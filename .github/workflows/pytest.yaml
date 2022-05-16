@@ -50,5 +50,5 @@ jobs:
         env:
           PYTEST_NETWORK: mainnet
           ETHERSCAN_TOKEN: ${{ secrets.ETHERSCAN_TOKEN  }}
-        run: pytest --maxfail=1
+        run: pytest
       
