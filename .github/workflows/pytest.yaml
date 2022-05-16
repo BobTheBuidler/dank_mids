@@ -48,6 +48,6 @@ jobs:
 
       - name: Run test suite
         env:
-          BROWNIE_NETWORK: mainnet
+          PYTEST_NETWORK: mainnet
         run: pytest
       
