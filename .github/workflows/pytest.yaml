@@ -1,0 +1,55 @@
+name: PyTest
+
+on:
+  push:
+    branch: dev
+    paths:
+      - '**.py'
+      - '**/pytest.yaml'
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ master, dev ]
+    paths:
+      - '**.py'
+      - '**/pytest.yaml'
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    #timeout-minutes: 10
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        include:
+        - os: ubuntu-latest
+          path: ~/.cache/pip
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+        - os: windows-latest
+          path: ~\AppData\Local\pip\Cache
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Python (faster than using Python container)
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-dev.txt
+          pip install -r requirements.txt
+      
+      - name: Setup brownie networks
+        run: |
+          brownie networks modify mainnet host=${{ secrets[WEB3_PROVIDER] }}
+        continue-on-error: true
+
+      - name: Run test suite
+        env:
+          BROWNIE_NETWORK: mainnet
+        run: pytest
+        continue-on-error: true
+      
