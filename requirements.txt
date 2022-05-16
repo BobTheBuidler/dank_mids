@@ -1,0 +1,2 @@
+bobs_lazy_logging>=0.0.2
+multicall>=0.5.0
