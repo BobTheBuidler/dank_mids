@@ -50,5 +50,4 @@ jobs:
         env:
           BROWNIE_NETWORK: mainnet
         run: pytest
-        continue-on-error: true
       
