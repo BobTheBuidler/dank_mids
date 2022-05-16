@@ -49,5 +49,5 @@ jobs:
       - name: Run test suite
         env:
           PYTEST_NETWORK: mainnet
-        run: pytest
+        run: pytest --maxfail=1
       
