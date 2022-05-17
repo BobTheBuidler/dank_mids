@@ -39,17 +39,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements-dev.txt
-          pip install -r requirements.txt
+          pip install -r requirements.txt -r requirements-dev.txt
       
       - name: Setup brownie networks
         run: |
-          brownie networks modify mainnet host=${{ secrets[WEB3_PROVIDER] }}
+          brownie networks modify mainnet host=${{ secrets.WEB3_PROVIDER }}
         continue-on-error: true
 
       - name: Run test suite
         env:
-          BROWNIE_NETWORK: mainnet
+          PYTEST_NETWORK: mainnet
+          ETHERSCAN_TOKEN: ${{ secrets.ETHERSCAN_TOKEN  }}
         run: pytest
-        continue-on-error: true
       
