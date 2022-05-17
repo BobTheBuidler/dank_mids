@@ -1,10 +1,13 @@
 
-from dank_mids.controller import instances, demo_logger
-from multicall import Call
-from multicall.utils import await_awaitable, gather
 import logging
 
+from brownie import chain
+from dank_mids.controller import demo_logger, instances
+from multicall import Call
+from multicall.utils import await_awaitable, gather
+
 from tests.fixtures import dank_w3
+
 demo_logger.addHandler(logging.StreamHandler())
 demo_logger.setLevel(logging.DEBUG)
 
@@ -31,3 +34,16 @@ def test_dank_middleware():
     assert mid < cid / 5,  f"Batched {cid} calls into {mid} multicalls. Performance underwhelming."
     assert bid < mid / 2,  f"{bid} batches required {mid} multicalls. Performance underwhelming."
 
+def test_bad_hex_handling():
+    chainlinkfeed = "0xfe67209f6FE3BA6cE36d0941700085C194e958DF"
+    assert await_awaitable(Call(chainlinkfeed, 'latestAnswer()(uint)', block_id=14_000_000).coroutine()) == 15717100
+    assert chainlinkfeed in instances[0].DO_NOT_BATCH
+
+def test_next_cid():
+    assert instances[0].next_cid + 1 == instances[0].next_cid
+    
+def test_next_mid():
+    assert instances[0].next_mid + 1 == instances[0].next_mid
+    
+def test_next_bid():
+    assert instances[0].next_bid + 1 == instances[0].next_bid

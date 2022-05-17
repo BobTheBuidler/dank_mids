@@ -20,12 +20,12 @@ from dank_mids.constants import (BAD_HEXES, GAS_LIMIT, LOOP_INTERVAL,
 from dank_mids.loggers import (demo_logger, main_logger, sort_lazy_logger,
                                sort_logger)
 
-instances = []
+instances: List["DankMiddlewareController"] = []
 
-def reattempt_call_and_return_exception(inputs: List, block: str, web3: Web3) -> Exception:
+def reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, web3: Web3) -> Exception:
     """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
     try:
-        return web3.eth.call({"to": inputs[0], "data": inputs[1]}, block)
+        return web3.eth.call({"to": target, "data": calldata}, block)
     except Exception as e:
         return e
 
@@ -213,7 +213,7 @@ class DankMiddlewareController:
             or (isinstance(data, bytes) and HexBytes(data).hex() in BAD_HEXES)
         ):
             target, calldata = params
-            data = await run_in_subprocess(reattempt_call_and_return_exception, [target, calldata], self.sync_w3)
+            data = await run_in_subprocess(reattempt_call_and_return_exception, target, calldata, block, self.sync_w3)
             # We were able to get a usable response from single call.
             # Add contract to DO_NOT_BATCH list
             if not isinstance(data, Exception):
