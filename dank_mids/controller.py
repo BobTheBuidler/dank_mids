@@ -180,6 +180,9 @@ class DankMiddlewareController:
                 main_logger.debug('out of gas. cut in half, trying again')
             elif any(err in str(e).lower() for err in ["connection reset by peer","request entity too large","server disconnected"]):
                 main_logger.debug('dank too loud, trying again')
+                old_step = self.batcher.step
+                self.batcher.step = round(len(inputs) * 0.99) if len(inputs) >= 100 else len(inputs) - 1
+                main_logger.warning(f'Multicall batch size reduced from {old_step} to {self.batcher.step}. The failed batch had {len(inputs)} calls.')
             else:
                 #raise
                 print(f"unexpected exception: {type(e)} {str(e)}")
