@@ -4,9 +4,9 @@ from types import MethodType
 from typing import Coroutine, Dict, Tuple, Union
 
 from brownie.network.contract import ContractTx, _get_tx
+from dank_mids.brownie_patch.account import _patch_account
 from web3 import Web3
 
-from dank_mids.brownie_patch.account import _patch_account
 
 def _patch_tx(call: ContractTx, w3: Web3) -> None:
 

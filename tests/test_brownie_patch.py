@@ -1,7 +1,7 @@
 
 from brownie import Contract
 from dank_mids.brownie_patch import patch_contract
-from dank_mids.brownie_patch.call import _patch_call
+from dank_mids.brownie_patch.contractcall import _patch_call
 from dank_mids.brownie_patch.tx import _patch_tx
 from multicall.utils import await_awaitable
 

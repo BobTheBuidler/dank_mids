@@ -4,12 +4,11 @@ from types import MethodType
 from typing import Coroutine, Dict, Tuple, Union
 
 import eth_abi
-from hexbytes import HexBytes
-from web3 import Web3
-
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall, _get_tx
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
+from hexbytes import HexBytes
+from web3 import Web3
 
 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
