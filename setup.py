@@ -16,6 +16,10 @@ setup(
     author_email='bobthebuidlerdefi@gmail.com',
     url='https://github.com/BobTheBuidler/dank_mids',
     license='MIT',
+    install_requires=[
+        "bobs_lazy_logging>=0.0.4",
+        "multicall>=0.5.1",
+    ]
     setup_requires=[
         'setuptools_scm',
     ],
