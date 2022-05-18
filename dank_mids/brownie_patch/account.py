@@ -5,8 +5,6 @@ import time
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple
 
-from web3 import Web3
-
 from brownie._config import CONFIG
 from brownie.convert import Wei
 from brownie.exceptions import VirtualMachineError
@@ -14,6 +12,7 @@ from brownie.network.account import Account
 from brownie.network.rpc import Rpc
 from brownie.network.state import Chain
 from brownie.network.transaction import TransactionReceipt
+from web3 import Web3
 
 rpc = Rpc()
 
