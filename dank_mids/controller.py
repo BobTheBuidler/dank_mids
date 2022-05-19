@@ -246,7 +246,7 @@ class DankMiddlewareController:
             return
         self._initializing = True
         print('Dank Middleware initializing... Strap on your rocket boots...')
-        chain_id = await self.w3.eth.chain_id
+        chain_id = self.sync_w3.eth.chain_id
         MULTICALL = multicall.constants.MULTICALL_ADDRESSES.get(chain_id,None)
         self.MULTICALL2 = multicall.constants.MULTICALL2_ADDRESSES.get(chain_id,None)
         self.DO_NOT_BATCH.update(to_checksum_address(address) for address in [MULTICALL,self.MULTICALL2] if address)
