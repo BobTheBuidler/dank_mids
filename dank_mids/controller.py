@@ -22,10 +22,10 @@ from dank_mids.loggers import (demo_logger, main_logger, sort_lazy_logger,
 
 instances: List["DankMiddlewareController"] = []
 
-def reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, web3: Web3) -> Exception:
+def reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, w3: Web3) -> Exception:
     """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
     try:
-        return web3.eth.call({"to": target, "data": calldata}, block)
+        return w3.eth.call({"to": target, "data": calldata}, block)
     except Exception as e:
         return e
 
@@ -47,6 +47,7 @@ class DankMiddlewareController:
         self.sync_w3 = Web3(provider = HTTPProvider(self.w3.provider.endpoint_uri))
         # Can't pickle middlewares to send to process executor
         self.sync_w3.middleware_onion.clear()
+        self.sync_w3.provider.middlewares = tuple()
         self.DO_NOT_BATCH = set()
         self.pending_calls = defaultdict(dict)
         self.completed_calls = defaultdict(dict)
@@ -246,6 +247,7 @@ class DankMiddlewareController:
             return
         self._initializing = True
         print('Dank Middleware initializing... Strap on your rocket boots...')
+        # NOTE use sync w3 here to prevent timeout issues with abusive scripts.
         chain_id = self.sync_w3.eth.chain_id
         MULTICALL = multicall.constants.MULTICALL_ADDRESSES.get(chain_id,None)
         self.MULTICALL2 = multicall.constants.MULTICALL2_ADDRESSES.get(chain_id,None)
