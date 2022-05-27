@@ -5,7 +5,6 @@ from brownie import Contract, network, web3
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
-from dank_mids.brownie_patch.tx import _patch_tx
 from web3 import Web3
 
 ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
@@ -13,9 +12,6 @@ ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
 def _patch_if_method(method: ContractMethod, w3: Web3):
     if isinstance(method, ContractCall) or isinstance(method, ContractTx):
         _patch_call(method, w3)
-    # TODO implement this properly
-    #elif isinstance(method, ContractTx):
-    #    _patch_tx(method, w3)
     elif isinstance(method, OverloadedMethod):
         _patch_overloaded_method(method, w3)
 

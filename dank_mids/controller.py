@@ -80,18 +80,22 @@ class DankMiddlewareController:
     
     @property
     def next_bid(self) -> int:
+        """ Returns the next unique batch id. """
         return self._increment('bid')
     
     @property
     def next_mid(self) -> int:
+        """ Returns the next unique multicall id. """
         return self._increment('mid')
     
     @property
     def next_cid(self) -> int:
+        """ Returns the next unique call id. """
         return self._increment('cid')
     
     @sort_lazy_logger
     def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
+        """ Determines whether or not a call should be passed to the DankMiddlewareController. """
         if method != 'eth_call':
             sort_logger.debug(f"bypassed, method is {method}")
             return False
@@ -101,6 +105,7 @@ class DankMiddlewareController:
         return True
     
     async def add_to_queue(self, params: Any) -> int:
+        """ Adds a call to the DankMiddlewareContoller's `pending_calls`. """
         cid = self.next_cid
         block = params[1]
         while self._pools_closed:
@@ -243,6 +248,7 @@ class DankMiddlewareController:
     async def _setup(self) -> None:
         if self._initializing:
             while self._initializing:
+                print('this line runs')
                 await asyncio.sleep(0)
             return
         self._initializing = True

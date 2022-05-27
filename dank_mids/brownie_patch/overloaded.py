@@ -4,7 +4,6 @@ from typing import Coroutine, Dict, Tuple, Union
 
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from dank_mids.brownie_patch.call import _patch_call
-from dank_mids.brownie_patch.tx import _patch_tx
 from web3 import Web3
 
 
