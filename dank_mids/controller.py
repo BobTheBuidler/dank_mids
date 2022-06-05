@@ -7,6 +7,7 @@ from time import time
 from typing import Any, Dict, List, Literal, Optional, Union
 
 import multicall
+from aiohttp import RequestInfo
 from eth_utils import to_checksum_address
 from hexbytes import HexBytes
 from multicall.utils import gather, run_in_subprocess
@@ -31,12 +32,14 @@ def reattempt_call_and_return_exception(target: str, calldata: bytes, block: str
 
 def _err_msg(e: Exception) -> str:
     """ Extract an error message from `e` to use in a spoof rpc response. """
-    if isinstance(e.args[0], str):
+    if isinstance(e.args[0], str) or isinstance(e.args[0], RequestInfo):
         err_msg = f"DankMidsError: {type(e)} {e.args}"
     elif "message" in e.args[0]:
         err_msg = e.args[0]["message"]
     elif "error" in e.args[0] and "message" in e.args[0]["error"]:
         err_msg = e.args[0]["error"]["message"]
+    else:
+        raise e
     return err_msg
 
 
