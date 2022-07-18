@@ -189,11 +189,13 @@ class DankMiddlewareController:
                 main_logger.debug('out of gas. cut in half, trying again')
             elif any(err in str(e).lower() for err in ["connection reset by peer","request entity too large","server disconnected"]):
                 main_logger.debug('dank too loud, trying again')
-                old_step = self.batcher.step
-                self.batcher.step = round(len(inputs) * 0.99) if len(inputs) >= 100 else len(inputs) - 1
-                main_logger.warning(f'Multicall batch size reduced from {old_step} to {self.batcher.step}. The failed batch had {len(inputs)} calls.')
+                new_step = round(len(inputs) * 0.99) if len(inputs) >= 100 else len(inputs) - 1
+                # We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
+                if new_step < self.batcher.step:
+                    old_step = self.batcher.step
+                    self.batcher.step = new_step
+                    main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {len(inputs)} calls.')
             else:
-                #raise
                 print(f"unexpected exception: {type(e)} {str(e)}")
 
             batches = [[cid, input] for cid, input in zip(cids, inputs)]
