@@ -144,7 +144,7 @@ class DankMiddlewareController:
         i = 0
         while self._cid_lock.locked():
             if i // 50 == int(i // 50):
-                print('lock is locked')
+                self.logger.debug('lock is locked')
             await asyncio.sleep(.1)
         if self._is_executing:
             return
@@ -187,7 +187,7 @@ class DankMiddlewareController:
             elif "out of gas" in str(e):
                 # TODO Remember which contracts/calls are gas guzzlers
                 main_logger.debug('out of gas. cut in half, trying again')
-            elif any(err in str(e).lower() for err in ["connection reset by peer","request entity too large","server disconnected"]):
+            elif any(err in str(e).lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
                 main_logger.debug('dank too loud, trying again')
                 new_step = round(len(inputs) * 0.99) if len(inputs) >= 100 else len(inputs) - 1
                 # We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
@@ -196,7 +196,7 @@ class DankMiddlewareController:
                     self.batcher.step = new_step
                     main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {len(inputs)} calls.')
             else:
-                print(f"unexpected exception: {type(e)} {str(e)}")
+                self.logger.warning(f"unexpected exception: {type(e)} {str(e)}")
 
             batches = [[cid, input] for cid, input in zip(cids, inputs)]
             halfpoint = len(batches) // 2
@@ -253,11 +253,10 @@ class DankMiddlewareController:
     async def _setup(self) -> None:
         if self._initializing:
             while self._initializing:
-                print('this line runs')
                 await asyncio.sleep(0)
             return
         self._initializing = True
-        print('Dank Middleware initializing... Strap on your rocket boots...')
+        self.logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         # NOTE use sync w3 here to prevent timeout issues with abusive scripts.
         chain_id = self.sync_w3.eth.chain_id
         MULTICALL = multicall.constants.MULTICALL_ADDRESSES.get(chain_id,None)
