@@ -187,7 +187,7 @@ class DankMiddlewareController:
             elif "out of gas" in str(e):
                 # TODO Remember which contracts/calls are gas guzzlers
                 main_logger.debug('out of gas. cut in half, trying again')
-            elif any(err in str(e).lower() for err in ["connection reset by peer","request entity too large","server disconnected"]):
+            elif any(err in str(e).lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
                 main_logger.debug('dank too loud, trying again')
                 new_step = round(len(inputs) * 0.99) if len(inputs) >= 100 else len(inputs) - 1
                 # We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
