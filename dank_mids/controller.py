@@ -16,8 +16,8 @@ from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids.constants import (BAD_HEXES, GAS_LIMIT, LOOP_INTERVAL,
-                                 OVERRIDE_CODE)
+from dank_mids._config import LOOP_INTERVAL
+from dank_mids.constants import BAD_HEXES, GAS_LIMIT, OVERRIDE_CODE
 from dank_mids.loggers import (demo_logger, main_logger, sort_lazy_logger,
                                sort_logger)
 

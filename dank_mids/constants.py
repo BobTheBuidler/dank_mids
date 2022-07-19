@@ -1,8 +1,6 @@
 
-import os
 import multicall
 
-LOOP_INTERVAL = float(os.environ.get("DANKMIDSLOOPINTERVAL", 0.05))
 GAS_LIMIT = multicall.constants.GAS_LIMIT
 OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
 
