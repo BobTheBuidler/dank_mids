@@ -16,8 +16,8 @@ from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids.constants import (BAD_HEXES, GAS_LIMIT, LOOP_INTERVAL,
-                                 OVERRIDE_CODE)
+from dank_mids._config import LOOP_INTERVAL
+from dank_mids.constants import BAD_HEXES, GAS_LIMIT, OVERRIDE_CODE
 from dank_mids.loggers import (demo_logger, main_logger, sort_lazy_logger,
                                sort_logger)
 
@@ -144,7 +144,7 @@ class DankMiddlewareController:
         i = 0
         while self._cid_lock.locked():
             if i // 50 == int(i // 50):
-                self.logger.debug('lock is locked')
+                main_logger.debug('lock is locked')
             await asyncio.sleep(.1)
         if self._is_executing:
             return
@@ -196,7 +196,7 @@ class DankMiddlewareController:
                     self.batcher.step = new_step
                     main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {len(inputs)} calls.')
             else:
-                self.logger.warning(f"unexpected exception: {type(e)} {str(e)}")
+                main_logger.warning(f"unexpected exception: {type(e)} {str(e)}")
 
             batches = [[cid, input] for cid, input in zip(cids, inputs)]
             halfpoint = len(batches) // 2
@@ -256,7 +256,7 @@ class DankMiddlewareController:
                 await asyncio.sleep(0)
             return
         self._initializing = True
-        self.logger.info('Dank Middleware initializing... Strap on your rocket boots...')
+        main_logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         # NOTE use sync w3 here to prevent timeout issues with abusive scripts.
         chain_id = self.sync_w3.eth.chain_id
         MULTICALL = multicall.constants.MULTICALL_ADDRESSES.get(chain_id,None)

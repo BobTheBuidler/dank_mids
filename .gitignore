@@ -2,6 +2,8 @@ build
 dist
 env
 dank_mids.egg-info
+.hypothesis
+.pytest_cache
 .eggs
 .mypy_cache
 __pycache__
