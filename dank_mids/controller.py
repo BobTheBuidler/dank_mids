@@ -61,11 +61,11 @@ class DankMiddlewareController:
         self.sync_w3.provider.middlewares = tuple()
         self.DO_NOT_BATCH = set()
         self.pending_calls = defaultdict(dict)
+        self.in_process_calls = defaultdict(dict)
         self.completed_calls = defaultdict(dict)
         self.batcher = multicall.multicall.batcher
         self.caller_event_loop = asyncio.new_event_loop()
         threading.Thread(target=lambda: start_caller_event_loop(self.caller_event_loop)).start()
-        self.process_executor = multicall.utils.process_pool_executor
         self._bid = 0   #      batch id
         self._mid = 0   #  multicall id
         self._cid = 0   #       call id
@@ -129,8 +129,12 @@ class DankMiddlewareController:
     
     async def await_response(self, block: str, cid: int) -> RPCResponse:
         while cid not in self.completed_calls[block]:
-            assert cid in self.pending_calls[block], f"Something went wrong, call{cid} is missing from `pending_calls`."
-            if self.queue_is_ready() and self.loop_is_ready():
+            if cid in self.in_process_calls[block]:
+                while cid not in self.completed_calls[block]:
+                    await asyncio.sleep(0)
+                return self.fetch_response(block,cid)
+            assert cid in self.pending_calls[block] or cid in self.in_process_calls[block], f"Something went wrong, call{cid} is missing from `pending_calls`."
+            if (self.queue_is_ready() and self.loop_is_ready()) or self.queue_is_full(block):
                 await self.execute_multicall()
             await asyncio.sleep(LOOP_INTERVAL)
             self._last_seen_cid = self._cid
@@ -162,9 +166,15 @@ class DankMiddlewareController:
         self._is_executing = True
         self._pools_closed = True
         with self._cid_lock:
-            pending_calls = list(self.pending_calls.items())
+            calls_to_exec = []
+            blocks = list(self.pending_calls.keys())
+            for block in blocks:
+                calls = self.pending_calls.pop(block)
+                for cid, params in calls.items():
+                    self.in_process_calls[block][cid] = params
+                calls_to_exec.append((block, calls))
         self._pools_closed = False
-        await gather([self.process_block(block, calls) for block, calls in pending_calls])
+        await gather([self.process_block(block, calls) for block, calls in calls_to_exec])
         self._is_executing = False
         demo_logger.info('multicall complete')
     
@@ -250,14 +260,14 @@ class DankMiddlewareController:
         main_logger.debug(f"spoof: {spoof}")
         self.completed_calls[block][cid] = spoof
 
-        # Pop the call from pending calls
-        # TODO figure out why cids can be missing from pending_calls when they haven't been popped yet
-        if cid in self.pending_calls[block]:
-            self.pending_calls[block].pop(cid)
+        # Pop the call from in_process_calls
+        # TODO figure out why cids can be missing from in_process_calls when they haven't been popped yet
+        if cid in self.in_process_calls[block]:
+            self.in_process_calls[block].pop(cid)
 
         # Pop the block from pending calls if empty
-        if not self.pending_calls[block]:
-            self.pending_calls.pop(block)
+        if not self.in_process_calls[block]:
+            self.in_process_calls.pop(block)
 
     async def _setup(self) -> None:
         if self._initializing:
