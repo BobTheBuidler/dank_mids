@@ -227,7 +227,7 @@ class DankMiddlewareController:
             state_override_code=OVERRIDE_CODE,
         )
     
-    async def spoof_response(self, cid: int, block: str, params: List, data: Optional[Union[str,Exception]]) -> RPCResponse:
+    async def spoof_response(self, cid: int, block: str, params: List, data: Optional[Union[str,Exception]]) -> None:
         """ Creates a spoof rpc response for call # `cid` using data returned from multicall2. """
         if (
             # If multicall failed, try single call to get detailed error.
@@ -258,7 +258,6 @@ class DankMiddlewareController:
         # Pop the block from pending calls if empty
         if not self.pending_calls[block]:
             self.pending_calls.pop(block)
-        return data
 
     async def _setup(self) -> None:
         if self._initializing:
