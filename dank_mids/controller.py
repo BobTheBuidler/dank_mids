@@ -42,6 +42,14 @@ def _err_msg(e: Exception) -> str:
         raise e
     return err_msg
 
+def start_caller_event_loop(loop: asyncio.BaseEventLoop) -> None:
+    """
+    Used to start a second event loop in a separate thread which is used to reduce congestion on the main event loop.
+    This allows dank_mids to better communicate with your node while you abuse it with heavy loads.
+    """
+    asyncio.set_event_loop(loop)
+    loop.run_forever()
+
 
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
@@ -55,6 +63,8 @@ class DankMiddlewareController:
         self.pending_calls = defaultdict(dict)
         self.completed_calls = defaultdict(dict)
         self.batcher = multicall.multicall.batcher
+        self.caller_event_loop = asyncio.new_event_loop()
+        threading.Thread(target=lambda: start_caller_event_loop(self.caller_event_loop)).start()
         self.process_executor = multicall.utils.process_pool_executor
         self._bid = 0   #      batch id
         self._mid = 0   #  multicall id
