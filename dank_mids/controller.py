@@ -104,6 +104,7 @@ class DankMiddlewareController:
     @property
     def next_cid(self) -> int:
         """ Returns the next unique call id. """
+        self._checkpoint = time()
         return self._increment('cid')
     
     @sort_lazy_logger
