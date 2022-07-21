@@ -144,8 +144,7 @@ class DankMiddlewareController:
         return time() - self._checkpoint > LOOP_INTERVAL
     
     def queue_is_full(self, block) -> bool:
-        if len(self.pending_calls[block]) >= self.batcher.step:
-            return True
+        return len(self.pending_calls[block]) >= self.batcher.step * 25
     
     def fetch_response(self, block: str, cid: int) -> RPCResponse:
         return self.completed_calls[block].pop(cid)
