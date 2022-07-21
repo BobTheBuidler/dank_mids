@@ -4,7 +4,7 @@ import threading
 from collections import defaultdict
 from functools import lru_cache
 from time import time
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Set, Union
 
 import multicall
 from aiohttp import RequestInfo
