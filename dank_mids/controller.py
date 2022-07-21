@@ -135,17 +135,12 @@ class DankMiddlewareController:
                     await asyncio.sleep(0)
                 return self.fetch_response(block,cid)
             assert cid in self.pending_calls[block] or cid in self.in_process_calls[block], f"Something went wrong, call{cid} is missing from `pending_calls`."
-            if (self.queue_is_ready() and self.loop_is_ready()) or self.queue_is_full(block):
+            if self.loop_is_ready() or self.queue_is_full(block):
                 asyncio.run_coroutine_threadsafe(self.execute_multicall(), self.caller_event_loop).result()
             await asyncio.sleep(LOOP_INTERVAL)
             self._last_seen_cid = self._cid
         return self.fetch_response(block,cid)
 
-    def queue_is_ready(self) -> bool:
-        if self._cid == self._last_seen_cid and len(self.pending_calls):
-            return True
-        return False
-    
     def loop_is_ready(self) -> bool:
         return time() - self._checkpoint > LOOP_INTERVAL
     
