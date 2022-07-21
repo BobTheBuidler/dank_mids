@@ -75,7 +75,6 @@ class DankMiddlewareController:
         self._last_seen_cid: int = 0
         self._initializing: bool = False
         self._is_configured: bool = False
-        self._is_executing: bool = False
         self._pools_closed: bool = False
         self._checkpoint: float = time()
         self._instance: int = len(instances)
@@ -141,7 +140,7 @@ class DankMiddlewareController:
         return self.fetch_response(block,cid)
 
     def queue_is_ready(self) -> bool:
-        if not self._is_executing and self._cid == self._last_seen_cid and len(self.pending_calls):
+        if self._cid == self._last_seen_cid and len(self.pending_calls):
             return True
         return False
     
@@ -160,10 +159,6 @@ class DankMiddlewareController:
             if i // 50 == int(i // 50):
                 main_logger.debug('lock is locked')
             await asyncio.sleep(.1)
-        if self._is_executing:
-            return
-        demo_logger.info(f'executing multicall (current cid: {self._cid})')
-        self._is_executing = True
         self._pools_closed = True
         with self._cid_lock:
             calls_to_exec = []
@@ -174,8 +169,8 @@ class DankMiddlewareController:
                     self.in_process_calls[block][cid] = params
                 calls_to_exec.append((block, calls))
         self._pools_closed = False
+        demo_logger.info(f'executing multicall (current cid: {self._cid})')
         await gather([self.process_block(block, calls) for block, calls in calls_to_exec])
-        self._is_executing = False
         demo_logger.info('multicall complete')
     
     async def process_block(self, block: str, calls: Dict[int,List]) -> None:
