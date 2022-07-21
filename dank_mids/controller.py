@@ -179,7 +179,7 @@ class DankMiddlewareController:
         calls = [[cid, [params[0]['to'], HexBytes(params[0]['data'])]] for cid, params in calls.items()]
         demo_logger.info(f'executing {len(calls)} calls for block {block}')
         batches = self.batcher.batch_calls(calls, self.batcher.step)
-        batches = await gather([self.process_batch(batch,block) for batch in batches])
+        await gather([self.process_batch(batch,block) for batch in batches])
 
     async def process_batch(self, batch: List, block: str, bid: Optional[int] = None) -> None:
         if bid is None:
