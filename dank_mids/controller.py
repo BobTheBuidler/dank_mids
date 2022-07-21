@@ -54,31 +54,31 @@ def start_caller_event_loop(loop: asyncio.BaseEventLoop) -> None:
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
         assert w3.eth.is_async and isinstance(w3.provider, AsyncBaseProvider), "Dank Middleware can only be applied to an asycnhronous Web3 instance."
-        self.w3 = w3
-        self.sync_w3 = Web3(provider = HTTPProvider(self.w3.provider.endpoint_uri))
+        self.w3: Web3 = w3
+        self.sync_w3: Web3 = Web3(provider = HTTPProvider(self.w3.provider.endpoint_uri))
         # Can't pickle middlewares to send to process executor
         self.sync_w3.middleware_onion.clear()
         self.sync_w3.provider.middlewares = tuple()
-        self.DO_NOT_BATCH = set()
-        self.pending_calls = defaultdict(dict)
-        self.in_process_calls = defaultdict(dict)
-        self.completed_calls = defaultdict(dict)
+        self.DO_NOT_BATCH: Set[str] = set()
+        self.pending_calls: defaultdict = defaultdict(dict)
+        self.in_process_calls: defaultdict = defaultdict(dict)
+        self.completed_calls: defaultdict = defaultdict(dict)
         self.batcher = multicall.multicall.batcher
         self.caller_event_loop = asyncio.new_event_loop()
         threading.Thread(target=lambda: start_caller_event_loop(self.caller_event_loop)).start()
-        self._bid = 0   #      batch id
-        self._mid = 0   #  multicall id
-        self._cid = 0   #       call id
-        self._bid_lock = threading.Lock()
-        self._mid_lock = threading.Lock()
-        self._cid_lock = threading.Lock()
-        self._last_seen_cid = 0
-        self._initializing = False
-        self._is_configured = False
-        self._is_executing = False
-        self._pools_closed = False
-        self._checkpoint = time()
-        self._instance = len(instances)
+        self._bid: int = 0   #      batch id
+        self._mid: int = 0   #  multicall id
+        self._cid: int = 0   #       call id
+        self._bid_lock: threading.Lock = threading.Lock()
+        self._mid_lock: threading.Lock = threading.Lock()
+        self._cid_lock: threading.Lock = threading.Lock()
+        self._last_seen_cid: int = 0
+        self._initializing: bool = False
+        self._is_configured: bool = False
+        self._is_executing: bool = False
+        self._pools_closed: bool = False
+        self._checkpoint: float = time()
+        self._instance: int = len(instances)
         instances.append(self)
     
     def __repr__(self) -> str:
