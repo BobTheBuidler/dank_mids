@@ -153,8 +153,9 @@ class DankMiddlewareController:
     async def execute_multicall(self) -> None:
         i = 0
         while self._cid_lock.locked():
-            if i // 50 == int(i // 50):
+            if i // 500 == int(i // 500):
                 main_logger.debug('lock is locked')
+            i += 1
             await asyncio.sleep(.1)
         self._pools_closed = True
         with self._cid_lock:
