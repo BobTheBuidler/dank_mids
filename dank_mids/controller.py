@@ -74,7 +74,6 @@ class DankMiddlewareController:
         self._bid_lock: threading.Lock = threading.Lock()
         self._mid_lock: threading.Lock = threading.Lock()
         self._cid_lock: threading.Lock = threading.Lock()
-        self._last_seen_cid: int = 0
         self._initializing: bool = False
         self._is_configured: bool = False
         self._pools_closed: bool = False
@@ -138,7 +137,6 @@ class DankMiddlewareController:
             if self.loop_is_ready() or self.queue_is_full(block):
                 asyncio.run_coroutine_threadsafe(self.execute_multicall(), self.caller_event_loop).result()
             await asyncio.sleep(LOOP_INTERVAL)
-            self._last_seen_cid = self._cid
         return self.fetch_response(block,cid)
 
     def loop_is_ready(self) -> bool:
