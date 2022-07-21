@@ -150,10 +150,7 @@ class DankMiddlewareController:
         return time() - self._checkpoint > LOOP_INTERVAL
     
     def fetch_response(self, block: str, cid: int) -> RPCResponse:
-        response = self.completed_calls[block].pop(cid)
-        if not self.completed_calls[block]:
-            self.completed_calls.pop(block)
-        return response
+        return self.completed_calls[block].pop(cid)
     
     async def execute_multicall(self) -> None:
         i = 0
