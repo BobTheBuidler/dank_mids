@@ -265,10 +265,6 @@ class DankMiddlewareController:
         if cid in self.in_process_calls[block]:
             self.in_process_calls[block].pop(cid)
 
-        # Pop the block from pending calls if empty
-        if not self.in_process_calls[block]:
-            self.in_process_calls.pop(block)
-
     async def _setup(self) -> None:
         if self._initializing:
             while self._initializing:
