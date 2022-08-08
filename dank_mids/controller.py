@@ -23,7 +23,7 @@ from dank_mids.loggers import (demo_logger, main_logger, sort_lazy_logger,
 
 instances: List["DankMiddlewareController"] = []
 
-def reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, w3: Web3) -> Exception:
+def _reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, w3: Web3) -> Exception:
     """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
     try:
         return w3.eth.call({"to": target, "data": calldata}, block)
@@ -44,7 +44,7 @@ def _err_msg(e: Exception) -> str:
         raise e
     return err_msg
 
-def start_worker_event_loop(loop: asyncio.BaseEventLoop) -> None:
+def _start_worker_event_loop(loop: asyncio.BaseEventLoop) -> None:
     """
     Used to start a second event loop in a separate thread which is used to reduce congestion on the main event loop.
     This allows dank_mids to better communicate with your node while you abuse it with heavy loads.
@@ -67,7 +67,7 @@ class DankMiddlewareController:
         self.batcher = multicall.multicall.batcher
         self.is_running = False
         self.worker_event_loop = asyncio.new_event_loop()
-        threading.Thread(target=lambda: start_worker_event_loop(self.worker_event_loop)).start()
+        threading.Thread(target=lambda: _start_worker_event_loop(self.worker_event_loop)).start()
         self._bid: int = 0   #      batch id
         self._mid: int = 0   #  multicall id
         self._cid: int = 0   #       call id
@@ -291,7 +291,7 @@ class BatchedCall:
             # Could be that target contract does not support multicall2.
             or (isinstance(data, bytes) and HexBytes(data).hex() in BAD_HEXES)
         ):
-            data = await run_in_subprocess(reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3)
+            data = await run_in_subprocess(_reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3)
             # We were able to get a usable response from single call.
             # Add contract to DO_NOT_BATCH list
             if not isinstance(data, Exception):
