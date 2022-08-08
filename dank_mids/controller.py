@@ -64,7 +64,7 @@ class DankMiddlewareController:
         self.DO_NOT_BATCH: Set[str] = set()
         self.pending_calls: defaultdict = defaultdict(dict)
         self.in_process_calls: defaultdict = defaultdict(dict)
-        self.completed_calls: defaultdict = defaultdict(dict)
+        self.completed_calls: Dict[int, RPCResponse] = {}
         self.batcher = multicall.multicall.batcher
         self.caller_event_loop = asyncio.new_event_loop()
         threading.Thread(target=lambda: start_caller_event_loop(self.caller_event_loop)).start()
@@ -129,9 +129,9 @@ class DankMiddlewareController:
         return cid
     
     async def await_response(self, block: str, cid: int) -> RPCResponse:
-        while cid not in self.completed_calls[block]:
+        while cid not in self.completed_calls:
             if cid in self.in_process_calls[block]:
-                while cid not in self.completed_calls[block]:
+                while cid not in self.completed_calls:
                     await asyncio.sleep(0)
                 return self.fetch_response(block,cid)
             assert cid in self.pending_calls[block] or cid in self.in_process_calls[block], f"Something went wrong, call{cid} is missing from `pending_calls`."
@@ -147,7 +147,7 @@ class DankMiddlewareController:
         return len(self.pending_calls[block]) >= self.batcher.step * 25
     
     def fetch_response(self, block: str, cid: int) -> RPCResponse:
-        return self.completed_calls[block].pop(cid)
+        return self.completed_calls.pop(cid)
     
     async def execute_multicall(self) -> None:
         i = 0
@@ -250,7 +250,7 @@ class DankMiddlewareController:
             spoof = {"result": HexBytes(data).hex()}
         spoof.update({"id": cid, "jsonrpc": "dank_mids"})
         main_logger.debug(f"spoof: {spoof}")
-        self.completed_calls[block][cid] = spoof
+        self.completed_calls[cid] = spoof
 
         # Pop the call from in_process_calls
         # TODO figure out why cids can be missing from in_process_calls when they haven't been popped yet
