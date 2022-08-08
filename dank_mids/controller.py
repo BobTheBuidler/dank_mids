@@ -23,7 +23,7 @@ from dank_mids.loggers import (demo_logger, main_logger, sort_lazy_logger,
 
 instances: List["DankMiddlewareController"] = []
 
-def _reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, w3: Web3) -> Exception:
+def _reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, w3: Web3) -> Union[bytes, Exception]:
     """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
     try:
         return w3.eth.call({"to": target, "data": calldata}, block)
