@@ -1,7 +1,7 @@
 
 import functools
 from types import MethodType
-from typing import Any, Coroutine, Dict, Tuple, Union
+from typing import Any, Dict, Tuple, Union
 
 import eth_abi
 from brownie.convert.normalize import format_input, format_output
@@ -42,15 +42,15 @@ def __decode_output(hexstr: str, abi: Dict) -> Any:
     return result
 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
-    async def _encode_input(self, *args):
+    async def _encode_input(self, *args: Tuple[Any,...]) -> str:
         return await run_in_subprocess(
             __encode_input,
             self.abi,
             self.signature,
-            *(arg if not hasattr(arg, 'address') else arg.address for arg in args)
+            *(arg if not hasattr(arg, 'address') else arg.address for arg in args)  # type: ignore
         )
     
-    async def _decode_output(self, data):
+    async def _decode_output(self, data: str) -> Any:
         return await run_in_subprocess(__decode_output, data, self.abi)
 
     @functools.wraps(call)
@@ -59,14 +59,14 @@ def _patch_call(call: ContractCall, w3: Web3) -> None:
         *args: Tuple,
         block_identifier: Union[int, str, bytes] = None,
         override: Dict = None
-    ) -> Coroutine:
+    ) -> Any:
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
         
         calldata = await self._encode_input(*args)
 
         try:
-            data = await w3.eth.call({"to": self._address, "data": calldata}, block_identifier, override)
+            data = await w3.eth.call({"to": self._address, "data": calldata}, block_identifier, override)  # type: ignore
         except ValueError as e:
             raise VirtualMachineError(e) from None
 

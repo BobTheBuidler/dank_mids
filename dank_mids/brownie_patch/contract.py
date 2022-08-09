@@ -9,7 +9,7 @@ from web3 import Web3
 
 ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
 
-def _patch_if_method(method: ContractMethod, w3: Web3):
+def _patch_if_method(method: ContractMethod, w3: Web3) -> None:
     if isinstance(method, ContractCall) or isinstance(method, ContractTx):
         _patch_call(method, w3)
     elif isinstance(method, OverloadedMethod):

@@ -44,11 +44,11 @@ def _err_msg(e: Exception) -> str:
         raise e
     return err_msg
 
-async def _worker_loop():
+async def _worker_loop() -> None:
     while threading.main_thread().is_alive():
         await asyncio.sleep(5)
     
-def _start_worker_loop(loop: asyncio.BaseEventLoop) -> None:
+def _start_worker_loop(loop: asyncio.AbstractEventLoop) -> None:
     """
     Used to start a second event loop in a separate thread which is used to reduce congestion on the main event loop.
     This allows dank_mids to better communicate with your node while you abuse it with heavy loads.
@@ -141,7 +141,7 @@ class DankMiddlewareController:
     
     @property
     def queue_is_full(self) -> bool:
-        return len(self.pending_calls) >= self.batcher.step * 25
+        return bool(len(self.pending_calls) >= self.batcher.step * 25)
     
     async def execute_multicall(self) -> None:
         asyncio.run_coroutine_threadsafe(self._execute_multicall(), self.worker_event_loop).result()
@@ -171,7 +171,7 @@ class DankMiddlewareController:
         batches = self.batcher.batch_calls(calls, self.batcher.step)
         await gather([self.process_batch(batch,block) for batch in batches])
 
-    async def process_batch(self, batch: List["BatchedCall"], block: str, bid: Optional[int] = None) -> None:
+    async def process_batch(self, batch: List["BatchedCall"], block: str, bid: Optional[Union[int, str]] = None) -> None:
         if bid is None:
             bid = self.next_bid
         mid = self.next_mid
@@ -236,7 +236,7 @@ class DankMiddlewareController:
     def _increment(self, id: Literal["bid","mid","cid"]) -> int:
         attr = f"_{id}"
         with getattr(self, f"{attr}_lock"):
-            new = getattr(self, attr) + 1
+            new: int = getattr(self, attr) + 1
             setattr(self, attr, new)
             return new
 

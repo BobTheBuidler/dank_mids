@@ -7,7 +7,7 @@ from web3.providers.base import BaseProvider
 from dank_mids.middleware import dank_middleware
 
 
-def setup_dank_w3(async_w3: Web3) -> None:
+def setup_dank_w3(async_w3: Web3) -> Web3:
     """ Injects Dank Middleware into an async Web3 instance. """
     assert async_w3.eth.is_async and isinstance(async_w3.provider, AsyncBaseProvider)
     async_w3.middleware_onion.inject(dank_middleware, layer=0)
