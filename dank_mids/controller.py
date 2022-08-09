@@ -44,13 +44,17 @@ def _err_msg(e: Exception) -> str:
         raise e
     return err_msg
 
-def _start_worker_event_loop(loop: asyncio.BaseEventLoop) -> None:
+async def _worker_loop():
+    while threading.main_thread().is_alive():
+        await asyncio.sleep(5)
+    
+def _start_worker_loop(loop: asyncio.BaseEventLoop) -> None:
     """
     Used to start a second event loop in a separate thread which is used to reduce congestion on the main event loop.
     This allows dank_mids to better communicate with your node while you abuse it with heavy loads.
     """
     asyncio.set_event_loop(loop)
-    loop.run_forever()
+    loop.run_until_complete(_worker_loop())
 
 
 class DankMiddlewareController:
@@ -67,7 +71,7 @@ class DankMiddlewareController:
         self.batcher = multicall.multicall.batcher
         self.is_running = False
         self.worker_event_loop = asyncio.new_event_loop()
-        threading.Thread(target=lambda: _start_worker_event_loop(self.worker_event_loop)).start()
+        threading.Thread(target=lambda: _start_worker_loop(self.worker_event_loop)).start()
         self._bid: int = 0   #      batch id
         self._mid: int = 0   #  multicall id
         self._cid: int = 0   #       call id
@@ -105,7 +109,6 @@ class DankMiddlewareController:
         """ Returns the next unique call id. """
         self._checkpoint = time()
         return self._increment('cid')
-    
     
     async def taskmaster_loop(self) -> None:
         self.is_running = True
