@@ -23,7 +23,7 @@ from dank_mids.loggers import (demo_logger, main_logger, sort_lazy_logger,
 
 instances: List["DankMiddlewareController"] = []
 
-def reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, w3: Web3) -> Exception:
+def _reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, w3: Web3) -> Union[bytes, Exception]:
     """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
     try:
         return w3.eth.call({"to": target, "data": calldata}, block)
@@ -44,13 +44,17 @@ def _err_msg(e: Exception) -> str:
         raise e
     return err_msg
 
-def start_worker_event_loop(loop: asyncio.BaseEventLoop) -> None:
+async def _worker_loop() -> None:
+    while threading.main_thread().is_alive():
+        await asyncio.sleep(5)
+    
+def _start_worker_loop(loop: asyncio.AbstractEventLoop) -> None:
     """
     Used to start a second event loop in a separate thread which is used to reduce congestion on the main event loop.
     This allows dank_mids to better communicate with your node while you abuse it with heavy loads.
     """
     asyncio.set_event_loop(loop)
-    loop.run_forever()
+    loop.run_until_complete(_worker_loop())
 
 
 class DankMiddlewareController:
@@ -67,7 +71,7 @@ class DankMiddlewareController:
         self.batcher = multicall.multicall.batcher
         self.is_running = False
         self.worker_event_loop = asyncio.new_event_loop()
-        threading.Thread(target=lambda: start_worker_event_loop(self.worker_event_loop)).start()
+        threading.Thread(target=lambda: _start_worker_loop(self.worker_event_loop)).start()
         self._bid: int = 0   #      batch id
         self._mid: int = 0   #  multicall id
         self._cid: int = 0   #       call id
@@ -106,7 +110,6 @@ class DankMiddlewareController:
         self._checkpoint = time()
         return self._increment('cid')
     
-    
     async def taskmaster_loop(self) -> None:
         self.is_running = True
         while self.pending_calls:
@@ -138,7 +141,7 @@ class DankMiddlewareController:
     
     @property
     def queue_is_full(self) -> bool:
-        return len(self.pending_calls) >= self.batcher.step * 25
+        return bool(len(self.pending_calls) >= self.batcher.step * 25)
     
     async def execute_multicall(self) -> None:
         asyncio.run_coroutine_threadsafe(self._execute_multicall(), self.worker_event_loop).result()
@@ -168,7 +171,7 @@ class DankMiddlewareController:
         batches = self.batcher.batch_calls(calls, self.batcher.step)
         await gather([self.process_batch(batch,block) for batch in batches])
 
-    async def process_batch(self, batch: List["BatchedCall"], block: str, bid: Optional[int] = None) -> None:
+    async def process_batch(self, batch: List["BatchedCall"], block: str, bid: Optional[Union[int, str]] = None) -> None:
         if bid is None:
             bid = self.next_bid
         mid = self.next_mid
@@ -233,7 +236,7 @@ class DankMiddlewareController:
     def _increment(self, id: Literal["bid","mid","cid"]) -> int:
         attr = f"_{id}"
         with getattr(self, f"{attr}_lock"):
-            new = getattr(self, attr) + 1
+            new: int = getattr(self, attr) + 1
             setattr(self, attr, new)
             return new
 
@@ -291,7 +294,7 @@ class BatchedCall:
             # Could be that target contract does not support multicall2.
             or (isinstance(data, bytes) and HexBytes(data).hex() in BAD_HEXES)
         ):
-            data = await run_in_subprocess(reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3)
+            data = await run_in_subprocess(_reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3)
             # We were able to get a usable response from single call.
             # Add contract to DO_NOT_BATCH list
             if not isinstance(data, Exception):
