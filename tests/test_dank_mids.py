@@ -2,7 +2,8 @@
 import logging
 
 from brownie import chain
-from dank_mids.controller import demo_logger, instances
+from dank_mids import instances
+from dank_mids.loggers import demo_logger
 from multicall import Call
 from multicall.utils import await_awaitable, gather
 
@@ -17,9 +18,9 @@ BIG_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]],_w3=dan
 def test_dank_middleware():
     await_awaitable(gather(BIG_WORK))
     dank_mids_controller = instances[0]
-    cid = dank_mids_controller._cid
-    bid = dank_mids_controller._bid
-    mid = dank_mids_controller._mid
+    cid = dank_mids_controller.call_uid.latest
+    bid = dank_mids_controller.worker.batch_uid.latest
+    mid = dank_mids_controller.worker.multicall_uid.latest
     assert cid, "The DankMiddlewareController did not process any calls."
     assert bid, "The DankMiddlewareController did not process any batches."
     assert mid, "The DankMiddlewareController did not process any multicalls."
@@ -40,10 +41,10 @@ def test_bad_hex_handling():
     assert chainlinkfeed in instances[0].DO_NOT_BATCH
 
 def test_next_cid():
-    assert instances[0].next_cid + 1 == instances[0].next_cid
+    assert instances[0].call_uid.next + 1 == instances[0].call_uid.next
     
 def test_next_mid():
-    assert instances[0].next_mid + 1 == instances[0].next_mid
+    assert instances[0].worker.multicall_uid.next + 1 == instances[0].worker.multicall_uid.next
     
 def test_next_bid():
-    assert instances[0].next_bid + 1 == instances[0].next_bid
+    assert instances[0].worker.batch_uid.next + 1 == instances[0].worker.batch_uid.next
