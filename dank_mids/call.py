@@ -7,7 +7,7 @@ from eth_typing import ChecksumAddress
 from hexbytes import HexBytes
 from multicall.utils import run_in_subprocess
 from web3 import Web3
-from web3.types import RPCResponse
+from web3.types import RPCError, RPCResponse
 
 from dank_mids.constants import BAD_HEXES
 from dank_mids.loggers import demo_logger, main_logger
@@ -20,6 +20,16 @@ if TYPE_CHECKING:
 class ResponseNotReady(Exception):
     pass
 
+def _call_failed(data: Optional[Union[bytes, Exception]]) -> bool:
+    """ Returns True if `data` indicates a failed response, False otherwise. """
+    if data is None:
+        return True
+    # If we got a known "bad" response from the multicall, that is also a failure.
+    # Most likely the target contract does not support multicall2.
+    elif (isinstance(data, bytes) and HexBytes(data).hex() in BAD_HEXES):
+        return True
+    return False
+
 def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: bytes, block: BlockId, w3: Web3) -> Union[bytes, Exception]:
     """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
     try:
@@ -27,7 +37,7 @@ def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: byte
     except Exception as e:
         return e
 
-def _err_msg(e: Exception) -> str:
+def _err_response(e: Exception) -> RPCError:
     """ Extract an error message from `e` to use in a spoof rpc response. """
     if isinstance(e.args[0], str) or isinstance(e.args[0], RequestInfo):
         err_msg = f"DankMidsError: {type(e)} {e.args}"
@@ -39,7 +49,7 @@ def _err_msg(e: Exception) -> str:
         err_msg = e.args[0]["error"]["message"]
     else:
         raise e
-    return err_msg
+    return {'code': -32000, 'message': err_msg, 'data': None}
 
 
 class BatchedCall:
@@ -83,25 +93,30 @@ class BatchedCall:
             await asyncio.sleep(0)
         return self.response
 
-    async def spoof_response(self, data: Optional[Union[str,Exception]]) -> RPCResponse:
+    async def spoof_response(self, data: Optional[Union[bytes, Exception]]) -> RPCResponse:
         """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
-        if (
-            # If multicall failed, try single call to get detailed error.
-            data is None
-            # Or, if we got a known "bad" response from the multicall, try single call.
-            # Could be that target contract does not support multicall2.
-            or (isinstance(data, bytes) and HexBytes(data).hex() in BAD_HEXES)
-        ):
-            data = await run_in_subprocess(_reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3)
-            # We were able to get a usable response from single call.
-            # Add contract to DO_NOT_BATCH list
-            if not isinstance(data, Exception):
-                self.controller.do_not_batch.add(self.target) 
+        spoof: RPCResponse
+        # If multicall failed, make sync call to get either:
+        # - revert details
+        # - successful response
+        if _call_failed(data):
+            data = await self.sync_call()
+        
         if isinstance(data, Exception):
-            spoof = {"error": {'code': -32000, 'message': _err_msg(data)}}
+            spoof = {"error": _err_response(data)}
         else:
-            spoof = {"result": HexBytes(data).hex()}
-        spoof.update({"id": self.cid, "jsonrpc": "dank_mids"})
+            spoof = {"result": HexBytes(data).hex()}  # type: ignore
+        spoof.update({"id": self.cid, "jsonrpc": "dank_mids"})  # type: ignore
         main_logger.debug(f"spoof: {spoof}")
         self._response = spoof
         return spoof
+
+    async def sync_call(self) -> Union[bytes, Exception]:
+        """ Used to bypass DankMiddlewareController. """ 
+        data = await run_in_subprocess(
+            _reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3
+        )
+        # If we were able to get a usable response from single call, add contract to `do_not_batch`.
+        if not isinstance(data, Exception):
+            self.controller.do_not_batch.add(self.target)
+        return data
