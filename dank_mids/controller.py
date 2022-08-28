@@ -11,6 +11,8 @@ from web3 import Web3
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
+from eth_typing import ChecksumAddress
+
 
 from dank_mids._config import LOOP_INTERVAL
 from dank_mids.call import BatchedCall
@@ -30,7 +32,7 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     sync_w3.provider.middlewares = tuple()
     return sync_w3
 
-def _get_constants_for_network(chainid: int) -> Tuple[str, Set[str]]:
+def _get_constants_for_network(chainid: int) -> Tuple[ChecksumAddress, Set[ChecksumAddress]]:
     multicall1 = multicall.constants.MULTICALL_ADDRESSES.get(chainid,None)
     multicall2 = multicall.constants.MULTICALL2_ADDRESSES.get(chainid,None)
     return multicall2, {to_checksum_address(address) for address in [multicall1,multicall2] if address}

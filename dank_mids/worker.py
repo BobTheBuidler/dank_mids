@@ -9,10 +9,13 @@ from multicall.utils import gather
 from dank_mids.call import BatchedCall
 from dank_mids.constants import GAS_LIMIT, OVERRIDE_CODE
 from dank_mids.loggers import demo_logger, main_logger
+from dank_mids.types import BlockId, CallsToExec
 from dank_mids.uid import UIDGenerator
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
+
+BatchId = Union[int, str]
 
 
 class DankWorker:
@@ -39,19 +42,19 @@ class DankWorker:
         while threading.main_thread().is_alive():
             await asyncio.sleep(5)
     
-    async def execute_multicall(self, calls_to_exec: Dict[str, List[BatchedCall]]) -> None:
+    async def execute_multicall(self, calls_to_exec: CallsToExec) -> None:
         asyncio.run_coroutine_threadsafe(self._execute_multicall(calls_to_exec), self.event_loop).result()
     
-    async def _execute_multicall(self, calls_to_exec: Dict[str, List[BatchedCall]]) -> None:
+    async def _execute_multicall(self, calls_to_exec: CallsToExec) -> None:
         await gather([self.process_block(block, calls) for block, calls in calls_to_exec.items()])
         demo_logger.info('multicall complete')
     
-    async def process_block(self, block: str, calls: List[BatchedCall]) -> None:
+    async def process_block(self, block: BlockId, calls: List[BatchedCall]) -> None:
         demo_logger.info(f'executing {len(calls)} calls for block {block}')
         batches = self.batcher.batch_calls(calls, self.batcher.step)
         await gather([self.process_batch(batch,block) for batch in batches])
 
-    async def process_batch(self, batch: List[BatchedCall], block: str, bid: Optional[Union[int, str]] = None) -> None:
+    async def process_batch(self, batch: List[BatchedCall], block: BlockId, bid: Optional[BatchId] = None) -> None:
         if bid is None:
             bid = self.batch_uid.next
         mid = self.multicall_uid.next
@@ -86,7 +89,7 @@ class DankWorker:
             demo_logger.info(f'tryBlockAndAggregate {mid} for batch {bid} complete')
     
     @lru_cache(maxsize=None)
-    def _multicall_for_block(self, block: str) -> multicall.Call:
+    def _multicall_for_block(self, block: BlockId) -> multicall.Call:
         return multicall.Call(
             self.controller.multicall2,
             "tryBlockAndAggregate(bool,(address,bytes)[])(uint256,uint256,(bool,bytes)[])",

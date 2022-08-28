@@ -3,6 +3,7 @@ import asyncio
 from typing import TYPE_CHECKING, Any, Generator, Optional, Union
 
 from aiohttp import RequestInfo
+from eth_typing import ChecksumAddress
 from hexbytes import HexBytes
 from multicall.utils import run_in_subprocess
 from web3 import Web3
@@ -10,6 +11,7 @@ from web3.types import RPCResponse
 
 from dank_mids.constants import BAD_HEXES
 from dank_mids.loggers import demo_logger, main_logger
+from dank_mids.types import BlockId
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -18,7 +20,7 @@ if TYPE_CHECKING:
 class ResponseNotReady(Exception):
     pass
 
-def _reattempt_call_and_return_exception(target: str, calldata: bytes, block: str, w3: Web3) -> Union[bytes, Exception]:
+def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: bytes, block: BlockId, w3: Web3) -> Union[bytes, Exception]:
     """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
     try:
         return w3.eth.call({"to": target, "data": calldata}, block)
@@ -44,7 +46,7 @@ class BatchedCall:
     def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
         """ Adds a call to the DankMiddlewareContoller's `pending_calls`. """
         self.cid = controller.call_uid.next
-        self.block: str = params[1]
+        self.block: BlockId = params[1]
         self.controller = controller
 
         self.target = params[0]['to']
