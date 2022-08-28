@@ -43,18 +43,22 @@ class DankWorker:
             await asyncio.sleep(5)
     
     async def execute_multicall(self, calls_to_exec: CallsToExec) -> None:
+        """ Runs in main thread. """
         asyncio.run_coroutine_threadsafe(self._execute_multicall(calls_to_exec), self.event_loop).result()
     
     async def _execute_multicall(self, calls_to_exec: CallsToExec) -> None:
+        """ Runs in worker thread. """
         await gather([self.process_block(block, calls) for block, calls in calls_to_exec.items()])
         demo_logger.info('multicall complete')
     
     async def process_block(self, block: BlockId, calls: List[BatchedCall]) -> None:
+        """ Runs in worker thread. """
         demo_logger.info(f'executing {len(calls)} calls for block {block}')
         batches = self.batcher.batch_calls(calls, self.batcher.step)
         await gather([self.process_batch(batch,block) for batch in batches])
 
     async def process_batch(self, batch: List[BatchedCall], block: BlockId, bid: Optional[BatchId] = None) -> None:
+        """ Runs in worker thread. """
         if bid is None:
             bid = self.batch_uid.next
         mid = self.multicall_uid.next
@@ -90,6 +94,7 @@ class DankWorker:
     
     @lru_cache(maxsize=None)
     def _multicall_for_block(self, block: BlockId) -> multicall.Call:
+        """ Runs in worker thread. """
         return multicall.Call(
             self.controller.multicall2,
             "tryBlockAndAggregate(bool,(address,bytes)[])(uint256,uint256,(bool,bytes)[])",
