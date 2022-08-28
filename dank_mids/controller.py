@@ -1,5 +1,6 @@
 
 import asyncio
+import threading
 from collections import defaultdict
 from time import time
 from typing import Any, List, Set
@@ -42,7 +43,6 @@ class DankMiddlewareController:
         self.call_uid = UIDGenerator()
         self._initializing: bool = False
         self._is_configured: bool = False
-        self._pools_closed: bool = False
         self._checkpoint: float = time()
         self._instance: int = len(instances)
         instances.append(self)
@@ -60,6 +60,10 @@ class DankMiddlewareController:
     def batcher(self):
         return self.worker.batcher
     
+    @property
+    def pools_closed_lock(self) -> threading.Lock:
+        return self.call_uid.lock
+    
     async def taskmaster_loop(self) -> None:
         self.is_running = True
         while self.pending_calls:
@@ -70,19 +74,17 @@ class DankMiddlewareController:
     
     async def execute_multicall(self) -> None:
         i = 0
-        while self.call_uid.lock.locked():
+        while self.pools_closed_lock.locked():
             if i // 500 == int(i // 500):
                 main_logger.debug('lock is locked')
             i += 1
             await asyncio.sleep(.1)
-        self._pools_closed = True
-        with self.call_uid.lock:
+        with self.pools_closed_lock:
             calls_to_exec = defaultdict(list)
             for call in self.pending_calls:
                 calls_to_exec[call.block].append(call)
             self.pending_calls.clear()
             self.num_pending_calls = 0
-        self._pools_closed = False
         demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')
         await self.worker.execute_multicall(calls_to_exec)
 
@@ -99,8 +101,6 @@ class DankMiddlewareController:
     
     async def add_to_queue(self, params: Any) -> "BatchedCall":
         """ Adds a call to the DankMiddlewareContoller's `pending_calls`. """
-        while self._pools_closed:
-            await asyncio.sleep(0)
         return BatchedCall(self, params)
 
     @property
