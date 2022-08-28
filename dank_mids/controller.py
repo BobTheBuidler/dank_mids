@@ -20,15 +20,20 @@ from dank_mids.worker import DankWorker
 
 instances: List["DankMiddlewareController"] = []
 
+def _sync_w3_from_async(w3: Web3) -> Web3:
+    assert w3.eth.is_async and isinstance(w3.provider, AsyncBaseProvider), "Dank Middleware can only be applied to an asycnhronous Web3 instance."
+    sync_provider = HTTPProvider(w3.provider.endpoint_uri)
+    sync_w3: Web3 = Web3(provider = sync_provider)
+    # Can't pickle middlewares to send to process executor
+    sync_w3.middleware_onion.clear()
+    sync_w3.provider.middlewares = tuple()
+    return sync_w3
+
 
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
-        assert w3.eth.is_async and isinstance(w3.provider, AsyncBaseProvider), "Dank Middleware can only be applied to an asycnhronous Web3 instance."
         self.w3: Web3 = w3
-        self.sync_w3: Web3 = Web3(provider = HTTPProvider(self.w3.provider.endpoint_uri))
-        # Can't pickle middlewares to send to process executor
-        self.sync_w3.middleware_onion.clear()
-        self.sync_w3.provider.middlewares = tuple()
+        self.sync_w3 = _sync_w3_from_async(w3)
         self.DO_NOT_BATCH: Set[str] = set()
         self.pending_calls: List[BatchedCall] = []
         self.num_pending_calls: int = 0
