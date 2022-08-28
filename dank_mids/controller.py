@@ -3,7 +3,7 @@ import asyncio
 import threading
 from collections import defaultdict
 from time import time
-from typing import Any, List, Set
+from typing import Any, List, Set, Tuple
 
 import multicall
 from eth_utils import to_checksum_address
@@ -30,19 +30,23 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     sync_w3.provider.middlewares = tuple()
     return sync_w3
 
+def _get_constants_for_network(chainid: int) -> Tuple[str, Set[str]]:
+    multicall1 = multicall.constants.MULTICALL_ADDRESSES.get(chainid,None)
+    multicall2 = multicall.constants.MULTICALL2_ADDRESSES.get(chainid,None)
+    return multicall2, {to_checksum_address(address) for address in [multicall1,multicall2] if address}
+
 
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
+        main_logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         self.w3: Web3 = w3
         self.sync_w3 = _sync_w3_from_async(w3)
-        self.DO_NOT_BATCH: Set[str] = set()
+        self.multicall2, self.do_not_batch = _get_constants_for_network(self.sync_w3.eth.chain_id)
         self.pending_calls: List[BatchedCall] = []
         self.num_pending_calls: int = 0
         self.worker = DankWorker(self)
         self.is_running: bool = False
         self.call_uid = UIDGenerator()
-        self._initializing: bool = False
-        self._is_configured: bool = False
         self._checkpoint: float = time()
         self._instance: int = len(instances)
         instances.append(self)
@@ -51,8 +55,6 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController {self._instance}>"
 
     async def __call__(self, params: Any) -> RPCResponse:
-        if not self._is_configured:
-            await self._setup()
         call = await self.add_to_queue(params)
         return await call
     
@@ -94,7 +96,7 @@ class DankMiddlewareController:
         if method != 'eth_call':
             sort_logger.debug(f"bypassed, method is {method}")
             return False
-        elif params[0]['to'] in self.DO_NOT_BATCH:
+        elif params[0]['to'] in self.do_not_batch:
             sort_logger.debug(f"bypassed, target is in `DO_NOT_BATCH`")
             return False
         return True
@@ -110,18 +112,3 @@ class DankMiddlewareController:
     @property
     def queue_is_full(self) -> bool:
         return bool(len(self.pending_calls) >= self.batcher.step * 25)
-
-    async def _setup(self) -> None:
-        if self._initializing:
-            while self._initializing:
-                await asyncio.sleep(0)
-            return
-        self._initializing = True
-        main_logger.info('Dank Middleware initializing... Strap on your rocket boots...')
-        # NOTE use sync w3 here to prevent timeout issues with abusive scripts.
-        chain_id = self.sync_w3.eth.chain_id
-        MULTICALL = multicall.constants.MULTICALL_ADDRESSES.get(chain_id,None)
-        self.MULTICALL2 = multicall.constants.MULTICALL2_ADDRESSES.get(chain_id,None)
-        self.DO_NOT_BATCH.update(to_checksum_address(address) for address in [MULTICALL,self.MULTICALL2] if address)
-        self._is_configured = True
-        self._initializing = False

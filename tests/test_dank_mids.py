@@ -38,7 +38,7 @@ def test_dank_middleware():
 def test_bad_hex_handling():
     chainlinkfeed = "0xfe67209f6FE3BA6cE36d0941700085C194e958DF"
     assert await_awaitable(Call(chainlinkfeed, 'latestAnswer()(uint)', block_id=14_000_000).coroutine()) == 15717100
-    assert chainlinkfeed in instances[0].DO_NOT_BATCH
+    assert chainlinkfeed in instances[0].do_not_batch
 
 def test_next_cid():
     assert instances[0].call_uid.next + 1 == instances[0].call_uid.next

@@ -88,7 +88,7 @@ class DankWorker:
     @lru_cache(maxsize=None)
     def _multicall_for_block(self, block: str) -> multicall.Call:
         return multicall.Call(
-            self.controller.MULTICALL2,
+            self.controller.multicall2,
             "tryBlockAndAggregate(bool,(address,bytes)[])(uint256,uint256,(bool,bytes)[])",
             returns=None,
             block_id=block,

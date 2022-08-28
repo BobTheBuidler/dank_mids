@@ -14,8 +14,6 @@ async def dank_middleware(
 ) -> AsyncMiddleware:
     dank_mids = DankMiddlewareController(web3)
     async def middleware(method: RPCEndpoint, params: Any) -> RPCResponse:
-        if not dank_mids._is_configured and dank_mids.should_batch(method, params):
-            await dank_mids._setup()
         if dank_mids.should_batch(method, params):
             return await dank_mids(params)
         return await make_request(method, params)

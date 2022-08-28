@@ -94,7 +94,7 @@ class BatchedCall:
             # We were able to get a usable response from single call.
             # Add contract to DO_NOT_BATCH list
             if not isinstance(data, Exception):
-                self.controller.DO_NOT_BATCH.add(self.target) 
+                self.controller.do_not_batch.add(self.target) 
         if isinstance(data, Exception):
             spoof = {"error": {'code': -32000, 'message': _err_msg(data)}}
         else:
