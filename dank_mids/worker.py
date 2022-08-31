@@ -10,7 +10,7 @@ from multicall.multicall import batcher
 from multicall.utils import gather, run_in_subprocess
 
 from dank_mids.call import BatchedCall
-from dank_mids.constants import OVERRIDE_CODE
+from dank_mids.constants import AIOHTTP_TIMEOUT, OVERRIDE_CODE
 from dank_mids.loggers import demo_logger, main_logger
 from dank_mids.types import BlockId, CallsToExec
 from dank_mids.uid import UIDGenerator
@@ -117,7 +117,7 @@ class DankWorker:
         demo_logger.info(f'request {rid} for jsonrpc batch {jid} starting')
         jsonrpc_batch = self.prepare_jsonrpc_batch(batches)
         try:
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
                 responses = await session.post(self.controller.w3.provider.endpoint_uri, json=jsonrpc_batch)
             responses = [response['result'] for response in await responses.json()]
             await gather([self.process_multicall_response(batch, to_bytes(response)) for batch, response in zip(batches, responses)])
