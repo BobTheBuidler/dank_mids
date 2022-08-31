@@ -35,7 +35,7 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
 def _get_constants_for_network(chainid: int) -> Tuple[ChecksumAddress, Set[ChecksumAddress]]:
     multicall1 = multicall.constants.MULTICALL_ADDRESSES.get(chainid,None)
     multicall2 = multicall.constants.MULTICALL2_ADDRESSES.get(chainid,None)
-    return multicall2, {to_checksum_address(address) for address in [multicall1,multicall2] if address}
+    return to_checksum_address(multicall2), {to_checksum_address(address) for address in [multicall1,multicall2] if address}
 
 
 class DankMiddlewareController:

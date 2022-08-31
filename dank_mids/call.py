@@ -49,7 +49,7 @@ def _err_response(e: Exception) -> RPCError:
         err_msg = e.args[0]["error"]["message"]
     else:
         raise e
-    return {'code': -32000, 'message': err_msg, 'data': None}
+    return {'code': -32000, 'message': err_msg, 'data': ''}
 
 
 class BatchedCall:
