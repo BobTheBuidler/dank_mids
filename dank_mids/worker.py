@@ -119,8 +119,13 @@ class DankWorker:
         try:
             async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
                 responses = await session.post(self.controller.w3.provider.endpoint_uri, json=jsonrpc_batch)
-            responses = [response['result'] for response in await responses.json()]
-            await gather([self.process_multicall_response(batch, to_bytes(response)) for batch, response in zip(batches, responses)])
+                responses = await responses.json()
+
+            # A successful response will be a list
+            if isinstance(responses, dict) and 'result' in responses and isinstance(responses['result'], dict) and 'message' in responses['result']:
+                raise ValueError(responses['result']['message'])
+
+            await gather([self.process_multicall_response(batch, to_bytes(response)) for batch, response in zip(batches, [response['result'] for response in responses])])
             demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')
         except Exception as e:
             if "out of gas" in str(e):
