@@ -18,7 +18,7 @@ setup(
     license='MIT',
     install_requires=[
         "bobs_lazy_logging>=0.0.4",
-        "multicall>=0.5.1",
+        "multicall>=0.6.0",
     ],
     setup_requires=[
         'setuptools_scm',
