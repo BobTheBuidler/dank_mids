@@ -152,7 +152,7 @@ class DankWorker:
         demo_logger.info(f'request {rid} for multicall {bid} starting')
         request_args = self.prepare_multicall_request(batch)
         try:
-            response = await self.controller.w3.eth.call(*request_args)
+            response = await eth_retry.auto_retry(self.controller.w3.eth.call)(*request_args)
             await self.process_multicall_response(batch, response)
             demo_logger.info(f'request {rid} for multicall {bid} complete')
         except Exception as e:
