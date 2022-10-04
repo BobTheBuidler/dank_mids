@@ -3,6 +3,7 @@ import threading
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 import aiohttp
+import eth_retry
 from eth_abi import decode_single, encode_single
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes._utils import to_bytes
