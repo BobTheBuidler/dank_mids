@@ -1,6 +1,6 @@
 import asyncio
 import threading
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 import aiohttp
 import eth_retry
@@ -57,6 +57,10 @@ class DankWorker:
         """ Exits loop when main thread dies, killing worker thread. Runs in worker thread. """
         while threading.main_thread().is_alive():
             await asyncio.sleep(5)
+    
+    @eth_retry.auto_retry
+    async def __call__(self, *request_args: Any) -> Any:
+        return await self.controller.w3.eth.call(*request_args)
     
     async def execute_multicall(self, calls_to_exec: CallsToExec) -> None:
         """ Runs in main thread. """
@@ -151,7 +155,7 @@ class DankWorker:
         demo_logger.info(f'request {rid} for multicall {bid} starting')
         request_args = self.prepare_multicall_request(batch)
         try:
-            response = await eth_retry.auto_retry(self.controller.w3.eth.call)(*request_args)
+            response = await self(*request_args)
             await self.process_multicall_response(batch, response)
             demo_logger.info(f'request {rid} for multicall {bid} complete')
         except Exception as e:
