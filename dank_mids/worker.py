@@ -118,9 +118,7 @@ class DankWorker:
         demo_logger.info(f'request {rid} for jsonrpc batch {jid} starting')
         jsonrpc_batch = self.prepare_jsonrpc_batch(batches)
         try:
-            async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
-                responses = await session.post(self.controller.w3.provider.endpoint_uri, json=jsonrpc_batch)
-                responses = await responses.json()
+            responses = await self._post_jsonrpc_batch(jsonrpc_batch)
 
             # A successful response will be a list
             if isinstance(responses, dict) and 'result' in responses and isinstance(responses['result'], dict) and 'message' in responses['result']:
@@ -188,3 +186,11 @@ class DankWorker:
     async def process_multicall_response(self, batch: List[BatchedCall], response: bytes) -> None:
         _, _, response = await run_in_subprocess(decode_single, OUTPUT_TYPES, response)
         await gather([call.spoof_response(data) for call, (_, data) in zip(batch, response)])
+    
+    @eth_retry.auto_retry
+    async def _post_jsonrpc_batch(self, jsonrpc_batch) -> Union[Dict, List]:
+        """ Posts `jsonrpc_batch` to your node. A successful call returns a list. """
+        async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
+            responses = await session.post(self.controller.w3.provider.endpoint_uri, json=jsonrpc_batch)
+            return await responses.json()
+
