@@ -11,6 +11,7 @@ from multicall.multicall import batcher
 from multicall.utils import gather, run_in_subprocess
 
 from dank_mids.call import BatchedCall
+from dank_mids.exceptions 
 from dank_mids.constants import AIOHTTP_TIMEOUT, OVERRIDE_CODE
 from dank_mids.loggers import demo_logger, main_logger
 from dank_mids.types import BlockId, CallsToExec
@@ -128,6 +129,10 @@ class DankWorker:
             if isinstance(responses, dict) and 'result' in responses and isinstance(responses['result'], dict) and 'message' in responses['result']:
                 raise ValueError(responses['result']['message'])
 
+            for response in responses:
+                if 'result' not in response:
+                    raise ValueError(response)
+            
             await gather([self.process_multicall_response(batch, to_bytes(response)) for batch, response in zip(batches, [response['result'] for response in responses])])
             demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')
         except Exception as e:
