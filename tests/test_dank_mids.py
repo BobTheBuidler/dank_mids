@@ -1,16 +1,11 @@
 
-import logging
 
 from brownie import chain
 from dank_mids import instances
-from dank_mids.loggers import demo_logger
 from multicall import Call
 from multicall.utils import await_awaitable, gather
 
 from tests.fixtures import dank_w3
-
-demo_logger.addHandler(logging.StreamHandler())
-demo_logger.setLevel(logging.DEBUG)
 
 CHAI = '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215'
 BIG_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]],_w3=dank_w3).coroutine() for i in range(100_000)]
