@@ -1,16 +1,12 @@
 
-import os
 
 import multicall
-from aiohttp import ClientTimeout
 
 GAS_LIMIT = multicall.constants.GAS_LIMIT
 
 OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
 
-# With default AsyncBaseProvider settings, some dense calls will fail
-#   due to aiohttp.TimeoutError where they would otherwise succeed.
-AIOHTTP_TIMEOUT = ClientTimeout(int(os.environ.get("AIOHTTP_TIMEOUT", 30)))
+
 
 # When you get these call responses back from the multicall, we know there was some problem with execution.
 # If you make the exact same calls without multicall, you will get an Exception not a response. 
