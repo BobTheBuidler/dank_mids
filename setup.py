@@ -20,6 +20,7 @@ setup(
         "bobs_lazy_logging>=0.0.4",
         "eth_retry>=0.1.10",
         "multicall>=0.6.0",
+        "web3>=5.27,!=5.29.*,!=5.30.*,!=5.31.*",
     ],
     setup_requires=[
         'setuptools_scm',

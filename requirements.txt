@@ -1,3 +1,4 @@
 bobs_lazy_logging>=0.0.2
 eth_retry>=0.1.10,<0.2
 multicall>=0.6.0
+web3>=5.27,!=5.29.*,!=5.30.*,!=5.31.*
