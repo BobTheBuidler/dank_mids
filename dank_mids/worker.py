@@ -11,10 +11,10 @@ from hexbytes._utils import to_bytes
 from multicall.multicall import batcher
 from multicall.utils import gather, run_in_subprocess
 
-from dank_mids._config import DEMO_MODE
+from dank_mids._config import AIOHTTP_TIMEOUT, DEMO_MODE
 from dank_mids._demo_mode import demo_logger
 from dank_mids.call import BatchedCall
-from dank_mids.constants import AIOHTTP_TIMEOUT, OVERRIDE_CODE
+from dank_mids.constants import OVERRIDE_CODE
 from dank_mids.loggers import main_logger
 from dank_mids.types import (BlockId, CallsToExec, JsonrpcBatch, JsonrpcCall,
                              JsonrpcParams, MulticallBatch)
