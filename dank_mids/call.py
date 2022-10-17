@@ -9,8 +9,9 @@ from multicall.utils import run_in_subprocess
 from web3 import Web3
 from web3.types import RPCError, RPCResponse
 
+from dank_mids._demo_mode import demo_logger
 from dank_mids.constants import BAD_HEXES
-from dank_mids.loggers import demo_logger, main_logger
+from dank_mids.loggers import main_logger
 from dank_mids.types import BlockId
 
 if TYPE_CHECKING:

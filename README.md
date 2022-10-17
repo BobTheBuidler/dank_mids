@@ -29,3 +29,6 @@ random_block = await dank_w3.eth.get_block(123)
 
 COMING SOON:
 using with ape
+
+NOTES:
+    - You can set DANK_MIDS_DEMO_MODE=True to see a visual represenataion of the batching in real time on your console.
