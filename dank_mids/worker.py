@@ -1,6 +1,7 @@
 import asyncio
 import threading
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import (TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypeVar,
+                    Union)
 
 import aiohttp
 import eth_retry
@@ -10,10 +11,13 @@ from hexbytes._utils import to_bytes
 from multicall.multicall import batcher
 from multicall.utils import gather, run_in_subprocess
 
+from dank_mids._config import DEMO_MODE
+from dank_mids._demo_mode import demo_logger
 from dank_mids.call import BatchedCall
 from dank_mids.constants import AIOHTTP_TIMEOUT, OVERRIDE_CODE
-from dank_mids.loggers import demo_logger, main_logger
-from dank_mids.types import BlockId, CallsToExec
+from dank_mids.loggers import main_logger
+from dank_mids.types import (BlockId, CallsToExec, JsonrpcBatch, JsonrpcCall,
+                             JsonrpcParams, MulticallBatch)
 from dank_mids.uid import UIDGenerator
 
 if TYPE_CHECKING:
@@ -26,7 +30,9 @@ FOURBYTE = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(addr
 INPUT_TYPES = "(bool,(address,bytes)[])"
 OUTPUT_TYPES = "(uint256,uint256,(bool,bytes)[])"
 
-def bisect(collection: List):
+T = TypeVar("T")
+
+def bisect(collection: List[T]) -> Tuple[List[T], List[T]]:
     halfpoint = len(collection) // 2
     left = collection[:halfpoint]
     right = collection[halfpoint:]
@@ -60,7 +66,7 @@ class DankWorker:
     
     @eth_retry.auto_retry
     async def __call__(self, *request_args: Any) -> Any:
-        return await self.controller.w3.eth.call(*request_args)
+        return await self.controller.w3.eth.call(*request_args)  # type: ignore
     
     async def execute_multicall(self, calls_to_exec: CallsToExec) -> None:
         """ Runs in main thread. """
@@ -68,16 +74,17 @@ class DankWorker:
     
     async def _execute_multicall(self, calls_to_exec: CallsToExec) -> None:
         """ Runs in worker thread. """
-        full_batches, partial_batches = [], []
+        full_batches: List[MulticallBatch] = []
+        partial_batches: List[MulticallBatch] = []
         for *batches, partial_batch in [self.batcher.batch_calls(calls, self.batcher.step) for calls in calls_to_exec.values()]:
-            full_batches.extend(batches)
-            partial_batches.append(partial_batch)
+            full_batches.extend(batches)  # type: ignore
+            partial_batches.append(partial_batch)  # type: ignore
         
         ### Combine multicalls into one or more jsonrpc batches
         partial_batches.sort(key=lambda x: len(x), reverse=True)
         num_calls_in_batch = 0
-        jsonrpc_batch = []
-        jsonrpc_batches = []
+        jsonrpc_batch: JsonrpcBatch = []
+        jsonrpc_batches: List[JsonrpcBatch] = []
         for partial_batch in partial_batches:
             # This would make the batch too large, lets start a new jsonrpc batch
             if num_calls_in_batch + len(partial_batch) > self.batcher.step:
@@ -108,9 +115,9 @@ class DankWorker:
                 for jsonrpc_batch in jsonrpc_batches:
                     coros.append(self.process_batch_multicall(jsonrpc_batch))
         await gather(coros)
-        demo_logger.info('multicall complete')
+        demo_logger.info('multicall complete')  # type: ignore
 
-    def prepare_jsonrpc_batch(self, batches: List[List[BatchedCall]]) -> List[Dict]:
+    def prepare_jsonrpc_batch(self, batches: List[List[BatchedCall]]) -> List[JsonrpcCall]:
         return [{'jsonrpc': '2.0', 'id': i, 'method': 'eth_call', 'params': self.prepare_multicall_request(batch)} for i, batch in enumerate(batches)]
     
     async def process_batch_multicall(self, batches: List[List[BatchedCall]], jid: Optional[BatchId] = None) -> None:
@@ -118,8 +125,10 @@ class DankWorker:
         if jid is None:
             jid = self.jsonrpc_batch_uid.next
         rid = self.request_uid.next
-        demo_logger.info(f'executing {sum(len(batch) for batch in batches)} calls for {len(batches)} blocks')
-        demo_logger.info(f'request {rid} for jsonrpc batch {jid} starting')
+        if DEMO_MODE:
+            # When demo mode is disabled, we can save some CPU time by skipping this sum
+            demo_logger.info(f'executing {sum(len(batch) for batch in batches)} calls for {len(batches)} blocks')  # type: ignore
+            demo_logger.info(f'request {rid} for jsonrpc batch {jid} starting')  # type: ignore
         jsonrpc_batch = self.prepare_jsonrpc_batch(batches)
         try:
             responses = await self._post_jsonrpc_batch(jsonrpc_batch)
@@ -133,7 +142,7 @@ class DankWorker:
                     raise ValueError(response)
             
             await gather([self.process_multicall_response(batch, to_bytes(response)) for batch, response in zip(batches, [response['result'] for response in responses])])
-            demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')
+            demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')  # type: ignore
         except Exception as e:
             if "out of gas" in str(e):
                 # TODO Remember which contracts/calls are gas guzzlers
@@ -148,20 +157,19 @@ class DankWorker:
                 self.process_batch_multicall(chunk0, str(jid)+"_0") if len(chunk0) > 1 else self.process_single_multicall(chunk0[0], chunk0[0][0].block),
                 self.process_batch_multicall(chunk1, str(jid)+"_1") if len(chunk1) > 1 else self.process_single_multicall(chunk1[0], chunk1[0][0].block),
             ])
-            demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')
+            demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')  # type: ignore
     
     async def process_single_multicall(self, batch: List[BatchedCall], block: BlockId, bid: Optional[BatchId] = None) -> None:
         """ Runs in worker thread. """
         if bid is None:
             bid = self.multicall_uid.next
         rid = self.request_uid.next
-        #demo_logger.info(f'executing {sum(len(batch) for batch in batches)} calls for blocks {[batch[0].block for batch in batches]}')
-        demo_logger.info(f'request {rid} for multicall {bid} starting')
+        demo_logger.info(f'request {rid} for multicall {bid} starting')  # type: ignore
         request_args = self.prepare_multicall_request(batch)
         try:
             response = await self(*request_args)
             await self.process_multicall_response(batch, response)
-            demo_logger.info(f'request {rid} for multicall {bid} complete')
+            demo_logger.info(f'request {rid} for multicall {bid} complete')  # type: ignore
         except Exception as e:
             if len(batch) == 1:
                 await batch[0].spoof_response(e)
@@ -184,21 +192,22 @@ class DankWorker:
                 self.process_single_multicall(chunk0, block, str(bid)+"_0"),
                 self.process_single_multicall(chunk1, block, str(bid)+"_1"),
             ])
-            demo_logger.info(f'request {rid} for multicall {bid} complete')
+            demo_logger.info(f'request {rid} for multicall {bid} complete')  # type: ignore
     
-    def prepare_multicall_request(self, batch: List[BatchedCall]) -> List[Union[Dict, str]]:
+    def prepare_multicall_request(self, batch: List[BatchedCall]) -> JsonrpcParams:
         fn_args = [False, [[call.target, call.calldata] for call in batch]]
         calldata = FOURBYTE + encode_single(INPUT_TYPES, fn_args)
-        return [{'to': self.target, 'data': '0x' + calldata.hex()}, batch[0].block, {self.target: {'code': OVERRIDE_CODE}}]
+        return [{'to': self.target, 'data': '0x' + calldata.hex()}, batch[0].block, {self.target: {'code': OVERRIDE_CODE}}]  # type: ignore
 
     async def process_multicall_response(self, batch: List[BatchedCall], response: bytes) -> None:
-        _, _, response = await run_in_subprocess(decode_single, OUTPUT_TYPES, response)
-        await gather([call.spoof_response(data) for call, (_, data) in zip(batch, response)])
+        decoded: List[Tuple[bool, bytes]]
+        _, _, decoded = await run_in_subprocess(decode_single, OUTPUT_TYPES, response)
+        await gather([call.spoof_response(data) for call, (_, data) in zip(batch, decoded)])
     
     @eth_retry.auto_retry
-    async def _post_jsonrpc_batch(self, jsonrpc_batch) -> Union[Dict, List]:
+    async def _post_jsonrpc_batch(self, jsonrpc_batch: List[JsonrpcCall]) -> Union[Dict, List[bytes]]:
         """ Posts `jsonrpc_batch` to your node. A successful call returns a list. """
         async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
-            responses = await session.post(self.controller.w3.provider.endpoint_uri, json=jsonrpc_batch)
+            responses = await session.post(self.controller.w3.provider.endpoint_uri, json=jsonrpc_batch)  # type: ignore
             return await responses.json()
 
