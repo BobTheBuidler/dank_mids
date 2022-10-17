@@ -30,7 +30,6 @@ def test_dank_middleware():
     # General "tests" that verify batching performance
     assert mid < cid / 10, f"Batched {cid} calls into {mid} batches. Performance underwhelming."
     assert rid < cid / 5,  f"Batched {cid} calls into {rid} multicalls. Performance underwhelming."
-    assert mid < rid / 2,  f"{mid} batches required {rid} multicalls. Performance underwhelming."
 
 def test_bad_hex_handling():
     chainlinkfeed = "0xfe67209f6FE3BA6cE36d0941700085C194e958DF"
