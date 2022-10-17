@@ -7,6 +7,7 @@ from typing import Any, List, Set, Tuple
 
 import multicall
 from eth_utils import to_checksum_address
+from multicall.multicall import NotSoBrightBatcher
 from web3 import Web3
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
@@ -61,7 +62,7 @@ class DankMiddlewareController:
         return await call
     
     @property
-    def batcher(self):
+    def batcher(self) -> NotSoBrightBatcher:
         return self.worker.batcher
     
     @property
