@@ -64,7 +64,7 @@ class BatchedCall:
         self.calldata = HexBytes(params[0]['data'])
         self.controller.pending_calls.append(self)
         self._response: Optional[RPCResponse] = None
-        demo_logger.info(f'added to queue (cid: {self.cid})')
+        demo_logger.info(f'added to queue (cid: {self.cid})')  # type: ignore
     
     @property
     def is_complete(self) -> bool:

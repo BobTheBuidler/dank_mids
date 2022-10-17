@@ -3,22 +3,22 @@ import asyncio
 import threading
 from collections import defaultdict
 from time import time
-from typing import Any, List, Set, Tuple
+from typing import Any, DefaultDict, List, Set, Tuple
 
 import multicall
+from eth_typing import ChecksumAddress
 from eth_utils import to_checksum_address
 from multicall.multicall import NotSoBrightBatcher
 from web3 import Web3
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
-from eth_typing import ChecksumAddress
-
 
 from dank_mids._config import LOOP_INTERVAL
+from dank_mids._demo_mode import demo_logger
 from dank_mids.call import BatchedCall
-from dank_mids.loggers import (demo_logger, main_logger, sort_lazy_logger,
-                               sort_logger)
+from dank_mids.loggers import main_logger, sort_lazy_logger, sort_logger
+from dank_mids.types import BlockId, MulticallBatch
 from dank_mids.uid import UIDGenerator
 from dank_mids.worker import DankWorker
 
@@ -85,12 +85,12 @@ class DankMiddlewareController:
             i += 1
             await asyncio.sleep(.1)
         with self.pools_closed_lock:
-            calls_to_exec = defaultdict(list)
+            calls_to_exec: DefaultDict[BlockId, MulticallBatch] = defaultdict(list)
             for call in self.pending_calls:
                 calls_to_exec[call.block].append(call)
             self.pending_calls.clear()
             self.num_pending_calls = 0
-        demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')
+        demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')  # type: ignore
         await self.worker.execute_multicall(calls_to_exec)
 
     @sort_lazy_logger
