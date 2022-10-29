@@ -42,6 +42,8 @@ class DankMiddlewareController:
         self.chain_id = self.sync_w3.eth.chain_id
         multicall = MULTICALL_ADDRESSES.get(self.chain_id)
         multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
+        if multicall2 is None:
+            raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
         self.multicall2 = to_checksum_address(multicall2)
         self.do_not_batch = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
         self.pending_calls: List[BatchedCall] = []
