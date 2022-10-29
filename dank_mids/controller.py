@@ -45,7 +45,8 @@ class DankMiddlewareController:
         main_logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         self.w3: Web3 = w3
         self.sync_w3 = _sync_w3_from_async(w3)
-        self.multicall2, self.do_not_batch = _get_constants_for_network(self.sync_w3.eth.chain_id)
+        self.chain_id = self.sync_w3.eth.chain_id
+        self.multicall2, self.do_not_batch = _get_constants_for_network(self.chain_id)
         self.pending_calls: List[BatchedCall] = []
         self.num_pending_calls: int = 0
         self.worker = DankWorker(self)

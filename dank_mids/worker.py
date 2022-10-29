@@ -50,6 +50,7 @@ class DankWorker:
         self.multicall_uid = UIDGenerator()
         self.request_uid = UIDGenerator()
         self.jsonrpc_batch_uid = UIDGenerator()
+        self.state_override_not_supported: bool = self.controller.chain_id == 100  # Gnosis Chain does not support state override.
         self.event_loop = asyncio.new_event_loop()
         self.worker_thread = threading.Thread(target=self.start)
         self.worker_thread.start()
@@ -197,6 +198,8 @@ class DankWorker:
     def prepare_multicall_request(self, batch: List[BatchedCall]) -> JsonrpcParams:
         fn_args = [False, [[call.target, call.calldata] for call in batch]]
         calldata = FOURBYTE + encode_single(INPUT_TYPES, fn_args)
+        if self.state_override_not_supported:
+            return [{'to': self.target, 'data': '0x' + calldata.hex()}, batch[0].block]  # type: ignore
         return [{'to': self.target, 'data': '0x' + calldata.hex()}, batch[0].block, {self.target: {'code': OVERRIDE_CODE}}]  # type: ignore
 
     async def process_multicall_response(self, batch: List[BatchedCall], response: bytes) -> None:
