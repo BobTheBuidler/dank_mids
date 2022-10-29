@@ -3,11 +3,10 @@ import asyncio
 import threading
 from collections import defaultdict
 from time import time
-from typing import Any, DefaultDict, List, Set, Tuple
+from typing import Any, DefaultDict, List
 
-import multicall
-from eth_typing import ChecksumAddress
 from eth_utils import to_checksum_address
+from multicall.constants import MULTICALL_ADDRESSES, MULTICALL2_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
 from web3 import Web3
 from web3.providers import HTTPProvider
@@ -34,11 +33,6 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     sync_w3.provider.middlewares = tuple()
     return sync_w3
 
-def _get_constants_for_network(chainid: int) -> Tuple[ChecksumAddress, Set[ChecksumAddress]]:
-    multicall1 = multicall.constants.MULTICALL_ADDRESSES.get(chainid,None)
-    multicall2 = multicall.constants.MULTICALL2_ADDRESSES.get(chainid,None)
-    return to_checksum_address(multicall2), {to_checksum_address(address) for address in [multicall1,multicall2] if address}
-
 
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
@@ -46,7 +40,10 @@ class DankMiddlewareController:
         self.w3: Web3 = w3
         self.sync_w3 = _sync_w3_from_async(w3)
         self.chain_id = self.sync_w3.eth.chain_id
-        self.multicall2, self.do_not_batch = _get_constants_for_network(self.chain_id)
+        multicall = MULTICALL_ADDRESSES.get(self.chain_id)
+        multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
+        self.multicall2 = to_checksum_address(multicall2)
+        self.do_not_batch = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
         self.pending_calls: List[BatchedCall] = []
         self.num_pending_calls: int = 0
         self.worker = DankWorker(self)
