@@ -28,7 +28,8 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     assert w3.eth.is_async and isinstance(w3.provider, AsyncBaseProvider), "Dank Middleware can only be applied to an asycnhronous Web3 instance."
     sync_provider = HTTPProvider(w3.provider.endpoint_uri)
     sync_w3: Web3 = Web3(provider = sync_provider)
-    # Can't pickle middlewares to send to process executor
+    # We can't pickle middlewares to send to process executor.
+    # The call has already passed thru all middlewares on the user's Web3 instance.
     sync_w3.middleware_onion.clear()
     sync_w3.provider.middlewares = tuple()
     return sync_w3
