@@ -41,9 +41,9 @@ def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: byte
 def _err_response(e: Exception) -> RPCError:
     """ Extract an error message from `e` to use in a spoof rpc response. """
     if isinstance(e.args[0], str) or isinstance(e.args[0], RequestInfo):
-        err_msg = f"DankMidsError: {type(e)} {e.args}"
+        err_msg = f"DankMidsError: {e.__class__.__name__} {e.args}"
     elif isinstance(e.args[0], Exception):
-        err_msg = f"DankMidsError: {type(e.args[0])} {e.args[0].args}"
+        err_msg = f"DankMidsError: {e.args[0].__class__.__name__} {e.args[0].args}"
     elif "message" in e.args[0]:
         err_msg = e.args[0]["message"]
     elif "error" in e.args[0] and "message" in e.args[0]["error"]:
