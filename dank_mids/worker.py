@@ -179,7 +179,7 @@ class DankWorker:
             # While it might look weird, f-string is faster than `str(e)`.
             elif "No state available for block" in f"{e}":
                 if "message" in e.args[0]:
-                    e.args[0]["message"] += "\nYou're not using an archive node, and you need one for the application you are attempting to run."
+                    e.args[0]["dankmids"] = "You're not using an archive node, and you need one for the application you are attempting to run."
                 await gather([call.spoof_response(e) for call in batch])
                 return
             elif "out of gas" in f"{e}":
