@@ -145,18 +145,19 @@ class DankWorker:
             await gather([self.process_multicall_response(batch, to_bytes(response)) for batch, response in zip(batches, [response['result'] for response in responses])])
             demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')  # type: ignore
         except Exception as e:
-            if "out of gas" in str(e):
+            # While it might look weird, f-string is faster than `str(e)`.
+            if "out of gas" in f"{e}":
                 # TODO Remember which contracts/calls are gas guzzlers
                 main_logger.debug('out of gas. cut in half, trying again')
-            elif any(err in str(e).lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
+            elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
                 main_logger.debug('dank too loud, trying again')
             else:
-                main_logger.warning(f"unexpected exception: {type(e)} {str(e)}")
+                main_logger.warning(f"unexpected exception: {type(e)} {e}")
 
             chunk0, chunk1 = bisect(batches)
             await gather([
-                self.process_batch_multicall(chunk0, str(jid)+"_0") if len(chunk0) > 1 else self.process_single_multicall(chunk0[0], chunk0[0][0].block),
-                self.process_batch_multicall(chunk1, str(jid)+"_1") if len(chunk1) > 1 else self.process_single_multicall(chunk1[0], chunk1[0][0].block),
+                self.process_batch_multicall(chunk0, f"{jid}_0") if len(chunk0) > 1 else self.process_single_multicall(chunk0[0], chunk0[0][0].block),
+                self.process_batch_multicall(chunk1, f"{jid}_1") if len(chunk1) > 1 else self.process_single_multicall(chunk1[0], chunk1[0][0].block),
             ])
             demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')  # type: ignore
     
@@ -175,10 +176,11 @@ class DankWorker:
             if len(batch) == 1:
                 await batch[0].spoof_response(e)
                 return
-            elif "out of gas" in str(e):
+            # While it might look weird, f-string is faster than `str(e)`.
+            elif "out of gas" in f"{e}":
                 # TODO Remember which contracts/calls are gas guzzlers
                 main_logger.debug('out of gas. cut in half, trying again')
-            elif any(err in str(e).lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
+            elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
                 main_logger.debug('dank too loud, trying again')
                 # We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
                 if (new_step := round(num_calls * 0.99) if (num_calls := len(batch)) >= 100 else num_calls - 1) < self.batcher.step:
@@ -186,12 +188,12 @@ class DankWorker:
                     self.batcher.step = new_step
                     main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
             else:
-                main_logger.warning(f"unexpected exception: {type(e)} {str(e)}")
+                main_logger.warning(f"unexpected exception: {type(e)} {e}")
 
             chunk0, chunk1 = bisect(batch)
             await gather([
-                self.process_single_multicall(chunk0, block, str(bid)+"_0"),
-                self.process_single_multicall(chunk1, block, str(bid)+"_1"),
+                self.process_single_multicall(chunk0, block, f"{bid}_0"),
+                self.process_single_multicall(chunk1, block, f"{bid}_1"),
             ])
             demo_logger.info(f'request {rid} for multicall {bid} complete')  # type: ignore
     
