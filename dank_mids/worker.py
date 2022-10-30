@@ -146,11 +146,13 @@ class DankWorker:
             demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')  # type: ignore
         except Exception as e:
             # While it might look weird, f-string is faster than `str(e)`.
-            if "out of gas" in f"{e}":
+            if "No state available for block" in f"{e}":
+                main_logger.debug('No state available for queried block. Bisecting batch and retrying.')
+            elif "out of gas" in f"{e}":
                 # TODO Remember which contracts/calls are gas guzzlers
                 main_logger.debug('out of gas. cut in half, trying again')
             elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
-                main_logger.debug('dank too loud, trying again')
+                main_logger.debug('Dank too loud. Bisecting batch and retrying.')
             else:
                 main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
 
