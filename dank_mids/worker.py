@@ -177,6 +177,11 @@ class DankWorker:
                 await batch[0].spoof_response(e)
                 return
             # While it might look weird, f-string is faster than `str(e)`.
+            elif "No state available for block" in f"{e}":
+                if "message" in e.args[0]:
+                    e.args[0]["message"] += "\nYou're not using an archive node, and you need one for the application you are attempting to run."
+                await gather([call.spoof_response(e) for call in batch])
+                return
             elif "out of gas" in f"{e}":
                 # TODO Remember which contracts/calls are gas guzzlers
                 main_logger.debug('out of gas. cut in half, trying again')
