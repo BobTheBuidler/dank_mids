@@ -152,7 +152,7 @@ class DankWorker:
             elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
                 main_logger.debug('dank too loud, trying again')
             else:
-                main_logger.warning(f"unexpected exception: {type(e)} {e}")
+                main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
 
             chunk0, chunk1 = bisect(batches)
             await gather([
@@ -193,7 +193,7 @@ class DankWorker:
                     self.batcher.step = new_step
                     main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
             else:
-                main_logger.warning(f"unexpected exception: {type(e)} {e}")
+                main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
 
             chunk0, chunk1 = bisect(batch)
             await gather([
