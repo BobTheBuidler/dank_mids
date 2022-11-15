@@ -1,7 +1,8 @@
 import asyncio
 import threading
+from json import JSONDecodeError
 from typing import (TYPE_CHECKING, Any, Dict, Iterable, Iterator, List,
-                    Literal, Optional, Tuple, TypeVar, Union)
+                    Optional, Tuple, TypeVar, Union)
 
 import aiohttp
 import eth_retry
@@ -297,7 +298,10 @@ class JSONRPCBatch(_Batch):
         """ Posts `jsonrpc_batch` to your node. A successful call returns a list. """
         async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
             responses = await session.post(self.worker.endpoint, json=self.data)  # type: ignore
-            return await responses.json(content_type=None)
+            try:
+                return await responses.json()
+            except JSONDecodeError as e:
+                raise ValueError(e)
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
