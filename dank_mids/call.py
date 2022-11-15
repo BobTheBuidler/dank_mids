@@ -7,12 +7,12 @@ from eth_typing import ChecksumAddress
 from hexbytes import HexBytes
 from multicall.utils import run_in_subprocess
 from web3 import Web3
-from web3.types import RPCError, RPCResponse
+from web3.types import RPCEndpoint, RPCError, RPCResponse
 
 from dank_mids._demo_mode import demo_logger
 from dank_mids.constants import BAD_HEXES
 from dank_mids.loggers import main_logger
-from dank_mids.types import BlockId
+from dank_mids.types import BlockId, RpcCallJson
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -53,18 +53,19 @@ def _err_response(e: Exception) -> RPCError:
     return {'code': -32000, 'message': err_msg, 'data': ''}
 
 
-class BatchedCall:
-    def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
-        """ Adds a call to the DankMiddlewareContoller's `pending_calls`. """
-        self.cid = controller.call_uid.next
-        self.block: BlockId = params[1]
+class RPCCall:
+    def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any):
+        super().__init__()
         self.controller = controller
-
-        self.target = params[0]['to']
-        self.calldata = HexBytes(params[0]['data'])
-        self.controller.pending_calls.append(self)
+        self.method = method
+        self.params = params
+        self.uid = self.controller.call_uid.next
         self._response: Optional[RPCResponse] = None
-        demo_logger.info(f'added to queue (cid: {self.cid})')  # type: ignore
+        if method == "eth_call" and self.target not in self.controller.no_multicall:
+            self.controller.pending_eth_calls.append(self)
+        else:
+            self.controller.pending_rpc_calls.append(self)
+        demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
     
     @property
     def is_complete(self) -> bool:
@@ -75,24 +76,50 @@ class BatchedCall:
         if self._response is None:
             raise ResponseNotReady(self)
         return self._response
-    
-    def __eq__(self, __o: object) -> bool:
-        if not isinstance(__o, BatchedCall):
-            return False
-        return self.cid == __o.cid
-    
-    def __hash__(self) -> int:
-        return self.cid
+
+    @property
+    def rpc_data(self) -> RpcCallJson:
+        return {'jsonrpc': '2.0', 'id': self.uid, 'method': self.method, 'params': self.params}
     
     def __await__(self) -> Generator[Any, None, RPCResponse]:
         return self.wait_for_response().__await__()
     
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o, self.__class__):
+            return False
+        return self.uid == __o.uid 
+    
+    def __hash__(self) -> int:
+        return self.uid
+
     async def wait_for_response(self) -> RPCResponse:
         if not self.controller.is_running:
             await self.controller.taskmaster_loop()
         while not self.is_complete:
             await asyncio.sleep(0)
         return self.response
+    
+    def spoof_response(self, data: RPCResponse) -> RPCResponse:
+        self._response = data
+        return data
+
+
+class eth_call(RPCCall):
+    def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
+        """ Adds a call to the DankMiddlewareContoller's `pending_eth_calls`. """
+        super().__init__(controller, "eth_call", params)
+    
+    @property
+    def block(self) -> BlockId:
+        return self.params[1]
+    
+    @property
+    def calldata(self) -> HexBytes:
+        return HexBytes(self.params[0]['data'])
+    
+    @property
+    def target(self) -> str:
+        return self.params[0]["to"]
 
     async def spoof_response(self, data: Optional[Union[bytes, Exception]]) -> RPCResponse:
         """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
@@ -102,12 +129,11 @@ class BatchedCall:
         # - successful response
         if _call_failed(data):
             data = await self.sync_call()
-        
         if isinstance(data, Exception):
             spoof = {"error": _err_response(data)}
         else:
             spoof = {"result": HexBytes(data).hex()}  # type: ignore
-        spoof.update({"id": self.cid, "jsonrpc": "dank_mids"})  # type: ignore
+        spoof.update({"id": self.uid, "jsonrpc": "dank_mids"})  # type: ignore
         main_logger.debug(f"spoof: {spoof}")
         self._response = spoof
         return spoof
@@ -119,5 +145,5 @@ class BatchedCall:
         )
         # If we were able to get a usable response from single call, add contract to `do_not_batch`.
         if not isinstance(data, Exception):
-            self.controller.do_not_batch.add(self.target)
+            self.controller.no_multicall.add(self.target)
         return data

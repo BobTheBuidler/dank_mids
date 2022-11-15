@@ -4,19 +4,18 @@ from eth_typing import ChecksumAddress
 from web3.types import RPCEndpoint, RPCResponse
 
 if TYPE_CHECKING:
-    from dank_mids.call import BatchedCall
+    from dank_mids.call import eth_call
 
+ChainId = NewType("ChainId", int)
 BlockId = NewType("BlockId", str)
-CallsToExec = Dict[BlockId, List["BatchedCall"]]
-MulticallBatch = List["BatchedCall"]
-JsonrpcBatch = List[MulticallBatch]
+CallsToExec = Dict[BlockId, List["eth_call"]]
 
 eth_callParams = TypedDict("eth_callParams", {"to": ChecksumAddress, "data": str})
 OverrideParams = TypedDict("OverrideParams", {"code": str})
 JsonrpcParams = List[Union[eth_callParams, BlockId, OverrideParams]]
 
-JsonrpcCall = TypedDict(
-    "JsonrpcCall", 
+RpcCallJson = TypedDict(
+    "RpcCallJson", 
     {
         "jsonrpc": str,
         "id": int,

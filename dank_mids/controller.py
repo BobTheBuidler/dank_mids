@@ -6,7 +6,7 @@ from time import time
 from typing import Any, DefaultDict, List
 
 from eth_utils import to_checksum_address
-from multicall.constants import MULTICALL_ADDRESSES, MULTICALL2_ADDRESSES
+from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
 from web3 import Web3
 from web3.providers import HTTPProvider
@@ -15,13 +15,15 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids._config import LOOP_INTERVAL
 from dank_mids._demo_mode import demo_logger
-from dank_mids.call import BatchedCall
+from dank_mids.call import RPCCall, eth_call
 from dank_mids.loggers import main_logger, sort_lazy_logger, sort_logger
-from dank_mids.types import BlockId, MulticallBatch
+from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator
 from dank_mids.worker import DankWorker
 
-instances: List["DankMiddlewareController"] = []
+BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
+
+instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
 
 def _sync_w3_from_async(w3: Web3) -> Web3:
     assert w3.eth.is_async and isinstance(w3.provider, AsyncBaseProvider), "Dank Middleware can only be applied to an asycnhronous Web3 instance."
@@ -45,22 +47,22 @@ class DankMiddlewareController:
         if multicall2 is None:
             raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
         self.multicall2 = to_checksum_address(multicall2)
-        self.do_not_batch = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
-        self.pending_calls: List[BatchedCall] = []
-        self.num_pending_calls: int = 0
+        self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
+        self.pending_eth_calls: List[eth_call] = []
+        self.pending_rpc_calls: List[RPCCall] = []
+        self.num_pending_eth_calls: int = 0
         self.worker = DankWorker(self)
         self.is_running: bool = False
         self.call_uid = UIDGenerator()
         self._checkpoint: float = time()
-        self._instance: int = len(instances)
-        instances.append(self)
+        self._instance: int = sum(len(_instances) for chain_id, _instances in instances.items())
+        instances[self.chain_id].append(self)
     
     def __repr__(self) -> str:
-        return f"<DankMiddlewareController {self._instance}>"
+        return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
 
-    async def __call__(self, params: Any) -> RPCResponse:
-        call = await self.add_to_queue(params)
-        return await call
+    async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+        return await eth_call(self, params) if method == "eth_call" else RPCCall(self, method, params)
     
     @property
     def batcher(self) -> NotSoBrightBatcher:
@@ -72,7 +74,7 @@ class DankMiddlewareController:
     
     async def taskmaster_loop(self) -> None:
         self.is_running = True
-        while self.pending_calls:
+        while self.pending_eth_calls or self.pending_rpc_calls:
             await asyncio.sleep(0)
             if (self.loop_is_ready or self.queue_is_full):
                 await self.execute_multicall()
@@ -86,28 +88,26 @@ class DankMiddlewareController:
             i += 1
             await asyncio.sleep(.1)
         with self.pools_closed_lock:
-            calls_to_exec: DefaultDict[BlockId, MulticallBatch] = defaultdict(list)
-            for call in self.pending_calls:
-                calls_to_exec[call.block].append(call)
-            self.pending_calls.clear()
-            self.num_pending_calls = 0
+            eth_calls: DefaultDict[BlockId, List[eth_call]] = defaultdict(list)
+            for call in self.pending_eth_calls:
+                eth_calls[call.block].append(call)
+            self.pending_eth_calls.clear()
+            self.num_pending_eth_calls = 0
+            rpc_calls = self.pending_rpc_calls[:]
+            self.pending_rpc_calls.clear()
         demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')  # type: ignore
-        await self.worker.execute_multicall(calls_to_exec)
+        await self.worker.execute_batch(eth_calls, rpc_calls)
 
     @sort_lazy_logger
     def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
         """ Determines whether or not a call should be passed to the DankMiddlewareController. """
-        if method != 'eth_call':
+        if method == "eth_call" and params[0]["to"] == self.multicall2:
+            # These most likely come from dank mids internals if you're using dank mids.
+            return False
+        if any(bypass in method for bypass in BYPASS_METHODS):
             sort_logger.debug(f"bypassed, method is {method}")
             return False
-        elif params[0]['to'] in self.do_not_batch:
-            sort_logger.debug(f"bypassed, target is in `DO_NOT_BATCH`")
-            return False
         return True
-    
-    async def add_to_queue(self, params: Any) -> "BatchedCall":
-        """ Adds a call to the DankMiddlewareContoller's `pending_calls`. """
-        return BatchedCall(self, params)
 
     @property
     def loop_is_ready(self) -> bool:
@@ -115,4 +115,12 @@ class DankMiddlewareController:
     
     @property
     def queue_is_full(self) -> bool:
-        return bool(len(self.pending_calls) >= self.batcher.step * 25)
+        return bool(len(self.pending_eth_calls) >= self.batcher.step * 25)
+    
+    def reduce_batch_size(self, num_calls: int) -> None:
+        new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
+        # NOTE: We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
+        if new_step < self.batcher.step:
+            old_step = self.batcher.step
+            self.batcher.step = new_step
+            main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')

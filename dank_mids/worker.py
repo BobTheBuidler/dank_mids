@@ -1,23 +1,24 @@
 import asyncio
 import threading
-from typing import (TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypeVar,
-                    Union)
+from typing import (TYPE_CHECKING, Any, Dict, Iterable, Iterator, List,
+                    Literal, Optional, Tuple, TypeVar, Union)
 
 import aiohttp
 import eth_retry
 from eth_abi import decode_single, encode_single
+from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes._utils import to_bytes
-from multicall.multicall import batcher
+from multicall.multicall import NotSoBrightBatcher, batcher
 from multicall.utils import gather, run_in_subprocess
+from web3.types import RPCResponse
 
 from dank_mids._config import AIOHTTP_TIMEOUT, DEMO_MODE
 from dank_mids._demo_mode import demo_logger
-from dank_mids.call import BatchedCall
+from dank_mids.call import RPCCall, eth_call
 from dank_mids.constants import OVERRIDE_CODE
 from dank_mids.loggers import main_logger
-from dank_mids.types import (BlockId, CallsToExec, JsonrpcBatch, JsonrpcCall,
-                             JsonrpcParams, MulticallBatch)
+from dank_mids.types import BlockId, CallsToExec, JsonrpcParams, RpcCallJson
 from dank_mids.uid import UIDGenerator
 
 if TYPE_CHECKING:
@@ -25,18 +26,14 @@ if TYPE_CHECKING:
 
 BatchId = Union[int, str]
 
+MAX_JSONRPC_BATCH_SIZE = 500
 
 FOURBYTE = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
 INPUT_TYPES = "(bool,(address,bytes)[])"
 OUTPUT_TYPES = "(uint256,uint256,(bool,bytes)[])"
 
-T = TypeVar("T")
+_T = TypeVar("_T")
 
-def bisect(collection: List[T]) -> Tuple[List[T], List[T]]:
-    halfpoint = len(collection) // 2
-    left = collection[:halfpoint]
-    right = collection[halfpoint:]
-    return left, right
 
 class DankWorker:
     """
@@ -69,157 +66,256 @@ class DankWorker:
     async def __call__(self, *request_args: Any) -> Any:
         return await self.controller.w3.eth.call(*request_args)  # type: ignore
     
-    async def execute_multicall(self, calls_to_exec: CallsToExec) -> None:
-        """ Runs in main thread. """
-        asyncio.run_coroutine_threadsafe(self._execute_multicall(calls_to_exec), self.event_loop).result()
+    @property
+    def endpoint(self) -> str:
+        return self.controller.w3.provider.endpoint_uri
     
-    async def _execute_multicall(self, calls_to_exec: CallsToExec) -> None:
+    async def execute_batch(self, calls_to_exec: CallsToExec, rpc_calls: List[RPCCall]) -> None:
+        """ Runs in main thread. """
+        asyncio.run_coroutine_threadsafe(self._execute_batch(calls_to_exec, rpc_calls), self.event_loop).result()
+
+    async def _execute_batch(self, calls_to_exec: CallsToExec, rpc_calls: List[RPCCall]) -> None:
         """ Runs in worker thread. """
-        full_batches: List[MulticallBatch] = []
-        partial_batches: List[MulticallBatch] = []
-        for *batches, partial_batch in [self.batcher.batch_calls(calls, self.batcher.step) for calls in calls_to_exec.values()]:
-            full_batches.extend(batches)  # type: ignore
-            partial_batches.append(partial_batch)  # type: ignore
-        
-        ### Combine multicalls into one or more jsonrpc batches
-        partial_batches.sort(key=lambda x: len(x), reverse=True)
-        num_calls_in_batch = 0
-        jsonrpc_batch: JsonrpcBatch = []
-        jsonrpc_batches: List[JsonrpcBatch] = []
-        for partial_batch in partial_batches:
-            # This would make the batch too large, lets start a new jsonrpc batch
-            if num_calls_in_batch + len(partial_batch) > self.batcher.step:
-                if jsonrpc_batch:
-                    jsonrpc_batches.append(jsonrpc_batch)
-                jsonrpc_batch = [partial_batch]
-                num_calls_in_batch = len(partial_batch)
+        await DankBatch(self, calls_to_exec, rpc_calls)
+    
+    
+class DankBatch:
+    """ A batch of jsonrpc batches. """
+    def __init__(self, worker: DankWorker, eth_calls: CallsToExec, rpc_calls: List[RPCCall]):
+        self.worker = worker
+        self.eth_calls = eth_calls
+        self.rpc_calls = rpc_calls
+    
+    def __await__(self) -> None:
+        return gather(self.coroutines).__await__()
+    
+    @property
+    def batcher(self) -> NotSoBrightBatcher:
+        return self.worker.batcher
+    
+    @property
+    def coroutines(self) -> List["_Batch"]:
+        request_coros: List[_Batch] = []
+        multicalls_to_batch: List["Multicall"] = []
+        for *full_batches, remaining_calls in [self.batcher.batch_calls(calls, self.batcher.step) for calls in self.eth_calls.values()]:
+            request_coros.extend(Multicall(self.worker, full_batches))  # type: ignore
+            multicalls_to_batch.append(Multicall(self.worker, remaining_calls))  # type: ignore
+        # Combine multicalls into one or more jsonrpc batches
+        full_batches, working_batch = self.batch_multicalls(multicalls_to_batch)
+        request_coros.extend(full_batches)
+        rpc_calls_to_batch = self.rpc_calls[:]
+        while rpc_calls_to_batch:
+            if len(working_batch) >= MAX_JSONRPC_BATCH_SIZE:
+                request_coros.append(working_batch)
+                working_batch = JSONRPCBatch(self.worker)
+            working_batch.append(rpc_calls_to_batch.pop())
+        if len(working_batch) == 1 and isinstance(working_batch[0], Multicall):
+            request_coros.append(working_batch[0])
+        else:
+            request_coros.append(working_batch)
+        return request_coros
+    
+    def batch_multicalls(self, multicalls: List["Multicall"]) -> Tuple[List["JSONRPCBatch"], "JSONRPCBatch"]:
+        """ Used to collect multicalls into batches without overwhelming the node with oversized calls. """
+        full_batches = []
+        multicalls.sort(key=lambda x: len(x), reverse=True)
+        eth_calls_in_batch = 0
+        working_batch = JSONRPCBatch(self.worker)
+        for mcall in multicalls:
+            # This would be too many eth_calls for a single multicall, lets start a new jsonrpc batch.
+            if eth_calls_in_batch + len(mcall) > self.batcher.step:
+                if working_batch:
+                    full_batches.append(working_batch)
+                working_batch = JSONRPCBatch(self.worker, [mcall])
+                eth_calls_in_batch = len(mcall)
             # This can be added to the current jsonrpc batch
             else:
-                jsonrpc_batch.append(partial_batch)
-                num_calls_in_batch += len(partial_batch)
-                if len(jsonrpc_batch) >= 500:
-                    jsonrpc_batches.append(jsonrpc_batch)
-                    jsonrpc_batch = []
-                    num_calls_in_batch = 0
-                
-        if jsonrpc_batch:
-            jsonrpc_batches.append(jsonrpc_batch)
+                working_batch.append(mcall)
+                eth_calls_in_batch += len(mcall)
+                if len(working_batch) >= MAX_JSONRPC_BATCH_SIZE:
+                    # There are more than `MAX_JSONRPC_BATCH_SIZE` rpc calls packed into this batch, let's start a new one
+                    full_batches.append(working_batch)
+                    working_batch = JSONRPCBatch(self.worker)
+                    eth_calls_in_batch = 0
+        return full_batches, working_batch
 
-        coros = [gather(self.process_single_multicall(batch, batch[0].block) for batch in full_batches)]
 
-        if jsonrpc_batches:
-            # If the only combined partial batch only contains calls for one block, we can add it to the full batches and process it like any single-block multicall
-            if len(jsonrpc_batches) == 1 and len(jsonrpc_batch := jsonrpc_batches[0]) == 1:
-                single_batch = jsonrpc_batch[0]
-                coros.append(self.process_single_multicall(single_batch, single_batch[0].block))
-            else:
-                for jsonrpc_batch in jsonrpc_batches:
-                    coros.append(self.process_batch_multicall(jsonrpc_batch))
-        await gather(coros)
-        demo_logger.info('multicall complete')  # type: ignore
-
-    def prepare_jsonrpc_batch(self, batches: List[List[BatchedCall]]) -> List[JsonrpcCall]:
-        return [{'jsonrpc': '2.0', 'id': i, 'method': 'eth_call', 'params': self.prepare_multicall_request(batch)} for i, batch in enumerate(batches)]
+class _Batch:
+    def __init__(self, worker: "DankWorker", calls: Iterable[_T]):
+        self.worker: DankWorker = worker
+        self.calls: List[_T] = calls
+        
+    def __await__(self) -> None:
+        return self.execute().__await__()
     
-    async def process_batch_multicall(self, batches: List[List[BatchedCall]], jid: Optional[BatchId] = None) -> None:
-        """ Runs in worker thread. """
-        if jid is None:
-            jid = self.jsonrpc_batch_uid.next
-        rid = self.request_uid.next
-        if DEMO_MODE:
-            # When demo mode is disabled, we can save some CPU time by skipping this sum
-            demo_logger.info(f'executing {sum(len(batch) for batch in batches)} calls for {len(batches)} blocks')  # type: ignore
-            demo_logger.info(f'request {rid} for jsonrpc batch {jid} starting')  # type: ignore
-        jsonrpc_batch = self.prepare_jsonrpc_batch(batches)
+    def __bool__(self) -> bool:
+        return bool(self.calls)
+    
+    def __getitem__(self, ix: int) -> _T:
+        return self.calls[ix]
+
+    def __iter__(self) -> Iterator[Iterable[_T]]:
+        return iter(self.calls)
+    
+    def __len__(self) -> int:
+        return len(self.calls)
+    
+    def append(self, call: _T) -> None:
+        self.calls.append(call)
+    
+    @property
+    def halfpoint(self) -> int:
+        return len(self) // 2
+    
+    @property
+    def chunk0(self) -> List[_T]:
+        return self.calls[:self.halfpoint]
+    
+    @property
+    def chunk1(self) -> List[_T]:
+        return self.calls[self.halfpoint:]
+    
+    def should_retry(self, e: Exception) -> bool:
+        if "out of gas" in f"{e}":
+            # TODO Remember which contracts/calls are gas guzzlers
+            main_logger.debug('out of gas. cut in half, trying again')
+        elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
+            main_logger.debug('Dank too loud. Bisecting batch and retrying.')
+        else:
+            main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
+        return len(self) > 1
+
+
+
+class Multicall(_Batch):
+    """ Runs in worker thread. """
+    method = "eth_call"
+    calls: List[eth_call]
+
+    def __init__(self, worker: DankWorker, calls: List[eth_call] = [], bid: Optional[BatchId] = None):
+        super().__init__(worker, calls)
+        self.bid = bid or self.worker.multicall_uid.next
+    
+    @property
+    def block(self) -> BlockId:
+        return self.calls[0].block
+    
+    @property
+    def calldata(self) -> bytes:
+        multicall_args = [False, [[call.target, call.calldata] for call in self.calls]]
+        data = FOURBYTE + encode_single(INPUT_TYPES, multicall_args)
+        return data.hex()
+    
+    @property
+    def controller(self) -> "DankMiddlewareController":
+        return self.worker.controller
+    
+    @property
+    def target(self) -> ChecksumAddress:
+        return self.worker.target
+    
+    @property
+    def params(self) -> JsonrpcParams:
+        if self.worker.state_override_not_supported:
+            return [{'to': self.target, 'data': '0x' + self.calldata}, self.block]  # type: ignore
+        return [{'to': self.target, 'data': '0x' + self.calldata}, self.block, {self.target: {'code': OVERRIDE_CODE}}]  # type: ignore
+    
+    @property
+    def rpc_data(self) -> RpcCallJson:
+        return {'jsonrpc': '2.0', 'id': self.bid, 'method': self.method, 'params': self.params}
+
+    async def execute(self) -> None:
+        rid = self.worker.request_uid.next
+        demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
-            responses = await self._post_jsonrpc_batch(jsonrpc_batch)
-
-            # A successful response will be a list
-            if isinstance(responses, dict) and 'result' in responses and isinstance(responses['result'], dict) and 'message' in responses['result']:
-                raise ValueError(responses['result']['message'])
-
-            for response in responses:
-                if 'result' not in response:
-                    raise ValueError(response)
-            
-            await gather([self.process_multicall_response(batch, to_bytes(response)) for batch, response in zip(batches, [response['result'] for response in responses])])
-            demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')  # type: ignore
+            response = await self.worker(*self.params)
+            await self.spoof_response(response)
         except Exception as e:
-            # While it might look weird, f-string is faster than `str(e)`.
-            if "No state available for block" in f"{e}":
-                main_logger.debug('No state available for queried block. Bisecting batch and retrying.')
-            elif "out of gas" in f"{e}":
-                # TODO Remember which contracts/calls are gas guzzlers
-                main_logger.debug('out of gas. cut in half, trying again')
-            elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
-                main_logger.debug('Dank too loud. Bisecting batch and retrying.')
+            if self.should_retry(e):
+                await self.bisect_and_retry()
             else:
-                main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
-
-            chunk0, chunk1 = bisect(batches)
-            await gather([
-                self.process_batch_multicall(chunk0, f"{jid}_0") if len(chunk0) > 1 else self.process_single_multicall(chunk0[0], chunk0[0][0].block),
-                self.process_batch_multicall(chunk1, f"{jid}_1") if len(chunk1) > 1 else self.process_single_multicall(chunk1[0], chunk1[0][0].block),
-            ])
-            demo_logger.info(f'request {rid} for jsonrpc batch {jid} complete')  # type: ignore
+                await gather([call.spoof_response(e) for call in self.calls])
+        demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
-    async def process_single_multicall(self, batch: List[BatchedCall], block: BlockId, bid: Optional[BatchId] = None) -> None:
-        """ Runs in worker thread. """
-        if bid is None:
-            bid = self.multicall_uid.next
-        rid = self.request_uid.next
-        demo_logger.info(f'request {rid} for multicall {bid} starting')  # type: ignore
-        request_args = self.prepare_multicall_request(batch)
-        try:
-            response = await self(*request_args)
-            await self.process_multicall_response(batch, response)
-            demo_logger.info(f'request {rid} for multicall {bid} complete')  # type: ignore
-        except Exception as e:
-            if len(batch) == 1:
-                await batch[0].spoof_response(e)
-                return
-            # While it might look weird, f-string is faster than `str(e)`.
-            elif "No state available for block" in f"{e}":
-                if "message" in e.args[0]:
-                    e.args[0]["dankmids"] = "You're not using an archive node, and you need one for the application you are attempting to run."
-                await gather([call.spoof_response(e) for call in batch])
-                return
-            elif "out of gas" in f"{e}":
-                # TODO Remember which contracts/calls are gas guzzlers
-                main_logger.debug('out of gas. cut in half, trying again')
-            elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
-                main_logger.debug('dank too loud, trying again')
-                # We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
-                if (new_step := round(num_calls * 0.99) if (num_calls := len(batch)) >= 100 else num_calls - 1) < self.batcher.step:
-                    old_step = self.batcher.step
-                    self.batcher.step = new_step
-                    main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
-            else:
-                main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
-
-            chunk0, chunk1 = bisect(batch)
-            await gather([
-                self.process_single_multicall(chunk0, block, f"{bid}_0"),
-                self.process_single_multicall(chunk1, block, f"{bid}_1"),
-            ])
-            demo_logger.info(f'request {rid} for multicall {bid} complete')  # type: ignore
+    def should_retry(self, e: Exception) -> bool:
+        if any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
+            main_logger.debug('dank too loud, trying again')
+            self.controller.reduce_batch_size(len(self))
+            return True
+        elif "No state available for block" in f"{e}":  # NOTE: While it might look weird, f-string is faster than `str(e)`.
+            e.args[0]["dankmids_note"] = "You're not using an archive node, and you need one for the application you are attempting to run."
+            return False
+        elif super().should_retry(e):
+            return True
+        return len(self) > 1
     
-    def prepare_multicall_request(self, batch: List[BatchedCall]) -> JsonrpcParams:
-        fn_args = [False, [[call.target, call.calldata] for call in batch]]
-        calldata = FOURBYTE + encode_single(INPUT_TYPES, fn_args)
-        if self.state_override_not_supported:
-            return [{'to': self.target, 'data': '0x' + calldata.hex()}, batch[0].block]  # type: ignore
-        return [{'to': self.target, 'data': '0x' + calldata.hex()}, batch[0].block, {self.target: {'code': OVERRIDE_CODE}}]  # type: ignore
-
-    async def process_multicall_response(self, batch: List[BatchedCall], response: bytes) -> None:
+    async def spoof_response(self, response: bytes) -> None:
         decoded: List[Tuple[bool, bytes]]
         _, _, decoded = await run_in_subprocess(decode_single, OUTPUT_TYPES, response)
-        await gather([call.spoof_response(data) for call, (_, data) in zip(batch, decoded)])
+        await gather([call.spoof_response(data) for call, (_, data) in zip(self.calls, decoded)])
+    
+    async def bisect_and_retry(self) -> None:
+        await gather([Multicall(self.worker, self.chunk0, f"{self.bid}_0"), Multicall(self.worker, self.chunk1, f"{self.bid}_1")])
+
+
+
+class JSONRPCBatch(_Batch):
+    calls: List[Union[Multicall, RPCCall]]
+
+    def __init__(self, worker: DankWorker, calls: List[Union[Multicall, RPCCall]] = [], jid: Optional[BatchId] = None) -> None:
+        super().__init__(worker, calls)
+        self.jid = jid or self.worker.jsonrpc_batch_uid.next
+    
+    @property
+    def data(self) -> List[RpcCallJson]:
+        return [call.rpc_data for call in self.calls]
+    
+    async def execute(self) -> None:
+        """ Runs in worker thread. """
+        rid = self.worker.request_uid.next
+        if DEMO_MODE:
+            # When demo mode is disabled, we can save some CPU time by skipping this sum
+            demo_logger.info(f'executing {sum(len(batch) for batch in self.calls)} calls for {len(self.calls)} blocks')  # type: ignore
+            demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} starting')  # type: ignore
+        try:
+            responses = await self.post()
+            self.validate_responses(responses)
+            await self.spoof_response(responses)
+        except Exception as e:
+            if not self.should_retry(e):
+                raise e
+            await self.bisect_and_retry()
+        demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
     @eth_retry.auto_retry
-    async def _post_jsonrpc_batch(self, jsonrpc_batch: List[JsonrpcCall]) -> Union[Dict, List[bytes]]:
+    async def post(self) -> Union[Dict, List[bytes]]:
         """ Posts `jsonrpc_batch` to your node. A successful call returns a list. """
         async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
-            responses = await session.post(self.controller.w3.provider.endpoint_uri, json=jsonrpc_batch)  # type: ignore
+            responses = await session.post(self.worker.endpoint, json=self.data)  # type: ignore
             return await responses.json()
-
+    
+    def should_retry(self, e: Exception) -> bool:
+        # While it might look weird, f-string is faster than `str(e)`.
+        if "No state available for block" in f"{e}":
+            main_logger.debug('No state available for queried block. Bisecting batch and retrying.')
+            return True
+        else:
+            return super().should_retry(e)
+    
+    async def spoof_response(self, response) -> List[RPCResponse]:
+        await gather([
+            call.spoof_response(to_bytes(result["result"]) if isinstance(call, Multicall) else result)
+            for call, result in zip(self.calls, response)
+        ])
+    
+    def validate_responses(self, responses) -> Union[Dict, List[bytes]]:
+        # A successful response will be a list
+        if isinstance(responses, dict) and 'result' in responses and isinstance(responses['result'], dict) and 'message' in responses['result']:
+            raise ValueError(responses['result']['message'])
+        for response in responses:
+            if 'result' not in response:
+                raise ValueError(response)
+    
+    async def bisect_and_retry(self) -> None:
+        chunks = self.chunk0, self.chunk1
+        await gather([JSONRPCBatch(self.worker, chunk, f"{self.jid}_{i}") for i, chunk in enumerate(chunks)])
