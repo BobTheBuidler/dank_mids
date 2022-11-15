@@ -106,10 +106,6 @@ class RPCCall:
         while not self.is_complete:
             await asyncio.sleep(0)
         return self.response
-    
-    def spoof_response(self, data: RPCResponse) -> RPCResponse:
-        self._response = data
-        return data
 
 
 class eth_call(RPCCall):
