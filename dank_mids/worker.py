@@ -293,23 +293,18 @@ class JSONRPCBatch(_Batch):
             await self.bisect_and_retry()
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
-    @eth_retry.auto_retry
     async def post(self) -> Union[Dict, List[bytes]]:
         """ Posts `jsonrpc_batch` to your node. A successful call returns a list. """
         async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
-            responses = await session.post(self.worker.endpoint, json=self.data)  # type: ignore
-            try:
-                return await responses.json()
-            except JSONDecodeError as e:
-                raise ValueError(e)
+            responses = await eth_retry.auto_retry(session.post)(self.worker.endpoint, json=self.data)  # type: ignore
+            return await responses.json()
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
         if "No state available for block" in f"{e}":
             main_logger.debug('No state available for queried block. Bisecting batch and retrying.')
             return True
-        else:
-            return super().should_retry(e)
+        return super().should_retry(e)
     
     async def spoof_response(self, response: Union[List[RPCResponse], Exception]) -> List[RPCResponse]:
         if isinstance(response, Exception):
