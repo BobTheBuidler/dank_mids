@@ -19,7 +19,7 @@ AIOHTTP_TIMEOUT = ClientTimeout(int(os.environ.get("AIOHTTP_TIMEOUT", 120)))
 
 # Method-specific Semaphores
 semaphore_envs = {
-    "eth_getBlock": int(os.environ.get("ETH_GETBLOCK_SEMAPHORE", 50)),
+    "eth_getBlock": int(os.environ.get("ETH_GETBLOCK_SEMAPHORE", 50)), # [eth_getBlockByNumber, eth_getBlockByHash]
     "eth_getLogs": int(os.environ.get("ETH_GETLOGS_SEMAPHORE", 16)),
     "eth_getTransaction": int(os.environ.get("ETH_GETTRANSACTION_SEMAPHORE", 100)),
 }
