@@ -22,5 +22,6 @@ class Semaphores:
         for key in self.keys:
             if key in method:
                 return self.method_semaphores[key]
+        return self.method_semaphores[method]
 
 method_semaphores = Semaphores()
