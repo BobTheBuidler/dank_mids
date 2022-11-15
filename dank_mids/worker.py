@@ -297,7 +297,7 @@ class JSONRPCBatch(_Batch):
         """ Posts `jsonrpc_batch` to your node. A successful call returns a list. """
         async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
             responses = await session.post(self.worker.endpoint, json=self.data)  # type: ignore
-            return await responses.json()
+            return await responses.json(content_type=None)
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
