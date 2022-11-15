@@ -1,5 +1,4 @@
 import asyncio
-from collections import defaultdict
 from typing import Union
 from web3.types import RPCEndpoint
 from dank_mids._config import semaphore_envs
