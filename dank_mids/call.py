@@ -55,7 +55,6 @@ def _err_response(e: Exception) -> RPCError:
 
 class RPCCall:
     def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any):
-        super().__init__()
         self.controller = controller
         self.method = method
         self.params = params
@@ -67,6 +66,20 @@ class RPCCall:
             self.controller.pending_rpc_calls.append(self)
         demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
     
+    def __await__(self) -> Generator[Any, None, RPCResponse]:
+        return self.wait_for_response().__await__()
+    
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o, self.__class__):
+            return False
+        return self.uid == __o.uid 
+    
+    def __hash__(self) -> int:
+        return self.uid
+    
+    def __len__(self) -> int:
+        return 1
+
     @property
     def is_complete(self) -> bool:
         return self._response is not None
@@ -80,17 +93,12 @@ class RPCCall:
     @property
     def rpc_data(self) -> RpcCallJson:
         return {'jsonrpc': '2.0', 'id': self.uid, 'method': self.method, 'params': self.params}
-    
-    def __await__(self) -> Generator[Any, None, RPCResponse]:
-        return self.wait_for_response().__await__()
-    
-    def __eq__(self, __o: object) -> bool:
-        if not isinstance(__o, self.__class__):
-            return False
-        return self.uid == __o.uid 
-    
-    def __hash__(self) -> int:
-        return self.uid
+
+    async def spoof_response(self, data: bytes) -> RPCResponse:
+        spoof = {"id": self.uid, "jsonrpc": "dank_mids", "result": HexBytes(data).hex()}
+        self._response = spoof
+        main_logger.debug(f"spoof: {spoof}")
+        return spoof
 
     async def wait_for_response(self) -> RPCResponse:
         if not self.controller.is_running:
@@ -102,6 +110,24 @@ class RPCCall:
     def spoof_response(self, data: RPCResponse) -> RPCResponse:
         self._response = data
         return data
+
+
+class eth_call(RPCCall):
+    def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
+        """ Adds a call to the DankMiddlewareContoller's `pending_eth_calls`. """
+        super().__init__(controller, "eth_call", params)
+    
+    @property
+    def block(self) -> BlockId:
+        return self.params[1]
+    
+    @property
+    def calldata(self) -> HexBytes:
+        return HexBytes(self.params[0]['data'])
+    
+    @property
+    def target(self) -> str:
+        return self.params[0]["to"]
 
 
 class eth_call(RPCCall):

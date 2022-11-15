@@ -9,9 +9,9 @@ from tests.fixtures import dank_w3
 
 CHAI = '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215'
 height = chain.height
-BIG_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]], block_id=height - (i // 25000), _w3=dank_w3).coroutine() for i in range(10_000)]
+BIG_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]], block_id=height - (i // 25000), _w3=dank_w3).coroutine() for i in range(100_000)]
 height = chain.height
-MULTIBLOCK_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]], _w3=dank_w3, block_id=height-i).coroutine() for i in range(10_000)]
+MULTIBLOCK_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]], _w3=dank_w3, block_id=height-i).coroutine() for i in range(100_000)]
 
 
 def _get_controller():
@@ -22,11 +22,9 @@ def _get_worker():
 
 def test_dank_middleware():
     await_awaitable(gather(BIG_WORK))
-    controller = _get_controller()
-    worker = controller.worker
-    cid = controller.call_uid.latest
-    mid = worker.multicall_uid.latest
-    rid = worker.request_uid.latest
+    cid = _get_controller().call_uid.latest
+    mid = _get_worker().multicall_uid.latest
+    rid = _get_worker().request_uid.latest
     assert cid, "The DankMiddlewareController did not process any calls."
     assert mid, "The DankMiddlewareController did not process any batches."
     assert rid, "The DankMiddlewareController did not process any requests."
@@ -54,3 +52,6 @@ def test_next_mid():
     
 def test_next_bid():
     assert _get_worker().multicall_uid.next + 1 == _get_worker().multicall_uid.next
+
+def test_other_methods():
+    await_awaitable(gather([dank_w3.eth.get_block_number() for i in range(50)]))

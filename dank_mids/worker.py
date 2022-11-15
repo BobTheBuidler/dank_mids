@@ -275,8 +275,7 @@ class JSONRPCBatch(_Batch):
         rid = self.worker.request_uid.next
         if DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
-            demo_logger.info(f'executing {sum(len(batch) for batch in self.calls)} calls for {len(self.calls)} blocks')  # type: ignore
-            demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} starting')  # type: ignore
+            demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:
             responses = await self.post()
             self.validate_responses(responses)
@@ -302,13 +301,10 @@ class JSONRPCBatch(_Batch):
         else:
             return super().should_retry(e)
     
-    async def spoof_response(self, response) -> List[RPCResponse]:
-        await gather([
-            call.spoof_response(to_bytes(result["result"]) if isinstance(call, Multicall) else result)
-            for call, result in zip(self.calls, response)
-        ])
+    async def spoof_response(self, response: List[RPCResponse]) -> List[RPCResponse]:
+        await gather([call.spoof_response(to_bytes(result["result"])) for call, result in zip(self.calls, response)])
     
-    def validate_responses(self, responses) -> Union[Dict, List[bytes]]:
+    def validate_responses(self, responses) -> None:
         # A successful response will be a list
         if isinstance(responses, dict) and 'result' in responses and isinstance(responses['result'], dict) and 'message' in responses['result']:
             raise ValueError(responses['result']['message'])
