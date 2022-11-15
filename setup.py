@@ -18,7 +18,7 @@ setup(
     license='MIT',
     install_requires=[
         "bobs_lazy_logging>=0.0.4",
-        "eth_retry>=0.1.12",
+        "eth_retry>=0.1.14",
         "multicall>=0.6.2",
     ],
     setup_requires=[
