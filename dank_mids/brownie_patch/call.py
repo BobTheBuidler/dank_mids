@@ -66,9 +66,12 @@ def _patch_call(call: ContractCall, w3: Web3) -> None:
         calldata = await self._encode_input(*args)
 
         try:
-            data = await w3.eth.call({"to": self._address, "data": calldata}, block_identifier, override)  # type: ignore
+            data = await w3.eth.call({"to": self._address, "data": calldata}, block_identifier)  # type: ignore
         except ValueError as e:
-            raise VirtualMachineError(e) from None
+            try:
+                raise VirtualMachineError(e) from None
+            except:
+                raise e
 
         return await self._decode_output(data)
 
