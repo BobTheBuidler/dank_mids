@@ -249,14 +249,16 @@ class Multicall(_Batch):
             return True
         return len(self) > 1
     
-    async def spoof_response(self, response: Union[bytes, str]) -> None:
+    async def spoof_response(self, response: Union[bytes, str, Exception]) -> List[RPCResponse]:
         """
         If called from `self`, `response` will be bytes type.
         if called from a JSONRPCBatch, `response` will be str type.
         """ 
+        if isinstance(response, Exception):
+            return await gather([call.spoof_response(response) for call in self.calls])
         decoded: List[Tuple[bool, bytes]]
         _, _, decoded = await run_in_subprocess(decode_single, OUTPUT_TYPES, to_bytes(response))
-        await gather([call.spoof_response(data) for call, (_, data) in zip(self.calls, decoded)])
+        return await gather([call.spoof_response(data) for call, (_, data) in zip(self.calls, decoded)])
     
     async def bisect_and_retry(self) -> None:
         await gather([Multicall(self.worker, self.chunk0, f"{self.bid}_0"), Multicall(self.worker, self.chunk1, f"{self.bid}_1")])
@@ -286,7 +288,7 @@ class JSONRPCBatch(_Batch):
             await self.spoof_response(responses)
         except Exception as e:
             if not self.should_retry(e):
-                raise e
+                return await self.spoof_response(e)
             await self.bisect_and_retry()
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
@@ -305,8 +307,10 @@ class JSONRPCBatch(_Batch):
         else:
             return super().should_retry(e)
     
-    async def spoof_response(self, response: List[RPCResponse]) -> List[RPCResponse]:
-        await gather([
+    async def spoof_response(self, response: Union[List[RPCResponse], Exception]) -> List[RPCResponse]:
+        if isinstance(response, Exception):
+            return await gather(call.spoof_response(response) for call in self.calls)
+        return await gather([
             # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
             call.spoof_response(HashableDict(result["result"]) if isinstance(result["result"], dict) else result["result"])
             for call, result in zip(self.calls, response)
