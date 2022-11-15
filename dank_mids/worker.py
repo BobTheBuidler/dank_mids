@@ -249,9 +249,13 @@ class Multicall(_Batch):
             return True
         return len(self) > 1
     
-    async def spoof_response(self, response: bytes) -> None:
+    async def spoof_response(self, response: Union[bytes, str]) -> None:
+        """
+        If called from `self`, `response` will be bytes type.
+        if called from a JSONRPCBatch, `response` will be str type.
+        """ 
         decoded: List[Tuple[bool, bytes]]
-        _, _, decoded = await run_in_subprocess(decode_single, OUTPUT_TYPES, response)
+        _, _, decoded = await run_in_subprocess(decode_single, OUTPUT_TYPES, to_bytes(response))
         await gather([call.spoof_response(data) for call, (_, data) in zip(self.calls, decoded)])
     
     async def bisect_and_retry(self) -> None:
