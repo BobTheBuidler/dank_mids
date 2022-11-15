@@ -15,7 +15,7 @@ from web3.types import RPCResponse
 
 from dank_mids._config import AIOHTTP_TIMEOUT, DEMO_MODE
 from dank_mids._demo_mode import demo_logger
-from dank_mids.call import RPCCall, eth_call
+from dank_mids.call import HashableDict, RPCCall, eth_call
 from dank_mids.constants import OVERRIDE_CODE
 from dank_mids.loggers import main_logger
 from dank_mids.types import BlockId, CallsToExec, JsonrpcParams, RpcCallJson
@@ -302,7 +302,11 @@ class JSONRPCBatch(_Batch):
             return super().should_retry(e)
     
     async def spoof_response(self, response: List[RPCResponse]) -> List[RPCResponse]:
-        await gather([call.spoof_response(to_bytes(result["result"])) for call, result in zip(self.calls, response)])
+        await gather([
+            # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
+            call.spoof_response(HashableDict(result["result"]) if isinstance(result["result"], dict) else result["result"])
+            for call, result in zip(self.calls, response)
+        ])
     
     def validate_responses(self, responses) -> None:
         # A successful response will be a list

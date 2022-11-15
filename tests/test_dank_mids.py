@@ -54,4 +54,6 @@ def test_next_bid():
     assert _get_worker().multicall_uid.next + 1 == _get_worker().multicall_uid.next
 
 def test_other_methods():
-    await_awaitable(gather([dank_w3.eth.get_block_number() for i in range(50)]))
+    work = [dank_w3.eth.get_block_number() for i in range(50)]
+    work.append(dank_w3.eth.get_block('0xe25822'))
+    await_awaitable(gather(work))

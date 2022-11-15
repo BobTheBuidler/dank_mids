@@ -53,6 +53,15 @@ def _err_response(e: Exception) -> RPCError:
     return {'code': -32000, 'message': err_msg, 'data': ''}
 
 
+class HashableDict(dict):
+    def __init__(self, _dict: dict) -> None:
+        super().__init__()
+        for k, v in _dict.items():
+            self[k] = v
+    
+    def __hash__(self) -> int:
+        return hash((key, tuple(self[key]) if isinstance(self[key], list) else self[key]) for key in sorted(self))
+
 class RPCCall:
     def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any):
         self.controller = controller
@@ -94,8 +103,8 @@ class RPCCall:
     def rpc_data(self) -> RpcCallJson:
         return {'jsonrpc': '2.0', 'id': self.uid, 'method': self.method, 'params': self.params}
 
-    async def spoof_response(self, data: bytes) -> RPCResponse:
-        spoof = {"id": self.uid, "jsonrpc": "dank_mids", "result": HexBytes(data).hex()}
+    async def spoof_response(self, result: Union[str, HashableDict]) -> RPCResponse:
+        spoof = {"id": self.uid, "jsonrpc": "dank_mids", "result": result}
         self._response = spoof
         main_logger.debug(f"spoof: {spoof}")
         return spoof
