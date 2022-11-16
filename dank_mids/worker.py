@@ -296,8 +296,12 @@ class JSONRPCBatch(_Batch):
     async def post(self) -> Union[Dict, List[bytes]]:
         """ Posts `jsonrpc_batch` to your node. A successful call returns a list. """
         async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
-            responses = await eth_retry.auto_retry(session.post)(self.worker.endpoint, json=self.data)  # type: ignore
-            return await responses.json()
+            responses = await self._post(session)  # type: ignore
+            return await responses.json(responses.content_type)
+    
+    @eth_retry.auto_retry
+    async def _post(self, session: aiohttp.ClientSession) -> aiohttp.ClientResponse:
+        return await session.post(self.worker.endpoint, json=self.data)
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
