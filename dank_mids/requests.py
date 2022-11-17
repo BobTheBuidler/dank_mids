@@ -142,7 +142,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         if isinstance(data, Exception):
             spoof["error"] = _err_response(data)
         else:
-            spoof["result"] = data if isinstance(data, dict) else HexBytes(data).hex()  # type: ignore
+            spoof["result"] = data  # type: ignore
         main_logger.debug(f"spoof: {spoof}")
         self._response = spoof  # type: ignore
         return spoof  # type: ignore
@@ -176,7 +176,7 @@ class eth_call(RPCRequest):
         # - successful response
         if _call_failed(data):
             data = await self.sync_call()
-        return await super().spoof_response(data)  # type: ignore
+        return await super().spoof_response(data.hex())  # type: ignore
 
     async def sync_call(self) -> Union[bytes, Exception]:
         """ Used to bypass DankMiddlewareController. """ 

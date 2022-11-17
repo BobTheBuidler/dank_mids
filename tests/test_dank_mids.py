@@ -4,6 +4,7 @@ from brownie import chain
 from dank_mids import instances
 from multicall import Call
 from multicall.utils import await_awaitable, gather
+from web3._utils.rpc_abi import RPC
 
 from tests.fixtures import dank_w3
 
@@ -56,4 +57,5 @@ def test_next_bid():
 def test_other_methods():
     work = [dank_w3.eth.get_block_number() for i in range(50)]
     work.append(dank_w3.eth.get_block('0xe25822'))
+    work.append(dank_w3.manager.coro_request(RPC.web3_clientVersion, []))
     await_awaitable(gather(work))
