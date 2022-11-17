@@ -239,7 +239,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
             # TODO: use these exceptions to optimize for the user's node
             main_logger.debug('Dank too loud. Bisecting batch and retrying.')
-        elif f"{e}" != "{'code': -32000, 'message': 'error processing call Revert'}":
+        elif "error processing call Revert" in f"{e}":
             main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
 
@@ -400,7 +400,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         if "No state available for block" in f"{e}":
             main_logger.debug('No state available for queried block. Bisecting batch and retrying.')
             return True
-        if super().should_retry(e):
+        elif f"{e}" == "jsonrpc":
+            # TODO Figure out what this means and how we can prevent it.
+            # For now, we simply bisect and retry.
+            return True
+        elif super().should_retry(e):
             return True
         return self.is_single_multicall
     
