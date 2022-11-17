@@ -15,8 +15,8 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids._config import LOOP_INTERVAL
 from dank_mids._demo_mode import demo_logger
-from dank_mids.call import RPCCall, eth_call
-from dank_mids.loggers import main_logger, sort_lazy_logger, sort_logger
+from dank_mids.loggers import main_logger, sort_lazy_logger
+from dank_mids.requests import RPCRequest, eth_call
 from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator
 from dank_mids.worker import DankWorker
@@ -49,20 +49,20 @@ class DankMiddlewareController:
         self.multicall2 = to_checksum_address(multicall2)
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
         self.pending_eth_calls: List[eth_call] = []
-        self.pending_rpc_calls: List[RPCCall] = []
+        self.pending_rpc_calls: List[RPCRequest] = []
         self.num_pending_eth_calls: int = 0
         self.worker = DankWorker(self)
         self.is_running: bool = False
         self.call_uid = UIDGenerator()
         self._checkpoint: float = time()
-        self._instance: int = sum(len(_instances) for chain_id, _instances in instances.items())
-        instances[self.chain_id].append(self)
+        self._instance: int = sum(len(_instances) for _instances in instances.values())
+        instances[self.chain_id].append(self)  # type: ignore
     
     def __repr__(self) -> str:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        return await (eth_call(self, params) if method == "eth_call" else RPCCall(self, method, params))
+        return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))
     
     @property
     def batcher(self) -> NotSoBrightBatcher:
@@ -105,7 +105,7 @@ class DankMiddlewareController:
             # These most likely come from dank mids internals if you're using dank mids.
             return False
         if any(bypass in method for bypass in BYPASS_METHODS):
-            sort_logger.debug(f"bypassed, method is {method}")
+            main_logger.debug(f"bypassed, method is {method}")
             return False
         return True
 
