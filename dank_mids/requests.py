@@ -176,7 +176,7 @@ class eth_call(RPCRequest):
         # - successful response
         if _call_failed(data):
             data = await self.sync_call()
-        return await super().spoof_response(data.hex())  # type: ignore
+        return await super().spoof_response(data.hex() if isinstance(data, bytes) else data)
 
     async def sync_call(self) -> Union[bytes, Exception]:
         """ Used to bypass DankMiddlewareController. """ 
