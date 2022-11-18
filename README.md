@@ -1,6 +1,7 @@
-Dank Mids automatically collects your async `eth_call`s and batch them into multicalls in the background.
+Dank Mids automatically collects your RPC calls and batches them together in jsonrpc batch calls.
 
-Now also supports jsonrpc batching for batching across multiple blocks.
+All eth_call calls will be batched into multicalls prior to jsonrpc batching.
+
 <hr>
 You only need to know one thing to use Dank Mids - `setup_dank_w3_from_sync`.
 
