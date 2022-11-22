@@ -15,6 +15,7 @@ from hexbytes import HexBytes
 from hexbytes._utils import to_bytes
 from multicall.utils import gather, run_in_subprocess
 from web3 import Web3
+from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
 
 from dank_mids._config import (AIOHTTP_TIMEOUT, DEMO_MODE,
@@ -22,7 +23,7 @@ from dank_mids._config import (AIOHTTP_TIMEOUT, DEMO_MODE,
 from dank_mids._demo_mode import demo_logger
 from dank_mids.constants import BAD_HEXES, OVERRIDE_CODE
 from dank_mids.loggers import main_logger
-from dank_mids.types import (BatchId, BlockId, HashableDict, JsonrpcParams,
+from dank_mids.types import (BatchId, BlockId, JsonrpcParams,
                              RpcCallJson)
 
 if TYPE_CHECKING:
@@ -137,7 +138,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             await asyncio.sleep(0)
         return self.response
     
-    async def spoof_response(self, data: Union[str, HashableDict, Exception]) -> RPCResponse:
+    async def spoof_response(self, data: Union[str, AttributeDict, Exception]) -> RPCResponse:
         spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
         if isinstance(data, Exception):
             spoof["error"] = _err_response(data)
@@ -413,7 +414,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return await gather(call.spoof_response(response) for call in self.calls)
         return await gather([
             # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
-            call.spoof_response(HashableDict(result["result"]) if isinstance(result["result"], dict) else result["result"])  # type: ignore
+            call.spoof_response(AttributeDict(result["result"]) if isinstance(result["result"], dict) else result["result"])  # type: ignore
             for call, result in zip(self.calls, response)
         ])
     

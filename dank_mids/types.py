@@ -28,14 +28,3 @@ RpcCallJson = TypedDict(
 
 # This type alias was introduced in web3 v5.28.0 but we like loose deps here so we recreate instead of import.
 AsyncMiddleware = Callable[[RPCEndpoint, Any], Coroutine[Any, Any, RPCResponse]]
-
-
-_V = TypeVar("_V")
-
-class HashableDict(Dict[str, _V]):
-    def __init__(self, _dict: Dict[str, _V]) -> None:
-        super().__init__()
-        for k, v in _dict.items():
-            self[k] = v
-    def __hash__(self) -> int:  # type: ignore
-        return hash((key, tuple(self[key]) if isinstance(self[key], list) else self[key]) for key in sorted(self))  # type: ignore
