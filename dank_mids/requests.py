@@ -144,7 +144,10 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             spoof["error"] = _err_response(data)
         else:
             spoof["result"] = data  # type: ignore
-        main_logger.debug(f"spoof: {spoof}")
+        if isinstance(self, eth_call):
+            main_logger.debug(f"method: eth_call  address: {self.target}  spoof: {spoof}")
+        else:
+            main_logger.debug(f"method: {self.method}  spoof: {spoof}")
         self._response = spoof  # type: ignore
         return spoof  # type: ignore
 
