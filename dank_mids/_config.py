@@ -25,4 +25,5 @@ semaphore_envs = {
     "eth_getBlock": int(os.environ.get("ETH_GETBLOCK_SEMAPHORE", 50)), # [eth_getBlockByNumber, eth_getBlockByHash]
     "eth_getLogs": int(os.environ.get("ETH_GETLOGS_SEMAPHORE", 16)),
     "eth_getTransaction": int(os.environ.get("ETH_GETTRANSACTION_SEMAPHORE", 100)),
+    "eth_getCode": int(os.environ.get("ETH_GETCODE_SEMAPHORE", 50))
 }
