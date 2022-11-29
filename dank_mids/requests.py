@@ -355,12 +355,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def append(self, call: Union[Multicall, RPCRequest]) -> None:
         if self._locked:
             raise Exception(f"{self} is locked.")
-        assert not call.is_complete, f"Something's wrong, {call} is already complete."
         self.calls.append(call)
     
     async def get_response(self) -> List[RPCResponse]:
         """ Runs in worker thread. """
-        assert len(self) <= MAX_JSONRPC_BATCH_SIZE, self.calls
         self._locked = True
         rid = self.worker.request_uid.next
         if DEMO_MODE:
