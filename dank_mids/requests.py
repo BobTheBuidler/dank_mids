@@ -243,7 +243,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
             # TODO: use these exceptions to optimize for the user's node
             main_logger.debug('Dank too loud. Bisecting batch and retrying.')
-        elif "error processing call Revert" in f"{e}":
+        elif "error processing call Revert" not in f"{e}":
             main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
 
