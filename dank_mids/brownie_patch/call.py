@@ -1,4 +1,5 @@
 
+import asyncio
 import functools
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
@@ -13,6 +14,10 @@ from hexbytes import HexBytes
 from multicall.utils import run_in_subprocess
 from web3 import Web3
 
+from dank_mids._config import BROWNIE_CALL_SEMAPHORE_VAL
+
+
+brownie_call_semaphore = asyncio.Semaphore(BROWNIE_CALL_SEMAPHORE_VAL)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     data = format_input(abi, args)
@@ -63,17 +68,18 @@ def _patch_call(call: ContractCall, w3: Web3) -> None:
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
         
-        calldata = await self._encode_input(*args)
+        async with brownie_call_semaphore:
+            calldata = await self._encode_input(*args)
 
-        try:
-            data = await w3.eth.call({"to": self._address, "data": calldata}, block_identifier)  # type: ignore
-        except ValueError as e:
             try:
-                raise VirtualMachineError(e) from None
-            except:
-                raise e
+                data = await w3.eth.call({"to": self._address, "data": calldata}, block_identifier)  # type: ignore
+            except ValueError as e:
+                try:
+                    raise VirtualMachineError(e) from None
+                except:
+                    raise e
 
-        return await self._decode_output(data)
+            return await self._decode_output(data)
 
     call.coroutine = MethodType(coroutine, call)
     call._encode_input = MethodType(_encode_input, call)
