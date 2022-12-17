@@ -26,3 +26,8 @@ semaphore_envs = {
     "eth_getLogs": int(os.environ.get("ETH_GETLOGS_SEMAPHORE", 16)),
     "eth_getTransaction": int(os.environ.get("ETH_GETTRANSACTION_SEMAPHORE", 100)),
 }
+
+# Brownie call Semaphore
+#   Used because I experienced some OOM errs due to web3 formatters when I was batching an absurd number of brownie calls.
+#   We need a separate semaphore here because the method-specific semaphores are too late in the code to prevent this OOM issue.
+BROWNIE_CALL_SEMAPHORE_VAL = int(os.environ.get("DANK_MIDS_BROWNIE_CALL_SEMAPHORE", 100_000))
