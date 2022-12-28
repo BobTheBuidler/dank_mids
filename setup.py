@@ -19,7 +19,7 @@ setup(
     install_requires=[
         "bobs_lazy_logging>=0.0.4",
         "eth_retry>=0.1.15",
-        "multicall>=0.6.2",
+        "multicall>=0.6.2,!=0.7.0",
     ],
     setup_requires=[
         'setuptools_scm',
