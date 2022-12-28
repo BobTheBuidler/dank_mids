@@ -1,5 +1,4 @@
 
-import asyncio
 import functools
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
@@ -15,9 +14,9 @@ from multicall.utils import run_in_subprocess
 from web3 import Web3
 
 from dank_mids._config import BROWNIE_CALL_SEMAPHORE_VAL
+from dank_mids.semaphore import ThreadsafeSemaphore
 
-
-brownie_call_semaphore = asyncio.Semaphore(BROWNIE_CALL_SEMAPHORE_VAL)
+brownie_call_semaphore = ThreadsafeSemaphore(BROWNIE_CALL_SEMAPHORE_VAL)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     data = format_input(abi, args)
