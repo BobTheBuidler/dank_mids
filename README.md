@@ -1,17 +1,22 @@
-Dank Mids automatically collects your RPC calls and batches them together in jsonrpc batch calls.
+# Dank Mids
 
-All eth_call calls will be batched into multicalls prior to jsonrpc batching.
+Dank Mids is an Ethereum RPC batching library that helps reduce the number of HTTP requests to a node, saving time and resources. It automatically collects RPC calls and bundles them together in jsonrpc batch calls while batching eth_call calls into multicalls.
 
-<hr>
-You only need to know one thing to use Dank Mids - `setup_dank_w3_from_sync`.
+The goal of this tool is to reduce the workload on RPC nodes and allow users to make calls to the Ethereum network more efficiently. This optimization is especially useful for developers writing scripts that make multiple calls to blockchain networks, as it can save development time and resources.
 
-Use `setup_dank_w3_from_sync` to wrap a sync Web3 instance for async use.
+## Installation
 
-Brownie's `web3` object, for example, is a sync Web3 instance. You can patch brownie Contracts with `patch_contract` for use with Dank Mids.
-<hr>
+To install Dank Mids, use pip:
 
-using with brownie:
-```
+`pip install dank-mids`
+
+## Usage
+
+The primary function you need to use Dank Mids is `setup_dank_w3_from_sync`. This function takes a sync Web3 instance and wraps it for async use.
+
+For example, if you are using Brownie, you can patch your Contracts with the `patch_contract` function:
+
+```python
 from brownie import Contract, web3
 from dank_mids.brownie_patch import patch_contract
 from dank_mids import setup_dank_w3_from_sync
@@ -21,15 +26,18 @@ weth = patch_contract(Contract(0x1234), dank_w3)
 total_supply = await weth.totalSupply.coroutine(block_identifier=12345)
 ```
 
-using with web3py:
-```
+You can also use Dank Mids with web3py:
+
+```python
 from dank_mids import setup_dank_w3_from_sync
 dank_w3 = setup_dank_w3_from_sync(w3)
 random_block = await dank_w3.eth.get_block(123)
 ```
 
-COMING SOON:
-using with ape
+COMING SOON: Dank Mids will also work with [apeworx](https://www.apeworx.io/).
 
-NOTES:
-    - You can set DANK_MIDS_DEMO_MODE=True to see a visual represenataion of the batching in real time on your console.
+You can also set `DANK_MIDS_DEMO_MODE=True` to see a visual representation of the batching in real time on your console.
+
+## Example
+
+- [Dank Brownie Example Commented Code](./examples/dank_brownie_example.py)
