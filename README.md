@@ -4,13 +4,13 @@ Dank Mids is a EVM RPC batching library that helps reduce the number of HTTP req
 
 The goal of this tool is to reduce the workload on RPC nodes and allow users to make calls to their preferred node more efficiently. This optimization is especially useful for developers writing scripts that make multiple calls to blockchain networks, as it can save development time and resources.
 
-## Installation
+### Installation
 
 To install Dank Mids, use pip:
 
 `pip install dank-mids`
 
-## Usage with web3.py
+### Usage with web3.py
 
 The primary function you need to use Dank Mids is `setup_dank_w3_from_sync`. This function takes a sync Web3 instance and wraps it for async use.
 
@@ -22,12 +22,14 @@ dank_w3 = setup_dank_w3_from_sync(w3)
 random_block = await dank_w3.eth.get_block(123)
 ```
 
-COMING SOON: Dank Mids will also work with [apeworx](https://www.apeworx.io/).
-
-## Usage with eth-brownie
+### Usage with eth-brownie
 
 - see [Dank Brownie Example Commented Code](./examples/dank_brownie_example.py)
 
-## Notes
+### Usage with ape
+
+- COMING SOON: Dank Mids will also work with [ape](https://github.com/ApeWorX/ape).
+
+### Notes
 
 You can also set `DANK_MIDS_DEMO_MODE=True` to see a visual representation of the batching in real time on your console.
