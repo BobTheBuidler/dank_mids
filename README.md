@@ -14,19 +14,7 @@ To install Dank Mids, use pip:
 
 The primary function you need to use Dank Mids is `setup_dank_w3_from_sync`. This function takes a sync Web3 instance and wraps it for async use.
 
-For example, if you are using Brownie, you can patch your Contracts with the `patch_contract` function:
-
-```python
-from brownie import Contract, web3
-from dank_mids.brownie_patch import patch_contract
-from dank_mids import setup_dank_w3_from_sync
-
-dank_w3 = setup_dank_w3_from_sync(web3)
-weth = patch_contract(Contract(0x1234), dank_w3)
-total_supply = await weth.totalSupply.coroutine(block_identifier=12345)
-```
-
-You can also use Dank Mids with web3py:
+Here is an example usage of Dank Mids with web3py:
 
 ```python
 from dank_mids import setup_dank_w3_from_sync
