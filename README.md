@@ -4,7 +4,7 @@ Dank Mids is a EVM RPC batching library that helps reduce the number of HTTP req
 
 The goal of this tool is to reduce the workload on RPC nodes and allow users to make calls to their preferred node more efficiently. This optimization is especially useful for developers writing scripts that perform large-scale blockchain analysis, as it can save development time and resources.
 
-![](https://i.imgur.com/PsqDLda.jpg)
+![](https://i.imgur.com/4fEkL3Y.jpg)
 
 ### Installation
 
