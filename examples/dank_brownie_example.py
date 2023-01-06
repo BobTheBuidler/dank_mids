@@ -6,7 +6,7 @@ This is how you ensure that all of the various parts of your code are running at
 """
 
 # Import the necessary packages and set up the dank_w3 instance.
-# This instance is used to wrap the web3 object, allowing us to make batch calls.
+# This instance wraps your sync Web3 instance and injects the dank middleware for batching
 import asyncio
 
 from brownie import Contract, web3
@@ -29,7 +29,7 @@ async def _main():
         "0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11",
     ]
 
-# Add the contracts to the list and wrap them with the dank_w3 instance.
+# Initialize the pools as brownie Contract objects and patch them to define an additional coroutine method for each ContractCall.
     uniswap_pool_contracts = [Contract(pool) for pool in uniswap_pools]
     dank_pool_contracts = [patch_contract(pool, dank_w3) for pool in uniswap_pool_contracts]
 
