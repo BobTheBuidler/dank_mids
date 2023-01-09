@@ -32,6 +32,12 @@ random_block = await dank_w3.eth.get_block(123)
 
 - COMING SOON: Dank Mids will also work with [ape](https://github.com/ApeWorX/ape).
 
+### Testimonials
+
+[Yearn](https://yearn.finance) big brain [Tonkers Kuma](https://github.com/tonkers-kuma) had this to say:
+
+![image](https://user-images.githubusercontent.com/70677534/211255488-e76e641c-a0fe-461c-a4e5-27c45a3fea5b.png)
+
 ### Notes
 
 You can also set `DANK_MIDS_DEMO_MODE=True` to see a visual representation of the batching in real time on your console.
