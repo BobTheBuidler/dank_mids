@@ -7,7 +7,7 @@ from eth_typing import ChecksumAddress
 from multicall.multicall import NotSoBrightBatcher
 from multicall.utils import gather
 
-from dank_mids._config import MAX_JSONRPC_BATCH_SIZE
+from dank_mids._config import GANACHE_FORK, MAX_JSONRPC_BATCH_SIZE
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, _Batch
 from dank_mids.types import CallsToExec
 from dank_mids.uid import UIDGenerator
@@ -28,7 +28,7 @@ class DankWorker:
         self.multicall_uid: UIDGenerator = UIDGenerator()
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.state_override_not_supported: bool = os.environ.get("DANK_MIDS_GANACHE_FORK") or self.controller.chain_id == 100  # Gnosis Chain does not support state override.
+        self.state_override_not_supported: bool = GANACHE_FORK or self.controller.chain_id == 100  # Gnosis Chain does not support state override.
         self.event_loop = asyncio.new_event_loop()
         self.worker_thread = threading.Thread(target=self.start)
         self.worker_thread.start()
