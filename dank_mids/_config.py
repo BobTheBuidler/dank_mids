@@ -12,6 +12,8 @@ MAX_JSONRPC_BATCH_SIZE = int(os.environ.get("MAX_JSONRPC_BATCH_SIZE", 500))
 # Enable Demo Mode?
 DEMO_MODE = bool(os.environ.get("DANKMIDS_DEMO_MODE", os.environ.get("DANK_MIDS_DEMO_MODE")))
 
+# Are you calling a ganache fork? Can't use state override code
+GANACHE_FORK = bool(os.environ.get("DANKMIDS_GANACHE_FORK", os.environ.get("DANK_MIDS_GANACHE_FORK")))
 
 # With default AsyncBaseProvider settings, some dense calls will fail
 #  due to aiohttp.TimeoutError where they would otherwise succeed.
