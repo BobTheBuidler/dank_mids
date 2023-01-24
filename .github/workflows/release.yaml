@@ -7,6 +7,7 @@ on:
   release:
     branches:
       - master
+    types: [published]
 
 jobs:
   deploy:
