@@ -2,6 +2,9 @@
 
 from setuptools import find_packages, setup
 
+with open(requirements_filename, "r") as f:
+    requirements = list(map(str.strip, f.read().split("\n")))[:-1]
+
 setup(
     name='dank_mids',
     packages=find_packages(),
@@ -16,11 +19,7 @@ setup(
     author_email='bobthebuidlerdefi@gmail.com',
     url='https://github.com/BobTheBuidler/dank_mids',
     license='MIT',
-    install_requires=[
-        "bobs_lazy_logging>=0.0.4",
-        "eth_retry>=0.1.15",
-        "multicall>=0.6.2,!=0.7.0",
-    ],
+    install_requires=requirements,
     setup_requires=[
         'setuptools_scm',
     ],
