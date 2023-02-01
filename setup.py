@@ -2,7 +2,7 @@
 
 from setuptools import find_packages, setup
 
-with open(requirements_filename, "r") as f:
+with open("requirements.txt", "r") as f:
     requirements = list(map(str.strip, f.read().split("\n")))[:-1]
 
 setup(
