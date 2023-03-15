@@ -57,9 +57,11 @@ def _err_response(e: Exception) -> RPCError:
         err_msg = f"DankMidsError: {e.__class__.__name__} {e.args}"
     elif isinstance(e.args[0], Exception):
         err_msg = f"DankMidsError: {e.args[0].__class__.__name__} {e.args[0].args}"
-    elif "message" in e.args[0]:
+    elif not :
+        err_msg = f"DankMidsError: {e.__class__.__name__} {e.args}"
+    elif hasattr(e.args[0], '__contains__') and "message" in e.args[0]:
         err_msg = e.args[0]["message"]
-    elif "error" in e.args[0] and "message" in e.args[0]["error"]:
+    elif hasattr(e.args[0], '__contains__') and "error" in e.args[0] and hasattr(e.args[0]["error"], '__contains__') and "message" in e.args[0]["error"]:
         err_msg = e.args[0]["error"]["message"]
     else:
         raise e
