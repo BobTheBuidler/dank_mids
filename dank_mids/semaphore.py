@@ -21,8 +21,8 @@ class ThreadsafeSemaphore:
     def semaphore(self) -> asyncio.Semaphore:
         tid = current_thread()
         if tid not in self.semaphores:
-            self.semaphores[tid] = asyncio.Semaphore(self.default_value)
-        return self.semaphores[tid]
+            self.semaphores[tid] = asyncio.Semaphore(self.default_value)  # type: ignore [index]
+        return self.semaphores[tid]  # type: ignore [index]
     
     async def __aenter__(self):
         await self.semaphore.acquire()
