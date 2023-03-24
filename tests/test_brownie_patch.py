@@ -1,7 +1,8 @@
 
-from brownie import Contract
+from brownie import Contract, web3
 from dank_mids.brownie_patch import patch_contract
 from dank_mids.brownie_patch.call import _patch_call
+from dank_mids import setup_dank_w3_from_sync
 from multicall.utils import await_awaitable
 
 from tests.fixtures import dank_w3
@@ -28,3 +29,10 @@ def test_patch_contract():
     assert await_awaitable(
         uni_v3_quoter.quoteExactInput.coroutine(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000)
     ) == 3169438072
+
+def test_call_setup_twice_on_same_web3():
+    w3_a = setup_dank_w3_from_sync(web3)
+    w3_a.test = True
+    w3_b = setup_dank_w3_from_sync(web3)
+    assert hasattr(w3_b, 'test')
+    
