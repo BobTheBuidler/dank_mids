@@ -26,13 +26,15 @@ def test_gather():
 def test_patch_contract():
     # ContractCall
     # must use from_explorer for gh testing workflow
+    # specify w3
     weth = patch_contract(Contract.from_explorer('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), dank_web3)
     assert hasattr(weth.totalSupply, 'coroutine')
     assert await_awaitable(weth.totalSupply.coroutine(block_identifier=13_000_000)) == 6620041514474872981393155
 
     # ContractTx
     # must use from_explorer for gh testing workflow
-    uni_v3_quoter = patch_contract(Contract.from_explorer('0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'), dank_web3)
+    # dont specify w3
+    uni_v3_quoter = patch_contract(Contract.from_explorer('0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'))
     assert hasattr(uni_v3_quoter.quoteExactInput, 'coroutine')
     assert await_awaitable(
         uni_v3_quoter.quoteExactInput.coroutine(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000)
