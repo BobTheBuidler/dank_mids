@@ -4,8 +4,7 @@ import asyncio
 from brownie import Contract, web3
 from multicall.utils import await_awaitable
 
-from dank_mids import dank_web3, setup_dank_w3_from_sync
-from dank_mids.brownie_patch import patch_contract
+from dank_mids import dank_web3, patch_contract, setup_dank_w3_from_sync
 from dank_mids.brownie_patch.call import _patch_call
 
 
