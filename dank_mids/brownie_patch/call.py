@@ -68,18 +68,16 @@ def _patch_call(call: ContractCall, w3: Web3) -> None:
             raise ValueError("Cannot use state override with `coroutine`.")
         
         async with brownie_call_semaphore:
-            calldata = await self._encode_input(*args)
-
             try:
-                data = await w3.eth.call({"to": self._address, "data": calldata}, block_identifier)  # type: ignore
+                return await self._decode_output(
+                    await w3.eth.call({"to": self._address, "data": await self._encode_input(*args)}, block_identifier)  # type: ignore
+                )
             except ValueError as e:
                 try:
                     raise VirtualMachineError(e) from None
                 except:
                     raise e
-
-            return await self._decode_output(data)
-
+                    
     call.coroutine = MethodType(coroutine, call)
     call._encode_input = MethodType(_encode_input, call)
     call._decode_output = MethodType(_decode_output, call)
