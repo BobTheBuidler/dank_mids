@@ -30,6 +30,7 @@ if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
     from dank_mids.worker import DankWorker
 
+RETRY_ERRS = ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]
 
 class ResponseNotReady(Exception):
     pass
@@ -242,7 +243,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         if "out of gas" in f"{e}":
             # TODO Remember which contracts/calls are gas guzzlers
             main_logger.debug('out of gas. cut in half, trying again')
-        elif any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
+        elif any(err in f"{e}".lower() for err in RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             main_logger.debug('Dank too loud. Bisecting batch and retrying.')
         elif "error processing call Revert" not in f"{e}":
@@ -300,7 +301,7 @@ class Multicall(_Batch[eth_call]):
         return response
     
     def should_retry(self, e: Exception) -> bool:
-        if any(err in f"{e}".lower() for err in ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]):
+        if any(err in f"{e}".lower() for err in RETRY_ERRS):
             main_logger.debug('dank too loud, trying again')
             self.controller.reduce_batch_size(len(self))
             return True
