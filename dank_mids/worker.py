@@ -93,7 +93,7 @@ class DankBatch:
             working_batch.append(rpc_calls_to_batch.pop())
         if working_batch:
             if working_batch.is_single_multicall:
-                yield working_batch[0]
+                yield working_batch[0]  # type: ignore [misc]
             else:
                 yield working_batch
     

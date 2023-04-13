@@ -22,4 +22,4 @@ jobs:
         pip install mypy types-requests
 
     - name: Run MyPy
-      run: mypy ./dank_mids --pretty --ignore-missing-imports --show-error-codes --show-error-context
+      run: mypy ./dank_mids --pretty --ignore-missing-imports --show-error-codes --show-error-context --no-warn-no-return

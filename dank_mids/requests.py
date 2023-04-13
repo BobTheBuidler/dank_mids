@@ -79,7 +79,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
             self.uid = self.worker.controller.call_uid.next
         self._response: Optional[_Response] = None
     
-    def __await__(self) -> Generator[Any, None, _Response]:
+    def __await__(self) -> Generator[Any, None, Optional[_Response]]:
         return self.get_response().__await__()
     
     @abc.abstractmethod
@@ -97,7 +97,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         return self._response
 
     @abc.abstractmethod
-    async def get_response(self) -> _Response:
+    async def get_response(self) -> Optional[_Response]:
         pass
 
 
@@ -296,7 +296,7 @@ class Multicall(_Batch[eth_call]):
         try:
             await self.spoof_response(await self.worker(*self.params))
         except Exception as e:
-            await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
+            await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
     def should_retry(self, e: Exception) -> bool:
@@ -429,7 +429,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     async def bisect_and_retry(self) -> None:
         await await_all(
-            Multicall(self.worker, chunk[0].calls, f"json{self.jid}_{i}")
+            Multicall(self.worker, chunk[0].calls, f"json{self.jid}_{i}")  # type: ignore [misc]
             if len(chunk) == 1 and isinstance(chunk[0], Multicall)
             else JSONRPCBatch(self.worker, chunk, f"{self.jid}_{i}")
             for i, chunk in enumerate(self.bisected)

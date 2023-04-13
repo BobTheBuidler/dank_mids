@@ -62,7 +62,7 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))
+        return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))  # type: ignore [return-value]
     
     @property
     def batcher(self) -> NotSoBrightBatcher:

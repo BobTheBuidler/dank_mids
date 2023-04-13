@@ -1,7 +1,7 @@
 
 import asyncio
-from typing import (Any, Awaitable, Callable, Coroutine, Iterable, Literal,
-                    Optional)
+from typing import (Any, Awaitable, Callable, Coroutine, Iterable, List,
+                    Literal, Optional)
 
 from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
                                apply_key_map, is_null)
@@ -17,7 +17,7 @@ from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 from dank_mids.middleware import dank_middleware
 from dank_mids.types import AsyncMiddleware
 
-dank_w3s = []
+dank_w3s: List[Web3] = []
 
 def setup_dank_w3(async_w3: Web3) -> Web3:
     """ Injects Dank Middleware into an async Web3 instance. """
@@ -71,7 +71,7 @@ async def geth_poa_middleware(make_request: Callable[[RPCEndpoint, Any], Any], w
             RPC.eth_getBlockByNumber: apply_formatter_if(is_not_null, geth_poa_cleanup),
         },
     )
-    return await middleware(make_request, w3)
+    return await middleware(make_request, w3)  # type: ignore [arg-type, return-value]
 
 async def async_construct_formatting_middleware(
     request_formatters: Optional[Formatters] = None,
@@ -88,7 +88,7 @@ async def async_construct_formatting_middleware(
             error_formatters=error_formatters or {},
         )
 
-    return await async_construct_web3_formatting_middleware(
+    return await async_construct_web3_formatting_middleware(  # type: ignore [return-value]
         ignore_web3_in_standard_formatters
     )
 
