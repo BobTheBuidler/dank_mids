@@ -1,5 +1,7 @@
 
-from typing import Any, Callable, Coroutine, Literal, Optional
+import asyncio
+from typing import (Any, Awaitable, Callable, Coroutine, Iterable, Literal,
+                    Optional)
 
 from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
                                apply_key_map, is_null)
@@ -32,6 +34,11 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> Web3:
     assert not sync_w3.eth.is_async and isinstance(sync_w3.provider, BaseProvider)
     return setup_dank_w3(get_async_w3(sync_w3))
 
+async def await_all(futs: Iterable[Awaitable]) -> None:
+    for fut in asyncio.as_completed([*futs]):
+        await fut
+        del fut
+        
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 

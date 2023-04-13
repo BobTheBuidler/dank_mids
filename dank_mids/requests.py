@@ -13,7 +13,7 @@ from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from hexbytes._utils import to_bytes
-from multicall.utils import gather, run_in_subprocess
+from multicall.utils import run_in_subprocess
 from web3 import Web3
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
@@ -22,9 +22,9 @@ from dank_mids._config import (AIOHTTP_TIMEOUT, DEMO_MODE,
                                MAX_JSONRPC_BATCH_SIZE)
 from dank_mids._demo_mode import demo_logger
 from dank_mids.constants import BAD_HEXES, OVERRIDE_CODE
+from dank_mids.helpers import await_all
 from dank_mids.loggers import main_logger
-from dank_mids.types import (BatchId, BlockId, JsonrpcParams,
-                             RpcCallJson)
+from dank_mids.types import BatchId, BlockId, JsonrpcParams, RpcCallJson
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -141,7 +141,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             await asyncio.sleep(0)
         return self.response
     
-    async def spoof_response(self, data: Union[str, AttributeDict, Exception]) -> RPCResponse:
+    async def spoof_response(self, data: Union[str, AttributeDict, Exception]) -> None:
         spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
         if isinstance(data, Exception):
             spoof["error"] = _err_response(data)
@@ -152,8 +152,6 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         else:
             main_logger.debug(f"method: {self.method}  spoof: {spoof}")
         self._response = spoof  # type: ignore
-        return spoof  # type: ignore
-
 
 class eth_call(RPCRequest):
     def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
@@ -176,17 +174,17 @@ class eth_call(RPCRequest):
     def target(self) -> str:
         return self.params[0]["to"]
 
-    async def spoof_response(self, data: Union[bytes, Exception]) -> RPCResponse:  # type: ignore
+    async def spoof_response(self, data: Union[bytes, Exception]) -> None:  # type: ignore
         """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
         # NOTE: If multicall failed, make sync call to get either:
         # - revert details
         # - successful response
         if _call_failed(data):
             data = await self.sync_call()
-        return await super().spoof_response(data.hex() if isinstance(data, bytes) else data)
+        await super().spoof_response(data.hex() if isinstance(data, bytes) else data)
 
     async def sync_call(self) -> Union[bytes, Exception]:
-        """ Used to bypass DankMiddlewareController. """ 
+        """ Used to bypass DankMiddlewareController. """
         data = await run_in_subprocess(
             _reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3
         )
@@ -232,6 +230,11 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         return len(self) // 2
     
     @property
+    def bisected(self) -> Generator[List[_Request], None, None]:
+        yield self.chunk0
+        yield self.chunk1
+        
+    @property
     def chunk0(self) -> List[_Request]:
         return self.calls[:self.halfpoint]
     
@@ -271,9 +274,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def calldata(self) -> str:
-        multicall_args = [False, [[call.target, call.calldata] for call in self.calls]]
-        data = self.fourbyte + encode_single(self.input_types, multicall_args)
-        return data.hex()
+        return (self.fourbyte + encode_single(self.input_types, [False, [[call.target, call.calldata] for call in self.calls]])).hex()
     
     @property
     def target(self) -> ChecksumAddress:
@@ -293,12 +294,10 @@ class Multicall(_Batch[eth_call]):
         rid = self.worker.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
-            response = await self.worker(*self.params)
-            response = await self.spoof_response(response)
+            await self.spoof_response(await self.worker(*self.params))
         except Exception as e:
-            response = await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))                
+            await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
         demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
-        return response
     
     def should_retry(self, e: Exception) -> bool:
         if any(err in f"{e}".lower() for err in RETRY_ERRS):
@@ -312,21 +311,20 @@ class Multicall(_Batch[eth_call]):
             return True
         return len(self) > 1
     
-    async def spoof_response(self, data: Union[bytes, str, Exception]) -> List[RPCResponse]:
+    async def spoof_response(self, data: Union[bytes, str, Exception]) -> None:
         """
         If called from `self`, `response` will be bytes type.
         if called from a JSONRPCBatch, `response` will be str type.
         """ 
         if isinstance(data, Exception):
-            self._response = await gather([call.spoof_response(data) for call in self.calls])
+            await await_all(call.spoof_response(data) for call in self.calls)
         else:
             decoded: List[Tuple[bool, bytes]]
             _, _, decoded = await run_in_subprocess(decode_single, self.output_types, to_bytes(data))
-            self._response = await gather([call.spoof_response(data) for call, (_, data) in zip(self.calls, decoded)])
-        return self._response  # type: ignore
+            await await_all(call.spoof_response(data) for call, (_, data) in zip(self.calls, decoded))
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
-        return await gather([Multicall(self.worker, self.chunk0, f"{self.bid}_0"), Multicall(self.worker, self.chunk1, f"{self.bid}_1")])
+        await await_all((Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)))
 
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
@@ -363,7 +361,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             raise Exception(f"{self} is locked.")
         self.calls.append(call)
     
-    async def get_response(self) -> List[RPCResponse]:
+    async def get_response(self) -> None:
         """ Runs in worker thread. """
         self._locked = True
         rid = self.worker.request_uid.next
@@ -373,11 +371,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         try:
             responses = await self.post()
             self.validate_responses(responses)
-            response = await self.spoof_response(responses)
+            await self.spoof_response(responses)
         except Exception as e:
-            response = await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
+            await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
-        return response
     
     @eth_retry.auto_retry
     async def post(self) -> Union[Dict, List[bytes]]:
@@ -413,14 +410,14 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return True
         return self.is_single_multicall
     
-    async def spoof_response(self, response: Union[List[RPCResponse], Exception]) -> List[RPCResponse]:
+    async def spoof_response(self, response: Union[List[RPCResponse], Exception]) -> None:
         if isinstance(response, Exception):
-            return await gather(call.spoof_response(response) for call in self.calls)
-        return await gather([
+            return await await_all(call.spoof_response(response) for call in self.calls)
+        return await await_all(
             # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
             call.spoof_response(AttributeDict(result["result"]) if isinstance(result["result"], dict) else result["result"])  # type: ignore
             for call, result in zip(self.calls, response)
-        ])
+        )
     
     def validate_responses(self, responses) -> None:
         # A successful response will be a list
@@ -430,12 +427,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             if 'result' not in response:
                 raise ValueError(response)
     
-    async def bisect_and_retry(self) -> List[RPCResponse]:
-        response = await gather([
+    async def bisect_and_retry(self) -> None:
+        await await_all(
             Multicall(self.worker, chunk[0].calls, f"json{self.jid}_{i}")
             if len(chunk) == 1 and isinstance(chunk[0], Multicall)
             else JSONRPCBatch(self.worker, chunk, f"{self.jid}_{i}")
-            for i, chunk in enumerate([self.chunk0, self.chunk1])
+            for i, chunk in enumerate(self.bisected)
             if chunk
-        ])
-        return response
+        )
