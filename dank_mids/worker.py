@@ -78,7 +78,7 @@ class DankBatch:
     def coroutines(self) -> List["_Batch"]:
         request_coros: List[_Batch] = []
         multicalls_to_batch: List["Multicall"] = []
-        for *full_batches, remaining_calls in [self.batcher.batch_calls(calls, self.batcher.step) for calls in self.eth_calls.values()]:
+        for *full_batches, remaining_calls in (self.batcher.batch_calls(calls, self.batcher.step) for calls in self.eth_calls.values()):
             request_coros.extend([Multicall(self.worker, batch) for batch in full_batches])
             multicalls_to_batch.append(Multicall(self.worker, remaining_calls))
         # Combine multicalls into one or more jsonrpc batches
