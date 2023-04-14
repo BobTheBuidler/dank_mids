@@ -3,8 +3,6 @@ import threading
 import weakref
 from concurrent.futures import ThreadPoolExecutor, _base, thread
 
-from dank_mids import constants
-
 TEN_MINUTES = 60 * 10
 
 def _worker(executor_reference, work_queue, initializer, initargs, timeout):  # NOTE: NEW 'timeout'
@@ -66,7 +64,7 @@ class PruningThreadPoolExecutor(ThreadPoolExecutor):
     Pruned threads will be automatically recreated as needed for future workloads. up to 'max_threads' can be active at any one time.
     """
     def __init__(self, max_workers=None, thread_name_prefix='',
-                 initializer=None, initargs=(), timeout=constants.TEN_MINUTES):
+                 initializer=None, initargs=(), timeout=TEN_MINUTES):
         self._timeout=timeout
         super().__init__(max_workers, thread_name_prefix, initializer, initargs)
     
