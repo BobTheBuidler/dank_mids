@@ -87,9 +87,6 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
             self.uid = self.controller.call_uid.next
         elif isinstance(self, _Batch):
             self.uid = self.worker.controller.call_uid.next
-        # WIP self.pipe = mp.Queue(1)
-        # WIP print(self, self.pipe)
-        #self._response: Optional[_Response] = None
         self._started = asyncio.Event()
         self._response: asyncio.Queue[_Response] = asyncio.Queue()
     
@@ -103,14 +100,6 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     @abc.abstractmethod
     async def get_response(self) -> Optional[_Response]:
         pass
-    
-    # NOTE WIP
-    #def _set_response_if_ready(self) -> None:
-    #    if self._response is None:
-    #        try:
-    #            self._response = self.pipe.get_nowait()
-    #        except Empty:
-    #            raise ResponseNotReady(self)
 
 
 ### Single requests:
@@ -133,8 +122,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             self.controller.pending_eth_calls[self.block].append(self)
         else:
             self.controller.pending_rpc_calls.append(self)
-        if self.uid / 100 == int(self.uid / 100):
-            print(f'added to queue (cid: {self.uid})')  # type: ignore
+        demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
     
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, self.__class__):
@@ -280,14 +268,12 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     
     def _ensure_future(self) -> asyncio.Future:
         """Not threadsafe"""
-        # WIP self._fut = self.worker.event_loop.run_in_executor(self.worker.executor, self)
         for call in self.calls:
             call._started.set()
             if isinstance(call, Multicall):
                 for _call in call:
                     _call._started.set()
         self._fut = asyncio.run_coroutine_threadsafe(self.coroutine(), loop=self.worker.event_loop)
-        #self._fut.result()
         self._fut.add_done_callback(self.raise_exception_in_main_thread)
         self.controller.futs.append(self._fut)
         self._post_future_cleanup()
@@ -368,15 +354,13 @@ class Multicall(_Batch[eth_call]):
             
     async def get_response(self) -> None:
         rid = self.worker.request_uid.next
-        print(f'request {rid} for multicall {self.bid} starting')  # type: ignore
+        demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
-            print(f'reuest {rid} posting to worker')
             d = await self.worker(*self.params)
-            print(f'reuest {rid} received data')
             await self.spoof_response(d)
         except Exception as e:
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
-        print(f'request {rid} for multicall {self.bid} complete')  # type: ignore
+        demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
     def should_retry(self, e: Exception) -> bool:
         if any(err in f"{e}".lower() for err in RETRY_ERRS):
@@ -395,7 +379,6 @@ class Multicall(_Batch[eth_call]):
         If called from `self`, `response` will be bytes type.
         if called from a JSONRPCBatch, `response` will be str type.
         """ 
-        #print(f'spoofing multicall {type(data)}')
         if isinstance(data, Exception):
             await await_all(call.spoof_response(data, wakeup_main_loop=False) for call in self.calls)
         else:
@@ -465,18 +448,15 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         if self.is_single_multicall:
             return await self[0].get_response()
         
-        #if DEMO_MODE:
+        if DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
-            # print(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
-        # NOTE dont forget to delete this and uncomment above
-        print(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
+            demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:
             # NOTE: We do this inline so we don't have to allocate the response to memory            
             await self.spoof_response(self.validate_responses(await self.post_sync()))
-            print(f'success')
         except Exception as e:
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
-        print(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
+        demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
     @eth_retry.auto_retry
     async def post_sync(self) -> Union[Dict, List[bytes]]:
@@ -534,13 +514,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     async def spoof_response(self, response: Union[List[RPCResponse], Exception], wakeup_main_loop: bool = True) -> None:
         if isinstance(response, Exception):
             return await await_all(call.spoof_response(response, wakeup_main_loop=False) for call in self.calls)
-        print('didnt except')
         await await_all(
             # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
             call.spoof_response(AttributeDict(result["result"], wakeup_main_loop=False) if isinstance(result["result"], dict) else result["result"])  # type: ignore
             for call, result in zip(self.calls, response)
         )
-        print(self.calls[0]._response.qsize())
         if wakeup_main_loop:
             wakeup(self)
     
