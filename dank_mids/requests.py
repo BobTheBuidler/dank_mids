@@ -9,13 +9,14 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
 
 import aiohttp
 import eth_retry
+import requests
 from aiohttp import RequestInfo
 from eth_abi import decode_single, encode_single
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from hexbytes._utils import to_bytes
-from multicall.utils import get_event_loop, run_in_subprocess
+from multicall.utils import run_in_subprocess
 from web3 import Web3
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
@@ -400,7 +401,6 @@ class Multicall(_Batch[eth_call]):
 
 
 def post_sync(endpoint, data) -> Union[bytes, Tuple[str, Exception]]:
-    import requests
     response = requests.post(endpoint, json=data)
     try:
         return response.json()
@@ -464,8 +464,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     @eth_retry.auto_retry
     async def post_sync(self) -> Union[Dict, List[bytes]]:
         response = await self.worker.event_loop.run_in_executor(self.worker.executor, post_sync, self.controller.endpoint, self.data)
-        #if isinstance(response, (List, Dict)):
-        if isinstance(response, List):
+        if isinstance(response, (List, dict)):
             return response
         elif isinstance(response, Tuple):
             decoded, e = response
