@@ -1,10 +1,8 @@
 
 import abc
 import asyncio
-import multiprocessing as mp
 import threading
 from collections import defaultdict
-from functools import cached_property
 from time import time
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
@@ -17,7 +15,7 @@ from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from hexbytes._utils import to_bytes
-from multicall.utils import run_in_subprocess
+from multicall.utils import get_event_loop, run_in_subprocess
 from web3 import Web3
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
@@ -152,21 +150,28 @@ class RPCRequest(_RequestMeta[RPCResponse]):
                     await asyncio.sleep(0)
                 await self.controller.execute_multicall()
                 self.controller._first = None
-        return await self._response.get()
+        return await self.spoof_response(await self._response.get())
     
-    async def spoof_response(self, data: Union[str, AttributeDict, Exception], wakeup_main_loop: bool = True) -> None:
+    async def set_response(self, data: Union[str, AttributeDict, Exception], wakeup_main_loop: bool = True) -> None:
+        self._response.put_nowait(data)
+        if wakeup_main_loop:
+            wakeup(self)
+    
+    async def spoof_response(self, data: Union[bytes, str, AttributeDict, Exception]) -> RPCResponse:
         spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
-        if isinstance(data, Exception):
+        if isinstance(data, bytes):
+            spoof["result"] = data.hex()  # type: ignore
+        elif isinstance(data, (str, AttributeDict)):
+            spoof["result"] = data
+        elif isinstance(data, Exception):
             spoof["error"] = _err_response(data)
         else:
-            spoof["result"] = data  # type: ignore
+            raise NotImplementedError(data.__class__.__name__)
         if isinstance(self, eth_call):
             main_logger.debug(f"method: eth_call  address: {self.target}  spoof: {spoof}")
         else:
             main_logger.debug(f"method: {self.method}  spoof: {spoof}")
-        self._response.put_nowait(spoof)
-        if wakeup_main_loop:
-            wakeup(self)
+        return spoof
             
 
 class eth_call(RPCRequest):
@@ -190,14 +195,23 @@ class eth_call(RPCRequest):
     def target(self) -> str:
         return self.params[0]["to"]
 
-    async def spoof_response(self, data: Union[bytes, Exception], wakeup_main_loop: bool = True) -> None:  # type: ignore
+    '''
+    async def set_response(self, data: Union[bytes, Exception], wakeup_main_loop: bool = True) -> None:
+        """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
+        # NOTE: If multicall failed, make sync call to get either:
+        # - revert details
+        # - successful response
+        await super().set_response(data, wakeup_main_loop=wakeup_main_loop)
+    '''
+
+    async def spoof_response(self, data: Union[bytes, Exception]) -> RPCResponse:  # type: ignore
         """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
         # NOTE: If multicall failed, make sync call to get either:
         # - revert details
         # - successful response
         if _call_failed(data):
             data = await self.sync_call()
-        await super().spoof_response(data.hex() if isinstance(data, bytes) else data, wakeup_main_loop=wakeup_main_loop)
+        return await super().spoof_response(data)
 
     async def sync_call(self) -> Union[bytes, Exception]:
         """ Used to bypass DankMiddlewareController. """
@@ -356,10 +370,9 @@ class Multicall(_Batch[eth_call]):
         rid = self.worker.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
-            d = await self.worker(*self.params)
-            await self.spoof_response(d)
+            await self.set_response(await self.worker(*self.params))
         except Exception as e:
-            await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
+            await (self.bisect_and_retry() if self.should_retry(e) else self.set_response(e))  # type: ignore [misc]
         demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
     def should_retry(self, e: Exception) -> bool:
@@ -374,20 +387,19 @@ class Multicall(_Batch[eth_call]):
             return True
         return len(self) > 1
     
-    async def spoof_response(self, data: Union[bytes, str, Exception], wakeup_main_loop: bool = True) -> None:
+    async def set_response(self, data: Union[bytes, str, Exception], wakeup_main_loop: bool = True) -> None:
         """
         If called from `self`, `response` will be bytes type.
         if called from a JSONRPCBatch, `response` will be str type.
         """ 
         if isinstance(data, Exception):
-            await await_all(call.spoof_response(data, wakeup_main_loop=False) for call in self.calls)
+            await await_all(call.set_response(data, wakeup_main_loop=False) for call in self.calls)
         else:
             decoded: List[Tuple[bool, bytes]]
             _, _, decoded = await run_in_subprocess(decode_single, self.output_types, to_bytes(data))
-            await await_all(call.spoof_response(data, wakeup_main_loop=False) for call, (_, data) in zip(self.calls, decoded))
+            await await_all(call.set_response(data, wakeup_main_loop=False) for call, (_, data) in zip(self.calls, decoded))
         if wakeup_main_loop:
             wakeup(self)
-        
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
         await await_all((Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)))
@@ -452,15 +464,16 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # When demo mode is disabled, we can save some CPU time by skipping this sum
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:
-            # NOTE: We do this inline so we don't have to allocate the response to memory            
-            await self.spoof_response(self.validate_responses(await self.post_sync()))
+            # NOTE: We do this inline so we don't have to allocate the response to memory
+            await self.set_response(self.validate_responses(await self.post_sync()))
         except Exception as e:
-            await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
+            await (self.bisect_and_retry() if self.should_retry(e) else self.set_response(e))
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
     @eth_retry.auto_retry
     async def post_sync(self) -> Union[Dict, List[bytes]]:
         response = await self.worker.event_loop.run_in_executor(self.worker.executor, post_sync, self.controller.endpoint, self.data)
+        #if isinstance(response, (List, Dict)):
         if isinstance(response, List):
             return response
         elif isinstance(response, Tuple):
@@ -511,14 +524,15 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return True
         return self.is_single_multicall
     
-    async def spoof_response(self, response: Union[List[RPCResponse], Exception], wakeup_main_loop: bool = True) -> None:
+    async def set_response(self, response: Union[List[RPCResponse], Exception], wakeup_main_loop: bool = True) -> None:
         if isinstance(response, Exception):
-            return await await_all(call.spoof_response(response, wakeup_main_loop=False) for call in self.calls)
-        await await_all(
-            # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
-            call.spoof_response(AttributeDict(result["result"], wakeup_main_loop=False) if isinstance(result["result"], dict) else result["result"])  # type: ignore
-            for call, result in zip(self.calls, response)
-        )
+            await await_all(call.set_response(response, wakeup_main_loop=False) for call in self.calls)
+        else:
+            await await_all(
+                # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
+                call.set_response(AttributeDict(result["result"], wakeup_main_loop=False) if isinstance(result["result"], dict) else result["result"])  # type: ignore
+                for call, result in zip(self.calls, response)
+            )
         if wakeup_main_loop:
             wakeup(self)
     
