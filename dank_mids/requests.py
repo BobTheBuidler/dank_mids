@@ -201,7 +201,7 @@ class eth_call(RPCRequest):
 
     async def sync_call(self) -> Union[bytes, Exception]:
         """ Used to bypass DankMiddlewareController. """
-        data = await run_in_subprocess(
+        data = await self.controller.worker.run_in_executor(
             _reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3
         )
         # If we were able to get a usable response from single call, add contract to `do_not_batch`.
