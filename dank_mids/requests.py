@@ -195,15 +195,6 @@ class eth_call(RPCRequest):
     def target(self) -> str:
         return self.params[0]["to"]
 
-    '''
-    async def set_response(self, data: Union[bytes, Exception], wakeup_main_loop: bool = True) -> None:
-        """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
-        # NOTE: If multicall failed, make sync call to get either:
-        # - revert details
-        # - successful response
-        await super().set_response(data, wakeup_main_loop=wakeup_main_loop)
-    '''
-
     async def spoof_response(self, data: Union[bytes, Exception]) -> RPCResponse:  # type: ignore
         """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
         # NOTE: If multicall failed, make sync call to get either:
@@ -216,7 +207,7 @@ class eth_call(RPCRequest):
     async def sync_call(self) -> Union[bytes, Exception]:
         """ Used to bypass DankMiddlewareController. """
         data = await self.controller.worker.run_in_executor(
-            _reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3
+            _reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3, loop=asyncio.get_event_loop()
         )
         # If we were able to get a usable response from single call, add contract to `do_not_batch`.
         if not isinstance(data, Exception):

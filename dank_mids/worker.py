@@ -55,8 +55,8 @@ class DankWorker:
         # NOTE: We make the actual reuest synchronously so we can get the results from the node without waiting for the event loop
         return await self.run_in_executor(self.controller.sync_w3.eth.call, *request_args)  # type: ignore
 
-    async def run_in_executor(self, fn, *args): #: Callable[P, T], *args: P.args) -> T:
-        return await self.event_loop.run_in_executor(self.executor, fn, *args)
+    async def run_in_executor(self, fn, *args, loop=None): #: Callable[P, T], *args: P.args) -> T:
+        return await (loop or self.event_loop).run_in_executor(self.executor, fn, *args)
     
     async def execute_batch(self, calls_to_exec: Multicalls, rpc_calls: JSONRPCBatch) -> None:
         """ Runs in main thread. """
