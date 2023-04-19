@@ -118,10 +118,10 @@ async def async_construct_web3_formatting_middleware(
             )
             request_formatters = formatters.pop("request_formatters")
 
-            if method in request_formatters:
-                formatter = request_formatters[method]
-                params = formatter(params)
-            response = await make_request(method, params)
+            response = await make_request(
+                method,
+                request_formatters[method](params) if method in request_formatters else params,
+            )
 
             return _apply_response_formatters(
                 method=method, response=response, **formatters
