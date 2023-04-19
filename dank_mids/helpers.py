@@ -8,6 +8,7 @@ from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
 from eth_utils.toolz import assoc, complement, compose, merge
 from hexbytes import HexBytes
 from multicall.utils import get_async_w3
+from tqdm.asyncio import tqdm_asyncio
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
 from web3.providers.async_base import AsyncBaseProvider
@@ -34,8 +35,15 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> Web3:
     assert not sync_w3.eth.is_async and isinstance(sync_w3.provider, BaseProvider)
     return setup_dank_w3(get_async_w3(sync_w3))
 
-async def await_all(futs: Iterable[Awaitable]) -> None:
-    for fut in asyncio.as_completed([*futs]):
+async def await_all(futs: Iterable[Awaitable], verbose: bool = False) -> None:
+    # NOTE: 'verbose' is mainly for debugging but feel free to have fun
+    if verbose is True:
+        generator = tqdm_asyncio.as_completed(futs if isinstance(futs, list) else [*futs])
+    elif verbose is False:
+        generator = asyncio.as_completed(futs if isinstance(futs, list) else [*futs])
+    else:
+        raise NotImplementedError(verbose)
+    for fut in generator:
         await fut
         del fut
         
