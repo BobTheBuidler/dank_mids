@@ -2,6 +2,7 @@
 import functools
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
+from functools import lru_cache
 
 import eth_abi
 from brownie.convert.normalize import format_input, format_output
@@ -45,19 +46,20 @@ def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
         result = result[0]
     return result
 
-def _patch_call(call: ContractCall, w3: Web3) -> None:
-    async def _encode_input(self: ContractCall, *args: Tuple[Any,...]) -> str:
-        return await run_in_subprocess(
-            __encode_input,
-            self.abi,
-            self.signature,
-            *(arg if not hasattr(arg, 'address') else arg.address for arg in args)  # type: ignore
-        )
-    
-    async def _decode_output(self: ContractCall, data: str) -> Any:
-        return await run_in_subprocess(__decode_output, data, self.abi)
+async def _encode_input(self: ContractCall, *args: Tuple[Any,...]) -> str:
+    return await run_in_subprocess(
+        __encode_input,
+        self.abi,
+        self.signature,
+        *(arg.address if hasattr(arg, 'address') else arg for arg in args)
+    )
 
-    @functools.wraps(call)
+async def _decode_output(self: ContractCall, data: str) -> Any:
+    return await run_in_subprocess(__decode_output, data, self.abi)
+
+@lru_cache
+def get_coroutine_fn(w3: Web3):
+    assert w3.eth.is_async, "You must provide a w3 instance with an async provider."
     async def coroutine(
         self: ContractCall,
         *args: Tuple[Any,...],
@@ -77,7 +79,9 @@ def _patch_call(call: ContractCall, w3: Web3) -> None:
                     raise VirtualMachineError(e) from None
                 except:
                     raise e
-                    
-    call.coroutine = MethodType(coroutine, call)
+    return coroutine
+
+def _patch_call(call: ContractCall, w3: Web3) -> None:
+    call.coroutine = MethodType(get_coroutine_fn(w3), call)
     call._encode_input = MethodType(_encode_input, call)
     call._decode_output = MethodType(_decode_output, call)
