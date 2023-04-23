@@ -82,11 +82,9 @@ _Response = TypeVar("_Response", RPCResponse, List[RPCResponse])
 
 class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     batch: "_Batch"
+    controller: "DankMiddlewareController"
     def __init__(self) -> None:
-        if isinstance(self, RPCRequest):
-            self.uid = self.controller.call_uid.next
-        elif isinstance(self, _Batch):
-            self.uid = self.worker.controller.call_uid.next
+        self.uid = self.controller.call_uid.next
         self._started = False
         self._response = None
         self._done = asyncio.Event()
@@ -107,7 +105,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         if wakeup:
             # NOTE: We are in a separate thread from the asyncio.Event's event loop.
             #       In this case we must wake up the event loop manually.
-            self._done._loop._write_to_self()
+            self.controller._wakeup_loop()
 
 ### Single requests:
 
@@ -242,7 +240,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
             call.set_done(wakeup=wakeup)
         # NOTE: We are in a separate thread from the asyncio.Event's event loop.
         #       In this case we must wake up the event loop in the main thread.
-        self._done._loop._write_to_self()
+        self.controller._wakeup_loop()
     
     def __bool__(self) -> bool:
         return bool(self.calls)
