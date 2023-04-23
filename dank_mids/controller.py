@@ -48,16 +48,16 @@ class DankMiddlewareController:
             raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
         self.multicall2 = to_checksum_address(multicall2)
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
-        self.worker = DankWorker(self)
         self.call_uid = UIDGenerator()
-        self.futs: List[asyncio.Future] = []
-        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self.worker))
-        self.pools_closed_lock = threading.Lock()
+        # NOTE: We need some internal things set up before we can start the worker thread.
+        self._futs: List[asyncio.Future] = []
+        self._daemon_running = False
+        self._wakeup_loop = asyncio.get_event_loop()._write_to_self
+        self.worker = DankWorker(self)
         self.pending_rpc_calls = JSONRPCBatch(self.worker)
-        self.is_running: bool = False
+        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self.worker))
+        self._pools_closed_lock = threading.Lock()
         self._first = None
-        self._paused = asyncio.Event()
-        self._paused._value = True
         self._checkpoint: float = time()
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
@@ -66,7 +66,10 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))  # type: ignore [return-value]
+        self._start_exception_daemon_if_stopped()
+        if method == "eth_call":
+            return await eth_call(self, params)
+        return await RPCRequest(self, method, params)
     
     @property
     def endpoint(self) -> str:
@@ -76,21 +79,10 @@ class DankMiddlewareController:
     def batcher(self) -> NotSoBrightBatcher:
         return self.worker.batcher
     
-    async def taskmaster_loop(self) -> None:
-        self.is_running = True
-        self._paused.clear()
-        while self.pending_eth_calls or self.pending_rpc_calls:
-            await self.raise_exceptions()
-            if (self.loop_is_ready or self.queue_is_full):
-                await self.execute_multicall()
-            await asyncio.sleep(0)
-        self._paused.set()
-        self.is_running = False
-    
     async def execute_multicall(self) -> None:
         self.checkpoint = time()
         i = 0
-        while self.pools_closed_lock.locked():
+        while self._pools_closed_lock.locked():
             if i // 500 == int(i // 500):
                 main_logger.debug('lock is locked')
             i += 1
@@ -98,7 +90,7 @@ class DankMiddlewareController:
         
         # NOTE we put this here to prevent a double locking issue
         empty = JSONRPCBatch(self.worker)
-        with self.pools_closed_lock:
+        with self._pools_closed_lock:
             eth_calls = dict(self.pending_eth_calls)
             self.pending_eth_calls.clear()
             rpc_calls = self.pending_rpc_calls
@@ -123,14 +115,7 @@ class DankMiddlewareController:
     
     @property
     def queue_is_full(self) -> bool:
-        return bool(sum(len(v) for v in self.pending_eth_calls.values()) >= self.batcher.step * 25)
-    
-    async def raise_exceptions(self) -> None:
-        if futs := self.futs[:]:
-            for fut in futs:
-                if fut.done():
-                    await fut
-                    self.futs.remove(fut)
+        return sum(len(v) for v in self.pending_eth_calls.values()) >= self.batcher.step * 25
 
     def reduce_batch_size(self, num_calls: int) -> None:
         new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
@@ -139,3 +124,35 @@ class DankMiddlewareController:
             old_step = self.batcher.step
             self.batcher.step = new_step
             main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
+    
+    def _start_exception_daemon_if_stopped(self) -> None:
+        if not self._daemon_running:
+            fut = asyncio.ensure_future(self._exception_daemon())
+            def done_callback(fut: asyncio.Future) -> None:
+                """Notifies the controller in the event of daemon shutdown or failure."""
+                self._daemon_running = False
+                if not fut.exception():
+                    self._futs.pop(fut)
+            fut.add_done_callback(done_callback)
+            self._futs.append(fut)
+            
+    async def _exception_daemon(self) -> None:
+        if self._daemon_running:
+            # Just in case
+            return
+        main_logger.debug('starting exception daemon.')
+        self._daemon_running = True
+        while self._futs:
+            futs = self._futs[:]
+            main_logger.debug(f'{sum(1 for fut in self._futs if fut.done())} futs are done and ready to pop')
+            if any(fut.done() and fut.exception() for fut in futs):
+                main_logger.critical(f"DankMids futures have err'd: {self._futs}")
+                [main_logger.critical(f"DankMidsError: {e}") for fut in futs if fut.done() and (e := fut.exception())]
+            else:
+                main_logger.debug(self._futs)
+            for fut in futs:
+                if fut.done() and not fut.exception():
+                    self._futs.pop(fut)
+            await asyncio.sleep(5)
+        main_logger.debug('exiting exception daemon.')
+

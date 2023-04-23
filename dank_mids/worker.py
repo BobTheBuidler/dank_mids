@@ -1,6 +1,6 @@
 import asyncio
 import threading
-from typing import TYPE_CHECKING, Any, Generator, List
+from typing import TYPE_CHECKING, Any, Coroutine, Generator, List
 
 import eth_retry
 from eth_typing import ChecksumAddress
@@ -9,6 +9,7 @@ from web3 import Web3
 
 from dank_mids import _config, executor
 from dank_mids.helpers import await_all
+from dank_mids.loggers import main_logger
 from dank_mids.requests import JSONRPCBatch, Multicall, _Batch
 from dank_mids.types import Multicalls
 from dank_mids.uid import UIDGenerator
@@ -48,6 +49,7 @@ class DankWorker:
     async def loop(self) -> None:
         """ Exits loop when main thread dies, killing worker thread. Runs in worker thread. """
         while threading.main_thread().is_alive():
+            self.controller._wakeup_loop()
             await asyncio.sleep(5)
     
     @eth_retry.auto_retry
@@ -55,21 +57,28 @@ class DankWorker:
         # NOTE: We make the actual reuest synchronously so we can get the results from the node without waiting for the event loop
         return await self.run_in_executor(self.controller.sync_w3.eth.call, *request_args)  # type: ignore
 
-    async def run_in_executor(self, fn, *args, loop=None): #: Callable[P, T], *args: P.args) -> T:
+    async def run_in_executor(self, fn, *args, loop=None):
         return await (loop or self.event_loop).run_in_executor(self.executor, fn, *args)
+    
+    def run_coro_threadsafe(self, coro: Coroutine):
+        # NOTE: This function should be called in the main thread only. Coro will execute in worker thread.
+        fut = asyncio.run_coroutine_threadsafe(coro, loop=self.event_loop)
+        fut.add_done_callback(self._raise_exception_in_main_thread)
+        return fut
     
     async def execute_batch(self, calls_to_exec: Multicalls, rpc_calls: JSONRPCBatch) -> None:
         """ Runs in main thread. """
-        #asyncio.run_coroutine_threadsafe(self._execute_batch(calls_to_exec, rpc_calls), loop=self.event_loop).result()
-        self.controller.futs.append(
-            asyncio.run_coroutine_threadsafe(
-                #self._execute_batch(DankBatch(self, calls_to_exec, rpc_calls)),
-                
-                # NOTE we materialize the generator here so that the execution takes place in the main thread
-                await_all([*DankBatch(self, calls_to_exec, rpc_calls).coroutines]),
-                loop=self.event_loop
-            )
-        )
+        # NOTE: We materialize the generator here so that the generator execution
+        #      takes place in the main thread leaving the worker less congested.
+        coros = [*DankBatch(self, calls_to_exec, rpc_calls).coroutines]
+        self.controller._futs.append(self.run_coro_threadsafe(await_all(coros)))
+        
+    def _raise_exception_in_main_thread(self, fut: asyncio.Future) -> None:
+        """Callback used to raise any exceptions that occur in the worker thread in the main thread."""
+        if e := fut.exception():
+            main_logger.error(e)
+            raise e
+        self.controller._futs.remove(fut)
     
 class DankBatch:
     """ A batch of jsonrpc batches. """
@@ -77,9 +86,9 @@ class DankBatch:
         self.worker = worker
         for mcall in eth_calls.values():
             for call in mcall:
-                call._started.set()
+                call._started = True
         for call in rpc_calls:
-            call._started.set()
+            call._started = True
         self.eth_calls = eth_calls
         self.rpc_calls = rpc_calls
     
