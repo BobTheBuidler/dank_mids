@@ -57,7 +57,7 @@ def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: byte
 
 def _err_response(e: Exception) -> RPCError:
     """ Extract an error message from `e` to use in a spoof rpc response. """
-    if isinstance(e.args[0], str) or isinstance(e.args[0], RequestInfo):
+    if isinstance(e.args[0], (str, RequestInfo)):
         if isinstance(e, AttributeError):
             raise e
         err_msg = f"DankMidsError: {e.__class__.__name__}: {e.args}"
@@ -81,13 +81,15 @@ def _err_response(e: Exception) -> RPCError:
 _Response = TypeVar("_Response", RPCResponse, List[RPCResponse])
 
 class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
+    batch: "_Batch"
     def __init__(self) -> None:
         if isinstance(self, RPCRequest):
             self.uid = self.controller.call_uid.next
         elif isinstance(self, _Batch):
             self.uid = self.worker.controller.call_uid.next
-        self._started = asyncio.Event()
-        self._response: asyncio.Queue[_Response] = asyncio.Queue()
+        self._started = False
+        self._response = None
+        self._done = asyncio.Event()
     
     def __await__(self) -> Generator[Any, None, Optional[_Response]]:
         return self.get_response().__await__()
@@ -100,14 +102,16 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     async def get_response(self) -> Optional[_Response]:
         pass
 
+    def set_done(self, wakeup: bool = True) -> None:
+        self._done.set()
+        if wakeup:
+            # NOTE: We are in a separate thread from the asyncio.Event's event loop.
+            #       In this case we must wake up the event loop manually.
+            self._done._loop._write_to_self()
 
 ### Single requests:
 
 single_semaphore = asyncio.Semaphore(1)
-
-def wakeup(self: _RequestMeta):
-    # NOTE: We need to let the main thread's event loop know there are delivered contents as the base ueue implementation is not threadsafe.
-    self._response._loop._write_to_self()
     
 class RPCRequest(_RequestMeta[RPCResponse]):
     def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any):
@@ -124,9 +128,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
     
     def __eq__(self, __o: object) -> bool:
-        if not isinstance(__o, self.__class__):
-            return False
-        return self.uid == __o.uid 
+        return self.uid == __o.uid if isinstance(__o, self.__class__) else False 
     
     def __hash__(self) -> int:
         return self.uid
@@ -140,9 +142,9 @@ class RPCRequest(_RequestMeta[RPCResponse]):
     @property
     def rpc_data(self) -> RpcCallJson:
         return {'jsonrpc': '2.0', 'id': self.uid, 'method': self.method, 'params': self.params}
-
+            
     async def get_response(self) -> RPCResponse:
-        if not self._started.is_set():
+        if not self._started:
             if self.controller._first is None:
                 self.controller._first = self
                 await asyncio.sleep(0)
@@ -151,12 +153,11 @@ class RPCRequest(_RequestMeta[RPCResponse]):
                     await asyncio.sleep(0)
                 await self.controller.execute_multicall()
                 self.controller._first = None
-        return await self.spoof_response(await self._response.get())
+        await self._done.wait()
+        return await self.spoof_response(self._response)
     
     async def set_response(self, data: Union[str, AttributeDict, Exception], wakeup_main_loop: bool = True) -> None:
-        self._response.put_nowait(data)
-        if wakeup_main_loop:
-            wakeup(self)
+        self._response = data
     
     async def spoof_response(self, data: Union[bytes, str, AttributeDict, Exception]) -> RPCResponse:
         spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
@@ -225,11 +226,23 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
 
     def __init__(self, worker: "DankWorker", calls: Iterable[_Request]):
         self.worker: DankWorker = worker
+        self.controller: "DankMiddlewareController" = worker.controller
         self.calls = list(calls)  # type: ignore
+        for call in self.calls:
+            call.batch = self
         super().__init__()
         self._len = len(self.calls)
         self._len_lock = threading.Lock()
         self._fut = None
+        self._done = asyncio.Event()
+    
+    def set_done(self, wakeup: bool = True) -> None:
+        self._done.set()
+        for call in self.calls:
+            call.set_done(wakeup=wakeup)
+        # NOTE: We are in a separate thread from the asyncio.Event's event loop.
+        #       In this case we must wake up the event loop in the main thread.
+        self._done._loop._write_to_self()
     
     def __bool__(self) -> bool:
         return bool(self.calls)
@@ -249,49 +262,49 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     
     def append(self, call: _Request, skip_check: bool = False) -> None:
         self.calls.append(call)
+        call.batch = self
         with self._len_lock:
             self._len += 1
-        if skip_check is False and self.is_full:
+        if not skip_check and self.is_full:
             self.ensure_future()
     
     def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
         self.calls.extend(calls)
+        for call in calls:
+            call.batch = self
         with self._len_lock:
             self._len += len(calls)
-        if skip_check is False and self.is_full:
+        if not skip_check and self.is_full:
             self.ensure_future()
-    
-    @property
-    def controller(self) -> "DankMiddlewareController":
-        return self.worker.controller
     
     def ensure_future(self) -> asyncio.Future:
         if self._fut is not None:
             return self._fut
-        with self.controller.pools_closed_lock:
+        with self.controller._pools_closed_lock:
             self._ensure_future()
         return self._fut
     
     def _ensure_future(self) -> asyncio.Future:
         """Not threadsafe"""
         for call in self.calls:
-            call._started.set()
+            call._started = True
             if isinstance(call, Multicall):
                 for _call in call:
-                    _call._started.set()
-        self._fut = asyncio.run_coroutine_threadsafe(self.coroutine(), loop=self.worker.event_loop)
-        self._fut.add_done_callback(self.raise_exception_in_main_thread)
-        self.controller.futs.append(self._fut)
-        self._post_future_cleanup()
+                    _call._started = True
+        self._fut = self.worker.run_coro_threadsafe(self.coroutine())
+        self.controller._futs.append(self._fut)
+        self._post_ensure_future_cleanup()
     
     @property
     def halfpoint(self) -> int:
         return len(self) // 2
     
-    @property
-    def bisected(self) -> Generator[List[_Request], None, None]:
+    def bisect(self) -> Generator[List[_Request], None, None]:
+        """Destroys this reuest."""
         yield self.chunk0
         yield self.chunk1
+        # We no longer need these references to the calls, the new batch calls will have them.
+        del self.calls
         
     @property
     def chunk0(self) -> List[_Request]:
@@ -300,11 +313,6 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     @property
     def chunk1(self) -> List[_Request]:
         return self.calls[self.halfpoint:]
-    
-    def raise_exception_in_main_thread(self, fut: asyncio.Future) -> None:
-        """Callback used to raise any exceptions that occur in the worker thread in the main thread."""
-        fut.result()
-        self.controller.futs.remove(fut)
     
     def should_retry(self, e: Exception) -> bool:
         if "out of gas" in f"{e}":
@@ -325,7 +333,12 @@ class Multicall(_Batch[eth_call]):
     input_types = "(bool,(address,bytes)[])"
     output_types = "(uint256,uint256,(bool,bytes)[])"
 
-    def __init__(self, worker: "DankWorker", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
+    def __init__(
+        self,
+        worker: "DankWorker",
+        calls: List[eth_call] = [],
+        bid: Optional[BatchId] = None
+    ) -> None:
         super().__init__(worker, calls)
         self.bid = bid or self.worker.multicall_uid.next
     
@@ -346,9 +359,10 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def params(self) -> JsonrpcParams:
+        params = [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]
         if self.worker.state_override_not_supported:
-            return [{'to': self.target, 'data': '0x' + self.calldata}, self.block]  # type: ignore
-        return [{'to': self.target, 'data': '0x' + self.calldata}, self.block, {self.target: {'code': OVERRIDE_CODE}}]  # type: ignore
+            params.append({self.target: {'code': OVERRIDE_CODE}})
+        return params
     
     @property
     def rpc_data(self) -> RpcCallJson:
@@ -391,12 +405,12 @@ class Multicall(_Batch[eth_call]):
             _, _, decoded = await run_in_subprocess(decode_single, self.output_types, to_bytes(data))
             await await_all(call.set_response(data, wakeup_main_loop=False) for call, (_, data) in zip(self.calls, decoded))
         if wakeup_main_loop:
-            wakeup(self)
+            self.set_done()
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
-        await await_all((Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)))
+        await await_all(Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisect()))
     
-    def _post_future_cleanup(self) -> None:
+    def _post_ensure_future_cleanup(self) -> None:
         self.controller.pending_eth_calls.pop(self.block)
 
 
@@ -495,7 +509,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 if 'content length too large' in decoded or decoded == "":
                     if self.is_multicalls_only:
                         self.controller.reduce_batch_size(self.total_calls)
-                    raise ValueError(decoded)
+                    raise ValueError(decoded) from e
                 # This shouldn't run unless there are issues. I'll probably delete it later.
                 main_logger.info(f"decoded body: {decoded}")
                 main_logger.info(f"{e.__class__.__name__}: {e} {responses.content._exception}")
@@ -514,7 +528,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return True
         return self.is_single_multicall
     
-    async def set_response(self, response: Union[List[RPCResponse], Exception], wakeup_main_loop: bool = True) -> None:
+    async def set_response(self, response: Union[List[RPCResponse], Exception]) -> None:
         if isinstance(response, Exception):
             await await_all(call.set_response(response, wakeup_main_loop=False) for call in self.calls)
         else:
@@ -523,8 +537,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 call.set_response(AttributeDict(result["result"], wakeup_main_loop=False) if isinstance(result["result"], dict) else result["result"])  # type: ignore
                 for call, result in zip(self.calls, response)
             )
-        if wakeup_main_loop:
-            wakeup(self)
+        self.set_done()
     
     def validate_responses(self, responses: T) -> T:
         # A successful response will be a list
@@ -540,10 +553,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             Multicall(self.worker, chunk[0].calls, f"json{self.jid}_{i}")  # type: ignore [misc]
             if len(chunk) == 1 and isinstance(chunk[0], Multicall)
             else JSONRPCBatch(self.worker, chunk, f"{self.jid}_{i}")
-            for i, chunk in enumerate(self.bisected)
+            for i, chunk in enumerate(self.bisect())
             if chunk
         )
 
-    def _post_future_cleanup(self) -> None:
+    def _post_ensure_future_cleanup(self) -> None:
         self.controller.pending_rpc_calls = JSONRPCBatch(self.worker)
         
