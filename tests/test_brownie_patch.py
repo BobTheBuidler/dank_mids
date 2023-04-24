@@ -1,10 +1,12 @@
 
+import asyncio
+
 from brownie import Contract, web3
-from dank_mids.brownie_patch import patch_contract
-from dank_mids.brownie_patch.call import _patch_call
-from dank_mids import setup_dank_w3_from_sync
 from multicall.utils import await_awaitable
 
+from dank_mids import setup_dank_w3_from_sync
+from dank_mids.brownie_patch import patch_contract
+from dank_mids.brownie_patch.call import _patch_call
 from tests.fixtures import dank_w3
 
 
@@ -15,6 +17,14 @@ def test_patch_call():
     assert hasattr(weth.totalSupply, 'coroutine')
     assert await_awaitable(weth.totalSupply.coroutine(block_identifier=13_000_000)) == 6620041514474872981393155
 
+def test_gather():
+    # must use from_explorer for gh testing workflow
+    weth = Contract.from_explorer('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
+    _patch_call(weth.totalSupply, dank_w3)
+    assert hasattr(weth.totalSupply, 'coroutine')
+    for result in await_awaitable(asyncio.gather(*[weth.totalSupply.coroutine(block_identifier=13_000_000) for _ in range(10_000)])):
+        assert result == 6620041514474872981393155
+    
 def test_patch_contract():
     # ContractCall
     # must use from_explorer for gh testing workflow
