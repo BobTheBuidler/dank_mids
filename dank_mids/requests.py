@@ -301,8 +301,6 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         """Destroys this reuest."""
         yield self.chunk0
         yield self.chunk1
-        # We no longer need these references to the calls, the new batch calls will have them.
-        del self.calls
         
     @property
     def chunk0(self) -> List[_Request]:
@@ -358,7 +356,7 @@ class Multicall(_Batch[eth_call]):
     @property
     def params(self) -> JsonrpcParams:
         params = [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]
-        if self.worker.state_override_not_supported:
+        if self.worker.state_override_supported:
             params.append({self.target: {'code': OVERRIDE_CODE}})
         return params
     
@@ -532,7 +530,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         else:
             await await_all(
                 # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
-                call.set_response(AttributeDict(result["result"], wakeup_main_loop=False) if isinstance(result["result"], dict) else result["result"])  # type: ignore
+                call.set_response(AttributeDict(result["result"]) if isinstance(result["result"], dict) else result["result"], wakeup_main_loop=False)  # type: ignore
                 for call, result in zip(self.calls, response)
             )
         self.set_done()

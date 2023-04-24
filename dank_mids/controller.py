@@ -126,19 +126,22 @@ class DankMiddlewareController:
             main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
     
     def _start_exception_daemon_if_stopped(self) -> None:
-        if not self._daemon_running:
-            fut = asyncio.ensure_future(self._exception_daemon())
-            def done_callback(fut: asyncio.Future) -> None:
-                """Notifies the controller in the event of daemon shutdown or failure."""
-                self._daemon_running = False
-                if not fut.exception():
-                    try:
-                        self._futs.remove(fut)
-                    except ValueError as e:
-                        if str(e) != "list.remove(x): x not in list":
-                            raise
-            fut.add_done_callback(done_callback)
-            self._futs.append(fut)
+        if self._daemon_running:
+            return
+        
+        def done_callback(fut: asyncio.Future) -> None:
+            """Notifies the controller in the event of daemon shutdown or failure."""
+            self._daemon_running = False
+            if not fut.exception():
+                try:
+                    self._futs.remove(fut)
+                except ValueError as e:
+                    if str(e) != "list.remove(x): x not in list":
+                        raise
+                    
+        fut = asyncio.ensure_future(self._exception_daemon())
+        fut.add_done_callback(done_callback)
+        self._futs.append(fut)
             
     async def _exception_daemon(self) -> None:
         if self._daemon_running:
