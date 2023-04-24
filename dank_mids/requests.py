@@ -3,6 +3,7 @@ import abc
 import asyncio
 import threading
 from collections import defaultdict
+from functools import partial
 from time import time
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
@@ -326,8 +327,8 @@ class Multicall(_Batch[eth_call]):
     """ Runs in worker thread. One-time use."""
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
-    input_types = "(bool,(address,bytes)[])"
-    output_types = "(uint256,uint256,(bool,bytes)[])"
+    encode_args = partial(encode_single, "(bool,(address,bytes)[])")
+    decode_response = partial(run_in_subprocess, partial(decode_single, "(uint256,uint256,(bool,bytes)[])"))
 
     def __init__(
         self,
@@ -347,7 +348,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def calldata(self) -> str:
-        return (self.fourbyte + encode_single(self.input_types, [False, [[call.target, call.calldata] for call in self.calls]])).hex()
+        return (self.fourbyte + Multicall.encode_args([False, [[call.target, call.calldata] for call in self.calls]])).hex()
     
     @property
     def target(self) -> ChecksumAddress:
@@ -398,7 +399,7 @@ class Multicall(_Batch[eth_call]):
             await await_all(call.set_response(data, wakeup_main_loop=False) for call in self.calls)
         else:
             decoded: List[Tuple[bool, bytes]]
-            _, _, decoded = await run_in_subprocess(decode_single, self.output_types, to_bytes(data))
+            _, _, decoded = await Multicall.decode_response(to_bytes(data))
             await await_all(call.set_response(data, wakeup_main_loop=False) for call, (_, data) in zip(self.calls, decoded))
         if wakeup_main_loop:
             self.set_done()
