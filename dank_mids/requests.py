@@ -358,7 +358,7 @@ class Multicall(_Batch[eth_call]):
     @property
     def params(self) -> JsonrpcParams:
         params = [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]
-        if self.worker.state_override_not_supported:
+        if self.worker.state_override_supported:
             params.append({self.target: {'code': OVERRIDE_CODE}})
         return params
     
