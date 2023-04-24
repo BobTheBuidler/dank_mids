@@ -26,7 +26,7 @@ from dank_mids._config import (AIOHTTP_TIMEOUT, DEMO_MODE,
                                MAX_JSONRPC_BATCH_SIZE)
 from dank_mids._demo_mode import demo_logger
 from dank_mids.constants import BAD_HEXES, OVERRIDE_CODE
-from dank_mids.helpers import await_all
+from dank_mids.helpers import _session, await_all
 from dank_mids.loggers import main_logger
 from dank_mids.types import BatchId, BlockId, JsonrpcParams, RpcCallJson, T
 
@@ -411,8 +411,10 @@ class Multicall(_Batch[eth_call]):
         self.controller.pending_eth_calls.pop(self.block)
 
 
+session = _session.get_session()
+
 def post_sync(endpoint, data) -> Union[bytes, Tuple[str, Exception]]:
-    response = requests.post(endpoint, json=data)
+    response = session.post(endpoint, json=data)
     try:
         response.raise_for_status()
         return response.json()
