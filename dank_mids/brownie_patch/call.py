@@ -59,8 +59,10 @@ def get_encode_fn(
                 raise type(e)(f"{abi_name} {e}") from None
             
         async def encode_inputs(self: ContractCall, *args: Any) -> str:
-            return await run_in_subprocess(__encode_inputs, *args)
-            
+            # TODO: Figure out a better way to handle this
+            #return await run_in_subprocess(__encode_inputs, *args)
+            return __encode_inputs(*args)
+        
     return encode_inputs
 
 
@@ -97,7 +99,10 @@ def get_decode_fn(
         __decode_output = _codec.DECODER_CACHE(__decode_output)
     
     async def decode_output(self: ContractCall, hexstr: str) -> Any:
-        return await run_in_subprocess(__decode_output, hexstr)
+        # TODO: Figure out a better way to handle this
+        #return await run_in_subprocess(__decode_output, hexstr)
+        return __decode_output(hexstr)
+        
     
     return decode_output
     
