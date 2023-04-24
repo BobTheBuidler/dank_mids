@@ -413,9 +413,13 @@ class Multicall(_Batch[eth_call]):
 def post_sync(endpoint, data) -> Union[bytes, Tuple[str, Exception]]:
     response = requests.post(endpoint, json=data)
     try:
+        response.raise_for_status()
         return response.json()
+    except requests.HTTPError as e:
+        return e.args[0], e
     except Exception as e:
-        return response._content.decode(), e
+        # This really shouldn't be running but just in case
+        return response.reason, e
     
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def __init__(self, worker: "DankWorker", calls: List[Union[Multicall, RPCRequest]] = [], jid: Optional[BatchId] = None) -> None:
