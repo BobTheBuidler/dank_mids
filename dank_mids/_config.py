@@ -34,3 +34,9 @@ semaphore_envs = {
 #   Used because I experienced some OOM errs due to web3 formatters when I was batching an absurd number of brownie calls.
 #   We need a separate semaphore here because the method-specific semaphores are too late in the code to prevent this OOM issue.
 BROWNIE_CALL_SEMAPHORE_VAL = int(os.environ.get("DANK_MIDS_BROWNIE_CALL_SEMAPHORE", 100_000))
+
+_ONE_HOUR = 60 * 60
+BROWNIE_ENCODER_CACHE_TTL = int(os.environ.get("DANK_MIDS_BROWNIE_ENCODER_CACHE_TTL", _ONE_HOUR))
+BROWNIE_DECODER_CACHE_TTL = int(os.environ.get("DANK_MIDS_BROWNIE_DECODER_CACHE_TTL", _ONE_HOUR))
+BROWNIE_ENCODER_CACHE_MAXSIZE = int(os.environ.get("DANK_MIDS_BROWNIE_ENCODER_CACHE_MAXSIZE", 10_000))
+BROWNIE_DECODER_CACHE_MAXSIZE = int(os.environ.get("DANK_MIDS_BROWNIE_DECODER_CACHE_MAXSIZE", 10_000))

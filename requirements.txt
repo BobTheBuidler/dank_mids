@@ -1,4 +1,5 @@
 bobs_lazy_logging>=0.0.2
+cachetools>=4.0.0
 eth_retry>=0.1.15,<0.2
 multicall>=0.6.2
 # web3 5.29 thru 5.31.2 are unable to use async provider in subthreads

@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import eth_abi
 from brownie.convert.normalize import ReturnValue
+from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
@@ -14,12 +15,25 @@ from multicall.utils import run_in_subprocess
 from web3 import Web3
 from web3.datastructures import AttributeDict
 
-from dank_mids._config import BROWNIE_CALL_SEMAPHORE_VAL
+from dank_mids import _config
 from dank_mids.brownie_patch import _codec, _formatters
 from dank_mids.semaphore import ThreadsafeSemaphore
 
 stream = abi.default_codec.stream_class
-brownie_call_semaphore = ThreadsafeSemaphore(BROWNIE_CALL_SEMAPHORE_VAL)
+brownie_call_semaphore = ThreadsafeSemaphore(_config.BROWNIE_CALL_SEMAPHORE_VAL)
+
+
+@lru_cache(maxsize=None)
+def get_method_unaware_encode_fn(
+    abi_inputs: Tuple[str, ...],
+) -> str:
+    formatter = _formatters.get_abi_formatter(abi_inputs)
+    encoder = _codec.get_encoder(abi_inputs)
+    def encode_args(args):
+        return encoder(formatter(args)).hex()
+    if _codec.should_cache(get_type_strings(abi_inputs)):
+        encode_args = _codec.ENCODER_CACHE(encode_args)
+    return encode_args
 
 @lru_cache(maxsize=None)
 def get_encode_fn(
@@ -35,13 +49,12 @@ def get_encode_fn(
                 raise TypeError(f"{abi_name} requires no arguments")
             return signature
     else:
-        formatter = _formatters.get_abi_formatter(abi_inputs)
-        encoder = _codec.get_encoder(abi_inputs)
+        encode = get_method_unaware_encode_fn(abi_inputs)
         def __encode_inputs(*args) -> str:
             # Format contract inputs based on ABI types
             # NOTE: We've removed a bunch of if statements from the formatters to speed things up.
             try:
-                return signature + encoder(formatter(args)).hex()
+                return signature + encode(args)
             except Exception as e:
                 raise type(e)(f"{abi_name} {e}") from None
             
@@ -79,6 +92,9 @@ def get_decode_fn(
         if len(result) == 1:
             result = result[0]
         return result
+    
+    if _codec.should_cache(get_type_strings(abi_outputs)):
+        __decode_output = _codec.DECODER_CACHE(__decode_output)
     
     async def decode_output(self: ContractCall, hexstr: str) -> Any:
         return await run_in_subprocess(__decode_output, hexstr)
