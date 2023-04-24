@@ -486,6 +486,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         elif isinstance(response, Tuple):
             decoded, e = response
             counts = self.method_counts
+            main_logger.error(f"{e.__class__.__name__}: {e}")
             main_logger.info(f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}", )
             main_logger.info(f"methods called: {counts}")
             if 'content length too large' in decoded or decoded == "":
