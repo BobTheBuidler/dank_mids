@@ -40,7 +40,7 @@ def get_encode_fn(
             _formatters.get_abi_formatter(abi_inputs), 
             _codec.get_encoder(abi_inputs),
         )
-        async def encode_inputs(*args) -> str:
+        async def encode_inputs(self, *args) -> str:
             # Format contract inputs based on ABI types
             # NOTE: We've removed a bunch of if statements from the formatters to speed things up.
             try:
