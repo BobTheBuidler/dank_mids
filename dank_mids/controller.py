@@ -8,6 +8,8 @@ from typing import Any, DefaultDict, List
 from eth_utils import to_checksum_address
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
+from requests import Session
+from requests.adapters import HTTPAdapter
 from web3 import Web3
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
@@ -27,8 +29,15 @@ instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(
 
 def _sync_w3_from_async(w3: Web3) -> Web3:
     assert w3.eth.is_async and isinstance(w3.provider, AsyncBaseProvider), "Dank Middleware can only be applied to an asycnhronous Web3 instance."
-    sync_provider = HTTPProvider(w3.provider.endpoint_uri)
-    sync_w3: Web3 = Web3(provider = sync_provider)
+    # First we give increase the default pool size.
+    adapter = HTTPAdapter(pool_connections=100, pool_maxsize=100)
+    session = Session()
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    # Then we increase the default timeout.
+    request_kwargs = {'timeout': 600}
+    # Then we put it all together.
+    sync_w3: Web3 = Web3(provider = HTTPProvider(w3.provider.endpoint_uri, request_kwargs, session))
     # We can't pickle middlewares to send to process executor.
     # The call has already passed thru all middlewares on the user's Web3 instance.
     sync_w3.middleware_onion.clear()
