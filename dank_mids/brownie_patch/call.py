@@ -1,17 +1,17 @@
 
 from functools import lru_cache, partial
 from types import MethodType
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 import eth_abi
 from brownie.convert.normalize import ReturnValue
+from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from eth_abi import abi
 from hexbytes import HexBytes
 from web3 import Web3
-from web3.datastructures import AttributeDict
 
 from dank_mids import _config
 from dank_mids.brownie_patch import _codec, _formatters
@@ -40,13 +40,24 @@ def get_encode_fn(
             _formatters.get_abi_formatter(abi_inputs), 
             _codec.get_encoder(abi_inputs),
         )
-        async def encode_inputs(self, *args) -> str:
-            # Format contract inputs based on ABI types
-            # NOTE: We've removed a bunch of if statements from the formatters to speed things up.
-            try:
-                return signature + await encode(args)
-            except Exception as e:
-                raise type(e)(f"{abi_name} {e}") from None
+        
+        type_strings = get_type_strings(abi_inputs)
+        if len(type_strings) > 1 or any(any(x in type_str for x in ["[","]",","]) for type_str in type_strings):
+            async def encode_inputs(self, *args) -> str:
+                # Format contract inputs based on ABI types
+                # NOTE: We've removed a bunch of if statements from the formatters to speed things up.
+                try:
+                    return signature + await encode(_codec._make_thing_hashable(args))
+                except Exception as e:
+                    raise type(e)(f"{abi_name} {type_strings} {e}") from None
+        else:
+            async def encode_inputs(self, *args) -> str:
+                # Format contract inputs based on ABI types
+                # NOTE: We've removed a bunch of if statements from the formatters to speed things up.
+                try:
+                    return signature + await encode(args)
+                except Exception as e:
+                    raise type(e)(f"{abi_name} {type_strings} {e}") from None
         
     return encode_inputs
 
@@ -112,21 +123,13 @@ def get_coroutine_fn(w3: Web3):
                     raise e
     return coroutine
 
-def _make_abi_hashable(
-    abi: List[Dict[str, str]]
-) -> Tuple[AttributeDict, ...]:
-    """Takes a list of dicts and returns a hashable tuple of AttributeDicts."""
-    return tuple(
-        AttributeDict({k: _make_abi_hashable(v) if isinstance(v, list) else v for k, v in x.items()})
-        for x in abi
-    )
 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
     """Patch a brownie 'ContractCall' object with a 'coroutine' method for async calling."""
     # NOTE: We define abi-specific encode and decode functions in the hope that it speeds up execution.
     #       Haven't tested the impact but it definitely removes some boilerplate code from script execution which should only mean good things.
-    encode_fn = get_encode_fn(call.abi['name'], _make_abi_hashable(call.abi['inputs']), call.signature)
-    decode_fn = get_decode_fn(_make_abi_hashable(call.abi['outputs']))
+    encode_fn = get_encode_fn(call.abi['name'], _codec._make_thing_hashable(call.abi['inputs']), call.signature)
+    decode_fn = get_decode_fn(_codec._make_thing_hashable(call.abi['outputs']))
     call._encode_input = MethodType(encode_fn, call)
     call._decode_output = MethodType(decode_fn, call)
     call.coroutine = MethodType(get_coroutine_fn(w3), call)

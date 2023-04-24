@@ -1,11 +1,13 @@
 
 import logging
 from functools import lru_cache
+from typing import Any, Tuple, Union
 
 from async_lru import alru_cache
 from brownie.convert.utils import get_type_strings
 from eth_abi import abi, codec
 from multicall.utils import run_in_subprocess
+from web3.datastructures import AttributeDict
 
 from dank_mids import _config
 
@@ -25,6 +27,16 @@ async def format_and_encode(formatter, encoder, args):
 async def decode_and_format(decoder, formatter, arg):
     """Lets us cache values in main process but delegate work to subprocess if desired."""
     return formatter(await run_in_subprocess(decoder, arg))
+
+Hashable = Union[Tuple["Hashable", ...], AttributeDict, Any]
+
+def _make_thing_hashable(thing: Any) -> Hashable:
+    """Takes a list of dicts and returns a hashable tuple of AttributeDicts."""
+    if isinstance(thing, dict):
+        return AttributeDict({k: _make_thing_hashable(v)for k, v in thing.items()})
+    elif isinstance(thing, (list, tuple)):
+        return tuple(_make_thing_hashable(x) for x in thing)
+    return thing
 
 @lru_cache(maxsize=None)
 def get_encoder(abi_inputs) -> codec.TupleEncoder:
