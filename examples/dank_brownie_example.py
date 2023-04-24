@@ -10,6 +10,7 @@ This is how you ensure that all of the various parts of your code are running at
 import asyncio
 
 from brownie import Contract, web3
+
 from dank_mids.brownie_patch import patch_contract
 from dank_mids.helpers import setup_dank_w3_from_sync
 
