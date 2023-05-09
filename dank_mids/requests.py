@@ -36,6 +36,9 @@ if TYPE_CHECKING:
 
 RETRY_ERRS = ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]
 
+class BadResponse(Exception):
+    pass
+  
 class ResponseNotReady(Exception):
     pass
 
