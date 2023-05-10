@@ -1,12 +1,10 @@
 
 import functools
-from functools import lru_cache
 from types import MethodType
-from typing import Any, Callable, Dict, Optional, Tuple, Union, List
+from typing import Any, Dict, Optional, Tuple, Union
 
 import eth_abi
-from brownie.convert.normalize import (ReturnValue, _format_tuple,
-                                       _get_abi_types)
+from brownie.convert.normalize import format_input, format_output
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
@@ -14,88 +12,52 @@ from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from hexbytes import HexBytes
 from multicall.utils import run_in_subprocess
 from web3 import Web3
-from web3.datastructures import AttributeDict
 
 from dank_mids._config import BROWNIE_CALL_SEMAPHORE_VAL
 from dank_mids.semaphore import ThreadsafeSemaphore
 
 brownie_call_semaphore = ThreadsafeSemaphore(BROWNIE_CALL_SEMAPHORE_VAL)
 
+def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
+    data = format_input(abi, args)
+    types_list = get_type_strings(abi["inputs"])
+    return signature + eth_abi.encode_abi(types_list, data).hex()
 
-@lru_cache(maxsize=None)
-def get_encode_fn(
-    abi_name: str, 
-    abi_inputs: Tuple[str, ...], 
-    signature: str
-) -> Callable[[Any], str]:
-    
-    # NOTE: We define a function for each set of arg types so we don't need to parse the abi every call.
-    abi_types = _get_abi_types(abi_inputs)
-    format_data = functools.partial(_format_tuple, abi_types)
-    encode_data = functools.partial(eth_abi.encode_abi, get_type_strings(abi_types))
-    
-    if len(abi_inputs) == 0:
-        def __encode_inputs(*args):
-            # Format contract inputs based on ABI types
-            if len(args):
-                raise TypeError(f"{abi_name} requires no arguments")
-            try:
-                return signature
-            except Exception as e:
-                raise type(e)(f"{abi_name} {e}") from None
-            
-    else:
-        def __encode_inputs(*args):
-            # Format contract inputs based on ABI types
-            try:
-                return signature + encode_data(format_data(args)).hex()
-            except Exception as e:
-                raise type(e)(f"{abi_name} {e}") from None
-            
-    async def encode_inputs(self, *args):
-        return await run_in_subprocess(__encode_inputs, *args)
-            
-    return encode_inputs
+def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
+    selector = HexBytes(hexstr)[:4].hex()
+    if selector == "0x08c379a0":
+        revert_str = eth_abi.decode_abi(["string"], HexBytes(hexstr)[4:])[0]
+        raise ValueError(f"Call reverted: {revert_str}")
+    elif selector == "0x4e487b71":
+        error_code = int(HexBytes(hexstr)[4:].hex(), 16)
+        if error_code in SOLIDITY_ERROR_CODES:
+            revert_str = SOLIDITY_ERROR_CODES[error_code]
+        else:
+            revert_str = f"Panic (error code: {error_code})"
+        raise ValueError(f"Call reverted: {revert_str}")
+    if abi["outputs"] and not hexstr:
+        raise ValueError("No data was returned - the call likely reverted")
 
+    types_list = get_type_strings(abi["outputs"])
+    result = eth_abi.decode_abi(types_list, HexBytes(hexstr))
+    result = format_output(abi, result)
+    if len(result) == 1:
+        result = result[0]
+    return result
 
-@lru_cache(maxsize=None)
-def get_decode_fn(
-    abi_ouputs: Tuple[str, ...]
-) -> Callable[[str], Any]:
+def _patch_call(call: ContractCall, w3: Web3) -> None:
+    async def _encode_input(self: ContractCall, *args: Tuple[Any,...]) -> str:
+        return await run_in_subprocess(
+            __encode_input,
+            self.abi,
+            self.signature,
+            *(arg if not hasattr(arg, 'address') else arg.address for arg in args)  # type: ignore
+        )
     
-    # NOTE: We define a function for each set of arg types so we don't need to parse the abi every call.
-    decode_data = functools.partial(eth_abi.decode_abi, get_type_strings(abi_ouputs))
-    format_data = functools.partial(_format_tuple, _get_abi_types(abi_ouputs))
-    
-    def __decode_output(hexstr):
-        selector = HexBytes(hexstr)[:4].hex()
-        if selector == "0x08c379a0":
-            revert_str = eth_abi.decode_abi(["string"], HexBytes(hexstr)[4:])[0]
-            raise ValueError(f"Call reverted: {revert_str}")
-        elif selector == "0x4e487b71":
-            error_code = int(HexBytes(hexstr)[4:].hex(), 16)
-            if error_code in SOLIDITY_ERROR_CODES:
-                revert_str = SOLIDITY_ERROR_CODES[error_code]
-            else:
-                revert_str = f"Panic (error code: {error_code})"
-            raise ValueError(f"Call reverted: {revert_str}")
-        if abi_ouputs and not hexstr:
-            raise ValueError("No data was returned - the call likely reverted")
-        
-        result = ReturnValue(format_data(decode_data(HexBytes(hexstr))), abi_ouputs)
-        if len(result) == 1:
-            result = result[0]
-        return result
-    
-    async def decode_output(self, hexstr):
-        return await run_in_subprocess(__decode_output, hexstr)
-    
-    return decode_output
-    
+    async def _decode_output(self: ContractCall, data: str) -> Any:
+        return await run_in_subprocess(__decode_output, data, self.abi)
 
-@lru_cache(maxsize=None)
-def get_coroutine_fn(w3: Web3):
-    assert w3.eth.is_async, "You must provide a w3 instance with an async provider."
+    @functools.wraps(call)
     async def coroutine(
         self: ContractCall,
         *args: Tuple[Any,...],
@@ -115,22 +77,7 @@ def get_coroutine_fn(w3: Web3):
                     raise VirtualMachineError(e) from None
                 except:
                     raise e
-    return coroutine
-
-def _make_abi_hashable(
-    abi: List[Dict[str, str]]
-) -> Tuple[AttributeDict, ...]:
-    """Takes a list of dicts and returns a hashable tuple of AttributeDicts."""
-    return tuple(AttributeDict(x) for x in abi)
-
-def _patch_call(call: ContractCall, w3: Web3) -> None:
-    """Patch a brownie 'ContractCall' object with a 'coroutine' method for async calling."""
-    # NOTE: We define abi-specific encode and decode functions in the hope that it speeds up execution.
-    #       Haven't tested the impact but it definitely removes some boilerplate code from script execution which should only mean good things.
-    inputs_abi = _make_abi_hashable(call.abi['inputs'])
-    encode_fn = get_encode_fn(call.abi['name'], inputs_abi, call.signature)
-    outputs_abi = _make_abi_hashable(call.abi['outputs'])
-    decode_fn = get_decode_fn(outputs_abi)
-    call._encode_input = MethodType(encode_fn, call)
-    call._decode_output = MethodType(decode_fn, call)
-    call.coroutine = MethodType(get_coroutine_fn(w3), call)
+                    
+    call.coroutine = MethodType(coroutine, call)
+    call._encode_input = MethodType(_encode_input, call)
+    call._decode_output = MethodType(_decode_output, call)
