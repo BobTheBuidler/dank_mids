@@ -55,28 +55,28 @@ async def _encode_input(self: ContractCall, *args: Tuple[Any,...]) -> str:
     
 async def _decode_output(self: ContractCall, data: str) -> Any:
     return await run_in_subprocess(__decode_output, data, self.abi)
-
-async def coroutine(
-    self: ContractCall,
-    *args: Tuple[Any,...],
-    block_identifier: Optional[Union[int, str, bytes]] = None,
-    override: Optional[Dict[str, str]] = None
-) -> Any:
-    if override:
-        raise ValueError("Cannot use state override with `coroutine`.")
-        
-    async with brownie_call_semaphore:
-        try:
-            return await self._decode_output(
-                await w3.eth.call({"to": self._address, "data": await self._encode_input(*args)}, block_identifier)  # type: ignore
-            )
-        except ValueError as e:
-            try:
-                raise VirtualMachineError(e) from None
-            except:
-                raise e
     
 def _patch_call(call: ContractCall, w3: Web3) -> None:
+    async def coroutine(
+        self: ContractCall,
+        *args: Tuple[Any,...],
+        block_identifier: Optional[Union[int, str, bytes]] = None,
+        override: Optional[Dict[str, str]] = None
+    ) -> Any:
+        if override:
+            raise ValueError("Cannot use state override with `coroutine`.")
+            
+        async with brownie_call_semaphore:
+            try:
+                return await self._decode_output(
+                    await w3.eth.call({"to": self._address, "data": await self._encode_input(*args)}, block_identifier)  # type: ignore
+                )
+            except ValueError as e:
+                try:
+                    raise VirtualMachineError(e) from None
+                except:
+                    raise e
+                    
     call.coroutine = MethodType(coroutine, call)
     call._encode_input = MethodType(_encode_input, call)
     call._decode_output = MethodType(_decode_output, call)
