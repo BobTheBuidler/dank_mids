@@ -24,12 +24,7 @@ ignore: # A list of paths or files which Sourcery will ignore.
 rule_settings:
   enable:
   - default
-  disable: [
-    # A list of rule IDs Sourcery will never suggest.
-    # I prefer to be explicit sometimes
-    default-mutable-arg,
-    simplify-len-comparison
-    ]
+  disable: [default-mutable-arg]  # A list of rule IDs Sourcery will never suggest.
   rule_types:
   - refactoring
   - suggestion
