@@ -1,2 +1,1 @@
 eth-brownie>1.16.0
-sourcery
