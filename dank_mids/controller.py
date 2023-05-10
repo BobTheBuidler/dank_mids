@@ -132,11 +132,7 @@ class DankMiddlewareController:
                 """Notifies the controller in the event of daemon shutdown or failure."""
                 self._daemon_running = False
                 if not fut.exception():
-                    try:
-                        self._futs.remove(fut)
-                    except ValueError as e:
-                        if str(e) != "list.remove(x): x not in list":
-                            raise
+                    self._futs.remove(fut)
             fut.add_done_callback(done_callback)
             self._futs.append(fut)
             
@@ -156,12 +152,7 @@ class DankMiddlewareController:
                 main_logger.debug(self._futs)
             for fut in futs:
                 if fut.done() and not fut.exception():
-                    try:
-                        self._futs.remove(fut)
-                    except ValueError as e:
-                        if str(e) != "list.remove(x): x not in list":
-                            raise
-                    
+                    self._futs.remove(fut)
             await asyncio.sleep(5)
         main_logger.debug('exiting exception daemon.')
 

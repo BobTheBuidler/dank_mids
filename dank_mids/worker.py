@@ -78,12 +78,8 @@ class DankWorker:
         if e := fut.exception():
             main_logger.error(e)
             raise e
-        try:
-            self.controller._futs.remove(fut)
-        except ValueError as e:
-            if str(e) != "list.remove(x): x not in list":
-                raise
-            
+        self.controller._futs.remove(fut)
+    
 class DankBatch:
     """ A batch of jsonrpc batches. """
     def __init__(self, worker: DankWorker, eth_calls: Multicalls, rpc_calls: JSONRPCBatch):
