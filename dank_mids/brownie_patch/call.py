@@ -30,15 +30,20 @@ def get_encode_fn(
 ) -> Callable[[Any], str]:
     
     # NOTE: We define a function for each set of arg types so we don't need to parse the abi every call.
-    format_data = functools.partial(_format_tuple, _get_abi_types(abi_inputs))
-    encode_data = functools.partial(eth_abi.encode_abi, get_type_strings(abi_inputs))
+    abi_types = _get_abi_types(abi_inputs)
+    format_data = functools.partial(_format_tuple, abi_types)
+    encode_data = functools.partial(eth_abi.encode_abi, get_type_strings(abi_types))
     
     if len(abi_inputs) == 0:
         def __encode_inputs(*args):
             # Format contract inputs based on ABI types
             if len(args):
                 raise TypeError(f"{abi_name} requires no arguments")
-            return signature
+            try:
+                return signature
+            except Exception as e:
+                raise type(e)(f"{abi_name} {e}") from None
+            
     else:
         def __encode_inputs(*args):
             # Format contract inputs based on ABI types
