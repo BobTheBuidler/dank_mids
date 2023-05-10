@@ -37,11 +37,16 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> Web3:
 
 async def await_all(futs: Iterable[Awaitable], verbose: bool = False) -> None:
     # NOTE: 'verbose' is mainly for debugging but feel free to have fun
-    if not isinstance(verbose, bool):
+    if verbose is True:
+        generator = tqdm_asyncio.as_completed(futs if isinstance(futs, list) else [*futs])
+    elif verbose is False:
+        generator = asyncio.as_completed(futs if isinstance(futs, list) else [*futs])
+    else:
         raise NotImplementedError(verbose)
-    as_completed = tqdm_asyncio.as_completed if verbose else asyncio.as_completed
-    for fut in as_completed(futs if isinstance(futs, list) else [*futs]):
+    for fut in generator:
         await fut
+        del fut
+        
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 
