@@ -47,10 +47,10 @@ def test_dank_middleware():
     print(f"calls per multicall:    {cid/mid}")
     print(f"calls per request:      {cid/rid}")
     print(f"multicalls per request: {mid/rid}")
-    # General "tests" that verify batching performance. You can uncomment and run these locally if you'd like.
-    #assert mid < cid / 100, f"Batched {cid} calls into {mid} multicalls. Performance underwhelming."
-    #assert rid < cid / 150,  f"Batched {cid} calls into {rid} requests. Performance underwhelming."
-    #assert mid / rid > 1,  f"Batched {mid} multicalls into {rid} requests. Performance underwhelming."
+    # General "tests" that verify batching performance
+    assert mid < cid / 100, f"Batched {cid} calls into {mid} multicalls. Performance underwhelming."
+    assert rid < cid / 150,  f"Batched {cid} calls into {rid} requests. Performance underwhelming."
+    assert mid / rid > 1,  f"Batched {mid} multicalls into {rid} requests. Performance underwhelming."
 
 def test_bad_hex_handling():
     chainlinkfeed = "0xfe67209f6FE3BA6cE36d0941700085C194e958DF"
