@@ -15,7 +15,6 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids._config import LOOP_INTERVAL
 from dank_mids._demo_mode import demo_logger
-from dank_mids.helpers import _session
 from dank_mids.loggers import main_logger, sort_lazy_logger
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.types import BlockId, ChainId
@@ -28,7 +27,8 @@ instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(
 
 def _sync_w3_from_async(w3: Web3) -> Web3:
     assert w3.eth.is_async and isinstance(w3.provider, AsyncBaseProvider), "Dank Middleware can only be applied to an asycnhronous Web3 instance."
-    sync_w3: Web3 = Web3(provider = HTTPProvider(w3.provider.endpoint_uri, {'timeout': 600}, session=_session.get_session()))
+    sync_provider = HTTPProvider(w3.provider.endpoint_uri)
+    sync_w3: Web3 = Web3(provider = sync_provider)
     # We can't pickle middlewares to send to process executor.
     # The call has already passed thru all middlewares on the user's Web3 instance.
     sync_w3.middleware_onion.clear()

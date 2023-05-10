@@ -3,7 +3,6 @@ import abc
 import asyncio
 import threading
 from collections import defaultdict
-from functools import partial
 from time import time
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
@@ -26,7 +25,7 @@ from dank_mids._config import (AIOHTTP_TIMEOUT, DEMO_MODE,
                                MAX_JSONRPC_BATCH_SIZE)
 from dank_mids._demo_mode import demo_logger
 from dank_mids.constants import BAD_HEXES, OVERRIDE_CODE
-from dank_mids.helpers import _session, await_all
+from dank_mids.helpers import await_all
 from dank_mids.loggers import main_logger
 from dank_mids.types import BatchId, BlockId, JsonrpcParams, RpcCallJson, T
 
@@ -327,8 +326,8 @@ class Multicall(_Batch[eth_call]):
     """ Runs in worker thread. One-time use."""
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
-    encode_args = partial(encode_single, "(bool,(address,bytes)[])")
-    decode_response = partial(run_in_subprocess, partial(decode_single, "(uint256,uint256,(bool,bytes)[])"))
+    input_types = "(bool,(address,bytes)[])"
+    output_types = "(uint256,uint256,(bool,bytes)[])"
 
     def __init__(
         self,
@@ -348,7 +347,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def calldata(self) -> str:
-        return (self.fourbyte + Multicall.encode_args([False, [[call.target, call.calldata] for call in self.calls]])).hex()
+        return (self.fourbyte + encode_single(self.input_types, [False, [[call.target, call.calldata] for call in self.calls]])).hex()
     
     @property
     def target(self) -> ChecksumAddress:
@@ -399,7 +398,7 @@ class Multicall(_Batch[eth_call]):
             await await_all(call.set_response(data, wakeup_main_loop=False) for call in self.calls)
         else:
             decoded: List[Tuple[bool, bytes]]
-            _, _, decoded = await Multicall.decode_response(to_bytes(data))
+            _, _, decoded = await run_in_subprocess(decode_single, self.output_types, to_bytes(data))
             await await_all(call.set_response(data, wakeup_main_loop=False) for call, (_, data) in zip(self.calls, decoded))
         if wakeup_main_loop:
             self.set_done()
@@ -411,18 +410,12 @@ class Multicall(_Batch[eth_call]):
         self.controller.pending_eth_calls.pop(self.block)
 
 
-session = _session.get_session()
-
 def post_sync(endpoint, data) -> Union[bytes, Tuple[str, Exception]]:
-    response = session.post(endpoint, json=data)
+    response = requests.post(endpoint, json=data)
     try:
-        response.raise_for_status()
         return response.json()
-    except requests.HTTPError as e:
-        return e.args[0], e
     except Exception as e:
-        # This really shouldn't be running but just in case
-        return response.reason, e
+        return response._content.decode(), e
     
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def __init__(self, worker: "DankWorker", calls: List[Union[Multicall, RPCRequest]] = [], jid: Optional[BatchId] = None) -> None:
@@ -486,7 +479,6 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         elif isinstance(response, Tuple):
             decoded, e = response
             counts = self.method_counts
-            main_logger.error(f"{e.__class__.__name__}: {e}")
             main_logger.info(f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}", )
             main_logger.info(f"methods called: {counts}")
             if 'content length too large' in decoded or decoded == "":
