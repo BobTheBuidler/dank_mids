@@ -5,27 +5,21 @@ from typing import TYPE_CHECKING, Any, Generator, List
 import eth_retry
 from eth_typing import ChecksumAddress
 from multicall.multicall import NotSoBrightBatcher
-from web3 import Web3
 
-from dank_mids import _config, executor
+from dank_mids._config import GANACHE_FORK, MAX_JSONRPC_BATCH_SIZE
 from dank_mids.helpers import await_all
-from dank_mids.requests import JSONRPCBatch, Multicall, _Batch
-from dank_mids.types import Multicalls
+from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, _Batch
+from dank_mids.types import CallsToExec
 from dank_mids.uid import UIDGenerator
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
 
-def call(endpoint: str, *request_args):
-    return Web3(endpoint).eth.call(*request_args)
-
-
 class DankWorker:
     """
     Runs a second event loop in a subthread which is used to reduce congestion on the main event loop.
-    A second loop with less items running in parallel allows dank_mids to get your responses back to your
-      main loop faster.
+    This allows dank_mids to better communicate with your node while you abuse it with heavy loads.
     """
     def __init__(self, controller: "DankMiddlewareController") -> None:
         self.controller = controller
@@ -34,12 +28,11 @@ class DankWorker:
         self.multicall_uid: UIDGenerator = UIDGenerator()
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.state_override_not_supported: bool = _config.GANACHE_FORK or self.controller.chain_id == 100  # Gnosis Chain does not support state override.
+        self.state_override_not_supported: bool = GANACHE_FORK or self.controller.chain_id == 100  # Gnosis Chain does not support state override.
         self.event_loop = asyncio.new_event_loop()
         self.worker_thread = threading.Thread(target=self.start)
         self.worker_thread.start()
-        self.executor = executor.executor
-            
+    
     def start(self) -> None:
         """ Runs in worker thread. """
         asyncio.set_event_loop(self.event_loop)
@@ -52,39 +45,30 @@ class DankWorker:
     
     @eth_retry.auto_retry
     async def __call__(self, *request_args: Any) -> Any:
-        # NOTE: We make the actual reuest synchronously so we can get the results from the node without waiting for the event loop
-        return await self.run_in_executor(self.controller.sync_w3.eth.call, *request_args)  # type: ignore
-
-    async def run_in_executor(self, fn, *args, loop=None): #: Callable[P, T], *args: P.args) -> T:
-        return await (loop or self.event_loop).run_in_executor(self.executor, fn, *args)
+        return await self.controller.w3.eth.call(*request_args)  # type: ignore
     
-    async def execute_batch(self, calls_to_exec: Multicalls, rpc_calls: JSONRPCBatch) -> None:
+    @property
+    def endpoint(self) -> str:
+        return self.controller.w3.provider.endpoint_uri  # type: ignore
+    
+    async def execute_batch(self, calls_to_exec: CallsToExec, rpc_calls: List[RPCRequest]) -> None:
         """ Runs in main thread. """
-        #asyncio.run_coroutine_threadsafe(self._execute_batch(calls_to_exec, rpc_calls), loop=self.event_loop).result()
-        self.controller.futs.append(
-            asyncio.run_coroutine_threadsafe(
-                #self._execute_batch(DankBatch(self, calls_to_exec, rpc_calls)),
-                
-                # NOTE we materialize the generator here so that the execution takes place in the main thread
-                await_all([*DankBatch(self, calls_to_exec, rpc_calls).coroutines]),
-                loop=self.event_loop
-            )
-        )
+        asyncio.run_coroutine_threadsafe(self._execute_batch(calls_to_exec, rpc_calls), self.event_loop).result()
+
+    async def _execute_batch(self, calls_to_exec: CallsToExec, rpc_calls: List[RPCRequest]) -> None:
+        """ Runs in worker thread. """
+        await DankBatch(self, calls_to_exec, rpc_calls)
+    
     
 class DankBatch:
     """ A batch of jsonrpc batches. """
-    def __init__(self, worker: DankWorker, eth_calls: Multicalls, rpc_calls: JSONRPCBatch):
+    def __init__(self, worker: DankWorker, eth_calls: CallsToExec, rpc_calls: List[RPCRequest]):
         self.worker = worker
-        for mcall in eth_calls.values():
-            for call in mcall:
-                call._started.set()
-        for call in rpc_calls:
-            call._started.set()
         self.eth_calls = eth_calls
         self.rpc_calls = rpc_calls
     
-    #def __await__(self) -> Generator[Any, None, Any]:
-    #    return await_all(self.coroutines).__await__()
+    def __await__(self) -> Generator[Any, None, Any]:
+        return await_all(self.coroutines).__await__()
     
     @property
     def batcher(self) -> NotSoBrightBatcher:
@@ -92,16 +76,26 @@ class DankBatch:
     
     @property
     def coroutines(self) -> Generator["_Batch", None, None]:
-        *full_batches, working_batch = self.batch_multicalls(list(self.eth_calls.values()))
+        multicalls_to_batch: List["Multicall"] = []
+        for *full_batches, remaining_calls in (self.batcher.batch_calls(calls, self.batcher.step) for calls in self.eth_calls.values()):
+            yield from (Multicall(self.worker, batch) for batch in full_batches)
+            multicalls_to_batch.append(Multicall(self.worker, remaining_calls))
+        # Combine multicalls into one or more jsonrpc batches
+        *full_batches, working_batch = self.batch_multicalls(multicalls_to_batch)
         
-        # Yield full batches then yield the rest
+        # Yield full batches then prepare the rest
         yield from full_batches
-        if len(working_batch) + len(self.rpc_calls) <= _config.MAX_JSONRPC_BATCH_SIZE:
-            working_batch.extend(self.rpc_calls, skip_check=True)
-            yield working_batch
-        else:
-            yield working_batch
-            yield self.rpc_calls
+        rpc_calls_to_batch = self.rpc_calls[:]
+        while rpc_calls_to_batch:
+            if len(working_batch) >= MAX_JSONRPC_BATCH_SIZE:
+                yield working_batch
+                working_batch = JSONRPCBatch(self.worker)
+            working_batch.append(rpc_calls_to_batch.pop())
+        if working_batch:
+            if working_batch.is_single_multicall:
+                yield working_batch[0]  # type: ignore [misc]
+            else:
+                yield working_batch
     
     def batch_multicalls(self, multicalls: List["Multicall"]) -> Generator["JSONRPCBatch", None, None]:
         """ Used to collect multicalls into batches without overwhelming the node with oversized calls. """
@@ -120,7 +114,7 @@ class DankBatch:
             else:
                 working_batch.append(mcall)
                 eth_calls_in_batch += len(mcall)
-                if len(working_batch) >= _config.MAX_JSONRPC_BATCH_SIZE:
+                if len(working_batch) >= MAX_JSONRPC_BATCH_SIZE:
                     # There are more than `MAX_JSONRPC_BATCH_SIZE` rpc calls packed into this batch, let's start a new one
                     yield working_batch
                     working_batch = JSONRPCBatch(self.worker)

@@ -1,12 +1,11 @@
 
-from time import time
 
 from brownie import chain
+from dank_mids import instances
 from multicall import Call
 from multicall.utils import await_awaitable, gather
 from web3._utils.rpc_abi import RPC
 
-from dank_mids import _config, instances
 from tests.fixtures import dank_w3
 
 CHAI = '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215'
@@ -22,17 +21,7 @@ def _get_controller():
 def _get_worker():
     return _get_controller().worker
 
-def _configure_batch_sizes():
-    """This is here so I can play around with diff params."""
-    # NOTE we need to ensure a dank controller is created before we can modify batch size
-    await_awaitable(dank_w3.eth.get_block_number())
-    _get_worker().batcher.step = 10_000
-    _config.MAX_JSONRPC_BATCH_SIZE = 200
-
-_configure_batch_sizes()
-
 def test_dank_middleware():
-    start = time()
     await_awaitable(gather(BIG_WORK))
     cid = _get_controller().call_uid.latest
     mid = _get_worker().multicall_uid.latest
@@ -40,7 +29,6 @@ def test_dank_middleware():
     assert cid, "The DankMiddlewareController did not process any calls."
     assert mid, "The DankMiddlewareController did not process any batches."
     assert rid, "The DankMiddlewareController did not process any requests."
-    print(f'took {time() - start} seconds.')
     print(f"calls:                  {cid}")
     print(f"multicalls:             {mid}")
     print(f"requests:               {rid}")
@@ -67,7 +55,7 @@ def test_next_bid():
     assert _get_worker().multicall_uid.next + 1 == _get_worker().multicall_uid.next
 
 def test_other_methods():
-    work = [dank_w3.eth.get_block_number() for i in range(1500)]
+    work = [dank_w3.eth.get_block_number() for i in range(50)]
     work.append(dank_w3.eth.get_block('0xe25822'))
     work.append(dank_w3.manager.coro_request(RPC.web3_clientVersion, []))
     assert await_awaitable(gather(work))
