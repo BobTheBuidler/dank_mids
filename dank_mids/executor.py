@@ -35,6 +35,7 @@ def _worker(executor_reference, work_queue, initializer, initargs, timeout):  # 
                         # Let the executor know we have one less idle thread available
                         executor._idle_semaphore.acquire(blocking=False)  # NOTE: NEW
                         return  # NOTE: NEW 
+                continue
                 
             if work_item is not None:
                 work_item.run()
