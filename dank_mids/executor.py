@@ -23,6 +23,7 @@ def _worker(executor_reference, work_queue, initializer, initargs, timeout):  # 
                                            timeout=timeout)  # NOTE: NEW
             except queue.Empty:  # NOTE: NEW
                 # Its been 'timeout' seconds and there are no new work items.  # NOTE: NEW
+                # Let's suicide the thread.  # NOTE: NEW
                 executor = executor_reference()  # NOTE: NEW
                 
                 with executor._adjusting_lock:  # NOTE: NEW
