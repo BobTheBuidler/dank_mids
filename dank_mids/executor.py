@@ -27,13 +27,14 @@ def _worker(executor_reference, work_queue, initializer, initargs, timeout):  # 
                 executor = executor_reference()  # NOTE: NEW
                 
                 with executor._adjusting_lock:  # NOTE: NEW
-                    t = threading.current_thread()  # NOTE: NEW
-                    executor._threads.remove(t)  # NOTE: NEW
-                    thread._threads_queues.pop(t)  # NOTE: NEW
-                    # Let the executor know we have one less idle thread available
-                    executor._idle_semaphore.acquire(blocking=False)  # NOTE: NEW
-                    
-                return  # NOTE: NEW
+                    # NOTE: We keep a minimum of one thread active to prevent locks
+                    if len(executor) > 1:  # NOTE: NEW
+                        t = threading.current_thread()  # NOTE: NEW
+                        executor._threads.remove(t)  # NOTE: NEW
+                        thread._threads_queues.pop(t)  # NOTE: NEW
+                        # Let the executor know we have one less idle thread available
+                        executor._idle_semaphore.acquire(blocking=False)  # NOTE: NEW
+                        return  # NOTE: NEW 
                 
             if work_item is not None:
                 work_item.run()
