@@ -47,9 +47,9 @@ def _call_failed(data: Optional[Union[bytes, Exception]]) -> bool:
 def _log_exception(e: Exception) -> None:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
-    retry_errs = RETRY_ERRS + ['out of gas','error processing call revert']
+    dont_need_to_see_errs = RETRY_ERRS + ['out of gas','error processing call revert', 'invalid ether transfer']
     stre = str(e).lower()
-    if any(err in stre for err in retry_errs):
+    if any(err in stre for err in dont_need_to_see_errs):
         return
     main_logger.exception(e)
 
@@ -229,25 +229,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     
     def __len__(self) -> int:
         return len(self.calls)
-    
-    def append(self, call: _Request, skip_check: bool = False) -> None:
-        self.calls.append(call)
-        #self._len += 1
-        if skip_check is False and self.is_full:
-            self.ensure_future()
-    
-    def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
-        self.calls.extend(calls)
-        #self._len += len(calls)
-        if skip_check is False:
-            if self.is_full:
-                self.ensure_future()
-            # TODO: put this somewhere else
-            elif sum(len(multicall) for multicall in self.controller.pending_eth_calls.values()) >= self.controller.batcher.step:
-                self.controller.pending_rpc_calls.extend(self.controller.pending_eth_calls.values())
-                self.controller.pending_eth_calls.clear()
-                self.controller.pending_rpc_calls.ensure_future()
-    
+
     @property
     def controller(self) -> "DankMiddlewareController":
         return self.worker.controller
@@ -269,6 +251,28 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     def chunk1(self) -> List[_Request]:
         return self.calls[self.halfpoint:]
     
+    def append(self, call: _Request, skip_check: bool = False) -> None:
+        self.calls.append(call)
+        #self._len += 1
+        if skip_check is False and self.is_full:
+            self.ensure_future()
+    
+    def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
+        self.calls.extend(calls)
+        #self._len += len(calls)
+        if skip_check is False:
+            if self.is_full:
+                self.ensure_future()
+            # TODO: put this somewhere else
+            elif sum(len(multicall) for multicall in self.controller.pending_eth_calls.values()) >= self.controller.batcher.step:
+                self.controller.pending_rpc_calls.extend(self.controller.pending_eth_calls.values())
+                self.controller.pending_eth_calls.clear()
+                self.controller.pending_rpc_calls.ensure_future()
+
+    def start(self) -> None:
+        for call in self.calls:
+            call.start()
+
     def should_retry(self, e: Exception) -> bool:
         if "out of gas" in f"{e}":
             # TODO Remember which contracts/calls are gas guzzlers
@@ -283,6 +287,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     def ensure_future(self) -> asyncio.Future:
         if self._fut is not None:
             return self._fut
+        self.start()
         with self.controller.pools_closed_lock:
             [call.start() for call in self.calls]
             self._fut = asyncio.ensure_future(self)
@@ -331,10 +336,6 @@ class Multicall(_Batch[eth_call]):
     @property
     def is_full(self) -> bool:
         return len(self) >= self.controller.batcher.step
-    
-    def start(self) -> None:
-        for call in self.calls:
-            call.start()
 
     async def get_response(self) -> List[RPCResponse]:
         rid = self.worker.request_uid.next
