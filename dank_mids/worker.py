@@ -44,6 +44,7 @@ class DankBatch:
         self.worker = worker
         self.multicalls = multicalls
         self.rpc_calls = rpc_calls
+        self._started = False
     
     def __await__(self) -> Generator[Any, None, Any]:
         self.start()
@@ -54,6 +55,7 @@ class DankBatch:
             mcall.start(self, cleanup=False)
         for call in self.rpc_calls:
             call.start(self)
+        self._started = True
     
     @property
     def batcher(self) -> NotSoBrightBatcher:
