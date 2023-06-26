@@ -122,7 +122,7 @@ class DankMiddlewareController:
     
     @property
     def queue_is_full(self) -> bool:
-        return bool(len(self.pending_eth_calls) >= self.batcher.step * 25)
+        return len(self.pending_eth_calls) >= self.batcher.step * 25
     
     def reduce_batch_size(self, num_calls: int) -> None:
         new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
