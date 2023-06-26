@@ -411,7 +411,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 if 'content length too large' in str(e) and self.is_multicalls_only:
                     self.controller.reduce_batch_size(self.total_calls)
                 raise e
-            raise NotImplementedError(response.__class__.__name__)
+            raise NotImplementedError(response.__class__.__name__, response)
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
