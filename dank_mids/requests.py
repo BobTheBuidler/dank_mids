@@ -400,7 +400,10 @@ class Multicall(_Batch[eth_call]):
             await await_all(call.spoof_response(data) for call, (_, data) in zip(self.calls, decoded))
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
-        await await_all((Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)))
+        batches = [Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
+        for batch in batches:
+            batch.start(cleanup=False)
+        await await_all(batches)
     
     def _post_future_cleanup(self) -> None:
         try:
