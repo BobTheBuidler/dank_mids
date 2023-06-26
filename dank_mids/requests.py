@@ -527,16 +527,13 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         return responses
     
     async def bisect_and_retry(self) -> None:
-        batches = [
+        await await_all(
             Multicall(self.worker, chunk[0].calls, f"json{self.jid}_{i}")  # type: ignore [misc]
             if len(chunk) == 1 and isinstance(chunk[0], Multicall)
             else JSONRPCBatch(self.worker, chunk, f"{self.jid}_{i}")
             for i, chunk in enumerate(self.bisected)
             if chunk
-        ]
-        for batch in batches:
-            batch._started = True
-        await await_all(batches)
+        )
 
     def _post_future_cleanup(self) -> None:
         self.controller.pending_rpc_calls = JSONRPCBatch(self.worker)
