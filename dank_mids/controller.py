@@ -94,12 +94,6 @@ class DankMiddlewareController:
         self.is_running = False
     
     async def execute_multicall(self) -> None:
-        i = 0
-        while self.pools_closed_lock.locked():
-            if i // 500 == int(i // 500):
-                main_logger.debug('lock is locked')
-            i += 1
-            await asyncio.sleep(.1)
         with self.pools_closed_lock:
             eth_calls: DefaultDict[BlockId, List[eth_call]] = defaultdict(list)
             for call in self.pending_eth_calls:
