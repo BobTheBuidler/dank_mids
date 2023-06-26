@@ -16,7 +16,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids._config import LOOP_INTERVAL
 from dank_mids._demo_mode import demo_logger
 from dank_mids.loggers import main_logger, sort_lazy_logger
-from dank_mids.requests import RPCRequest, _log_exception, eth_call
+from dank_mids.requests import JSONRPCBatch, RPCRequest, eth_call
 from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator
 from dank_mids.worker import DankBatch, DankWorker
@@ -62,15 +62,12 @@ class DankMiddlewareController:
         instances[self.chain_id].append(self)  # type: ignore
 
         self.pending_eth_calls: List[eth_call] = []
-        self.pending_rpc_calls: List[RPCRequest] = []
+        self.pending_rpc_calls = JSONRPCBatch(self.worker)
     
     def __repr__(self) -> str:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        self._start_exception_daemon_if_stopped()
-        # Just in case the exception daemon task errs, we can raise exceptions here with minimal overhead.
-        await self._exception_daemon(_raise=True)
         return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))
     
     @property
@@ -87,24 +84,25 @@ class DankMiddlewareController:
     
     async def taskmaster_loop(self) -> None:
         self.is_running = True
-        while self.pending_eth_calls or self.pending_rpc_calls:
-            await asyncio.sleep(0)
-            if (self.loop_is_ready or self.queue_is_full):
-                await self.execute_multicall()
+        await asyncio.sleep(0)
+        if self.pending_eth_calls or self.pending_rpc_calls:
+            await self.execute_batch()
         self.is_running = False
     
-    async def execute_multicall(self) -> None:
-        with self.pools_closed_lock:
+    async def execute_batch(self) -> None:
+        with self.pools_closed_lock:  # Do we really need this?
             eth_calls: DefaultDict[BlockId, List[eth_call]] = defaultdict(list)
             for call in self.pending_eth_calls:
                 eth_calls[call.block].append(call)
             self.pending_eth_calls.clear()
             self.num_pending_eth_calls = 0
             rpc_calls = self.pending_rpc_calls[:]
-            self.pending_rpc_calls.clear()
+        self.pending_rpc_calls = JSONRPCBatch(self.worker)
         demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')  # type: ignore
-        self._futs.append(asyncio.ensure_future(DankBatch(self.worker, eth_calls, rpc_calls)))
-        self._clear_completed_futs()
+        await DankBatch(self.worker, eth_calls, rpc_calls)
+        # TODO: handle this better along with .is_running flag
+        #self._futs.append(fut)
+        #self._clear_completed_futs()
 
     @sort_lazy_logger
     def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
