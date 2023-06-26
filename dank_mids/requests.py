@@ -338,6 +338,9 @@ class Multicall(_Batch[eth_call]):
         await await_all((Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)))
 
 
+class EmptyBatch(Exception):
+    pass
+
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def __init__(self, worker: "DankWorker", calls: List[Union[Multicall, RPCRequest]] = [], jid: Optional[BatchId] = None) -> None:
         super().__init__(worker, calls)
@@ -346,6 +349,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     @property
     def data(self) -> List[RpcCallJson]:
+        if not self.calls:
+            raise EmptyBatch(f"batch {self.uid} is empty and should not be processed.")
         return [call.rpc_data for call in self.calls]
     
     @property
