@@ -41,6 +41,14 @@ class DankMiddlewareController:
         self.w3: Web3 = w3
         self.sync_w3 = _sync_w3_from_async(w3)
         self.chain_id = self.sync_w3.eth.chain_id
+        self.endpoint = self.w3.provider.endpoint_uri
+        if "tenderly" in self.endpoint:
+            # NOTE: Tenderly does funky things sometimes
+            main_logger.warning(
+                "We see you're using a tenderly rpc.\n" +
+                "There is a known conflict between dank and tenderly which causes issues not present with other providers.\n" + 
+                "Your milage may vary. Debugging efforts welcome."
+            )
         multicall = MULTICALL_ADDRESSES.get(self.chain_id)
         multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
         if multicall2 is None:
@@ -56,7 +64,7 @@ class DankMiddlewareController:
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self.worker))
         self.pending_rpc_calls = JSONRPCBatch(self.worker)
-        
+
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
     
@@ -65,10 +73,6 @@ class DankMiddlewareController:
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
         return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))
-    
-    @property
-    def endpoint(self) -> str:
-        return self.w3.provider.endpoint_uri  # type: ignore
     
     @property
     def batcher(self) -> NotSoBrightBatcher:
