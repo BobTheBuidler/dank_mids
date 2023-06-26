@@ -239,8 +239,14 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
         self.calls.extend(calls)
         #self._len += len(calls)
-        if skip_check is False and self.is_full:
-            self.ensure_future()
+        if skip_check is False:
+            if self.is_full:
+                self.ensure_future()
+            # TODO: put this somewhere else
+            elif sum(len(multicall) for multicall in self.controller.pending_eth_calls.values()) >= self.controller.batcher.step:
+                self.controller.pending_rpc_calls.extend(self.controller.pending_eth_calls.values())
+                self.controller.pending_eth_calls.clear()
+                self.controller.pending_rpc_calls.ensure_future()
     
     @property
     def controller(self) -> "DankMiddlewareController":
