@@ -16,7 +16,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids._config import LOOP_INTERVAL
 from dank_mids._demo_mode import demo_logger
 from dank_mids.loggers import main_logger, sort_lazy_logger
-from dank_mids.requests import RPCRequest, eth_call
+from dank_mids.requests import RPCRequest, _log_exception, eth_call
 from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator
 from dank_mids.worker import DankWorker
@@ -48,9 +48,12 @@ class DankMiddlewareController:
             raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
         self.multicall2 = to_checksum_address(multicall2)
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
-        self.pending_eth_calls: List[eth_call] = []
-        self.pending_rpc_calls: List[RPCRequest] = []
-        self.num_pending_eth_calls: int = 0
+        self.call_uid = UIDGenerator()
+        # NOTE: We need some internal things set up before we can start the worker thread.
+        self._futs: List[asyncio.Future] = []
+        self._daemon_running = False
+        self.event_loop = asyncio.get_event_loop()
+        self._wakeup_loop = self.event_loop._write_to_self
         self.worker = DankWorker(self)
         self.is_running: bool = False
         self.call_uid = UIDGenerator()
@@ -62,7 +65,14 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))  # type: ignore [return-value]
+        self._start_exception_daemon_if_stopped()
+        # Just in case the exception daemon task errs, we can raise exceptions here with minimal overhead.
+        await self._exception_daemon(_raise=True)
+        return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))
+    
+    @property
+    def endpoint(self) -> str:
+        return self.w3.provider.endpoint_uri  # type: ignore
     
     @property
     def batcher(self) -> NotSoBrightBatcher:
@@ -124,3 +134,54 @@ class DankMiddlewareController:
             old_step = self.batcher.step
             self.batcher.step = new_step
             main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
+    
+    def _start_exception_daemon_if_stopped(self) -> None:
+        if self._daemon_running:
+            return
+        
+        def done_callback(fut: asyncio.Future) -> None:
+            """Notifies the controller in the event of daemon shutdown or failure."""
+            self._daemon_running = False
+            if not fut.exception():
+                try:
+                    self._futs.remove(fut)
+                except ValueError as e:
+                    if str(e) != "list.remove(x): x not in list":
+                        _log_exception(e)
+                        raise
+                    
+        fut = asyncio.ensure_future(self._exception_daemon())
+        fut.add_done_callback(done_callback)
+        self._futs.append(fut)
+            
+    async def _exception_daemon(self, _raise: bool = False) -> None:
+        """_raise is used when running from a coroutine that isn't a task so we don't get stuck."""
+        if self._daemon_running:
+            # Just in case
+            return
+        main_logger.debug('starting exception daemon.')
+        self._daemon_running = True
+        while self._futs:
+            futs = self._futs[:]
+            main_logger.debug(f'{sum(1 for fut in self._futs if fut.done())} futs are done and ready to pop')
+            if any(fut.done() and fut.exception() for fut in futs):
+                main_logger.critical(f"DankMids futures have err'd: {self._futs}")
+                [main_logger.critical(f"DankMidsError: {e}") for fut in futs if fut.done() and (e := fut.exception())]
+            else:
+                main_logger.debug(self._futs)
+            for fut in futs:
+                if fut.done():
+                    if e := fut.exception():
+                        if _raise:
+                            raise e
+                    else:
+                        try:
+                            self._futs.remove(fut)
+                        except ValueError as e:
+                            if str(e) != "list.remove(x): x not in list":
+                                _log_exception(e)
+                                raise
+                    
+            await asyncio.sleep(5)
+        main_logger.debug('exiting exception daemon.')
+
