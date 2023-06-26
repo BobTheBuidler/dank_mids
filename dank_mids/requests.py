@@ -448,12 +448,12 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def validate_responses(self, responses) -> None:
         # A successful response will be a list
         if isinstance(responses, dict):
-            error = (
-                responses if 'result' not in responses
-                else responses['result']['message'] if isinstance(responses['result'], dict) and 'message' in responses['result']
-                else responses['result']
-            )
-            raise BadResponse(error)
+            err = responses
+            if 'result' in err:
+                err = responses['result']
+            if isinstance(err, dict) and 'message' in err:
+                err = err['message']
+            raise BadResponse(err)
         for i, error in enumerate(responses):
             if 'result' not in error:
                 error = error['error'] if 'error' in error else error
