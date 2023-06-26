@@ -92,13 +92,6 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     def __await__(self) -> Generator[Any, None, Optional[_Response]]:
         return self.get_response().__await__()
     
-    def __del__(self) -> None:
-        try:
-            if not self._started and self._batch and self._batch._started:
-                main_logger.warning(f'{self} was created and destroyed.')
-        except Exception as e:
-            main_logger.exception(e)
-    
     @abc.abstractmethod
     def __len__(self) -> int:
         pass
@@ -140,6 +133,16 @@ class RPCRequest(_RequestMeta[RPCResponse]):
     
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} uid={self.uid} method={self.method}>"
+    
+    def __del__(self) -> None:
+        """Just lets the user know if there is something fishy going on"""
+        try:
+            if not self._started and self._batch and self._batch._started:
+                main_logger.warning(f'{self} was created and destroyed.')
+        except AttributeError as e:
+            print(e)
+        except Exception as e:
+            main_logger.exception(e)
 
     @property
     def rpc_data(self) -> RpcCallJson:
@@ -159,15 +162,15 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         if not self._started:
             await self.controller.execute_batch()
         
-        #async def debug_helper():
+        async def debug_helper():
         #    print(f'fetching {self} from {self._batch}  started: {self._batch._started}')
-        #    while not self._done.is_set():
-        #        await asyncio.sleep(60)
-        #        if not self._done.is_set():
-        #            print(f"{self} from {self._batch} event not set.  started: {self._batch._started}")
-        #t = asyncio.create_task(
-        #    asyncio.wait_for(debug_helper(), 300)
-        #)
+            while not self._done.is_set():
+                await asyncio.sleep(60)
+                if not self._done.is_set():
+                    print(f"{self} from {self._batch} event not set.  started: {self._batch._started}")
+        t = asyncio.create_task(
+            asyncio.wait_for(debug_helper(), 300)
+        )
         await self._done.wait()
         return self.response
     

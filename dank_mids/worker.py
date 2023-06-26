@@ -1,5 +1,4 @@
-import asyncio
-import threading
+
 from typing import TYPE_CHECKING, Any, Generator, List
 
 import eth_retry
@@ -45,25 +44,16 @@ class DankBatch:
         self.worker = worker
         self.multicalls = multicalls
         self.rpc_calls = rpc_calls
-        self._fut = None
     
     def __await__(self) -> Generator[Any, None, Any]:
-        return await_all(self.coroutines).__await__()
-    
-    def ensure_future(self) -> asyncio.Future:
-        if self._fut is not None:
-            return self._fut
         self.start()
-        fut = asyncio.ensure_future(self)
-        self.worker.controller._futs.append(fut)
-        self.worker.controller._clear_completed_futs()
-        return fut
+        return await_all(self.coroutines).__await__()
 
     def start(self) -> None:
-        for multicall in self.multicalls.values():
-            multicall.start()
-        for rpc_call in self.rpc_calls:
-            rpc_call.start()
+        for mcall in self.multicalls.values():
+            mcall.start(self, cleanup=False)
+        for call in self.rpc_calls:
+            call.start(self)
     
     @property
     def batcher(self) -> NotSoBrightBatcher:

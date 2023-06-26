@@ -1,5 +1,4 @@
 
-import asyncio
 import threading
 from collections import defaultdict
 from time import time
@@ -32,7 +31,7 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     # We can't pickle middlewares to send to process executor.
     # The call has already passed thru all middlewares on the user's Web3 instance.
     sync_w3.middleware_onion.clear()
-    sync_w3.provider.middlewares = tuple()
+    sync_w3.provider.middlewares = ()
     return sync_w3
 
 
@@ -57,8 +56,6 @@ class DankMiddlewareController:
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self.worker))
         self.pending_rpc_calls = JSONRPCBatch(self.worker)
-
-        self._futs: List[asyncio.Future] = []
         
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
@@ -81,7 +78,7 @@ class DankMiddlewareController:
     def pools_closed_lock(self) -> threading.Lock:
         return self.call_uid.lock
     
-    def start_batch(self) -> None:
+    async def execute_batch(self) -> None:
         # NOTE: We create this empty batch here to avoid double-locking.
         empty = JSONRPCBatch(self.worker)
         with self.pools_closed_lock:  # Do we really need this?
@@ -90,8 +87,10 @@ class DankMiddlewareController:
             self.num_pending_eth_calls = 0
             rpc_calls = self.pending_rpc_calls[:]
             self.pending_rpc_calls = empty
-        demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')  # type: ignore
-        DankBatch(self.worker, multicalls, rpc_calls).ensure_future()
+        demo_logger.info(f'executing dank batch (current cid: {self.call_uid.latest})')  # type: ignore
+        batch = DankBatch(self.worker, multicalls, rpc_calls)
+        await batch
+        demo_logger.info(f'{batch} done')
 
     @sort_lazy_logger
     def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
@@ -119,11 +118,3 @@ class DankMiddlewareController:
             old_step = self.batcher.step
             self.batcher.step = new_step
             main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
-    
-    def _clear_completed_futs(self) -> None:
-        for fut in self._futs[:]:
-            if not fut.done():
-                continue
-            if e := fut.exception():
-                raise e
-            self._futs.remove(fut)
