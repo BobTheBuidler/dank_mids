@@ -421,6 +421,9 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         super().__init__(worker, calls)
         self.jid = jid or self.worker.jsonrpc_batch_uid.next
         self._started = False
+
+    def __repr__(self) -> str:
+        return f"<JSONRPCBatch jid={self.jid} block={self.block} len={len(self)}>"
     
     @property
     def data(self) -> List[RpcCallJson]:
