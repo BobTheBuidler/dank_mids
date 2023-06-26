@@ -45,11 +45,22 @@ def _call_failed(data: Optional[Union[bytes, Exception]]) -> bool:
         return True
     return False
 
+def _log_exception(e: Exception) -> None:
+    # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
+    # TODO: Better filter what we choose to log here
+    stre = str(e).lower()
+    if any(err in stre for err in RETRY_ERRS):
+        return
+    if any(err in stre for err in ['out of gas','error processing call revert']):
+        return
+    main_logger.exception(e)
+
 def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: bytes, block: BlockId, w3: Web3) -> Union[bytes, Exception]:
     """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
     try:
         return w3.eth.call({"to": target, "data": calldata}, block)
     except Exception as e:
+        _log_exception(e)
         return e
 
 def _err_response(e: Exception) -> RPCError:
@@ -296,6 +307,7 @@ class Multicall(_Batch[eth_call]):
         try:
             await self.spoof_response(await self.worker(*self.params))
         except Exception as e:
+            _log_exception(e)
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
@@ -369,10 +381,12 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # When demo mode is disabled, we can save some CPU time by skipping this sum
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:
-            responses = await self.post()
-            self.validate_responses(responses)
-            await self.spoof_response(responses)
+            # NOTE: We do this inline so we never have to allocate the response to memory
+            await self.spoof_response(self.validate_responses(await self.post()))
+        except EmptyBatch as e:
+            _log_exception(e)
         except Exception as e:
+            _log_exception(e)
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
