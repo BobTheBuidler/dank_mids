@@ -143,6 +143,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
 
     async def get_response(self) -> RPCResponse:
         if not self._started:
+            # NOTE: We want to force the event loop to make one full _run_once call before we execute.
             await asyncio.sleep(0)
         if not self._started:
             self.controller.start_batch()
