@@ -342,7 +342,12 @@ class EmptyBatch(Exception):
     pass
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
-    def __init__(self, worker: "DankWorker", calls: List[Union[Multicall, RPCRequest]] = [], jid: Optional[BatchId] = None) -> None:
+    def __init__(
+        self,
+        worker: "DankWorker",
+        calls: List[Union[Multicall, RPCRequest]] = [], 
+        jid: Optional[BatchId] = None
+    ) -> None:
         super().__init__(worker, calls)
         self.jid = jid or self.worker.jsonrpc_batch_uid.next
         self._locked = False
