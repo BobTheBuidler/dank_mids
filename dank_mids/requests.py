@@ -113,10 +113,11 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         self.controller = controller
         self.method = method
         self.params = params
+        self._started = False
         super().__init__()
         
         if isinstance(self, eth_call) and self.multicall_compatible:
-            self.controller.pending_eth_calls.append(self)
+            self.controller.pending_eth_calls[self.block].append(self)
         else:
             self.controller.pending_rpc_calls.append(self)
         demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
@@ -136,10 +137,15 @@ class RPCRequest(_RequestMeta[RPCResponse]):
     @property
     def rpc_data(self) -> RpcCallJson:
         return {'jsonrpc': '2.0', 'id': self.uid, 'method': self.method, 'params': self.params}
+    
+    def start(self) -> None:
+        self._started = True
 
     async def get_response(self) -> RPCResponse:
-        if not self.controller.is_running:
-            await self.controller.taskmaster_loop()
+        if not self._started:
+            await asyncio.sleep(0)
+        if not self._started:
+            self.controller.start_batch()
         await self._done.wait()
         return self.response
     
@@ -207,6 +213,8 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     def __init__(self, worker: "DankWorker", calls: Iterable[_Request]):
         self.worker: DankWorker = worker
         self.calls = list(calls)  # type: ignore
+        self._fut = None
+        #self._len = 0
         super().__init__()
     
     def __bool__(self) -> bool:
@@ -221,8 +229,17 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     def __len__(self) -> int:
         return len(self.calls)
     
-    def append(self, call: _Request) -> None:
+    def append(self, call: _Request, skip_check: bool = False) -> None:
         self.calls.append(call)
+        #self._len += 1
+        if skip_check is False and self.is_full:
+            self.ensure_future()
+    
+    def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
+        self.calls.extend(calls)
+        #self._len += len(calls)
+        if skip_check is False and self.is_full:
+            self.ensure_future()
     
     @property
     def controller(self) -> "DankMiddlewareController":
@@ -255,6 +272,17 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif "error processing call Revert" not in f"{e}":
             main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
+    
+    def ensure_future(self) -> asyncio.Future:
+        if self._fut is not None:
+            return self._fut
+        with self.controller.pools_closed_lock:
+            [call.start() for call in self.calls]
+            self._fut = asyncio.ensure_future(self)
+            self._post_future_cleanup()
+            self.controller._futs.append(self._fut)
+            self.controller._clear_completed_futs()
+        return self._fut
 
 
 class Multicall(_Batch[eth_call]):
@@ -292,6 +320,14 @@ class Multicall(_Batch[eth_call]):
     @property
     def rpc_data(self) -> RpcCallJson:
         return {'jsonrpc': '2.0', 'id': self.uid, 'method': self.method, 'params': self.params}
+    
+    @property
+    def is_full(self) -> bool:
+        return len(self) >= self.controller.batcher.step
+    
+    def start(self) -> None:
+        for call in self.calls:
+            call.start()
 
     async def get_response(self) -> List[RPCResponse]:
         rid = self.worker.request_uid.next
@@ -329,7 +365,9 @@ class Multicall(_Batch[eth_call]):
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
         await await_all((Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)))
-
+    
+    def _post_future_cleanup(self) -> None:
+        self.controller.pending_eth_calls.pop(self.block)
 
 class BadResponse(Exception):
     pass
@@ -373,10 +411,21 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def total_calls(self) -> int:
         return sum(len(call) for call in self.calls)
 
+    @property
+    def is_full(self) -> bool:
+        return (self.is_multicalls_only and len(self) >= self.controller.batcher.step) or len(self) >= _config.MAX_JSONRPC_BATCH_SIZE
+
     def append(self, call: Union[Multicall, RPCRequest]) -> None:
         if self._locked:
+            # This shouldn't happen but just in case...
             raise Exception(f"{self} is locked.")
-        self.calls.append(call)
+        super().append(call)
+
+    def extend(self, call: Union[Multicall, RPCRequest]) -> None:
+        if self._locked:
+            # This shouldn't happen but just in case...
+            raise Exception(f"{self} is locked.")
+        super().extend(call)
     
     async def get_response(self) -> None:
         """ Runs in worker thread. """
@@ -454,3 +503,6 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             for i, chunk in enumerate(self.bisected)
             if chunk
         )
+
+    def _post_future_cleanup(self) -> None:
+        self.controller.pending_rpc_calls = JSONRPCBatch(self.worker)

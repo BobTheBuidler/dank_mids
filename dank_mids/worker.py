@@ -9,7 +9,7 @@ from multicall.multicall import NotSoBrightBatcher
 from dank_mids._config import GANACHE_FORK, MAX_JSONRPC_BATCH_SIZE
 from dank_mids.helpers import await_all
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, _Batch
-from dank_mids.types import CallsToExec
+from dank_mids.types import Multicalls
 from dank_mids.uid import UIDGenerator
 
 if TYPE_CHECKING:
@@ -41,13 +41,29 @@ class DankWorker:
     
 class DankBatch:
     """ A batch of jsonrpc batches. """
-    def __init__(self, worker: DankWorker, eth_calls: CallsToExec, rpc_calls: List[RPCRequest]):
+    def __init__(self, worker: DankWorker, multicalls: Multicalls, rpc_calls: List[RPCRequest]):
         self.worker = worker
-        self.eth_calls = eth_calls
+        self.multicalls = multicalls
         self.rpc_calls = rpc_calls
+        self._fut = None
     
     def __await__(self) -> Generator[Any, None, Any]:
         return await_all(self.coroutines).__await__()
+    
+    def ensure_future(self) -> asyncio.Future:
+        if self._fut is not None:
+            return self._fut
+        self.start()
+        fut = asyncio.ensure_future(self)
+        self.worker.controller._futs.append(fut)
+        self.worker.controller._clear_completed_futs()
+        return fut
+
+    def start(self) -> None:
+        for multicall in self.multicalls.values():
+            multicall.start()
+        for rpc_call in self.rpc_calls:
+            rpc_call.start()
     
     @property
     def batcher(self) -> NotSoBrightBatcher:
@@ -56,7 +72,7 @@ class DankBatch:
     @property
     def coroutines(self) -> Generator["_Batch", None, None]:
         multicalls_to_batch: List["Multicall"] = []
-        for *full_batches, remaining_calls in (self.batcher.batch_calls(calls, self.batcher.step) for calls in self.eth_calls.values()):
+        for *full_batches, remaining_calls in (self.batcher.batch_calls(calls, self.batcher.step) for calls in self.multicalls.values()):
             yield from (Multicall(self.worker, batch) for batch in full_batches)
             multicalls_to_batch.append(Multicall(self.worker, remaining_calls))
         # Combine multicalls into one or more jsonrpc batches

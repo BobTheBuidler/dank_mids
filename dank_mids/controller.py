@@ -16,7 +16,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids._config import LOOP_INTERVAL
 from dank_mids._demo_mode import demo_logger
 from dank_mids.loggers import main_logger, sort_lazy_logger
-from dank_mids.requests import JSONRPCBatch, RPCRequest, eth_call
+from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator
 from dank_mids.worker import DankBatch, DankWorker
@@ -48,21 +48,20 @@ class DankMiddlewareController:
             raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
         self.multicall2 = to_checksum_address(multicall2)
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
-        self.call_uid = UIDGenerator()
-        # NOTE: We need some internal things set up before we can start the worker thread.
-        self._futs: List[asyncio.Future] = []
-        self._daemon_running = False
-        self.event_loop = asyncio.get_event_loop()
-        self._wakeup_loop = self.event_loop._write_to_self
-        self.worker = DankWorker(self)
-        self.is_running: bool = False
+
         self.call_uid = UIDGenerator()
         self._checkpoint: float = time()
+
+        # NOTE: We no longer have a worker thread, we just have this weird worker thing we should refactor out.
+        self.worker = DankWorker(self)
+
+        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self.worker))
+        self.pending_rpc_calls = JSONRPCBatch(self.worker)
+
+        self._futs: List[asyncio.Future] = []
+        
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
-
-        self.pending_eth_calls: List[eth_call] = []
-        self.pending_rpc_calls = JSONRPCBatch(self.worker)
     
     def __repr__(self) -> str:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
@@ -82,27 +81,17 @@ class DankMiddlewareController:
     def pools_closed_lock(self) -> threading.Lock:
         return self.call_uid.lock
     
-    async def taskmaster_loop(self) -> None:
-        self.is_running = True
-        await asyncio.sleep(0)
-        if self.pending_eth_calls or self.pending_rpc_calls:
-            await self.execute_batch()
-        self.is_running = False
-    
-    async def execute_batch(self) -> None:
+    def start_batch(self) -> None:
+        # NOTE: We create this empty batch here to avoid double-locking.
+        empty = JSONRPCBatch(self.worker)
         with self.pools_closed_lock:  # Do we really need this?
-            eth_calls: DefaultDict[BlockId, List[eth_call]] = defaultdict(list)
-            for call in self.pending_eth_calls:
-                eth_calls[call.block].append(call)
+            multicalls = dict(self.pending_eth_calls)
             self.pending_eth_calls.clear()
             self.num_pending_eth_calls = 0
             rpc_calls = self.pending_rpc_calls[:]
-        self.pending_rpc_calls = JSONRPCBatch(self.worker)
+            self.pending_rpc_calls = empty
         demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')  # type: ignore
-        await DankBatch(self.worker, eth_calls, rpc_calls)
-        # TODO: handle this better along with .is_running flag
-        #self._futs.append(fut)
-        #self._clear_completed_futs()
+        DankBatch(self.worker, multicalls, rpc_calls).ensure_future()
 
     @sort_lazy_logger
     def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
@@ -121,7 +110,7 @@ class DankMiddlewareController:
     
     @property
     def queue_is_full(self) -> bool:
-        return len(self.pending_eth_calls) >= self.batcher.step * 25
+        return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step * 25
     
     def reduce_batch_size(self, num_calls: int) -> None:
         new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
@@ -133,8 +122,8 @@ class DankMiddlewareController:
     
     def _clear_completed_futs(self) -> None:
         for fut in self._futs[:]:
-            if fut.done():
-                if e := fut.exception():
-                    raise e
-                self._futs.remove(fut)
-
+            if not fut.done():
+                continue
+            if e := fut.exception():
+                raise e
+            self._futs.remove(fut)
