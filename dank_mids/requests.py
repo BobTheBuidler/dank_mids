@@ -111,7 +111,6 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     async def get_response(self) -> Optional[_Response]:
         pass
 
-
 ### Single requests:
 
 class RPCRequest(_RequestMeta[RPCResponse]):
