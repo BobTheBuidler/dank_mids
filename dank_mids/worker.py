@@ -29,19 +29,6 @@ class DankWorker:
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
         self.state_override_not_supported: bool = GANACHE_FORK or self.controller.chain_id == 100  # Gnosis Chain does not support state override.
-        self.event_loop = asyncio.new_event_loop()
-        self.worker_thread = threading.Thread(target=self.start)
-        self.worker_thread.start()
-    
-    def start(self) -> None:
-        """ Runs in worker thread. """
-        asyncio.set_event_loop(self.event_loop)
-        self.event_loop.run_until_complete(self.loop())
-    
-    async def loop(self) -> None:
-        """ Exits loop when main thread dies, killing worker thread. Runs in worker thread. """
-        while threading.main_thread().is_alive():
-            await asyncio.sleep(5)
     
     @eth_retry.auto_retry
     async def __call__(self, *request_args: Any) -> Any:
@@ -50,14 +37,6 @@ class DankWorker:
     @property
     def endpoint(self) -> str:
         return self.controller.w3.provider.endpoint_uri  # type: ignore
-    
-    async def execute_batch(self, calls_to_exec: CallsToExec, rpc_calls: List[RPCRequest]) -> None:
-        """ Runs in main thread. """
-        asyncio.run_coroutine_threadsafe(self._execute_batch(calls_to_exec, rpc_calls), self.event_loop).result()
-
-    async def _execute_batch(self, calls_to_exec: CallsToExec, rpc_calls: List[RPCRequest]) -> None:
-        """ Runs in worker thread. """
-        await DankBatch(self, calls_to_exec, rpc_calls)
     
     
 class DankBatch:

@@ -19,7 +19,7 @@ from dank_mids.loggers import main_logger, sort_lazy_logger
 from dank_mids.requests import RPCRequest, _log_exception, eth_call
 from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator
-from dank_mids.worker import DankWorker
+from dank_mids.worker import DankBatch, DankWorker
 
 BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
 
@@ -103,12 +103,13 @@ class DankMiddlewareController:
             rpc_calls = self.pending_rpc_calls[:]
             self.pending_rpc_calls.clear()
         demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')  # type: ignore
-        await self.worker.execute_batch(eth_calls, rpc_calls)
+        self._futs.append(asyncio.ensure_future(DankBatch(self.worker, eth_calls, rpc_calls)))
+        self._clear_completed_futs()
 
     @sort_lazy_logger
     def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
         """ Determines whether or not a call should be passed to the DankMiddlewareController. """
-        if method == "eth_call" and params[0]["to"] == self.multicall2:
+        if method == "eth_call" and params[0]["to"] in self.no_multicall:
             # These most likely come from dank mids internals if you're using dank mids.
             return False
         if any(bypass in method for bypass in BYPASS_METHODS):
@@ -132,53 +133,10 @@ class DankMiddlewareController:
             self.batcher.step = new_step
             main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
     
-    def _start_exception_daemon_if_stopped(self) -> None:
-        if self._daemon_running:
-            return
-        
-        def done_callback(fut: asyncio.Future) -> None:
-            """Notifies the controller in the event of daemon shutdown or failure."""
-            self._daemon_running = False
-            if not fut.exception():
-                try:
-                    self._futs.remove(fut)
-                except ValueError as e:
-                    if str(e) != "list.remove(x): x not in list":
-                        _log_exception(e)
-                        raise
-                    
-        fut = asyncio.ensure_future(self._exception_daemon())
-        fut.add_done_callback(done_callback)
-        self._futs.append(fut)
-            
-    async def _exception_daemon(self, _raise: bool = False) -> None:
-        """_raise is used when running from a coroutine that isn't a task so we don't get stuck."""
-        if self._daemon_running:
-            # Just in case
-            return
-        main_logger.debug('starting exception daemon.')
-        self._daemon_running = True
-        while self._futs:
-            futs = self._futs[:]
-            main_logger.debug(f'{sum(1 for fut in self._futs if fut.done())} futs are done and ready to pop')
-            if any(fut.done() and fut.exception() for fut in futs):
-                main_logger.critical(f"DankMids futures have err'd: {self._futs}")
-                [main_logger.critical(f"DankMidsError: {e}") for fut in futs if fut.done() and (e := fut.exception())]
-            else:
-                main_logger.debug(self._futs)
-            for fut in futs:
-                if fut.done():
-                    if e := fut.exception():
-                        if _raise:
-                            raise e
-                    else:
-                        try:
-                            self._futs.remove(fut)
-                        except ValueError as e:
-                            if str(e) != "list.remove(x): x not in list":
-                                _log_exception(e)
-                                raise
-                    
-            await asyncio.sleep(5)
-        main_logger.debug('exiting exception daemon.')
+    def _clear_completed_futs(self) -> None:
+        for fut in self._futs[:]:
+            if fut.done():
+                if e := fut.exception():
+                    raise e
+                self._futs.remove(fut)
 

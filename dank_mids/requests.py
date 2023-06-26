@@ -87,6 +87,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         elif isinstance(self, _Batch):
             self.uid = self.worker.controller.call_uid.next
         self._response: Optional[_Response] = None
+        self._done = asyncio.Event()
     
     def __await__(self) -> Generator[Any, None, Optional[_Response]]:
         return self.get_response().__await__()
@@ -96,12 +97,8 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         pass
 
     @property
-    def is_complete(self) -> bool:
-        return self._response is not None
-    
-    @property
     def response(self) -> _Response:
-        if self._response is None:
+        if not self._done.is_set():
             raise ResponseNotReady(self)
         return self._response
 
@@ -125,9 +122,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
     
     def __eq__(self, __o: object) -> bool:
-        if not isinstance(__o, self.__class__):
-            return False
-        return self.uid == __o.uid 
+        return self.uid == __o.uid if isinstance(__o, self.__class__) else False 
     
     def __hash__(self) -> int:
         return self.uid
@@ -145,8 +140,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
     async def get_response(self) -> RPCResponse:
         if not self.controller.is_running:
             await self.controller.taskmaster_loop()
-        while not self.is_complete:
-            await asyncio.sleep(0)
+        await self._done.wait()
         return self.response
     
     async def spoof_response(self, data: Union[str, AttributeDict, Exception]) -> None:
@@ -160,6 +154,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         else:
             main_logger.debug(f"method: {self.method}  spoof: {spoof}")
         self._response = spoof  # type: ignore
+        self._done.set()
 
 class eth_call(RPCRequest):
     def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
@@ -402,9 +397,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     @eth_retry.auto_retry
     async def post(self) -> Union[Dict, List[bytes]]:
-        session: aiohttp.ClientSession = await _session.get_session(self.controller.endpoint)
-        async with session.post() as response:
-            response.raise_for_status()
+        session = await _session.get_session()
+        async with session.post(self.controller.endpoint, json=self.data) as response:
             response = await response.json()
             if isinstance(response, List):
                 return response
