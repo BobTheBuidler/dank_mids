@@ -18,11 +18,10 @@ from web3 import Web3
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
 
-from dank_mids._config import (AIOHTTP_TIMEOUT, DEMO_MODE,
-                               MAX_JSONRPC_BATCH_SIZE)
+from dank_mids import _config
 from dank_mids._demo_mode import demo_logger
 from dank_mids.constants import BAD_HEXES, OVERRIDE_CODE
-from dank_mids.helpers import await_all
+from dank_mids.helpers import _session, await_all
 from dank_mids.loggers import main_logger
 from dank_mids.types import BatchId, BlockId, JsonrpcParams, RpcCallJson
 
@@ -389,7 +388,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         """ Runs in worker thread. """
         self._locked = True
         rid = self.worker.request_uid.next
-        if DEMO_MODE:
+        if _config.DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:
@@ -404,33 +403,27 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     @eth_retry.auto_retry
     async def post(self) -> Union[Dict, List[bytes]]:
-        """ Posts `jsonrpc_batch` to your node. A successful call returns a list. """
-        async with aiohttp.ClientSession(timeout=AIOHTTP_TIMEOUT) as session:
-            responses = await session.post(self.worker.endpoint, json=self.data)  # type: ignore
-            try:
-                return await responses.json(content_type=responses.content_type)
-            except:
+        session: aiohttp.ClientSession = await _session.get_session(self.controller.endpoint)
+        async with session.post() as response:
+            response.raise_for_status()
+            response = await response.json()
+            if isinstance(response, List):
+                return response
+            elif isinstance(response, Tuple):
+                reason, e = response
                 counts = self.method_counts
-                decoded = responses._body.decode()
+                main_logger.warning(f"{e.__class__.__name__}: {e}")
                 main_logger.info(f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}", )
                 main_logger.info(f"methods called: {counts}")
-                if 'content length too large' in decoded or decoded == "":
-                    if self.is_multicalls_only:
-                        self.controller.reduce_batch_size(self.total_calls)
-                    raise ValueError(decoded)
-                # This shouldn't run unless there are issues. I'll probably delete it later.
-                main_logger.info(f"decoded body: {decoded}")
-                main_logger.info(f"exception: {responses.content._exception}")
-                raise 
+                if 'content length too large' in str(e) and self.is_multicalls_only:
+                    self.controller.reduce_batch_size(self.total_calls)
+                raise e
+            raise NotImplementedError(response.__class__.__name__)
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
         if "No state available for block" in f"{e}":
             main_logger.debug('No state available for queried block. Bisecting batch and retrying.')
-            return True
-        elif f"{e}" == "jsonrpc":
-            # TODO Figure out what this means and how we can prevent it.
-            # For now, we simply bisect and retry.
             return True
         elif super().should_retry(e):
             return True
