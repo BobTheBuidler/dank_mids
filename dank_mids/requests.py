@@ -5,7 +5,6 @@ from collections import defaultdict
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
 
-import aiohttp
 import eth_retry
 from aiohttp import RequestInfo
 from eth_abi import decode_single, encode_single
@@ -20,6 +19,7 @@ from web3.types import RPCEndpoint, RPCError, RPCResponse
 
 from dank_mids import _config
 from dank_mids._demo_mode import demo_logger
+from dank_mids._exceptions import BadResponse, EmptyBatch
 from dank_mids.constants import BAD_HEXES, OVERRIDE_CODE
 from dank_mids.helpers import _session, await_all
 from dank_mids.loggers import main_logger
@@ -376,11 +376,6 @@ class Multicall(_Batch[eth_call]):
     def _post_future_cleanup(self) -> None:
         self.controller.pending_eth_calls.pop(self.block)
 
-class BadResponse(Exception):
-    pass
-
-class EmptyBatch(Exception):
-    pass
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def __init__(
@@ -443,7 +438,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:
             # NOTE: We do this inline so we never have to allocate the response to memory
-            await self.spoof_response(self.validate_responses(await self.post()))
+            await self.spoof_response(await self.post())
         except EmptyBatch as e:
             _log_exception(e)
         except Exception as e:
@@ -452,22 +447,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
     @eth_retry.auto_retry
-    async def post(self) -> Union[Dict, List[bytes]]:
+    async def post(self) -> List[RPCResponse]:
         session = await _session.get_session()
         async with session.post(self.controller.endpoint, json=self.data) as response:
             response = await response.json()
-            if isinstance(response, List):
-                return response
-            elif isinstance(response, Tuple):
-                reason, e = response
-                counts = self.method_counts
-                main_logger.warning(f"{e.__class__.__name__}: {e}")
-                main_logger.info(f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}", )
-                main_logger.info(f"methods called: {counts}")
-                if 'content length too large' in str(e) and self.is_multicalls_only:
-                    self.controller.reduce_batch_size(self.total_calls)
-                raise e
-            raise NotImplementedError(response.__class__.__name__, response)
+            return self.validate_responses(response)
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
@@ -487,15 +471,16 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             for call, result in zip(self.calls, response)
         )
     
-    def validate_responses(self, responses) -> None:
+    def validate_responses(self, responses: List[RPCResponse]) -> None:
         # A successful response will be a list
-        if isinstance(responses, dict):
-            err = responses
-            if 'result' in err:
-                err = responses['result']
-            if isinstance(err, dict) and 'message' in err:
-                err = err['message']
-            raise BadResponse(err)
+        if isinstance(responses, Dict):
+            main_logger.info(f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}")
+            main_logger.info(f"methods called: {self.method_counts}")
+            if 'content length too large' in str(responses) and self.is_multicalls_only:
+                self.controller.reduce_batch_size(self.total_calls)
+            raise BadResponse(responses)
+        if not isinstance(responses, list):
+            raise NotImplementedError(responses.__class__.__name__, responses)
         for i, error in enumerate(responses):
             if 'result' not in error:
                 error = error['error'] if 'error' in error else error
