@@ -338,6 +338,9 @@ class Multicall(_Batch[eth_call]):
         await await_all((Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)))
 
 
+class BadResponse(Exception):
+    pass
+
 class EmptyBatch(Exception):
     pass
 
@@ -444,11 +447,18 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     def validate_responses(self, responses) -> None:
         # A successful response will be a list
-        if isinstance(responses, dict) and 'result' in responses and isinstance(responses['result'], dict) and 'message' in responses['result']:
-            raise ValueError(responses['result']['message'])
-        for response in responses:
-            if 'result' not in response:
-                raise ValueError(response)
+        if isinstance(responses, dict):
+            error = (
+                responses if 'result' not in responses
+                else responses['result']['message'] if isinstance(responses['result'], dict) and 'message' in responses['result']
+                else responses['result']
+            )
+            raise BadResponse(error)
+        for i, error in enumerate(responses):
+            if 'result' not in error:
+                error = error['error'] if 'error' in error else error
+                raise BadResponse(self.calls[i], self.calls[i].params, error)
+        return responses
     
     async def bisect_and_retry(self) -> None:
         await await_all(
