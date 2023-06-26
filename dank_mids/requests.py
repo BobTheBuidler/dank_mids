@@ -47,7 +47,7 @@ def _call_failed(data: Optional[Union[bytes, Exception]]) -> bool:
 def _log_exception(e: Exception) -> None:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
-    dont_need_to_see_errs = RETRY_ERRS + ['out of gas','error processing call revert', 'invalid ether transfer']
+    dont_need_to_see_errs = RETRY_ERRS + ['out of gas','error processing call revert', 'non_empty_data', 'invalid ether transfer']
     stre = str(e).lower()
     if any(err in stre for err in dont_need_to_see_errs):
         return
