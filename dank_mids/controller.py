@@ -60,6 +60,9 @@ class DankMiddlewareController:
         self._checkpoint: float = time()
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
+
+        self.pending_eth_calls: List[eth_call] = []
+        self.pending_rpc_calls: List[RPCRequest] = []
     
     def __repr__(self) -> str:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
