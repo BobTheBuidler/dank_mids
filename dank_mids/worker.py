@@ -1,4 +1,5 @@
 
+import asyncio
 from typing import TYPE_CHECKING, Any, Generator, List
 
 import eth_retry
@@ -6,7 +7,6 @@ from eth_typing import ChecksumAddress
 from multicall.multicall import NotSoBrightBatcher
 
 from dank_mids._config import GANACHE_FORK, MAX_JSONRPC_BATCH_SIZE
-from dank_mids.helpers import await_all
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, _Batch
 from dank_mids.types import Multicalls
 from dank_mids.uid import UIDGenerator
@@ -48,7 +48,7 @@ class DankBatch:
     
     def __await__(self) -> Generator[Any, None, Any]:
         self.start()
-        return await_all(self.coroutines).__await__()
+        return asyncio.gather(*self.coroutines).__await__()
 
     def start(self) -> None:
         for mcall in self.multicalls.values():

@@ -115,6 +115,12 @@ class DankMiddlewareController:
     def queue_is_full(self) -> bool:
         return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step * 25
     
+    def early_start(self):
+        """Used to start all queued calls when we have enough for a full batch"""
+        self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
+        self.pending_eth_calls.clear()
+        self.pending_rpc_calls.start()
+    
     def reduce_batch_size(self, num_calls: int) -> None:
         new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
         # NOTE: We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
