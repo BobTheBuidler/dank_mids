@@ -13,7 +13,7 @@ from eth_abi import decode_single, encode_single
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
-from msgspec import Raw
+from msgspec import Raw, ValidationError
 from msgspec.json import decode
 from multicall.utils import run_in_subprocess
 from web3 import Web3
@@ -217,31 +217,34 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             decoded = decode(data, type=typ)
             return AttributeDict(decoded) if hasattr(typ, "__origin__") and typ.__origin__ is dict else decoded
     
-        # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
-        if self.method in self.dict_responses:
-            # TODO: Refactor this
-            list_of_stuff = List[Union[str, dict, list]]
-            dict_of_stuff = Dict[str, Union[str, list_of_stuff, Dict[str, Any]]]
-            nested_dict_of_stuff = Dict[str, Union[str, list_of_stuff, dict_of_stuff]]
+        try:
+            # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
+            if self.method in self.dict_responses:
+                # TODO: Refactor this
+                list_of_stuff = List[Union[str, dict, list]]
+                dict_of_stuff = Dict[str, Union[str, list_of_stuff, Dict[str, Any]]]
+                nested_dict_of_stuff = Dict[str, Union[str, list_of_stuff, dict_of_stuff]]
 
-            decoded = AttributeDict(decode(data, type=nested_dict_of_stuff))
-            types = {type(v) for v in decoded.values()}
-            print(f'my method and types: {self.method} {types}')
-            self._types.update(types)
-            return decoded
-        elif self.method in self.str_responses:
-            print(f'Must add `{self.method}: str` to `RETURN_TYPES`')
-            return decode(data, type=str)
-        
-        # In this case we can provide no hints, let's let the decoder figure it out
-        decoded = decode(data)
-        if isinstance(decoded, str):
-            self.str_responses.add(self.method)
-            return decoded
-        elif isinstance(decoded, dict):
-            self.dict_responses.add(self.method)
-            return AttributeDict(decoded)
-        raise TypeError(type(decoded), decoded)
+                decoded = AttributeDict(decode(data, type=nested_dict_of_stuff))
+                types = {type(v) for v in decoded.values()}
+                print(f'my method and types: {self.method} {types}')
+                self._types.update(types)
+                return decoded
+            elif self.method in self.str_responses:
+                print(f'Must add `{self.method}: str` to `RETURN_TYPES`')
+                return decode(data, type=str)
+            
+            # In this case we can provide no hints, let's let the decoder figure it out
+            decoded = decode(data)
+            if isinstance(decoded, str):
+                self.str_responses.add(self.method)
+                return decoded
+            elif isinstance(decoded, dict):
+                self.dict_responses.add(self.method)
+                return AttributeDict(decoded)
+            raise TypeError(type(decoded), decoded)
+        except ValidationError as e:
+            raise ValidationError(self.rpc_data, e) from e
 
 class eth_call(RPCRequest):
     def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
