@@ -587,6 +587,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             if 'content length too large' in str(responses) and self.is_multicalls_only:
                 self.controller.reduce_batch_size(self.total_calls)
             raise BadResponse(responses)
+        # TODO: This probably should go somewhere else.
         for i, response in enumerate(responses):
             if hasattr(response, 'error'):
                 raise BadResponse(self.calls[i], self.calls[i].params, response.error)

@@ -1,7 +1,6 @@
 
 import threading
 from collections import defaultdict
-from time import time
 from typing import Any, DefaultDict, List
 
 from eth_utils import to_checksum_address
@@ -12,7 +11,6 @@ from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids._config import LOOP_INTERVAL
 from dank_mids._demo_mode import demo_logger
 from dank_mids.loggers import main_logger, sort_lazy_logger
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
@@ -57,7 +55,6 @@ class DankMiddlewareController:
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
 
         self.call_uid = UIDGenerator()
-        self._checkpoint: float = time()
 
         # NOTE: We no longer have a worker thread, we just have this weird worker thing we should refactor out.
         self.worker = DankWorker(self)
@@ -106,10 +103,6 @@ class DankMiddlewareController:
             main_logger.debug(f"bypassed, method is {method}")
             return False
         return True
-
-    @property
-    def loop_is_ready(self) -> bool:
-        return time() - self._checkpoint > LOOP_INTERVAL
     
     @property
     def queue_is_full(self) -> bool:

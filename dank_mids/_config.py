@@ -1,9 +1,6 @@
 
 import os
 
-from aiohttp import ClientTimeout
-
-LOOP_INTERVAL = float(os.environ.get("DANKMIDSLOOPINTERVAL", 0.01))
 
 # Max number of rpc calls to include in one batch call
 MAX_JSONRPC_BATCH_SIZE = int(os.environ.get("MAX_JSONRPC_BATCH_SIZE", 500))
