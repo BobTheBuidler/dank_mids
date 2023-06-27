@@ -40,7 +40,7 @@ def _call_failed(data: Optional[Union[bytes, Exception]]) -> bool:
         return True
     # If we got a known "bad" response from the multicall, that is also a failure.
     # Most likely the target contract does not support multicall2.
-    elif (isinstance(data, bytes) and HexBytes(data).hex() in BAD_HEXES):
+    elif isinstance(data, bytes) and f"0x{data.hex()}" in BAD_HEXES:
         return True
     return False
 
