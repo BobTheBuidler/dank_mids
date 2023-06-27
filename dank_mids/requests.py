@@ -233,8 +233,8 @@ class RPCRequest(_RequestMeta[RPCResponse]):
                 if list in types:
                     lists = [v for v in decoded.values() if isinstance(v, list)]
                     for lst in lists:
-                        for _ in lst:
-                            print(type(_))
+                        lst_types = {type(_) for _ in lst}
+                        print(f"list types: {lst_types}")
                 self._types.update(types)
                 return decoded
             elif self.method in self.str_responses:
