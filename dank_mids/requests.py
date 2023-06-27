@@ -548,6 +548,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # NOTE: We do this inline so we never have to allocate the response to memory
             await self.spoof_response(await self.post())
         except EmptyBatch as e:
+            # NOTE: These shouldn't actually happen and this except clause can probably be removed soon.
             _log_exception(e)
         except Exception as e:
             _log_exception(e)
