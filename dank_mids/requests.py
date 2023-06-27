@@ -194,6 +194,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         `bytes` type data comes for individual eth_calls that were batched into multicalls and already decoded
         `Exception` type data comes from failed calls
         """
+        # TODO: refactor this so Raw decoding doesn't occur until the caller requests the result.
         spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
         if isinstance(data, Exception):
             spoof["error"] = _err_response(data)
