@@ -116,6 +116,7 @@ RETURN_TYPES = {
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_getBlockByNumber": Dict[str, Union[str, List[str]]],
+    "erigon_getHeaderByNumber": Dict[str, str],
 }
 
 class RPCRequest(_RequestMeta[RPCResponse]):
