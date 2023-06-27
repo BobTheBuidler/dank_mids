@@ -215,7 +215,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if typ := RETURN_TYPES.get(self.method):
             decoded = decode(data, type=typ)
-            return AttributeDict(decoded) if typ.__origin__ is dict else decoded
+            return AttributeDict(decoded) if hasattr(typ, "__origin__") and typ.__origin__ is dict else decoded
     
         # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
         if self.method in self.dict_responses:
@@ -228,11 +228,6 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             types = {type(v) for v in decoded.values()}
             print(f'my method and types: {self.method} {types}')
             self._types.update(types)
-            if self.method == 'eth_getBlockByNumber':
-                for v in decoded.values():
-                    if isinstance(v, list):
-                        for _ in v:
-                            print(type(_))
             return decoded
         elif self.method in self.str_responses:
             print(f'Must add `{self.method}: str` to `RETURN_TYPES`')
