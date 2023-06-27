@@ -176,6 +176,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         if not self._started:
             await self.controller.execute_batch()
         
+        # TODO: Remove this
         async def debug_helper():
         #    print(f'fetching {self} from {self._batch}  started: {self._batch._started}')
             while not self._done.is_set():
@@ -212,12 +213,12 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         self._done.set()
 
     def _decode_raw(self, data: Raw) -> Union[str, AttributeDict]:
-        # NOTE: These must be added to the `RETURN_TYPES` constant above manually
-        if typ := RETURN_TYPES.get(self.method):
-            decoded = decode(data, type=typ)
-            return AttributeDict(decoded) if hasattr(typ, "__origin__") and typ.__origin__ is dict else decoded
-    
         try:
+            # NOTE: These must be added to the `RETURN_TYPES` constant above manually
+            if typ := RETURN_TYPES.get(self.method):
+                decoded = decode(data, type=typ)
+                return AttributeDict(decoded) if hasattr(typ, "__origin__") and typ.__origin__ is dict else decoded
+        
             # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
             if self.method in self.dict_responses:
                 # TODO: Refactor this
@@ -587,9 +588,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 self.controller.reduce_batch_size(self.total_calls)
             raise BadResponse(responses)
         for i, response in enumerate(responses):
-            if response.result:
-                continue
-            raise BadResponse(self.calls[i], self.calls[i].params, response.error or response)
+            if hasattr(response, 'error'):
+                raise BadResponse(self.calls[i], self.calls[i].params, response.error)
         return responses
     
     async def bisect_and_retry(self) -> None:
