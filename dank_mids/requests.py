@@ -114,7 +114,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 RETURN_TYPES = {
     "eth_call": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
-    "eth_getBlockByNumber": Dict[str, Union[str, List[str]]],
+    "eth_getBlockByNumber": Dict[str, Union[str, List[str, object]]],
 }
 
 class RPCRequest(_RequestMeta[RPCResponse]):
@@ -590,7 +590,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             raise BadResponse(responses)
         # TODO: This probably should go somewhere else.
         for i, response in enumerate(responses):
-            if hasattr(response, 'error'):
+            if response.error:
                 raise BadResponse(self.calls[i], self.calls[i].params, response.error)
         return responses
     
