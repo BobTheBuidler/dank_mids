@@ -215,13 +215,16 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         self._done.set()
 
     def _decode_raw(self, data: Raw) -> Union[str, AttributeDict]:
-        try:
-            # NOTE: These must be added to the `RETURN_TYPES` constant above manually
-            if typ := RETURN_TYPES.get(self.method):
+        # NOTE: These must be added to the `RETURN_TYPES` constant above manually
+        if typ := RETURN_TYPES.get(self.method):
+            try:
                 decoded = decode(data, type=typ)
                 return AttributeDict(decoded) if hasattr(typ, "__origin__") and typ.__origin__ is dict else decoded
-        
-            # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
+            except ValidationError as e:
+                main_logger.exception(e)
+
+        # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
+        try:
             if self.method in self.dict_responses:
                 # TODO: Refactor this
                 list_of_stuff = List[Union[str, dict, list]]
