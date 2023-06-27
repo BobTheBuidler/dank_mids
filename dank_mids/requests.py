@@ -114,7 +114,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 RETURN_TYPES = {
     "eth_call": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
-    "eth_getBlockByNumber": Dict[str, Union[str, List[str, object]]],
+    #"eth_getBlockByNumber": Dict[str, Union[str, List[str, object]]],
 }
 
 class RPCRequest(_RequestMeta[RPCResponse]):
@@ -229,6 +229,11 @@ class RPCRequest(_RequestMeta[RPCResponse]):
                 decoded = AttributeDict(decode(data, type=nested_dict_of_stuff))
                 types = {type(v) for v in decoded.values()}
                 print(f'my method and types: {self.method} {types}')
+                if list in types:
+                    lists = [v for v in decoded.values() if isinstance(v, list)]
+                    for lst in lists:
+                        for _ in lst:
+                            print(type(_))
                 self._types.update(types)
                 return decoded
             elif self.method in self.str_responses:
