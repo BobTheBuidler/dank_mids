@@ -44,9 +44,6 @@ class Semaphores:
         self.dummy = _DummySemaphore()
     
     def __getitem__(self, method: RPCEndpoint) -> Union[ThreadsafeSemaphore, _DummySemaphore]:
-        for key in self.keys:
-            if key in method:
-                return self.method_semaphores[key]
-        return self.dummy
+        return next((self.method_semaphores[key] for key in self.keys if key in method), self.dummy)
 
 method_semaphores = Semaphores()

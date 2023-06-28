@@ -14,7 +14,7 @@ from multicall.utils import run_in_subprocess
 from web3 import Web3
 
 from dank_mids._config import BROWNIE_CALL_SEMAPHORE_VAL
-from dank_mids.semaphore import ThreadsafeSemaphore
+from dank_mids.helpers.semaphore import ThreadsafeSemaphore
 
 brownie_call_semaphore = ThreadsafeSemaphore(BROWNIE_CALL_SEMAPHORE_VAL)
 

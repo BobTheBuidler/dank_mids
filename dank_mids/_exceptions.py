@@ -2,7 +2,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dank_mids.helpers._json import Response
+    from dank_mids.types import Response
 
 
 class BadResponse(Exception):

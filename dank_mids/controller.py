@@ -1,4 +1,5 @@
 
+import logging
 import threading
 from collections import defaultdict
 from typing import Any, DefaultDict, List
@@ -15,13 +16,13 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import _config
 from dank_mids._demo_mode import demo_logger
 from dank_mids.batch import DankBatch
-from dank_mids.helpers import _session
-from dank_mids.helpers._json import Request, Response, decode_response
-from dank_mids.loggers import main_logger
+from dank_mids.helpers import _session, decode
+from dank_mids.helpers.semaphore import method_semaphores
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
-from dank_mids.semaphore import method_semaphores
-from dank_mids.types import BlockId, ChainId
+from dank_mids.types import BlockId, ChainId, Request, Response
 from dank_mids.uid import UIDGenerator
+
+logger = logging.getLogger(__name__)
 
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
 
@@ -38,7 +39,7 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
 
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
-        main_logger.info('Dank Middleware initializing... Strap on your rocket boots...')
+        logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         self.w3: Web3 = w3
         self.sync_w3 = _sync_w3_from_async(w3)
 
@@ -48,11 +49,12 @@ class DankMiddlewareController:
         self.endpoint = self.w3.provider.endpoint_uri
         if "tenderly" in self.endpoint:
             # NOTE: Tenderly does funky things sometimes
-            main_logger.warning(
+            logger.warning(
                 "We see you're using a tenderly rpc.\n" +
                 "There is a known conflict between dank and tenderly which causes issues not present with other providers.\n" + 
                 "Your milage may vary. Debugging efforts welcome."
             )
+
         multicall = MULTICALL_ADDRESSES.get(self.chain_id)
         multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
         if multicall2 is None:
@@ -94,10 +96,10 @@ class DankMiddlewareController:
         request_id = next(self.w3.provider.request_counter)
         request = Request(method=method, params=params, id=request_id)
         session = await _session.get_session()
-        main_logger.debug(f'making request: {request}')
+        logger.debug(f'making request: {request}')
         async with session.post(self.endpoint, json=request.to_dict()) as response:
-            response = await response.json(loads=decode_response)
-            main_logger.debug(f'received response: {response}')
+            response = await response.json(loads=decode.response)
+            logger.debug(f'received response: {response}')
             return response
 
     async def execute_batch(self) -> None:
@@ -130,4 +132,4 @@ class DankMiddlewareController:
         if new_step < self.batcher.step:
             old_step = self.batcher.step
             self.batcher.step = new_step
-            main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
+            logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')

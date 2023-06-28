@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Generator, List
 
 from multicall.multicall import NotSoBrightBatcher
 
-from dank_mids._config import MAX_JSONRPC_BATCH_SIZE
+from dank_mids import _config
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, _Batch
 from dank_mids.types import Multicalls
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
     
 class DankBatch:
-    """ A batch of jsonrpc batches. """
+    """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
     def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[RPCRequest]):
         self.controller = controller
         self.multicalls = multicalls
@@ -48,7 +48,7 @@ class DankBatch:
         yield from full_batches
         rpc_calls_to_batch = self.rpc_calls[:]
         while rpc_calls_to_batch:
-            if len(working_batch) >= MAX_JSONRPC_BATCH_SIZE:
+            if len(working_batch) >= _config.MAX_JSONRPC_BATCH_SIZE:
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
             working_batch.append(rpc_calls_to_batch.pop())
@@ -75,7 +75,7 @@ class DankBatch:
             else:
                 working_batch.append(mcall)
                 eth_calls_in_batch += len(mcall)
-                if len(working_batch) >= MAX_JSONRPC_BATCH_SIZE:
+                if len(working_batch) >= _config.MAX_JSONRPC_BATCH_SIZE:
                     # There are more than `MAX_JSONRPC_BATCH_SIZE` rpc calls packed into this batch, let's start a new one
                     yield working_batch
                     working_batch = JSONRPCBatch(self.controller)
