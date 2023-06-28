@@ -119,7 +119,8 @@ RETURN_TYPES = {
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_getBlockByNumber": Dict[str, Union[str, List[str]]],
     "eth_getTransactionCount": str,
-    "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Dict[str, Union[str, List[str]]]]]],
+    "eth_getTransactionByHash": Dict[str, Union[str, None, List[Dict[str, Union[str, List[str]]]]]],
+    "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Dict[str, Union[str, None, List[str]]]]]], 
     "erigon_getHeaderByNumber": Dict[str, Optional[str]],
 }
 
