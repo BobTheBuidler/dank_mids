@@ -1,14 +1,14 @@
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from dank_mids.helpers._json import Response
+
+
 class BadResponse(Exception):
-    def __init__(self, *args) -> None:
-        if len(args) == 1:
-            arg = args[0]
-            if isinstance(arg, dict) and 'result' in arg:
-                arg = arg['result']
-            if isinstance(arg, dict) and 'message' in arg:
-                arg = arg['message']
-            args = (arg)
-        super().__init__(*args)
+    def __init__(self, response: "Response") -> None:
+        self.response = response
+        super().__init__(response.to_dict())
 
 class EmptyBatch(Exception):
     pass

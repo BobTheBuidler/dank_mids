@@ -37,7 +37,8 @@ RETRY_ERRS = ["connection reset by peer","request entity too large","server disc
 class ResponseNotReady(Exception):
     pass
 
-def _call_failed(data: Optional[Union[bytes, Exception]]) -> bool:
+def _call_failed(data: Union[_json.Response, Raw, bytes, Exception]) -> bool:
+    # TODO: make this handle Response and Raw correctly
     """ Returns True if `data` indicates a failed response, False otherwise. """
     if data is None:
         return True
@@ -66,7 +67,11 @@ def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: byte
 
 def _err_response(e: Exception) -> RPCError:
     """ Extract an error message from `e` to use in a spoof rpc response. """
-    if isinstance(e.args[0], (str, RequestInfo)):
+    if isinstance(e, BadResponse):
+        return e.response.error.to_dict()
+
+    # TODO: figure out which of these I still need after the above refactor
+    elif isinstance(e.args[0], (str, RequestInfo)):
         err_msg = f"DankMidsError: {e.__class__.__name__}: {e.args}"
     elif isinstance(e.args[0], Exception):
         err_msg = f"DankMidsError: {e.args[0].__class__.__name__}: {e.args[0].args}"
@@ -110,23 +115,6 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         pass
 
 ### Single requests:
-
-# TODO: use the types from snek
-Log = Dict[str, Union[bool, str, None, List[str]]]
-AccessList = List[Dict[str, Union[str, List[str]]]]
-
-RETURN_TYPES = {
-    "eth_call": str,
-    "eth_chainId": str,
-    "eth_getCode": str,
-    "eth_getBalance": str,
-    "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
-    "eth_getBlockByNumber": Dict[str, Union[str, List[str]]],
-    "eth_getTransactionCount": str,
-    "eth_getTransactionByHash": Dict[str, Union[str, None, AccessList]],
-    "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Log]]], 
-    "erigon_getHeaderByNumber": Dict[str, Optional[str]],
-}
 
 class RPCRequest(_RequestMeta[RPCResponse]):
     dict_responses = set()
@@ -198,15 +186,29 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             asyncio.wait_for(debug_helper(), 300)
         )
         await self._done.wait()
+
+        # JIT json decoding
+        if isinstance(self.response, _json.Response):
+            return self.response.to_dict(self.method)
+        # Less optimal decoding
+        # TODO: refactor this out
         return self.response
     
-    async def spoof_response(self, data: Union[Raw, bytes, Exception]) -> None:
+    async def spoof_response(self, data: Union[_json.Response, Raw, bytes, Exception]) -> None:
         """
         `Raw` type data comes from rpc calls executed in a jsonrpc batch
         `bytes` type data comes for individual eth_calls that were batched into multicalls and already decoded
         `Exception` type data comes from failed calls
         """
         # TODO: refactor this so Raw decoding doesn't occur until the caller requests the result.
+        
+        # New handler
+        if isinstance(data, _json.Response):
+            self._response = data
+            self._done.set()
+            return
+
+        # Old handler (once we use msgspec for single multicalls all `data` will be a Response)
         spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
         if isinstance(data, Exception):
             spoof["error"] = _err_response(data)
@@ -215,7 +217,8 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         elif isinstance(data, bytes):
             spoof["result"] = data
         else:
-            raise TypeError(type(data), data)
+            raise TypeError('b', type(data), data)
+        
         if isinstance(self, eth_call):
             main_logger.debug(f"method: eth_call  address: {self.target}  spoof: {spoof}")
         else:
@@ -225,7 +228,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
 
     def _decode_raw(self, data: Raw) -> Union[str, AttributeDict]:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
-        if typ := RETURN_TYPES.get(self.method):
+        if typ := _json.RETURN_TYPES.get(self.method):
             try:
                 decoded = decode(data, type=typ)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
@@ -262,7 +265,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             elif isinstance(decoded, dict):
                 self.dict_responses.add(self.method)
                 return AttributeDict(decoded)
-            raise TypeError(type(decoded), decoded)
+            raise TypeError('c', type(decoded), decoded)
         except ValidationError as e:
             raise ValidationError(self.rpc_data, e) from e
 
@@ -392,7 +395,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
 def multicall_decode_hook(type: Type, obj: Any) -> Any:
     if isinstance(obj, (str, bytes)):
         return decode(obj[2:], type=type)
-    raise TypeError(type, obj, type(obj))
+    raise TypeError('hook', type, obj, type(obj))
 
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
@@ -465,9 +468,13 @@ class Multicall(_Batch[eth_call]):
             return True
         return len(self) > 1
     
-    async def spoof_response(self, data: Union[HexBytes, Raw, Exception]) -> None:
+    async def spoof_response(self, data: Union[HexBytes, _json.Response, Exception]) -> None:
+        # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
             return await asyncio.gather(*[call.spoof_response(data) for call in self.calls])
+        # These can either be successful or failed, received from jsonrpc batch handling.
+        elif isinstance(data, _json.Response) and data.error:
+            raise data.exception
         await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, self.decode(data))))
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
@@ -476,17 +483,20 @@ class Multicall(_Batch[eth_call]):
             batch.start(cleanup=False)
         await asyncio.gather(*batches)
     
-    def decode(self, data: Union[Raw, HexBytes]) -> List[Tuple[bool, bytes]]:
+    def decode(self, data: Union[_json.Response, HexBytes]) -> List[Tuple[bool, bytes]]:
         # NOTE This is the case when the multicall was sent in a jsonrpc batch.
-        if isinstance(data, Raw):
-            data = bytes.fromhex(decode(data, type=str)[2:])
-            # TODO: Figure out how to use msgspec to parse abi data
+        if isinstance(data, _json.Response):
+            data = bytes.fromhex(data.decode_result("eth_call")[2:])
             return _parse_results_from_bytes(data)
+        #elif isinstance(data, Raw):
+        #    data = bytes.fromhex(decode(data, type=str)[2:])
+            # TODO: Figure out how to use msgspec to parse abi data
+        #    return _parse_results_from_bytes(data)
         # NOTE: This is the case when it was not
         # TODO Refactor this out so `data` is always Raw, probably with snek
         elif isinstance(data, HexBytes):
             return _parse_results_from_bytes(data)
-        raise TypeError(type(data), data)
+        raise TypeError('a', type(data), data)
 
     def _post_future_cleanup(self) -> None:
         try:
@@ -576,8 +586,19 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     async def post(self) -> List[RPCResponse]:
         session = await _session.get_session()
         async with session.post(self.controller.endpoint, json=self.data) as response:
-            response = await response.json(loads=_json.decode_jsonrpc_batch)
-            return self.validate_responses(response)
+            response: Union[list, _json.Response] = await response.json(loads=_json.decode_jsonrpc_batch)
+            # A successful response will be a list of Response objects, not a single Response.
+            if isinstance(response, list):
+                return response
+            # Oops, we failed.
+            main_logger.info(
+                "jsonrpc batch failed\n"
+                + f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}\n"
+                + f"methods called: {self.method_counts}"
+            )
+            if 'content length too large' in response.error.message and self.is_multicalls_only:
+                self.controller.reduce_batch_size(self.total_calls)
+            raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
@@ -589,27 +610,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         return self.is_single_multicall
     
     async def spoof_response(self, response: Union[_json.JSONRPCBatchResponse, Exception]) -> None:
+        # This means an exception occurred during the post request
         if isinstance(response, Exception):
             return await asyncio.gather(*[call.spoof_response(response) for call in self.calls])
-        return await asyncio.gather(*[
-            # NOTE: For some rpc methods, the result will be a dict we can't hash during the gather.
-            call.spoof_response(result.result)  # type: ignore
-            for call, result in zip(self.calls, response)
-        ])
-    
-    def validate_responses(self, responses: _json.JSONRPCBatchResponse) -> _json.JSONRPCBatchResponse:
-        # A successful response will be a list
-        if isinstance(responses, Dict):
-            main_logger.info(f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}")
-            main_logger.info(f"methods called: {self.method_counts}")
-            if 'content length too large' in str(responses) and self.is_multicalls_only:
-                self.controller.reduce_batch_size(self.total_calls)
-            raise BadResponse(responses)
-        # TODO: This probably should go somewhere else.
-        for i, response in enumerate(responses):
-            if response.error:
-                raise BadResponse(self.calls[i], self.calls[i].params, response.error)
-        return responses
+        # This means we got results
+        return await asyncio.gather(*[call.spoof_response(result) for call, result in zip(self.calls, response)])
     
     async def bisect_and_retry(self) -> None:
         batches = [
