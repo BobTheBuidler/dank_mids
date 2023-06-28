@@ -113,6 +113,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 
 RETURN_TYPES = {
     "eth_call": str,
+    "eth_chainId": str,
     "eth_getCode": str,
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
