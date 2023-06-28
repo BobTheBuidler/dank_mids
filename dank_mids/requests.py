@@ -41,8 +41,8 @@ RETRY_ERRS = ["connection reset by peer","request entity too large","server disc
 class ResponseNotReady(Exception):
     pass
 
-def _call_failed(data: Union[Response, Raw, bytes, Exception]) -> bool:
-    # TODO: make this handle Response and Raw correctly
+def _call_failed(data: Union[PartialResponse, Raw, bytes, Exception]) -> bool:
+    # TODO: make this handle PartialResponse and Raw correctly
     """ Returns True if `data` indicates a failed response, False otherwise. """
     if data is None:
         return True
@@ -204,7 +204,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             self._done.set()
             return
 
-        # Old handler (once we use msgspec for single multicalls all `data` will be a Response)
+        # Old handler (once we use msgspec for single multicalls all `data` will be a RawResponse object)
         spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
         if isinstance(data, Exception):
             spoof["error"] = _err_response(data)
@@ -551,8 +551,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     async def post(self) -> List[RawResponse]:
         session = await _session.get_session()
         async with session.post(self.controller.endpoint, data=self.data) as response:
-            response: Union[JSONRPCBatchResponse, Response] = await response.json(loads=decode.jsonrpc_batch)
-            # A successful response will be a list of Response objects, a single Response implies an error.
+            response: Union[JSONRPCBatchResponse, PartialResponse] = await response.json(loads=decode.jsonrpc_batch)
+            # A successful response will be a list of Raw objects, a single PartialResponse implies an error.
             if isinstance(response, list):
                 return [RawResponse(raw) for raw in response]
             # Oops, we failed.

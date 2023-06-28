@@ -87,6 +87,14 @@ class PartialResponse(_DictStruct):
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
         return BadResponse(self)
+        
+    def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
+        data = {}
+        for field in self.__struct_fields__:
+            attr = self.decode_result(method=method) if field == "result" else getattr(self, field)
+            if field != 'error' or attr is not None:
+                data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
+        return data
 
     def decode_result(self, method: Optional[str] = None) -> Any:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
@@ -132,14 +140,6 @@ class PartialResponse(_DictStruct):
 class Response(PartialResponse):
     id: Optional[Union[str, int]] = None
     jsonrpc: Literal["2.0"] = "2.0"
-        
-    def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
-        data = {}
-        for field in self.__struct_fields__:
-            attr = self.decode_result(method=method) if field == "result" else getattr(self, field)
-            if field != 'error' or attr is not None:
-                data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
-        return data
 
 class RawResponse:
     """Wraps a Raw object that we know represents a Response with a `decode` helper method"""
