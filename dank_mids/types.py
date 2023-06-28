@@ -95,17 +95,17 @@ class Response(_DictStruct):
             raise AttributeError(f"{self} did not error.")
         return BadResponse(self)
         
-    def to_dict(self, method: str) -> Dict[str, Any]:
+    def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
         data = {}
         for field in self.__struct_fields__:
-            attr = self.decode_result(method) if field == "result" else getattr(self, field)
+            attr = self.decode_result(method=method) if field == "result" else getattr(self, field)
             if field != 'error' or attr is not None:
                 data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
         return data
     
-    def decode_result(self, method: str) -> Any:
+    def decode_result(self, method: Optional[str] = None) -> Any:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
-        if typ := RETURN_TYPES.get(method):
+        if method and (typ := RETURN_TYPES.get(method)):
             try:
                 decoded = decode(self.result, type=typ)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
@@ -114,32 +114,39 @@ class Response(_DictStruct):
 
         # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
         try:
-            if method in _dict_responses:
-                decoded = AttributeDict(decode(self.result, type=nested_dict_of_stuff))
-                types = {type(v) for v in decoded.values()}
-                print(f'my method and types: {method} {types}')
-                if list in types:
-                    lists = [v for v in decoded.values() if isinstance(v, list)]
-                    for lst in lists:
-                        lst_types = {type(_) for _ in lst}
-                        print(f"list types: {lst_types}")
-                _types.update(types)
-                return decoded
-            elif method in _str_responses:
-                print(f'Must add `{method}: str` to `RETURN_TYPES`')
-                return decode(self.result, type=str)
+            if method:
+                if method in _dict_responses:
+                    decoded = AttributeDict(decode(self.result, type=nested_dict_of_stuff))
+                    types = {type(v) for v in decoded.values()}
+                    print(f'my method and types: {method} {types}')
+                    if list in types:
+                        lists = [v for v in decoded.values() if isinstance(v, list)]
+                        for lst in lists:
+                            lst_types = {type(_) for _ in lst}
+                            print(f"list types: {lst_types}")
+                    _types.update(types)
+                    return decoded
+                elif method in _str_responses:
+                    print(f'Must add `{method}: str` to `RETURN_TYPES`')
+                    return decode(self.result, type=str)
             
             # In this case we can provide no hints, let's let the decoder figure it out
             decoded = decode(self.result)
             if isinstance(decoded, str):
-                _str_responses.add(method)
+                if method:
+                    _str_responses.add(method)
                 return decoded
             elif isinstance(decoded, dict):
-                _dict_responses.add(method)
+                if method:
+                    _dict_responses.add(method)
                 return AttributeDict(decoded)
             raise TypeError(type(decoded), decoded)
         except ValidationError as e:
             raise ValidationError(method, e) from e
+
+class RawResponse(Raw[Response]):
+    def decode(self, method: Optional[str] = None) -> RPCResponse:
+        return decode(self, type=Response).to_dict(method=method)
 
 JSONRPCBatchRequest = List[Request]
 JSONRPCBatchResponse = List[Response]
