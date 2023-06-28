@@ -16,4 +16,4 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     Most everything should be run in main thread though.
     """
     timeout = ClientTimeout(_config.AIOHTTP_TIMEOUT)
-    return ClientSession(timeout=timeout, raise_for_status=True)
+    return ClientSession(headers={'content-type': 'application/json'}, timeout=timeout, raise_for_status=True)

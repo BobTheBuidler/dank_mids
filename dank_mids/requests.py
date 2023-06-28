@@ -14,6 +14,7 @@ from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from msgspec import Raw, ValidationError
+from msgspec.json import encode
 from multicall.utils import run_in_subprocess
 from web3 import Web3
 from web3.datastructures import AttributeDict
@@ -158,7 +159,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
             await self.make_request()
-            return self.response.to_dict(self.method)
+            return self.response.decode().to_dict(self.method)
         
         if self._started and not self._batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
@@ -218,13 +219,12 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self._response = spoof  # type: ignore
         self._done.set()
     
-    async def make_request(self) -> Response:
+    async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
         self._started = True
-        raw_response = await self.controller.make_request(self.method, self.params)
-        self._response = raw_response
+        self._response = await self.controller.make_request(self.method, self.params, request_id=self.uid)
         self._done.set()
-        return raw_response
+        return self._response
 
     def _decode_raw(self, data: Raw) -> Union[str, AttributeDict]:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
@@ -260,7 +260,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             elif isinstance(decoded, dict):
                 self.dict_responses.add(self.method)
                 return AttributeDict(decoded)
-            raise TypeError('c', type(decoded), decoded)
+            raise NotImplementedError(f"type {type(decoded)} needs code for handling", decoded)
         except ValidationError as e:
             raise ValidationError(self.rpc_data, e) from e
 
@@ -433,7 +433,7 @@ class Multicall(_Batch[eth_call]):
         rid = self.controller.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
-            await self.spoof_response(await self.controller.make_request(self.method, self.params))
+            await self.spoof_response(await self.controller.make_request(self.method, self.params, request_id=self.uid))
         except Exception as e:
             _log_exception(e)
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
@@ -498,10 +498,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         return f"<JSONRPCBatch jid={self.jid} len={len(self)}>"
     
     @property
-    def data(self) -> List[RpcCallJson]:
+    def data(self) -> bytes:
         if not self.calls:
             raise EmptyBatch(f"batch {self.uid} is empty and should not be processed.")
-        return [call.rpc_data for call in self.calls]
+        return encode([call.rpc_data for call in self.calls])
     
     @property
     def is_multicalls_only(self) -> bool:
@@ -561,7 +561,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     @eth_retry.auto_retry
     async def post(self) -> List[RawResponse]:
         session = await _session.get_session()
-        async with session.post(self.controller.endpoint, json=self.data) as response:
+        async with session.post(self.controller.endpoint, data=self.data) as response:
             response: Union[JSONRPCBatchResponse, Response] = await response.json(loads=decode.jsonrpc_batch)
             # A successful response will be a list of Response objects, a single Response implies an error.
             if isinstance(response, list):

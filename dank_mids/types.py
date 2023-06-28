@@ -5,7 +5,7 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
 
 from eth_typing import ChecksumAddress
 from msgspec import Raw, Struct, ValidationError
-from msgspec.json import decode
+from msgspec.json import decode, encode
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -53,6 +53,10 @@ class Request(_DictStruct):
     id: Union[str, int]
     params: Optional[list] = None
     jsonrpc: Literal["2.0"] = "2.0"
+
+    @property
+    def data(self) -> bytes:
+        return encode(self)
 
 class Error(_DictStruct):
     code: int
