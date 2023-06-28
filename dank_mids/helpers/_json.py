@@ -1,4 +1,4 @@
-from functools import lru_cache, partial
+from functools import partial
 from typing import Any, Dict, List, Literal, Optional, Union
 
 from msgspec import Raw, Struct, ValidationError
@@ -64,7 +64,6 @@ class Response(DictStruct):
                 data[field] = attr.to_dict() if isinstance(attr, DictStruct) else attr
         return data
     
-    @lru_cache
     def decode_result(self, method: str) -> Any:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if typ := RETURN_TYPES.get(method):
