@@ -433,7 +433,7 @@ class Multicall(_Batch[eth_call]):
         rid = self.controller.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
-            await self.spoof_response(await self.controller.eth_call(*self.params))
+            await self.spoof_response(await self.controller.make_request(self.method, self.params))
         except Exception as e:
             _log_exception(e)
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]

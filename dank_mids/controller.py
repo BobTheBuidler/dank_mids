@@ -88,9 +88,6 @@ class DankMiddlewareController:
     def pools_closed_lock(self) -> threading.Lock:
         return self.call_uid.lock
     
-    async def eth_call(self, *params: Any) -> Response:
-        return await self.make_request("eth_call", params)
-    
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any]) -> Response:
         request_id = next(self.w3.provider.request_counter)
