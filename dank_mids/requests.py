@@ -527,18 +527,6 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def is_full(self) -> bool:
         return (self.is_multicalls_only and len(self) >= self.controller.batcher.step) or len(self) >= _config.MAX_JSONRPC_BATCH_SIZE
 
-    def append(self, call: Union[Multicall, RPCRequest], skip_check: bool = False) -> None:
-        if self._started:
-            # This shouldn't happen but just in case...
-            raise RuntimeError(f"{self} is already started.")
-        super().append(call, skip_check=skip_check)
-
-    def extend(self, call: Union[Multicall, RPCRequest], skip_check: bool = False) -> None:
-        if self._started:
-            # This shouldn't happen but just in case...
-            raise RuntimeError(f"{self} is already started.")
-        super().extend(call, skip_check=skip_check)
-    
     async def get_response(self) -> None:
         if self._started:
             logger.warning(f"{self} exiting early. This shouldn't really happen bro")
