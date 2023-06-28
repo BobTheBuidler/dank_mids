@@ -26,8 +26,8 @@ from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import BadResponse, EmptyBatch
 from dank_mids.helpers import _session, decode
 from dank_mids.types import (RETURN_TYPES, BatchId, BlockId,
-                             JSONRPCBatchResponse, JsonrpcParams, RawResponse,
-                             Request, Response)
+                             JSONRPCBatchResponse, JsonrpcParams,
+                             PartialResponse, RawResponse, Request, Response)
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -458,14 +458,14 @@ class Multicall(_Batch[eth_call]):
             return await asyncio.gather(*[call.spoof_response(data) for call in self.calls])
         # These can either be successful or failed, received from jsonrpc batch handling.
         elif isinstance(data, RawResponse):
-            response = data.decode()
+            response = data.decode(partial=True)
             if response.error:
                 raise response.exception
             return await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, self.decode(response))))
         raise NotImplementedError(f"type {type(data)} not supported.", data)
     
     @staticmethod
-    def decode(data: Response) -> List[Tuple[bool, bytes]]:
+    def decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:
         data = bytes.fromhex(data.decode_result("eth_call")[2:])
         return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
     

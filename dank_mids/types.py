@@ -1,5 +1,5 @@
 import logging
-from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
+from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,overload, 
                     List, Literal, NewType, Optional, TypedDict, TypeVar,
                     Union)
 
@@ -78,26 +78,16 @@ RETURN_TYPES = {
     "erigon_getHeaderByNumber": Dict[str, Optional[str]],
 }
 
-class Response(_DictStruct):
+class PartialResponse(_DictStruct):
     result: Raw = None  # type: ignore
     error: Optional[Error] = None
-    id: Optional[Union[str, int]] = None
-    jsonrpc: Literal["2.0"] = "2.0"
 
     @property
     def exception(self) -> BadResponse:
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
         return BadResponse(self)
-        
-    def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
-        data = {}
-        for field in self.__struct_fields__:
-            attr = self.decode_result(method=method) if field == "result" else getattr(self, field)
-            if field != 'error' or attr is not None:
-                data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
-        return data
-    
+
     def decode_result(self, method: Optional[str] = None) -> Any:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
@@ -139,12 +129,28 @@ class Response(_DictStruct):
         except ValidationError as e:
             raise ValidationError(method, e) from e
 
+class Response(PartialResponse):
+    id: Optional[Union[str, int]] = None
+    jsonrpc: Literal["2.0"] = "2.0"
+        
+    def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
+        data = {}
+        for field in self.__struct_fields__:
+            attr = self.decode_result(method=method) if field == "result" else getattr(self, field)
+            if field != 'error' or attr is not None:
+                data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
+        return data
+
 class RawResponse:
     """Wraps a Raw object that we know represents a Response with a `decode` helper method"""
     def __init__(self, raw: Raw) -> None:
         self._raw = raw
-    def decode(self) -> Response:
-        return decode(self._raw, type=Response)
+    @overload
+    def decode(self, partial = True) -> PartialResponse:...
+    @overload
+    def decode(self, partial = False) -> Response:...
+    def decode(self, partial: bool = False) -> Union[Response, PartialResponse]:
+        return decode(self._raw, type=PartialResponse if partial else Response)
 
 JSONRPCBatchRequest = List[Request]
 JSONRPCBatchResponse = List[Raw]
