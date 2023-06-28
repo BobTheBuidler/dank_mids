@@ -16,8 +16,10 @@ RETURN_TYPES = {
     "eth_call": str,
     "eth_chainId": str,
     "eth_getCode": str,
+    "eth_getLogs": List[Log],
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
+    "eth_accounts": List[str],
     "eth_getBlockByNumber": Dict[str, Union[str, List[str]]],
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Dict[str, Union[str, None, AccessList]],

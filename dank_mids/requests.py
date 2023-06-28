@@ -111,6 +111,8 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 
 ### Single requests:
 
+BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
+
 class RPCRequest(_RequestMeta[RPCResponse]):
     dict_responses = set()
     str_responses = set()
@@ -121,9 +123,10 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         self.controller = controller
         self.method = method
         self.params = params
+        self.should_batch = all(bypass not in method for bypass in BYPASS_METHODS)
         self._started = False
         super().__init__()
-        
+
         if isinstance(self, eth_call) and self.multicall_compatible:
             self.controller.pending_eth_calls[self.block].append(self)
         else:
@@ -133,24 +136,11 @@ class RPCRequest(_RequestMeta[RPCResponse]):
     def __eq__(self, __o: object) -> bool:
         return self.uid == __o.uid if isinstance(__o, self.__class__) else False 
     
-    def __hash__(self) -> int:
-        return self.uid
-    
     def __len__(self) -> int:
         return 1
     
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} uid={self.uid} method={self.method}>"
-    
-    def __del__(self) -> None:
-        """Just lets the user know if there is something fishy going on"""
-        try:
-            if not self._started and self._batch and self._batch._started:
-                main_logger.warning(f'{self} was created and destroyed.')
-        except AttributeError as e:
-            print(e)
-        except Exception as e:
-            main_logger.exception(e)
 
     @property
     def rpc_data(self) -> RpcCallJson:
@@ -161,6 +151,10 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         self._batch = batch
 
     async def get_response(self) -> RPCResponse:
+        if not self.should_batch:
+            main_logger.debug(f"bypassed, method is {self.method}")
+            return await self.make_request()
+        
         if self._started and not self._batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
             await self._batch
@@ -218,6 +212,11 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             main_logger.debug(f"method: {self.method}  spoof: {spoof}")
         self._response = spoof  # type: ignore
         self._done.set()
+    
+    async def make_request(self) -> RPCResponse:
+        """Used to execute the request with no batching."""
+        response = await self.controller.make_request(self.method, self.params)
+        return response.to_dict(self.method)
 
     def _decode_raw(self, data: Raw) -> Union[str, AttributeDict]:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually

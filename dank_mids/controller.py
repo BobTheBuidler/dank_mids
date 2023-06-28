@@ -17,12 +17,11 @@ from dank_mids._demo_mode import demo_logger
 from dank_mids.batch import DankBatch
 from dank_mids.helpers import _session
 from dank_mids.helpers._json import Request, Response, decode_response
-from dank_mids.loggers import main_logger, sort_lazy_logger
+from dank_mids.loggers import main_logger
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
+from dank_mids.semaphore import method_semaphores
 from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator
-
-BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
 
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
 
@@ -74,6 +73,19 @@ class DankMiddlewareController:
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
     
+    def __repr__(self) -> str:
+        return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
+
+    async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+        async with method_semaphores[method]:
+            if method == "eth_call" and params[0]["to"] not in self.no_multicall:
+                return await eth_call(self, params)
+            return await RPCRequest(self, method, params)
+    
+    @property
+    def pools_closed_lock(self) -> threading.Lock:
+        return self.call_uid.lock
+    
     async def eth_call(self, *params: Any) -> Response:
         return await self.make_request("eth_call", params)
     
@@ -81,25 +93,13 @@ class DankMiddlewareController:
     async def make_request(self, method: str, params: List[Any]) -> Response:
         request_id = next(self.w3.provider.request_counter)
         request = Request(method=method, params=params, id=request_id)
-        main_logger.debug(f'making request: {request}')
         session = await _session.get_session()
+        main_logger.debug(f'making request: {request}')
         async with session.post(self.endpoint, json=request.to_dict()) as response:
             response = await response.json(loads=decode_response)
             main_logger.debug(f'received response: {response}')
             return response
-    
-    def __repr__(self) -> str:
-        return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
-    async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        if method != "eth_call" or params[0]["to"] in self.no_multicall:
-            return await eth_call(self, params)
-        return await RPCRequest(self, method, params)
-    
-    @property
-    def pools_closed_lock(self) -> threading.Lock:
-        return self.call_uid.lock
-    
     async def execute_batch(self) -> None:
         # NOTE: We create this empty batch here to avoid double-locking.
         empty = JSONRPCBatch(self)
@@ -114,14 +114,6 @@ class DankMiddlewareController:
         await batch
         demo_logger.info(f'{batch} done')
 
-    @sort_lazy_logger
-    def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
-        """ Determines whether or not a call should be passed to the DankMiddlewareController. """
-        if any(bypass in method for bypass in BYPASS_METHODS):
-            main_logger.debug(f"bypassed, method is {method}")
-            return False
-        return True
-    
     @property
     def queue_is_full(self) -> bool:
         return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
