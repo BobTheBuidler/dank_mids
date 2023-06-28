@@ -3,7 +3,8 @@ import abc
 import asyncio
 import logging
 from collections import defaultdict
-from functools import cached_property
+from concurrent.futures import ProcessPoolExecutor
+from functools import cached_property, partial
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, Type, TypeVar,
                     Union)
@@ -16,7 +17,6 @@ from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from msgspec import Raw, ValidationError
 from msgspec.json import encode
-from multicall.utils import run_in_subprocess
 from web3 import Web3
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
@@ -36,6 +36,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 RETRY_ERRS = ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]
+
+subprocesses = ProcessPoolExecutor(_config.NUM_PROCESSES)
+
+run_in_subprocess = partial(asyncio.get_event_loop().run_in_executor, subprocesses)
 
 
 class ResponseNotReady(Exception):
@@ -297,8 +301,9 @@ class eth_call(RPCRequest):
 
     async def sync_call(self) -> Union[bytes, Exception]:
         """ Used to bypass DankMiddlewareController. """
-        data = await run_in_subprocess(
-            _reattempt_call_and_return_exception, self.target, self.calldata, self.block, self.controller.sync_w3
+        # NOTE: This blocks but should be rare. still needs fixin'
+        data = _reattempt_call_and_return_exception(
+            self.target, self.calldata, self.block, self.controller.sync_w3
         )
         # If we were able to get a usable response from single call, add contract to `do_not_batch`.
         if not isinstance(data, Exception):
@@ -384,9 +389,15 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
 
-
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
+
+def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
+    return mcall_encoder([False, data])
+
+def mcall_decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:
+    data = bytes.fromhex(data.decode_result("eth_call")[2:])
+    return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
 
 class Multicall(_Batch[eth_call]):
     method = "eth_call"
@@ -406,7 +417,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def calldata(self) -> str:
-        return (self.fourbyte + mcall_encoder([False, [[call.target, call.calldata] for call in self.calls]])).hex()
+        return (self.fourbyte + mcall_encode([[call.target, call.calldata] for call in self.calls])).hex()
     
     @property
     def target(self) -> ChecksumAddress:
@@ -461,13 +472,19 @@ class Multicall(_Batch[eth_call]):
             response = data.decode(partial=True)
             if response.error:
                 raise response.exception
-            return await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, self.decode(response))))
+            return await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, await self.decode(response))))
         raise NotImplementedError(f"type {type(data)} not supported.", data)
     
-    @staticmethod
-    def decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:
-        data = bytes.fromhex(data.decode_result("eth_call")[2:])
-        return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
+    async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
+        import time
+        try:  # NOTE: Quickly check for length without counting each item with `len`.
+            self[500]
+            return await run_in_subprocess(mcall_decode, data)
+        except IndexError:
+            start = time.time()
+            retval = mcall_decode(data)
+            print(f'took {time.time() - start} for {len(self)}')
+            return retval
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
         batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
