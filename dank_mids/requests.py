@@ -487,16 +487,14 @@ class Multicall(_Batch[eth_call]):
     def _decode_data(self, data: Union[Raw, HexBytes]) -> List[Tuple[bool, bytes]]:
         # NOTE This is the case when the multicall was sent in a jsonrpc batch.
         if isinstance(data, Raw):
-            return self.decode_raw(data)
+            data = bytes.fromhex(decode(data, type=str)[2:])
+            # TODO: Figure out how to use msgspec to parse abi data
+            return self.decode_single(data)
         # NOTE: This is the case when it was not
         # TODO Refactor this out so `data` is always Raw, probably with snek
         elif isinstance(data, HexBytes):
             return self.decode_single(data)
         raise TypeError(type(data), data)
-
-    def decode_raw(self, data: Raw) -> List[Tuple[bool, bytes]]:
-        _, _, raw = decode(data, type=Tuple[int, int, Raw], dec_hook=multicall_decode_hook)
-        return decode(raw, type=List[Tuple[bool, bytes]], dec_hook=multicall_decode_hook)
 
     def _post_future_cleanup(self) -> None:
         try:
