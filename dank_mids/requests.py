@@ -2,7 +2,6 @@
 import abc
 import asyncio
 from collections import defaultdict
-from functools import partial
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, Type, TypeVar,
                     Union)
@@ -392,11 +391,6 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
             main_logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
 
-def multicall_decode_hook(type: Type, obj: Any) -> Any:
-    if isinstance(obj, (str, bytes)):
-        return decode(obj[2:], type=type)
-    raise TypeError('hook', type, obj, type(obj))
-
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
@@ -573,8 +567,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     async def post(self) -> List[RPCResponse]:
         session = await _session.get_session()
         async with session.post(self.controller.endpoint, json=self.data) as response:
-            response: Union[list, _json.Response] = await response.json(loads=_json.decode_jsonrpc_batch)
-            # A successful response will be a list of Response objects, not a single Response.
+            response: Union[_json.JSONRPCBatchResponse, _json.Response] = await response.json(loads=_json.decode_jsonrpc_batch)
+            # A successful response will be a list of Response objects, a single Response implies an error.
             if isinstance(response, list):
                 return response
             # Oops, we failed.
