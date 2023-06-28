@@ -29,7 +29,6 @@ from dank_mids.types import BatchId, BlockId, JsonrpcParams, RpcCallJson
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
-    from dank_mids.worker import DankWorker
 
 RETRY_ERRS = ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]
 
@@ -311,8 +310,8 @@ _Request = TypeVar("_Request")
 class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     calls: List[_Request]
 
-    def __init__(self, worker: "DankWorker", calls: Iterable[_Request]):
-        self.worker: DankWorker = worker
+    def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
+        self.controller = controller
         self.calls = list(calls)  # type: ignore
         self._fut = None
         #self._len = 0
@@ -329,10 +328,6 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     
     def __len__(self) -> int:
         return len(self.calls)
-
-    @property
-    def controller(self) -> "DankMiddlewareController":
-        return self.worker.controller
     
     @property
     def halfpoint(self) -> int:
@@ -357,7 +352,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         if not skip_check:
             if self.is_full:
                 self.start()
-            elif sum(len(multicall) for multicall in self.controller.pending_eth_calls.values()) >= self.controller.batcher.step:
+            elif self.controller.queue_is_full:
                 self.controller.early_start()
     
     def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
@@ -366,7 +361,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         if not skip_check:
             if self.is_full:
                 self.start()
-            elif sum(len(multicall) for multicall in self.controller.pending_eth_calls.values()) >= self.controller.batcher.step:
+            elif self.controller.queue_is_full:
                 self.controller.early_start()
 
     def start(self, batch: Optional["_Batch"] = None, cleanup=True) -> None:
@@ -394,8 +389,8 @@ class Multicall(_Batch[eth_call]):
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")    
 
-    def __init__(self, worker: "DankWorker", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
-        super().__init__(worker, calls)
+    def __init__(self, controller: "DankMiddlewareController", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
+        super().__init__(controller, calls)
         self.bid = bid or self.controller.multicall_uid.next
         self._started = False
     
@@ -412,11 +407,11 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def target(self) -> ChecksumAddress:
-        return self.worker.target
+        return self.controller.multicall2
     
     @property
     def params(self) -> JsonrpcParams:
-        if self.worker.state_override_not_supported:
+        if self.controller.state_override_not_supported:
             return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]  # type: ignore
         return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block, {self.target: {'code': OVERRIDE_CODE}}]  # type: ignore
     
@@ -436,7 +431,7 @@ class Multicall(_Batch[eth_call]):
         rid = self.controller.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
-            await self.spoof_response(await self.worker(*self.params))
+            await self.spoof_response(await self.controller.eth_call(*self.params))
         except Exception as e:
             _log_exception(e)
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
@@ -469,7 +464,7 @@ class Multicall(_Batch[eth_call]):
         return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
-        batches = [Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
+        batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
         for batch in batches:
             batch.start(cleanup=False)
         await asyncio.gather(*batches)
@@ -486,11 +481,11 @@ class Multicall(_Batch[eth_call]):
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def __init__(
         self,
-        worker: "DankWorker",
+        controller: "DankMiddlewareController",
         calls: List[Union[Multicall, RPCRequest]] = [], 
         jid: Optional[BatchId] = None
     ) -> None:
-        super().__init__(worker, calls)
+        super().__init__(controller, calls)
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
         self._started = False
 
@@ -594,9 +589,9 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     async def bisect_and_retry(self) -> None:
         batches = [
-            Multicall(self.worker, chunk[0].calls, f"json{self.jid}_{i}")  # type: ignore [misc]
+            Multicall(self.controller, chunk[0].calls, f"json{self.jid}_{i}")  # type: ignore [misc]
             if len(chunk) == 1 and isinstance(chunk[0], Multicall)
-            else JSONRPCBatch(self.worker, chunk, f"{self.jid}_{i}")
+            else JSONRPCBatch(self.controller, chunk, f"{self.jid}_{i}")
             for i, chunk in enumerate(self.bisected)
             if chunk
         ]
@@ -605,4 +600,4 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         await asyncio.gather(*batches)
 
     def _post_future_cleanup(self) -> None:
-        self.controller.pending_rpc_calls = JSONRPCBatch(self.worker)
+        self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)

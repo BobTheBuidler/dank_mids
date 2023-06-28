@@ -3,6 +3,7 @@ import threading
 from collections import defaultdict
 from typing import Any, DefaultDict, List
 
+import eth_retry
 from eth_utils import to_checksum_address
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
@@ -11,12 +12,15 @@ from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
+from dank_mids import _config
 from dank_mids._demo_mode import demo_logger
+from dank_mids.batch import DankBatch
+from dank_mids.helpers import _session
+from dank_mids.helpers._json import Request, Response, decode_response
 from dank_mids.loggers import main_logger, sort_lazy_logger
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator
-from dank_mids.worker import DankBatch, DankWorker
 
 BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
 
@@ -38,7 +42,10 @@ class DankMiddlewareController:
         main_logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         self.w3: Web3 = w3
         self.sync_w3 = _sync_w3_from_async(w3)
+
         self.chain_id = self.sync_w3.eth.chain_id
+        self.state_override_not_supported: bool = _config.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
+
         self.endpoint = self.w3.provider.endpoint_uri
         if "tenderly" in self.endpoint:
             # NOTE: Tenderly does funky things sometimes
@@ -54,29 +61,40 @@ class DankMiddlewareController:
         self.multicall2 = to_checksum_address(multicall2)
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
 
+        self.batcher = NotSoBrightBatcher()
+
         self.call_uid = UIDGenerator()
         self.multicall_uid: UIDGenerator = UIDGenerator()
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
 
-        # NOTE: We no longer have a worker thread, we just have this weird worker thing we should refactor out.
-        self.worker = DankWorker(self)
-
-        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self.worker))
-        self.pending_rpc_calls = JSONRPCBatch(self.worker)
+        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
+        self.pending_rpc_calls = JSONRPCBatch(self)
 
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
     
+    async def eth_call(self, *params: Any) -> Response:
+        return await self.make_request("eth_call", params)
+    
+    @eth_retry.auto_retry
+    async def make_request(self, method: str, params: List[Any]) -> Response:
+        request_id = next(self.w3.provider.request_counter)
+        request = Request(method=method, params=params, id=request_id)
+        main_logger.debug(f'making request: {request}')
+        session = await _session.get_session()
+        async with session.post(self.endpoint, json=request.to_dict()) as response:
+            response = await response.json(loads=decode_response)
+            main_logger.debug(f'received response: {response}')
+            return response
+    
     def __repr__(self) -> str:
-        return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
+        return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))
-    
-    @property
-    def batcher(self) -> NotSoBrightBatcher:
-        return self.worker.batcher
+        if method != "eth_call" or params[0]["to"] in self.no_multicall:
+            return await eth_call(self, params)
+        return await RPCRequest(self, method, params)
     
     @property
     def pools_closed_lock(self) -> threading.Lock:
@@ -84,7 +102,7 @@ class DankMiddlewareController:
     
     async def execute_batch(self) -> None:
         # NOTE: We create this empty batch here to avoid double-locking.
-        empty = JSONRPCBatch(self.worker)
+        empty = JSONRPCBatch(self)
         with self.pools_closed_lock:  # Do we really need this?
             multicalls = dict(self.pending_eth_calls)
             self.pending_eth_calls.clear()
@@ -92,16 +110,13 @@ class DankMiddlewareController:
             rpc_calls = self.pending_rpc_calls[:]
             self.pending_rpc_calls = empty
         demo_logger.info(f'executing dank batch (current cid: {self.call_uid.latest})')  # type: ignore
-        batch = DankBatch(self.worker, multicalls, rpc_calls)
+        batch = DankBatch(self, multicalls, rpc_calls)
         await batch
         demo_logger.info(f'{batch} done')
 
     @sort_lazy_logger
     def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
         """ Determines whether or not a call should be passed to the DankMiddlewareController. """
-        if method == "eth_call" and params[0]["to"] in self.no_multicall:
-            # These most likely come from dank mids internals if you're using dank mids.
-            return False
         if any(bypass in method for bypass in BYPASS_METHODS):
             main_logger.debug(f"bypassed, method is {method}")
             return False
@@ -109,7 +124,7 @@ class DankMiddlewareController:
     
     @property
     def queue_is_full(self) -> bool:
-        return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step * 25
+        return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
     
     def early_start(self):
         """Used to start all queued calls when we have enough for a full batch"""
