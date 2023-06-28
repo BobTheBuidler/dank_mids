@@ -88,7 +88,7 @@ def _err_response(e: Exception) -> RPCError:
     return {'code': -32000, 'message': err_msg, 'data': ''}
 
 
-_Response = TypeVar("_Response", RPCResponse, List[RPCResponse])
+_Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPCResponse])
 
 class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     def __init__(self) -> None:
@@ -117,7 +117,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 
 BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
 
-class RPCRequest(_RequestMeta[RPCResponse]):
+class RPCRequest(_RequestMeta[Response]):
     dict_responses = set()
     str_responses = set()
 
@@ -157,7 +157,8 @@ class RPCRequest(_RequestMeta[RPCResponse]):
     async def get_response(self) -> RPCResponse:
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
-            return await self.make_request()
+            await self.make_request()
+            return self.response.to_dict(self.method)
         
         if self._started and not self._batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
@@ -217,10 +218,13 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         self._response = spoof  # type: ignore
         self._done.set()
     
-    async def make_request(self) -> RPCResponse:
+    async def make_request(self) -> Response:
         """Used to execute the request with no batching."""
+        self._started = True
         response = await self.controller.make_request(self.method, self.params)
-        return response.to_dict(self.method)
+        self._response = response
+        self._done.set()
+        return response
 
     def _decode_raw(self, data: Raw) -> Union[str, AttributeDict]:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
