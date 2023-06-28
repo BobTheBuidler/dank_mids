@@ -190,7 +190,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         # TODO: refactor this out
         return self.response
     
-    async def spoof_response(self, data: Union[_json.Response, Raw, bytes, Exception]) -> None:
+    async def spoof_response(self, data: Union[_json.Response, bytes, Exception]) -> None:
         """
         `Raw` type data comes from rpc calls executed in a jsonrpc batch
         `bytes` type data comes for individual eth_calls that were batched into multicalls and already decoded
@@ -208,12 +208,10 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
         if isinstance(data, Exception):
             spoof["error"] = _err_response(data)
-        elif isinstance(data, Raw):
-            spoof["result"] = self._decode_raw(data)
         elif isinstance(data, bytes):
             spoof["result"] = data
         else:
-            raise TypeError('b', type(data), data)
+            raise TypeError('You have an incorrect type for spoofing.', type(data), data)
         
         if isinstance(self, eth_call):
             main_logger.debug(f"method: eth_call  address: {self.target}  spoof: {spoof}")
