@@ -116,7 +116,7 @@ RETURN_TYPES = {
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_getBlockByNumber": Dict[str, Union[str, List[str]]],
-    "erigon_getHeaderByNumber": Dict[str, str],
+    "erigon_getHeaderByNumber": Dict[str, Optional[str]],
 }
 
 class RPCRequest(_RequestMeta[RPCResponse]):
@@ -385,8 +385,13 @@ def multicall_decode_hook(type: Type, obj: Any) -> Any:
 
 def _reduce(decoder):
     def decode(self, data):
-        _, _, decoded = decoder(data)
-        return decoded
+        try:
+            return decoder(data)[2]
+        except:
+            raise Exception(
+                f'self: {type(self)}\n'
+                + f'data: {type(data)}'
+            )
     return decode
 
 class Multicall(_Batch[eth_call]):
