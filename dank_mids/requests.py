@@ -401,7 +401,7 @@ def _reduce(decoder):
                 f'self: {type(self)}\n'
                 + f"decoder: {decoder}\n"
                 + f'data: {type(data)}\n'
-                + f"decoded: {type(decoder(data))}"
+                + f"decoded: {type(decode(data))}"
             )
     return decode
 
@@ -410,11 +410,6 @@ class Multicall(_Batch[eth_call]):
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
     encode_single = partial(encode_single, "(bool,(address,bytes)[])")
     decode_single = _reduce(partial(decode_single, "(uint256,uint256,(bool,bytes)[])"))
-    decode_raw = _reduce(partial(
-        decode,
-        type=Tuple[int, int, List[Tuple[bool, bytes]]], 
-        dec_hook=multicall_decode_hook
-    ))
 
     def __init__(self, worker: "DankWorker", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
         super().__init__(worker, calls)
@@ -496,7 +491,11 @@ class Multicall(_Batch[eth_call]):
         elif isinstance(data, HexBytes):
             return self.decode_single(data)
         raise TypeError(type(data), data)
-    
+
+    def decode_raw(self, data: Raw) -> List[Tuple[bool, bytes]]:
+        _, _, decoded = decode(data, type=Tuple[int, int, Raw], dec_hook=multicall_decode_hook)
+        return decode(decoded, type=List[Tuple[bool, bytes]], dec_hook=multicall_decode_hook)
+
     def _post_future_cleanup(self) -> None:
         try:
             # This will have already taken place in a full json batch of multicalls
