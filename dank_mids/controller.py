@@ -68,6 +68,7 @@ class DankMiddlewareController:
         self.multicall_uid: UIDGenerator = UIDGenerator()
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
+        self.pools_closed_lock = self.call_uid.lock
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
         self.pending_rpc_calls = JSONRPCBatch(self)
@@ -83,10 +84,6 @@ class DankMiddlewareController:
             if method == "eth_call" and params[0]["to"] not in self.no_multicall:
                 return await eth_call(self, params)
             return await RPCRequest(self, method, params)
-    
-    @property
-    def pools_closed_lock(self) -> threading.Lock:
-        return self.call_uid.lock
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
