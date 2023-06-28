@@ -43,7 +43,8 @@ class Request(_DictStruct):
     method: str
     id: Union[str, int]
     params: Optional[list] = None
-    jsonrpc: Literal["2.0"] = "2.0"
+    # NOTE: While technially part of a request, we can successfully make requests without including the `jsonrpc` field.
+    #jsonrpc: Literal["2.0"] = "2.0"
 
     @property
     def data(self) -> bytes:
