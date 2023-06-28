@@ -111,6 +111,10 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 
 ### Single requests:
 
+# TODO: use the types from snek
+Log = Dict[str, Union[bool, str, None, List[str]]]
+AccessList = List[Dict[str, Union[str, List[str]]]]
+
 RETURN_TYPES = {
     "eth_call": str,
     "eth_chainId": str,
@@ -119,8 +123,8 @@ RETURN_TYPES = {
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_getBlockByNumber": Dict[str, Union[str, List[str]]],
     "eth_getTransactionCount": str,
-    "eth_getTransactionByHash": Dict[str, Union[str, None, List[Dict[str, Union[str, List[str]]]]]],
-    "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Dict[str, Union[str, None, List[str]]]]]], 
+    "eth_getTransactionByHash": Dict[str, Union[str, None, AccessList]],
+    "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Log]]], 
     "erigon_getHeaderByNumber": Dict[str, Optional[str]],
 }
 
