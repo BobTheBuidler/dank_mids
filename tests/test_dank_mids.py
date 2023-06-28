@@ -18,14 +18,11 @@ MULTIBLOCK_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]],
 def _get_controller():
     return instances[chain.id][0]
 
-def _get_worker():
-    return _get_controller().worker
-
 def test_dank_middleware():
     await_awaitable(gather(BIG_WORK))
     cid = _get_controller().call_uid.latest
-    mid = _get_worker().multicall_uid.latest
-    rid = _get_worker().request_uid.latest
+    mid = _get_controller().multicall_uid.latest
+    rid = _get_controller().request_uid.latest
     assert cid, "The DankMiddlewareController did not process any calls."
     assert mid, "The DankMiddlewareController did not process any batches."
     assert rid, "The DankMiddlewareController did not process any requests."
@@ -49,10 +46,10 @@ def test_next_cid():
     assert _get_controller().call_uid.next + 1 == _get_controller().call_uid.next
     
 def test_next_mid():
-    assert _get_worker().request_uid.next + 1 == _get_worker().request_uid.next
+    assert _get_controller().request_uid.next + 1 == _get_controller().request_uid.next
     
 def test_next_bid():
-    assert _get_worker().multicall_uid.next + 1 == _get_worker().multicall_uid.next
+    assert _get_controller().multicall_uid.next + 1 == _get_controller().multicall_uid.next
 
 def test_other_methods():
     work = [dank_w3.eth.get_block_number() for i in range(50)]

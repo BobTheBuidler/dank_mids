@@ -89,10 +89,7 @@ _Response = TypeVar("_Response", RPCResponse, List[RPCResponse])
 
 class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     def __init__(self) -> None:
-        if isinstance(self, RPCRequest):
-            self.uid = self.controller.call_uid.next
-        elif isinstance(self, _Batch):
-            self.uid = self.worker.controller.call_uid.next
+        self.uid = self.controller.call_uid.next
         self._response: Optional[_Response] = None
         self._done = asyncio.Event()
     
@@ -401,7 +398,7 @@ class Multicall(_Batch[eth_call]):
 
     def __init__(self, worker: "DankWorker", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
         super().__init__(worker, calls)
-        self.bid = bid or self.worker.multicall_uid.next
+        self.bid = bid or self.controller.multicall_uid.next
         self._started = False
     
     def __repr__(self) -> str:
@@ -438,7 +435,7 @@ class Multicall(_Batch[eth_call]):
             main_logger.warning(f'{self} early exit')
             return
         self._started = True
-        rid = self.worker.request_uid.next
+        rid = self.controller.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
             await self.spoof_response(await self.worker(*self.params))
@@ -496,7 +493,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         jid: Optional[BatchId] = None
     ) -> None:
         super().__init__(worker, calls)
-        self.jid = jid or self.worker.jsonrpc_batch_uid.next
+        self.jid = jid or self.controller.jsonrpc_batch_uid.next
         self._started = False
 
     def __repr__(self) -> str:
@@ -548,7 +545,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             main_logger.warning(f"{self} exiting early. This shouldn't really happen bro")
             return
         self._started = True
-        rid = self.worker.request_uid.next
+        rid = self.controller.request_uid.next
         if _config.DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore

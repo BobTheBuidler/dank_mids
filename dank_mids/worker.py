@@ -27,9 +27,6 @@ class DankWorker:
         self.controller = controller
         self.target: ChecksumAddress = self.controller.multicall2
         self.batcher = NotSoBrightBatcher()
-        self.multicall_uid: UIDGenerator = UIDGenerator()
-        self.request_uid: UIDGenerator = UIDGenerator()
-        self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
         self.state_override_not_supported: bool = GANACHE_FORK or self.controller.chain_id == 100  # Gnosis Chain does not support state override.
     
     @eth_retry.auto_retry
