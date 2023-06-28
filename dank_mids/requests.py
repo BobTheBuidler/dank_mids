@@ -232,7 +232,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
             if self.method in self.dict_responses:
                 # TODO: Refactor this
                 list_of_stuff = List[Union[str, None, dict, list]]
-                dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, Dict[str, Any, None]]]
+                dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, Dict[str, Optional[Any]]]]
                 nested_dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, dict_of_stuff]]
 
                 decoded = AttributeDict(decode(data, type=nested_dict_of_stuff))
@@ -394,7 +394,9 @@ def _reduce(decoder):
         except:
             raise Exception(
                 f'self: {type(self)}\n'
-                + f'data: {type(data)}'
+                + f"decoder: {decoder}\n"
+                + f'data: {type(data)}\n'
+                + f"decoded: {type(decoder(data))}"
             )
     return decode
 
