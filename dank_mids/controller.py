@@ -19,7 +19,7 @@ from dank_mids.batch import DankBatch
 from dank_mids.helpers import _session, decode
 from dank_mids.helpers.semaphore import method_semaphores
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
-from dank_mids.types import BlockId, ChainId, Request, Response
+from dank_mids.types import BlockId, ChainId, Request, RawResponse
 from dank_mids.uid import UIDGenerator
 
 logger = logging.getLogger(__name__)
@@ -89,15 +89,15 @@ class DankMiddlewareController:
         return self.call_uid.lock
     
     @eth_retry.auto_retry
-    async def make_request(self, method: str, params: List[Any]) -> Response:
+    async def make_request(self, method: str, params: List[Any]) -> RawResponse:
         request_id = next(self.w3.provider.request_counter)
         request = Request(method=method, params=params, id=request_id)
         session = await _session.get_session()
         logger.debug(f'making request: {request}')
         async with session.post(self.endpoint, json=request.to_dict()) as response:
-            response = await response.json(loads=decode.response)
+            response = await response.json(loads=decode.raw)
             logger.debug(f'received response: {response}')
-            return response
+            return RawResponse(response)
 
     async def execute_batch(self) -> None:
         # NOTE: We create this empty batch here to avoid double-locking.

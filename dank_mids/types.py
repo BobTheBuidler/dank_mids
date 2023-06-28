@@ -144,9 +144,12 @@ class Response(_DictStruct):
         except ValidationError as e:
             raise ValidationError(method, e) from e
 
-class RawResponse(Raw[Response]):
-    def decode(self, method: Optional[str] = None) -> RPCResponse:
-        return decode(self, type=Response).to_dict(method=method)
+class RawResponse:
+    """Wraps a Raw object that we know represents a Response with a `decode` helper method"""
+    def __init__(self, raw: Raw) -> None:
+        self._raw = raw
+    def decode(self) -> Response:
+        return decode(self._raw, type=Response)
 
 JSONRPCBatchRequest = List[Request]
-JSONRPCBatchResponse = List[Response]
+JSONRPCBatchResponse = List[Raw]

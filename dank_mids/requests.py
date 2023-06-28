@@ -24,8 +24,8 @@ from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import BadResponse, EmptyBatch
 from dank_mids.helpers import _session, decode
 from dank_mids.types import (RETURN_TYPES, BatchId, BlockId,
-                             JSONRPCBatchResponse, JsonrpcParams, Response,
-                             RpcCallJson)
+                             JSONRPCBatchResponse, JsonrpcParams, RawResponse,
+                             Response, RpcCallJson)
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -117,7 +117,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 
 BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
 
-class RPCRequest(_RequestMeta[Response]):
+class RPCRequest(_RequestMeta[RawResponse]):
     dict_responses = set()
     str_responses = set()
 
@@ -182,13 +182,13 @@ class RPCRequest(_RequestMeta[Response]):
         await self._done.wait()
 
         # JIT json decoding
-        if isinstance(self.response, Response):
-            return self.response.to_dict(self.method)
+        if isinstance(self.response, RawResponse):
+            return self.response.decode().to_dict(self.method)
         # Less optimal decoding
         # TODO: refactor this out
         return self.response
     
-    async def spoof_response(self, data: Union[Response, bytes, Exception]) -> None:
+    async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
         """
         `Raw` type data comes from rpc calls executed in a jsonrpc batch
         `bytes` type data comes for individual eth_calls that were batched into multicalls and already decoded
@@ -197,7 +197,7 @@ class RPCRequest(_RequestMeta[Response]):
         # TODO: refactor this so Raw decoding doesn't occur until the caller requests the result.
         
         # New handler
-        if isinstance(data, Response):
+        if isinstance(data, RawResponse):
             self._response = data
             self._done.set()
             return
@@ -209,7 +209,7 @@ class RPCRequest(_RequestMeta[Response]):
         elif isinstance(data, bytes):
             spoof["result"] = data
         else:
-            raise TypeError('You have an incorrect type for spoofing.', type(data), data)
+            raise NotImplementedError(f'type {type(data)} not supported for spoofing.', type(data), data)
         
         if isinstance(self, eth_call):
             logger.debug(f"method: eth_call  address: {self.target}  spoof: {spoof}")
@@ -221,10 +221,10 @@ class RPCRequest(_RequestMeta[Response]):
     async def make_request(self) -> Response:
         """Used to execute the request with no batching."""
         self._started = True
-        response = await self.controller.make_request(self.method, self.params)
-        self._response = response
+        raw_response = await self.controller.make_request(self.method, self.params)
+        self._response = raw_response
         self._done.set()
-        return response
+        return raw_response
 
     def _decode_raw(self, data: Raw) -> Union[str, AttributeDict]:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
@@ -451,14 +451,17 @@ class Multicall(_Batch[eth_call]):
             return True
         return len(self) > 1
     
-    async def spoof_response(self, data: Union[Response, Exception]) -> None:
+    async def spoof_response(self, data: Union[RawResponse, Exception]) -> None:
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
             return await asyncio.gather(*[call.spoof_response(data) for call in self.calls])
         # These can either be successful or failed, received from jsonrpc batch handling.
-        elif isinstance(data, Response) and data.error:
-            raise data.exception
-        await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, self.decode(data))))
+        elif isinstance(data, RawResponse):
+            response = data.decode()
+            if response.error:
+                raise response.exception
+            return await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, self.decode(response))))
+        raise NotImplementedError(f"type {type(data)} not supported.", data)
     
     @staticmethod
     def decode(data: Response) -> List[Tuple[bool, bytes]]:
@@ -556,13 +559,13 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
     @eth_retry.auto_retry
-    async def post(self) -> List[RPCResponse]:
+    async def post(self) -> List[RawResponse]:
         session = await _session.get_session()
         async with session.post(self.controller.endpoint, json=self.data) as response:
             response: Union[JSONRPCBatchResponse, Response] = await response.json(loads=decode.jsonrpc_batch)
             # A successful response will be a list of Response objects, a single Response implies an error.
             if isinstance(response, list):
-                return response
+                return [RawResponse(raw) for raw in response]
             # Oops, we failed.
             logger.info(
                 "jsonrpc batch failed\n"
@@ -582,12 +585,12 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return True
         return self.is_single_multicall
     
-    async def spoof_response(self, response: Union[JSONRPCBatchResponse, Exception]) -> None:
+    async def spoof_response(self, response: Union[List[RawResponse], Exception]) -> None:
         # This means an exception occurred during the post request
         if isinstance(response, Exception):
             return await asyncio.gather(*[call.spoof_response(response) for call in self.calls])
         # This means we got results
-        return await asyncio.gather(*[call.spoof_response(result) for call, result in zip(self.calls, response)])
+        return await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(self.calls, response)])
     
     async def bisect_and_retry(self) -> None:
         batches = [
