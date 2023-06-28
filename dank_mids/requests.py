@@ -390,7 +390,9 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         return len(self) > 1
 
 def multicall_decode_hook(type: Type, obj: Any) -> Any:
-    return type.fromhex(obj[2:])
+    if isinstance(obj, (str, bytes)):
+        return decode(obj[2:], type=type)
+    raise TypeError(type, obj, type(obj))
 
 def _reduce(decoder):
     def decode(self, data):
@@ -493,8 +495,8 @@ class Multicall(_Batch[eth_call]):
         raise TypeError(type(data), data)
 
     def decode_raw(self, data: Raw) -> List[Tuple[bool, bytes]]:
-        _, _, decoded = decode(data, type=Tuple[int, int, Raw], dec_hook=multicall_decode_hook)
-        return decode(decoded, type=List[Tuple[bool, bytes]], dec_hook=multicall_decode_hook)
+        _, _, raw = decode(data, type=Tuple[int, int, Raw], dec_hook=multicall_decode_hook)
+        return decode(raw, type=List[Tuple[bool, bytes]], dec_hook=multicall_decode_hook)
 
     def _post_future_cleanup(self) -> None:
         try:
