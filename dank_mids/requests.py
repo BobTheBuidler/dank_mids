@@ -175,16 +175,6 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if not self._started:
             await self.controller.execute_batch()
         
-        # TODO: Remove this
-        async def debug_helper():
-        #    print(f'fetching {self} from {self._batch}  started: {self._batch._started}')
-            while not self._done.is_set():
-                await asyncio.sleep(60)
-                if not self._done.is_set() and not self._batch._started:
-                    print(f"{self} from {self._batch} event not set and batch not started.")
-        t = asyncio.create_task(
-            asyncio.wait_for(debug_helper(), 300)
-        )
         await self._done.wait()
 
         # JIT json decoding
