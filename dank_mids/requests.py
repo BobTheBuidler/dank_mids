@@ -195,23 +195,13 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # New handler
         if isinstance(data, RawResponse):
             self._response = data
-            self._done.set()
-            return
-
         # Old handler (once we use msgspec for single multicalls all `data` will be a RawResponse object)
-        spoof = {"id": self.uid, "jsonrpc": "dank_mids"}
-        if isinstance(data, Exception):
-            spoof["error"] = _err_response(data)
+        elif isinstance(data, Exception):
+            self._response = {"error": _err_response(data)}
         elif isinstance(data, bytes):
-            spoof["result"] = data
+            self._response = {"result": data}
         else:
             raise NotImplementedError(f'type {type(data)} not supported for spoofing.', type(data), data)
-        
-        if isinstance(self, eth_call):
-            logger.debug(f"method: eth_call  address: {self.target}  spoof: {spoof}")
-        else:
-            logger.debug(f"method: {self.method}  spoof: {spoof}")
-        self._response = spoof  # type: ignore
         self._done.set()
     
     async def make_request(self) -> RawResponse:
