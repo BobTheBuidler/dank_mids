@@ -221,7 +221,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         if typ := RETURN_TYPES.get(self.method):
             try:
                 decoded = decode(data, type=typ)
-                return AttributeDict(decoded) if hasattr(typ, "__origin__") and typ.__origin__ is dict else decoded
+                return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
             except ValidationError as e:
                 main_logger.exception(e)
 
