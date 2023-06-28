@@ -9,7 +9,7 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
 
 import eth_retry
 from aiohttp import RequestInfo
-from eth_abi import decode_single, encode_single
+from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
@@ -394,24 +394,16 @@ def multicall_decode_hook(type: Type, obj: Any) -> Any:
         return decode(obj[2:], type=type)
     raise TypeError(type, obj, type(obj))
 
-def _reduce(decoder):
-    def decode(self, data):
-        try:
-            return decoder(data)[2]
-        except:
-            raise Exception(
-                f'self: {type(self)}\n'
-                + f"decoder: {decoder}\n"
-                + f'data: {type(data)}\n'
-                + f"decoded: {type(decode(data))}"
-            )
-    return decode
+
+mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
+
+def _parse_results_from_bytes(data: bytes) -> List[Tuple[bool, bytes]]:
+    return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
 
 class Multicall(_Batch[eth_call]):
     method = "eth_call"
-    fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
-    encode_single = partial(encode_single, "(bool,(address,bytes)[])")
-    decode_single = _reduce(partial(decode_single, "(uint256,uint256,(bool,bytes)[])"))
+    fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")    
 
     def __init__(self, worker: "DankWorker", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
         super().__init__(worker, calls)
@@ -427,7 +419,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def calldata(self) -> str:
-        return (self.fourbyte + self.encode_single([False, [[call.target, call.calldata] for call in self.calls]])).hex()
+        return (self.fourbyte + mcall_encoder([False, [[call.target, call.calldata] for call in self.calls]])).hex()
     
     @property
     def target(self) -> ChecksumAddress:
@@ -476,7 +468,7 @@ class Multicall(_Batch[eth_call]):
     async def spoof_response(self, data: Union[HexBytes, Raw, Exception]) -> None:
         if isinstance(data, Exception):
             return await asyncio.gather(*[call.spoof_response(data) for call in self.calls])
-        await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, self._decode_data(data))))
+        await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, self.decode(data))))
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
         batches = [Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
@@ -484,16 +476,16 @@ class Multicall(_Batch[eth_call]):
             batch.start(cleanup=False)
         await asyncio.gather(*batches)
     
-    def _decode_data(self, data: Union[Raw, HexBytes]) -> List[Tuple[bool, bytes]]:
+    def decode(self, data: Union[Raw, HexBytes]) -> List[Tuple[bool, bytes]]:
         # NOTE This is the case when the multicall was sent in a jsonrpc batch.
         if isinstance(data, Raw):
             data = bytes.fromhex(decode(data, type=str)[2:])
             # TODO: Figure out how to use msgspec to parse abi data
-            return self.decode_single(data)
+            return _parse_results_from_bytes(data)
         # NOTE: This is the case when it was not
         # TODO Refactor this out so `data` is always Raw, probably with snek
         elif isinstance(data, HexBytes):
-            return self.decode_single(data)
+            return _parse_results_from_bytes(data)
         raise TypeError(type(data), data)
 
     def _post_future_cleanup(self) -> None:
