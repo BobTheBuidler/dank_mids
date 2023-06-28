@@ -118,6 +118,8 @@ RETURN_TYPES = {
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_getBlockByNumber": Dict[str, Union[str, List[str]]],
+    "eth_getTransactionCount": str,
+    "eth_getTransactionReceipt": Dict[str, Optional[str]],
     "erigon_getHeaderByNumber": Dict[str, Optional[str]],
 }
 
@@ -229,9 +231,9 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         try:
             if self.method in self.dict_responses:
                 # TODO: Refactor this
-                list_of_stuff = List[Union[str, dict, list]]
-                dict_of_stuff = Dict[str, Union[str, list_of_stuff, Dict[str, Any]]]
-                nested_dict_of_stuff = Dict[str, Union[str, list_of_stuff, dict_of_stuff]]
+                list_of_stuff = List[Union[str, None, dict, list]]
+                dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, Dict[str, Any, None]]]
+                nested_dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, dict_of_stuff]]
 
                 decoded = AttributeDict(decode(data, type=nested_dict_of_stuff))
                 types = {type(v) for v in decoded.values()}
