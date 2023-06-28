@@ -3,6 +3,7 @@ import abc
 import asyncio
 import logging
 from collections import defaultdict
+from functools import cached_property
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, Type, TypeVar,
                     Union)
@@ -26,7 +27,7 @@ from dank_mids._exceptions import BadResponse, EmptyBatch
 from dank_mids.helpers import _session, decode
 from dank_mids.types import (RETURN_TYPES, BatchId, BlockId,
                              JSONRPCBatchResponse, JsonrpcParams, RawResponse,
-                             Response, RpcCallJson)
+                             Request, Response)
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -147,9 +148,9 @@ class RPCRequest(_RequestMeta[RawResponse]):
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} uid={self.uid} method={self.method}>"
 
-    @property
-    def rpc_data(self) -> RpcCallJson:
-        return {'jsonrpc': '2.0', 'id': self.uid, 'method': self.method, 'params': self.params}
+    @cached_property
+    def request(self) -> Request:
+        return Request(method=self.method, params=self.params, id=self.uid)
     
     def start(self, batch: "_Batch") -> None:
         self._started = True
@@ -262,7 +263,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 return AttributeDict(decoded)
             raise NotImplementedError(f"type {type(decoded)} needs code for handling", decoded)
         except ValidationError as e:
-            raise ValidationError(self.rpc_data, e) from e
+            raise ValidationError(self.request, e) from e
 
 class eth_call(RPCRequest):
     def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
@@ -417,9 +418,9 @@ class Multicall(_Batch[eth_call]):
             return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]  # type: ignore
         return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block, {self.target: {'code': constants.OVERRIDE_CODE}}]  # type: ignore
     
-    @property
-    def rpc_data(self) -> RpcCallJson:
-        return {'jsonrpc': '2.0', 'id': self.uid, 'method': self.method, 'params': self.params}
+    @cached_property
+    def request(self) -> Request:
+        return Request(method=self.method, params=self.params, id=self.uid)
     
     @property
     def is_full(self) -> bool:
@@ -501,7 +502,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def data(self) -> bytes:
         if not self.calls:
             raise EmptyBatch(f"batch {self.uid} is empty and should not be processed.")
-        return encode([call.rpc_data for call in self.calls])
+        return encode([call.request for call in self.calls])
     
     @property
     def is_multicalls_only(self) -> bool:
