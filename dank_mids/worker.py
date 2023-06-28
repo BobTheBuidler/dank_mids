@@ -7,6 +7,9 @@ from eth_typing import ChecksumAddress
 from multicall.multicall import NotSoBrightBatcher
 
 from dank_mids._config import GANACHE_FORK, MAX_JSONRPC_BATCH_SIZE
+from dank_mids.helpers import _session
+from dank_mids.helpers._json import Request, Response, decode_response
+from dank_mids.loggers import main_logger
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, _Batch
 from dank_mids.types import Multicalls
 from dank_mids.uid import UIDGenerator
@@ -30,8 +33,15 @@ class DankWorker:
         self.state_override_not_supported: bool = GANACHE_FORK or self.controller.chain_id == 100  # Gnosis Chain does not support state override.
     
     @eth_retry.auto_retry
-    async def __call__(self, *request_args: Any) -> Any:
-        return await self.controller.w3.eth.call(*request_args)  # type: ignore
+    async def __call__(self, *params: Any) -> Response:
+        request_id = next(self.controller.w3.provider.request_counter)
+        request = Request(method="eth_call", params=params, id=request_id)
+        main_logger.debug(f'making request: {request}')
+        session = await _session.get_session()
+        async with session.post(self.controller.endpoint, json=request.to_dict()) as response:
+            response = await response.json(loads=decode_response)
+            main_logger.debug(f'received response: {response}')
+            return response
     
     @property
     def endpoint(self) -> str:

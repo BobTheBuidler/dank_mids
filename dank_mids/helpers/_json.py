@@ -1,13 +1,12 @@
-from functools import partial
-from typing import Any, List, Literal, Optional, Union, Dict
+from functools import lru_cache, partial
+from typing import Any, Dict, List, Literal, Optional, Union
 
-from msgspec import Raw, Struct
+from msgspec import Raw, Struct, ValidationError
 from msgspec.json import decode
 from web3.datastructures import AttributeDict
 
-from dank_mids.loggers import main_logger
 from dank_mids._exceptions import BadResponse
-from msgspec import ValidationError
+from dank_mids.loggers import main_logger
 
 # TODO: use the types from snek
 Log = Dict[str, Union[bool, str, None, List[str]]]
@@ -27,12 +26,12 @@ RETURN_TYPES = {
 }
 
 class DictStruct(Struct):
-    def to_dict(self) -> AttributeDict:
+    def to_dict(self) -> Dict[str, Any]:
         data = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
             data[field] = attr.to_dict() if isinstance(attr, DictStruct) else attr
-        return AttributeDict(data)
+        return data
     
 class Error(DictStruct):
     code: int
@@ -57,14 +56,15 @@ class Response(DictStruct):
             raise AttributeError(f"{self} did not error.")
         return BadResponse(self)
         
-    def to_dict(self, method: str) -> AttributeDict:
+    def to_dict(self, method: str) -> Dict[str, Any]:
         data = {}
         for field in self.__struct_fields__:
             attr = self.decode_result(method) if field == "result" else getattr(self, field)
             if field != 'error' or attr is not None:
                 data[field] = attr.to_dict() if isinstance(attr, DictStruct) else attr
-        return AttributeDict(data)
+        return data
     
+    @lru_cache
     def decode_result(self, method: str) -> Any:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if typ := RETURN_TYPES.get(method):
@@ -112,10 +112,11 @@ class Response(DictStruct):
 class Request(DictStruct):
     method: str
     id: Union[str, int]
-    params: Optional[Any] = None
+    params: Optional[list] = None
     jsonrpc: Literal["2.0"] = "2.0"
 
 JSONRPCBatchRequest = List[Request]
 JSONRPCBatchResponse = List[Response]
 
 decode_jsonrpc_batch = partial(decode, type=Union[JSONRPCBatchResponse, Response])
+decode_response = partial(decode, type=Response)

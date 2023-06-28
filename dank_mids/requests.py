@@ -401,9 +401,6 @@ def multicall_decode_hook(type: Type, obj: Any) -> Any:
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
 
-def _parse_results_from_bytes(data: bytes) -> List[Tuple[bool, bytes]]:
-    return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
-
 class Multicall(_Batch[eth_call]):
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")    
@@ -468,7 +465,7 @@ class Multicall(_Batch[eth_call]):
             return True
         return len(self) > 1
     
-    async def spoof_response(self, data: Union[HexBytes, _json.Response, Exception]) -> None:
+    async def spoof_response(self, data: Union[_json.Response, Exception]) -> None:
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
             return await asyncio.gather(*[call.spoof_response(data) for call in self.calls])
@@ -477,26 +474,16 @@ class Multicall(_Batch[eth_call]):
             raise data.exception
         await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, self.decode(data))))
     
+    @staticmethod
+    def decode(data: _json.Response) -> List[Tuple[bool, bytes]]:
+        data = bytes.fromhex(data.decode_result("eth_call")[2:])
+        return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
+    
     async def bisect_and_retry(self) -> List[RPCResponse]:
         batches = [Multicall(self.worker, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
         for batch in batches:
             batch.start(cleanup=False)
         await asyncio.gather(*batches)
-    
-    def decode(self, data: Union[_json.Response, HexBytes]) -> List[Tuple[bool, bytes]]:
-        # NOTE This is the case when the multicall was sent in a jsonrpc batch.
-        if isinstance(data, _json.Response):
-            data = bytes.fromhex(data.decode_result("eth_call")[2:])
-            return _parse_results_from_bytes(data)
-        #elif isinstance(data, Raw):
-        #    data = bytes.fromhex(decode(data, type=str)[2:])
-            # TODO: Figure out how to use msgspec to parse abi data
-        #    return _parse_results_from_bytes(data)
-        # NOTE: This is the case when it was not
-        # TODO Refactor this out so `data` is always Raw, probably with snek
-        elif isinstance(data, HexBytes):
-            return _parse_results_from_bytes(data)
-        raise TypeError('a', type(data), data)
 
     def _post_future_cleanup(self) -> None:
         try:
