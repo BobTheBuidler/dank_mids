@@ -34,7 +34,7 @@ class DankBatch:
     @property
     def coroutines(self) -> Generator["_Batch", None, None]:
         # Combine multicalls into one or more jsonrpc batches
-        
+    
         #calls = []
         #for mcall in self.multicalls.values():
         #    try:  # NOTE: This should be faster than using len().
