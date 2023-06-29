@@ -9,7 +9,9 @@ from dank_mids.types import Multicalls
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
-    
+MIN_SIZE = 2
+CHECK = MIN_SIZE - 1
+
 class DankBatch:
     """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
     def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[RPCRequest]):
@@ -32,7 +34,16 @@ class DankBatch:
     @property
     def coroutines(self) -> Generator["_Batch", None, None]:
         # Combine multicalls into one or more jsonrpc batches
-        working_batch = JSONRPCBatch(self.controller, self.multicalls.values())
+        
+        calls = []
+        for mcall in self.multicalls.values():
+            try:  # NOTE: This should be faster than using len().
+                calls[CHECK]
+                calls.append(mcall)
+            except IndexError:
+                calls.extend(mcall)
+            
+        working_batch = JSONRPCBatch(self.controller, calls)
         rpc_calls_to_batch = self.rpc_calls[:]
         while rpc_calls_to_batch:
             if len(working_batch) >= _config.MAX_JSONRPC_BATCH_SIZE or working_batch.total_calls >= self.controller.batcher.step:
