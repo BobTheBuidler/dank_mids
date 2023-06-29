@@ -92,16 +92,22 @@ class PartialResponse(_DictStruct):
     def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
         data = {}
         for field in self.__struct_fields__:
-            attr = self.decode_result(method=method) if field == "result" else getattr(self, field)
+            attr = self.decode_result(method=method, _caller=self) if field == "result" else getattr(self, field)
             if field != 'error' or attr is not None:
                 data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
         return data
 
-    def decode_result(self, method: Optional[str] = None) -> Any:
+    def decode_result(self, method: Optional[str] = None, _caller = None) -> Any:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
+            if method in ["eth_blockNumber", "eth_chainId"]:
+                return decode(self.result, type=typ)
             try:
+                from time import time
+                start = time()
                 decoded = decode(self.result, type=typ)
+                if _caller:
+                    print(f'decoding {type(_caller)} {method} took {time() - start}')
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
             except ValidationError as e:
                 logging.getLogger('dank_mids.decoder').exception(e)

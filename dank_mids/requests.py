@@ -461,7 +461,7 @@ class Multicall(_Batch[eth_call]):
         except IndexError:
             start = time.time()
             retval = mcall_decode(data)
-            print(f'took {time.time() - start} for {len(self)}')
+            print(f'multicall decoding took {time.time() - start} for {len(self)}')
             return retval
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
