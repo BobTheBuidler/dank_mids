@@ -40,17 +40,19 @@ class _DictStruct(Struct):
             attr = getattr(self, field)
             data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
         return data
-    
-class Request(_DictStruct):
+  
+class PartialRequest(_DictStruct):
     method: str
     id: Union[str, int]
     params: Optional[list] = None
-    # NOTE: While technially part of a request, we can successfully make requests without including the `jsonrpc` field.
-    #jsonrpc: Literal["2.0"] = "2.0"
 
     @property
     def data(self) -> bytes:
         return encode(self)
+
+class Request(PartialRequest):
+    # NOTE: While technially part of a request, we can successfully make requests without including the `jsonrpc` field.
+    jsonrpc: Literal["2.0"] = "2.0"
 
 class Error(_DictStruct):
     code: int

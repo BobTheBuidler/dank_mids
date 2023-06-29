@@ -27,7 +27,8 @@ from dank_mids._exceptions import BadResponse, EmptyBatch
 from dank_mids.helpers import _session, decode
 from dank_mids.types import (RETURN_TYPES, BatchId, BlockId,
                              JSONRPCBatchResponse, JsonrpcParams,
-                             PartialResponse, RawResponse, Request, Response)
+                             PartialRequest, PartialResponse, RawResponse,
+                             Request, Response)
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -151,8 +152,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return f"<{self.__class__.__name__} uid={self.uid} method={self.method}>"
 
     @cached_property
-    def request(self) -> Request:
-        return Request(method=self.method, params=self.params, id=self.uid)
+    def request(self) -> Union[Request, PartialRequest]:
+        return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
     
     def start(self, batch: "_Batch") -> None:
         self._started = True
@@ -408,8 +409,8 @@ class Multicall(_Batch[eth_call]):
         return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block, {self.target: {'code': constants.OVERRIDE_CODE}}]  # type: ignore
     
     @cached_property
-    def request(self) -> Request:
-        return Request(method=self.method, params=self.params, id=self.uid)
+    def request(self) -> Union[Request, PartialRequest]:
+        return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
     
     @property
     def is_full(self) -> bool:

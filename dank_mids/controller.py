@@ -19,7 +19,7 @@ from dank_mids.batch import DankBatch
 from dank_mids.helpers import _session, decode
 from dank_mids.helpers.semaphore import method_semaphores
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
-from dank_mids.types import BlockId, ChainId, RawResponse, Request
+from dank_mids.types import BlockId, ChainId, RawResponse, Request, PartialRequest
 from dank_mids.uid import UIDGenerator
 
 logger = logging.getLogger(__name__)
@@ -44,6 +44,7 @@ class DankMiddlewareController:
         self.sync_w3 = _sync_w3_from_async(w3)
 
         self.chain_id = self.sync_w3.eth.chain_id
+        self.request_type = Request if self.chain_id == 100 else PartialRequest
         self.state_override_not_supported: bool = _config.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
         self.endpoint = self.w3.provider.endpoint_uri
@@ -87,7 +88,7 @@ class DankMiddlewareController:
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
-        request = Request(method=method, params=params, id=request_id or self.call_uid.next)
+        request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
         session = await _session.get_session()
         logger.debug(f'making request: {request}')
         async with session.post(self.endpoint, data=request.data) as response:
