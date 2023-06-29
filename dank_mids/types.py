@@ -32,6 +32,8 @@ dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, Dict[str, Optional[Any
 nested_dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, dict_of_stuff]]
 
 class _DictStruct(Struct):
+    def __getitem__(self, attr: str) -> Any:
+        return getattr(self, attr)
     def to_dict(self) -> Dict[str, Any]:
         data = {}
         for field in self.__struct_fields__:
