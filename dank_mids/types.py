@@ -82,7 +82,7 @@ RETURN_TYPES = {
 }
 
 class PartialResponse(_DictStruct):
-    result: Raw  # type: ignore
+    result: Raw = None  # type: ignore
     error: Optional[Error] = None
 
     @property
