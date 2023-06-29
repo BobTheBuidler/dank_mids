@@ -73,26 +73,6 @@ def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: byte
         _log_exception(e)
         return e
 
-def _err_response(e: Exception) -> RPCError:
-    """ Extract an error message from `e` to use in a spoof rpc response. """
-    if isinstance(e, BadResponse):
-        return e.response.error.to_dict()
-
-    # TODO: figure out which of these I still need after the above refactor
-    elif isinstance(e.args[0], (str, RequestInfo)):
-        err_msg = f"DankMidsError: {e.__class__.__name__}: {e.args}"
-    elif isinstance(e.args[0], Exception):
-        err_msg = f"DankMidsError: {e.args[0].__class__.__name__}: {e.args[0].args}"
-    elif not hasattr(e.args[0], '__contains__'):
-        err_msg = f"DankMidsError: {e.__class__.__name__}: {e.args}"
-    elif "message" in e.args[0]:
-        err_msg = e.args[0]["message"]
-    elif "error" in e.args[0] and hasattr(e.args[0]["error"], '__contains__') and "message" in e.args[0]["error"]:
-        err_msg = e.args[0]["error"]["message"]
-    else:
-        raise e
-    return {'code': -32000, 'message': err_msg, 'data': ''}
-
 
 _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPCResponse])
 
@@ -195,9 +175,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # New handler
         if isinstance(data, RawResponse):
             self._response = data
-        # Old handler (once we use msgspec for single multicalls all `data` will be a RawResponse object)
+        elif isinstance(data, BadResponse):
+            self._response = {"error": data.response.error.to_dict()}
         elif isinstance(data, Exception):
-            self._response = {"error": _err_response(data)}
+            raise data
+        # Old handler (once we use msgspec for single multicalls all `data` will be a RawResponse object)
         elif isinstance(data, bytes):
             self._response = {"result": data}
         else:
