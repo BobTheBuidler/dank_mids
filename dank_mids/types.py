@@ -38,7 +38,9 @@ class _DictStruct(Struct):
         data = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
-            data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
+            if isinstance(attr, _DictStruct):
+                attr = attr.to_dict()
+            data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
         return data
   
 class PartialRequest(_DictStruct):
@@ -101,7 +103,9 @@ class PartialResponse(_DictStruct):
             if field == "result" and attr:
                 attr = self.decode_result(method=method, _caller=self)
             if field != 'error' or attr is not None:
-                data[field] = attr.to_dict() if isinstance(attr, _DictStruct) else attr
+                if isinstance(attr, _DictStruct):
+                    attr = attr.to_dict()
+                data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
         return data
 
     def decode_result(self, method: Optional[str] = None, _caller = None) -> Any:
