@@ -4,10 +4,9 @@ import asyncio
 import logging
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
-from functools import cached_property, partial
+from functools import cached_property
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
-                    Iterable, Iterator, List, Optional, Tuple, Type, TypeVar,
-                    Union)
+                    Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
 
 import eth_retry
 from aiohttp import RequestInfo
@@ -15,20 +14,18 @@ from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
-from msgspec import Raw, ValidationError
+from msgspec import Raw
 from msgspec.json import encode
 from web3 import Web3
-from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
 
-from dank_mids import _config, constants
+from dank_mids import _config, constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import BadResponse, EmptyBatch
 from dank_mids.helpers import _session, decode
-from dank_mids.types import (RETURN_TYPES, BatchId, BlockId,
-                             JSONRPCBatchResponse, JsonrpcParams,
-                             PartialRequest, PartialResponse, RawResponse,
-                             Request, Response)
+from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
+                             JsonrpcParams, PartialRequest, PartialResponse,
+                             RawResponse, Request, Response)
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -406,7 +403,7 @@ class Multicall(_Batch[eth_call]):
         except IndexError:
             start = time.time()
             retval = mcall_decode(data)
-            print(f'multicall decoding took {time.time() - start} for {len(self)}')
+            stats.logger.log_duration(f"multicall decoding for {len(self)} calls", start)
             return retval
     
     async def bisect_and_retry(self) -> List[RPCResponse]:

@@ -1,7 +1,8 @@
 import logging
-from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,overload, 
+from time import time
+from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     List, Literal, NewType, Optional, TypedDict, TypeVar,
-                    Union)
+                    Union, overload)
 
 from eth_typing import ChecksumAddress
 from msgspec import Raw, Struct, ValidationError
@@ -9,6 +10,7 @@ from msgspec.json import decode, encode
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
+from dank_mids import stats
 from dank_mids._exceptions import BadResponse
 
 if TYPE_CHECKING:
@@ -64,7 +66,6 @@ class Error(_DictStruct):
 # some devving tools that will go away eventually
 _dict_responses = set()
 _str_responses = set()
-_types = set()
 
 # TODO: use the types from snek
 Log = Dict[str, Union[bool, str, None, List[str]]]
@@ -116,33 +117,27 @@ class PartialResponse(_DictStruct):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
                 return decode(self.result, type=typ)
             try:
-                from time import time
                 start = time()
                 decoded = decode(self.result, type=typ)
                 if _caller:
-                    print(f'decoding {type(_caller)} {method} took {time() - start}')
+                    stats.logger.log_duration(f'decoding {type(_caller)} {method}', start)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
             except ValidationError as e:
-                decoder_logger.warning(f"ValidationError when decoding {method} response. This *should* not impact your script. If it does, you'll know. {e}")
+                stats.logger.log_validation_error(self, e)
 
         # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
         try:
             if method:
                 if method in _dict_responses:
                     decoded = AttributeDict(decode(self.result, type=nested_dict_of_stuff))
-                    types = {type(v) for v in decoded.values()}
-                    print(f'my method and types: {method} {types}')
-                    if list in types:
-                        lists = [v for v in decoded.values() if isinstance(v, list)]
-                        for lst in lists:
-                            lst_types = {type(_) for _ in lst}
-                            print(f"list types: {lst_types}")
-                    _types.update(types)
+                    stats.logger.log_types(method, decoded)
                     return decoded
                 elif method in _str_responses:
-                    print(f'Must add `{method}: str` to `RETURN_TYPES`')
+                    stats.logger.devhint(f'Must add `{method}: str` to `RETURN_TYPES`')
                     return decode(self.result, type=str)
-            
+        except ValidationError as e:
+            stats.logger.log_validation_error(method, e)
+        try:
             # In this case we can provide no hints, let's let the decoder figure it out
             decoded = decode(self.result)
             if isinstance(decoded, str):
@@ -153,9 +148,10 @@ class PartialResponse(_DictStruct):
                 if method:
                     _dict_responses.add(method)
                 return AttributeDict(decoded)
-            raise TypeError(type(decoded), decoded)
+            raise TypeError(f"type {type(decoded)} is not supported.", decoded)
         except ValidationError as e:
-            raise ValidationError(method, e) from e
+            raise ValidationError(method, e) from None
+        
 
 class Response(PartialResponse):
     id: Optional[Union[str, int]] = None
