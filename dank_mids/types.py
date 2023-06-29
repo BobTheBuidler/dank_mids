@@ -4,7 +4,7 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,o
                     Union)
 
 from eth_typing import ChecksumAddress
-from msgspec import Raw, Struct, ValidationError, UNSET
+from msgspec import Raw, Struct, ValidationError
 from msgspec.json import decode, encode
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
@@ -57,7 +57,7 @@ class Request(PartialRequest):
 class Error(_DictStruct):
     code: int
     message: str
-    data: Optional[Any] = UNSET
+    data: Optional[Any] = None
 
 # some devving tools that will go away eventually
 _dict_responses = set()
