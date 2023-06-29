@@ -86,6 +86,8 @@ RETURN_TYPES = {
     "erigon_getHeaderByNumber": Dict[str, Optional[str]],
 }
 
+decoder_logger = logging.getLogger('dank_mids.decoder')
+
 class PartialResponse(_DictStruct):
     result: Raw = None  # type: ignore
     error: Optional[Error] = None
@@ -121,7 +123,7 @@ class PartialResponse(_DictStruct):
                     print(f'decoding {type(_caller)} {method} took {time() - start}')
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
             except ValidationError as e:
-                logging.getLogger('dank_mids.decoder').exception(e)
+                decoder_logger.warning(f"ValidationError when decoding {method} response. This *should* not impact your script. If it does, you'll know. {e}")
 
         # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
         try:
