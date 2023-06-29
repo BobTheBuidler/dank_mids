@@ -2,6 +2,7 @@
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
 from functools import lru_cache
+from pickle import PicklingError
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
 
@@ -20,31 +21,44 @@ from dank_mids.helpers.semaphore import ThreadsafeSemaphore
 brownie_call_semaphore = ThreadsafeSemaphore(_config.BROWNIE_CALL_SEMAPHORE_VAL)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
-    data = format_input(abi, args)
-    types_list = get_type_strings(abi["inputs"])
-    return signature + eth_abi.encode_abi(types_list, data).hex()
+    try:
+        data = format_input(abi, args)
+        types_list = get_type_strings(abi["inputs"])
+        return signature + eth_abi.encode_abi(types_list, data).hex()
+    except Exception as e:
+        return e
 
 def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
-    selector = HexBytes(hexstr)[:4].hex()
-    if selector == "0x08c379a0":
-        revert_str = eth_abi.decode_abi(["string"], HexBytes(hexstr)[4:])[0]
-        raise ValueError(f"Call reverted: {revert_str}")
-    elif selector == "0x4e487b71":
-        error_code = int(HexBytes(hexstr)[4:].hex(), 16)
-        if error_code in SOLIDITY_ERROR_CODES:
-            revert_str = SOLIDITY_ERROR_CODES[error_code]
-        else:
-            revert_str = f"Panic (error code: {error_code})"
-        raise ValueError(f"Call reverted: {revert_str}")
-    if abi["outputs"] and not hexstr:
-        raise ValueError("No data was returned - the call likely reverted")
+    try:
+        types_list = get_type_strings(abi["outputs"])
+        result = eth_abi.decode_abi(types_list, HexBytes(hexstr))
+        result = format_output(abi, result)
+        if len(result) == 1:
+            result = result[0]
+        return result
+    except Exception as e:
+        return e
 
-    types_list = get_type_strings(abi["outputs"])
-    result = eth_abi.decode_abi(types_list, HexBytes(hexstr))
-    result = format_output(abi, result)
-    if len(result) == 1:
-        result = result[0]
-    return result
+def __validate_output(abi: Dict[str, Any], hexstr: str):
+    try:
+        selector = HexBytes(hexstr)[:4].hex()
+        if selector == "0x08c379a0":
+            revert_str = eth_abi.decode_abi(["string"], HexBytes(hexstr)[4:])[0]
+            raise ValueError(f"Call reverted: {revert_str}").with_traceback
+        elif selector == "0x4e487b71":
+            error_code = int(HexBytes(hexstr)[4:].hex(), 16)
+            if error_code in SOLIDITY_ERROR_CODES:
+                revert_str = SOLIDITY_ERROR_CODES[error_code]
+            else:
+                revert_str = f"Panic (error code: {error_code})"
+            raise ValueError(f"Call reverted: {revert_str}")
+        if abi["outputs"] and not hexstr:
+            raise ValueError("No data was returned - the call likely reverted")
+    except ValueError as e:
+        try:
+            raise VirtualMachineError(e) from None
+        except:
+            raise e
 
 encoder_processes = ProcessPoolExecutor(_config.NUM_PROCESSES)
 decoder_processes = ProcessPoolExecutor(_config.NUM_PROCESSES)
@@ -56,13 +70,13 @@ async def _request_data_no_args(
     call: ContractCall,
     *args: Tuple[Any,...],
 ):
-    return {"to": call._address, "data": call.signature}
+    return call.signature
 
 async def _request_data_with_args(
     call: ContractCall,
     *args: Tuple[Any,...],
 ):
-    return {"to": call._address, "data": await call._encode_input(*args)}
+    return await call._encode_input(*args)
 
 @lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
@@ -78,15 +92,27 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             raise ValueError("Cannot use state override with `coroutine`.")
             
         async with brownie_call_semaphore:
-            try:
-                return await self._decode_output(
-                    await w3.eth.call(await get_request_data(self, *args), block_identifier)  # type: ignore
-                )
-            except ValueError as e:
-                try:
-                    raise VirtualMachineError(e) from None
-                except:
-                    raise e
+            try: # We're better off sending these to the subprocess so they don't clog up the event loop.
+                data = await get_request_data(self, *args)
+            except PicklingError:  # But if that fails, don't worry. I got you.
+                data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
+            
+            # We have to do it like this so we don't break the process pool.
+            if isinstance(data, Exception):
+                raise data
+            
+            output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
+
+            __validate_output(self.abi, output)
+
+            decoded = await self._decode_output(output)
+
+            # We have to do it like this so we don't break the process pool.
+            if isinstance(decoded, Exception):
+                raise decoded
+            
+            return decoded
+        
     return coroutine
 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
