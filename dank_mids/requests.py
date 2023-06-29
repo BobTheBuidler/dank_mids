@@ -38,7 +38,8 @@ RETRY_ERRS = ["connection reset by peer","request entity too large","server disc
 
 logger = logging.getLogger(__name__)
 
-run_in_subprocess = partial(asyncio.get_event_loop().run_in_executor, ProcessPoolExecutor(_config.NUM_PROCESSES))
+subprocesses = ProcessPoolExecutor(_config.NUM_PROCESSES)
+run_in_subprocess = lambda fn, *args: asyncio.get_event_loop().run_in_executor(subprocesses, fn, *args)
 
 
 class ResponseNotReady(Exception):
