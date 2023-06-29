@@ -457,7 +457,7 @@ class Multicall(_Batch[eth_call]):
     async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
         import time
         try:  # NOTE: Quickly check for length without counting each item with `len`.
-            self[200]
+            self[100]
             return await run_in_subprocess(mcall_decode, data)
         except IndexError:
             start = time.time()
