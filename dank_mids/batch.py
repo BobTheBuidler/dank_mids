@@ -35,15 +35,15 @@ class DankBatch:
     def coroutines(self) -> Generator["_Batch", None, None]:
         # Combine multicalls into one or more jsonrpc batches
         
-        calls = []
-        for mcall in self.multicalls.values():
-            try:  # NOTE: This should be faster than using len().
-                calls[CHECK]
-                calls.append(mcall)
-            except IndexError:
-                calls.extend(mcall)
-            
-        working_batch = JSONRPCBatch(self.controller, calls)
+        #calls = []
+        #for mcall in self.multicalls.values():
+        #    try:  # NOTE: This should be faster than using len().
+        #        calls[CHECK]
+        #        calls.append(mcall)
+        #    except IndexError:
+        #        calls.extend(mcall)
+        # working_batch = JSONRPCBatch(self.controller, calls)
+        working_batch = JSONRPCBatch(self.controller, self.multicalls.values())
         rpc_calls_to_batch = self.rpc_calls[:]
         while rpc_calls_to_batch:
             if len(working_batch) >= _config.MAX_JSONRPC_BATCH_SIZE or working_batch.total_calls >= self.controller.batcher.step:
