@@ -162,7 +162,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
             await self.make_request()
-            return self.response.decode().to_dict(self.method)
+            return self.response.decode(partial=True).to_dict(self.method)
         
         if self._started and not self._batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
@@ -177,7 +177,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
         # JIT json decoding
         if isinstance(self.response, RawResponse):
-            return self.response.decode().to_dict(self.method)
+            return self.response.decode(partial=True).to_dict(self.method)
         # Less optimal decoding
         # TODO: refactor this out
         return self.response
