@@ -1,5 +1,7 @@
 
-import functools
+import asyncio
+from concurrent.futures import ProcessPoolExecutor
+from functools import lru_cache
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
 
@@ -10,13 +12,12 @@ from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from hexbytes import HexBytes
-from multicall.utils import run_in_subprocess
 from web3 import Web3
 
-from dank_mids._config import BROWNIE_CALL_SEMAPHORE_VAL
+from dank_mids import _config
 from dank_mids.helpers.semaphore import ThreadsafeSemaphore
 
-brownie_call_semaphore = ThreadsafeSemaphore(BROWNIE_CALL_SEMAPHORE_VAL)
+brownie_call_semaphore = ThreadsafeSemaphore(_config.BROWNIE_CALL_SEMAPHORE_VAL)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     data = format_input(abi, args)
@@ -45,18 +46,28 @@ def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
         result = result[0]
     return result
 
-async def _encode_input(self: ContractCall, *args: Tuple[Any,...]) -> str:
-    return await run_in_subprocess(
-        __encode_input,
-        self.abi,
-        self.signature,
-        *(arg if not hasattr(arg, 'address') else arg.address for arg in args)  # type: ignore
-    )
+encoder_processes = ProcessPoolExecutor(_config.NUM_PROCESSES)
+decoder_processes = ProcessPoolExecutor(_config.NUM_PROCESSES)
+
+encode = lambda self, *args: asyncio.get_event_loop().run_in_executor(encoder_processes, __encode_input, self.abi, self.signature, *args)
+decode = lambda self, data: asyncio.get_event_loop().run_in_executor(decoder_processes, __decode_output, data, self.abi)
+
+async def _request_data_no_args(
+    call: ContractCall,
+    *args: Tuple[Any,...],
+):
+    return {"to": call._address, "data": call.signature}
+
+async def _request_data_with_args(
+    call: ContractCall,
+    *args: Tuple[Any,...],
+):
+    return {"to": call._address, "data": await call._encode_input(*args)}
+
+@lru_cache
+def _get_coroutine_fn(w3: Web3, len_inputs: int):
+    get_request_data = _request_data_with_args if len_inputs else _request_data_no_args
     
-async def _decode_output(self: ContractCall, data: str) -> Any:
-    return await run_in_subprocess(__decode_output, data, self.abi)
-    
-def _patch_call(call: ContractCall, w3: Web3) -> None:
     async def coroutine(
         self: ContractCall,
         *args: Tuple[Any,...],
@@ -69,14 +80,16 @@ def _patch_call(call: ContractCall, w3: Web3) -> None:
         async with brownie_call_semaphore:
             try:
                 return await self._decode_output(
-                    await w3.eth.call({"to": self._address, "data": await self._encode_input(*args)}, block_identifier)  # type: ignore
+                    await w3.eth.call(await get_request_data(self, *args), block_identifier)  # type: ignore
                 )
             except ValueError as e:
                 try:
                     raise VirtualMachineError(e) from None
                 except:
                     raise e
-                    
-    call.coroutine = MethodType(coroutine, call)
-    call._encode_input = MethodType(_encode_input, call)
-    call._decode_output = MethodType(_decode_output, call)
+    return coroutine
+
+def _patch_call(call: ContractCall, w3: Web3) -> None:
+    call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
+    call._encode_input = MethodType(encode, call)
+    call._decode_output = MethodType(decode, call)
