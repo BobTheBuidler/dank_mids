@@ -107,7 +107,7 @@ class PartialResponse(_DictStruct):
     def decode_result(self, method: Optional[str] = None, _caller = None) -> Any:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
-            if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getTransactionReceipt", "eth_getBalance", "eth_chainId"]:
+            if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
                 return decode(self.result, type=typ)
             try:
                 from time import time
