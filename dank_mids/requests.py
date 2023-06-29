@@ -33,13 +33,11 @@ if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
 
-logger = logging.getLogger(__name__)
-
 RETRY_ERRS = ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]
 
-subprocesses = ProcessPoolExecutor(_config.NUM_PROCESSES)
+logger = logging.getLogger(__name__)
 
-run_in_subprocess = partial(asyncio.get_event_loop().run_in_executor, subprocesses)
+run_in_subprocess = partial(asyncio.get_event_loop().run_in_executor, ProcessPoolExecutor(_config.NUM_PROCESSES))
 
 
 class ResponseNotReady(Exception):
