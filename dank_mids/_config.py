@@ -16,7 +16,7 @@ GANACHE_FORK = bool(os.environ.get("DANKMIDS_GANACHE_FORK", os.environ.get("DANK
 #  due to aiohttp.TimeoutError where they would otherwise succeed.
 # We set the default to 2 minutes but if you're doing serious work
 #  you may want to increase it further.
-AIOHTTP_TIMEOUT = int(os.environ.get("AIOHTTP_TIMEOUT", 120))
+AIOHTTP_TIMEOUT = int(os.environ.get("AIOHTTP_TIMEOUT", 300))
 
 
 # Method-specific Semaphores
