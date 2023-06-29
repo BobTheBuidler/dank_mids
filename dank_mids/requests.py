@@ -170,7 +170,6 @@ class RPCRequest(_RequestMeta[RawResponse]):
         `bytes` type data comes for individual eth_calls that were batched into multicalls and already decoded
         `Exception` type data comes from failed calls
         """
-        # TODO: refactor this so Raw decoding doesn't occur until the caller requests the result.
         
         # New handler
         if isinstance(data, RawResponse):
@@ -192,44 +191,6 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self._response = await self.controller.make_request(self.method, self.params, request_id=self.uid)
         self._done.set()
         return self._response
-
-    def _decode_raw(self, data: Raw) -> Union[str, AttributeDict]:
-        # NOTE: These must be added to the `RETURN_TYPES` constant above manually
-        if typ := RETURN_TYPES.get(self.method):
-            try:
-                decoded = decode(data, type=typ)
-                return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
-            except ValidationError as e:
-                logger.exception(e)
-
-        # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
-        try:
-            if self.method in self.dict_responses:
-                decoded = AttributeDict(decode.nested_dict(data))
-                types = {type(v) for v in decoded.values()}
-                print(f'my method and types: {self.method} {types}')
-                if list in types:
-                    lists = [v for v in decoded.values() if isinstance(v, list)]
-                    for lst in lists:
-                        lst_types = {type(_) for _ in lst}
-                        print(f"list types: {lst_types}")
-                self._types.update(types)
-                return decoded
-            elif self.method in self.str_responses:
-                print(f'Must add `{self.method}: str` to `RETURN_TYPES`')
-                return decode(data, type=str)
-            
-            # In this case we can provide no hints, let's let the decoder figure it out
-            decoded = decode(data)
-            if isinstance(decoded, str):
-                self.str_responses.add(self.method)
-                return decoded
-            elif isinstance(decoded, dict):
-                self.dict_responses.add(self.method)
-                return AttributeDict(decoded)
-            raise NotImplementedError(f"type {type(decoded)} needs code for handling", decoded)
-        except ValidationError as e:
-            raise ValidationError(self.request, e) from e
 
 class eth_call(RPCRequest):
     def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
