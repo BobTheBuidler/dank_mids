@@ -4,7 +4,7 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,o
                     Union)
 
 from eth_typing import ChecksumAddress
-from msgspec import Raw, Struct, ValidationError
+from msgspec import Raw, Struct, ValidationError, UNSET
 from msgspec.json import decode, encode
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
@@ -57,7 +57,7 @@ class Request(PartialRequest):
 class Error(_DictStruct):
     code: int
     message: str
-    data: Optional[Any] = None
+    data: Optional[Any] = UNSET
 
 # some devving tools that will go away eventually
 _dict_responses = set()
@@ -77,7 +77,7 @@ RETURN_TYPES = {
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_accounts": List[str],
-    "eth_getBlockByNumber": Dict[str, Union[str, List[str], List[Transaction]]],
+    "eth_getBlockByNumber": Dict[str, Union[str, List[Union[str, Transaction]]]],
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
     "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Log]]], 
