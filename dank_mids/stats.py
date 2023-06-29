@@ -34,7 +34,7 @@ class StatsLogger(logging.Logger):
         duration = time() - start
         self._durations[work_descriptor].append(duration)
         if self.isEnabledFor(STATS):
-            self._log(STATS, f"{work_descriptor} took {time() - start}", (duration))
+            self._log(STATS, f"{work_descriptor} took {duration}", ())
     def log_validation_error(self, method: RPCEndpoint, e: ValidationError) -> None:
         self._validation_errors[method].append(e)
         if self.isEnabledFor(DEVHINT):
