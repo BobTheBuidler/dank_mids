@@ -37,6 +37,8 @@ logger = logging.getLogger(__name__)
 subprocesses = ProcessPoolExecutor(_config.NUM_PROCESSES)
 run_in_subprocess = lambda fn, *args: asyncio.get_event_loop().run_in_executor(subprocesses, fn, *args)
 
+# Set up custom error codes we might see
+HTTPStatus.CLOUDFLARE_TIMEOUT = 524
 
 class ResponseNotReady(Exception):
     pass
@@ -506,7 +508,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                             + f"methods called: {self.method_counts}")
                     raise e
             except ClientResponseError as e:
-                if tried >= 5 or e.status not in {HTTPStatus.BAD_GATEWAY}:
+                if tried >= 5 or e.status not in {HTTPStatus.BAD_GATEWAY, HTTPStatus.CLOUDFLARE_TIMEOUT}:
                     raise e
                 tried += 1
     
