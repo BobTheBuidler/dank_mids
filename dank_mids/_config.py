@@ -30,3 +30,8 @@ BROWNIE_CALL_SEMAPHORE_VAL = int(os.environ.get("DANK_MIDS_BROWNIE_CALL_SEMAPHOR
 
 # Processes for decoding
 NUM_PROCESSES = int(os.environ.get("DANKMIDS_PROCESSES", 1))
+
+# NOTE: EXPORT_STATS is not implemented
+# TODO: implement this
+EXPORT_STATS = bool(os.environ.get("DANKMIDS_EXPORT_STATS"))
+COLLECT_STATS = bool(os.environ.get("DANKMIDS_COLLECT_STATS", EXPORT_STATS))

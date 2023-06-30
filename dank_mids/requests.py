@@ -5,7 +5,6 @@ import logging
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 from functools import cached_property
-from http import HTTPStatus
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
 
@@ -23,7 +22,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import _config, constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import BadResponse, EmptyBatch, PayloadTooLarge
-from dank_mids.helpers import _session, decode
+from dank_mids.helpers import decode, session
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
                              RawResponse, Request, Response)
@@ -404,7 +403,7 @@ class Multicall(_Batch[eth_call]):
         except IndexError:
             start = time.time()
             retval = mcall_decode(data)
-            stats.logger.log_duration(f"multicall decoding for {len(self)} calls", start)
+            stats.log_duration(f"multicall decoding for {len(self)} calls", start)
             return retval
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
@@ -477,31 +476,30 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         try:
             # NOTE: We do this inline so we never have to allocate the response to memory
             await self.spoof_response(await self.post())
+        # I want to see these asap when working on the lib.
+        except (AttributeError, TypeError, UnboundLocalError, NotImplementedError):
+            raise
         except EmptyBatch as e:
             # NOTE: These shouldn't actually happen and this except clause can probably be removed soon.
             _log_exception(e)
         except Exception as e:
+            if not isinstance(e, PayloadTooLarge):
+                # TODO: put this somewhere else
+                # TODO: track too large payloads and do some better optimizations for batch sizing
+                stats.log_errd_batch(self)
             self.adjust_batch_size() if isinstance(e, PayloadTooLarge) else _log_exception(e)
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
     @eth_retry.auto_retry
     async def post(self) -> List[RawResponse]:
-        session = await _session.get_session()
-        response = await session.post(self.controller.endpoint, data=self.data, loads=decode.jsonrpc_batch)
-
-        # A successful response will be a list of Raw objects, a single PartialResponse implies an error.
+        response: JSONRPCBatchResponse = await session.post(self.controller.endpoint, data=self.data, loads=decode.jsonrpc_batch)
+        # NOTE: A successful response will be a list of `RawResponse` objects.
+        #       A single `PartialResponse` implies an error.
         if isinstance(response, list):
-            return [RawResponse(raw) for raw in response]
-        
+            return response
         # Oops, we failed.
-        e = response.exception
-        if not isinstance(e, PayloadTooLarge):
-            # TODO: put this somewhere else
-            stats.devhint("jsonrpc batch failed\n"
-                + f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}\n"
-                + f"methods called: {self.method_counts}")
-        raise e
+        raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.

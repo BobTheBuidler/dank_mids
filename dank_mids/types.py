@@ -125,7 +125,7 @@ class PartialResponse(_DictStruct):
                 start = time()
                 decoded = decode(self.result, type=typ)
                 if _caller:
-                    stats.logger.log_duration(f'decoding {type(_caller)} {method}', start)
+                    stats.log_duration(f'decoding {type(_caller)} {method}', start)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
             except ValidationError as e:
                 stats.logger.log_validation_error(self, e)
@@ -174,4 +174,7 @@ class RawResponse:
         return decode(self._raw, type=PartialResponse if partial else Response)
 
 JSONRPCBatchRequest = List[Request]
-JSONRPCBatchResponse = List[Raw]
+# NOTE: A PartialResponse result implies a failure response from the rpc.
+JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
+# We need this for proper decoding.
+_JSONRPCBatchResponse = Union[List[Raw], PartialResponse]

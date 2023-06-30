@@ -16,7 +16,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import _config
 from dank_mids._demo_mode import demo_logger
 from dank_mids.batch import DankBatch
-from dank_mids.helpers import _session, decode
+from dank_mids.helpers import decode, session
 from dank_mids.helpers.semaphore import method_semaphores
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.types import BlockId, ChainId, RawResponse, Request, PartialRequest
@@ -89,9 +89,7 @@ class DankMiddlewareController:
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
         request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
-        session = await _session.get_session()
-        response = await session.post(self.endpoint, data=request, loads=decode.raw)
-        return RawResponse(response)
+        return await session.post(self.endpoint, data=request, loads=decode.raw)
 
     async def execute_batch(self) -> None:
         # NOTE: We create this empty batch here to avoid double-locking.
