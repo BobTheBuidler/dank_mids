@@ -19,18 +19,34 @@ if TYPE_CHECKING:
     from dank_mids.requests import JSONRPCBatch
     from dank_mids.types import Request
 
-Level = Union[int, str]
+_LogLevel = Union[int, str]
 
-# New `Level`s:
-# NOTE: DEBUG == 10
-STATS = 12
-DEVHINT = 11
-
-Times = Deque[float]
+# New logging levels:
+# DEBUG=10, INFO=20, 
+STATS = 13
+DEVHINT = 15
 
 COLLECT_STATS: bool = False  # TODO: enable this
 
-class StatsLogger(logging.Logger):
+# if you're both collecting data and logging something, put the function here:
+
+def log_errd_batch(batch: "JSONRPCBatch") -> None:
+    collector.errd_batches.append(batch)
+    logger.devhint(f"jsonrpc batch failed\njson batch id: {batch.jid} | len: {len(batch)} | total calls: {batch.total_calls}\n"
+        + f"methods called: {batch.method_counts}")
+    
+def log_duration(work_descriptor: str, start: float, *, level=STATS) -> None:
+    # sourcery skip: hoist-if-from-if
+    enabled = logger.isEnabledFor(level)
+    if COLLECT_STATS or enabled:
+        duration = time() - start
+        if COLLECT_STATS:
+            collector.durations[work_descriptor].append(duration)
+        if enabled:
+            logger._log_nocheck(level, f"{work_descriptor} took {duration}")
+
+
+class _StatsLogger(logging.Logger):
     """A specialized logger for logging stats related to dank mids"""
 
     @property
@@ -50,30 +66,30 @@ class StatsLogger(logging.Logger):
 
     # Functions to print stats to your logs.
     
-    def log_brownie_stats(self, *, level: Level = STATS) -> None:
-        self._log_fn_result(level, Writer.brownie)
+    def log_brownie_stats(self, *, level: _LogLevel = STATS) -> None:
+        self._log_fn_result(level, _Writer.brownie)
 
-    def log_event_loop_stats(self, *, level: Level = STATS) -> None:
-        self._log_fn_result(level, Writer.event_loop)
+    def log_event_loop_stats(self, *, level: _LogLevel = STATS) -> None:
+        self._log_fn_result(level, _Writer.event_loop)
 
-    def log_subprocess_stats(self, *, level: Level = STATS) -> None:
+    def log_subprocess_stats(self, *, level: _LogLevel = STATS) -> None:
         for pool in collector._subprocesses:
-            self._log_fn_result(level, Writer.queue, pool)
+            self._log_fn_result(level, _Writer.queue, pool)
     
     # Internal helpers
 
-    def _log(self, level: Level, *args, **kwargs) -> None:
+    def _log(self, level: _LogLevel, *args, **kwargs) -> None:
         # Saves us having to do this ourselves for each custom message
         if self.isEnabledFor(level):
             return self._log_nocheck(level, *args, **kwargs)
     
-    def _log_nocheck(self, level: Level, *args, **kwargs) -> None:
+    def _log_nocheck(self, level: _LogLevel, *args, **kwargs) -> None:
         try:
             return super()._log(level, args[0], args[1:], **kwargs)
         except IndexError:
             raise ValueError("Both a level and a message are required.") from None
 
-    def _log_fn_result(self, level: Level, callable: Callable[[], str], *callable_args, **logging_kwargs) -> None:
+    def _log_fn_result(self, level: _LogLevel, callable: Callable[[], str], *callable_args, **logging_kwargs) -> None:
         """If `self.isEnabledFor(level)` is True, will call `callable` with your args and log the output."""
         if self.isEnabledFor(level):
             return self._log_nocheck(level, callable(*callable_args), (), **logging_kwargs)
@@ -119,38 +135,21 @@ class StatsLogger(logging.Logger):
             self._log_list_types(decoded.values())
         collector.types.update(types)
 
-    def _log_list_types(self, values, level: Level = DEVHINT) -> None:
+    def _log_list_types(self, values, level: _LogLevel = DEVHINT) -> None:
         list_types = {type(_) for v in values if isinstance(v, list) for _ in v}
         collector.types.update(list_types)
         if self.isEnabledFor(level):
             self._log(level, f"list types: {list_types}")
 
-logger = StatsLogger(__name__)
-log = logger.stats
-devhint = logger.devhint
 
-# if you're both collecting data and logging something, put the function here:
-
-def log_errd_batch(batch: "JSONRPCBatch") -> None:
-    collector.errd_batches.append(batch)
-    logger.devhint(f"jsonrpc batch failed\njson batch id: {batch.jid} | len: {len(batch)} | total calls: {batch.total_calls}\n"
-        + f"methods called: {batch.method_counts}")
-    
-def log_duration(work_descriptor: str, start: float, *, level=STATS) -> None:
-    # sourcery skip: hoist-if-from-if
-    enabled = logger.isEnabledFor(level)
-    if COLLECT_STATS or enabled:
-        duration = time() - start
-        if COLLECT_STATS:
-            collector.durations[work_descriptor].append(duration)
-        if enabled:
-            logger._log_nocheck(level, f"{work_descriptor} took {duration}")
+_Times = Deque[float]
 
 class _Collector:
+    """Handles the collection and computation of stats-related data."""
     errd_batches = deque(maxlen=500)
-    durations: DefaultDict[str, Times] = defaultdict(lambda: deque(maxlen=50_000))
+    durations: DefaultDict[str, _Times] = defaultdict(lambda: deque(maxlen=50_000))
     types: Set[Type] = set()
-    event_loop_times: Times = deque(maxlen=50_000)
+    event_loop_times: _Times = deque(maxlen=50_000)
     _brownie_semaphore = call.brownie_call_semaphore
     encoder_processes = call.encoder_processes
     decoder_processes = call.decoder_processes
@@ -174,12 +173,10 @@ class _Collector:
         return self.encoder_processes._queue_count
         
 
-collector = _Collector()
-
-class Writer:
+class _Writer:
     """
-    `Writer` is used to turn `Collector` stats into human readable on a as-needed,
-    JIT basis without wasting compute or cluttering `Collector` or `StatsLogger`.
+    `Writer` is used to turn `Collector` stats into human readable on a as-needed, JIT basis
+    without wasting compute or cluttering `Collector` or `StatsLogger` class definitions.
     """
     def event_loop(self) -> str:
         return f"Average event loop time: {collector.avg_loop_time}"
@@ -187,3 +184,44 @@ class Writer:
         return f"{collector.count_active_brownie_calls} brownie calls are processing, {collector.count_queued_brownie_calls} are queued in {collector._brownie_semaphore}."
     def queue(self, pool: ProcessPoolExecutor) -> str:
         return f"{pool} has {pool._queue_count} items in its queue"
+
+            
+class _SentryExporter:
+    """
+    Pushes all metrics from the `metrics` dict to sentry.
+    Each metric value will be fetched by calling `getattr(collector, metrics[k])`.
+    If the result is a callable object, it will be called without args.
+    """
+    metrics = {
+        "active_eth_calls": "count_active_brownie_calls",
+        "queued_eth_calls": "count_queued_brownie_calls",
+        "encoder_queue":    "encoder_queue_len",
+        "decoder_queue":    "decoder_queue_len",
+        "loop_time":        "avg_loop_time",
+    }
+    units = {"loop_time": "seconds"}
+
+    def push_measurements(self) -> None:
+        """Pushes all metrics in `self._metrics` to sentry"""
+        if self._exc:
+            raise self._exc
+        for tag, attr_name in self.metrics.items():
+            attr = getattr(collector, attr_name)
+            if callable(attr):
+                attr = attr()
+            self.set_measurement(tag, attr, self.units.get(attr_name))
+
+    try:
+        import sentry_sdk
+        set_tag = sentry_sdk.set_tag
+        set_measurement = sentry_sdk.set_measurement
+        _exc = None
+    except ImportError as e:
+        _exc = e
+
+
+logger = _StatsLogger(__name__)
+log = logger.stats
+devhint = logger.devhint
+collector = _Collector()
+sentry = _SentryExporter()
