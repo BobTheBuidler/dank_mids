@@ -15,10 +15,10 @@ from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from hexbytes import HexBytes
 from web3 import Web3
 
-from dank_mids import _config
+from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids.helpers.semaphore import ThreadsafeSemaphore
 
-brownie_call_semaphore = ThreadsafeSemaphore(_config.BROWNIE_CALL_SEMAPHORE_VAL)
+brownie_call_semaphore = ThreadsafeSemaphore(ENVIRONMENT_VARIABLES.BROWNIE_CALL_SEMAPHORE_VAL)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     try:
@@ -60,8 +60,8 @@ def __validate_output(abi: Dict[str, Any], hexstr: str):
         except:
             raise e
 
-encoder_processes = ProcessPoolExecutor(_config.NUM_PROCESSES)
-decoder_processes = ProcessPoolExecutor(_config.NUM_PROCESSES)
+encoder_processes = ProcessPoolExecutor(ENVIRONMENT_VARIABLES.NUM_PROCESSES)
+decoder_processes = ProcessPoolExecutor(ENVIRONMENT_VARIABLES.NUM_PROCESSES)
 
 encode = lambda self, *args: asyncio.get_event_loop().run_in_executor(encoder_processes, __encode_input, self.abi, self.signature, *args)
 decode = lambda self, data: asyncio.get_event_loop().run_in_executor(decoder_processes, __decode_output, data, self.abi)

@@ -13,7 +13,7 @@ from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids import _config
+from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids._demo_mode import demo_logger
 from dank_mids.batch import DankBatch
 from dank_mids.helpers import decode, session
@@ -45,7 +45,7 @@ class DankMiddlewareController:
 
         self.chain_id = self.sync_w3.eth.chain_id
         self.request_type = Request if self.chain_id == 100 else PartialRequest
-        self.state_override_not_supported: bool = _config.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
+        self.state_override_not_supported: bool = ENVIRONMENT_VARIABLES.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
         self.endpoint = self.w3.provider.endpoint_uri
         if "tenderly" in self.endpoint:

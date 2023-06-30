@@ -12,7 +12,7 @@ from typing import (TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Set,
 import msgspec
 from web3.types import RPCEndpoint
 
-from dank_mids import _config
+from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids.brownie_patch import call
 
 if TYPE_CHECKING:
@@ -97,7 +97,7 @@ class _StatsLogger(logging.Logger):
     # Daemon
 
     def _ensure_daemon(self) -> None:
-        if (_config.COLLECT_STATS or self.enabled) and self._daemon is None:
+        if (ENVIRONMENT_VARIABLES.COLLECT_STATS or self.enabled) and self._daemon is None:
             self._daemon = asyncio.create_task(self._stats_daemon())
         elif self._daemon.done():
             raise self._daemon.exception()

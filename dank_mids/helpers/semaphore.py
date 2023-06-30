@@ -1,7 +1,7 @@
 import asyncio
 from typing import Union
 from web3.types import RPCEndpoint
-from dank_mids._config import semaphore_envs
+from dank_mids.ENVIRONMENT_VARIABLES import semaphore_envs
 from threading import current_thread
 from typing import Dict
 

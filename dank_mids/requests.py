@@ -10,8 +10,8 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
 
 import eth_retry
+
 import msgspec
-from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
@@ -19,7 +19,7 @@ from hexbytes import HexBytes
 from web3 import Web3
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids import _config, constants, stats
+from dank_mids import ENVIRONMENT_VARIABLES, constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import BadResponse, EmptyBatch, PayloadTooLarge
 from dank_mids.helpers import decode, session
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-subprocesses = ProcessPoolExecutor(_config.NUM_PROCESSES)
+subprocesses = ProcessPoolExecutor(ENVIRONMENT_VARIABLES.NUM_PROCESSES)
 run_in_subprocess = lambda fn, *args: asyncio.get_event_loop().run_in_executor(subprocesses, fn, *args)
 
 class ResponseNotReady(Exception):
@@ -461,7 +461,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 
     @property
     def is_full(self) -> bool:
-        return (self.is_multicalls_only and len(self) >= self.controller.batcher.step) or len(self) >= _config.MAX_JSONRPC_BATCH_SIZE
+        return (self.is_multicalls_only and len(self) >= self.controller.batcher.step) or len(self) >= ENVIRONMENT_VARIABLES.MAX_JSONRPC_BATCH_SIZE
 
     async def get_response(self) -> None:
         if self._started:
@@ -469,7 +469,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return
         self._started = True
         rid = self.controller.request_uid.next
-        if _config.DEMO_MODE:
+        if ENVIRONMENT_VARIABLES.DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:

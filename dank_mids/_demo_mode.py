@@ -1,7 +1,7 @@
 import logging
 from typing import Any
 
-from dank_mids._config import DEMO_MODE
+from dank_mids import ENVIRONMENT_VARIABLES
 
 
 class DummyLogger:
@@ -9,4 +9,4 @@ class DummyLogger:
     def info(self, *args: Any, **kwargs: Any) -> None:
         ...
 
-demo_logger = logging.getLogger("dank_mids.demo") if DEMO_MODE else DummyLogger()
+demo_logger = logging.getLogger("dank_mids.demo") if ENVIRONMENT_VARIABLES.DEMO_MODE else DummyLogger()

@@ -13,7 +13,7 @@ from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import JSONDecoder
 from async_lru import alru_cache
 
-from dank_mids import _config
+from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids.helpers import decode
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
@@ -91,5 +91,5 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     This makes our ClientSession threadsafe just in case.
     Most everything should be run in main thread though.
     """
-    timeout = ClientTimeout(_config.AIOHTTP_TIMEOUT)
+    timeout = ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT)
     return ClientSession(headers={'content-type': 'application/json'}, timeout=timeout, raise_for_status=True)

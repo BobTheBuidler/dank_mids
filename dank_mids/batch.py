@@ -2,7 +2,7 @@
 import asyncio
 from typing import TYPE_CHECKING, Any, Generator, List
 
-from dank_mids import _config
+from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids.requests import JSONRPCBatch, RPCRequest, _Batch
 from dank_mids.types import Multicalls
 
@@ -46,7 +46,7 @@ class DankBatch:
         working_batch = JSONRPCBatch(self.controller, self.multicalls.values())
         rpc_calls_to_batch = self.rpc_calls[:]
         while rpc_calls_to_batch:
-            if len(working_batch) >= _config.MAX_JSONRPC_BATCH_SIZE or working_batch.total_calls >= self.controller.batcher.step:
+            if len(working_batch) >= ENVIRONMENT_VARIABLES.MAX_JSONRPC_BATCH_SIZE or working_batch.total_calls >= self.controller.batcher.step:
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
             working_batch.append(rpc_calls_to_batch.pop(), skip_check=True)
