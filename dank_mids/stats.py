@@ -83,3 +83,4 @@ class StatsLogger(logging.Logger):
             self._log(DEVHINT, f"list types: {list_types}")
 
 logger = StatsLogger(__name__)
+log = logger.stats

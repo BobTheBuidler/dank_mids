@@ -12,3 +12,6 @@ class BadResponse(Exception):
 
 class EmptyBatch(Exception):
     pass
+
+class PayloadTooLarge(BadResponse):
+    pass

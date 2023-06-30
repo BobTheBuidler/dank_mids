@@ -9,7 +9,6 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
 
 import eth_retry
-from aiohttp import RequestInfo
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
@@ -17,11 +16,11 @@ from hexbytes import HexBytes
 from msgspec import Raw
 from msgspec.json import encode
 from web3 import Web3
-from web3.types import RPCEndpoint, RPCError, RPCResponse
+from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import _config, constants, stats
 from dank_mids._demo_mode import demo_logger
-from dank_mids._exceptions import BadResponse, EmptyBatch
+from dank_mids._exceptions import BadResponse, EmptyBatch, PayloadTooLarge
 from dank_mids.helpers import _session, decode
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
@@ -31,7 +30,8 @@ if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
 
-RETRY_ERRS = ["connection reset by peer","request entity too large","server disconnected","execution aborted (timeout = 5s)"]
+TOO_MUCH_DATA_ERRS = ["Payload Too Large", "content length too large", "request entity too large"]
+RETRY_ERRS = ["connection reset by peer", "server disconnected","execution aborted (timeout = 5s)"]
 
 logger = logging.getLogger(__name__)
 
@@ -302,7 +302,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         if "out of gas" in f"{e}":
             # TODO Remember which contracts/calls are gas guzzlers
             logger.debug('out of gas. cut in half, trying again')
-        elif any(err in f"{e}".lower() for err in RETRY_ERRS):
+        elif isinstance(e, PayloadTooLarge) or any(err in f"{e}".lower() for err in RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             logger.debug('Dank too loud. Bisecting batch and retrying.')
         elif "error processing call Revert" not in f"{e}":
@@ -372,7 +372,7 @@ class Multicall(_Batch[eth_call]):
         demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
     def should_retry(self, e: Exception) -> bool:
-        if any(err in f"{e}".lower() for err in RETRY_ERRS):
+        if isinstance(e, PayloadTooLarge) or any(err in f"{e}".lower() for err in RETRY_ERRS):
             logger.debug('dank too loud, trying again')
             self.controller.reduce_batch_size(len(self))
             return True
@@ -480,7 +480,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # NOTE: These shouldn't actually happen and this except clause can probably be removed soon.
             _log_exception(e)
         except Exception as e:
-            _log_exception(e)
+            self.adjust_batch_size() if isinstance(e, PayloadTooLarge) else _log_exception(e)
             await (self.bisect_and_retry() if self.should_retry(e) else self.spoof_response(e))
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
@@ -492,20 +492,21 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # A successful response will be a list of Raw objects, a single PartialResponse implies an error.
             if isinstance(response, list):
                 return [RawResponse(raw) for raw in response]
+        
             # Oops, we failed.
+            if any(err in response.error.message for err in TOO_MUCH_DATA_ERRS):
+                raise PayloadTooLarge(response)
             logger.info(
                 "jsonrpc batch failed\n"
                 + f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}\n"
                 + f"methods called: {self.method_counts}"
             )
-            if 'content length too large' in response.error.message and self.is_multicalls_only:
-                self.controller.reduce_batch_size(self.total_calls)
             raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
         if "No state available for block" in f"{e}":
-            logger.debug('No state available for queried block. Bisecting batch and retrying.')
+            logger.debug('No state available for one of the blocks queried. Bisecting batch and retrying.')
             return True
         elif super().should_retry(e):
             return True
@@ -529,6 +530,14 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         for batch in batches:
             batch.start(cleanup=False)
         await asyncio.gather(*batches)
+    
+    def adjust_batch_size(self) -> None:
+        if self.is_multicalls_only:
+            self.controller.reduce_batch_size(self.total_calls)
+        else:
+            stats.logger.devhint(
+                "We still need some logic for catching these errors and using them to better optimize the batching process"
+            )
 
     def _post_future_cleanup(self) -> None:
         self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)
