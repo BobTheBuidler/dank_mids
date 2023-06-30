@@ -12,9 +12,8 @@ DEMO_MODE = bool(os.environ.get("DANKMIDS_DEMO_MODE", os.environ.get("DANK_MIDS_
 # Are you calling a ganache fork? Can't use state override code
 GANACHE_FORK = bool(os.environ.get("DANKMIDS_GANACHE_FORK", os.environ.get("DANK_MIDS_GANACHE_FORK")))
 
-# We set the default to 5 minutes but if you're doing serious work
-#  you may want to increase it further.
-AIOHTTP_TIMEOUT = int(os.environ.get("AIOHTTP_TIMEOUT", 300))
+# We set the default to 20 minutes to account for potentially long event loop times if you're doing serious work.
+AIOHTTP_TIMEOUT = int(os.environ.get("AIOHTTP_TIMEOUT", 20 * 60))
 
 
 # Method-specific Semaphores
