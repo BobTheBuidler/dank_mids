@@ -84,3 +84,4 @@ class StatsLogger(logging.Logger):
 
 logger = StatsLogger(__name__)
 log = logger.stats
+devhint = logger.devhint

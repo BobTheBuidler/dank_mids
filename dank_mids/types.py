@@ -10,8 +10,8 @@ from msgspec.json import decode, encode
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids import stats
-from dank_mids._exceptions import BadResponse
+from dank_mids import constants, stats
+from dank_mids._exceptions import BadResponse, PayloadTooLarge
 
 if TYPE_CHECKING:
     from dank_mids.requests import Multicall
@@ -97,7 +97,11 @@ class PartialResponse(_DictStruct):
     def exception(self) -> BadResponse:
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
-        return BadResponse(self)
+        return PayloadTooLarge(self) if self.payload_too_large else BadResponse(self)
+    
+    @property
+    def payload_too_large(self):
+        any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)
         
     def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
         data = {}

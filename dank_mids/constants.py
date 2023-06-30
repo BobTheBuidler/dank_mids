@@ -2,11 +2,11 @@
 
 import multicall
 
+TOO_MUCH_DATA_ERRS = ["Payload Too Large", "content length too large", "request entity too large"]
+RETRY_ERRS = ["connection reset by peer", "server disconnected", "execution aborted (timeout = 5s)"]
+
 GAS_LIMIT = multicall.constants.GAS_LIMIT
-
 OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
-
-
 
 # When you get these call responses back from the multicall, we know there was some problem with execution.
 # If you make the exact same calls without multicall, you will get an Exception not a response. 
