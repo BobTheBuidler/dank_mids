@@ -107,12 +107,13 @@ class PartialResponse(_DictStruct):
         data = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
-            if field == "result" and attr:
+            if attr is None:
+                continue
+            if field == "result":
                 attr = self.decode_result(method=method, _caller=self)
-            if field != 'error' or attr is not None:
-                if isinstance(attr, _DictStruct):
-                    attr = attr.to_dict()
-                data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
+            if isinstance(attr, _DictStruct) and field != 'error':
+                attr = attr.to_dict()
+            data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr
         return data
 
     def decode_result(self, method: Optional[str] = None, _caller = None) -> Any:
