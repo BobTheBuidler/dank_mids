@@ -90,11 +90,8 @@ class DankMiddlewareController:
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
         request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
         session = await _session.get_session()
-        logger.debug(f'making request: {request}')
-        async with session.post(self.endpoint, data=request.data) as response:
-            response = await response.json(loads=decode.raw)
-            logger.debug(f'received response: {response}')
-            return RawResponse(response)
+        response = await session.post(self.endpoint, data=request, loads=decode.raw)
+        return RawResponse(response)
 
     async def execute_batch(self) -> None:
         # NOTE: We create this empty batch here to avoid double-locking.

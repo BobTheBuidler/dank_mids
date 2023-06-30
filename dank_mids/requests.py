@@ -37,9 +37,6 @@ logger = logging.getLogger(__name__)
 subprocesses = ProcessPoolExecutor(_config.NUM_PROCESSES)
 run_in_subprocess = lambda fn, *args: asyncio.get_event_loop().run_in_executor(subprocesses, fn, *args)
 
-# Set up custom error codes we might see
-HTTPStatus.CLOUDFLARE_TIMEOUT = 524
-
 class ResponseNotReady(Exception):
     pass
 
@@ -490,27 +487,21 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     @eth_retry.auto_retry
     async def post(self) -> List[RawResponse]:
-        tried = 0
-        while True:
-            try:
-                session = await _session.get_session()
-                async with session.post(self.controller.endpoint, data=self.data) as response:
-                    response: Union[JSONRPCBatchResponse, PartialResponse] = await response.json(loads=decode.jsonrpc_batch)
-                    # A successful response will be a list of Raw objects, a single PartialResponse implies an error.
-                    if isinstance(response, list):
-                        return [RawResponse(raw) for raw in response]
-                    # Oops, we failed.
-                    e = response.exception
-                    if not isinstance(e, PayloadTooLarge):
-                        # TODO: put this somewhere else
-                        stats.devhint("jsonrpc batch failed\n"
-                            + f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}\n"
-                            + f"methods called: {self.method_counts}")
-                    raise e
-            except ClientResponseError as e:
-                if tried >= 5 or e.status not in {HTTPStatus.BAD_GATEWAY, HTTPStatus.CLOUDFLARE_TIMEOUT}:
-                    raise e
-                tried += 1
+        session = await _session.get_session()
+        response = await session.post(self.controller.endpoint, data=self.data, loads=decode.jsonrpc_batch)
+
+        # A successful response will be a list of Raw objects, a single PartialResponse implies an error.
+        if isinstance(response, list):
+            return [RawResponse(raw) for raw in response]
+        
+        # Oops, we failed.
+        e = response.exception
+        if not isinstance(e, PayloadTooLarge):
+            # TODO: put this somewhere else
+            stats.devhint("jsonrpc batch failed\n"
+                + f"json batch id: {self.jid} | len: {len(self)} | total calls: {self.total_calls}\n"
+                + f"methods called: {self.method_counts}")
+        raise e
     
     def should_retry(self, e: Exception) -> bool:
         # While it might look weird, f-string is faster than `str(e)`.
