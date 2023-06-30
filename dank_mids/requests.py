@@ -4,18 +4,18 @@ import asyncio
 import logging
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
+from contextlib import suppress
 from functools import cached_property
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
 
 import eth_retry
+import msgspec
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
-from msgspec import Raw
-from msgspec.json import encode
 from web3 import Web3
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -39,7 +39,7 @@ run_in_subprocess = lambda fn, *args: asyncio.get_event_loop().run_in_executor(s
 class ResponseNotReady(Exception):
     pass
 
-def _call_failed(data: Union[PartialResponse, Raw, bytes, Exception]) -> bool:
+def _call_failed(data: Union[PartialResponse, msgspec.Raw, bytes, Exception]) -> bool:
     # TODO: make this handle PartialResponse and Raw correctly
     """ Returns True if `data` indicates a failed response, False otherwise. """
     if data is None:
@@ -321,6 +321,7 @@ class Multicall(_Batch[eth_call]):
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")    
 
     def __init__(self, controller: "DankMiddlewareController", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
+        # sourcery skip: default-mutable-arg
         super().__init__(controller, calls)
         self.bid = bid or self.controller.multicall_uid.next
         self._started = False
@@ -413,12 +414,10 @@ class Multicall(_Batch[eth_call]):
         await asyncio.gather(*batches)
 
     def _post_future_cleanup(self) -> None:
-        try:
+        with suppress(KeyError):
             # This will have already taken place in a full json batch of multicalls
             for call in self.controller.pending_eth_calls.pop(self.block):
                 assert call._started
-        except KeyError:
-            pass
 
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
@@ -427,7 +426,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         controller: "DankMiddlewareController",
         calls: List[Union[Multicall, RPCRequest]] = [], 
         jid: Optional[BatchId] = None
-    ) -> None:
+    ) -> None:  # sourcery skip: default-mutable-arg
         super().__init__(controller, calls)
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
         self._started = False
@@ -439,7 +438,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def data(self) -> bytes:
         if not self.calls:
             raise EmptyBatch(f"batch {self.uid} is empty and should not be processed.")
-        return encode([call.request for call in self.calls])
+        return msgspec.json.encode([call.request for call in self.calls])
     
     @property
     def is_multicalls_only(self) -> bool:

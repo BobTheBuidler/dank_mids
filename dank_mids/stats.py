@@ -9,7 +9,7 @@ from time import time
 from typing import (TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Set,
                     Type, Union)
 
-from msgspec import ValidationError
+import msgspec
 from web3.types import RPCEndpoint
 
 from dank_mids import _config
@@ -120,7 +120,7 @@ class _StatsLogger(logging.Logger):
 
     # TODO: MOVE COLLECTIONS UOT OF THIS CLASS
 
-    def log_validation_error(self, method: RPCEndpoint, e: ValidationError) -> None:
+    def log_validation_error(self, method: RPCEndpoint, e: msgspec.ValidationError) -> None:
         enabled = self.isEnabledFor(DEVHINT)
         if COLLECT_STATS or enabled:
             collector.validation_errors[method].append(e)

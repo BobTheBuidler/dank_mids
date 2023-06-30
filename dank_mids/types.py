@@ -4,9 +4,8 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     List, Literal, NewType, Optional, TypedDict, TypeVar,
                     Union, overload)
 
+import msgspec
 from eth_typing import ChecksumAddress
-from msgspec import Raw, Struct, ValidationError
-from msgspec.json import decode, encode
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -33,7 +32,7 @@ list_of_stuff = List[Union[str, None, dict, list]]
 dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, Dict[str, Optional[Any]]]]
 nested_dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, dict_of_stuff]]
 
-class _DictStruct(Struct):
+class _DictStruct(msgspec.Struct):
     def __getitem__(self, attr: str) -> Any:
         return getattr(self, attr)
     def to_dict(self) -> Dict[str, Any]:
@@ -52,7 +51,7 @@ class PartialRequest(_DictStruct):
 
     @property
     def data(self) -> bytes:
-        return encode(self)
+        return msgspec.json.encode(self)
 
 class Request(PartialRequest):
     # NOTE: While technially part of a request, we can successfully make requests without including the `jsonrpc` field.
@@ -90,7 +89,7 @@ RETURN_TYPES = {
 decoder_logger = logging.getLogger('dank_mids.decoder')
 
 class PartialResponse(_DictStruct):
-    result: Raw = None  # type: ignore
+    result: msgspec.Raw = None  # type: ignore
     error: Optional[Error] = None
 
     @property
@@ -120,42 +119,41 @@ class PartialResponse(_DictStruct):
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
-                return decode(self.result, type=typ)
+                return msgspec.json.decode(self.result, type=typ)
             try:
                 start = time()
-                decoded = decode(self.result, type=typ)
+                decoded = msgspec.json.decode(self.result, type=typ)
                 if _caller:
                     stats.log_duration(f'decoding {type(_caller)} {method}', start)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
-            except ValidationError as e:
+            except msgspec.ValidationError as e:
                 stats.logger.log_validation_error(self, e)
 
         # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
-        try:
-            if method:
+        if method:
+            try:
                 if method in _dict_responses:
-                    decoded = AttributeDict(decode(self.result, type=nested_dict_of_stuff))
+                    decoded = AttributeDict(msgspec.json.decode(self.result, type=nested_dict_of_stuff))
                     stats.logger.log_types(method, decoded)
                     return decoded
                 elif method in _str_responses:
+                    # TODO: finish adding methods and get rid of this
                     stats.logger.devhint(f'Must add `{method}: str` to `RETURN_TYPES`')
-                    return decode(self.result, type=str)
-        except ValidationError as e:
-            stats.logger.log_validation_error(method, e)
-        try:
-            # In this case we can provide no hints, let's let the decoder figure it out
-            decoded = decode(self.result)
-            if isinstance(decoded, str):
-                if method:
-                    _str_responses.add(method)
-                return decoded
-            elif isinstance(decoded, dict):
-                if method:
-                    _dict_responses.add(method)
-                return AttributeDict(decoded)
-            raise TypeError(f"type {type(decoded)} is not supported.", decoded)
-        except ValidationError as e:
-            raise ValidationError(method, e) from None
+                    return msgspec.json.decode(self.result, type=str)
+            except msgspec.ValidationError as e:
+                stats.logger.log_validation_error(method, e)
+
+        # In this case we can provide no hints, let's let the decoder figure it out
+        decoded = msgspec.json.decode(self.result)
+        if isinstance(decoded, str):
+            if method:
+                _str_responses.add(method)
+            return decoded
+        elif isinstance(decoded, dict):
+            if method:
+                _dict_responses.add(method)
+            return AttributeDict(decoded)
+        raise TypeError(f"type {type(decoded)} is not supported.", decoded)
         
 
 class Response(PartialResponse):
@@ -164,17 +162,17 @@ class Response(PartialResponse):
 
 class RawResponse:
     """Wraps a Raw object that we know represents a Response with a `decode` helper method"""
-    def __init__(self, raw: Raw) -> None:
+    def __init__(self, raw: msgspec.Raw) -> None:
         self._raw = raw
     @overload
     def decode(self, partial = True) -> PartialResponse:...
     @overload
     def decode(self, partial = False) -> Response:...
     def decode(self, partial: bool = False) -> Union[Response, PartialResponse]:
-        return decode(self._raw, type=PartialResponse if partial else Response)
+        return msgspec.json.decode(self._raw, type=PartialResponse if partial else Response)
 
 JSONRPCBatchRequest = List[Request]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
 JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
 # We need this for proper decoding.
-_JSONRPCBatchResponse = Union[List[Raw], PartialResponse]
+_JSONRPCBatchResponse = Union[List[msgspec.Raw], PartialResponse]
