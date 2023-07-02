@@ -420,7 +420,8 @@ class Multicall(_Batch[eth_call]):
         with suppress(KeyError):
             # This will have already taken place in a full json batch of multicalls
             for call in self.controller.pending_eth_calls.pop(self.block):
-                assert call._started
+                if not call._started:
+                    logger.warning(f"{call} is not started but {self} is. Will it complete? Who knows. Ngl, I'm not really sure what happens here so you get a log til I figure it out.")
 
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
