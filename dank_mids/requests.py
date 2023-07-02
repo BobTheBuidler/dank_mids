@@ -169,7 +169,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(data, RawResponse):
             self._response = data
         elif isinstance(data, BadResponse):
-            self._response = {"error": data.response.error.to_dict()}
+            error = data.response.error.to_dict()
+            if 'message' in error and error['message'] == 'invalid request':
+                error['dankmids_added_context'] = self.request.to_dict()
+            self._response = {"error": error}
         elif isinstance(data, Exception):
             raise data
         # Old handler (once we use msgspec for single multicalls all `data` will be a RawResponse object)
