@@ -30,7 +30,7 @@ EXPORT_STATS = create_env("DANKMIDS_EXPORT_STATS", bool, default=False)
 COLLECT_STATS = create_env("DANKMIDS_COLLECT_STATS", bool, default=EXPORT_STATS)
 
 # Method-specific Semaphores
-semaphore_envs = {
+method_semaphores = {
     "eth_getBlock": create_env("ETH_GETBLOCK_SEMAPHORE", int, default=50), # [eth_getBlockByNumber, eth_getBlockByHash]
     "eth_getLogs": create_env("ETH_GETLOGS_SEMAPHORE", int, default=64),
     "eth_getTransaction": create_env("ETH_GETTRANSACTION_SEMAPHORE", int, default=100),

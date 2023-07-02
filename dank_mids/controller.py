@@ -17,8 +17,8 @@ from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids._demo_mode import demo_logger
 from dank_mids.batch import DankBatch
 from dank_mids.helpers import decode, session
-from dank_mids.helpers.semaphore import MethodSemaphores
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
+from dank_mids.semaphores import MethodSemaphores
 from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
                              Request)
 from dank_mids.uid import UIDGenerator
