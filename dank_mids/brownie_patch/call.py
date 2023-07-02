@@ -6,6 +6,7 @@ from pickle import PicklingError
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
 
+import a_sync
 import eth_abi
 from brownie.convert.normalize import format_input, format_output
 from brownie.convert.utils import get_type_strings
@@ -16,9 +17,8 @@ from hexbytes import HexBytes
 from web3 import Web3
 
 from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids.helpers.semaphore import ThreadsafeSemaphore
 
-brownie_call_semaphore = ThreadsafeSemaphore(ENVIRONMENT_VARIABLES.BROWNIE_CALL_SEMAPHORE_VAL)
+brownie_call_semaphore = a_sync.ThreadsafeSemaphore(ENVIRONMENT_VARIABLES.BROWNIE_CALL_SEMAPHORE_VAL)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     try:
