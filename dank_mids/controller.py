@@ -17,9 +17,10 @@ from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids._demo_mode import demo_logger
 from dank_mids.batch import DankBatch
 from dank_mids.helpers import decode, session
-from dank_mids.helpers.semaphore import method_semaphores
+from dank_mids.helpers.semaphore import MethodSemaphores
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
-from dank_mids.types import BlockId, ChainId, RawResponse, Request, PartialRequest
+from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
+                             Request)
 from dank_mids.uid import UIDGenerator
 
 logger = logging.getLogger(__name__)
@@ -63,6 +64,7 @@ class DankMiddlewareController:
         self.multicall2 = to_checksum_address(multicall2)
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
 
+        self.method_semaphores = MethodSemaphores()
         self.batcher = NotSoBrightBatcher()
 
         self.call_uid = UIDGenerator()
@@ -81,7 +83,7 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        async with method_semaphores[method]:
+        async with self.method_semaphores[method]:
             if method == "eth_call" and params[0]["to"] not in self.no_multicall:
                 return await eth_call(self, params)
             return await RPCRequest(self, method, params)
