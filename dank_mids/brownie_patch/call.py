@@ -20,13 +20,11 @@ decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, 
 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
     call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
-    call._encode_input = MethodType(encode, call)
-    call._decode_output = MethodType(decode, call)
     
 @lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
-    # TODO: Make this user configurable in case they'd rather fully unblock the event loop
-    get_request_data = __request_data_with_args if len_inputs else __request_data_no_args
+    # TODO: Make this user configurable in case they'd rather fully unblock the event loop or fully block it
+    get_request_data = encode if len_inputs else __request_data_no_args
     
     async def coroutine(
         self: ContractCall,
@@ -49,7 +47,7 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
             __validate_output(self.abi, output)
 
-            decoded = await self._decode_output(output)
+            decoded = await decode(self, output)
 
             # We have to do it like this so we don't break the process pool.
             if isinstance(decoded, Exception):
@@ -64,12 +62,6 @@ async def __request_data_no_args(
     *args: Tuple[Any,...],
 ) -> str:
     return call.signature
-
-async def __request_data_with_args(
-    call: ContractCall,
-    *args: Tuple[Any,...],
-) -> str:
-    return await call._encode_input(*args)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     try:
