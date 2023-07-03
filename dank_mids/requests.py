@@ -194,7 +194,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return self._response
 
 class eth_call(RPCRequest):
-    def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
+    def __init__(self, controller: "DankMiddlewareController", params: Any, retry: bool = False) -> None:
         """ Adds a call to the DankMiddlewareContoller's `pending_eth_calls`. """
         super().__init__(controller, "eth_call", params)  # type: ignore
     
