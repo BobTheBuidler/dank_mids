@@ -4,7 +4,7 @@ import logging
 import a_sync
 import typed_envs
 
-from dank_mids.helpers import _envs
+from dank_mids import _envs
 
 logger = logging.getLogger("dank_mids.envs")
 
