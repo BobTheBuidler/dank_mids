@@ -106,6 +106,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self.params = params
         self.should_batch = all(bypass not in method for bypass in BYPASS_METHODS)
         self._started = False
+        self._retried = False
         super().__init__()
 
         if isinstance(self, eth_call) and self.multicall_compatible:
@@ -153,6 +154,13 @@ class RPCRequest(_RequestMeta[RawResponse]):
             response = self.response.decode(partial=True).to_dict(self.method)
             if 'error' in response:
                 response['error']['dankmids_added_context'] = self.request.to_dict()
+                if response['error']['message'] == 'invalid request' and not self._retried:
+                    if self.controller.request_type == PartialRequest:
+                        self.controller.request_type = Request
+                    # NOTE: We probably sent other calls to the node with the same request structure so we need to make sure we catch them
+                    new_request = self.controller(self.method, self.params)
+                    new_request._retried = True
+                    return await new_request
             return response
         # Less optimal decoding
         # TODO: refactor this out
@@ -170,8 +178,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             self._response = data
         elif isinstance(data, BadResponse):
             error = data.response.error.to_dict()
-            if error['message'] == 'invalid request':
-                error['dankmids_added_context'] = self.request.to_dict()
+            error['dankmids_added_context'] = self.request.to_dict()
             self._response = {"error": error}
         elif isinstance(data, Exception):
             raise data
