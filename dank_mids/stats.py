@@ -10,10 +10,10 @@ from typing import (TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Set,
                     Type, Union)
 
 import msgspec
+from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
 from web3.types import RPCEndpoint
 
-from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids.brownie_patch import call
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 
 if TYPE_CHECKING:
     from dank_mids.requests import JSONRPCBatch
@@ -150,9 +150,11 @@ class _Collector:
     durations: DefaultDict[str, _Times] = defaultdict(lambda: deque(maxlen=50_000))
     types: Set[Type] = set()
     event_loop_times: _Times = deque(maxlen=50_000)
-    _brownie_semaphore = call.brownie_call_semaphore
-    encoder_processes = call.encoder_processes
-    decoder_processes = call.decoder_processes
+    _brownie_semaphore = ENVS.BROWNIE_CALL_SEMAPHORE
+    encoder_processes = ENVS.BROWNIE_ENCODER_PROCESSES
+    decoder_processes = ENVS.BROWNIE_DECODER_PROCESSES
+    # not implemented
+    _multicall_decoder_processes = ENVS.MULTICALL_DECODER_PROCESSES
     validation_errors: DefaultDict[RPCEndpoint, Deque["Request"]] = defaultdict(lambda: deque(maxlen=100))
     _subprocesses = {encoder_processes, decoder_processes}
 
@@ -211,6 +213,13 @@ class _SentryExporter:
                 attr = attr()
             self.set_measurement(tag, attr, self.units.get(attr_name))
 
+    def push_envs(self) -> None:
+        for env, value in _ENVIRONMENT_VARIABLES_SET_BY_USER.items():
+            try:
+                self.set_tag(env, value)
+            except Exception as e:
+                logger.warning(f"Unable to set sentry tag {env} to {value}. See {e.__class__.__name__} below:")
+                logger.info(e, exc_info=True)
     try:
         import sentry_sdk
         set_tag = sentry_sdk.set_tag

@@ -3,14 +3,12 @@ import abc
 import asyncio
 import logging
 from collections import defaultdict
-from concurrent.futures import ProcessPoolExecutor
 from contextlib import suppress
 from functools import cached_property
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
 
 import eth_retry
-
 import msgspec
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
@@ -22,6 +20,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import ENVIRONMENT_VARIABLES, constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import BadResponse, EmptyBatch, PayloadTooLarge
+from dank_mids.ENVIRONMENT_VARIABLES import MULTICALL_DECODER_PROCESSES
 from dank_mids.helpers import decode, session
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
@@ -33,8 +32,6 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-subprocesses = ProcessPoolExecutor(ENVIRONMENT_VARIABLES.NUM_PROCESSES)
-run_in_subprocess = lambda fn, *args: asyncio.get_event_loop().run_in_executor(subprocesses, fn, *args)
 
 class ResponseNotReady(Exception):
     pass
@@ -403,7 +400,7 @@ class Multicall(_Batch[eth_call]):
         import time
         try:  # NOTE: Quickly check for length without counting each item with `len`.
             self[100]
-            return await run_in_subprocess(mcall_decode, data)
+            return await MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
         except IndexError:
             start = time.time()
             retval = mcall_decode(data)

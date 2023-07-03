@@ -2,5 +2,6 @@ eth_retry>=0.1.15,<0.2
 ez-a-sync>=0.4.0
 msgspec
 multicall>=0.6.2
+typed-envs>=0.0.2
 # web3 5.29 thru 5.31.2 are unable to use async provider in subthreads
 web3>=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2
