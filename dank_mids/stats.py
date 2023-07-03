@@ -73,7 +73,7 @@ class _StatsLogger(logging.Logger):
         self._log_fn_result(level, _Writer.event_loop)
 
     def log_subprocess_stats(self, *, level: _LogLevel = STATS) -> None:
-        for pool in collector._subprocesses:
+        for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:
             self._log_fn_result(level, _Writer.queue, pool)
     
     # Internal helpers
@@ -145,34 +145,33 @@ class _StatsLogger(logging.Logger):
 _Times = Deque[float]
 
 class _Collector:
-    """Handles the collection and computation of stats-related data."""
-    errd_batches = deque(maxlen=500)
-    durations: DefaultDict[str, _Times] = defaultdict(lambda: deque(maxlen=50_000))
-    types: Set[Type] = set()
-    event_loop_times: _Times = deque(maxlen=50_000)
-    _brownie_semaphore = ENVS.BROWNIE_CALL_SEMAPHORE
-    encoder_processes = ENVS.BROWNIE_ENCODER_PROCESSES
-    decoder_processes = ENVS.BROWNIE_DECODER_PROCESSES
-    # not implemented
-    _multicall_decoder_processes = ENVS.MULTICALL_DECODER_PROCESSES
-    validation_errors: DefaultDict[RPCEndpoint, Deque["Request"]] = defaultdict(lambda: deque(maxlen=100))
-    _subprocesses = {encoder_processes, decoder_processes}
+    def __init__(self):
+        """Handles the collection and computation of stats-related data."""
+        self.errd_batches = deque(maxlen=500)
+        self.durations: DefaultDict[str, _Times] = defaultdict(lambda: deque(maxlen=50_000))
+        self.types: Set[Type] = set()
+        self.event_loop_times: _Times = deque(maxlen=50_000)
+        # not implemented
+        self.validation_errors: DefaultDict[RPCEndpoint, Deque["Request"]] = defaultdict(lambda: deque(maxlen=100))
 
     @property
     def avg_loop_time(self) -> float:
         return sum(collector.event_loop_times) / len(collector.event_loop_times)
     @property
     def count_active_brownie_calls(self) -> int:
-        return self._brownie_semaphore.default_value - self._brownie_semaphore.semaphore._value
+        return ENVS.BROWNIE_CALL_SEMAPHORE.default_value - ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._value
     @property
     def count_queued_brownie_calls(self) -> int:
-        return len(self._brownie_semaphore.semaphore._waiters)
+        return len(ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._waiters)
     @property
     def encoder_queue_len(self) -> int:
-        return self.encoder_processes._queue_count
+        return ENVS.BROWNIE_ENCODER_PROCESSES._queue_count
     @property
     def decoder_queue_len(self) -> int:
-        return self.encoder_processes._queue_count
+        return ENVS.BROWNIE_DECODER_PROCESSES._queue_count
+    @property
+    def mcall_decoder_queue_len(self) -> int:
+        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count
         
 
 class _Writer:
@@ -183,7 +182,7 @@ class _Writer:
     def event_loop(self) -> str:
         return f"Average event loop time: {collector.avg_loop_time}"
     def brownie(self) -> str:
-        return f"{collector.count_active_brownie_calls} brownie calls are processing, {collector.count_queued_brownie_calls} are queued in {collector._brownie_semaphore}."
+        return f"{collector.count_active_brownie_calls} brownie calls are processing, {collector.count_queued_brownie_calls} are queued in {ENVS.BROWNIE_CALL_SEMAPHORE}."
     def queue(self, pool: ProcessPoolExecutor) -> str:
         return f"{pool} has {pool._queue_count} items in its queue"
 
