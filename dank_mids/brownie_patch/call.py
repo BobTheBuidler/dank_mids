@@ -38,7 +38,7 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             raise ValueError("Cannot use state override with `coroutine`.")
             
         async with ENVS.BROWNIE_CALL_SEMAPHORE:
-            if any(isinstance(arg, Contract) for arg in args):
+            if any(isinstance(arg, Contract) for arg in args) or any(hasattr(arg, "__contains__") for arg in args): # We will just assume containers contain a Contract object until we have a better way to handle this
                 # We can't unpickle these because of the added `coroutine` method.
                 data = __encode_input(self.abi, self.signature, *args)
             else:
