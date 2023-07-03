@@ -78,7 +78,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         self._response: Optional[_Response] = None
         self._done = asyncio.Event()
         self._start = time.time()
-        self._daemon = asyncio.create_task(self._debug_daemon)
+        self._daemon = asyncio.create_task(self._debug_daemon())
     
     def __await__(self) -> Generator[Any, None, Optional[_Response]]:
         return self.get_response().__await__()
