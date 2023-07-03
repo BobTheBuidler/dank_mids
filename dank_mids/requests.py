@@ -2,6 +2,7 @@
 import abc
 import asyncio
 import logging
+import time
 from collections import defaultdict
 from contextlib import suppress
 from functools import cached_property
@@ -323,7 +324,7 @@ mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,
 def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
     return mcall_encoder([False, data])
 
-def mcall_decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:
+def mcall_decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:        
     try:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         data = bytes.fromhex(data.decode_result("eth_call")[2:])
@@ -413,12 +414,11 @@ class Multicall(_Batch[eth_call]):
         raise NotImplementedError(f"type {type(data)} not supported.", data)
     
     async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
-        import time
+        start = time.time()
         try:  # NOTE: Quickly check for length without counting each item with `len`.
             self[100]
             retval = await MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
         except IndexError:
-            start = time.time()
             retval = mcall_decode(data)
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
         # Raise any Exceptions that may have come out of the process pool.
