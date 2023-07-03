@@ -10,7 +10,7 @@ from a_sync.primitives import ProcessPoolExecutor
 from brownie.convert.normalize import format_input, format_output
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
-from brownie.network.contract import ContractCall
+from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from hexbytes import HexBytes
 from web3 import Web3
@@ -38,15 +38,19 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             raise ValueError("Cannot use state override with `coroutine`.")
             
         async with ENVS.BROWNIE_CALL_SEMAPHORE:
-            try: # We're better off sending these to the subprocess so they don't clog up the event loop.
-                data = await get_request_data(self, *args)
-            # TODO: move this somewhere else
-            except BrokenProcessPool:
-                # Let's fix that right up
-                ENVS.BROWNIE_ENCODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
-                data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
-            except PicklingError:  # But if that fails, don't worry. I got you.
-                data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
+            if any(isinstance(arg, Contract) for arg in args):
+                # We can't unpickle these because of the added `coroutine` method.
+                data = __encode_input(self.abi, self.signature, *args)
+            else:
+                try: # We're better off sending these to the subprocess so they don't clog up the event loop.
+                    data = await get_request_data(self, *args)
+                # TODO: move this somewhere else
+                except BrokenProcessPool:
+                    # Let's fix that right up
+                    ENVS.BROWNIE_ENCODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
+                    data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
+                except PicklingError:  # But if that fails, don't worry. I got you.
+                    data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
             
             # We have to do it like this so we don't break the process pool.
             if isinstance(data, Exception):
