@@ -150,7 +150,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
         # JIT json decoding
         if isinstance(self.response, RawResponse):
-            return self.response.decode(partial=True).to_dict(self.method)
+            response = self.response.decode(partial=True).to_dict(self.method)
+            if 'error' in response:
+                response['error']['dankmids_added_context'] = self.request.to_dict()
+            return response
         # Less optimal decoding
         # TODO: refactor this out
         return self.response
@@ -167,7 +170,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             self._response = data
         elif isinstance(data, BadResponse):
             error = data.response.error.to_dict()
-            if 'message' in error and error['message'] == 'invalid request':
+            if error['message'] == 'invalid request':
                 error['dankmids_added_context'] = self.request.to_dict()
             self._response = {"error": error}
         elif isinstance(data, Exception):
