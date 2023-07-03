@@ -4,6 +4,7 @@ import asyncio
 import logging
 import time
 from collections import defaultdict
+from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
 from functools import cached_property
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
@@ -11,6 +12,7 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
 
 import eth_retry
 import msgspec
+from a_sync import ProcessPoolExecutor
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
@@ -18,7 +20,8 @@ from hexbytes import HexBytes
 from web3 import Web3
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids import ENVIRONMENT_VARIABLES, constants, stats
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import BadResponse, EmptyBatch, PayloadTooLarge
 from dank_mids.ENVIRONMENT_VARIABLES import MULTICALL_DECODER_PROCESSES
@@ -417,7 +420,12 @@ class Multicall(_Batch[eth_call]):
         start = time.time()
         try:  # NOTE: Quickly check for length without counting each item with `len`.
             self[100]
-            retval = await MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
+            retval = await ENVS.MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
+        except BrokenProcessPool:
+            # TODO: Move this somewhere else
+            ENVS.MULTICALL_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)
+            retval = mcall_decode()
+            
         except IndexError:
             retval = mcall_decode(data)
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
@@ -481,7 +489,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 
     @property
     def is_full(self) -> bool:
-        return (self.is_multicalls_only and len(self) >= self.controller.batcher.step) or len(self) >= ENVIRONMENT_VARIABLES.MAX_JSONRPC_BATCH_SIZE
+        return (self.is_multicalls_only and len(self) >= self.controller.batcher.step) or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
 
     async def get_response(self) -> None:
         if self._started:
@@ -489,7 +497,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return
         self._started = True
         rid = self.controller.request_uid.next
-        if ENVIRONMENT_VARIABLES.DEMO_MODE:
+        if ENVS.DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:

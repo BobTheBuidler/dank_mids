@@ -1,10 +1,12 @@
 
+from concurrent.futures.process import BrokenProcessPool
 from functools import lru_cache
 from pickle import PicklingError
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
 
 import eth_abi
+from a_sync.primitives import ProcessPoolExecutor
 from brownie.convert.normalize import format_input, format_output
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
@@ -38,6 +40,11 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
         async with ENVS.BROWNIE_CALL_SEMAPHORE:
             try: # We're better off sending these to the subprocess so they don't clog up the event loop.
                 data = await get_request_data(self, *args)
+            # TODO: move this somewhere else
+            except BrokenProcessPool:
+                # Let's fix that right up
+                ENVS.BROWNIE_ENCODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
+                data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
             except PicklingError:  # But if that fails, don't worry. I got you.
                 data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
             
@@ -47,7 +54,13 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
             __validate_output(self.abi, output)
 
-            decoded = await decode(self, output)
+            try:
+                decoded = await decode(self, output)
+            # TODO: move this somewhere else
+            except BrokenProcessPool:
+                # Let's fix that right up
+                ENVS.BROWNIE_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
+                decoded = __decode_output(data, self.abi)
 
             # We have to do it like this so we don't break the process pool.
             if isinstance(decoded, Exception):

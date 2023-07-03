@@ -97,7 +97,7 @@ class _StatsLogger(logging.Logger):
     # Daemon
 
     def _ensure_daemon(self) -> None:
-        if (ENVIRONMENT_VARIABLES.COLLECT_STATS or self.enabled) and self._daemon is None:
+        if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:
             self._daemon = asyncio.create_task(self._stats_daemon())
         elif self._daemon.done():
             raise self._daemon.exception()
