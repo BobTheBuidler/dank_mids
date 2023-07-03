@@ -100,13 +100,13 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
     _types = set()
 
-    def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any):
+    def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any, retry: bool = False):
         self.controller = controller
         self.method = method
         self.params = params
         self.should_batch = all(bypass not in method for bypass in BYPASS_METHODS)
         self._started = False
-        self._retried = False
+        self._retry = retry
         super().__init__()
 
         if isinstance(self, eth_call) and self.multicall_compatible:
@@ -153,14 +153,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True).to_dict(self.method)
             if 'error' in response:
-                response['error']['dankmids_added_context'] = self.request.to_dict()
-                if response['error']['message'] == 'invalid request' and not self._retried:
+                if response['error']['message'] == 'invalid request' and not self._retry:
                     if self.controller.request_type == PartialRequest:
                         self.controller.request_type = Request
-                    # NOTE: We probably sent other calls to the node with the same request structure so we need to make sure we catch them
-                    new_request = self.controller(self.method, self.params)
-                    new_request._retried = True
-                    return await new_request
+                    return await self.controller(self.method, self.params, retry=True)
+                response['error']['dankmids_added_context'] = self.request.to_dict()
             return response
         # Less optimal decoding
         # TODO: refactor this out

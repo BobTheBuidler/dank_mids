@@ -83,11 +83,11 @@ class DankMiddlewareController:
     def __repr__(self) -> str:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
-    async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+    async def __call__(self, method: RPCEndpoint, params: Any, retry: bool = False) -> RPCResponse:
         async with self.method_semaphores[method]:
             if method == "eth_call" and params[0]["to"] not in self.no_multicall:
-                return await eth_call(self, params)
-            return await RPCRequest(self, method, params)
+                return await eth_call(self, params, retry=retry)
+            return await RPCRequest(self, method, params, retry=retry)
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
