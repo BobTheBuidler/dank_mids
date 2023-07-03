@@ -158,6 +158,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
                         self.controller.request_type = Request
                     return await self.controller(self.method, self.params, retry=True)
                 response['error']['dankmids_added_context'] = self.request.to_dict()
+                # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
+                # But I'll check it anyway to be safe
+                if result := response.pop('result', None):
+                    response['result'] = result 
             return response
         # Less optimal decoding
         # TODO: refactor this out
