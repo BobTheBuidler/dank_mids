@@ -60,7 +60,7 @@ class Request(PartialRequest):
 class Error(_DictStruct):
     code: int
     message: str
-    data: Optional[Any] = None
+    data: Optional[Any] = ''
 
 # some devving tools that will go away eventually
 _dict_responses = set()
