@@ -167,6 +167,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 if result := response.pop('result', None):
                     response['result'] = result 
             return response
+    
+        # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
+        # We raise it here so it traces back up to the caller
+        if isinstance(self.response, Exception):
+            raise self.response.__class__(self.response, self.request) from None
         # Less optimal decoding
         # TODO: refactor this out
         return self.response
@@ -186,7 +191,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             error['dankmids_added_context'] = self.request.to_dict()
             self._response = {"error": error}
         elif isinstance(data, Exception):
-            raise data
+            self._response = data
         # Old handler (once we use msgspec for single multicalls all `data` will be a RawResponse object)
         elif isinstance(data, bytes):
             self._response = {"result": data}
@@ -424,7 +429,7 @@ class Multicall(_Batch[eth_call]):
         except BrokenProcessPool:
             # TODO: Move this somewhere else
             ENVS.MULTICALL_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)
-            retval = mcall_decode()
+            retval = mcall_decode(data)
             
         except IndexError:
             retval = mcall_decode(data)
