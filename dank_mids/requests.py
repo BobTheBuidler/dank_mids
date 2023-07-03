@@ -320,8 +320,13 @@ def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
     return mcall_encoder([False, data])
 
 def mcall_decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:
-    data = bytes.fromhex(data.decode_result("eth_call")[2:])
-    return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
+    try:
+        # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
+        data = bytes.fromhex(data.decode_result("eth_call")[2:])
+        return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
+    except Exception as e:
+        return e
+    
 
 class Multicall(_Batch[eth_call]):
     method = "eth_call"
@@ -407,12 +412,15 @@ class Multicall(_Batch[eth_call]):
         import time
         try:  # NOTE: Quickly check for length without counting each item with `len`.
             self[100]
-            return await MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
+            retval = await MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
         except IndexError:
             start = time.time()
             retval = mcall_decode(data)
-            stats.log_duration(f"multicall decoding for {len(self)} calls", start)
-            return retval
+        stats.log_duration(f"multicall decoding for {len(self)} calls", start)
+        # Raise any Exceptions that may have come out of the process pool.
+        if isinstance(retval, Exception):
+            raise retval    
+        return retval
     
     async def bisect_and_retry(self) -> List[RPCResponse]:
         batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
