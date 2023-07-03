@@ -8,7 +8,8 @@ from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
 from functools import cached_property
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
-                    Iterable, Iterator, List, Optional, Tuple, TypeVar, Union)
+                    Iterable, Iterator, List, NoReturn, Optional, Tuple,
+                    TypeVar, Union)
 
 import eth_retry
 import msgspec
@@ -76,6 +77,8 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         self.uid = self.controller.call_uid.next
         self._response: Optional[_Response] = None
         self._done = asyncio.Event()
+        self._start = time.time()
+        self._daemon = asyncio.create_task(self._debug_daemon)
     
     def __await__(self) -> Generator[Any, None, Optional[_Response]]:
         return self.get_response().__await__()
@@ -93,6 +96,13 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     @abc.abstractmethod
     async def get_response(self) -> Optional[_Response]:
         pass
+
+    async def _debug_daemon(self) -> NoReturn:
+        while not self._done.is_set():
+            await asyncio.sleep(60)
+            if not self._done.is_set():
+                logger.debug(f"{self} has not received data after {time.time() - self._start}s")
+            
 
 ### Single requests:
 
