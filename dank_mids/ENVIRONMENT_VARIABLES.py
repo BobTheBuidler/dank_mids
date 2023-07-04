@@ -27,7 +27,7 @@ ganache_fork = _envs._deprecated_format.create_env("GANACHE_FORK", bool, default
 GANACHE_FORK = _envs.create_env("GANACHE_FORK", bool, default=ganache_fork)
 
 # We set the default to 20 minutes to account for potentially long event loop times if you're doing serious work.
-AIOHTTP_TIMEOUT = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20*60)
+AIOHTTP_TIMEOUT = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20*60, string_converter=int)
 
 # Brownie call Semaphore
 #   Used because I experienced some OOM errs due to web3 formatters when I was batching an absurd number of brownie calls.
@@ -38,9 +38,9 @@ BROWNIE_CALL_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", a_sync.Threa
 # Processes for decoding. This determines process pool size, not total subprocess count.
 # There are 3 pools, each initialized with the same value.
 # NOTE: Don't stress, these are good for you and will not hog your cpu. You can disable them by setting the var = 0. #TODO: lol u cant yet
-BROWNIE_ENCODER_PROCESSES = _envs.create_env("BROWNIE_ENCODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1)
-BROWNIE_DECODER_PROCESSES = _envs.create_env("BROWNIE_DECODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1)
-MULTICALL_DECODER_PROCESSES = _envs.create_env("MULTICALL_DECODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1)
+BROWNIE_ENCODER_PROCESSES = _envs.create_env("BROWNIE_ENCODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1, string_converter=int)
+BROWNIE_DECODER_PROCESSES = _envs.create_env("BROWNIE_DECODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1, string_converter=int)
+MULTICALL_DECODER_PROCESSES = _envs.create_env("MULTICALL_DECODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1, string_converter=int)
 
 # NOTE: EXPORT_STATS is not implemented
 # TODO: implement this
@@ -50,9 +50,9 @@ COLLECT_STATS = _envs.create_env("COLLECT_STATS", bool, default=EXPORT_STATS)
 
 # Method-specific Semaphores
 method_semaphores = {
-    "eth_getBlock": _envs.create_env("ETH_GETBLOCK_SEMAPHORE", int, default=50),
-    "eth_getLogs": _envs.create_env("ETH_GETLOGS_SEMAPHORE", int, default=64),
-    "eth_getTransaction": _envs.create_env("ETH_GETTRANSACTION_SEMAPHORE", int, default=100),
+    "eth_getBlock": _envs.create_env("ETH_GETBLOCK_SEMAPHORE", int, default=50, string_converter=int),
+    "eth_getLogs": _envs.create_env("ETH_GETLOGS_SEMAPHORE", int, default=64, string_converter=int),
+    "eth_getTransaction": _envs.create_env("ETH_GETTRANSACTION_SEMAPHORE", int, default=100, string_converter=int),
 }
 
 if not typed_envs.logger.disabled:
