@@ -253,8 +253,11 @@ class eth_call(RPCRequest):
             self.target, self.calldata, self.block, self.controller.sync_w3
         )
         # If we were able to get a usable response from single call, add contract to `do_not_batch`.
-        if not isinstance(data, Exception):
-            self.controller.no_multicall.add(self.target)  # type: ignore
+        # NOTE We're going to test something, lets just add all of these to `no_multicall` and see how that works. I suspect better.
+        #if not isinstance(data, Exception):
+        #    self.controller.no_multicall.add(self.target)  # type: ignore
+        # NOTE: If this works the way I want we can finally refactor this ugly shit out.
+        self.controller.no_multicall.add(self.target)  # type: ignore
         return data
 
 
