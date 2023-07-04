@@ -78,7 +78,6 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         self._response: Optional[_Response] = None
         self._done = asyncio.Event()
         self._start = time.time()
-        self._daemon = asyncio.create_task(self._debug_daemon())
     
     def __await__(self) -> Generator[Any, None, Optional[_Response]]:
         return self.get_response().__await__()
@@ -128,6 +127,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         else:
             self.controller.pending_rpc_calls.append(self)
         demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
+        self._daemon = asyncio.create_task(self._debug_daemon())
     
     def __eq__(self, __o: object) -> bool:
         return self.uid == __o.uid if isinstance(__o, self.__class__) else False 
@@ -320,6 +320,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
                 self.controller.early_start()
 
     def start(self, batch: Optional["_Batch"] = None, cleanup=True) -> None:
+        self._daemon = asyncio.create_task(self._debug_daemon())
         for call in self.calls:
             call.start(batch or self)
         if cleanup:
