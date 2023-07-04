@@ -13,5 +13,8 @@ class BadResponse(ValueError):
 class EmptyBatch(ValueError):
     pass
 
+class ResponseNotReady(ValueError):
+    pass
+
 class PayloadTooLarge(BadResponse):
     pass

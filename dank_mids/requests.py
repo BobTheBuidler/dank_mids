@@ -18,14 +18,12 @@ from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
-from web3 import Web3
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
-from dank_mids._exceptions import BadResponse, EmptyBatch, PayloadTooLarge
-from dank_mids.ENVIRONMENT_VARIABLES import MULTICALL_DECODER_PROCESSES
+from dank_mids._exceptions import BadResponse, EmptyBatch, PayloadTooLarge, ResponseNotReady
 from dank_mids.helpers import decode, session
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
@@ -36,39 +34,6 @@ if TYPE_CHECKING:
 
 
 logger = logging.getLogger(__name__)
-
-
-class ResponseNotReady(Exception):
-    pass
-
-def _call_failed(data: Union[PartialResponse, msgspec.Raw, bytes, Exception]) -> bool:
-    # TODO: make this handle PartialResponse and Raw correctly
-    """ Returns True if `data` indicates a failed response, False otherwise. """
-    if data is None:
-        return True
-    # If we got a known "bad" response from the multicall, that is also a failure.
-    # Most likely the target contract does not support multicall2.
-    elif isinstance(data, bytes) and f"0x{data.hex()}" in constants.BAD_HEXES:
-        return True
-    return False
-
-def _log_exception(e: Exception) -> None:
-    # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
-    # TODO: Better filter what we choose to log here
-    dont_need_to_see_errs = constants.RETRY_ERRS + ['out of gas','error processing call revert', 'non_empty_data', 'invalid ether transfer']
-    stre = str(e).lower()
-    if any(err in stre for err in dont_need_to_see_errs):
-        return
-    logger.exception(e)
-
-def _reattempt_call_and_return_exception(target: ChecksumAddress, calldata: bytes, block: BlockId, w3: Web3) -> Union[bytes, Exception]:
-    """ NOTE: This runs synchronously in a subprocess in order to bypass Dank Middleware without blocking the event loop. """
-    try:
-        return w3.eth.call({"to": target, "data": calldata}, block)
-    except Exception as e:
-        _log_exception(e)
-        return e
-
 
 _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPCResponse])
 
@@ -237,29 +202,29 @@ class eth_call(RPCRequest):
     def target(self) -> str:
         return self.params[0]["to"]
 
-    async def spoof_response(self, data: Union[bytes, Exception]) -> None:  # type: ignore
+    async def spoof_response(self, data: Union[bytes, Exception, RawResponse]) -> None:  # type: ignore
         """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
-        # NOTE: If multicall failed, make sync call to get either:
-        # - revert details
-        # - successful response
-        if _call_failed(data):
-            data = await self.sync_call()
+
+        # If we got a known "bad" result back from a successful multicall.
+        # These appear to be successful byte responses but they're just errs that didn't break the mcall.
+        if isinstance(data, bytes) and any(data.startswith(selector) for selector in constants.BAD_SELECTORS):
+            # TODO figure out how to include method selector in no_multicall key
+              # type: ignore
+            try:
+                # NOTE: If multicall failed, make sync call to get either:
+                # - successful response
+                # - revert details from exception
+                
+                # If we get a successful response, most likely the target contract does not support multicall2.
+                # NOTE: This blocks but should be rare. still needs fixin'
+                data = self.controller.sync_w3.eth.call({"to": self.target, "data": self.calldata}, self.block)
+                # The single call was successful. We don't want to include this contract in more multicalls
+                self.controller.no_multicall.add(self.target)
+            except Exception as e:
+                _log_exception(e)
+                data = e
+        # The above revert catching logic fails to account for pre-decoding RawResponse objects.
         await super().spoof_response(data)
-
-    async def sync_call(self) -> Union[bytes, Exception]:
-        """ Used to bypass DankMiddlewareController. """
-        # NOTE: This blocks but should be rare. still needs fixin'
-        data = _reattempt_call_and_return_exception(
-            self.target, self.calldata, self.block, self.controller.sync_w3
-        )
-        # If we were able to get a usable response from single call, add contract to `do_not_batch`.
-        # NOTE We're going to test something, lets just add all of these to `no_multicall` and see how that works. I suspect better.
-        #if not isinstance(data, Exception):
-        #    self.controller.no_multicall.add(self.target)  # type: ignore
-        # NOTE: If this works the way I want we can finally refactor this ugly shit out.
-        self.controller.no_multicall.add(self.target)  # type: ignore
-        return data
-
 
 ### Batch requests:
 
@@ -589,3 +554,12 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 
     def _post_future_cleanup(self) -> None:
         self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)
+
+def _log_exception(e: Exception) -> None:
+    # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
+    # TODO: Better filter what we choose to log here
+    dont_need_to_see_errs = constants.RETRY_ERRS + ['out of gas','error processing call revert', 'non_empty_data', 'invalid ether transfer']
+    stre = str(e).lower()
+    if any(err in stre for err in dont_need_to_see_errs):
+        return
+    logger.exception(e)
