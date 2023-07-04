@@ -428,8 +428,10 @@ class Multicall(_Batch[eth_call]):
             response = data.decode(partial=True)
             if response.error:
                 raise response.exception
-            return await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, await self.decode(response))))
-        raise NotImplementedError(f"type {type(data)} not supported.", data)
+            await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, await self.decode(response))))
+            self._done.set()
+        else:
+            raise NotImplementedError(f"type {type(data)} not supported.", data)
     
     async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
         start = time.time()
@@ -555,9 +557,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     async def spoof_response(self, response: Union[List[RawResponse], Exception]) -> None:
         # This means an exception occurred during the post request
         if isinstance(response, Exception):
-            return await asyncio.gather(*[call.spoof_response(response) for call in self.calls])
-        # This means we got results
-        return await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(self.calls, response)])
+            await asyncio.gather(*[call.spoof_response(response) for call in self.calls])
+        else:
+            # This means we got results
+            await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(self.calls, response)])
+        self._done.set()
     
     async def bisect_and_retry(self) -> None:
         batches = [
