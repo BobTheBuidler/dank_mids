@@ -84,6 +84,7 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any, retry: bool = False) -> RPCResponse:
+        logger.debug(f'calling {method} with params {params} {"for second attempt" if retry else ""}')
         async with self.method_semaphores[method]:
             if method == "eth_call" and params[0]["to"] not in self.no_multicall:
                 return await eth_call(self, params, retry=retry)
