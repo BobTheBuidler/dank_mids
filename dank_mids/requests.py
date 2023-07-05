@@ -365,6 +365,8 @@ class Multicall(_Batch[eth_call]):
             logger.warning(f'{self} early exit')
             return
         self._started = True
+        if len(self) < 50: # arbitrary number to play with later
+            return await JSONRPCBatch(self.controller, self.calls)
         rid = self.controller.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
