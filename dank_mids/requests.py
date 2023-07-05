@@ -208,11 +208,10 @@ class eth_call(RPCRequest):
     async def spoof_response(self, data: Union[bytes, Exception, RawResponse]) -> None:  # type: ignore
         """ Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker. """
 
-        # If we got a known "bad" result back from a successful multicall.
-        # These appear to be successful byte responses but they're just errs that didn't break the mcall.
+        # NOTE: If `type(data)` is `bytes`, it is a result from a multicall. If not, `data` comes from a jsonrpc batch.
+        # If this if clause is True, it means the call reverted inside of a multicall but returned a result, without causing the multicall to revert.
         if isinstance(data, bytes) and any(data.startswith(selector) for selector in constants.REVERT_SELECTORS):
             # TODO figure out how to include method selector in no_multicall key
-              # type: ignore
             try:
                 # NOTE: If call response from multicall indicates failure, make sync call to get either:
                 # - successful response
