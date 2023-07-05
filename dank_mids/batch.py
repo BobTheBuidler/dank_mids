@@ -2,14 +2,13 @@
 import asyncio
 from typing import TYPE_CHECKING, Any, Generator, List
 
-from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids.requests import JSONRPCBatch, RPCRequest, _Batch
 from dank_mids.types import Multicalls
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
-MIN_SIZE = 2
+MIN_SIZE = 10
 CHECK = MIN_SIZE - 1
 
 class DankBatch:
@@ -38,11 +37,12 @@ class DankBatch:
         # Create empty batch
         working_batch = JSONRPCBatch(self.controller)
 
+        check_len = min(CHECK, self.controller.batcher.step)
         # Go thru the multicalls and add calls to the batch
         for mcall in self.multicalls.values():
             # NOTE: If a multicall has less than `CHECK` calls, we should just throw the calls into a jsonrpc batch individually.
             try:  # NOTE: This should be faster than using len().
-                mcall[CHECK]
+                mcall[check_len]
                 working_batch.append(mcall, skip_check=True)
             except IndexError:
                 working_batch.extend(mcall, skip_check=True)
