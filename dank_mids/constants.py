@@ -37,4 +37,4 @@ BAD_HEXES = [
 # Not sure why yet but sometimes a multicall will succeed but one of the results will be a failure for one call that doesn't interrupt the rest of the mcall.
 # NOTE: we leave off the '0x' so we can compare raw bytes
 # NOTE: The 2nd one here needs to be converted to the first format but I need to encounter one in the wild before I can do that
-BAD_SELECTORS = [b'\x08\xc3y\xa0', b"4e487b71"]
+REVERT_SELECTORS = [b'\x08\xc3y\xa0', b"4e487b71"]

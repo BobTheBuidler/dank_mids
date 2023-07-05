@@ -34,19 +34,25 @@ class DankBatch:
     @property
     def coroutines(self) -> Generator["_Batch", None, None]:
         # Combine multicalls into one or more jsonrpc batches
+
+        # Create empty batch
+        working_batch = JSONRPCBatch(self.controller)
+
+        # Go thru the multicalls and add calls to the batch
+        for mcall in self.multicalls.values():
+            # NOTE: If a multicall has less than `CHECK` calls, we should just throw the calls into a jsonrpc batch individually.
+            try:  # NOTE: This should be faster than using len().
+                mcall[CHECK]
+                working_batch.append(mcall, skip_check=True)
+            except IndexError:
+                working_batch.extend(mcall, skip_check=True)
+            if working_batch.is_full:
+                yield working_batch
+                working_batch = JSONRPCBatch(self.controller)
         
-        #calls = []
-        #for mcall in self.multicalls.values():
-        #    try:  # NOTE: This should be faster than using len().
-        #        calls[CHECK]
-        #        calls.append(mcall)
-        #    except IndexError:
-        #        calls.extend(mcall)
-        # working_batch = JSONRPCBatch(self.controller, calls)
-        working_batch = JSONRPCBatch(self.controller, self.multicalls.values())
         rpc_calls_to_batch = self.rpc_calls[:]
         while rpc_calls_to_batch:
-            if len(working_batch) >= ENVIRONMENT_VARIABLES.MAX_JSONRPC_BATCH_SIZE or working_batch.total_calls >= self.controller.batcher.step:
+            if working_batch.is_full:
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
             working_batch.append(rpc_calls_to_batch.pop(), skip_check=True)

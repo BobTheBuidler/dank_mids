@@ -210,7 +210,7 @@ class eth_call(RPCRequest):
 
         # If we got a known "bad" result back from a successful multicall.
         # These appear to be successful byte responses but they're just errs that didn't break the mcall.
-        if isinstance(data, bytes) and any(data.startswith(selector) for selector in constants.BAD_SELECTORS):
+        if isinstance(data, bytes) and any(data.startswith(selector) for selector in constants.REVERT_SELECTORS):
             # TODO figure out how to include method selector in no_multicall key
               # type: ignore
             try:
@@ -223,7 +223,7 @@ class eth_call(RPCRequest):
                 # The single call was successful. We don't want to include this contract in more multicalls
                 self.controller.no_multicall.add(self.target)
             except Exception as e:
-                _log_exception(e)
+                # NOTE: The call still returns a revert when it's not packed in a multicall
                 data = e
         # The above revert catching logic fails to account for pre-decoding RawResponse objects.
         await super().spoof_response(data)
@@ -477,7 +477,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 
     @property
     def is_full(self) -> bool:
-        return (self.is_multicalls_only and len(self) >= self.controller.batcher.step) or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
+        return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
 
     async def get_response(self) -> None:
         if self._started:
