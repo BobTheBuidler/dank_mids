@@ -125,7 +125,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
             await asyncio.sleep(0)
         if not self._started:
-            await self.controller.execute_batch()
+            await asyncio.shield(self.controller.execute_batch())
         
         await self._done.wait()
 
