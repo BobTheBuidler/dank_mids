@@ -1,8 +1,7 @@
 
 import logging
-import threading
 from collections import defaultdict
-from typing import Any, DefaultDict, List, Optional
+from typing import Any, DefaultDict, List, Literal, Optional
 
 import eth_retry
 from eth_utils import to_checksum_address
@@ -120,23 +119,23 @@ class DankMiddlewareController:
         self.pending_rpc_calls.start()
     
     def reduce_multicall_size(self, num_calls: int) -> None:
-        new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
-        if new_step < 20:
-            logger.warning("your multicall size is really low, did you have some connection issue?")
-            return
-        # NOTE: We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
-        if new_step < self.batcher.step:
-            old_step = self.batcher.step
-            self.batcher.step = new_step
-            logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
+        self._reduce_chunk_size(num_calls, "multicall")
     
     def reduce_batch_size(self, num_calls: int) -> None:
+        self._reduce_chunk_size(num_calls, "jsonrpc")
+    
+    def _reduce_chunk_size(self, num_calls, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
         new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
-        if new_step < 10:
-            logger.warning("your jsonrpc batch size is really low, did you have some connection issue?")
+        if new_step < 30:
+            logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue?")
             return
-        # NOTE: We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
-        if new_step < ENVS.MAX_JSONRPC_BATCH_SIZE:
+        # NOTE: We need this check because one of the other calls in a batch might have already reduced the chunk size
+        if chunk_name == "jsonrpc" and new_step < ENVS.MAX_JSONRPC_BATCH_SIZE:
             old_step = ENVS.MAX_JSONRPC_BATCH_SIZE
             ENVS.MAX_JSONRPC_BATCH_SIZE = new_step
-            logger.warning(f'jsonrpc batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
+        elif chunk_name == "multicall" and new_step < self.batcher.step:
+            old_step = self.batcher.step
+            self.batcher.step = new_step
+        elif chunk_name:
+            raise ValueError(f"chunk name {chunk_name} is invalid")
+        logger.warning(f'{chunk_name} batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
