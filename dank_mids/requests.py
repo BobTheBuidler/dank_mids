@@ -13,7 +13,7 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
 
 import eth_retry
 import msgspec
-from a_sync import ProcessPoolExecutor
+from a_sync import ProcessPoolExecutor, PruningThreadPoolExecutor
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
@@ -23,7 +23,8 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
-from dank_mids._exceptions import BadResponse, EmptyBatch, PayloadTooLarge, ResponseNotReady
+from dank_mids._exceptions import (BadResponse, EmptyBatch, PayloadTooLarge,
+                                   ResponseNotReady)
 from dank_mids.helpers import decode, session
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
@@ -181,6 +182,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self._done.set()
         return self._response
 
+revert_threads = PruningThreadPoolExecutor(4)
+
 class eth_call(RPCRequest):
     def __init__(self, controller: "DankMiddlewareController", params: Any, retry: bool = False) -> None:
         """ Adds a call to the DankMiddlewareContoller's `pending_eth_calls`. """
@@ -211,13 +214,12 @@ class eth_call(RPCRequest):
             # TODO figure out how to include method selector in no_multicall key
               # type: ignore
             try:
-                # NOTE: If multicall failed, make sync call to get either:
+                # NOTE: If call response from multicall indicates failure, make sync call to get either:
                 # - successful response
                 # - revert details from exception
-                
                 # If we get a successful response, most likely the target contract does not support multicall2.
-                # NOTE: This blocks but should be rare. still needs fixin'
-                data = self.controller.sync_w3.eth.call({"to": self.target, "data": self.calldata}, self.block)
+                # TODO: Get rid of the sync executor and just use `make_request`
+                data = await asyncio.get_event_loop().run_in_executor(revert_threads, self.controller.sync_w3.eth.call, {"to": self.target, "data": self.calldata}, self.block)
                 # The single call was successful. We don't want to include this contract in more multicalls
                 self.controller.no_multicall.add(self.target)
             except Exception as e:
