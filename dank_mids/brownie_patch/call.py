@@ -14,6 +14,7 @@ from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from hexbytes import HexBytes
 from web3 import Web3
+import os
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 
@@ -23,10 +24,12 @@ decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
     call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
     
+_TESTING_SOMETHING = bool(os.environ.get("DANKMIDS_TEST_SOMETHING"))
+
 @lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
     # TODO: Make this user configurable in case they'd rather fully unblock the event loop or fully block it
-    get_request_data = encode if len_inputs else __request_data_no_args
+    get_request_data = encode if len_inputs or _TESTING_SOMETHING else __request_data_no_args
     
     async def coroutine(
         self: ContractCall,
