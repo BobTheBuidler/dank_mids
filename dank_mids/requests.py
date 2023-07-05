@@ -378,7 +378,7 @@ class Multicall(_Batch[eth_call]):
     def should_retry(self, e: Exception) -> bool:
         if isinstance(e, PayloadTooLarge):
             logger.debug('dank too loud, trying again')
-            self.controller.reduce_batch_size(len(self))
+            self.controller.reduce_multicall_size(len(self))
             return True
         elif any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
             logger.debug('dank too loud, trying again')
@@ -548,10 +548,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     def adjust_batch_size(self) -> None:
         if self.is_multicalls_only:
-            self.controller.reduce_batch_size(self.total_calls)
+            self.controller.reduce_multicall_size(self.total_calls)
         else:
+            self.controller.reduce_batch_size(len(self))
             stats.logger.devhint(
-                "We still need some logic for catching these errors and using them to better optimize the batching process"
+                "We still need some better logic for catching these errors and using them to better optimize the batching process"
             )
 
     def _post_future_cleanup(self) -> None:

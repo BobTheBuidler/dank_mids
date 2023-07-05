@@ -13,7 +13,7 @@ from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids import ENVIRONMENT_VARIABLES
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._demo_mode import demo_logger
 from dank_mids.batch import DankBatch
 from dank_mids.helpers import decode, session
@@ -47,7 +47,7 @@ class DankMiddlewareController:
         self.chain_id = self.sync_w3.eth.chain_id
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
         self.request_type = PartialRequest
-        self.state_override_not_supported: bool = ENVIRONMENT_VARIABLES.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
+        self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
         self.endpoint = self.w3.provider.endpoint_uri
         if "tenderly" in self.endpoint:
@@ -119,10 +119,24 @@ class DankMiddlewareController:
         self.pending_eth_calls.clear()
         self.pending_rpc_calls.start()
     
-    def reduce_batch_size(self, num_calls: int) -> None:
+    def reduce_multicall_size(self, num_calls: int) -> None:
         new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
+        if new_step < 20:
+            logger.warning("your multicall size is really low, did you have some connection issue?")
+            return
         # NOTE: We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
         if new_step < self.batcher.step:
             old_step = self.batcher.step
             self.batcher.step = new_step
             logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
+    
+    def reduce_batch_size(self, num_calls: int) -> None:
+        new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
+        if new_step < 10:
+            logger.warning("your jsonrpc batch size is really low, did you have some connection issue?")
+            return
+        # NOTE: We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
+        if new_step < ENVS.MAX_JSONRPC_BATCH_SIZE:
+            old_step = ENVS.MAX_JSONRPC_BATCH_SIZE
+            ENVS.MAX_JSONRPC_BATCH_SIZE = new_step
+            logger.warning(f'jsonrpc batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
