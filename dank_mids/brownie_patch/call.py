@@ -41,41 +41,46 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             raise ValueError("Cannot use state override with `coroutine`.")
             
         async with ENVS.BROWNIE_CALL_SEMAPHORE:
-            if any(isinstance(arg, Contract) for arg in args) or any(hasattr(arg, "__contains__") for arg in args): # We will just assume containers contain a Contract object until we have a better way to handle this
-                # We can't unpickle these because of the added `coroutine` method.
-                data = __encode_input(self.abi, self.signature, *args)
-            else:
-                try: # We're better off sending these to the subprocess so they don't clog up the event loop.
-                    data = await get_request_data(self, *args)
-                # TODO: move this somewhere else
-                except BrokenProcessPool:
-                    # Let's fix that right up
-                    ENVS.BROWNIE_ENCODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
-                    data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
-                except PicklingError:  # But if that fails, don't worry. I got you.
-                    data = __encode_input(self.abi, self.signature, *args) if len_inputs else self.signature
-            
-            # We have to do it like this so we don't break the process pool.
-            if isinstance(data, Exception):
-                raise data
+            data = await encode_input(self, len_inputs, get_request_data, *args)
             output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
-            __validate_output(self.abi, output)
-
-            try:
-                decoded = await decode(self, output)
-            # TODO: move this somewhere else
-            except BrokenProcessPool:
-                # Let's fix that right up
-                ENVS.BROWNIE_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
-                decoded = __decode_output(data, self.abi)
-
-            # We have to do it like this so we don't break the process pool.
-            if isinstance(decoded, Exception):
-                raise decoded
-            
-            return decoded
+        return await decode_output(self, output)
         
     return coroutine
+
+async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> bytes:
+    if any(isinstance(arg, Contract) for arg in args) or any(hasattr(arg, "__contains__") for arg in args): # We will just assume containers contain a Contract object until we have a better way to handle this
+        # We can't unpickle these because of the added `coroutine` method.
+        data = __encode_input(call.abi, call.signature, *args)
+    else:
+        try: # We're better off sending these to the subprocess so they don't clog up the event loop.
+            data = await get_request_data(call, *args)
+        # TODO: move this somewhere else
+        except BrokenProcessPool:
+            # Let's fix that right up
+            ENVS.BROWNIE_ENCODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
+            data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
+        except PicklingError:  # But if that fails, don't worry. I got you.
+            data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
+    
+    # We have to do it like this so we don't break the process pool.
+    if isinstance(data, Exception):
+        raise data
+async def decode_output(call: ContractCall, data: bytes) -> Any:
+    __validate_output(call.abi, data)
+
+    try:
+        decoded = await decode(call, data)
+    # TODO: move this somewhere else
+    except BrokenProcessPool:
+        # Let's fix that right up
+        ENVS.BROWNIE_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
+        decoded = __decode_output(data, call.abi)
+
+    # We have to do it like this so we don't break the process pool.
+    if isinstance(decoded, Exception):
+        raise decoded
+    
+    return decoded
 
 async def __request_data_no_args(
     call: ContractCall,
@@ -122,3 +127,4 @@ def __validate_output(abi: Dict[str, Any], hexstr: str):
             raise VirtualMachineError(e) from None
         except:
             raise e
+
