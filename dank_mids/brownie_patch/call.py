@@ -65,6 +65,8 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
     # We have to do it like this so we don't break the process pool.
     if isinstance(data, Exception):
         raise data
+    return data
+
 async def decode_output(call: ContractCall, data: bytes) -> Any:
     __validate_output(call.abi, data)
 
