@@ -8,7 +8,7 @@ from dank_mids.types import Multicalls
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
-MIN_SIZE = 10
+MIN_SIZE = 1  # TODO: Play with this
 CHECK = MIN_SIZE - 1
 
 class DankBatch:
