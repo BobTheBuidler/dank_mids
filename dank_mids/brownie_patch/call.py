@@ -45,8 +45,8 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             raise ValueError("Cannot use state override with `coroutine`.")
         async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:
             data = await encode_input(self, len_inputs, get_request_data, *args)
-        async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:
-            output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
+            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:
+                output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
         return await decode_output(self, output)
         
     return coroutine

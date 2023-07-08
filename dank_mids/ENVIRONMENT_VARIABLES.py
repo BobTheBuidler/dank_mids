@@ -39,8 +39,8 @@ AIOHTTP_TIMEOUT = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20*60, string
 #   Used because I experienced some OOM errs due to web3 formatters when I was batching an absurd number of brownie calls.
 #   We need a separate semaphore here because the method-specific semaphores are too late in the code to prevent this OOM issue.
 brownie_semaphore = _envs._deprecated_format.create_env("BROWNIE_CALL_SEMAPHORE", int, default=100_000, string_converter=int, verbose=False)
-BROWNIE_CALL_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", BlockSemaphore, default=brownie_semaphore, string_converter=int)
-BROWNIE_ENCODER_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", BlockSemaphore, default=BROWNIE_CALL_SEMAPHORE._default_value, string_converter=int)
+BROWNIE_CALL_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", BlockSemaphore, default=brownie_semaphore, string_converter=int, verbose=not OPERATION_MODE.infura)
+BROWNIE_ENCODER_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", BlockSemaphore, default=BROWNIE_CALL_SEMAPHORE._default * 2, string_converter=int, verbose=not OPERATION_MODE.infura)
 
 # Processes for decoding. This determines process pool size, not total subprocess count.
 # There are 3 pools, each initialized with the same value.
