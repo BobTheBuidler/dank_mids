@@ -98,7 +98,7 @@ class DankMiddlewareController:
     async def execute_batch(self) -> None:
         # NOTE: We create this empty batch here to avoid double-locking.
         empty = JSONRPCBatch(self)
-        with self.pools_closed_lock:  # Do we really need this?
+        with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
             multicalls = dict(self.pending_eth_calls)
             self.pending_eth_calls.clear()
             self.num_pending_eth_calls = 0
@@ -111,13 +111,15 @@ class DankMiddlewareController:
 
     @property
     def queue_is_full(self) -> bool:
-        return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
+        with self.pools_closed_lock:
+            return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
     
     def early_start(self):
         """Used to start all queued calls when we have enough for a full batch"""
-        self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
-        self.pending_eth_calls.clear()
-        self.pending_rpc_calls.start()
+        with self.pools_closed_lock:
+            self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
+            self.pending_eth_calls.clear()
+            self.pending_rpc_calls.start()
     
     def reduce_multicall_size(self, num_calls: int) -> None:
         self._reduce_chunk_size(num_calls, "multicall")

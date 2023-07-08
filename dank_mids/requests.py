@@ -291,6 +291,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
                 self.controller.early_start()
     
     def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
+        """This acquires the pools_closed_lock if skip_check is False."""
         self.calls.extend(calls)
         #self._len += len(calls)
         if not skip_check:
