@@ -9,7 +9,7 @@ class OperationMode(str):
         # This mode keeps the event loop as unblocked as possible so an asyncio application can run as designed
         return self.mode == "application"
     @cached_property
-    def normal(self) -> bool:
+    def default(self) -> bool:
         return self.mode == "default"
     @cached_property
     def infura(self) -> bool:
