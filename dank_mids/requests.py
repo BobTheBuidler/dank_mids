@@ -101,6 +101,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return self.uid == __o.uid if isinstance(__o, self.__class__) else False 
     
     def __len__(self) -> int:
+        # NOTE: These are totally arbitrary
+        if "eth_getTransaction" in self.method:
+            return 10
+        elif "eth_getBlock" in self.method:
+            return 6
         return 1
     
     def __repr__(self) -> str:
@@ -518,7 +523,12 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     @eth_retry.auto_retry
     async def post(self) -> List[RawResponse]:
-        response: JSONRPCBatchResponse = await session.post(self.controller.endpoint, data=self.data, loads=decode.jsonrpc_batch)
+        try:
+            response: JSONRPCBatchResponse = await session.post(self.controller.endpoint, data=self.data, loads=decode.jsonrpc_batch)
+        except Exception as e:
+            if 'broken pipe' in str(e).lower():
+                logger.warning(f"This is what broke the pipe: {self.method_counts}")
+            raise
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
         if isinstance(response, list):
