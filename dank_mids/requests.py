@@ -158,7 +158,13 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(self.response, ClientResponseError):
             raise DankMidsClientResponseError(self.response, self.request) from self.response
         if isinstance(self.response, Exception):
-            raise self.response.__class__(self.response, self.request) from None
+            try:
+                more_detailed_exc = self.response.__class__(self.response, self.request)
+            except Exception as e:
+                self.response.request = self.request
+                self.response._dank_mids_exception = e
+                raise self.response
+            raise more_detailed_exc from None
         # Less optimal decoding
         # TODO: refactor this out
         return self.response
