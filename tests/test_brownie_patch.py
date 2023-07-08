@@ -1,4 +1,4 @@
-
+# sourcery skip: no-loop-in-tests
 import asyncio
 
 from brownie import Contract, web3

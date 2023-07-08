@@ -153,6 +153,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return self.response
     
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
+        # sourcery skip: merge-duplicate-blocks
         """
         `Raw` type data comes from rpc calls executed in a jsonrpc batch
         `bytes` type data comes for individual eth_calls that were batched into multicalls and already decoded
