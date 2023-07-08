@@ -13,7 +13,8 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
 
 import eth_retry
 import msgspec
-from a_sync import ProcessPoolExecutor, PruningThreadPoolExecutor
+import a_sync
+from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
@@ -44,7 +45,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     def __init__(self) -> None:
         self.uid = self.controller.call_uid.next
         self._response: Optional[_Response] = None
-        self._done = asyncio.Event()
+        self._done = a_sync.Event()
         self._start = time.time()
     
     def __await__(self) -> Generator[Any, None, Optional[_Response]]:
@@ -428,7 +429,7 @@ class Multicall(_Batch[eth_call]):
                 retval = mcall_decode(data)
             except BrokenProcessPool:
                 # TODO: Move this somewhere else
-                ENVS.MULTICALL_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)
+                ENVS.MULTICALL_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)
                 retval = mcall_decode(data)
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
         # Raise any Exceptions that may have come out of the process pool.
