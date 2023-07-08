@@ -7,6 +7,7 @@ from a_sync import AsyncProcessPoolExecutor
 
 from dank_mids import _envs
 from dank_mids._mode import OperationMode
+from dank_mids.semaphores import BlockSemaphore
 
 logger = logging.getLogger("dank_mids.envs")
 
@@ -38,7 +39,7 @@ AIOHTTP_TIMEOUT = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20*60, string
 #   Used because I experienced some OOM errs due to web3 formatters when I was batching an absurd number of brownie calls.
 #   We need a separate semaphore here because the method-specific semaphores are too late in the code to prevent this OOM issue.
 brownie_semaphore = _envs._deprecated_format.create_env("BROWNIE_CALL_SEMAPHORE", int, default=100_000, string_converter=int, verbose=False)
-BROWNIE_CALL_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", a_sync.ThreadsafeSemaphore, default=brownie_semaphore, string_converter=int)
+BROWNIE_CALL_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", BlockSemaphore, default=brownie_semaphore, string_converter=int)
 
 # Processes for decoding. This determines process pool size, not total subprocess count.
 # There are 3 pools, each initialized with the same value.
@@ -55,9 +56,10 @@ COLLECT_STATS = _envs.create_env("COLLECT_STATS", bool, default=EXPORT_STATS)
 
 # Method-specific Semaphores
 method_semaphores = {
-    "eth_getBlock": _envs.create_env("ETH_GETBLOCK_SEMAPHORE", int, default=50, string_converter=int),
-    "eth_getLogs": _envs.create_env("ETH_GETLOGS_SEMAPHORE", int, default=64, string_converter=int),
-    "eth_getTransaction": _envs.create_env("ETH_GETTRANSACTION_SEMAPHORE", int, default=100, string_converter=int),
+    "eth_call": _envs.create_env("ETH_CALL_SEMAPHORE", BlockSemaphore, default=BROWNIE_CALL_SEMAPHORE._value, string_converter=int),
+    "eth_getBlock": _envs.create_env("ETH_GETBLOCK_SEMAPHORE", a_sync.Semaphore, default=50, string_converter=int),
+    "eth_getLogs": _envs.create_env("ETH_GETLOGS_SEMAPHORE", a_sync.Semaphore, default=64, string_converter=int),
+    "eth_getTransaction": _envs.create_env("ETH_GETTRANSACTION_SEMAPHORE", a_sync.Semaphore, default=100, string_converter=int),
 }
 
 if not typed_envs.logger.disabled:

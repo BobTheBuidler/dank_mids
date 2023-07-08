@@ -67,7 +67,7 @@ class DankMiddlewareController:
         self.multicall2 = to_checksum_address(multicall2)
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
 
-        self.method_semaphores = MethodSemaphores()
+        self.method_semaphores = MethodSemaphores(self)
         self.batcher = NotSoBrightBatcher()
 
         self.call_uid = UIDGenerator()
@@ -83,8 +83,9 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any, retry: bool = False) -> RPCResponse:
-        logger.debug(f'calling {method} with params {params} {"for second attempt" if retry else ""}')
-        async with self.method_semaphores[method]:
+        call_semaphore = self.method_semaphores[method][params[1]] if method == "eth_call" else self.method_semaphores[method]
+        async with call_semaphore:
+            logger.debug(f'calling {method} with params {params} {"for second attempt" if retry else ""}')
             if method == "eth_call" and params[0]["to"] not in self.no_multicall:
                 return await eth_call(self, params, retry=retry)
             return await RPCRequest(self, method, params, retry=retry)

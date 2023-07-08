@@ -44,7 +44,7 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
             
-        async with ENVS.BROWNIE_CALL_SEMAPHORE:
+        async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:
             data = await encode_input(self, len_inputs, get_request_data, *args)
             output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
         return await decode_output(self, output)
@@ -89,6 +89,12 @@ async def __request_data_no_args(
     *args: Tuple[Any,...],
 ) -> str:
     return call.signature
+
+async def __request_data_with_args(
+    call: ContractCall,
+    *args: Tuple[Any,...],
+) -> str:
+    return __encode_input(call.abi, call.signature, *args)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     try:
