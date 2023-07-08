@@ -407,16 +407,18 @@ class Multicall(_Batch[eth_call]):
     
     async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
         start = time.time()
-        try:  # NOTE: Quickly check for length without counting each item with `len`.
-            self[100]
-            retval = await ENVS.MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
-        except BrokenProcessPool:
-            # TODO: Move this somewhere else
-            ENVS.MULTICALL_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)
+        if ENVS.OPERATION_MODE.infura:
             retval = mcall_decode(data)
-            
-        except IndexError:
-            retval = mcall_decode(data)
+        else:
+            try:  # NOTE: Quickly check for length without counting each item with `len`.
+                self[100]
+                retval = await ENVS.MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
+            except IndexError:
+                retval = mcall_decode(data)
+            except BrokenProcessPool:
+                # TODO: Move this somewhere else
+                ENVS.MULTICALL_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)
+                retval = mcall_decode(data)
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
         # Raise any Exceptions that may have come out of the process pool.
         if isinstance(retval, Exception):

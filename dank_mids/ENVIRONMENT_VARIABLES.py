@@ -3,8 +3,10 @@ import logging
 
 import a_sync
 import typed_envs
+from a_sync import AsyncProcessPoolExecutor
 
 from dank_mids import _envs
+from dank_mids._mode import OperationMode
 
 logger = logging.getLogger("dank_mids.envs")
 
@@ -14,6 +16,9 @@ if not typed_envs.logger.disabled:
 ###############
 # ENVIRONMENT #
 ###############
+
+# What mode should dank mids operate in?
+OPERATION_MODE = _envs.create_env("OPERATION_MODE", OperationMode, default="default")
 
 # Max number of rpc calls to include in one batch call
 MAX_JSONRPC_BATCH_SIZE = _envs.create_env("MAX_JSONRPC_BATCH_SIZE", int, default=500)
@@ -38,9 +43,9 @@ BROWNIE_CALL_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", a_sync.Threa
 # Processes for decoding. This determines process pool size, not total subprocess count.
 # There are 3 pools, each initialized with the same value.
 # NOTE: Don't stress, these are good for you and will not hog your cpu. You can disable them by setting the var = 0. #TODO: lol u cant yet
-BROWNIE_ENCODER_PROCESSES = _envs.create_env("BROWNIE_ENCODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1, string_converter=int)
-BROWNIE_DECODER_PROCESSES = _envs.create_env("BROWNIE_DECODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1, string_converter=int)
-MULTICALL_DECODER_PROCESSES = _envs.create_env("MULTICALL_DECODER_PROCESSES", a_sync.ProcessPoolExecutor, default=1, string_converter=int)
+BROWNIE_ENCODER_PROCESSES = _envs.create_env("BROWNIE_ENCODER_PROCESSES", AsyncProcessPoolExecutor, default=1, string_converter=int, verbose=not OPERATION_MODE.infura)
+BROWNIE_DECODER_PROCESSES = _envs.create_env("BROWNIE_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=1, string_converter=int, verbose=not OPERATION_MODE.infura)
+MULTICALL_DECODER_PROCESSES = _envs.create_env("MULTICALL_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=1, string_converter=int, verbose=not OPERATION_MODE.infura)
 
 # NOTE: EXPORT_STATS is not implemented
 # TODO: implement this

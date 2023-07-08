@@ -6,7 +6,7 @@ from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
 
 import eth_abi
-from a_sync.primitives import ProcessPoolExecutor
+from a_sync import AsyncProcessPoolExecutor
 from brownie.convert.normalize import format_input, format_output
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
@@ -14,7 +14,6 @@ from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from hexbytes import HexBytes
 from web3 import Web3
-import os
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 
@@ -23,13 +22,18 @@ decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, 
 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
     call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
-    
-_TESTING_SOMETHING = bool(os.environ.get("DANKMIDS_TEST_SOMETHING"))
 
 @lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
-    # TODO: Make this user configurable in case they'd rather fully unblock the event loop or fully block it
-    get_request_data = encode if len_inputs or _TESTING_SOMETHING else __request_data_no_args
+    mode = ENVS.OPERATION_MODE
+    if mode.default:
+        get_request_data = encode if len_inputs else __request_data_no_args
+    elif mode.application:
+        get_request_data = encode
+    elif mode.infura:
+        get_request_data = __request_data_with_args if len_inputs else __request_data_no_args
+    else:
+        raise NotImplementedError(mode)
     
     async def coroutine(
         self: ContractCall,
@@ -57,7 +61,7 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
         # TODO: move this somewhere else
         except BrokenProcessPool:
             # Let's fix that right up
-            ENVS.BROWNIE_ENCODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
+            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
         except PicklingError:  # But if that fails, don't worry. I got you.
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
@@ -73,7 +77,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
     # TODO: move this somewhere else
     except BrokenProcessPool:
         # Let's fix that right up
-        ENVS.BROWNIE_DECODER_PROCESSES = ProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
+        ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
         decoded = __decode_output(data, call.abi)
     # We have to do it like this so we don't break the process pool.
     if isinstance(decoded, Exception):

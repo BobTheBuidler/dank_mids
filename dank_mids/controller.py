@@ -56,6 +56,9 @@ class DankMiddlewareController:
                 "There is a known conflict between dank and tenderly which causes issues not present with other providers.\n" + 
                 "Your milage may vary. Debugging efforts welcome."
             )
+            
+        self._instance: int = sum(len(_instances) for _instances in instances.values())
+        instances[self.chain_id].append(self)  # type: ignore
 
         multicall = MULTICALL_ADDRESSES.get(self.chain_id)
         multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
@@ -75,9 +78,6 @@ class DankMiddlewareController:
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
         self.pending_rpc_calls = JSONRPCBatch(self)
-
-        self._instance: int = sum(len(_instances) for _instances in instances.values())
-        instances[self.chain_id].append(self)  # type: ignore
     
     def __repr__(self) -> str:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
