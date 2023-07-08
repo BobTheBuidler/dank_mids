@@ -103,9 +103,9 @@ class RPCRequest(_RequestMeta[RawResponse]):
     
     def __len__(self) -> int:
         # NOTE: These are totally arbitrary
-        if "eth_getTransaction" in self.method:
+        if self.method == "eth_getTransactionReceipt":
             return 10
-        elif "eth_getBlock" in self.method:
+        elif any(m in self.method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]):
             return 6
         return 1
     
