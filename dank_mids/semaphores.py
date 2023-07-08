@@ -15,6 +15,7 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
     
 class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):
     _context_manager_class = _BlockSemaphoreContextManager
+    _top_priority = -1
     def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":
         return super().__getitem__(
             block if isinstance(block, int)
