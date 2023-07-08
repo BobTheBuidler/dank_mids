@@ -91,10 +91,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self._retry = retry
         super().__init__()
 
-        if isinstance(self, eth_call) and self.multicall_compatible:
-            self.controller.pending_eth_calls[self.block].append(self)
-        else:
-            self.controller.pending_rpc_calls.append(self)
+        with self.controller.pools_closed_lock:
+            if isinstance(self, eth_call) and self.multicall_compatible:
+                self.controller.pending_eth_calls[self.block].append(self)
+            else:
+                self.controller.pending_rpc_calls.append(self)
         demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
         self._daemon = asyncio.create_task(self._debug_daemon())
     
@@ -291,7 +292,6 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
                 self.controller.early_start()
     
     def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
-        """This acquires the pools_closed_lock if skip_check is False."""
         self.calls.extend(calls)
         #self._len += len(calls)
         if not skip_check:
@@ -301,6 +301,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
                 self.controller.early_start()
 
     def start(self, batch: Optional["_Batch"] = None, cleanup=True) -> None:
+        """pools_closed_lock should be locked before calling this function with cleanup=True."""
         self._daemon = asyncio.create_task(self._debug_daemon())
         for call in self.calls:
             call.start(batch or self)

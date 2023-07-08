@@ -1,5 +1,6 @@
 
 import logging
+import threading
 from collections import defaultdict
 from typing import Any, DefaultDict, List, Literal, Optional
 
@@ -74,7 +75,7 @@ class DankMiddlewareController:
         self.multicall_uid: UIDGenerator = UIDGenerator()
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.pools_closed_lock = self.call_uid.lock
+        self.pools_closed_lock = threading.Lock()
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
         self.pending_rpc_calls = JSONRPCBatch(self)
@@ -111,8 +112,8 @@ class DankMiddlewareController:
 
     @property
     def queue_is_full(self) -> bool:
-        with self.pools_closed_lock:
-            return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
+        # NOTE: pools_closed_lock should already be acquired
+        return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
     
     def early_start(self):
         """Used to start all queued calls when we have enough for a full batch"""
