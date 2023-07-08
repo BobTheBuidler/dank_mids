@@ -1,8 +1,10 @@
 
 from typing import TYPE_CHECKING
 
+from aiohttp.client_exceptions import ClientResponseError
+
 if TYPE_CHECKING:
-    from dank_mids.types import PartialResponse
+    from dank_mids.types import PartialRequest, PartialResponse
 
 
 class BadResponse(ValueError):
@@ -18,3 +20,15 @@ class ResponseNotReady(ValueError):
 
 class PayloadTooLarge(BadResponse):
     pass
+
+class DankMidsClientResponseError(ClientResponseError):
+    """A wrapper around the standard aiohttp ClientResponseError that attaches the request that generated the error."""
+    def __init__(
+        self,
+        exc: ClientResponseError,
+        request: "PartialRequest",
+    ) -> None:
+        self.request = request
+        super().__init__(exc.request_info, exc.history, code=exc.code, status=exc.status, message=exc.message, headers=exc.headers)
+        self.args = (*exc.request_info, exc.history, request)
+        self._exception = exc

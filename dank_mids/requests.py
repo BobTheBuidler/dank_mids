@@ -14,6 +14,7 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
 import eth_retry
 import msgspec
 from a_sync import ProcessPoolExecutor, PruningThreadPoolExecutor
+from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
@@ -23,7 +24,8 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
-from dank_mids._exceptions import (BadResponse, EmptyBatch, PayloadTooLarge,
+from dank_mids._exceptions import (BadResponse, DankMidsClientResponseError,
+                                   EmptyBatch, PayloadTooLarge,
                                    ResponseNotReady)
 from dank_mids.helpers import decode, session
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
@@ -146,6 +148,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
     
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
         # We raise it here so it traces back up to the caller
+        if isinstance(self.response, ClientResponseError):
+            raise DankMidsClientResponseError(self.response, self.request) from self.response
         if isinstance(self.response, Exception):
             raise self.response.__class__(self.response, self.request) from None
         # Less optimal decoding
