@@ -1,5 +1,6 @@
 
 import asyncio
+import logging
 from typing import TYPE_CHECKING, Any, Generator, List
 
 from dank_mids.requests import JSONRPCBatch, RPCRequest, _Batch
@@ -11,6 +12,8 @@ if TYPE_CHECKING:
 MIN_SIZE = 1  # TODO: Play with this
 CHECK = MIN_SIZE - 1
 
+logger = logging.getLogger(__name__)
+
 class DankBatch:
     """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
     def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[RPCRequest]):
@@ -21,7 +24,14 @@ class DankBatch:
     
     def __await__(self) -> Generator[Any, None, Any]:
         self.start()
-        return asyncio.gather(*self.coroutines).__await__()
+        return self._await().__await__()
+    
+    async def _await(self) -> None:
+        batches = tuple(self.coroutines)
+        for batch, result in zip(batches, asyncio.gather(*batches, return_exceptions=True).__await__()):
+            if isinstance(result, Exception):
+                logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
+                raise result
 
     def start(self) -> None:
         for mcall in self.multicalls.values():

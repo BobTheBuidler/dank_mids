@@ -412,7 +412,8 @@ class Multicall(_Batch[eth_call]):
             retval = mcall_decode(data)
         else:
             try:  # NOTE: Quickly check for length without counting each item with `len`.
-                self[100]
+                if not ENVS.OPERATION_MODE.application:
+                    self[100]
                 retval = await ENVS.MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
             except IndexError:
                 retval = mcall_decode(data)
@@ -430,7 +431,10 @@ class Multicall(_Batch[eth_call]):
         batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
         for batch in batches:
             batch.start(cleanup=False)
-        await asyncio.gather(*batches)
+        for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
+            if isinstance(result, Exception):
+                logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
+                raise result
 
     def _post_future_cleanup(self) -> None:
         with suppress(KeyError):
@@ -546,7 +550,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         ]
         for batch in batches:
             batch.start(cleanup=False)
-        await asyncio.gather(*batches)
+        for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
+            if isinstance(result, Exception):
+                logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
+                raise result
+
     
     def adjust_batch_size(self) -> None:
         if self.is_multicalls_only:
