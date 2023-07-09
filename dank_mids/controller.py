@@ -75,7 +75,7 @@ class DankMiddlewareController:
         self.multicall_uid: UIDGenerator = UIDGenerator()
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.pools_closed_lock = threading.Lock()
+        self.pools_closed_lock = threading.RLock()
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
         self.pending_rpc_calls = JSONRPCBatch(self)
@@ -97,14 +97,12 @@ class DankMiddlewareController:
         return await session.post(self.endpoint, data=request, loads=decode.raw)
 
     async def execute_batch(self) -> None:
-        # NOTE: We create this empty batch here to avoid double-locking.
-        empty = JSONRPCBatch(self)
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
             multicalls = dict(self.pending_eth_calls)
             self.pending_eth_calls.clear()
             self.num_pending_eth_calls = 0
             rpc_calls = self.pending_rpc_calls[:]
-            self.pending_rpc_calls = empty
+            self.pending_rpc_calls = JSONRPCBatch(self)
         demo_logger.info(f'executing dank batch (current cid: {self.call_uid.latest})')  # type: ignore
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
