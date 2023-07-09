@@ -573,7 +573,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 await self.bisect_and_retry(e)
             # NOTE: `self.should_retry(e)` can only return False here if the json batch is comprised of just one rpc request that is not a multicall.
             #       I include this elif clause as a failsafe. This is rare and should not impact performance.
-            elif self.is_single_multicall:
+            elif not self.is_single_multicall:
                 # Just to force my IDE to resolve types correctly
                 calls : List[RPCRequest] = self.calls
                 logger.debug("%s had exception %s, aborting and setting Exception as call._response", self, e)
