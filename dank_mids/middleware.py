@@ -17,13 +17,10 @@ async def dank_middleware(
     make_request: Callable[[RPCEndpoint, Any], Any],
     web3: Web3
 ) -> AsyncMiddleware:
+    return DankMiddlewareController(web3)
+""" testing something
     cache_key = web3, current_thread()
     if (cache_key) not in _controllers:
         logger.debug(f"cache key {cache_key} not known to dank mids, starting new controller")
-        try:
-            raise RuntimeError("printing tb")
-        except RuntimeError as e:
-            logger.debug(e, exc_info=True)
-            # NOTE: I need a traceback here
-            _controllers[(cache_key)] = DankMiddlewareController(web3)
-    return _controllers[(cache_key)]
+        _controllers[(cache_key)] = DankMiddlewareController(web3)
+    return _controllers[(cache_key)]"""
