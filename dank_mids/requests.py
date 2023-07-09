@@ -97,7 +97,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
             else:
                 self.controller.pending_rpc_calls.append(self)
         demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
-        self._daemon = asyncio.create_task(self._debug_daemon())
+        if logger.isEnabledFor(logging.DEBUG):
+            self._daemon = asyncio.create_task(self._debug_daemon())
     
     def __eq__(self, __o: object) -> bool:
         return self.uid == __o.uid if isinstance(__o, self.__class__) else False 
@@ -308,7 +309,8 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
 
     def start(self, batch: Optional["_Batch"] = None, cleanup=True) -> None:
         """pools_closed_lock should be locked before calling this function with cleanup=True."""
-        self._daemon = asyncio.create_task(self._debug_daemon())
+        if logger.isEnabledFor(logging.DEBUG):
+            self._daemon = asyncio.create_task(self._debug_daemon())
         for call in self.calls:
             call.start(batch or self)
         if cleanup:
@@ -413,16 +415,16 @@ class Multicall(_Batch[eth_call]):
     async def spoof_response(self, data: Union[RawResponse, Exception]) -> None:
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
-            return await asyncio.gather(*[call.spoof_response(data) for call in self.calls])
+            await asyncio.gather(*[call.spoof_response(data) for call in self.calls])
         # These can either be successful or failed, received from jsonrpc batch handling.
         elif isinstance(data, RawResponse):
             response = data.decode(partial=True)
             if response.error:
                 raise response.exception
             await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, await self.decode(response))))
-            self._done.set()
         else:
             raise NotImplementedError(f"type {type(data)} not supported.", data)
+        self._done.set()
     
     async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
         start = time.time()
