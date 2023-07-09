@@ -122,20 +122,20 @@ class DankMiddlewareController:
         self._reduce_chunk_size(num_calls, "multicall")
     
     def reduce_batch_size(self, num_calls: int) -> None:
-        self._reduce_chunk_size(num_calls, "jsonrpc")
+        self._reduce_chunk_size(num_calls, "jsonrpc batch")
     
     def _reduce_chunk_size(self, num_calls, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
-        new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
-        if new_step < 30:
-            logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue?")
-            return
-        # NOTE: We need this check because one of the other calls in a batch might have already reduced the chunk size
-        if chunk_name == "jsonrpc" and new_step < ENVS.MAX_JSONRPC_BATCH_SIZE:
-            old_step = ENVS.MAX_JSONRPC_BATCH_SIZE
-            ENVS.MAX_JSONRPC_BATCH_SIZE = new_step
-        elif chunk_name == "multicall" and new_step < self.batcher.step:
-            old_step = self.batcher.step
-            self.batcher.step = new_step
-        elif chunk_name:
+        if chunk_name not in ["multicall", "jsonrpc batch"]:
             raise ValueError(f"chunk name {chunk_name} is invalid")
-        logger.warning(f'{chunk_name} batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
+        new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
+        if new_chunk_size < 30:
+            logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue? {chunk_name} chunk size will not be further lowered.")
+            return
+        # NOTE: We need the 2nd check because one of the other calls in a batch might have already reduced the chunk size
+        if chunk_name == "jsonrpc batch" and new_chunk_size < ENVS.MAX_JSONRPC_BATCH_SIZE:
+            old_chunk_size = ENVS.MAX_JSONRPC_BATCH_SIZE
+            ENVS.MAX_JSONRPC_BATCH_SIZE = new_chunk_size
+        elif chunk_name == "multicall" and new_chunk_size < self.batcher.step:
+            old_chunk_size = self.batcher.step
+            self.batcher.step = new_chunk_size
+        logger.warning(f'{chunk_name} batch size reduced from {old_chunk_size} to {new_chunk_size}. The failed batch had {num_calls} calls.')
