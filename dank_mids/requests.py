@@ -320,7 +320,6 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
                 self.controller.early_start()
 
     def start(self, batch: Optional["_Batch"] = None, cleanup=True) -> None:
-        """pools_closed_lock should be locked before calling this function with cleanup=True."""
         if logger.isEnabledFor(logging.DEBUG):
             self._daemon = asyncio.create_task(self._debug_daemon())
         for call in self.calls:
@@ -404,17 +403,20 @@ class Multicall(_Batch[eth_call]):
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
             await self.spoof_response(await self.controller.make_request(self.method, self.params, request_id=self.uid))
+        except ClientResponseError as e:
+            if e.message == "Payload Too Large":
+                logger.info("Payload too large. response headers: %s", e.headers)
+                self.controller.reduce_multicall_size(len(self))
+            else:
+                _log_exception(e)
+            await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         except Exception as e:
             _log_exception(e)
             await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
     def should_retry(self, e: Exception) -> bool:
-        if isinstance(e, PayloadTooLarge):
-            logger.debug('dank too loud, trying again')
-            self.controller.reduce_multicall_size(len(self))
-            return True
-        elif any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
+        if any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
             logger.debug('dank too loud, trying again')
             return True
         elif "No state available for block" in f"{e}":  # NOTE: While it might look weird, f-string is faster than `str(e)`.
@@ -644,9 +646,9 @@ def _log_exception(e: Exception) -> None:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
     dont_need_to_see_errs = constants.RETRY_ERRS + ['out of gas','error processing call revert', 'non_empty_data', 'invalid ether transfer']
-    dont_need_to_see_errs += ["payload too large"]  # TODO: once we're comfortable with performance, put TOO_MUCH_DATA_ERRS here instead
     dont_need_to_see_errs += ["invalid request"]  # We catch and correct these
     stre = str(e).lower()
     if any(err in stre for err in dont_need_to_see_errs):
         return
-    logger.exception(e)
+    logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
+    logger.warning(e, exc_info=True)
