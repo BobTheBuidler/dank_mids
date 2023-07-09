@@ -542,9 +542,9 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # NOTE: We do this inline so we never have to allocate the response to memory
             await self.spoof_response(await self.post())
         # I want to see these asap when working on the lib.
-        except (AttributeError, TypeError, UnboundLocalError, NotImplementedError) as e:
+        except (AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError) as e:
             logger.warning(f"unhandled exception inside dank mids internals: {e}", exc_info=True)
-            raise
+            raise e
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
         except PayloadTooLarge as e:
@@ -602,7 +602,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             #       without being interrupted by the first exc in the gather and having to wait for the bisect and retry process
             # TODO: stop retrying ones that succeed, that's wasteful
             if isinstance(r, Exception):
-                raise
+                raise r
         self._done.set()
     
     async def bisect_and_retry(self, e: Exception) -> None:
