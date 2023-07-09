@@ -328,6 +328,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
             self._post_future_cleanup()
 
     def should_retry(self, e: Exception) -> bool:
+        """Should the _Batch be retried based on `e`?"""
         if "out of gas" in f"{e}":
             # TODO Remember which contracts/calls are gas guzzlers
             logger.debug('out of gas. cut in half, trying again')
@@ -416,6 +417,7 @@ class Multicall(_Batch[eth_call]):
         demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
     def should_retry(self, e: Exception) -> bool:
+        """Should the Multicall be retried based on `e`?"""
         if any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
             logger.debug('dank too loud, trying again')
             return True
@@ -577,10 +579,19 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         "this function raises `BadResponse` if a successful 'error' response was received from the rpc"
         try:
             response: JSONRPCBatchResponse = await session.post(self.controller.endpoint, data=self.data, loads=decode.jsonrpc_batch)
+        except ClientResponseError as e:
+            if e.message == "Payload Too Large":
+                logger.warning("Payload Too Large")
+                logger.warning("This is what was too large: %s", self.method_counts)
+                self.adjust_batch_size()
+            elif 'broken pipe' in str(e).lower():
+                logger.warning("This is what broke the pipe: %s", self.method_counts)
+            logger.debug("caught %s for %s, reraising", e, self)
+            raise e
         except Exception as e:
             if 'broken pipe' in str(e).lower():
-                logger.warning(f"This is what broke the pipe: {self.method_counts}")
-            raise
+                logger.warning("This is what broke the pipe: %s", self.method_counts)
+            raise e
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
         if isinstance(response, list):
@@ -589,6 +600,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
+        """Should the JSONRPCBatch be retried based on `e`?"""
         # While it might look weird, f-string is faster than `str(e)`.
         if "No state available for block" in f"{e}":
             logger.debug('No state available for one of the blocks queried. Bisecting batch and retrying.')
@@ -628,7 +640,6 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
         self._done.set()
-
     
     def adjust_batch_size(self) -> None:
         if self.is_multicalls_only:
