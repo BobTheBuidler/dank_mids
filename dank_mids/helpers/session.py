@@ -79,7 +79,7 @@ class ClientSession(DefaultClientSession):
                         logger.debug(f"received response {response}")
                     return response
             except ClientResponseError as e:
-                if tried >= 5 or e.status not in RETRY_FOR_CODES:
+                if e.status not in RETRY_FOR_CODES or tried >= 5:
                     logger.debug(f"response failed with status {HTTPStatusExtended(e.status)}.")
                     raise e
                 logger.debug(f"response failed with status {HTTPStatusExtended(e.status)}, retrying.")
