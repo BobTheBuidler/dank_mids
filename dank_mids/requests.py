@@ -2,6 +2,7 @@
 import abc
 import asyncio
 import logging
+import threading
 import time
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
@@ -11,9 +12,9 @@ from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, NoReturn, Optional, Tuple,
                     TypeVar, Union)
 
+import a_sync
 import eth_retry
 import msgspec
-import a_sync
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
@@ -269,6 +270,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         self.controller = controller
         self.calls = list(calls)  # type: ignore
         self._fut = None
+        self._lock = threading.RLock()
         #self._len = 0
         super().__init__()
     
@@ -302,30 +304,33 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         return self.calls[self.halfpoint:]
     
     def append(self, call: _Request, skip_check: bool = False) -> None:
-        self.calls.append(call)
-        #self._len += 1
-        if not skip_check:
-            if self.is_full:
-                self.start()
-            elif self.controller.queue_is_full:
-                self.controller.early_start()
+        with self._lock:
+            self.calls.append(call)
+            #self._len += 1
+            if not skip_check:
+                if self.is_full:
+                    self.start()
+                elif self.controller.queue_is_full:
+                    self.controller.early_start()
     
     def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
-        self.calls.extend(calls)
-        #self._len += len(calls)
-        if not skip_check:
-            if self.is_full:
-                self.start()
-            elif self.controller.queue_is_full:
-                self.controller.early_start()
+        with self._lock:
+            self.calls.extend(calls)
+            #self._len += len(calls)
+            if not skip_check:
+                if self.is_full:
+                    self.start()
+                elif self.controller.queue_is_full:
+                    self.controller.early_start()
 
     def start(self, batch: Optional["_Batch"] = None, cleanup=True) -> None:
         if logger.isEnabledFor(logging.DEBUG):
             self._daemon = asyncio.create_task(self._debug_daemon())
-        for call in self.calls:
-            call.start(batch or self)
-        if cleanup:
-            self._post_future_cleanup()
+        with self._lock:
+            for call in self.calls:
+                call.start(batch or self)
+            if cleanup:
+                self._post_future_cleanup()
 
     def should_retry(self, e: Exception) -> bool:
         """Should the _Batch be retried based on `e`?"""
@@ -486,8 +491,9 @@ class Multicall(_Batch[eth_call]):
 
     def _post_future_cleanup(self) -> None:
         with suppress(KeyError):
-            # This will have already taken place in a full json batch of multicalls
-            self.controller.pending_eth_calls.pop(self.block)
+            with self.controller.pools_closed_lock:
+                # This will have already taken place in a full json batch of multicalls
+                self.controller.pending_eth_calls.pop(self.block)
 
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
@@ -512,26 +518,31 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     @property
     def is_multicalls_only(self) -> bool:
-        return all(isinstance(call, Multicall) for call in self.calls)
+        with self._lock:
+            return all(isinstance(call, Multicall) for call in self.calls)
 
     @property
     def is_single_multicall(self) -> bool:
-        return len(self) == 1 and self.is_multicalls_only
+        with self._lock:
+            return len(self) == 1 and self.is_multicalls_only
 
     @property
     def method_counts(self) -> Dict[RPCEndpoint, int]:
         counts: DefaultDict[RPCEndpoint, int] = defaultdict(int)
-        for call in self.calls:
-            counts[call.method] += len(call)  # type: ignore
-        return dict(counts)
+        with self._lock:
+            for call in self.calls:
+                counts[call.method] += len(call)  # type: ignore
+            return dict(counts)
     
     @property
     def total_calls(self) -> int:
-        return sum(len(call) for call in self.calls)
+        with self._lock:
+            return sum(len(call) for call in self.calls)
 
     @property
     def is_full(self) -> bool:
-        return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
+        with self._lock:
+            return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
 
     async def get_response(self) -> None:
         if self._started:
@@ -651,7 +662,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             )
 
     def _post_future_cleanup(self) -> None:
-        self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)
+        with self.controller.pools_closed_lock:
+            self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)
 
 def _log_exception(e: Exception) -> None:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.

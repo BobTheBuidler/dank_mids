@@ -19,8 +19,7 @@ from dank_mids.batch import DankBatch
 from dank_mids.helpers import decode, session
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.semaphores import MethodSemaphores
-from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
-                             Request)
+from dank_mids.types import BlockId, ChainId, PartialRequest, RawResponse
 from dank_mids.uid import UIDGenerator
 
 logger = logging.getLogger(__name__)
@@ -109,8 +108,8 @@ class DankMiddlewareController:
 
     @property
     def queue_is_full(self) -> bool:
-        # NOTE: pools_closed_lock should already be acquired
-        return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
+        with self.pools_closed_lock:
+            return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
     
     def early_start(self):
         """Used to start all queued calls when we have enough for a full batch"""
