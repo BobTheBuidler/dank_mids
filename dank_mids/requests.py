@@ -535,7 +535,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         counts: DefaultDict[RPCEndpoint, int] = defaultdict(int)
         with self._lock:
             for call in self.calls:
-                counts[call.method] += len(call)  # type: ignore
+                counts["eth_call[multicall]" if isinstance(call, Multicall) else call.method] += len(call)  # type: ignore
             return dict(counts)
     
     @property
