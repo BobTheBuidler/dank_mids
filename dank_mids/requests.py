@@ -418,7 +418,7 @@ class Multicall(_Batch[eth_call]):
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
             await self.spoof_response(await self.controller.make_request(self.method, self.params, request_id=self.uid))
-        except internal_err_types.__args__:
+        except internal_err_types.__args__ as e:
             raise DankMidsInternalError(e)
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
@@ -546,7 +546,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 if isinstance(call, Multicall):
                     counts["eth_call[multicall]"] += len(call)  # type: ignore
                 else:
-                    counts[self.method] += 1
+                    counts[call.method] += 1
             return dict(counts)
     
     @property
