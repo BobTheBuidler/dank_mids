@@ -161,7 +161,11 @@ class Response(PartialResponse):
     jsonrpc: Literal["2.0"] = "2.0"
 
 class RawResponse:
-    """Wraps a Raw object that we know represents a Response with a `decode` helper method"""
+    """
+    Wraps a Raw object that we know represents a Response with a `decode` helper method.
+    A `RawResponse` is a properly shaped response for one rpc call, received back from a jsonrpc batch request.
+    They represent either a successful or a failed response, stored as pre-decoded bytes.
+    """
     def __init__(self, raw: msgspec.Raw) -> None:
         self._raw = raw
     @overload
