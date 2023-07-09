@@ -88,9 +88,7 @@ class DankMiddlewareController:
         async with call_semaphore:
             logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
             call = eth_call(self, params) if method == "eth_call" and params[0]["to"] not in self.no_multicall else RPCRequest(self, method, params)
-            response = await call
-            logger.debug("%s received response %s", call.request, response)
-            return response
+            return await call
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
