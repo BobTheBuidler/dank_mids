@@ -27,8 +27,9 @@ from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import (BadResponse, DankMidsClientResponseError,
-                                   EmptyBatch, PayloadTooLarge,
-                                   ResponseNotReady)
+                                   DankMidsInternalError, EmptyBatch,
+                                   PayloadTooLarge, ResponseNotReady,
+                                   internal_err_types)
 from dank_mids.helpers import decode, session
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
@@ -409,6 +410,8 @@ class Multicall(_Batch[eth_call]):
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
             await self.spoof_response(await self.controller.make_request(self.method, self.params, request_id=self.uid))
+        except internal_err_types.__args__:
+            raise DankMidsInternalError(e)
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 logger.info("Payload too large. response headers: %s", e.headers)
@@ -485,7 +488,8 @@ class Multicall(_Batch[eth_call]):
             batch.start(cleanup=False)
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
             if isinstance(result, Exception):
-                logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
+                if not isinstance(result, DankMidsInternalError)
+                    logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
         self._done.set()
 
@@ -557,9 +561,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # NOTE: We do this inline so we never have to allocate the response to memory
             await self.spoof_response(await self.post())
         # I want to see these asap when working on the lib.
-        except (AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError) as e:
-            logger.warning(f"unhandled exception inside dank mids internals: {e}", exc_info=True)
-            raise e
+        except internal_err_types.__args__ as e:
+            raise DankMidsInternalError(e) from e
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
         except PayloadTooLarge as e:
@@ -648,7 +651,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             batch.start(cleanup=False)
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
             if isinstance(result, Exception):
-                logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
+                if not isinstance(result, DankMidsInternalError):
+                    logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
         self._done.set()
     

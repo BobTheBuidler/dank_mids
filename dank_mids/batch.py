@@ -3,6 +3,7 @@ import asyncio
 import logging
 from typing import TYPE_CHECKING, Any, Generator, List
 
+from dank_mids._exceptions import DankMidsInternalError
 from dank_mids.requests import JSONRPCBatch, RPCRequest, _Batch
 from dank_mids.types import Multicalls
 
@@ -30,7 +31,8 @@ class DankBatch:
         batches = tuple(self.coroutines)
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
             if isinstance(result, Exception):
-                logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
+                if not isinstance(result, DankMidsInternalError):
+                    logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
 
     def start(self) -> None:
