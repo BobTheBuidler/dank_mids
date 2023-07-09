@@ -46,6 +46,8 @@ _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPC
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
         super().__init__()
+        # TODO move this to a_sync
+        self._loop = asyncio.get_event_loop()
         self._owner = owner
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
