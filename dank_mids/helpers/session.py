@@ -22,6 +22,13 @@ logger = logging.getLogger("dank_mids.session")
 # NOTE: You cannot subclass an IntEnum object so we have to do some hacky shit here.
 # First, set up custom error codes we might see.
 class _HTTPStatusExtension(IntEnum):
+    CLOUDFLARE_CONNECTION_TIMEOUT = (522, 'Cloudflare Connection Timeout',
+        'Cloudflare is a content delivery network that acts as a gateway between a user and a website server.\n'
+        + 'When the 522 Connection timed out status code is received, Cloudflare attempted to connect\n'
+        + 'to the origin server but was not successful due to a timeout. The HTTP Connection was not established\n'
+        + 'most likely because the IP addresses of Cloudflare are blocked by the origin server,\n'
+        + 'the origin server settings are misconfigured, or the origin server is overloaded.'
+        + 'Learn more at https://http.dev/522')
     CLOUDFLARE_TIMEOUT = (524, 'Cloudflare Timeout',
         '"524 A timeout occurred" is an unofficial server error that is specific to Cloudflare.\n'
         + 'When the 524 A timeout occurred status code is received, it implies that a successful\n'
@@ -41,7 +48,8 @@ HTTPStatusExtended = IntEnum('HTTPStatusExtended', [(i.name, i.value) for i in c
 
 RETRY_FOR_CODES = {
     HTTPStatusExtended.BAD_GATEWAY,
-    HTTPStatusExtended.CLOUDFLARE_TIMEOUT
+    HTTPStatusExtended.CLOUDFLARE_CONNECTION_TIMEOUT,
+    HTTPStatusExtended.CLOUDFLARE_TIMEOUT,
 }
 
 @overload
