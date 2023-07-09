@@ -139,4 +139,6 @@ class DankMiddlewareController:
         elif chunk_name == "multicall" and new_chunk_size < self.batcher.step:
             old_chunk_size = self.batcher.step
             self.batcher.step = new_chunk_size
+        else:
+            return
         logger.warning(f'{chunk_name} batch size reduced from {old_chunk_size} to {new_chunk_size}. The failed batch had {num_calls} calls.')
