@@ -36,7 +36,7 @@ class DankMidsClientResponseError(ClientResponseError):
         self.args = (*exc.request_info, exc.history, request)
         self._exception = exc
 
-internal_err_types = Union[AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError]
+internal_err_types = Union[AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError, SyntaxError]
 
 class DankMidsInternalError(Exception):
     def __init__(self, e: internal_err_types) -> None:

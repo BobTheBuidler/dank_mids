@@ -488,7 +488,7 @@ class Multicall(_Batch[eth_call]):
             batch.start(cleanup=False)
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
             if isinstance(result, Exception):
-                if not isinstance(result, DankMidsInternalError)
+                if not isinstance(result, DankMidsInternalError):
                     logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
         self._done.set()
