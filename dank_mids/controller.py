@@ -15,6 +15,7 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._demo_mode import demo_logger
+from dank_mids._exceptions import DankMidsInternalError
 from dank_mids.batch import DankBatch
 from dank_mids.helpers import decode, session
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
@@ -126,7 +127,7 @@ class DankMiddlewareController:
     
     def _reduce_chunk_size(self, num_calls, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
         if chunk_name not in ["multicall", "jsonrpc batch"]:
-            raise ValueError(f"chunk name {chunk_name} is invalid")
+            raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
         new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
         if new_chunk_size < 30:
             logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue? {chunk_name} chunk size will not be further lowered.")
