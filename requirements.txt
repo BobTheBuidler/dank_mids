@@ -1,5 +1,5 @@
 eth_retry>=0.1.15,<0.2
-ez-a-sync>=0.6.1.dev5
+ez-a-sync>=0.6.1.dev6
 msgspec
 multicall>=0.6.2
 typed-envs>=0.0.2

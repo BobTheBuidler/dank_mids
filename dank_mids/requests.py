@@ -45,18 +45,16 @@ _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPC
 
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
-        super().__init__()
-        # TODO move this to a_sync
-        self._loop = asyncio.get_event_loop()
+        super().__init__(debug_daemon_interval=300)
         self._owner = owner
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
     def set(self):
         # Make sure we wake up the _RequestEvent's event loop if its in another thread
-        if asyncio.get_running_loop() == self.loop:
+        if asyncio.get_running_loop() == self._loop:
             super().set()
         else:
-            self.loop.call_soon_threadsafe(super().set)
+            self._loop.call_soon_threadsafe(super().set)
 
 class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     controller: "DankMiddlewareController"
