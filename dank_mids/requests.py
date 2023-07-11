@@ -240,7 +240,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     @property
     def semaphore(self) -> a_sync.Semaphore:
         # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
-        return self.controller.method_semaphores['eth_call'][self.block]
+        return self.controller.method_semaphores[self.method]
     
     async def create_duplicate(self) -> Self: # Not actually self, but for typing purposes it is.
         # We need to make room since the stalled call is still holding the semaphore
