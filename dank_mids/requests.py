@@ -142,7 +142,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
     async def get_response(self) -> RPCResponse:
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
-            await self.make_request()
+            try:
+                await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)
+            except asyncio.TimeoutError:
+                return await self.create_duplicate()
             return self.response.decode(partial=True).to_dict(self.method)
         
         if self._started and not self._batch._started:
@@ -152,7 +155,16 @@ class RPCRequest(_RequestMeta[RawResponse]):
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
             await asyncio.sleep(0)
         if not self._started:
-            await asyncio.shield(self.controller.execute_batch())
+            try:
+                await asyncio.wait_for(
+                    # If this timeout fails, we go nuclear and destroy the batch.
+                    # Any calls that already succeeded will have already completed on the client side.
+                    # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
+                    self.controller.execute_batch(),
+                    timeout=ENVS.STUCK_CALL_TIMEOUT,
+                )
+            except asyncio.TimeoutError:
+                return await self.create_duplicate()
         
         try:
             await asyncio.wait_for(self._done.wait(), timeout=ENVS.STUCK_CALL_TIMEOUT)
