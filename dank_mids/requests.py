@@ -163,7 +163,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True).to_dict(self.method)
             if 'error' in response:
-                if response['error']['message'] == 'invalid request' and isinstance(self.request, PartialRequest):
+                if response['error']['message'] == 'invalid request' and 'jsonrpc' not in self.request.to_dict():
                     self.controller.request_type = Request
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     return await self.controller(self.method, self.params)
