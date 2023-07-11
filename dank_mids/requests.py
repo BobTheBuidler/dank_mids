@@ -175,8 +175,9 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True).to_dict(self.method)
             if 'error' in response:
-                if response['error']['message'] == 'invalid request' and 'jsonrpc' not in self.request.to_dict():
+                if response['error']['message'] == 'invalid request' and time.time() - self.controller._time_of_request_type_change <= 600:
                     self.controller.request_type = Request
+                    self.controller._time_of_request_type_change = time.time()
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     return await self.controller(self.method, self.params)
                 response['error']['dankmids_added_context'] = self.request.to_dict()
@@ -184,8 +185,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 # But I'll check it anyway to be safe
                 if result := response.pop('result', None):
                     response['result'] = result
-                if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f"error response for {self}: {response}")
+                logger.debug("error response for %s: %s", self, response)
             return response
     
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.

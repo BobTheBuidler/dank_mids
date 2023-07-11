@@ -47,6 +47,7 @@ class DankMiddlewareController:
         self.chain_id = self.sync_w3.eth.chain_id
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
         self.request_type = PartialRequest
+        self._time_of_request_type_change = 0
         self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
         self.endpoint = self.w3.provider.endpoint_uri
