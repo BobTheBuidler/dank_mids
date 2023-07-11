@@ -110,7 +110,11 @@ class DankMiddlewareController:
     @property
     def queue_is_full(self) -> bool:
         with self.pools_closed_lock:
-            return sum(len(calls) for calls in self.pending_eth_calls.values()) >= self.batcher.step
+            if ENVS.OPERATION_MODE.infura:
+                return sum(len(call) for call in self.pending_rpc_calls) >= ENVS.MAX_JSONRPC_BATCH_SIZE
+            eth_calls = sum(len(calls) for calls in self.pending_eth_calls.values())
+            other_calls = sum(len(call) for call in self.pending_rpc_calls)
+            return eth_calls + other_calls >= self.batcher.step
     
     def early_start(self):
         """Used to start all queued calls when we have enough for a full batch"""
