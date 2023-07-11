@@ -175,11 +175,13 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True).to_dict(self.method)
             if 'error' in response:
-                if response['error']['message'] == 'invalid request' and time.time() - self.controller._time_of_request_type_change <= 600:
-                    self.controller.request_type = Request
-                    self.controller._time_of_request_type_change = time.time()
-                    logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
-                    return await self.controller(self.method, self.params)
+                if response['error']['message'] == 'invalid request':
+                    if self.controller._time_of_request_type_change:
+                        self.controller.request_type = Request
+                        self.controller._time_of_request_type_change = time.time()
+                    if time.time() - self.controller._time_of_request_type_change <= 600:
+                        logger.info("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
+                        return await self.controller(self.method, self.params)
                 response['error']['dankmids_added_context'] = self.request.to_dict()
                 # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
                 # But I'll check it anyway to be safe
