@@ -55,6 +55,9 @@ EXPORT_STATS = _envs.create_env("EXPORT_STATS", bool, default=False)
 # NOTE: COLLECT_STATS is implemented
 COLLECT_STATS = _envs.create_env("COLLECT_STATS", bool, default=EXPORT_STATS)
 
+# You probably don't need to use this unless you know you need to
+STUCK_CALL_TIMEOUT = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60)
+
 # Method-specific Semaphores
 method_semaphores = {
     "eth_call": _envs.create_env("ETH_CALL_SEMAPHORE", BlockSemaphore, default=BROWNIE_CALL_SEMAPHORE._value, string_converter=int),

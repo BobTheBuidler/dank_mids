@@ -21,6 +21,7 @@ from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
+from typing_extensions import Self
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
@@ -153,7 +154,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if not self._started:
             await asyncio.shield(self.controller.execute_batch())
         
-        await self._done.wait()
+        try:
+            await asyncio.wait_for(self._done.wait(), timeout=ENVS.STUCK_CALL_TIMEOUT)
+        except asyncio.TimeoutError:
+            return await self.create_duplicate()
 
         # JIT json decoding
         if isinstance(self.response, RawResponse):
@@ -220,6 +224,21 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self._response = await self.controller.make_request(self.method, self.params, request_id=self.uid)
         self._done.set()
         return self._response
+    
+    @property
+    def semaphore(self) -> a_sync.Semaphore:
+        # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
+        return self.controller.method_semaphores['eth_call'][self.block]
+    
+    async def create_duplicate(self) -> Self: # Not actually self, but for typing purposes it is.
+        # We need to make room since the stalled call is still holding the semaphore
+        self.semaphore.release()
+        # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
+        # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
+        # and then the task will try to acquire at the very next event loop _run_once cycle
+        asyncio.create_task(self.semaphore.acquire())
+        logger.warning(f"call {self.uid} got stuck, we're creating a new one")
+        return await self.controller(self.method, self.params)
 
 revert_threads = PruningThreadPoolExecutor(4)
 
@@ -265,6 +284,13 @@ class eth_call(RPCRequest):
                 data = e
         # The above revert catching logic fails to account for pre-decoding RawResponse objects.
         await super().spoof_response(data)
+    
+    @property
+    def semaphore(self) -> a_sync.Semaphore:
+        # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
+        return self.controller.method_semaphores['eth_call'][self.block]
+    
+    
 
 ### Batch requests:
 
