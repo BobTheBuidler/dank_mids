@@ -176,7 +176,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             response = self.response.decode(partial=True).to_dict(self.method)
             if 'error' in response:
                 if response['error']['message'] == 'invalid request':
-                    if self.controller._time_of_request_type_change:
+                    if self.controller._time_of_request_type_change == 0:
                         self.controller.request_type = Request
                         self.controller._time_of_request_type_change = time.time()
                     if time.time() - self.controller._time_of_request_type_change <= 600:
