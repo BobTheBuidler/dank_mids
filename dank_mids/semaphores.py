@@ -2,14 +2,22 @@
 import logging
 from typing import TYPE_CHECKING, Literal, Union
 
-from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
-from a_sync.primitives.locks.prio_semaphore import (
+from a_sync.primitives import DummySemaphore as dummy, ThreadsafeSemaphore
+from a_sync.primitives.locks.prio_semaphore import (PT,
     _AbstractPrioritySemaphore, _PrioritySemaphoreContextManager)
 from web3.types import RPCEndpoint
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
+# NOTE MOVE THIS TO ASYNC FOR PROD, THIS IS FOR PRERELEASE TESTING ONLY
+
+class DummySemaphore(dummy):
+    async def acquire(self) -> Literal[True]:
+        return await super().acquire()
+    def release(self) -> None:
+        return super().release()
+    
 logger = logging.getLogger(__name__)
 
 class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
