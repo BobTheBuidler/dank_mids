@@ -47,7 +47,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
         """Returns True if semaphore cannot be acquired immediately."""
         return self._value == 0 or (
             any(
-                any(not w.cancelled() for w in cm)
+                any(not w.cancelled() for w in cm._waiters)
                 for cm in (self._context_managers.values() or ())
             )
         )
