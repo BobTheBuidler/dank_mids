@@ -42,6 +42,16 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
         super().release()
         logger.debug("released %s", self)
 
+    # NOTE: Put this in a-sync
+    def locked(self):
+        """Returns True if semaphore cannot be acquired immediately."""
+        return self._value == 0 or (
+            any(
+                any(not w.cancelled() for w in cm)
+                for cm in (self._context_managers.values() or ())
+            )
+        )
+
 class MethodSemaphores:
     def __init__(self, controller: "DankMiddlewareController") -> None:
         from dank_mids import ENVIRONMENT_VARIABLES
