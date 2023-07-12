@@ -661,6 +661,12 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         if isinstance(response, list):
             return response
         # Oops, we failed.
+        if response.error.message == 'invalid request':
+            if self.controller._time_of_request_type_change == 0:
+                self.controller.request_type = Request
+                self.controller._time_of_request_type_change = time.time()
+            if time.time() - self.controller._time_of_request_type_change <= 600:
+                logger.info("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
         raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
