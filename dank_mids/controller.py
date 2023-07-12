@@ -21,7 +21,7 @@ from dank_mids.helpers import decode, session
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.semaphores import MethodSemaphores
 from dank_mids.types import BlockId, ChainId, PartialRequest, RawResponse
-from dank_mids.uid import UIDGenerator
+from dank_mids.uid import UIDGenerator, _AlertingRLock
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ class DankMiddlewareController:
         self.multicall_uid: UIDGenerator = UIDGenerator()
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.pools_closed_lock = threading.RLock()
+        self.pools_closed_lock = _AlertingRLock(name='pools closed')
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
         self.pending_rpc_calls = JSONRPCBatch(self)

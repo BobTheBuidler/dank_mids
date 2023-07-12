@@ -35,6 +35,7 @@ from dank_mids.helpers import decode, session
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
                              RawResponse, Request, Response)
+from dank_mids.uid import _AlertingRLock
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -317,7 +318,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         self.controller = controller
         self.calls = list(calls)  # type: ignore
         self._fut = None
-        self._lock = threading.RLock()
+        self._lock = _AlertingRLock(name=self.__class__.__name__)
         #self._len = 0
         super().__init__()
     
