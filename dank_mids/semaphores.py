@@ -14,9 +14,9 @@ if TYPE_CHECKING:
 
 class DummySemaphore(dummy):
     async def acquire(self) -> Literal[True]:
-        return await super().acquire()
+        pass
     def release(self) -> None:
-        return super().release()
+        pass
     
 logger = logging.getLogger(__name__)
 
