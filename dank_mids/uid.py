@@ -24,6 +24,7 @@ class UIDGenerator:
 
 class _AlertingRLock(threading._RLock):
     def __init__(self, name: str) -> None:
+        super().__init__()
         self.name = name
     def acquire(self, blocking: bool = True, timeout: int = -1) -> bool:
         acquired = super().acquire(blocking=False, timeout=5)
