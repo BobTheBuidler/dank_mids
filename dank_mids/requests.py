@@ -219,6 +219,16 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(data, RawResponse):
             self._response = data
         elif isinstance(data, BadResponse):
+            if data.response.error.message == 'invalid request':
+                if self.controller._time_of_request_type_change == 0:
+                    self.controller.request_type = Request
+                    self.controller._time_of_request_type_change = time.time()
+                if time.time() - self.controller._time_of_request_type_change <= 600:
+                    logger.info("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
+                    retried = await self.create_duplicate()
+                    self._response = retried.response
+                    self._done.set()
+                    return
             error = data.response.error.to_dict()
             error['dankmids_added_context'] = self.request.to_dict()
             self._response = {"error": error}
