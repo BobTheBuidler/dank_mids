@@ -2,22 +2,14 @@
 import logging
 from typing import TYPE_CHECKING, Literal, Union
 
-from a_sync.primitives import DummySemaphore as dummy, ThreadsafeSemaphore
-from a_sync.primitives.locks.prio_semaphore import (PT,
+from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
+from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore, _PrioritySemaphoreContextManager)
 from web3.types import RPCEndpoint
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
-# NOTE MOVE THIS TO ASYNC FOR PROD, THIS IS FOR PRERELEASE TESTING ONLY
-
-class DummySemaphore(dummy):
-    async def acquire(self) -> Literal[True]:
-        pass
-    def release(self) -> None:
-        pass
-    
 logger = logging.getLogger(__name__)
 
 class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
@@ -34,23 +26,15 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
             else block if block not in [None, 'latest']  # NOTE: We do this to generate an err if an unsuitable value was provided
             else self._top_priority
         )
-    async def acquire(self):
-        logger.debug("acquiring %s", self)
-        await super().acquire()
-        logger.debug("acquired %s", self)
-    def release(self):
-        super().release()
-        logger.debug("released %s", self)
+    # NOTE: do we break anything if we no longer use these extra logs?
+    #async def acquire(self):
+    #    logger.debug("acquiring %s", self)
+    #    await super().acquire()
+    #    logger.debug("acquired %s", self)
+    #def release(self):
+    #    super().release()
+    #    logger.debug("released %s", self)
 
-    # NOTE: Put this in a-sync
-    def locked(self):
-        """Returns True if semaphore cannot be acquired immediately."""
-        return self._value == 0 or (
-            any(
-                cm._waiters and any(not w.cancelled() for w in cm._waiters) 
-                for cm in (self._context_managers.values() or ())
-            )
-        )
 
 class MethodSemaphores:
     def __init__(self, controller: "DankMiddlewareController") -> None:
