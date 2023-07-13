@@ -225,8 +225,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     self.controller._time_of_request_type_change = time.time()
                 if time.time() - self.controller._time_of_request_type_change <= 600:
                     logger.info("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
-                    retried = await self.create_duplicate()
-                    self._response = retried.response
+                    self._response = await self.create_duplicate()
                     self._done.set()
                     return
             error = data.response.error.to_dict()
