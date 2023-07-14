@@ -36,6 +36,12 @@ class _HTTPStatusExtension(IntEnum):
         + 'timed out before the HTTP request was completed. Cloudflare typically waits 100 seconds\n'
         + 'for an HTTP response and returns this HTTP status code if nothing is received.\n'
         + 'Learn more at https://http.dev/524')
+    SITE_FROZEN = (530, 'Site Frozen',
+        'HTTP response status code 530 is an unofficial server error that is specific to Cloudflare\n'
+        + 'and Pantheon. In the case of Cloudflare, a second HTTP status code 1XXX error message will be\n'
+        + 'included to provide a more accurate description of the problem. For Pantheon, HTTP status code\n'
+        + '530 Site Frozen indicates that a site has been restricted due to inactivity.\n'
+        + 'Learn more at https://http.dev/530')
     def __new__(cls, value, phrase, description=''):
         obj = int.__new__(cls, value)
         obj._value_ = value
