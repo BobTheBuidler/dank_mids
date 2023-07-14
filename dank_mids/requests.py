@@ -263,9 +263,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
         # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
         # and then the task will try to acquire at the very next event loop _run_once cycle
-        asyncio.create_task(self.semaphore.acquire())
         logger.warning(f"call {self.uid} got stuck, we're creating a new one")
-        return await self.controller(self.method, self.params)
+        retval = await self.controller(self.method, self.params)
+        await self.semaphore.acquire()
+        return retval
 
 revert_threads = PruningThreadPoolExecutor(4)
 
