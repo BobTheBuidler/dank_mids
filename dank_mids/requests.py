@@ -30,6 +30,7 @@ from dank_mids._exceptions import (BadResponse, DankMidsClientResponseError,
                                    PayloadTooLarge, ResponseNotReady,
                                    internal_err_types)
 from dank_mids.helpers import decode, session
+from dank_mids.helpers.helpers import set_done
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
                              RawResponse, Request, Response)
