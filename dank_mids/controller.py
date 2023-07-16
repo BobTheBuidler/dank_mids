@@ -130,7 +130,7 @@ class DankMiddlewareController:
     def reduce_batch_size(self, num_calls: int) -> None:
         self._reduce_chunk_size(num_calls, "jsonrpc batch")
     
-    def _reduce_chunk_size(self, num_calls, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
+    def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
         if chunk_name not in ["multicall", "jsonrpc batch"]:
             raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
         new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1

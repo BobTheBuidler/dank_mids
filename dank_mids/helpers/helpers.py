@@ -1,13 +1,15 @@
 
 import asyncio
-from typing import (Any, Awaitable, Callable, Coroutine, Iterable, List,
-                    Literal, Optional)
+from functools import wraps
+from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
+                    Iterable, List, Literal, Optional, TypeVar)
 
 from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
                                apply_key_map, is_null)
 from eth_utils.toolz import assoc, complement, compose, merge
 from hexbytes import HexBytes
 from multicall.utils import get_async_w3
+from typing_extensions import ParamSpec
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
 from web3.providers.async_base import AsyncBaseProvider
@@ -16,7 +18,13 @@ from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 
 from dank_mids.types import AsyncMiddleware
 
+if TYPE_CHECKING:
+    from dank_mids.requests import RPCRequest
+
 dank_w3s: List[Web3] = []
+
+T = TypeVar("T")
+P = ParamSpec("P")
 
 def setup_dank_w3(async_w3: Web3) -> Web3:
     """ Injects Dank Middleware into an async Web3 instance. """
@@ -39,7 +47,14 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
     for fut in asyncio.as_completed([*futs]):
         await fut
         del fut
-        
+
+def set_done(fn: Callable[P, Awaitable[T]]):
+	@wraps(fn)
+	async def set_done_wrap(self: "RPCRequest", *args: P.args, **kwargs: P.kwargs) -> T:
+		retval = await fn(self, *args, **kwargs)
+		self._done.set()
+		return retval
+	return set_done_wrap   
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 

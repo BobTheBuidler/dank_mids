@@ -2,12 +2,10 @@
 import abc
 import asyncio
 import logging
-import threading
 import time
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
-from functools import cached_property
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, NoReturn, Optional, Tuple,
                     TypeVar, Union)
@@ -132,7 +130,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} uid={self.uid} method={self.method}>"
 
-    @cached_property
+    @property
     def request(self) -> Union[Request, PartialRequest]:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
     
@@ -140,6 +138,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self._started = True
         self._batch = batch
 
+    @set_done
     async def get_response(self) -> RPCResponse:
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
@@ -451,7 +450,7 @@ class Multicall(_Batch[eth_call]):
             return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]  # type: ignore
         return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block, {self.target: {'code': constants.OVERRIDE_CODE}}]  # type: ignore
     
-    @cached_property
+    @property
     def request(self) -> Union[Request, PartialRequest]:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
     
