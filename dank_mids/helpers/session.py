@@ -11,6 +11,7 @@ from aiohttp import ClientSession as DefaultClientSession
 from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import JSONDecoder
+from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES
@@ -58,6 +59,8 @@ RETRY_FOR_CODES = {
     HTTPStatusExtended.CLOUDFLARE_TIMEOUT,
 }
 
+limiter = AsyncLimiter(5, 0.05)
+
 @overload
 async def post(endpoint: str, *args, loads = decode.raw, **kwargs) -> RawResponse:...
 @overload
@@ -65,7 +68,8 @@ async def post(endpoint: str, *args, loads = decode.jsonrpc_batch, **kwargs) -> 
 async def post(endpoint: str, *args, loads: JSONDecoder = None, **kwargs) -> Any:
     """Returns decoded json data from `endpoint`"""
     session = await get_session()
-    return await session.post(endpoint, *args, loads=loads, **kwargs)
+    async with limiter:
+        return await session.post(endpoint, *args, loads=loads, **kwargs)
 
 async def get_session() -> "ClientSession":
     return await _get_session_for_thread(get_ident())
