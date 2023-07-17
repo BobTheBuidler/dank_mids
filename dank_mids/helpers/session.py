@@ -68,8 +68,7 @@ async def post(endpoint: str, *args, loads = decode.jsonrpc_batch, **kwargs) -> 
 async def post(endpoint: str, *args, loads: JSONDecoder = None, **kwargs) -> Any:
     """Returns decoded json data from `endpoint`"""
     session = await get_session()
-    async with limiter:
-        return await session.post(endpoint, *args, loads=loads, **kwargs)
+    return await session.post(endpoint, *args, loads=loads, **kwargs)
 
 async def get_session() -> "ClientSession":
     return await _get_session_for_thread(get_ident())
@@ -78,24 +77,21 @@ class ClientSession(DefaultClientSession):
     async def post(self, endpoint: str, *args, loads: JSONDecoder = None, **kwargs) -> bytes:
         # Process input arguments.
         if isinstance(kwargs.get('data'), PartialRequest):
-            # NOTE: We check this to avoid unnecessary f-string conversions.
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f"making request for {kwargs['data']}")
+            logger.debug("making request for %s", kwargs['data'])
             kwargs['data'] = msgspec.json.encode(kwargs['data'])
-        # NOTE: We check this to avoid unnecessary f-string conversions.
-        elif logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f"making request with (args, kwargs): {(tuple(chain((endpoint), args)), kwargs)}")
+        logger.debug("making request with (args, kwargs): (%s %s)", tuple(chain((endpoint), args)), kwargs)
 
         # Try the request until success or 5 failures.
         tried = 0
         while True:
             try:
-                async with super().post(endpoint, *args, **kwargs) as response:
-                    response = await response.json(loads=loads)
-                    # NOTE: We check this to avoid unnecessary f-string conversions.
-                    if logger.isEnabledFor(logging.DEBUG):
-                        logger.debug(f"received response {response}")
-                    return response
+                async with limiter:
+                    async with super().post(endpoint, *args, **kwargs) as response:
+                        response = await response.json(loads=loads)
+                        # NOTE: We check this to avoid unnecessary f-string conversions.
+                        if logger.isEnabledFor(logging.DEBUG):
+                            logger.debug(f"received response {response}")
+                        return response
             except ClientResponseError as e:
                 if e.status not in RETRY_FOR_CODES or tried >= 5:
                     logger.debug(f"response failed with status {HTTPStatusExtended(e.status)}.")
