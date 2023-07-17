@@ -1,10 +1,10 @@
 
-import asyncio
+import logging
 import threading
 from collections import defaultdict
-from time import time
-from typing import Any, DefaultDict, List
+from typing import Any, DefaultDict, List, Literal, Optional
 
+import eth_retry
 from eth_utils import to_checksum_address
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
@@ -13,15 +13,17 @@ from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids._config import LOOP_INTERVAL
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._demo_mode import demo_logger
-from dank_mids.loggers import main_logger, sort_lazy_logger
-from dank_mids.requests import RPCRequest, eth_call
-from dank_mids.types import BlockId, ChainId
-from dank_mids.uid import UIDGenerator
-from dank_mids.worker import DankWorker
+from dank_mids._exceptions import DankMidsInternalError
+from dank_mids.batch import DankBatch
+from dank_mids.helpers import decode, session
+from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
+from dank_mids.semaphores import MethodSemaphores
+from dank_mids.types import BlockId, ChainId, PartialRequest, RawResponse
+from dank_mids.uid import UIDGenerator, _AlertingRLock
 
-BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
+logger = logging.getLogger(__name__)
 
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
 
@@ -32,95 +34,122 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     # We can't pickle middlewares to send to process executor.
     # The call has already passed thru all middlewares on the user's Web3 instance.
     sync_w3.middleware_onion.clear()
-    sync_w3.provider.middlewares = tuple()
+    sync_w3.provider.middlewares = ()
     return sync_w3
 
 
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
-        main_logger.info('Dank Middleware initializing... Strap on your rocket boots...')
+        logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         self.w3: Web3 = w3
         self.sync_w3 = _sync_w3_from_async(w3)
+
         self.chain_id = self.sync_w3.eth.chain_id
+        # NOTE: We need this mutable for node types that require the full jsonrpc spec
+        self.request_type = PartialRequest
+        self._time_of_request_type_change = 0
+        self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
+
+        self.endpoint = self.w3.provider.endpoint_uri
+        if "tenderly" in self.endpoint:
+            # NOTE: Tenderly does funky things sometimes
+            logger.warning(
+                "We see you're using a tenderly rpc.\n" +
+                "There is a known conflict between dank and tenderly which causes issues not present with other providers.\n" + 
+                "Your milage may vary. Debugging efforts welcome."
+            )
+            
+        self._instance: int = sum(len(_instances) for _instances in instances.values())
+        instances[self.chain_id].append(self)  # type: ignore
+
         multicall = MULTICALL_ADDRESSES.get(self.chain_id)
         multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
         if multicall2 is None:
             raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
         self.multicall2 = to_checksum_address(multicall2)
         self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
-        self.pending_eth_calls: List[eth_call] = []
-        self.pending_rpc_calls: List[RPCRequest] = []
-        self.num_pending_eth_calls: int = 0
-        self.worker = DankWorker(self)
-        self.is_running: bool = False
+
+        self.method_semaphores = MethodSemaphores(self)
+        self.batcher = NotSoBrightBatcher()
+
         self.call_uid = UIDGenerator()
-        self._checkpoint: float = time()
-        self._instance: int = sum(len(_instances) for _instances in instances.values())
-        instances[self.chain_id].append(self)  # type: ignore
+        self.multicall_uid: UIDGenerator = UIDGenerator()
+        self.request_uid: UIDGenerator = UIDGenerator()
+        self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
+        self.pools_closed_lock = _AlertingRLock(name='pools closed')
+
+        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
+        self.pending_rpc_calls = JSONRPCBatch(self)
     
     def __repr__(self) -> str:
-        return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.worker.endpoint}>"
+        return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        return await (eth_call(self, params) if method == "eth_call" else RPCRequest(self, method, params))  # type: ignore [return-value]
+        call_semaphore = self.method_semaphores[method][params[1]] if method == "eth_call" else self.method_semaphores[method]
+        async with call_semaphore:
+            logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
+            call = eth_call(self, params) if method == "eth_call" and params[0]["to"] not in self.no_multicall else RPCRequest(self, method, params)
+            return await call
     
-    @property
-    def batcher(self) -> NotSoBrightBatcher:
-        return self.worker.batcher
-    
-    @property
-    def pools_closed_lock(self) -> threading.Lock:
-        return self.call_uid.lock
-    
-    async def taskmaster_loop(self) -> None:
-        self.is_running = True
-        while self.pending_eth_calls or self.pending_rpc_calls:
-            await asyncio.sleep(0)
-            if (self.loop_is_ready or self.queue_is_full):
-                await self.execute_multicall()
-        self.is_running = False
-    
-    async def execute_multicall(self) -> None:
-        i = 0
-        while self.pools_closed_lock.locked():
-            if i // 500 == int(i // 500):
-                main_logger.debug('lock is locked')
-            i += 1
-            await asyncio.sleep(.1)
-        with self.pools_closed_lock:
-            eth_calls: DefaultDict[BlockId, List[eth_call]] = defaultdict(list)
-            for call in self.pending_eth_calls:
-                eth_calls[call.block].append(call)
+    @eth_retry.auto_retry
+    async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
+        request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
+        return await session.post(self.endpoint, data=request, loads=decode.raw)
+
+    async def execute_batch(self) -> None:
+        with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
+            multicalls = dict(self.pending_eth_calls)
             self.pending_eth_calls.clear()
             self.num_pending_eth_calls = 0
             rpc_calls = self.pending_rpc_calls[:]
-            self.pending_rpc_calls.clear()
-        demo_logger.info(f'executing multicall (current cid: {self.call_uid.latest})')  # type: ignore
-        await self.worker.execute_batch(eth_calls, rpc_calls)
+            self.pending_rpc_calls = JSONRPCBatch(self)
+        demo_logger.info(f'executing dank batch (current cid: {self.call_uid.latest})')  # type: ignore
+        batch = DankBatch(self, multicalls, rpc_calls)
+        await batch
+        demo_logger.info(f'{batch} done')
 
-    @sort_lazy_logger
-    def should_batch(self, method: RPCEndpoint, params: Any) -> bool:
-        """ Determines whether or not a call should be passed to the DankMiddlewareController. """
-        if method == "eth_call" and params[0]["to"] == self.multicall2:
-            # These most likely come from dank mids internals if you're using dank mids.
-            return False
-        if any(bypass in method for bypass in BYPASS_METHODS):
-            main_logger.debug(f"bypassed, method is {method}")
-            return False
-        return True
-
-    @property
-    def loop_is_ready(self) -> bool:
-        return time() - self._checkpoint > LOOP_INTERVAL
-    
     @property
     def queue_is_full(self) -> bool:
-        return bool(len(self.pending_eth_calls) >= self.batcher.step * 25)
+        with self.pools_closed_lock:
+            if ENVS.OPERATION_MODE.infura:
+                return sum(len(call) for call in self.pending_rpc_calls) >= ENVS.MAX_JSONRPC_BATCH_SIZE
+            eth_calls = sum(len(calls) for calls in self.pending_eth_calls.values())
+            other_calls = sum(len(call) for call in self.pending_rpc_calls)
+            return eth_calls + other_calls >= self.batcher.step
+    
+    def early_start(self):
+        """Used to start all queued calls when we have enough for a full batch"""
+        with self.pools_closed_lock:
+            self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
+            self.pending_eth_calls.clear()
+            self.pending_rpc_calls.start()
+    
+    def reduce_multicall_size(self, num_calls: int) -> None:
+        self._reduce_chunk_size(num_calls, "multicall")
     
     def reduce_batch_size(self, num_calls: int) -> None:
-        new_step = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
-        # NOTE: We need this check because one of the other multicalls in a batch might have already reduced `self.batcher.step`
-        if new_step < self.batcher.step:
-            old_step = self.batcher.step
-            self.batcher.step = new_step
-            main_logger.warning(f'Multicall batch size reduced from {old_step} to {new_step}. The failed batch had {num_calls} calls.')
+        self._reduce_chunk_size(num_calls, "jsonrpc batch")
+    
+    def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
+        new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
+        if new_chunk_size < 30:
+            logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue earlier? You might want to restart your script. {chunk_name} chunk size will not be further lowered.")
+            return
+        # NOTE: We need the 2nd check because one of the other calls in a batch might have already reduced the chunk size
+        if chunk_name == "jsonrpc batch":
+            if new_chunk_size < ENVS.MAX_JSONRPC_BATCH_SIZE:
+                old_chunk_size = ENVS.MAX_JSONRPC_BATCH_SIZE
+                ENVS.MAX_JSONRPC_BATCH_SIZE = new_chunk_size
+            else:
+                logger.info("new chunk size %s is not lower than max batch size %s", new_chunk_size, str(ENVS.MAX_JSONRPC_BATCH_SIZE))
+                return
+        elif chunk_name == "multicall":
+            if new_chunk_size < self.batcher.step:
+                old_chunk_size = self.batcher.step
+                self.batcher.step = new_chunk_size
+            else:
+                logger.info("new chunk size %s is not lower than batcher step %s", new_chunk_size, self.batcher.step)
+                return
+        else:
+            raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
+        logger.warning(f'{chunk_name} batch size reduced from {old_chunk_size} to {new_chunk_size}. The failed batch had {num_calls} calls.')

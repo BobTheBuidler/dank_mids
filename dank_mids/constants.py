@@ -2,15 +2,15 @@
 
 import multicall
 
+TOO_MUCH_DATA_ERRS = ["Payload Too Large", "content length too large", "request entity too large"]
+RETRY_ERRS = ["connection reset by peer", "server disconnected", "execution aborted (timeout = 5s)"]
+
 GAS_LIMIT = multicall.constants.GAS_LIMIT
-
 OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
-
-
 
 # When you get these call responses back from the multicall, we know there was some problem with execution.
 # If you make the exact same calls without multicall, you will get an Exception not a response. 
-# TODO: Replicate brownie's logic for detecting reverts.
+# TODO: Delete these
 BAD_HEXES = [
     # Chainlink feeds no access
     "0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000094e6f206163636573730000000000000000000000000000000000000000000000",
@@ -33,3 +33,8 @@ BAD_HEXES = [
     # Function does not exist
     "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001846756e6374696f6e20646f6573206e6f742065786973742e0000000000000000",
 ]
+
+# Not sure why yet but sometimes a multicall will succeed but one of the results will be a failure for one call that doesn't interrupt the rest of the mcall.
+# NOTE: we leave off the '0x' so we can compare raw bytes
+# NOTE: The 2nd one here needs to be converted to the first format but I need to encounter one in the wild before I can do that
+REVERT_SELECTORS = [b'\x08\xc3y\xa0', b"4e487b71"]
