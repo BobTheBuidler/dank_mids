@@ -23,6 +23,11 @@ logger = logging.getLogger("dank_mids.session")
 # NOTE: You cannot subclass an IntEnum object so we have to do some hacky shit here.
 # First, set up custom error codes we might see.
 class _HTTPStatusExtension(IntEnum):
+    WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR = (520, 'Web Server is Returning an Unknown Error',
+        'HTTP response status code 520 Web server is returning an unknown error is an unofficial server error\n'
+        + 'that is specific to Cloudflare. This is a catch-all error that is used in the absence of having a\n'
+        + 'HTTP status code for one that is more specific.\n'
+        + 'Learn more at https://http.dev/520')
     CLOUDFLARE_CONNECTION_TIMEOUT = (522, 'Cloudflare Connection Timeout',
         'Cloudflare is a content delivery network that acts as a gateway between a user and a website server.\n'
         + 'When the 522 Connection timed out status code is received, Cloudflare attempted to connect\n'
@@ -55,6 +60,7 @@ HTTPStatusExtended = IntEnum('HTTPStatusExtended', [(i.name, i.value) for i in c
 
 RETRY_FOR_CODES = {
     HTTPStatusExtended.BAD_GATEWAY,
+    HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR,
     HTTPStatusExtended.CLOUDFLARE_CONNECTION_TIMEOUT,
     HTTPStatusExtended.CLOUDFLARE_TIMEOUT,
 }
