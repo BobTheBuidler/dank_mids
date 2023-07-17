@@ -131,19 +131,25 @@ class DankMiddlewareController:
         self._reduce_chunk_size(num_calls, "jsonrpc batch")
     
     def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
-        if chunk_name not in ["multicall", "jsonrpc batch"]:
-            raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
         new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
         if new_chunk_size < 30:
-            logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue? {chunk_name} chunk size will not be further lowered.")
+            logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue earlier? You might want to restart your script. {chunk_name} chunk size will not be further lowered.")
             return
         # NOTE: We need the 2nd check because one of the other calls in a batch might have already reduced the chunk size
-        if chunk_name == "jsonrpc batch" and new_chunk_size < ENVS.MAX_JSONRPC_BATCH_SIZE:
-            old_chunk_size = ENVS.MAX_JSONRPC_BATCH_SIZE
-            ENVS.MAX_JSONRPC_BATCH_SIZE = new_chunk_size
-        elif chunk_name == "multicall" and new_chunk_size < self.batcher.step:
-            old_chunk_size = self.batcher.step
-            self.batcher.step = new_chunk_size
+        if chunk_name == "jsonrpc batch":
+            if new_chunk_size < ENVS.MAX_JSONRPC_BATCH_SIZE:
+                old_chunk_size = ENVS.MAX_JSONRPC_BATCH_SIZE
+                ENVS.MAX_JSONRPC_BATCH_SIZE = new_chunk_size
+            else:
+                logger.info("new chunk size %s is not lower than max batch size %s", new_chunk_size, str(ENVS.MAX_JSONRPC_BATCH_SIZE))
+                return
+        elif chunk_name == "multicall":
+            if new_chunk_size < self.batcher.step:
+                old_chunk_size = self.batcher.step
+                self.batcher.step = new_chunk_size
+            else:
+                logger.info("new chunk size %s is not lower than batcher step %s", new_chunk_size, self.batcher.step)
+                return
         else:
-            return
+            raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
         logger.warning(f'{chunk_name} batch size reduced from {old_chunk_size} to {new_chunk_size}. The failed batch had {num_calls} calls.')
