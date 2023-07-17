@@ -1,4 +1,5 @@
 
+import logging
 from concurrent.futures.process import BrokenProcessPool
 from functools import lru_cache
 from pickle import PicklingError
@@ -17,6 +18,7 @@ from web3 import Web3
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 
+logger = logging.getLogger(__name__)
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)
 decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)
 
@@ -60,6 +62,7 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
             data = await get_request_data(call, *args)
         # TODO: move this somewhere else
         except BrokenProcessPool:
+            logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_ENCODER_PROCESSES, data, call.abi)
             # Let's fix that right up
             ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
@@ -80,6 +83,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         # TODO: move this somewhere else
         except BrokenProcessPool:
             # Let's fix that right up
+            logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_DECODER_PROCESSES, data, call.abi)
             ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
         decoded = __decode_output(data, call.abi)
     # We have to do it like this so we don't break the process pool.

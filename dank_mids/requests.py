@@ -528,6 +528,7 @@ class Multicall(_Batch[eth_call]):
                 retval = mcall_decode(data)
             except BrokenProcessPool:
                 # TODO: Move this somewhere else
+                logger.critical("Oh fuck, you broke the %s while decoding %s", ENVS.MULTICALL_DECODER_PROCESSES, data)
                 ENVS.MULTICALL_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)
                 retval = mcall_decode(data)
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
