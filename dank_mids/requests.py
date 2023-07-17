@@ -207,6 +207,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # TODO: refactor this out
         return self.response
     
+    @set_done
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
         # sourcery skip: merge-duplicate-blocks
         """
@@ -226,7 +227,6 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 if time.time() - self.controller._time_of_request_type_change <= 600:
                     logger.info("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     self._response = await self.create_duplicate()
-                    self._done.set()
                     return
             error = data.response.error.to_dict()
             error['dankmids_added_context'] = self.request.to_dict()
@@ -240,13 +240,12 @@ class RPCRequest(_RequestMeta[RawResponse]):
             self._response = {"result": data}
         else:
             raise NotImplementedError(f'type {type(data)} not supported for spoofing.', type(data), data)
-        self._done.set()
     
+    @set_done
     async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
         self._started = True
         self._response = await self.controller.make_request(self.method, self.params, request_id=self.uid)
-        self._done.set()
         return self._response
     
     @property
@@ -461,7 +460,7 @@ class Multicall(_Batch[eth_call]):
 
     async def get_response(self) -> None:
         if self._started:
-            logger.warning(f'{self} early exit')
+            logger.error(f'{self} early exit')
             return
         self._started = True
         #if len(self) < 50: # TODO play with later
@@ -496,6 +495,7 @@ class Multicall(_Batch[eth_call]):
             return True
         return len(self) > 1
     
+    @set_done
     async def spoof_response(self, data: Union[RawResponse, Exception]) -> None:
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
@@ -514,7 +514,6 @@ class Multicall(_Batch[eth_call]):
             await asyncio.gather(*(call.spoof_response(data) for call, (_, data) in zip(self.calls, await self.decode(response))))
         else:
             raise NotImplementedError(f"type {type(data)} not supported.", data)
-        self._done.set()
     
     async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
         start = time.time()
@@ -537,6 +536,7 @@ class Multicall(_Batch[eth_call]):
             raise retval    
         return retval
     
+    @set_done
     async def bisect_and_retry(self, e: Exception) -> List[RPCResponse]:
         """
         Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
@@ -551,7 +551,6 @@ class Multicall(_Batch[eth_call]):
                 if not isinstance(result, DankMidsInternalError):
                     logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
-        self._done.set()
 
     def _post_future_cleanup(self) -> None:
         with suppress(KeyError):
@@ -675,6 +674,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return response
         # Oops, we failed.
         if response.error.message == 'invalid request':
+            # NOT SURE IF THIS ACTUALLY RUNS, CAN WE RECEIVE THIS TYPE RESPONSE FOR A JSON BATCH?
             if self.controller._time_of_request_type_change == 0:
                 self.controller.request_type = Request
                 self.controller._time_of_request_type_change = time.time()
@@ -692,6 +692,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return True
         return self.is_single_multicall
     
+    @set_done
     async def spoof_response(self, response: List[RawResponse]) -> None:
         # This means we got results. That doesn't mean they're good, but we got 'em.
         for r in await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(self.calls, response)], return_exceptions=True):
@@ -700,8 +701,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # TODO: stop retrying ones that succeed, that's wasteful
             if isinstance(r, Exception):
                 raise r
-        self._done.set()
     
+    @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
         """
         Splits up the calls of a `JSONRPCBatch` into 2 chunks, then awaits both.
@@ -723,7 +724,6 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 if not isinstance(result, DankMidsInternalError):
                     logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
-        self._done.set()
     
     def adjust_batch_size(self) -> None:
         if self.is_multicalls_only:
