@@ -59,7 +59,7 @@ RETRY_FOR_CODES = {
     HTTPStatusExtended.CLOUDFLARE_TIMEOUT,
 }
 
-limiter = AsyncLimiter(1, 0.02)  # 50 requests/second
+limiter = AsyncLimiter(1, 0.03)  # 33.333 requests/second
 
 @overload
 async def post(endpoint: str, *args, loads = decode.raw, **kwargs) -> RawResponse:...
