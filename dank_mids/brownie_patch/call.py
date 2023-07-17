@@ -72,12 +72,15 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
 
 async def decode_output(call: ContractCall, data: bytes) -> Any:
     __validate_output(call.abi, data)
-    try:
-        decoded = await decode(call, data)
-    # TODO: move this somewhere else
-    except BrokenProcessPool:
-        # Let's fix that right up
-        ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
+    if ENVS.OPERATION_MODE.infura:
+        decoded = __decode_output(data, call.abi)
+    else:
+        try:
+            decoded = await decode(call, data)
+        # TODO: move this somewhere else
+        except BrokenProcessPool:
+            # Let's fix that right up
+            ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
         decoded = __decode_output(data, call.abi)
     # We have to do it like this so we don't break the process pool.
     if isinstance(decoded, Exception):
