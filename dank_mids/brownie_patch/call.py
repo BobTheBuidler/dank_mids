@@ -27,15 +27,10 @@ def _patch_call(call: ContractCall, w3: Web3) -> None:
 
 @lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
-    mode = ENVS.OPERATION_MODE
-    if mode.default:
-        get_request_data = encode if len_inputs else __request_data_no_args
-    elif mode.application:
+    if ENVS.OPERATION_MODE.application:
         get_request_data = encode
-    elif mode.infura:
-        get_request_data = __request_data_with_args if len_inputs else __request_data_no_args
     else:
-        raise NotImplementedError(mode)
+        get_request_data = encode if len_inputs else __request_data_no_args
     
     async def coroutine(
         self: ContractCall,
@@ -75,33 +70,21 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
 
 async def decode_output(call: ContractCall, data: bytes) -> Any:
     __validate_output(call.abi, data)
-    if ENVS.OPERATION_MODE.infura:
-        decoded = __decode_output(data, call.abi)
-    else:
-        try:
-            decoded = await decode(call, data)
-        # TODO: move this somewhere else
-        except BrokenProcessPool:
-            # Let's fix that right up
-            logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_DECODER_PROCESSES, data, call.abi)
-            ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
+    try:
+        decoded = await decode(call, data)
+    # TODO: move this somewhere else
+    except BrokenProcessPool:
+        # Let's fix that right up
+        logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_DECODER_PROCESSES, data, call.abi)
+        ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
         decoded = __decode_output(data, call.abi)
     # We have to do it like this so we don't break the process pool.
     if isinstance(decoded, Exception):
         raise decoded
     return decoded
 
-async def __request_data_no_args(
-    call: ContractCall,
-    *args: Tuple[Any,...],
-) -> str:
+async def __request_data_no_args(call: ContractCall) -> str:
     return call.signature
-
-async def __request_data_with_args(
-    call: ContractCall,
-    *args: Tuple[Any,...],
-) -> str:
-    return __encode_input(call.abi, call.signature, *args)
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     try:

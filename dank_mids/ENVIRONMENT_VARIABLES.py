@@ -19,7 +19,9 @@ if not typed_envs.logger.disabled:
 ###############
 
 # What mode should dank mids operate in?
-OPERATION_MODE = _envs.create_env("OPERATION_MODE", OperationMode, default="default")
+# NOTE: infura mode is required for now
+# TODO: fix the other modes, set default='default', and make this verbose again
+OPERATION_MODE = _envs.create_env("OPERATION_MODE", OperationMode, default="infura", verbose=False)
 
 # Max number of rpc calls to include in one batch call
 MAX_JSONRPC_BATCH_SIZE = _envs.create_env("MAX_JSONRPC_BATCH_SIZE", int, default=500)
@@ -45,15 +47,15 @@ BROWNIE_ENCODER_SEMAPHORE = _envs.create_env("BROWNIE_ENCODER_SEMAPHORE", BlockS
 # Processes for decoding. This determines process pool size, not total subprocess count.
 # There are 3 pools, each initialized with the same value.
 # NOTE: Don't stress, these are good for you and will not hog your cpu. You can disable them by setting the var = 0. #TODO: lol u cant yet
-BROWNIE_ENCODER_PROCESSES = _envs.create_env("BROWNIE_ENCODER_PROCESSES", AsyncProcessPoolExecutor, default=1, string_converter=int, verbose=not OPERATION_MODE.infura)
-BROWNIE_DECODER_PROCESSES = _envs.create_env("BROWNIE_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=1, string_converter=int, verbose=not OPERATION_MODE.infura)
-MULTICALL_DECODER_PROCESSES = _envs.create_env("MULTICALL_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=1, string_converter=int, verbose=not OPERATION_MODE.infura)
+BROWNIE_ENCODER_PROCESSES = _envs.create_env("BROWNIE_ENCODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
+BROWNIE_DECODER_PROCESSES = _envs.create_env("BROWNIE_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
+MULTICALL_DECODER_PROCESSES = _envs.create_env("MULTICALL_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
 
 # NOTE: EXPORT_STATS is not implemented
 # TODO: implement this
-EXPORT_STATS = _envs.create_env("EXPORT_STATS", bool, default=False)
+EXPORT_STATS = _envs.create_env("EXPORT_STATS", bool, default=False, verbose=False)
 # NOTE: COLLECT_STATS is implemented
-COLLECT_STATS = _envs.create_env("COLLECT_STATS", bool, default=EXPORT_STATS)
+COLLECT_STATS = _envs.create_env("COLLECT_STATS", bool, default=EXPORT_STATS, verbose=not EXPORT_STATS)
 
 # You probably don't need to use this unless you know you need to
 STUCK_CALL_TIMEOUT = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60)
@@ -69,3 +71,15 @@ method_semaphores = {
 if not typed_envs.logger.disabled:
     logger.info("More details can be found in dank_mids/ENVIRONMENT_VARIABLES.py")
     logger.info("NOTE: You can disable these logs by setting the `TYPEDENVS_SHUTUP` env var to any value.")
+
+
+# Validate some stuffs
+
+# NOTE: The other modes are (probably) bugging out right now. More investigation needed. For now you use infura mode.
+if not OPERATION_MODE.infura:
+    raise ValueError("Dank mids must be run in infura mode for now")
+
+if OPERATION_MODE.infura:
+    for process_pool in {MULTICALL_DECODER_PROCESSES, BROWNIE_DECODER_PROCESSES, BROWNIE_ENCODER_PROCESSES}:
+        if process_pool._max_workers:
+            raise ValueError(f"You cannot set env var {process_pool.name} while running dank in infura mode.")
