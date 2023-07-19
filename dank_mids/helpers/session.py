@@ -28,6 +28,11 @@ class _HTTPStatusExtension(IntEnum):
         + 'that is specific to Cloudflare. This is a catch-all error that is used in the absence of having a\n'
         + 'HTTP status code for one that is more specific.\n'
         + 'Learn more at https://http.dev/520')
+    WEB_SERVER_IS_DOWN = (521, 'Web Server Is Down',
+        'HTTP response status code 521 Web server is down is an unofficial server error that is specific to Cloudflare.\n'
+        + 'This HTTP status code occurs when the HTTP client was able to successfully connect to Cloudflare but it was\n'
+        + 'unable to connect to the origin server.'
+        + 'Learn more at https://http.dev/521')
     CLOUDFLARE_CONNECTION_TIMEOUT = (522, 'Cloudflare Connection Timeout',
         'Cloudflare is a content delivery network that acts as a gateway between a user and a website server.\n'
         + 'When the 522 Connection timed out status code is received, Cloudflare attempted to connect\n'
@@ -98,11 +103,14 @@ class ClientSession(DefaultClientSession):
                         if logger.isEnabledFor(logging.DEBUG):
                             logger.debug(f"received response {response}")
                         return response
-            except ClientResponseError as e:
-                if e.status not in RETRY_FOR_CODES or tried >= 5:
-                    logger.debug(f"response failed with status {HTTPStatusExtended(e.status)}.")
-                    raise e
-                logger.debug(f"response failed with status {HTTPStatusExtended(e.status)}, retrying.")
+            except ClientResponseError as ce:
+                try:
+                    if ce.status not in RETRY_FOR_CODES or tried >= 5:
+                        logger.debug(f"response failed with status {HTTPStatusExtended(ce.status)}.")
+                        raise ce
+                except ValueError as ve:
+                    raise ce if str(ve).endswith("is not a valid HTTPStatusExtended") else ve
+                logger.debug(f"response failed with status {HTTPStatusExtended(ce.status)}, retrying.")
                 tried += 1
 
 @alru_cache(maxsize=None)
