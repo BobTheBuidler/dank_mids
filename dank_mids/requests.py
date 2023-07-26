@@ -181,7 +181,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                         self.controller.request_type = Request
                         self.controller._time_of_request_type_change = time.time()
                     if time.time() - self.controller._time_of_request_type_change <= 600:
-                        logger.info("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
+                        logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                         return await self.controller(self.method, self.params)
                 response['error']['dankmids_added_context'] = self.request.to_dict()
                 # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
@@ -225,7 +225,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     self.controller.request_type = Request
                     self.controller._time_of_request_type_change = time.time()
                 if time.time() - self.controller._time_of_request_type_change <= 600:
-                    logger.info("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
+                    logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     self._response = await self.create_duplicate()
                     return
             error = data.response.error.to_dict()
@@ -400,6 +400,8 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif isinstance(e, PayloadTooLarge) or any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             logger.debug('Dank too loud. Bisecting batch and retrying.')
+        elif isinstance(e, BadResponse) and 'invalid request' in f"{e}":
+            pass
         elif "error processing call Revert" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
@@ -680,7 +682,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 self.controller.request_type = Request
                 self.controller._time_of_request_type_change = time.time()
             if time.time() - self.controller._time_of_request_type_change <= 600:
-                logger.info("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
+                logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
         raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
