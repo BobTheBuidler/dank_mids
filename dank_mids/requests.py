@@ -400,6 +400,8 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif isinstance(e, PayloadTooLarge) or any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             logger.debug('Dank too loud. Bisecting batch and retrying.')
+        elif isinstance(e, BadResponse) and 'invalid request' in f"{e}":
+            pass
         elif "error processing call Revert" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
