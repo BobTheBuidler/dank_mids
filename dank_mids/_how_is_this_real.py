@@ -5,7 +5,7 @@ from logging.handlers import RotatingFileHandler
 LOGS_PATH = 'just-leave-me-here-and-dont-touch-me-plz.log'
 ONE_KB = 1024
 
-silencer = RotatingFileHandler(LOGS_PATH, maxBytes=500*ONE_KB, backupCount=0)
+silencer = RotatingFileHandler(LOGS_PATH, maxBytes=500*ONE_KB, backupCount=1)
 
 def _the_most_absurd_fix_youve_ever_seen():
     """
