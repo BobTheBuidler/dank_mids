@@ -1,5 +1,6 @@
 
 import logging
+import os
 from collections import defaultdict
 from functools import lru_cache
 from typing import Any, DefaultDict, List, Literal, Optional
@@ -19,11 +20,11 @@ from dank_mids import constants
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids.batch import DankBatch
-from typing import ClassVar
 from dank_mids.helpers import decode, session
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.semaphores import MethodSemaphores
-from dank_mids.types import BlockId, ChainId, PartialRequest, RawResponse
+from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
+                             Request)
 from dank_mids.uid import UIDGenerator, _AlertingRLock
 
 try:
@@ -54,7 +55,7 @@ class DankMiddlewareController:
 
         self.chain_id = self.sync_w3.eth.chain_id
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
-        self.request_type = PartialRequest
+        self.request_type = PartialRequest if not os.environ.get("DANKMIDS_USE_FULL_REQUEST") else Request
         self._time_of_request_type_change = 0
         self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
