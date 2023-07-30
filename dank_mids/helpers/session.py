@@ -1,4 +1,5 @@
 
+import asyncio
 import http
 import logging
 from enum import IntEnum
@@ -99,18 +100,23 @@ class ClientSession(DefaultClientSession):
                 async with limiter:
                     async with super().post(endpoint, *args, **kwargs) as response:
                         response = await response.json(loads=loads)
-                        # NOTE: We check this to avoid unnecessary f-string conversions.
-                        if logger.isEnabledFor(logging.DEBUG):
-                            logger.debug(f"received response {response}")
+                        logger.debug("received response %s", response)
                         return response
             except ClientResponseError as ce:
+                if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS and (try_after := ce.headers.get("Retry-After")):
+                    if self not in _limited:
+                        _limited.append(self)
+                        logger.info("You're being rate limited by your node provider")
+                        logger.info("Its all good, dank_mids has this handled, but you might get results slower than you'd like")
+                    await asyncio.sleep(try_after)
+                    return await self.post(endpoint, *args, loads=loads, **kwargs)
                 try:
                     if ce.status not in RETRY_FOR_CODES or tried >= 5:
-                        logger.debug(f"response failed with status {HTTPStatusExtended(ce.status)}.")
+                        logger.debug("response failed with status %s", HTTPStatusExtended(ce.status))
                         raise ce
                 except ValueError as ve:
-                    raise ce if str(ve).endswith("is not a valid HTTPStatusExtended") else ve
-                logger.debug(f"response failed with status {HTTPStatusExtended(ce.status)}, retrying.")
+                    raise ce if str(ve).endswith("is not a valid HTTPStatusExtended") else ve from ve
+                logger.debug("response failed with status %s, retrying", HTTPStatusExtended(ce.status))
                 tried += 1
 
 @alru_cache(maxsize=None)
@@ -121,3 +127,5 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     """
     timeout = ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT)
     return ClientSession(headers={'content-type': 'application/json'}, timeout=timeout, raise_for_status=True)
+
+_limited = []
