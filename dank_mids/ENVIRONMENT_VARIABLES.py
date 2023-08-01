@@ -58,7 +58,7 @@ EXPORT_STATS = _envs.create_env("EXPORT_STATS", bool, default=False, verbose=Fal
 COLLECT_STATS = _envs.create_env("COLLECT_STATS", bool, default=EXPORT_STATS, verbose=not EXPORT_STATS)
 
 # You probably don't need to use this unless you know you need to
-STUCK_CALL_TIMEOUT = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60)
+STUCK_CALL_TIMEOUT = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60*60*2)
 
 # Method-specific Semaphores
 method_semaphores = {
