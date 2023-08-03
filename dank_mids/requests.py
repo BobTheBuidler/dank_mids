@@ -730,10 +730,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     
     def adjust_batch_size(self) -> None:
         if self.is_multicalls_only:
-            logger.info('checking if we should reduce multicall batch size...')
+            logger.info('checking if we should reduce multicall batch size... (%s calls)', self.total_calls)
             self.controller.reduce_multicall_size(self.total_calls)
         else:
-            logger.info('checking if we should reduce json batch size...')
+            logger.info('checking if we should reduce json batch size... (%s requests)', len(self))
             self.controller.reduce_batch_size(len(self))
             stats.logger.devhint(
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"
