@@ -1,6 +1,7 @@
 
-from typing import TYPE_CHECKING, Union
 import logging
+import re
+from typing import TYPE_CHECKING, Union
 
 from aiohttp.client_exceptions import ClientResponseError
 
@@ -23,6 +24,11 @@ class ResponseNotReady(ValueError):
 
 class PayloadTooLarge(BadResponse):
     pass
+
+class ExceedsMaxBatchSize(BadResponse):
+    @property
+    def limit(self) -> int:
+        return int(re.search(r'batch limit (\d+) exceeded', self.response.error.message).group(1))        
 
 class DankMidsClientResponseError(ClientResponseError):
     """A wrapper around the standard aiohttp ClientResponseError that attaches the request that generated the error."""

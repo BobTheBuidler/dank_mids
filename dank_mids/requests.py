@@ -27,8 +27,8 @@ from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import (BadResponse, DankMidsClientResponseError,
                                    DankMidsInternalError, EmptyBatch,
-                                   PayloadTooLarge, ResponseNotReady,
-                                   internal_err_types)
+                                   ExceedsMaxBatchSize, PayloadTooLarge,
+                                   ResponseNotReady, internal_err_types)
 from dank_mids.helpers import decode, session
 from dank_mids.helpers.helpers import set_done
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
@@ -397,7 +397,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         if "out of gas" in f"{e}":
             # TODO Remember which contracts/calls are gas guzzlers
             logger.debug('out of gas. cut in half, trying again')
-        elif isinstance(e, PayloadTooLarge) or any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
+        elif any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             logger.debug('Dank too loud. Bisecting batch and retrying.')
         elif isinstance(e, BadResponse) and 'invalid request' in f"{e}":
@@ -630,6 +630,11 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             raise DankMidsInternalError(e) from e
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
+        except ExceedsMaxBatchSize as e:
+            print('asd')
+            logger.warning("exceeded max batch size for your node")
+            self.controller.set_batch_size_limit(e.limit)
+            await self.bisect_and_retry(e)
         except PayloadTooLarge as e:
             # TODO: track too large payloads and do some better optimizations for batch sizing
             self.adjust_batch_size()
