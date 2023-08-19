@@ -1,4 +1,5 @@
 import logging
+import re
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     List, Literal, NewType, Optional, TypedDict, TypeVar,
@@ -10,7 +11,7 @@ from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
-from dank_mids._exceptions import BadResponse, PayloadTooLarge
+from dank_mids._exceptions import BadResponse, ExceedsMaxBatchSize, PayloadTooLarge
 
 if TYPE_CHECKING:
     from dank_mids.requests import Multicall
@@ -96,7 +97,11 @@ class PartialResponse(_DictStruct):
     def exception(self) -> BadResponse:
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
-        return PayloadTooLarge(self) if self.payload_too_large else BadResponse(self)
+        return (
+            PayloadTooLarge(self) if self.payload_too_large
+            else ExceedsMaxBatchSize(self) if re.search(r'batch limit (\d+) exceeded', self.error.message)
+            else BadResponse(self)
+        )
     
     @property
     def payload_too_large(self) -> bool:
