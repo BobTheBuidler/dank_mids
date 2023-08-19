@@ -5,6 +5,7 @@ import logging
 from enum import IntEnum
 from itertools import chain
 from threading import get_ident
+from random import random
 from typing import Any, overload
 
 import msgspec
@@ -86,7 +87,7 @@ async def get_session() -> "ClientSession":
     return await _get_session_for_thread(get_ident())
 
 class ClientSession(DefaultClientSession):
-    async def post(self, endpoint: str, *args, loads: JSONDecoder = None, **kwargs) -> bytes:
+    async def post(self, endpoint: str, *args, loads: JSONDecoder = None, _retry_after: int = 1, **kwargs) -> bytes:
         # Process input arguments.
         if isinstance(kwargs.get('data'), PartialRequest):
             logger.debug("making request for %s", kwargs['data'])
@@ -103,20 +104,28 @@ class ClientSession(DefaultClientSession):
                         logger.debug("received response %s", response)
                         return response
             except ClientResponseError as ce:
-                if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS and (try_after := ce.headers.get("Retry-After")):
+                if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:
+                    try_after = float(ce.headers.get("Retry-After", _retry_after * 1.5))
                     if self not in _limited:
                         _limited.append(self)
                         logger.info("You're being rate limited by your node provider")
                         logger.info("Its all good, dank_mids has this handled, but you might get results slower than you'd like")
+                    logger.info(f"rate limited: retrying after {try_after}s")
                     await asyncio.sleep(try_after)
-                    return await self.post(endpoint, *args, loads=loads, **kwargs)
+                    if try_after > 30:
+                        logger.warning('severe rate limiting from your provider')
+                    return await self.post(endpoint, *args, loads=loads, _retry_after=try_after, **kwargs)
+                
                 try:
                     if ce.status not in RETRY_FOR_CODES or tried >= 5:
                         logger.debug("response failed with status %s", HTTPStatusExtended(ce.status))
                         raise ce
                 except ValueError as ve:
                     raise ce if str(ve).endswith("is not a valid HTTPStatusExtended") else ve from ve
-                logger.debug("response failed with status %s, retrying", HTTPStatusExtended(ce.status))
+                
+                sleep = random()
+                await asyncio.sleep(sleep)
+                logger.debug("response failed with status %s, retrying in %ss", HTTPStatusExtended(ce.status), round(sleep, 2))
                 tried += 1
 
 @alru_cache(maxsize=None)
