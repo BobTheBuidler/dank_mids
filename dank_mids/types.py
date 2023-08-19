@@ -99,8 +99,8 @@ class PartialResponse(_DictStruct):
         return PayloadTooLarge(self) if self.payload_too_large else BadResponse(self)
     
     @property
-    def payload_too_large(self):
-        any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)
+    def payload_too_large(self) -> bool:
+        return any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)
         
     def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
         data = {}
