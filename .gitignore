@@ -7,4 +7,4 @@ dank_mids.egg-info
 .eggs
 .mypy_cache
 __pycache__
-just-leave-me-here-and-dont-touch-me-plz.log
+*.log*
