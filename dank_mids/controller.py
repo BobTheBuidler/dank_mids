@@ -137,19 +137,28 @@ class DankMiddlewareController:
             return
         # NOTE: We need the 2nd check because one of the other calls in a batch might have already reduced the chunk size
         if chunk_name == "jsonrpc batch":
-            if new_chunk_size < ENVS.MAX_JSONRPC_BATCH_SIZE:
-                old_chunk_size = ENVS.MAX_JSONRPC_BATCH_SIZE
-                ENVS.MAX_JSONRPC_BATCH_SIZE = new_chunk_size
-            else:
-                logger.info("new chunk size %s is not lower than max batch size %s", new_chunk_size, str(ENVS.MAX_JSONRPC_BATCH_SIZE))
-                return
+            self.set_batch_size_limit(new_chunk_size)
+            logger.info("The failed batch had %s calls", num_calls)
+            return
         elif chunk_name == "multicall":
-            if new_chunk_size < self.batcher.step:
-                old_chunk_size = self.batcher.step
-                self.batcher.step = new_chunk_size
-            else:
-                logger.info("new chunk size %s is not lower than batcher step %s", new_chunk_size, self.batcher.step)
-                return
+            self.set_multicall_size_limit(new_chunk_size)
+            logger.info("The failed multicall had %s calls", num_calls)
+            return
+        raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
+    
+    def set_multicall_size_limit(self, new_limit: int) -> None:
+        existing_limit = self.batcher.step
+        if new_limit < existing_limit:
+            self.batcher.step = new_limit
+            logger.warning("multicall size limit reduced from %s to %s", existing_limit, new_limit)
         else:
-            raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
-        logger.warning(f'{chunk_name} batch size reduced from {old_chunk_size} to {new_chunk_size}. The failed batch had {num_calls} calls.')
+            logger.info("new multicall size limit %s is not lower than existing limit %s", new_limit, existing_limit)
+            
+    def set_batch_size_limit(self, new_limit: int) -> None:
+        existing_limit = ENVS.MAX_JSONRPC_BATCH_SIZE
+        if new_limit < existing_limit:
+            ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit
+            logger.warning("jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit)
+        else:
+            logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))
+        

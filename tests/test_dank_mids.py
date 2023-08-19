@@ -42,6 +42,9 @@ def test_bad_hex_handling():
     assert await_awaitable(Call(chainlinkfeed, 'latestAnswer()(uint)', block_id=14_000_000).coroutine()) == 15717100
     assert chainlinkfeed in _get_controller().no_multicall
 
+def test_json_batch():
+    await_awaitable(gather(MULTIBLOCK_WORK))
+
 def test_next_cid():
     assert _get_controller().call_uid.next + 1 == _get_controller().call_uid.next
     
