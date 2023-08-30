@@ -23,6 +23,11 @@ from dank_mids.semaphores import MethodSemaphores
 from dank_mids.types import BlockId, ChainId, PartialRequest, RawResponse
 from dank_mids.uid import UIDGenerator, _AlertingRLock
 
+try:
+    from multicall.constants import MULTICALL3_ADDRESSES
+except ImportError:
+    MULTICALL3_ADDRESSES = {}
+
 logger = logging.getLogger(__name__)
 
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
@@ -64,11 +69,20 @@ class DankMiddlewareController:
 
         multicall = MULTICALL_ADDRESSES.get(self.chain_id)
         multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
-        if multicall2 is None:
+        multicall3 = MULTICALL3_ADDRESSES.get(self.chain_id)
+        if multicall2 is None and multicall3 is None:
             raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
-        self.multicall2 = to_checksum_address(multicall2)
-        self.no_multicall = {self.multicall2} if multicall is None else {self.multicall2, to_checksum_address(multicall)}
-
+        elif multicall2 and multicall3:
+            self.multicall = to_checksum_address(multicall3)
+            self.no_multicall = {self.multicall, to_checksum_address(multicall2)}
+        else:
+            self.multicall = to_checksum_address(multicall3 if multicall3 else multicall2)
+            self.no_multicall = {self.multicall}
+        if multicall:
+            self.no_multicall.add(to_checksum_address(multicall))
+            
+        self.multicall = to_checksum_address(multicall2 if multicall2 else multicall3)
+        
         self.method_semaphores = MethodSemaphores(self)
         self.batcher = NotSoBrightBatcher()
 
