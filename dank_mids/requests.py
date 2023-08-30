@@ -444,7 +444,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def target(self) -> ChecksumAddress:
-        return self.controller.multicall2
+        return self.controller.multicall
     
     @property
     def params(self) -> JsonrpcParams:
