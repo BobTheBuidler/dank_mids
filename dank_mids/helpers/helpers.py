@@ -4,6 +4,7 @@ from functools import wraps
 from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
                     Iterable, List, Literal, Optional, TypeVar)
 
+from async_lru import alru_cache
 from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
                                apply_key_map, is_null)
 from eth_utils.toolz import assoc, complement, compose, merge
@@ -36,6 +37,12 @@ def setup_dank_w3(async_w3: Web3) -> Web3:
         async_w3.middleware_onion.inject(dank_middleware, layer=0)
         async_w3.middleware_onion.add(geth_poa_middleware)
         dank_w3s.append(async_w3)
+    async_w3.eth._get_block_number = async_w3.eth.get_block_number
+    @alru_cache(ttl=0)
+    async def get_block_number() -> int:
+        return await async_w3.eth._get_block_number()
+    async_w3.eth.get_block_number = get_block_number
+    async_w3.eth.block_number
     return async_w3
 
 def setup_dank_w3_from_sync(sync_w3: Web3) -> Web3:
