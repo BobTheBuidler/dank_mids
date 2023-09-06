@@ -1,12 +1,32 @@
 
 
 import multicall
+from multicall.constants import Network
 
 TOO_MUCH_DATA_ERRS = ["Payload Too Large", "content length too large", "request entity too large"]
 RETRY_ERRS = ["connection reset by peer", "server disconnected", "execution aborted (timeout = 5s)"]
 
 GAS_LIMIT = multicall.constants.GAS_LIMIT
-OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
+MULTICALL2_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
+try:
+    MULTICALL3_OVERRIDE_CODE = multicall.constants.MULTICALL3_BYTECODE
+except AttributeError:
+    MULTICALL3_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
+
+MULTICALL2_DEPLOY_BLOCKS = {
+    Network.Mainnet: 12336033,
+    Network.Fantom: 16572242,
+    Network.Arbitrum: 821923,
+    Network.Optimism: 722566,
+}
+
+MULTICALL3_DEPLOY_BLOCKS = {
+    Network.Mainnet: 14353601,
+    Network.Fantom: 33001987,
+    Network.Arbitrum: 7654707,
+    Network.Optimism: 4286263,
+    Network.Base: 5022,
+}
 
 # When you get these call responses back from the multicall, we know there was some problem with execution.
 # If you make the exact same calls without multicall, you will get an Exception not a response. 

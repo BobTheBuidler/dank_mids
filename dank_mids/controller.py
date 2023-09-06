@@ -1,11 +1,12 @@
 
 import logging
-import threading
 from collections import defaultdict
+from functools import lru_cache
 from typing import Any, DefaultDict, List, Literal, Optional
 
 import eth_retry
 from eth_utils import to_checksum_address
+from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
 from web3 import Web3
@@ -14,9 +15,11 @@ from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids import constants
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids.batch import DankBatch
+from typing import ClassVar
 from dank_mids.helpers import decode, session
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.semaphores import MethodSemaphores
@@ -72,16 +75,28 @@ class DankMiddlewareController:
         multicall3 = MULTICALL3_ADDRESSES.get(self.chain_id)
         if multicall2 is None and multicall3 is None:
             raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
-        elif multicall2 and multicall3:
-            self.multicall = to_checksum_address(multicall3)
-            self.no_multicall = {self.multicall, to_checksum_address(multicall2)}
-        else:
-            self.multicall = to_checksum_address(multicall3 if multicall3 else multicall2)
-            self.no_multicall = {self.multicall}
+        
+        self.mc2 = MulticallContract(
+            address = to_checksum_address(multicall2), 
+            # TODO: copypasta deploy block dict
+            deploy_block = constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
+            bytecode = constants.MULTICALL2_OVERRIDE_CODE,
+        ) if multicall2 else None
+        
+        self.mc3 = MulticallContract(
+            address = to_checksum_address(multicall3), 
+            # TODO: copypasta deploy block dict
+            deploy_block = constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
+            bytecode = constants.MULTICALL3_OVERRIDE_CODE,
+        ) if multicall3 else None
+                    
+        self.no_multicall = set()
         if multicall:
             self.no_multicall.add(to_checksum_address(multicall))
-            
-        self.multicall = to_checksum_address(multicall2 if multicall2 else multicall3)
+        if self.mc2:
+            self.no_multicall.add(self.mc2.address)
+        if self.mc3:
+            self.no_multicall.add(self.mc3.address)
         
         self.method_semaphores = MethodSemaphores(self)
         self.batcher = NotSoBrightBatcher()
@@ -175,4 +190,32 @@ class DankMiddlewareController:
             logger.warning("jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit)
         else:
             logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))
-        
+    
+    @lru_cache(maxsize=1024)
+    def _select_mcall_target_for_block(self, block) -> "MulticallContract":
+        if block == 'latest':
+            return self.mc3 if self.mc3 else self.mc2
+        if self.mc3 and not self.mc3.needs_override_code_for_block(block):
+            return self.mc3
+        if self.mc2:
+            # We don't care if mc2 needs override code, mc2 override code is shorter
+            return self.mc2
+        return self.mc3
+
+class MulticallContract(Struct):
+    address: str
+    deploy_block: Optional[int]
+    bytecode: str
+    
+    @lru_cache(maxsize=1024)
+    def needs_override_code_for_block(self, block: BlockId) -> bool:
+        if block == 'latest':
+            return False
+        if self.deploy_block is None:
+            return True
+        if isinstance(block, str):
+            block = int(block, 16)
+        return block < self.deploy_block
+    
+    def __hash__(self) -> int:
+        return hash(self.address)
