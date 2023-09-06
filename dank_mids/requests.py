@@ -21,7 +21,7 @@ from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from typing_extensions import Self
 from web3.types import RPCEndpoint, RPCResponse
-
+from functools import cached_property
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
@@ -37,7 +37,7 @@ from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
 from dank_mids.uid import _AlertingRLock
 
 if TYPE_CHECKING:
-    from dank_mids.controller import DankMiddlewareController
+    from dank_mids.controller import DankMiddlewareController, MulticallContract
 
 
 logger = logging.getLogger(__name__)
@@ -434,7 +434,7 @@ class Multicall(_Batch[eth_call]):
     def __repr__(self) -> str:
         return f"<Multicall mid={self.bid} block={self.block} len={len(self)}>"
     
-    @property
+    @cached_property
     def block(self) -> BlockId:
         return self.calls[0].block
     
@@ -444,13 +444,18 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def target(self) -> ChecksumAddress:
-        return self.controller.multicall
+        return self.mcall.address
+    
+    @cached_property
+    def mcall(self) -> "MulticallContract":
+        return self.controller._select_mcall_target_for_block(self.block)
     
     @property
     def params(self) -> JsonrpcParams:
-        if self.controller.state_override_not_supported:
-            return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]  # type: ignore
-        return [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block, {self.target: {'code': constants.OVERRIDE_CODE}}]  # type: ignore
+        params = [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]
+        if self.needs_override_code and not self.controller.state_override_not_supported:
+            params.append({self.target: {'code': self.mcall.bytecode}})
+        return params
     
     @property
     def request(self) -> Union[Request, PartialRequest]:
@@ -460,6 +465,10 @@ class Multicall(_Batch[eth_call]):
     def is_full(self) -> bool:
         return len(self) >= self.controller.batcher.step
 
+    @property
+    def needs_override_code(self) -> bool:
+        return self.mcall.needs_override_code_for_block(self.block)
+        
     async def get_response(self) -> None:
         if self._started:
             logger.error(f'{self} early exit')

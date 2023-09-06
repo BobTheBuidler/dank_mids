@@ -10,7 +10,6 @@ from web3.types import RPCEndpoint
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
-logger = logging.getLogger(__name__)
 
 class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
     _priority_name = "block"
@@ -26,14 +25,6 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
             else block if block not in [None, 'latest']  # NOTE: We do this to generate an err if an unsuitable value was provided
             else self._top_priority
         )
-    # NOTE: do we break anything if we no longer use these extra logs?
-    #async def acquire(self):
-    #    logger.debug("acquiring %s", self)
-    #    await super().acquire()
-    #    logger.debug("acquired %s", self)
-    #def release(self):
-    #    super().release()
-    #    logger.debug("released %s", self)
 
 
 class MethodSemaphores:
