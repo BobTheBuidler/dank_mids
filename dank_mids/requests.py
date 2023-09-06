@@ -91,7 +91,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 
 ### Single requests:
 
-BYPASS_METHODS = "eth_getLogs", "trace_", "debug_"
+BYPASS_METHODS = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
 
 class RPCRequest(_RequestMeta[RawResponse]):
     dict_responses = set()
