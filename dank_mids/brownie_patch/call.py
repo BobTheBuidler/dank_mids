@@ -55,6 +55,9 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
     else:
         try: # We're better off sending these to the subprocess so they don't clog up the event loop.
             data = await get_request_data(call, *args)
+        except (AttributeError, TypeError):
+            # These occur when we have issues pickling an object, but that's fine, we can do it sync.
+            data = __encode_input(call.abi, call.signature, *args)
         # TODO: move this somewhere else
         except BrokenProcessPool:
             logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_ENCODER_PROCESSES, data, call.abi)
