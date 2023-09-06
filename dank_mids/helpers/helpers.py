@@ -42,7 +42,6 @@ def setup_dank_w3(async_w3: Web3) -> Web3:
     async def get_block_number() -> int:
         return await async_w3.eth._get_block_number()
     async_w3.eth.get_block_number = get_block_number
-    async_w3.eth.block_number
     return async_w3
 
 def setup_dank_w3_from_sync(sync_w3: Web3) -> Web3:
