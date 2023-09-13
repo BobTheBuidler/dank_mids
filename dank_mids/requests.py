@@ -6,6 +6,7 @@ import time
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
+from functools import cached_property, lru_cache
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, NoReturn, Optional, Tuple,
                     TypeVar, Union)
@@ -21,7 +22,7 @@ from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from typing_extensions import Self
 from web3.types import RPCEndpoint, RPCResponse
-from functools import cached_property
+
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
@@ -37,7 +38,8 @@ from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
 from dank_mids.uid import _AlertingRLock
 
 if TYPE_CHECKING:
-    from dank_mids.controller import DankMiddlewareController, MulticallContract
+    from dank_mids.controller import (DankMiddlewareController,
+                                      MulticallContract)
 
 
 logger = logging.getLogger(__name__)
@@ -58,6 +60,7 @@ class _RequestEvent(a_sync.Event):
             self._loop.call_soon_threadsafe(super().set)
 
 class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
+    __slots__ = 'controller', 'uid', '_response', '_done', '_start', '_batch'
     controller: "DankMiddlewareController"
     def __init__(self) -> None:
         self.uid = self.controller.call_uid.next
@@ -93,7 +96,12 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 
 BYPASS_METHODS = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
 
+@lru_cache(maxsize=None)
+def _should_batch_method(method: str) -> bool:
+    return all(bypass not in method for bypass in BYPASS_METHODS)
+
 class RPCRequest(_RequestMeta[RawResponse]):
+    __slots__ = 'method', 'params', 'should_batch', '_started', '_retry'
     dict_responses = set()
     str_responses = set()
 
@@ -103,7 +111,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self.controller = controller
         self.method = method
         self.params = params
-        self.should_batch = all(bypass not in method for bypass in BYPASS_METHODS)
+        self.should_batch = _should_batch_method(method)
         self._started = False
         self._retry = retry
         super().__init__()
@@ -270,13 +278,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
 revert_threads = PruningThreadPoolExecutor(4)
 
 class eth_call(RPCRequest):
+    __slots__ = 'block'
     def __init__(self, controller: "DankMiddlewareController", params: Any, retry: bool = False) -> None:
         """ Adds a call to the DankMiddlewareContoller's `pending_eth_calls`. """
+        self.block = params[1]
         super().__init__(controller, "eth_call", params)  # type: ignore
-    
-    @property
-    def block(self) -> BlockId:
-        return self.params[1]
     
     @property
     def calldata(self) -> HexBytes:
@@ -324,6 +330,7 @@ class eth_call(RPCRequest):
 _Request = TypeVar("_Request")
 
 class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
+    __slots__ = 'calls', '_fut', '_lock'
     calls: List[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
@@ -422,6 +429,7 @@ def mcall_decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:
     
 
 class Multicall(_Batch[eth_call]):
+    __slots__ = 'bid', '_started', '__dict__'  # We need to specify __dict__ for the cached properties to work
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")    
 
@@ -572,6 +580,7 @@ class Multicall(_Batch[eth_call]):
 
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
+    __slots__ = 'jid', '_started'
     def __init__(
         self,
         controller: "DankMiddlewareController",
