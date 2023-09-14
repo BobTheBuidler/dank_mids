@@ -161,6 +161,8 @@ class DankMiddlewareController:
     
     def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
         new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
+        # TODO: remove this later
+        logger.info('potential new %s batch size %s', chunk_name, new_chunk_size)
         if new_chunk_size < 30:
             logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue earlier? You might want to restart your script. {chunk_name} chunk size will not be further lowered.")
             return
