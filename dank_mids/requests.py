@@ -184,7 +184,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True).to_dict(self.method)
             if 'error' in response:
-                if response['error']['message'] == 'invalid request':
+                if response['error']['message'] in ['invalid request', 'Parse error']:
                     if self.controller._time_of_request_type_change == 0:
                         self.controller.request_type = Request
                         self.controller._time_of_request_type_change = time.time()
@@ -228,7 +228,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(data, RawResponse):
             self._response = data
         elif isinstance(data, BadResponse):
-            if data.response.error.message == 'invalid request':
+            if data.response.error.message in ['invalid request', 'Parse error']:
                 if self.controller._time_of_request_type_change == 0:
                     self.controller.request_type = Request
                     self.controller._time_of_request_type_change = time.time()
@@ -407,7 +407,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             logger.debug('Dank too loud. Bisecting batch and retrying.')
-        elif isinstance(e, BadResponse) and 'invalid request' in f"{e}":
+        elif isinstance(e, BadResponse) and ('invalid request' in f"{e}" or 'Parse error' in f"{e}"):
             pass
         elif "error processing call Revert" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
@@ -699,7 +699,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         if isinstance(response, list):
             return response
         # Oops, we failed.
-        if response.error.message == 'invalid request':
+        if response.error.message in ['invalid request', 'Parse error']:
             # NOT SURE IF THIS ACTUALLY RUNS, CAN WE RECEIVE THIS TYPE RESPONSE FOR A JSON BATCH?
             if self.controller._time_of_request_type_change == 0:
                 self.controller.request_type = Request
