@@ -77,7 +77,12 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
 
 async def decode_output(call: ContractCall, data: bytes) -> Any:
     __validate_output(call.abi, data)
-    if call._skip_decoder_proc_pool or b"Unexpected error" in data:  # Multicall3
+    if hasattr(call, '_skip_decoder_proc_pool'):
+        skip_proc_pool = call._skip_decoder_proc_pool
+    else:
+        logger.info('%s is missing attr `_skip_decoder_proc_pool`', call)
+        skip_proc_pool = call._address in _skip_proc_pool
+    if skip_proc_pool or b"Unexpected error" in data:  # Multicall3
         # This will break the process pool
         decoded = __decode_output(data, call.abi)
     else:
