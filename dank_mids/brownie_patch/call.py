@@ -71,9 +71,11 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
         raise data
     return data
 
+MULTICALL3 = "0xcA11bde05977b3631167028862bE2a173976CA11"
+
 async def decode_output(call: ContractCall, data: bytes) -> Any:
     __validate_output(call.abi, data)
-    if call._address == "0xcA11bde05977b3631167028862bE2a173976CA11":  # Multicall3
+    if call._address == MULTICALL3 or b"Unexpected error" in data:  # Multicall3
         # This will break the process pool
         decoded = __decode_output(data, call.abi)
     else:
