@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Tuple, Union
 
 from brownie import Contract
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
-from dank_mids.brownie_patch.call import _get_coroutine_fn
+from dank_mids.brownie_patch.call import _get_coroutine_fn, _skip_proc_pool
 from web3 import Web3
 
 
@@ -32,6 +32,7 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: Web3) -> None:
 
     for method in call.__dict__['methods'].values():
         if isinstance(method, (ContractCall, ContractTx)):
+            method._skip_decoder_proc_pool = method._address in _skip_proc_pool
             method.coroutine = MethodType(_get_coroutine_fn(w3, len(method.abi['inputs'])), method)
     # TODO implement this properly
         #elif isinstance(call, ContractTx):
