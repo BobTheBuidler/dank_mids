@@ -8,12 +8,14 @@ from typing import Any, Dict, Optional, Tuple, Union
 
 import eth_abi
 from a_sync import AsyncProcessPoolExecutor
+from brownie import chain
 from brownie.convert.normalize import format_input, format_output
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from hexbytes import HexBytes
+from multicall.constants import MULTICALL2_ADDRESSES
 from web3 import Web3
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
@@ -71,11 +73,14 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
         raise data
     return data
 
-MULTICALL3 = "0xcA11bde05977b3631167028862bE2a173976CA11"
+multicall3 = "0xcA11bde05977b3631167028862bE2a173976CA11"
+skip_proc_pool = {multicall3}
+if multicall2 := MULTICALL2_ADDRESSES.get(chain.id, None):
+    skip_proc_pool.add(multicall2)
 
 async def decode_output(call: ContractCall, data: bytes) -> Any:
     __validate_output(call.abi, data)
-    if call._address == MULTICALL3 or b"Unexpected error" in data:  # Multicall3
+    if call._address in skip_proc_pool or b"Unexpected error" in data:  # Multicall3
         # This will break the process pool
         decoded = __decode_output(data, call.abi)
     else:
