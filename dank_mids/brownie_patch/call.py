@@ -77,27 +77,26 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
 
 async def decode_output(call: ContractCall, data: bytes) -> Any:
     __validate_output(call.abi, data)
-    if hasattr(call, '_skip_decoder_proc_pool'):
-        skip_proc_pool = call._skip_decoder_proc_pool
-    else:
-        logger.info('%s is missing attr `_skip_decoder_proc_pool`', call)
-        skip_proc_pool = call._address in _skip_proc_pool
-    if skip_proc_pool or b"Unexpected error" in data:  # Multicall3
-        # This will break the process pool
-        decoded = __decode_output(data, call.abi)
-    else:
-        try:
-            decoded = await decode(call, data)
-        # TODO: move this somewhere else
-        except BrokenProcessPool:
-            # Let's fix that right up
-            logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_DECODER_PROCESSES, data, call.abi)
-            ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
+    try:
+        if call._skip_decoder_proc_pool or b"Unexpected error" in data:  # Multicall3
+            # This will break the process pool
             decoded = __decode_output(data, call.abi)
-    # We have to do it like this so we don't break the process pool.
-    if isinstance(decoded, Exception):
-        raise decoded
-    return decoded
+        else:
+            try:
+                decoded = await decode(call, data)
+            # TODO: move this somewhere else
+            except BrokenProcessPool:
+                # Let's fix that right up
+                logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_DECODER_PROCESSES, data, call.abi)
+                ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
+                decoded = __decode_output(data, call.abi)
+        # We have to do it like this so we don't break the process pool.
+        if isinstance(decoded, Exception):
+            raise decoded
+        return decoded
+    except AttributeError: # NOTE: Not sure why this happens as we set the attr while patching the call but w/e, this works for now
+        call._skip_decoder_proc_pool = call._address in _skip_proc_pool
+        return await decode_output(call, data)
 
 async def __request_data_no_args(call: ContractCall) -> str:
     return call.signature
