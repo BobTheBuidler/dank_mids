@@ -78,7 +78,7 @@ if not typed_envs.logger.disabled:
 
 # NOTE: The other modes are (probably) bugging out right now. More investigation needed. For now you use infura mode.
 if not OPERATION_MODE.infura:
-    raise ValueError("Dank mids must be run in infura mode for now")
+    logger.warning("Unless you know what you're doing, dank mids should be run in infura mode for now")
 
 if OPERATION_MODE.infura:
     for process_pool in {MULTICALL_DECODER_PROCESSES, BROWNIE_DECODER_PROCESSES, BROWNIE_ENCODER_PROCESSES}:
