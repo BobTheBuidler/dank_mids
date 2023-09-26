@@ -14,6 +14,7 @@ from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
+from eth_utils import to_checksum_address
 from hexbytes import HexBytes
 from multicall.constants import MULTICALL2_ADDRESSES
 from web3 import Web3
@@ -111,7 +112,7 @@ def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -
 
 _skip_proc_pool = {"0xcA11bde05977b3631167028862bE2a173976CA11"}  # multicall3
 if multicall2 := MULTICALL2_ADDRESSES.get(chain.id, None):
-    _skip_proc_pool.add(multicall2)
+    _skip_proc_pool.add(to_checksum_address(multicall2))
     
 def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
     try:
