@@ -25,8 +25,9 @@ encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, 
 decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)
 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
+    call._skip_decoder_proc_pool = call._address in _skip_proc_pool
     call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
-
+    
 @lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
     if ENVS.OPERATION_MODE.application:
@@ -73,14 +74,10 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
         raise data
     return data
 
-multicall3 = "0xcA11bde05977b3631167028862bE2a173976CA11"
-skip_proc_pool = {multicall3}
-if multicall2 := MULTICALL2_ADDRESSES.get(chain.id, None):
-    skip_proc_pool.add(multicall2)
 
 async def decode_output(call: ContractCall, data: bytes) -> Any:
     __validate_output(call.abi, data)
-    if call._address in skip_proc_pool or b"Unexpected error" in data:  # Multicall3
+    if call._skip_decoder_proc_pool or b"Unexpected error" in data:  # Multicall3
         # This will break the process pool
         decoded = __decode_output(data, call.abi)
     else:
@@ -108,6 +105,10 @@ def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -
     except Exception as e:
         return e
 
+_skip_proc_pool = {"0xcA11bde05977b3631167028862bE2a173976CA11"}  # multicall3
+if multicall2 := MULTICALL2_ADDRESSES.get(chain.id, None):
+    _skip_proc_pool.add(multicall2)
+    
 def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
     try:
         types_list = get_type_strings(abi["outputs"])
