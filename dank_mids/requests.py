@@ -711,7 +711,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 return
             except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError):
                 detail = _err_details.get(e.__class__, "failed to connect")
-                logger.warning("This batch %s: %s", detail, self.method_counts)
+                if isinstance(e, asyncio.TimeoutError) or len(self) > 100:
+                    logger.warning("This batch %s: %s", detail, self.method_counts)
                 raise e
             except ExceedsMaxBatchSize as e:
                 logger.warning("exceeded max batch size for your node")
