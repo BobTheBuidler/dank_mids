@@ -18,11 +18,13 @@ logger = logging.getLogger(__name__)
 class Rebatcher:
     def __init__(self, controller: "DankMiddlewareController") -> None:
         self.controller = controller
-        self.queue = asyncio.Queue()
+        self.__queue = asyncio.Queue()
+        self.__eth_calls: DefaultDict[BlockId, List[eth_call]] = defaultdict(list)
+        self.__rpc_calls: List["RPCRequest"] = []
     
     async def rebatch(self, request: "RPCRequest") -> None:
         self._task
-        self.queue.put_nowait(request)
+        self.__queue.put_nowait(request)
         while True:
             with suppress(asyncio.TimeoutError):
                 await asyncio.wait_for(request._done.wait(), 30)
@@ -36,32 +38,29 @@ class Rebatcher:
     
     def __get_next(self) -> Optional["RPCRequest"]:
         try:
-            return self.queue.get_nowait()
+            return self.__queue.get_nowait()
         except asyncio.QueueEmpty:
             return None
     
     async def __rebatch_daemon_job(self) -> NoReturn:
-        eth_calls: DefaultDict[BlockId, List[eth_call]]
-        rpc_calls: List[RPCRequest]
         try:
             while True:
-                eth_calls = defaultdict(list)
-                rpc_calls = []
+                self.__eth_calls = defaultdict(list)
+                self.__rpc_calls = []
+                request = await self.__queue.get()
+                self.__sort_call(request)
                 while request := self.__get_next():
-                    # NOTE we don't need logic for single requests here because its a rebatcher. when we want to generalize it to a batcher, we will
-                    if isinstance(request, eth_call) and request.multicall_compatible:
-                        eth_calls[request.block].append(request)
-                    else:
-                        rpc_calls.append(request)
-                if eth_calls or rpc_calls:
-                    logger.debug("rebatching %s calls in multicalls and %s other calls", sum(len(calls) for calls in eth_calls.values()), len(rpc_calls))
-                    await DankBatch(self.controller, eth_calls, rpc_calls=rpc_calls)
-                await asyncio.sleep(1)
-                        
+                    self.__sort_call(request)
+                logger.debug("rebatching %s calls in multicalls and %s other calls", sum(len(calls) for calls in eth_calls.values()), len(rpc_calls))
+                await DankBatch(self.controller, self.__eth_calls, self.__rpc_calls)
         except Exception as e:
             self._exc = e
             raise e
-            
         
-        
+    def __sort_call(self, request: "RPCRequest") -> None:
+        # NOTE we don't need logic for single requests here because its a rebatcher. when we want to generalize it to a batcher, we will
+        if isinstance(request, eth_call) and request.multicall_compatible:
+            self.__eth_calls[request.block].append(request)
+        else:
+            self.__rpc_calls.append(request)
         
