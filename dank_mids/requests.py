@@ -66,7 +66,7 @@ class _RequestEvent(a_sync.Event):
             self._loop.call_soon_threadsafe(super().set)
 
 class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
-    __slots__ = 'controller', 'uid', '_response', '_done', '_start', '_batch'
+    __slots__ = 'controller', 'provider', 'uid', '_response', '_done', '_start', '_batch'
     controller: "DankMiddlewareController"
     def __init__(self) -> None:
         self.uid = self.controller.call_uid.next
