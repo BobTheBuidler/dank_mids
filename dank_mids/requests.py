@@ -172,10 +172,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     @property
     def semaphore(self) -> a_sync.Semaphore:
         # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
-        semaphore = self.controller.method_semaphores[self.method]
-        if self.method == 'eth_call':
-            semaphore = semaphore[self.params[1]]
-        return semaphore
+        return self.controller.method_semaphores.get_semaphore(self.method, self.params)
     
     @cached_property
     def weight(self) -> float:

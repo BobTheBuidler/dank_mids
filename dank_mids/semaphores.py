@@ -1,6 +1,6 @@
 
 import logging
-from typing import TYPE_CHECKING, Literal, Union
+from typing import TYPE_CHECKING, Any, Literal, Union
 
 from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
 from a_sync.primitives.locks.prio_semaphore import (
@@ -28,7 +28,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
 
 
 class MethodSemaphores:
-    _use_block_semaphore = ["eth_call"] #, "eth_getCode", "erigon_getHeaderByNumber"]
+    _use_block_semaphore = ["eth_call", "eth_getCode", "erigon_getHeaderByNumber"]
     def __init__(self, controller: "DankMiddlewareController") -> None:
         from dank_mids import ENVIRONMENT_VARIABLES
         self.controller = controller
@@ -40,5 +40,12 @@ class MethodSemaphores:
         self.keys = self.method_semaphores.keys()
         self.dummy = DummySemaphore()
     
-    def __getitem__(self, method: RPCEndpoint) -> Union[ThreadsafeSemaphore, DummySemaphore]:
+    def __getitem__(self, method: RPCEndpoint) -> Union[BlockSemaphore, ThreadsafeSemaphore, DummySemaphore]:
         return next((self.method_semaphores[key] for key in self.keys if key in method), self.dummy)
+    
+    def get_semaphore(self, method: RPCEndpoint, params: Any) -> Union[BlockSemaphore, ThreadsafeSemaphore, DummySemaphore]:
+        method_semaphore = self[method]
+        if method in self._use_block_semaphore:
+            block = params[0 if method == "erigon_getHeaderByNumber" else 1]
+            return method_semaphore[block]
+        return method_semaphore
