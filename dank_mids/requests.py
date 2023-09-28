@@ -196,7 +196,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
             if not self.should_batch:
                 logger.debug("bypassed, method is %s", self.method)
                 await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)
-                return self.response.decode(partial=True).to_dict(method=self.method)
+                response = self.response.decode(partial=True)
+                if self.provider._should_retry_invalid_request(response.exception):
+                    return await self.create_duplicate(cancel_old=True)
+                return response.to_dict(method=self.method)
             
             if self._batch and self._batch._status == Status.QUEUED:
                 # NOTE: If this call has a batch assigned, we filled a batch. Let's await it now so we can send something to the node.
