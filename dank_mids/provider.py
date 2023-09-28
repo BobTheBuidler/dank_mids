@@ -116,6 +116,7 @@ class DankProvider:
     def _dethrottle(self) -> None:
         self._semaphore.release()
         self._throttled_by -= 1
+        self._pools_open.set()
         logger.info('%s max concurrency raised to %s', self, self._concurrency)
     
     
