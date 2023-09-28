@@ -92,7 +92,7 @@ class DankMidsClientResponseError(_EasyInitClientResponseError):
         request: "PartialRequest",
     ) -> None:
         super().__init__(e)
-        self.args = (*e.request_info, e.history, request)
+        self.args = (e.request_info, e.history, request)
         self.request = request
         
 class TooManyRequests(_EasyInitClientResponseError):
