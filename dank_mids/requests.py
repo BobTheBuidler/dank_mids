@@ -123,6 +123,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 ### Single requests:
 
 BYPASS_METHODS = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
+Noop = Any
 
 @lru_cache(maxsize=None)
 def _should_batch_method(method: str) -> bool:
@@ -185,7 +186,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             return 5
         return 0.5
     
-    def start(self, batch: "_Batch") -> None:
+    def start(self, batch: "_Batch", cleanup: Noop = False) -> None:
         self._status = Status.ACTIVE
         self._batch = batch
 
@@ -648,7 +649,7 @@ class Multicall(_Batch[eth_call]):
 
 async def _await_batch(batch) -> Tuple[str, Optional[Exception]]:
     try:
-        await batch
+        await (batch if isinstance(batch, _Batch) else batch.make_request())
         return batch, None
     except Exception as e:
         return batch, e  
@@ -810,8 +811,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         """
         logger.debug("%s had exception %s, retrying", self, e)
         batches = [
-            Multicall(self.controller, chunk[0].calls, f"json{self.jid}_{i}")  # type: ignore [misc]
-            if len(chunk) == 1 and isinstance(chunk[0], Multicall)
+            Multicall(self.controller, chunk, f"jrpcbatch{self.jid}_{i}")  # type: ignore [misc]
+            if len(chunk) == 1 and isinstance(chunk[0], eth_call)
+            else chunk[0]
+            if len(chunk) == 1
             else JSONRPCBatch(self.controller, chunk, f"{self.jid}_{i}")
             for i, chunk in enumerate(self.bisected)
             if chunk
