@@ -72,14 +72,6 @@ class DankProvider:
             yield chunk
     
     @property
-    def _at_min_speed(self) -> bool:
-        if self._concurrency > self._min_concurrency:
-            return False
-        elif self._concurrency == self._min_concurrency:
-            return True
-        raise ValueError(f'concurrency ({self._concurrency}) should never be less than minimum ({self._min_concurrency})')
-    
-    @property
     def _concurrency(self) -> bool:
         return self._max_concurrency - self._throttled_by
     
@@ -113,9 +105,9 @@ class DankProvider:
             self._pools_open.set()
         
     def _throttle(self) -> None:
-        if self._at_min_speed:
-            return
         throttle_by = max(self._concurrency - self._active_requests, 1)
+        if self._concurrency - throttle_by < self._min_concurrency:
+            return
         self._throttled_by += throttle_by
         self._semaphore._value -= throttle_by
         for _ in range(throttle_by):
