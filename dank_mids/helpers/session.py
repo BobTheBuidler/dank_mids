@@ -102,12 +102,12 @@ class ClientSession(DefaultClientSession):
                 async for b in self.post(endpoint, *args, _retry_after=e.try_after, **kwargs):
                     yield b
             except ClientResponseError as e:
+                tried += 1
                 if tried >= 5 or not _should_retry(e):
                     raise e
-                sleep = random() * 2
+                sleep = random() * 4 * tried
                 logger.debug("response failed with status %s, retrying in %ss", HTTPStatusExtended(e.status), round(sleep, 2))
                 await asyncio.sleep(sleep)
-                tried += 1
                 
     async def _post_and_handle_excs(self, endpoint: str, *args, _retry_after: int = 1, **kwargs) -> BytesStream:
         async with limiter:
