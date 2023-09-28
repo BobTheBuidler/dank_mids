@@ -12,7 +12,7 @@ from web3 import Web3
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 
-from dank_mids._exceptions import BrokenPipe
+from dank_mids._exceptions import BadGateway, BadRequest, BrokenPipe
 from dank_mids.helpers import decode, session
 from dank_mids.types import BytesStream, PartialRequest, RawResponse, Request
 
@@ -96,7 +96,7 @@ class DankProvider:
                 async for chunk in session.post(self.endpoint, data=data):
                     yield chunk
                 self._successes += 1
-            except (asyncio.TimeoutError, BrokenPipe, ClientConnectorError):
+            except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError):
                 self._failures += 1
                 await self._throttle()
                 raise

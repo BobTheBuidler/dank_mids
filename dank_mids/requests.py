@@ -29,8 +29,9 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants, stats
 from dank_mids._demo_mode import demo_logger
-from dank_mids._exceptions import (ArchiveNodeRequired, BadResponse,
-                                   BrokenPipe, DankMidsClientResponseError,
+from dank_mids._exceptions import (ArchiveNodeRequired, BadGateway, BadRequest,
+                                   BadResponse, BrokenPipe,
+                                   DankMidsClientResponseError,
                                    DankMidsInternalError, EmptyBatch,
                                    ExceedsMaxBatchSize, GatewayPayloadTooLarge,
                                    InvalidRequest, NodePayloadTooLarge,
@@ -499,7 +500,7 @@ class Multicall(_Batch[eth_call]):
             await self.spoof_response(await self.provider.make_request(self.method, self.params, request_id=self.uid))
         except internal_err_types.__args__ as e:
             raise DankMidsInternalError(e) from e
-        except (asyncio.TimeoutError, BrokenPipe, ClientConnectorError) as e:
+        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError) as e:
             await self.bisect_and_retry(e)
         except GatewayPayloadTooLarge as e:
             logger.debug("multicall payload too large.  calls: %s  response headers: %s", len(self), e.headers)
@@ -665,7 +666,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             await self.bisect_and_retry(e)
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
-        except (asyncio.TimeoutError, BrokenPipe, ExceedsMaxBatchSize, PayloadTooLarge) as e:
+        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ExceedsMaxBatchSize, PayloadTooLarge) as e:
             await self.bisect_and_retry(e)
         except Exception as e:
             _log_exception(e)
@@ -690,7 +691,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             except BrokenPipe:
                 logger.warning("This batch broke the pipe: %s  max concurrency lowered to %s", self.method_counts, self.provider._concurrency)
                 raise
-            except ClientConnectorError:
+            except (BadRequest, BadGateway, ClientConnectorError):
                 logger.warning("This batch failed to connect: %s  max concurrency lowered to %s", self.method_counts, self.provider._concurrency)
                 raise
             except ExceedsMaxBatchSize as e:

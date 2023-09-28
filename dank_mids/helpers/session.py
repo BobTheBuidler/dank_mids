@@ -15,8 +15,8 @@ from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids._exceptions import (BrokenPipe, GatewayPayloadTooLarge,
-                                   TooManyRequests)
+from dank_mids._exceptions import (BadGateway, BadRequest, BrokenPipe,
+                                   GatewayPayloadTooLarge, TooManyRequests)
 from dank_mids.types import BytesStream
 
 logger = logging.getLogger("dank_mids.session")
@@ -120,6 +120,10 @@ class ClientSession(DefaultClientSession):
                     raise BrokenPipe(*e.args) from e
                 raise e
             except ClientResponseError as e:
+                if e.status == HTTPStatusExtended.BAD_REQUEST:
+                    raise BadRequest(e)
+                if e.status == HTTPStatusExtended.BAD_GATEWAY:
+                    raise BadGateway(e)
                 if e.status == HTTPStatusExtended.TOO_MANY_REQUESTS:
                     raise TooManyRequests(e, endpoint, _retry_after) from e
                 elif e.message == "Payload Too Large":

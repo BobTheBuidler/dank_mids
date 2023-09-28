@@ -91,5 +91,10 @@ class TooManyRequests(DankMidsClientResponseError):
         logger.info(f"rate limited: retrying after {self.try_after}s")
 
 class GatewayPayloadTooLarge(DankMidsClientResponseError, PayloadTooLarge):
-    def __init__(self, e: ClientResponseError) -> None:
-        super().__init__(e)
+    pass
+
+class BadRequest(DankMidsClientResponseError):
+    pass
+
+class BadGateway(DankMidsClientResponseError):
+    pass
