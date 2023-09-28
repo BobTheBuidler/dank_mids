@@ -123,13 +123,13 @@ class DankProvider:
             next_dethrottle = self._next_dethrottle.when() if self._next_dethrottle else 0
             dethrottle_at = max(next_dethrottle, time()) + 60
             self._next_dethrottle = asyncio.get_running_loop().call_at(dethrottle_at, self._dethrottle)
-        logger.info("%s max concurrency throttled to %s", self, self._concurrency)
+        logger.info("%s max concurrency throttled to %s, current %s", self, self._concurrency, self._active_requests)
         
     def _dethrottle(self) -> None:
         self._semaphore.release()
         self._throttled_by -= 1
         self._pools_open.set()
-        logger.info('%s max concurrency raised to %s', self, self._concurrency)
+        logger.info('%s max concurrency raised to %s, current %s', self, self._concurrency, self._active_requests)
     
     
 def _validate_endpoint(endpoint: str) -> None:
