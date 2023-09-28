@@ -44,6 +44,9 @@ class BadResponse(ValueError):
 class NodePayloadTooLarge(BadResponse, PayloadTooLarge):
     pass
 
+class OutOfGas(BadResponse):
+    pass
+
 class InvalidRequest(BadResponse):
     pass
 

@@ -33,7 +33,7 @@ from dank_mids._exceptions import (ArchiveNodeRequired, BadGateway, BadRequest,
                                    DankMidsInternalError, EmptyBatch,
                                    ExceedsMaxBatchSize, GatewayPayloadTooLarge,
                                    InvalidRequest, NodePayloadTooLarge,
-                                   PayloadTooLarge, ResponseNotReady,
+                                   OutOfGas, PayloadTooLarge, ResponseNotReady,
                                    internal_err_types)
 from dank_mids.helpers import decode, session, stream
 from dank_mids.helpers.helpers import set_done
@@ -549,6 +549,9 @@ class Multicall(_Batch[eth_call]):
         elif isinstance(data, RawResponse):
             response = data.decode(partial=True)
             if response.error:
+                if isinstance(response.exception, OutOfGas):
+                    self._t = asyncio.create_task(self.bisect_and_retry(response.exception))
+                    return
                 logger.debug("%s received an 'error' response from the rpc: %s", self, response.exception)
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
                 raise response.exception

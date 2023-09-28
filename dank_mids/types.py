@@ -13,7 +13,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import constants, stats
 from dank_mids._exceptions import (ArchiveNodeRequired, BadResponse,
                                    ExceedsMaxBatchSize, InvalidRequest,
-                                   NodePayloadTooLarge)
+                                   NodePayloadTooLarge, OutOfGas)
 
 if TYPE_CHECKING:
     from dank_mids.requests import Multicall
@@ -103,6 +103,7 @@ class PartialResponse(_DictStruct):
             NodePayloadTooLarge(self) if self.payload_too_large
             else ExceedsMaxBatchSize(self) if re.search(r'batch limit (\d+) exceeded', self.error.message)
             else InvalidRequest(self) if self.error.message in ["invalid request", "Parse error"]
+            else OutOfGas(self) if self.error.message == "out of gas"
             else ArchiveNodeRequired(self) if self.error.message.startswith("No state available for block")
             else BadResponse(self)
         )
