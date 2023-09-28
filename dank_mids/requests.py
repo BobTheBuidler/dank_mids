@@ -6,11 +6,10 @@ import time
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
-from enum import IntEnum
 from functools import cached_property, lru_cache
 from typing import (TYPE_CHECKING, Any, AsyncGenerator, DefaultDict, Dict,
-                    Generator, Generic, Iterable, Iterator, List, NoReturn,
-                    Optional, Tuple, TypeVar, Union)
+                    Generator, Generic, Iterable, Iterator, List, Optional,
+                    Tuple, TypeVar, Union)
 
 import a_sync
 import eth_retry
@@ -36,8 +35,7 @@ from dank_mids._exceptions import (ArchiveNodeRequired, BadGateway, BadRequest,
                                    InvalidRequest, NodePayloadTooLarge,
                                    OutOfGas, PayloadTooLarge, ResponseNotReady,
                                    internal_err_types)
-from dank_mids.helpers import decode, session, stream
-from dank_mids.helpers.helpers import set_status
+from dank_mids.helpers import Status, decode, session, stream
 from dank_mids.types import (BatchId, BlockId, JsonrpcParams, PartialRequest,
                              PartialResponse, RawResponse, Request, Response)
 from dank_mids.uid import _AlertingRLock
@@ -51,22 +49,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPCResponse])
-
-class Status(IntEnum):
-    QUEUED = 0
-    ACTIVE = 1
-    COMPLETE = 2
-    CANCELED = 3
-    FAILED = 4
-    TIMED_OUT = 5
-    
-    @classmethod
-    def for_exc(cls, e: Exception):
-        if isinstance(e, asyncio.CancelledError):
-            return cls.CANCELED
-        elif isinstance(e, asyncio.TimeoutError):
-            return cls.TIMED_OUT
-        return cls.FAILED
 
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
@@ -186,7 +168,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self._status = Status.ACTIVE
         self._batch = batch
 
-    @set_status
+    @Status.set
     async def get_response(self) -> RPCResponse:
         try:
             if not self.should_batch:
@@ -246,7 +228,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # TODO: refactor this out
         return self.response
     
-    @set_status
+    @Status.set
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
         # sourcery skip: merge-duplicate-blocks
         """
@@ -279,7 +261,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         else:
             raise NotImplementedError(f'type {type(data)} not supported for spoofing.', type(data), data)
     
-    @set_status
+    @Status.set
     async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
         self._response = await self.provider.make_request(self.method, self.params, request_id=self.uid)
@@ -513,8 +495,7 @@ class Multicall(_Batch[eth_call]):
     def needs_override_code(self) -> bool:
         return self.mcall.needs_override_code_for_block(self.block)
         
-    @set_done
-    @set_status
+    @Status.set
     @eth_retry.auto_retry
     async def get_response(self) -> None:
         #if len(self) < 50: # TODO play with later
@@ -552,7 +533,7 @@ class Multicall(_Batch[eth_call]):
             return True
         return len(self) > 1
     
-    @set_status
+    @Status.set
     async def spoof_response(self, data: Union[RawResponse, Exception]) -> None:
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
@@ -598,7 +579,7 @@ class Multicall(_Batch[eth_call]):
             raise retval    
         return retval
     
-    @set_status
+    @Status.set
     async def bisect_and_retry(self, e: Exception) -> List[RPCResponse]:
         """
         Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
@@ -685,7 +666,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         with self._lock:
             return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
 
-    @set_status
+    @Status.set
     @eth_retry.auto_retry
     async def get_response(self) -> None:
         rid = self.controller.request_uid.next
@@ -756,14 +737,14 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         """Should the JSONRPCBatch be retried based on `e`?"""
         return super().should_retry(e) or self.is_single_multicall
     
-    @set_status
+    @Status.set
     async def spoof_response(self, response_stream: AsyncGenerator[RawResponse, None]) -> None:
         done = 0
         async for raw in response_stream:
             await self.calls[done].spoof_response(raw)
             done += 1
     
-    @set_status
+    @Status.set
     async def bisect_and_retry(self, e: Exception) -> None:
         """
         Splits up the calls of a `JSONRPCBatch` into 2 chunks, then awaits both.
