@@ -851,6 +851,6 @@ _err_details = {
 }
 
 async def sleep_random(e: Exception, multiplier: int) -> None:
-    sleep = session.random() * 10 * multiplier
-    logger.debug("response failed with %s, retrying in %ss", e, round(sleep, 2))
+    sleep = session.random() * 2 * multiplier
+    logger.warning("response failed with %s, retrying in %ss", e, round(sleep, 2))
     await asyncio.sleep(sleep)
