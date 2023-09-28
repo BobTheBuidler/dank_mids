@@ -16,7 +16,7 @@ CHECK = MIN_SIZE - 1
 logger = logging.getLogger(__name__)
 
 class DankBatch:
-    __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
+    __slots__ = 'controller', 'multicalls', 'rpc_calls', 'rebatched', '_started'
     """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
     def __init__(
         self, 
