@@ -79,7 +79,7 @@ class DankMidsClientResponseError(_EasyInitClientResponseError):
     def __init__(
         self,
         e: ClientResponseError,
-        request: Optional[PartialRequest] = None,
+        request: "PartialRequest",
     ) -> None:
         super().__init__(e)
         self.args = (*e.request_info, e.history, request)
