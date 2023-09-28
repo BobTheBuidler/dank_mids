@@ -18,7 +18,8 @@ from dank_mids._exceptions import (BadGateway, BadRequest, BrokenPipe,
                                    CloudflareConnectionTimeout,
                                    CloudflareTimeout, GatewayPayloadTooLarge,
                                    StreamReaderTimeout, TooManyRequests)
-from dank_mids.types import BytesStream
+from dank_mids.helpers import decode
+from dank_mids.types import BytesStream, RawResponse
 
 logger = logging.getLogger("dank_mids.session")
 
@@ -85,6 +86,10 @@ async def get_session() -> "ClientSession":
 
 
 class ClientSession(DefaultClientSession):
+    async def old_post(self, endpoint: str, *args, _retry_after: int = 1, **kwargs) -> RawResponse:
+        async with super().post(endpoint, *args, **kwargs) as response:
+            return await response.json(loads=decode.raw)
+        
     async def post(self, endpoint: str, *args, _retry_after: int = 1, **kwargs) -> BytesStream:
         logger.debug("making request with (args, kwargs): (%s %s)", tuple(chain((endpoint), args)), kwargs)
         # Try the request until success or 5 failures.

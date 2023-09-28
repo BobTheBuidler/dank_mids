@@ -67,6 +67,10 @@ class DankProvider:
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
+        request = self._request_selector(method=method, params=params, id=request_id or self.controller.call_uid.next)
+        sesh = await session.get_session()
+        return await sesh.old_post(self.endpoint, data=encode(request))
+        
         response = b''
         async for chunk in self.stream_request(method, params, request_id=request_id):
             response += chunk
@@ -84,7 +88,7 @@ class DankProvider:
     @property
     def _active_requests(self) -> int:
         return self._concurrency - self._semaphore._value
-    
+        
     async def _post(self, data: bytes) -> BytesStream:
         try:
             async with self._semaphore:
