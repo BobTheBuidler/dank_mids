@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Awaitable, Callable, TypeVar
 from typing_extensions import ParamSpec
 from web3.exceptions import ContractLogicError
 
+from dank_mids import constants
+
 if TYPE_CHECKING:
     from dank_mids.requests import RPCRequest
 
@@ -50,7 +52,6 @@ class Status(IntEnum):
                 raise e
             except Exception as e:
                 from dank_mids.requests import eth_call
-
                 # TODO this if clause should live elsewhere
                 # NOTE: these come from the sync w3 and will need a logic change when the sync w3 is removed
                 ok = isinstance(self, eth_call) and isinstance(e, ContractLogicError)
@@ -59,7 +60,9 @@ class Status(IntEnum):
                     self._status = Status.COMPLETE
                     raise e
                 self._status = Status.FAILED
-                logger.warning("%s failed due to the following exc:", self)
-                logger.exception(e)
+                stre = str(e).lower()
+                if all(err not in stre for err in constants.RETRY_ERRS):
+                    logger.warning("%s failed due to the following exc:", self)
+                    logger.exception(e)
                 raise e
         return set_status_wrap
