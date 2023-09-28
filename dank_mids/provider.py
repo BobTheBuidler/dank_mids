@@ -11,7 +11,8 @@ from web3 import Web3
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 
-from dank_mids._exceptions import BadGateway, BadRequest, BrokenPipe
+from dank_mids._exceptions import (BadGateway, BadRequest, BrokenPipe,
+                                   InvalidRequest)
 from dank_mids.helpers import decode, session
 from dank_mids.types import BytesStream, PartialRequest, RawResponse, Request
 
@@ -97,8 +98,8 @@ class DankProvider:
         if not self._semaphore._waiters:
             self._pools_open.set()
     
-    def _should_retry_invalid_request(self) -> bool:
-        return self._request_selector._should_retry_invalid_request()
+    def _should_retry_invalid_request(self, e: Optional[Exception]) -> bool:
+        return self._request_selector._should_retry_invalid_request() if isinstance(e, InvalidRequest) else False
     
     def _throttle(self) -> None:
         throttle_to = max(self._active_requests - 1, self._min_concurrency)

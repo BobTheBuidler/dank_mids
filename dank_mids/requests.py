@@ -197,7 +197,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # JIT json decoding
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True)
-            if isinstance(response.exception, InvalidRequest) and self.provider._should_retry_invalid_request():
+            if self.provider._should_retry_invalid_request(response.exception):
                 return await self.create_duplicate()
                 
             response_dict = response.to_dict(self.method)
@@ -240,8 +240,9 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # New handler
         if isinstance(data, RawResponse):
             self._response = data
-        elif isinstance(data, BadResponse):
-            if isinstance(data, InvalidRequest) and self.provider._should_retry_invalid_request():
+        elif isinstance(data, BadResponse):         
+            # NOTE: keep this down here to save an if check for successful (most) responses      
+            if self.provider._should_retry_invalid_request(data):
                 logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                 self._response = await self.create_duplicate()
                 return
