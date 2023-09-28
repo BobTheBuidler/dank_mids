@@ -484,7 +484,6 @@ class Multicall(_Batch[eth_call]):
     __slots__ = 'bid', '_started', '__dict__'  # We need to specify __dict__ for the cached properties to work
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
-    _might_want_to_reduce_batch_size_indicators = 0
 
     def __init__(
         self, 
@@ -556,8 +555,8 @@ class Multicall(_Batch[eth_call]):
             raise DankMidsInternalError(e) from e
         except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError, _Timeout) as e:
             if len(self) >= self.controller.batcher.step:
-                self._might_want_to_reduce_batch_size_indicators += 1
-            if (i := self._might_want_to_reduce_batch_size_indicators / 5) == int(i):
+                _might_want_to_reduce_batch_size_indicators[self.__class__] += 1
+            if (i := _might_want_to_reduce_batch_size_indicators[self.__class__] / 5) == int(i):
                 self.controller.reduce_multicall_size(len(self))
             await self.sleep_random(e, multiplier=1 + str(self.bid).count("_"))
             await self.bisect_and_retry(e)
@@ -671,7 +670,6 @@ async def _await_batch(batch) -> Tuple[str, Optional[Exception]]:
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     __slots__ = 'jid', '_started'
-    _might_want_to_reduce_batch_size_indicators = 0
     
     def __init__(
         self,
@@ -777,12 +775,12 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 if isinstance(e, asyncio.TimeoutError) or len(self) > 100:
                     failure_logger.warning("This batch %s: %s", detail, self.method_counts)
                 if (this := max(len(self), self.weight)) >= ENVS.MAX_JSONRPC_BATCH_SIZE:
-                    self._might_want_to_reduce_batch_size_indicators += 1
-                    if (i := self._might_want_to_reduce_batch_size_indicators / 5) == int(i):
+                    _might_want_to_reduce_batch_size_indicators[self.__class__] += 1
+                    if (i := _might_want_to_reduce_batch_size_indicators[self.__class__] / 5) == int(i):
                         self.controller.reduce_batch_size(this)
                 elif self.total_calls >= self.controller.batcher.step:
-                    Multicall._might_want_to_reduce_batch_size_indicators += 1
-                    if (i := Multicall._might_want_to_reduce_batch_size_indicators / 5) == int(i):
+                    _might_want_to_reduce_batch_size_indicators[Multicall] += 1
+                    if (i := _might_want_to_reduce_batch_size_indicators[Multicall] / 5) == int(i):
                         self.controller.reduce_multicall_size(self.total_calls)
                 raise e
             except ExceedsMaxBatchSize as e:
@@ -878,3 +876,5 @@ _err_details = {
     asyncio.TimeoutError: "timed out",
     BrokenPipe: "broke the pipe",
 }
+
+_might_want_to_reduce_batch_size_indicators = defaultdict(int)
