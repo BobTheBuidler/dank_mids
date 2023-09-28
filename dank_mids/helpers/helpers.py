@@ -69,7 +69,7 @@ def set_done(fn: Callable[P, Awaitable[T]]):
             self._status = Status.COMPLETE
             return retval
         except (asyncio.TimeoutError, asyncio.CancelledError) as e:
-            if isinstance(self, "_Batch"):
+            if isinstance(self, _Batch):
                 status_logger.warning("%s was cancelled due to the following exc:", self)
                 status_logger.warning(e, exc_info=True)
             self._status = Status.CANCELED
@@ -77,7 +77,7 @@ def set_done(fn: Callable[P, Awaitable[T]]):
         except Exception as e:
             # TODO this if clause should live elsewhere
             # NOTE: these come from the sync w3 and will need a logic change when the sync w3 is removed
-            if isinstance(self, "RPCRequest") and isinstance(e, ContractLogicError):
+            if isinstance(self, RPCRequest) and isinstance(e, ContractLogicError):
                 # This is a successful failure response from the rpc and is handled further up the stack
                 self._status = Status.COMPLETE
                 return
