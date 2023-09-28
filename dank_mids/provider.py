@@ -13,6 +13,7 @@ from web3 import Web3
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._exceptions import (BadGateway, BadRequest, BrokenPipe,
                                    InvalidRequest)
 from dank_mids.helpers import decode, session
@@ -31,8 +32,8 @@ class DankProvider:
         self,
         controller: "DankMiddlewareController", 
         w3: Web3, 
-        min_concurrency: int = 256, 
-        max_concurrency: int = 512,
+        min_concurrency: int = ENVS.MIN_CONCURRENCY, 
+        max_concurrency: int = ENVS.MAX_CONCURRENCY,
     ) -> None:
         self.controller = controller
         endpoint = w3.provider.endpoint_uri

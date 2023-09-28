@@ -23,6 +23,10 @@ if not typed_envs.logger.disabled:
 # TODO: fix the other modes, set default='default', and make this verbose again
 OPERATION_MODE = _envs.create_env("OPERATION_MODE", OperationMode, default="infura", verbose=False)
 
+# Max and min number of open requests at any one time
+MIN_CONCURRENCY = _envs.create_env("MIN_CONCURRENCY", int, default=32, verbose=False)
+MAX_CONCURRENCY = _envs.create_env("MAX_CONCURRENCY", int, default=128, verbose=False)
+
 # Max number of rpc calls to include in one batch call
 MAX_JSONRPC_BATCH_SIZE = _envs.create_env("MAX_JSONRPC_BATCH_SIZE", int, default=500)
 
