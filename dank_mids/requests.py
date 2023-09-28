@@ -591,11 +591,15 @@ class Multicall(_Batch[eth_call]):
         batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
         for batch in batches:
             batch.start(cleanup=False)
-        for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
-            if isinstance(result, Exception):
-                if not isinstance(result, DankMidsInternalError):
-                    logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
-                raise result
+        for batch in asyncio.as_completed(batches):
+            try:
+                batch = await batch
+                self.delete_refs_to_completed_calls()
+                del batch
+            except Exception as e:
+                if not isinstance(e, DankMidsInternalError):
+                    logger.error(f"That's not good, there was an exception in a Multicall. These are supposed to be handled.\n{e}\n", exc_info=True)
+                raise e
 
     def _post_future_cleanup(self) -> None:
         with suppress(KeyError):
@@ -604,6 +608,13 @@ class Multicall(_Batch[eth_call]):
                 self.controller.pending_eth_calls.pop(self.block)
 
 
+async def _await_batch(batch) -> Tuple[str, Optional[Exception]]:
+    try:
+        await batch
+        return batch, None
+    except Exception as e:
+        return batch, e  
+    
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     __slots__ = 'jid', '_started'
     def __init__(
@@ -678,7 +689,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             await self.bisect_and_retry(e)
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
-        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ExceedsMaxBatchSize, PayloadTooLarge) as e:
+        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError, ExceedsMaxBatchSize, PayloadTooLarge) as e:
             await self.bisect_and_retry(e)
         except Exception as e:
             _log_exception(e)
@@ -758,11 +769,13 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         ]
         for batch in batches:
             batch.start(cleanup=False)
-        for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
+        for fut in asyncio.as_completed([_await_batch(batch) for batch in batches]):
+            batch_cls, result = await fut
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
-                    logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
+                    logger.error(f"That's not good, there was an exception in a {batch_cls}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
+            self.delete_refs_to_completed_calls()
     
     def adjust_batch_size(self) -> None:
         if self.is_multicalls_only:
