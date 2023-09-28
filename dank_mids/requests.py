@@ -525,9 +525,6 @@ class Multicall(_Batch[eth_call]):
     @Status.set
     @eth_retry.auto_retry
     async def get_response(self) -> None:
-        if len(self) == 0:
-            logger.info('multicall is empty, exiting. devnote: why does this occur?')
-            return
         #if len(self) < 50: # TODO play with later
         #    return await JSONRPCBatch(self.controller, self.calls)
         rid = self.controller.request_uid.next
@@ -616,7 +613,7 @@ class Multicall(_Batch[eth_call]):
         Calls `self._done.set()` when finished.
         """
         logger.debug("%s had exception %s, bisecting and retrying", self, e)
-        batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
+        batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected) if chunk]
         for batch in batches:
             batch.start(cleanup=False)
         for batch in asyncio.as_completed(batches):
