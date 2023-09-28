@@ -520,6 +520,9 @@ class Multicall(_Batch[eth_call]):
     @Status.set
     @eth_retry.auto_retry
     async def get_response(self) -> None:
+        if len(self) == 0:
+            logger.info('multicall is empty, exiting. devnote: why does this occur?')
+            return
         #if len(self) < 50: # TODO play with later
         #    return await JSONRPCBatch(self.controller, self.calls)
         rid = self.controller.request_uid.next
