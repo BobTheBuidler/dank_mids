@@ -15,8 +15,9 @@ from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._exceptions import (BadGateway, BadRequest, BrokenPipe,
-                                   GatewayPayloadTooLarge, StreamReaderTimeout,
-                                   TooManyRequests)
+                                   CloudflareConnectionTimeout,
+                                   CloudflareTimeout, GatewayPayloadTooLarge,
+                                   StreamReaderTimeout, TooManyRequests)
 from dank_mids.types import BytesStream
 
 logger = logging.getLogger("dank_mids.session")
@@ -122,13 +123,17 @@ class ClientSession(DefaultClientSession):
                 raise e
             except ClientResponseError as e:
                 if e.status == HTTPStatusExtended.BAD_REQUEST:
-                    raise BadRequest(e)
+                    raise BadRequest(e) from e
                 if e.status == HTTPStatusExtended.BAD_GATEWAY:
-                    raise BadGateway(e)
+                    raise BadGateway(e) from e
                 if e.status == HTTPStatusExtended.TOO_MANY_REQUESTS:
                     raise TooManyRequests(e, endpoint, _retry_after) from e
+                if e.status == HTTPStatusExtended.CLOUDFLARE_TIMEOUT:
+                    raise CloudflareTimeout(e) from e
+                if e.status == HTTPStatusExtended.CLOUDFLARE_TIMEOUT:
+                    raise CloudflareConnectionTimeout(e) from e
                 elif e.message == "Payload Too Large":
-                    raise GatewayPayloadTooLarge(e)
+                    raise GatewayPayloadTooLarge(e) from e
                 raise e
 
 

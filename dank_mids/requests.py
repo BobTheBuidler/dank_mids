@@ -34,7 +34,8 @@ from dank_mids._exceptions import (ArchiveNodeRequired, BadGateway, BadRequest,
                                    ExceedsMaxBatchSize, GatewayPayloadTooLarge,
                                    InvalidRequest, NodePayloadTooLarge,
                                    PayloadTooLarge, ResponseNotReady, Revert,
-                                   StreamReaderTimeout, internal_err_types)
+                                   StreamReaderTimeout, _Timeout,
+                                   internal_err_types)
 from dank_mids.helpers import Status, decode, session, stream
 from dank_mids.types import (BatchId, BlockId, JsonrpcParams, PartialRequest,
                              PartialResponse, RawResponse, Request, Response)
@@ -540,7 +541,7 @@ class Multicall(_Batch[eth_call]):
             await self.spoof_response(await self.provider.make_request(self.method, self.params, request_id=self.uid))
         except internal_err_types.__args__ as e:
             raise DankMidsInternalError(e) from e
-        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError) as e:
+        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError, _Timeout) as e:
             if len(self) >= self.controller.batcher.step:
                 self._might_want_to_reduce_batch_size_indicators += 1
             if (i := self._might_want_to_reduce_batch_size_indicators / 5) == int(i):
@@ -731,7 +732,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             await self.bisect_and_retry(e)
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
-        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError) as e:
+        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError, _Timeout) as e:
             await self.sleep_random(e, multiplier=1 + str(self.jid).count("_"))
             await self.bisect_and_retry(e)
         except (ExceedsMaxBatchSize, PayloadTooLarge) as e:
@@ -753,7 +754,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 async for raw_response in decode.jsonrpc_batch(data_stream):
                     yield raw_response
                 return
-            except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError) as e:
+            except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError, _Timeout) as e:
                 detail = _err_details.get(e.__class__, "failed to connect")
                 if isinstance(e, asyncio.TimeoutError) or len(self) > 100:
                     logger.warning("This batch %s: %s", detail, self.method_counts)
@@ -780,7 +781,6 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 self.adjust_batch_size()
                 raise
             except ClientResponseError as e:
-                print(e)
                 logger.info(e, exc_info=True)
                 if retries < 5:
                     logger.debug("caught %s for %s, retrying", e, self)

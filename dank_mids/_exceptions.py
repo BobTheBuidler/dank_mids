@@ -25,7 +25,14 @@ class ResponseNotReady(ValueError):
 class EmptyBatch(ValueError):
     pass
 
-class StreamReaderTimeout(asyncio.TimeoutError):
+class _Timeout(Exception):
+    """A helper mixin for various types of timeout"""
+    pass
+
+class StreamReaderTimeout(_Timeout):
+    pass
+
+class BrokenStream(_Timeout):
     pass
 
 internal_err_types = Union[AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError, SyntaxError]
@@ -114,4 +121,13 @@ class BadRequest(_EasyInitClientResponseError):
     pass
 
 class BadGateway(_EasyInitClientResponseError):
+    pass
+
+class CloudflareError(_EasyInitClientResponseError):
+    pass
+
+class CloudflareTimeout(CloudflareError, _Timeout):
+    pass
+
+class CloudflareConnectionTimeout(CloudflareError, _Timeout):
     pass
