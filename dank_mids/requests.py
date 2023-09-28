@@ -15,7 +15,6 @@ import a_sync
 import eth_retry
 import msgspec
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
-from a_sync.primitives import DummySemaphore
 from aiohttp.client_exceptions import ClientConnectorError, ClientResponseError
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
@@ -309,8 +308,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 response = result
                 # This suppresses an unawaited coroutine warning
             asyncio.create_task(next(futs))
-        if not isinstance(self.semaphore, DummySemaphore):
-            self.semaphore._value -= 1
+        await self.semaphore.acquire()
         return response
         
 
