@@ -78,6 +78,10 @@ class DankProvider:
         return self._max_concurrency - self._throttled_by
     
     @property
+    def _active_requests(self) -> int:
+        self._max_concurrency - self._semaphore._value
+        
+    @property
     def _should_retry_invalid_request(self):
         if self._request_type_changed_at == 0:
             self._request_type = Request
@@ -99,22 +103,26 @@ class DankProvider:
             except Exception:
                 self._failures += 1
                 raise
-    
-    async def _throttle(self):
+        
+    async def _throttle(self) -> None:
         if self._at_min_speed:
             return
-        self._throttled_by += 1
-        await self._semaphore.acquire()
-        def release():
-            self._semaphore.release()
-            self._throttled_by -= 1
-            logger.info('%s max conncurrency raised to %s', self, self._concurrency)
-        if self._next_dethrottle:
-            dethrottle_at = max(time.time(), self._next_dethrottle.when()) + 5*60
-        else:
-            dethrottle_at = time.time() + 5*60
-        self._next_dethrottle = asyncio.get_running_loop().call_at(dethrottle_at, release)
         
+        throttle_by = max(self._concurrency - self._active_requests, 1)
+        self._throttled_by += throttle_by
+        
+        for _ in range(throttle_by):
+            await self._semaphore.acquire()
+            if self._next_dethrottle is None:
+                dethrottle_at = time.time() + 5*60
+            else:
+                dethrottle_at = max(time.time(), self._next_dethrottle.when()) + 5*60
+            self._next_dethrottle = asyncio.get_running_loop().call_at(dethrottle_at, self._dethrottle)
+        
+    def _dethrottle(self) -> None:
+        self._semaphore.release()
+        self._throttled_by -= 1
+        logger.info('%s max concurrency raised to %s', self, self._concurrency)
     
     
 def _validate_endpoint(endpoint: str) -> None:
