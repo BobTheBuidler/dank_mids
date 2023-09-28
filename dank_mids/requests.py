@@ -163,7 +163,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return 1
     
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} uid={self.uid} method={self.method} status={self._status.name}>"
+        return f"<{self.__class__.__name__} uid={self.uid} method={self.method} status={self._status.name} batch={self._batch}>"
     
     @property
     def provider(self) -> "DankProvider":
@@ -188,10 +188,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
             if self._batch and self._batch._status == Status.QUEUED:
                 # NOTE: If this call has a batch assigned, we filled a batch. Let's await it now so we can send something to the node.
                 await self._batch
-            elif self._status == Status.QUEUED:
+            elif self._batch is None:
                 # NOTE: We want to force the event loop to make one full _run_once call before we execute.
                 await asyncio.sleep(0)
-            if self._status == Status.QUEUED:
+            if self._batch is None:
                 await asyncio.wait_for(
                     # If this timeout fails, we go nuclear and destroy the batch.
                     # Any calls that already succeeded will have already completed on the client side.
@@ -273,7 +273,6 @@ class RPCRequest(_RequestMeta[RawResponse]):
     @set_done
     async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
-        self._status = Status.ACTIVE
         self._response = await self.provider.make_request(self.method, self.params, request_id=self.uid)
         return self._response
     
@@ -463,10 +462,11 @@ class Multicall(_Batch[eth_call]):
         # sourcery skip: default-mutable-arg
         super().__init__(controller, calls)
         self.bid = bid or self.controller.multicall_uid.next
-        self._status == Status.QUEUED
+        self._batch = None
+        self._status = Status.QUEUED
     
     def __repr__(self) -> str:
-        return f"<Multicall mid={self.bid} block={self.block} len={len(self)} status={self._status.name}>"
+        return f"<Multicall mid={self.bid} block={self.block} len={len(self)} status={self._status.name} batch={self._batch}>"
     
     @cached_property
     def block(self) -> BlockId:
@@ -507,10 +507,6 @@ class Multicall(_Batch[eth_call]):
     @set_done
     @eth_retry.auto_retry
     async def get_response(self) -> None:
-        if not self._status == Status.QUEUED:
-            logger.error(f'{self} early exit')
-            return
-        self._status = Status.ACTIVE
         #if len(self) < 50: # TODO play with later
         #    return await JSONRPCBatch(self.controller, self.calls)
         rid = self.controller.request_uid.next
@@ -679,11 +675,9 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         with self._lock:
             return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
 
+    @set_done
     @eth_retry.auto_retry
     async def get_response(self) -> None:
-        if self._status == Status.ACTIVE:
-            logger.warning(f"{self} exiting early. This shouldn't really happen bro")
-            return
         rid = self.controller.request_uid.next
         if ENVS.DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
