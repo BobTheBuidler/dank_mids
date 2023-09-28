@@ -21,7 +21,6 @@ from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
-from typing_extensions import Self
 from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -158,11 +157,6 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return self.uid == __o.uid if isinstance(__o, self.__class__) else False 
     
     def __len__(self) -> int:
-        # NOTE: These are totally arbitrary
-        if self.method == "eth_getTransactionReceipt":
-            return 10
-        elif any(m in self.method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]):
-            return 6
         return 1
     
     def __repr__(self) -> str:
@@ -175,6 +169,23 @@ class RPCRequest(_RequestMeta[RawResponse]):
     @property
     def request(self) -> Union[Request, PartialRequest]:
         return self.provider._request_selector(method=self.method, params=self.params, id=self.uid)
+    
+    @property
+    def semaphore(self) -> a_sync.Semaphore:
+        # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
+        semaphore = self.controller.method_semaphores[self.method]
+        if self.method == 'eth_call':
+            semaphore = semaphore[self.params[1]]
+        return semaphore
+    
+    @cached_property
+    def weight(self) -> float:
+        # NOTE: These are totally arbitrary for now
+        if self.method in ["eth_getTransactionReceipt", "eth_getCode"]:
+            return 10
+        elif any(m in self.method for m in ["eth_getBlockBy", "eth_getTransaction", "erigon_getHeader"]):
+            return 5
+        return 0.5
     
     def start(self, batch: "_Batch") -> None:
         self._status = Status.ACTIVE
@@ -276,14 +287,6 @@ class RPCRequest(_RequestMeta[RawResponse]):
         """Used to execute the request with no batching."""
         self._response = await self.provider.make_request(self.method, self.params, request_id=self.uid)
         return self._response
-    
-    @property
-    def semaphore(self) -> a_sync.Semaphore:
-        # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
-        semaphore = self.controller.method_semaphores[self.method]
-        if self.method == 'eth_call':
-            semaphore = semaphore[self.params[1]]
-        return semaphore
     
     @Status.set
     async def create_duplicate(self, timed_out: bool = False, cancel_old: bool = False) -> RPCResponse: # Not actually self, but for typing purposes it is.
@@ -517,6 +520,10 @@ class Multicall(_Batch[eth_call]):
     def needs_override_code(self) -> bool:
         return self.mcall.needs_override_code_for_block(self.block)
         
+    @property
+    def weight(self) -> float:
+        return len(self) / 20
+
     @Status.set
     @eth_retry.auto_retry
     async def get_response(self) -> None:
@@ -689,7 +696,12 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     @property
     def is_full(self) -> bool:
         with self._lock:
-            return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
+            return self.total_calls >= self.controller.batcher.step or max(len(self), self.weight) >= ENVS.MAX_JSONRPC_BATCH_SIZE
+    
+    @property
+    def weight(self) -> int:
+        # a primitive attempt to reduce bulky calls to the node
+        return int(sum(call.weight for call in self.calls))
 
     @Status.set
     @eth_retry.auto_retry
