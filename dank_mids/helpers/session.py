@@ -5,11 +5,10 @@ import http
 import logging
 from enum import IntEnum
 from itertools import chain
-from random import random
 from threading import get_ident
 
 from aiohttp import ClientSession as DefaultClientSession
-from aiohttp import ClientTimeout
+from aiohttp import ClientTimeout, DummyCookieJar, TCPConnector
 from aiohttp.client_exceptions import ClientOSError, ClientResponseError
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
@@ -139,5 +138,15 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     This makes our ClientSession threadsafe just in case.
     Most everything should be run in main thread though.
     """
+    connector = TCPConnector(
+        limit=ENVS.MAX_CONCURRENCY,
+        force_close=True,
+    )
     timeout = ClientTimeout(ENVS.AIOHTTP_TIMEOUT)
-    return ClientSession(headers={'content-type': 'application/json'}, timeout=timeout, raise_for_status=True)
+    return ClientSession(
+        connector=connector,
+        cookie_jar=DummyCookieJar(),  # We don't need to waste bandwidth on junk
+        headers={'content-type': 'application/json'},
+        timeout=timeout,
+        raise_for_status=True,
+    )
