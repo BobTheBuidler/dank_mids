@@ -16,6 +16,7 @@ import a_sync
 import eth_retry
 import msgspec
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
+from a_sync.primitives import DummySemaphore
 from aiohttp.client_exceptions import ClientConnectorError, ClientResponseError
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
@@ -280,7 +281,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if timed_out:
             logger.warning(f"call {self.uid} got stuck, we're creating a new one")
         retval = await self.controller(self.method, self.params)
-        self.semaphore._value -= 1
+        if not isinstance(self.semaphore, DummySemaphore):
+            self.semaphore._value -= 1
         return retval
 
 revert_threads = PruningThreadPoolExecutor(4)
