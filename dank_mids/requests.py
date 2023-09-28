@@ -422,6 +422,9 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif not isinstance(e, InvalidRequest) and "error processing call Revert" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
+    
+    def delete_refs_to_completed_calls(self) -> None:
+        self.calls = [call for call in self.calls if not call._done.is_set()]
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
@@ -458,6 +461,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def calldata(self) -> str:
+        self.delete_refs_to_completed_calls()
         return (self.fourbyte + mcall_encode([[call.target, call.calldata] for call in self.calls])).hex()
     
     @property
@@ -763,9 +767,6 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"
             )
 
-    def delete_refs_to_completed_calls(self) -> None:
-        self.calls = [call for call in self.calls if not call._done.is_set()]
-        
     def _post_future_cleanup(self) -> None:
         with self.controller.pools_closed_lock:
             self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)
