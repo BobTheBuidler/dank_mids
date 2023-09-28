@@ -107,7 +107,7 @@ class DankProvider:
         return self._request_selector._should_retry_invalid_request() if isinstance(e, InvalidRequest) else False
     
     def _throttle(self) -> None:
-        throttle_to = max(self._active_requests - 1, self._min_concurrency)
+        throttle_to = max(self._active_requests - 1, self._min_concurrency, int(self._concurrency * 0.95))
         if self._concurrency <= throttle_to:
             return
         throttle_by = self._concurrency - throttle_to
