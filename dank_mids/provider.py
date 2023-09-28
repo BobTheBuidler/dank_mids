@@ -116,7 +116,6 @@ class DankProvider:
                 self._pools_open.set()
             raise
         
-    
     def _should_retry_invalid_request(self, e: Optional[Exception]) -> bool:
         return self._request_selector._should_retry_invalid_request() if isinstance(e, InvalidRequest) else False
     

@@ -751,7 +751,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError, _Timeout) as e:
             await self.sleep_random(e, multiplier=1 + str(self.jid).count("_"))
             await self.bisect_and_retry(e)
-        except (ExceedsMaxBatchSize, PayloadTooLarge) as e:
+        except (ExceedsMaxBatchSize, PayloadTooLarge, InvalidRequest) as e:
             await self.bisect_and_retry(e)
         except Exception as e:
             _log_exception(e)
