@@ -48,10 +48,7 @@ async def of_objects(stream: BytesStream) -> StreamedJSONArrayOfObjects:
             to_send = working[start+sent:]
             yield to_send
             sent += len(to_send)
-            if chunk_num > 0:
-                st = f'chunk {chunk_num}  {done} completed  {datetime.now() - started_at}'
-                logger.info(st)
-                print(st)
+            logger.debug("read %s responses from chunk %s in %s", done, chunk_num, datetime.now() - started_at)
             chunk_num += 1
             working += await stream.__anext__()
              
