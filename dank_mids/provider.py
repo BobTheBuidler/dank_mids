@@ -90,18 +90,23 @@ class DankProvider:
                     self._pools_open.clear()
                 async for chunk in session.post(self.endpoint, data=data):
                     yield chunk
-                self._successes += 1
+            self._successes += 1
+            if not self._semaphore._waiters:
+                self._pools_open.set()
         except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError):
             self._failures += 1
             self._throttle()
+            if not self._semaphore._waiters:
+                self._pools_open.set()
             async with self._err_limiter:
                 # lets slow the pace down a bit and see if we get a better response when we handle the exc
                 raise
         except Exception:
             self._failures += 1
+            if not self._semaphore._waiters:
+                self._pools_open.set()
             raise
-        if not self._semaphore._waiters:
-            self._pools_open.set()
+        
     
     def _should_retry_invalid_request(self, e: Optional[Exception]) -> bool:
         return self._request_selector._should_retry_invalid_request() if isinstance(e, InvalidRequest) else False
