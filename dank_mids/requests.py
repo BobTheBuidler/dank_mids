@@ -99,6 +99,9 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
                     if all(call._status == Status.COMPLETE for call in self.calls):
                         logger.debug('oh but wait, all calls are completed')
                         return
+                    elif len(self) == 1 and self.calls[0]._status == Status.CANCELED:
+                        logger.debug("but its only call was cancelled %s", call)
+                        return
                     for call in self.calls:
                         if call._status == Status.CANCELED:
                             logger.debug("this call was cancelled though %s", call)
