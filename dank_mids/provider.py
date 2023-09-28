@@ -1,7 +1,6 @@
 
 import asyncio
 import logging
-import time
 from typing import TYPE_CHECKING, Any, List, Optional
 
 import a_sync
@@ -21,6 +20,9 @@ if TYPE_CHECKING:
     
 logger = logging.getLogger(__name__)
 
+time = lambda: asyncio.get_event_loop().time()
+
+        
 class DankProvider:
     def __init__(
         self,
@@ -83,8 +85,8 @@ class DankProvider:
     def _should_retry_invalid_request(self):
         if self._request_type_changed_at == 0:
             self._request_type = Request
-            self._request_type_changed_at = time.time()
-        return time.time() - self._request_type_changed_at <= 600
+            self._request_type_changed_at = time()
+        return time() - self._request_type_changed_at <= 600
     
     async def _post(self, data: bytes) -> BytesStream: 
         async with self._semaphore:
@@ -111,10 +113,8 @@ class DankProvider:
         self._throttled_by += throttle_by
         self._semaphore._value -= throttle_by
         for _ in range(throttle_by):
-            if self._next_dethrottle is None:
-                dethrottle_at = time.time() + 5*60
-            else:
-                dethrottle_at = max(time.time(), self._next_dethrottle.when()) + 5*60
+            next_dethrottle = self._next_dethrottle.when() if self._next_dethrottle else 0
+            dethrottle_at = max(next_dethrottle, time()) + 5*60
             self._next_dethrottle = asyncio.get_running_loop().call_at(dethrottle_at, self._dethrottle)
         
     def _dethrottle(self) -> None:
