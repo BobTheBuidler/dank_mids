@@ -18,7 +18,7 @@ from typing import (TYPE_CHECKING, Any, AsyncGenerator, DefaultDict, Dict,
 import a_sync
 import msgspec
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
-from aiohttp.client_exceptions import ClientResponseError
+from aiohttp.client_exceptions import ClientConnectorError, ClientResponseError
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
@@ -683,10 +683,13 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                     yield raw_response
                 return
             except asyncio.TimeoutError:
-                logger.warning("This batch timed out: %s", self.method_counts)
+                logger.warning("This batch timed out: %s  max concurrency lowered to %s", self.method_counts, self.provider._concurrency)
                 raise
             except BrokenPipe:
-                logger.warning("This batch broke the pipe: %s", self.method_counts)
+                logger.warning("This batch broke the pipe: %s  max concurrency lowered to %s", self.method_counts, self.provider._concurrency)
+                raise
+            except ClientConnectorError:
+                logger.warning("This batch failed to connect: %s  max concurrency lowered to %s", self.method_counts, self.provider._concurrency)
                 raise
             except ExceedsMaxBatchSize as e:
                 logger.warning("exceeded max batch size for your node")

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import a_sync
 import eth_retry
+from aiohttp.client_exceptions import ClientConnectorError
 from msgspec.json import encode
 from web3 import Web3
 from web3.providers import HTTPProvider
@@ -66,7 +67,15 @@ class DankProvider:
     
     @property
     def _at_min_speed(self) -> bool:
-        return self._max_concurrency - self._throttled_by <= self._min_concurrency
+        if self._concurrency > self._min_concurrency:
+            return False
+        elif self._concurrency == self._min_concurrency:
+            return True
+        raise ValueError(f'concurrency ({self._concurrency}) should never be less than minimum ({self._min_concurrency})')
+    
+    @property
+    def _concurrency(self) -> bool:
+        return self._max_concurrency - self._throttled_by
     
     @property
     def _should_retry_invalid_request(self):
@@ -83,7 +92,8 @@ class DankProvider:
                 async for chunk in session.post(self.endpoint, data=data):
                     yield chunk
                 self._successes += 1
-            except (asyncio.TimeoutError, BrokenPipe):
+            except (asyncio.TimeoutError, BrokenPipe, ClientConnectorError):
+                self._failures += 1
                 await self._throttle()
                 raise
             except Exception:
@@ -98,6 +108,7 @@ class DankProvider:
         def release():
             self._semaphore.release()
             self._throttled_by -= 1
+            logger.info('%s max conncurrency raised to %s', self, self._concurrency)
         if self._next_dethrottle:
             dethrottle_at = max(time.time(), self._next_dethrottle.when()) + 5*60
         else:
