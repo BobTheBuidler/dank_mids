@@ -1,6 +1,5 @@
 import logging
 import re
-from functools import cached_property
 from time import time
 from typing import (TYPE_CHECKING, Any, AsyncGenerator, Callable, Coroutine,
                     DefaultDict, Dict, List, Literal, NewType, Optional,
@@ -104,7 +103,7 @@ class PartialResponse(_DictStruct):
     result: msgspec.Raw = None  # type: ignore
     error: Optional[Error] = None
 
-    @cached_property
+    @property
     def exception(self) -> Optional[BadResponse]:
         if self.error is None:
             return None
