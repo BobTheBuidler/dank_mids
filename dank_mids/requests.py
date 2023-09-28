@@ -130,6 +130,15 @@ Noop = Any
 def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
+@lru_cache(maxsize=None)
+def _method_weight(method: str) -> float:
+    # NOTE: These are totally arbitrary for now
+    if method in ["eth_getTransactionReceipt", "eth_getCode"]:
+        return 10
+    elif any(m in method for m in ["eth_getBlockBy", "eth_getTransaction", "erigon_getHeader"]):
+        return 5
+    return 0.5
+    
 class RPCRequest(_RequestMeta[RawResponse]):
     __slots__ = 'method', 'params', 'should_batch', '_started', '_retry', '_daemon'
     dict_responses = set()
@@ -178,14 +187,9 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
         return self.controller.method_semaphores.get_semaphore(self.method, self.params)
     
-    @cached_property
+    @property
     def weight(self) -> float:
-        # NOTE: These are totally arbitrary for now
-        if self.method in ["eth_getTransactionReceipt", "eth_getCode"]:
-            return 10
-        elif any(m in self.method for m in ["eth_getBlockBy", "eth_getTransaction", "erigon_getHeader"]):
-            return 5
-        return 0.5
+        return _method_weight(self.method)
     
     def start(self, batch: "_Batch", cleanup: Noop = False) -> None:
         self._status = Status.ACTIVE
