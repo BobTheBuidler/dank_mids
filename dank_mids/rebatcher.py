@@ -1,5 +1,6 @@
 
 import asyncio
+import logging
 from collections import defaultdict
 from contextlib import suppress
 from functools import cached_property
@@ -11,6 +12,8 @@ from dank_mids.types import BlockId
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
     from dank_mids.requests import RPCRequest, eth_call
+
+logger = logging.getLogger(__name__)
 
 class Rebatcher:
     def __init__(self, controller: "DankMiddlewareController") -> None:
@@ -51,6 +54,7 @@ class Rebatcher:
                     else:
                         rpc_calls.append(request)
                 if eth_calls or rpc_calls:
+                    logger.debug("rebatching %s calls in multicalls and %s other calls", sum(len(calls) for calls in eth_calls.values()), len(rpc_calls))
                     await DankBatch(self.controller, eth_calls, rpc_calls=rpc_calls)
                 await asyncio.sleep(1)
                         
