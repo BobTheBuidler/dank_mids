@@ -669,7 +669,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             _log_exception(e)
             stats.log_errd_batch(self)
             if not self.should_retry(e):
-                raise NotImplementedError('and you may ask yourself, well, how did I get here?')
+                raise e
                 # TODO: the useful stuff in should_retry should probably be moved elsewhere
             await self.bisect_and_retry(e)
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
