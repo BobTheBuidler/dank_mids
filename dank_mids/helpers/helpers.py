@@ -1,5 +1,5 @@
 
-import asyncio
+import asyncio, logging
 from functools import wraps
 from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
                     Iterable, List, Literal, Optional, TypeVar)
@@ -56,9 +56,11 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
 
 def set_done(fn: Callable[P, Awaitable[T]]):
     from dank_mids.requests import Status
+    logger = logging.getLogger(__name__)
     @wraps(fn)
     async def set_done_wrap(self: "RPCRequest", *args: P.args, **kwargs: P.kwargs) -> T:
         try:
+            self._status = Status.ACTIVE
             retval = await fn(self, *args, **kwargs)
             self._done.set()
             self._status = Status.COMPLETE
@@ -66,6 +68,11 @@ def set_done(fn: Callable[P, Awaitable[T]]):
         except (asyncio.TimeoutError, asyncio.CancelledError):
             self._status = Status.CANCELED
             raise
+        except Exception as e:
+            self._status = Status.FAILED
+            logger.warning("%s failed with exception:")
+            logger.exception(e)
+            raise e
     return set_done_wrap   
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.

@@ -57,6 +57,7 @@ class Status(IntEnum):
     ACTIVE = 1
     COMPLETE = 2
     CANCELED = 3
+    FAILED = 4
 
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
@@ -98,11 +99,23 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     async def get_response(self) -> Optional[_Response]:
         pass
 
-    async def _debug_daemon(self) -> NoReturn:
+    async def _debug_daemon(self) -> None:
         while self._status in {Status.QUEUED, Status.ACTIVE}:
             await asyncio.sleep(60)
             if not self._done.is_set():
-                logger.debug(f"{self} has not received data after {time.time() - self._start}s")            
+                logger.debug("%s has not received data after %ss", self, round(time.time() - self._start, 2))  
+                if isinstance(self, Multicall):
+                    if all(call._status == Status.COMPLETE for call in self.calls):
+                        logger.debug('oh but wait, all calls are completed')
+                        return
+                    for call in self.calls:
+                        if call._status == Status.CANCELED:
+                            logger.debug("this call was cancelled though %s", call)
+                        if call._status == Status.FAILED:
+                            logger.debug("this call failed though %s", call)
+                        if call._status == Status.QUEUED:
+                            logger.warning("%s is started but %s is still queued. this should not happen.", self, call)
+                    
 
 ### Single requests:
 
@@ -149,7 +162,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return 1
     
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} uid={self.uid} method={self.method}>"
+        return f"<{self.__class__.__name__} uid={self.uid} method={self.method} status={self._status.name}>"
     
     @property
     def provider(self) -> "DankProvider":
@@ -171,10 +184,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)
                 return self.response.decode(partial=True).to_dict(self.method)
             
-            if self._status == Status.ACTIVE and not self._batch._started:
+            if self._status == Status.ACTIVE and self._batch._status == Status.QUEUED:
                 # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
                 await self._batch
-            if self._status == Status.QUEUED:
+            elif self._status == Status.QUEUED:
                 # NOTE: We want to force the event loop to make one full _run_once call before we execute.
                 await asyncio.sleep(0)
             if self._status == Status.QUEUED:
@@ -449,10 +462,10 @@ class Multicall(_Batch[eth_call]):
         # sourcery skip: default-mutable-arg
         super().__init__(controller, calls)
         self.bid = bid or self.controller.multicall_uid.next
-        self._started = False
+        self._status == Status.QUEUED
     
     def __repr__(self) -> str:
-        return f"<Multicall mid={self.bid} block={self.block} len={len(self)}>"
+        return f"<Multicall mid={self.bid} block={self.block} len={len(self)} status={self._status.name}>"
     
     @cached_property
     def block(self) -> BlockId:
@@ -493,10 +506,10 @@ class Multicall(_Batch[eth_call]):
     @set_done
     @eth_retry.auto_retry
     async def get_response(self) -> None:
-        if self._started:
+        if not self._status == Status.QUEUED:
             logger.error(f'{self} early exit')
             return
-        self._started = True
+        self._status = Status.ACTIVE
         #if len(self) < 50: # TODO play with later
         #    return await JSONRPCBatch(self.controller, self.calls)
         rid = self.controller.request_uid.next
@@ -622,10 +635,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     ) -> None:  # sourcery skip: default-mutable-arg
         super().__init__(controller, calls)
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
-        self._started = False
+        self._status = Status.QUEUED
 
     def __repr__(self) -> str:
-        return f"<JSONRPCBatch jid={self.jid} len={len(self)}>"
+        return f"<JSONRPCBatch jid={self.jid} len={len(self)} status={self._status.name}>"
     
     @property
     def data(self) -> bytes:
@@ -667,10 +680,9 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 
     @eth_retry.auto_retry
     async def get_response(self) -> None:
-        if self._started:
+        if self._status == Status.ACTIVE:
             logger.warning(f"{self} exiting early. This shouldn't really happen bro")
             return
-        self._started = True
         rid = self.controller.request_uid.next
         if ENVS.DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
