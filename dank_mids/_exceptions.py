@@ -1,4 +1,5 @@
 
+import asyncio
 import logging
 import re
 from typing import TYPE_CHECKING, List, Optional, Union
@@ -22,6 +23,9 @@ class ResponseNotReady(ValueError):
     pass
 
 class EmptyBatch(ValueError):
+    pass
+
+class StreamReaderTimeout(asyncio.TimeoutError):
     pass
 
 internal_err_types = Union[AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError, SyntaxError]

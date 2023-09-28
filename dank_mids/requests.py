@@ -33,7 +33,7 @@ from dank_mids._exceptions import (ArchiveNodeRequired, BadGateway, BadRequest,
                                    ExceedsMaxBatchSize, GatewayPayloadTooLarge,
                                    InvalidRequest, NodePayloadTooLarge,
                                    PayloadTooLarge, ResponseNotReady, Revert,
-                                   internal_err_types)
+                                   StreamReaderTimeout, internal_err_types)
 from dank_mids.helpers import Status, decode, session, stream
 from dank_mids.types import (BatchId, BlockId, JsonrpcParams, PartialRequest,
                              PartialResponse, RawResponse, Request, Response)
@@ -826,6 +826,7 @@ def _log_exception(e: Exception) -> None:
     logger.warning(e, exc_info=True)
 
 _err_details = {
+    StreamReaderError: "timed out mid stream",
     asyncio.TimeoutError: "timed out",
     BrokenPipe: "broke the pipe",
 }

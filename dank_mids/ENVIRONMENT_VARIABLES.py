@@ -36,6 +36,7 @@ GANACHE_FORK = _envs.create_env("GANACHE_FORK", bool, default=ganache_fork)
 
 # We set the default to 20 minutes to account for potentially long event loop times if you're doing serious work.
 AIOHTTP_TIMEOUT = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20*60, string_converter=int)
+STREAM_READER_TIMEOUT = _envs.create_env("STREAM_READER_TIMEOUT", int, default=5*60, string_converter=int)
 
 # Brownie call Semaphore
 #   Used because I experienced some OOM errs due to web3 formatters when I was batching an absurd number of brownie calls.

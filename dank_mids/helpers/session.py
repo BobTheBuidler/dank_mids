@@ -14,9 +14,10 @@ from aiohttp.client_exceptions import ClientOSError, ClientResponseError
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
-from dank_mids import ENVIRONMENT_VARIABLES
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._exceptions import (BadGateway, BadRequest, BrokenPipe,
-                                   GatewayPayloadTooLarge, TooManyRequests)
+                                   GatewayPayloadTooLarge, StreamReaderTimeout,
+                                   TooManyRequests)
 from dank_mids.types import BytesStream
 
 logger = logging.getLogger("dank_mids.session")
@@ -113,8 +114,11 @@ class ClientSession(DefaultClientSession):
             try:
                 async with super().post(endpoint, *args, **kwargs) as response:
                     logger.debug("received response %s", response)
-                    while response.content._buffer or not response.content._eof:
-                        yield await response.content.readany()
+                    while not response.content.at_eof():
+                        try:
+                            yield await asyncio.wait_for(response.content.readany(), timeout=ENVS.STREAM_READER_TIMEOUT)
+                        except asyncio.TimeoutError as e:
+                            raise StreamReaderTimeout from e
             except ClientOSError as e:
                 if e.errno == errno.EPIPE:
                     raise BrokenPipe(*e.args) from e
@@ -137,7 +141,7 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     This makes our ClientSession threadsafe just in case.
     Most everything should be run in main thread though.
     """
-    timeout = ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT)
+    timeout = ClientTimeout(ENVS.AIOHTTP_TIMEOUT)
     return ClientSession(headers={'content-type': 'application/json'}, timeout=timeout, raise_for_status=True)
 
 def _should_retry(e: ClientResponseError) -> bool:
