@@ -71,11 +71,9 @@ class DankMidsClientResponseError(ClientResponseError):
     def __init__(
         self,
         exc: ClientResponseError,
-        request: "PartialRequest",
     ) -> None:
-        self.request = request
         super().__init__(exc.request_info, exc.history, code=exc.code, status=exc.status, message=exc.message, headers=exc.headers)
-        self.args = (*exc.request_info, exc.history, request)
+        self.args = (*exc.request_info, exc.history)
         self._exception = exc
         
 class TooManyRequests(DankMidsClientResponseError):
