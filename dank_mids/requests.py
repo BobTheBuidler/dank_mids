@@ -490,6 +490,7 @@ class Multicall(_Batch[eth_call]):
     def needs_override_code(self) -> bool:
         return self.mcall.needs_override_code_for_block(self.block)
         
+    @set_done
     @eth_retry.auto_retry
     async def get_response(self) -> None:
         if self._started:
