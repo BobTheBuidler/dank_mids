@@ -820,7 +820,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             if chunk
         ]
         for batch in batches:
-            batch.start(cleanup=False)
+            batch.start(batch=self, cleanup=False)
         for fut in asyncio.as_completed([_await_batch(batch) for batch in batches]):
             batch_cls, result = await fut
             if isinstance(result, Exception):
