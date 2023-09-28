@@ -31,8 +31,8 @@ class DankProvider:
         self,
         controller: "DankMiddlewareController", 
         w3: Web3, 
-        min_concurrency: int = 32, 
-        max_concurrency: int = 256,
+        min_concurrency: int = 256, 
+        max_concurrency: int = 512,
     ) -> None:
         self.controller = controller
         endpoint = w3.provider.endpoint_uri
