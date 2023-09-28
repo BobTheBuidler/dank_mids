@@ -24,6 +24,7 @@ from dank_mids.types import AsyncMiddleware
 if TYPE_CHECKING:
     from dank_mids.requests import RPCRequest
 
+logger = logging.getLogger(__name__)
 dank_w3s: List[Web3] = []
 
 T = TypeVar("T")
@@ -157,7 +158,7 @@ async def async_construct_web3_formatting_middleware(
                 formatter = request_formatters[method]
                 params = formatter(params)
             response = await make_request(method, params)
-
+            logger.debug("formatters: %s", formatters)
             return _apply_response_formatters(
                 method=method, response=response, **formatters
             )
@@ -180,7 +181,7 @@ def _apply_response_formatters(
         return assoc(
             response, response_type, method_response_formatter(appropriate_response)
         )
-
+    logger.debug(f'formatters: {result_formatters}')
     if "result" in response and method in result_formatters:
         return _format_response("result", result_formatters[method])
     elif "error" in response and method in error_formatters:
