@@ -53,7 +53,7 @@ class DankProvider:
         self._request_selector = _RequestSpecSelector()
         
     def __repr__(self) -> str:
-        return f"<Provider host={self.endpoint} successes={self._successes} failures={self._failures}>"
+        return f"<{self.__class__.__name__} host={self.endpoint} successes={self._successes} failures={self._failures}>"
     
     @property
     def total_requests(self) -> int:
@@ -111,6 +111,7 @@ class DankProvider:
             next_dethrottle = self._next_dethrottle.when() if self._next_dethrottle else 0
             dethrottle_at = max(next_dethrottle, time()) + 5*60
             self._next_dethrottle = asyncio.get_running_loop().call_at(dethrottle_at, self._dethrottle)
+        logger.info("%s max concurrency throttled to %s", self._concurrency)
         
     def _dethrottle(self) -> None:
         self._semaphore.release()

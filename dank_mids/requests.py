@@ -696,8 +696,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             _log_exception(e)
             stats.log_errd_batch(self)
             if not self.should_retry(e):
-                raise e
                 # TODO: the useful stuff in should_retry should probably be moved elsewhere
+                raise e
             await self.bisect_and_retry(e)
         demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
     
@@ -709,15 +709,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 async for raw_response in decode.jsonrpc_batch(data_stream):
                     yield raw_response
                 return
-            except asyncio.TimeoutError:
-                logger.warning("This batch timed out: %s  max concurrency lowered to %s", self.method_counts, self.provider._concurrency)
-                raise
-            except BrokenPipe:
-                logger.warning("This batch broke the pipe: %s  max concurrency lowered to %s", self.method_counts, self.provider._concurrency)
-                raise
-            except (BadRequest, BadGateway, ClientConnectorError):
-                logger.warning("This batch failed to connect: %s  max concurrency lowered to %s", self.method_counts, self.provider._concurrency)
-                raise
+            except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError):
+                detail = _err_details.get(e.__class__, "failed to connect")
+                logger.warning("This batch %s: %s", detail, self.method_counts)
+                raise e
             except ExceedsMaxBatchSize as e:
                 logger.warning("exceeded max batch size for your node")
                 self.controller.set_batch_size_limit(e.limit)
@@ -802,3 +797,8 @@ def _log_exception(e: Exception) -> None:
         return
     logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
     logger.warning(e, exc_info=True)
+
+_err_details = {
+    asyncio.TimeoutError: "timed out",
+    BrokenPipe: "broke the pipe",
+}
