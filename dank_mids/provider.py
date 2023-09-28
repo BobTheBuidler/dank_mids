@@ -155,10 +155,10 @@ class _RequestSpecSelector:
         Configures the RequestSpecSelector to use the fully compliant request type.
         Returns: boolean value indicating whether the request type was recently changed and the call should be retried with the full spec.
         """
-        if self._request_type_changed_at == 0:
+        if self._full_request_spec_enforced_at == 0:
             self.type = Request
-            self._request_type_changed_at = time()
-        retval = time() - self._request_type_changed_at <= 600
+            self._full_request_spec_enforced_at = time()
+        retval = time() - self._full_request_spec_enforced_at <= 600
         if retval:
             logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
         return retval
