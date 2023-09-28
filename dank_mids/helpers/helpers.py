@@ -1,5 +1,6 @@
 
-import asyncio, logging
+import asyncio
+import logging
 from functools import wraps
 from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
                     Iterable, List, Literal, Optional, TypeVar)
@@ -13,6 +14,7 @@ from multicall.utils import get_async_w3
 from typing_extensions import ParamSpec
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
+from web3.exceptions import ContractLogicError
 from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
@@ -69,8 +71,14 @@ def set_done(fn: Callable[P, Awaitable[T]]):
             self._status = Status.CANCELED
             raise
         except Exception as e:
+            # TODO this if clause should live elsewhere
+            # NOTE: these come from the sync w3 and will need a logic change when the sync w3 is removed
+            if isinstance(e, ContractLogicError):
+                # This is a successful failure response from the rpc and is handled further up the stack
+                self._status = Status.COMPLETE
+                return
             self._status = Status.FAILED
-            logger.warning("%s failed with exception:")
+            logger.warning("%s failed with exception:", self)
             logger.exception(e)
             raise e
     return set_done_wrap   
