@@ -151,7 +151,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
     @property
     def request(self) -> Union[Request, PartialRequest]:
-        return self.provider.request_type(method=self.method, params=self.params, id=self.uid)
+        return self.provider._request_type(method=self.method, params=self.params, id=self.uid)
     
     def start(self, batch: "_Batch") -> None:
         self._started = True
@@ -319,7 +319,7 @@ class eth_call(RPCRequest):
                 # - revert details from exception
                 # If we get a successful response, most likely the target contract does not support multicall2.
                 # TODO: Get rid of the sync executor and just use `make_request`
-                data = await asyncio.get_event_loop().run_in_executor(revert_threads, self.provider.sync_w3.eth.call, {"to": self.target, "data": self.calldata}, self.block)
+                data = await asyncio.get_event_loop().run_in_executor(revert_threads, self.provider._sync_w3.eth.call, {"to": self.target, "data": self.calldata}, self.block)
                 # The single call was successful. We don't want to include this contract in more multicalls
                 self.controller.no_multicall.add(self.target)
             except Exception as e:
@@ -476,7 +476,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def request(self) -> Union[Request, PartialRequest]:
-        return self.provider.request_type(method=self.method, params=self.params, id=self.uid)
+        return self.provider._request_type(method=self.method, params=self.params, id=self.uid)
     
     @property
     def is_full(self) -> bool:

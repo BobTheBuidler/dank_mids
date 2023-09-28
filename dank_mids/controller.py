@@ -2,9 +2,8 @@
 import logging
 from collections import defaultdict
 from functools import lru_cache
-from typing import Any, DefaultDict, List, Literal, Optional
+from typing import Any, Awaitable, DefaultDict, List, Literal, Optional
 
-import eth_retry
 from eth_utils import to_checksum_address
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
@@ -21,7 +20,7 @@ from dank_mids.helpers import decode, session
 from dank_mids.provider import DankProvider
 from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids.semaphores import MethodSemaphores
-from dank_mids.types import BlockId, ChainId, PartialRequest, RawResponse
+from dank_mids.types import BlockId, ChainId
 from dank_mids.uid import UIDGenerator, _AlertingRLock
 
 try:
@@ -90,7 +89,8 @@ class DankMiddlewareController:
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
         call_semaphore = self.method_semaphores[method][params[1]] if method == "eth_call" else self.method_semaphores[method]
         async with call_semaphore:
-            logger.debug(f'making {self.provider.request_type.__name__} {method} with params {params}')
+            await self.pools_open
+            logger.debug(f'making {self.provider._request_type.__name__} {method} with params {params}')
             call = eth_call(self, params) if method == "eth_call" and params[0]["to"] not in self.no_multicall else RPCRequest(self, method, params)
             return await call
 
@@ -105,6 +105,10 @@ class DankMiddlewareController:
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
         demo_logger.info(f'{batch} done')
+    
+    @property
+    def pools_open(self) -> Awaitable[bool]:
+        return self.provider._pools_open.wait()
 
     @property
     def queue_is_full(self) -> bool:

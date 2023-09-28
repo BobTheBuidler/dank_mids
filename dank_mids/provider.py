@@ -1,14 +1,17 @@
 
+import asyncio
 import logging
 import time
 from typing import TYPE_CHECKING, Any, List, Optional
 
+import a_sync
 import eth_retry
 from msgspec.json import encode
 from web3 import Web3
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 
+from dank_mids._exceptions import BrokenPipe
 from dank_mids.helpers import decode, session
 from dank_mids.types import BytesStream, PartialRequest, RawResponse, Request
 
@@ -18,28 +21,35 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 class DankProvider:
-    def __init__(self, controller: "DankMiddlewareController", w3: Web3) -> None:
+    def __init__(self, controller: "DankMiddlewareController", w3: Web3, min_concurrency: int = 4, max_concurrency: int = 64) -> None:
         self.controller = controller
         endpoint = w3.provider.endpoint_uri
         _validate_endpoint(endpoint)
         self.endpoint = endpoint
         
-        self.sync_w3 = _sync_w3_from_async(w3)
-        self.chain_id = self.sync_w3.eth.chain_id
+        self._sync_w3 = _sync_w3_from_async(w3)
+        self.chain_id = self._sync_w3.eth.chain_id
         
-        self.successes = 0
-        self.failures = 0
+        self._min_concurrency = min_concurrency
+        self._max_concurrency = max_concurrency
+        self._semaphore = a_sync.Semaphore(max_concurrency, self)
+        self._pools_open = a_sync.Event()
+        self._pools_open.set()
+        self._throttled_by = 0
+        
+        self._successes = 0
+        self._failures = 0
         
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
-        self.request_type = PartialRequest
+        self._request_type = PartialRequest
         self._request_type_changed_at = 0
         
     def __repr__(self) -> str:
-        return f"<Provider host={self.endpoint} successes={self.successes} failures={self.failures}>"
+        return f"<Provider host={self.endpoint} successes={self._successes} failures={self._failures}>"
     
     @property
     def total_requests(self) -> int:
-        return self.successes + self.failures
+        return self._successes + self._failures
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
@@ -49,25 +59,50 @@ class DankProvider:
         return decode.raw(response)
     
     async def stream_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> BytesStream:
-        request = self.request_type(method=method, params=params, id=request_id or self.controller.call_uid.next)
+        request = self._request_type(method=method, params=params, id=request_id or self.controller.call_uid.next)
         async for chunk in self._post(encode(request)):
             yield chunk
     
     @property
+    def _at_min_speed(self) -> bool:
+        return self._max_concurrency - self._throttled_by <= self._min_concurrency
+    
+    @property
     def _should_retry_invalid_request(self):
         if self._request_type_changed_at == 0:
-            self.request_type = Request
+            self._request_type = Request
             self._request_type_changed_at = time.time()
         return time.time() - self._request_type_changed_at <= 600
     
-    async def _post(self, data: bytes) -> BytesStream:
-        try:
-            async for chunk in session.post(self.endpoint, data=data):
-                yield chunk
-            self.successes += 1
-        except Exception:
-            self.failures += 1
-            raise
+    async def _post(self, data: bytes) -> BytesStream: 
+        async with self._semaphore:
+            if self._semaphore._waiters:
+                self._pools_open.clear()
+            try:
+                async for chunk in session.post(self.endpoint, data=data):
+                    yield chunk
+                self._successes += 1
+            except (asyncio.TimeoutError, BrokenPipe):
+                await self._throttle()
+                raise
+            except Exception:
+                self._failures += 1
+                raise
+    
+    async def _throttle(self):
+        if self._at_min_speed:
+            return
+        self._throttled_by += 1
+        await self._semaphore.acquire()
+        def release():
+            self._semaphore.release()
+            self._throttled_by -= 1
+        if self._next_dethrottle:
+            dethrottle_at = max(time.time(), self._next_dethrottle.when()) + 5*60
+        else:
+            dethrottle_at = time.time() + 5*60
+        self._next_dethrottle = asyncio.get_running_loop().call_at(dethrottle_at, release)
+        
     
     
 def _validate_endpoint(endpoint: str) -> None:
