@@ -28,13 +28,13 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
 
 
 class MethodSemaphores:
-    _use_block_semaphore = ["eth_call", "eth_getCode", "erigon_getHeaderByNumber"]
+    _use_block_semaphore = ["eth_call"] #, "eth_getCode", "erigon_getHeaderByNumber"]
     def __init__(self, controller: "DankMiddlewareController") -> None:
         from dank_mids import ENVIRONMENT_VARIABLES
         self.controller = controller
-        semaphore_type = lambda method: BlockSemaphore if method in self._use_block_semaphore else ThreadsafeSemaphore
+        get_semaphore_type = lambda method: BlockSemaphore if method in self._use_block_semaphore else ThreadsafeSemaphore
         self.method_semaphores = {
-            method: semaphore_type(sem._value, name=f"{method} {controller}") 
+            method: get_semaphore_type(method)(sem._value, name=f"{method} {controller}") 
             for method, sem in ENVIRONMENT_VARIABLES.method_semaphores.items()
         }
         self.keys = self.method_semaphores.keys()
