@@ -115,7 +115,7 @@ class DankProvider:
         self._semaphore._value -= throttle_by
         for _ in range(throttle_by):
             next_dethrottle = self._next_dethrottle.when() if self._next_dethrottle else 0
-            dethrottle_at = max(next_dethrottle, time()) + 5*60
+            dethrottle_at = max(next_dethrottle, time()) + 60
             self._next_dethrottle = asyncio.get_running_loop().call_at(dethrottle_at, self._dethrottle)
         logger.info("%s max concurrency throttled to %s", self, self._concurrency)
         
