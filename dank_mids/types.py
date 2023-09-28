@@ -1,9 +1,9 @@
 import logging
 import re
 from time import time
-from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    List, Literal, NewType, Optional, TypedDict, TypeVar,
-                    Union, overload)
+from typing import (TYPE_CHECKING, Any, AsyncGenerator, Callable, Coroutine,
+                    DefaultDict, Dict, List, Literal, NewType, Optional,
+                    TypedDict, TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
@@ -11,7 +11,9 @@ from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
-from dank_mids._exceptions import BadResponse, ExceedsMaxBatchSize, PayloadTooLarge
+from dank_mids._exceptions import (ArchiveNodeRequired, BadResponse,
+                                   ExceedsMaxBatchSize, InvalidRequest,
+                                   NodePayloadTooLarge)
 
 if TYPE_CHECKING:
     from dank_mids.requests import Multicall
@@ -94,12 +96,14 @@ class PartialResponse(_DictStruct):
     error: Optional[Error] = None
 
     @property
-    def exception(self) -> BadResponse:
+    def exception(self) -> Optional[BadResponse]:
         if self.error is None:
-            raise AttributeError(f"{self} did not error.")
+            return None
         return (
-            PayloadTooLarge(self) if self.payload_too_large
+            NodePayloadTooLarge(self) if self.payload_too_large
             else ExceedsMaxBatchSize(self) if re.search(r'batch limit (\d+) exceeded', self.error.message)
+            else InvalidRequest(self) if self.error.message in ["invalid request", "Parse error"]
+            else ArchiveNodeRequired(self) if self.error.message.startswith("No state available for block")
             else BadResponse(self)
         )
     
@@ -185,3 +189,17 @@ JSONRPCBatchRequest = List[Request]
 JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
 # We need this for proper decoding.
 _JSONRPCBatchResponse = Union[List[msgspec.Raw], PartialResponse]
+
+
+###########
+# Streams #
+###########
+
+class BytesStream(AsyncGenerator[bytes, None]):
+    pass
+
+class StreamedJSONObject(AsyncGenerator[bytes, None]):
+    pass
+
+class StreamedJSONArrayOfObjects(AsyncGenerator[StreamedJSONObject, None]):
+    pass

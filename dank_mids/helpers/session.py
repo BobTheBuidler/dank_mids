@@ -4,8 +4,8 @@ import http
 import logging
 from enum import IntEnum
 from itertools import chain
-from threading import get_ident
 from random import random
+from threading import get_ident
 from typing import Any, overload
 
 import msgspec
@@ -17,8 +17,9 @@ from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES
+from dank_mids._exceptions import GatewayPayloadTooLarge, TooManyRequests, BrokenPipe
 from dank_mids.helpers import decode
-from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
+from dank_mids.types import PartialRequest, RawResponse, BytesStream
 
 logger = logging.getLogger("dank_mids.session")
 
@@ -74,59 +75,57 @@ RETRY_FOR_CODES = {
 
 limiter = AsyncLimiter(5, 0.1)  # 50 requests/second
 
-@overload
-async def post(endpoint: str, *args, loads = decode.raw, **kwargs) -> RawResponse:...
-@overload
-async def post(endpoint: str, *args, loads = decode.jsonrpc_batch, **kwargs) -> JSONRPCBatchResponse:...
-async def post(endpoint: str, *args, loads: JSONDecoder = None, **kwargs) -> Any:
+async def post(endpoint: str, *args, **kwargs) -> BytesStream:
     """Returns decoded json data from `endpoint`"""
     session = await get_session()
-    return await session.post(endpoint, *args, loads=loads, **kwargs)
+    async for chunk in session.post(endpoint, *args, **kwargs):
+        yield chunk
 
 async def get_session() -> "ClientSession":
     return await _get_session_for_thread(get_ident())
 
-class ClientSession(DefaultClientSession):
-    async def post(self, endpoint: str, *args, loads: JSONDecoder = None, _retry_after: int = 1, **kwargs) -> bytes:
-        # Process input arguments.
-        if isinstance(kwargs.get('data'), PartialRequest):
-            logger.debug("making request for %s", kwargs['data'])
-            kwargs['data'] = msgspec.json.encode(kwargs['data'])
-        logger.debug("making request with (args, kwargs): (%s %s)", tuple(chain((endpoint), args)), kwargs)
 
-        # Try the request until success or 5 failures.
+class ClientSession(DefaultClientSession):
+    async def post(self, endpoint: str, *args, _retry_after: int = 1, **kwargs) -> BytesStream:
+        logger.debug("making request with (args, kwargs): (%s %s)", tuple(chain((endpoint), args)), kwargs)
         tried = 0
+        # Try the request until success or 5 failures.
         while True:
             try:
-                async with limiter:
-                    async with super().post(endpoint, *args, **kwargs) as response:
-                        response = await response.json(loads=loads)
-                        logger.debug("received response %s", response)
-                        return response
-            except ClientResponseError as ce:
-                if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:
-                    try_after = float(ce.headers.get("Retry-After", _retry_after * 1.5))
-                    if self not in _limited:
-                        _limited.append(self)
-                        logger.info("You're being rate limited by your node provider")
-                        logger.info("Its all good, dank_mids has this handled, but you might get results slower than you'd like")
-                    logger.info(f"rate limited: retrying after {try_after}s")
-                    await asyncio.sleep(try_after)
-                    if try_after > 30:
-                        logger.warning('severe rate limiting from your provider')
-                    return await self.post(endpoint, *args, loads=loads, _retry_after=try_after, **kwargs)
-                
-                try:
-                    if ce.status not in RETRY_FOR_CODES or tried >= 5:
-                        logger.debug("response failed with status %s", HTTPStatusExtended(ce.status))
-                        raise ce
-                except ValueError as ve:
-                    raise ce if str(ve).endswith("is not a valid HTTPStatusExtended") else ve from ve
-                
-                sleep = random()
+                async for chunk in self._post_and_handle_excs(endpoint, *args, _retry_after=_retry_after, **kwargs):
+                    yield chunk
+                return
+            except TooManyRequests as e:
+                if e.try_after > 30:
+                    logger.warning('severe rate limiting from your provider')
+                await asyncio.sleep(e.try_after)
+                _retry_after = e.try_after
+                async for b in self.post(endpoint, *args, _retry_after=e.try_after, **kwargs):
+                    yield b
+            except ClientResponseError as e:
+                if tried >= 5 or not _should_retry(e):
+                    raise e
+                sleep = random() * 2
+                logger.debug("response failed with status %s, retrying in %ss", HTTPStatusExtended(e.status), round(sleep, 2))
                 await asyncio.sleep(sleep)
-                logger.debug("response failed with status %s, retrying in %ss", HTTPStatusExtended(ce.status), round(sleep, 2))
                 tried += 1
+                
+    async def _post_and_handle_excs(self, endpoint: str, *args, _retry_after: int = 1, **kwargs) -> BytesStream:
+        async with limiter:
+            try:
+                async with super().post(endpoint, *args, **kwargs) as response:
+                    logger.debug("received response %s", response)
+                    while response.content._buffer or not response.content._eof:
+                        yield await response.content.readany()
+            except ClientResponseError as e:
+                if e.status == HTTPStatusExtended.TOO_MANY_REQUESTS:
+                    raise TooManyRequests(e, endpoint, _retry_after) from e
+                elif e.message == "Payload Too Large":
+                    raise GatewayPayloadTooLarge(e)
+                elif "broken pipe" in str(e).lower():
+                    raise BrokenPipe(e)
+                raise e
+
 
 @alru_cache(maxsize=None)
 async def _get_session_for_thread(thread_ident: int) -> ClientSession:
@@ -137,4 +136,14 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     timeout = ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT)
     return ClientSession(headers={'content-type': 'application/json'}, timeout=timeout, raise_for_status=True)
 
-_limited = []
+def _should_retry(e: ClientResponseError) -> bool:
+    try:
+        if e.status not in RETRY_FOR_CODES:
+            logger.debug("response failed with status %s", HTTPStatusExtended(e.status))
+            return False
+        return True
+    except ValueError as _e:
+        if not str(_e).endswith("is not a valid HTTPStatusExtended"):
+            raise _e from e
+        logger.debug("response failed with status %s %s", e.status, e.message)
+        raise e from _e
