@@ -79,7 +79,7 @@ class DankProvider:
     
     @property
     def _active_requests(self) -> int:
-        self._max_concurrency - self._semaphore._value
+        return self._max_concurrency - self._semaphore._value
         
     @property
     def _should_retry_invalid_request(self):
