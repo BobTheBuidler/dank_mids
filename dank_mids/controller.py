@@ -90,7 +90,7 @@ class DankMiddlewareController:
         call_semaphore = self.method_semaphores[method][params[1]] if method == "eth_call" else self.method_semaphores[method]
         async with call_semaphore:
             await self.pools_open
-            logger.debug(f'making {self.provider._request_type.__name__} {method} with params {params}')
+            logger.debug(f'making {self.provider._request_selector.type.__name__} {method} with params {params}')
             call = eth_call(self, params) if method == "eth_call" and params[0]["to"] not in self.no_multicall else RPCRequest(self, method, params)
             return await call
 
