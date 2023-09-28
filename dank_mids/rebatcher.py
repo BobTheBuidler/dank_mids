@@ -17,9 +17,11 @@ logger = logging.getLogger(__name__)
 
 class Rebatcher:
     def __init__(self, controller: "DankMiddlewareController") -> None:
+        from dank_mids.requests import Multicall
         self.controller = controller
+        self._exc = None
         self.__queue = asyncio.Queue()
-        self.__eth_calls: DefaultDict[BlockId, List["eth_call"]] = defaultdict(list)
+        self.__eth_calls: DefaultDict[BlockId, List["eth_call"]] = defaultdict(lambda: Multicall(self.controller, rebatched=True))
         self.__rpc_calls: List["RPCRequest"] = []
     
     async def rebatch(self, request: "RPCRequest") -> None:
@@ -52,7 +54,7 @@ class Rebatcher:
                 while request := self.__get_next():
                     self.__sort_call(request)
                 logger.debug("rebatching %s calls in multicalls and %s other calls", sum(len(calls) for calls in self.__eth_calls.values()), len(self.__rpc_calls))
-                await DankBatch(self.controller, self.__eth_calls, self.__rpc_calls)
+                await DankBatch(self.controller, self.__eth_calls, self.__rpc_calls, rebatched=True)
         except Exception as e:
             self._exc = e
             raise e

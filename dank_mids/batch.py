@@ -18,10 +18,17 @@ logger = logging.getLogger(__name__)
 class DankBatch:
     __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
     """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
-    def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[RPCRequest]):
+    def __init__(
+        self, 
+        controller: "DankMiddlewareController", 
+        multicalls: Multicalls, 
+        rpc_calls: List[RPCRequest], 
+        rebatched: bool = False,
+    ) -> None:
         self.controller = controller
         self.multicalls = multicalls
         self.rpc_calls = rpc_calls
+        self.rebatched = rebatched
     
     def __await__(self) -> Generator[Any, None, Any]:
         self.start()
@@ -46,7 +53,7 @@ class DankBatch:
         # Combine multicalls into one or more jsonrpc batches
 
         # Create empty batch
-        working_batch = JSONRPCBatch(self.controller)
+        working_batch = JSONRPCBatch(self.controller, rebatched=self.rebatched)
 
         check_len = min(CHECK, self.controller.batcher.step)
         # Go thru the multicalls and add calls to the batch
@@ -61,7 +68,7 @@ class DankBatch:
                 for request in working_batch:
                     request.start(working_batch)
                 yield working_batch
-                working_batch = JSONRPCBatch(self.controller)
+                working_batch = JSONRPCBatch(self.controller, rebatched=self.rebatched)
         
         rpc_calls_to_batch = self.rpc_calls[:]
         while rpc_calls_to_batch:
@@ -69,7 +76,7 @@ class DankBatch:
                 for request in working_batch:
                     request.start(working_batch)
                 yield working_batch
-                working_batch = JSONRPCBatch(self.controller)
+                working_batch = JSONRPCBatch(self.controller, rebatched=self.rebatched)
             working_batch.append(rpc_calls_to_batch.pop(), skip_check=True)
         if working_batch:
             if working_batch.is_single_multicall:

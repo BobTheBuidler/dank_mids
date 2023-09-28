@@ -482,12 +482,19 @@ class Multicall(_Batch[eth_call]):
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
     _might_want_to_reduce_batch_size_indicators = 0
 
-    def __init__(self, controller: "DankMiddlewareController", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
+    def __init__(
+        self, 
+        controller: "DankMiddlewareController", 
+        calls: List[eth_call] = [], 
+        bid: Optional[BatchId] = None,
+        rebatched: bool = False
+    ) -> None:
         # sourcery skip: default-mutable-arg
         super().__init__(controller, calls)
         self.bid = bid or self.controller.multicall_uid.next
         self._batch = None
         self._status = Status.QUEUED
+        self._rebatched = rebatched
     
     def __repr__(self) -> str:
         return f"<Multicall mid={self.bid} block={self.block} len={len(self)} status={self._status.name} batch={self._batch}>"
@@ -627,7 +634,7 @@ class Multicall(_Batch[eth_call]):
         Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
         Calls `self._done.set()` when finished.
         """
-        if not isinstance(e, Revert) and len(self) <= self.controller.batcher.step * 0.2:
+        if not self._rebatched and not isinstance(e, Revert) and len(self) <= self.controller.batcher.step * 0.2:
             failure_logger.debug("%s had exception %s, rebatching and retrying", self, e)
             return await asyncio.gather(*[self.controller.rebatcher.rebatch(call) for call in self.calls])
         failure_logger.debug("%s had exception %s, bisecting and retrying", self, e)
@@ -666,11 +673,13 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         self,
         controller: "DankMiddlewareController",
         calls: List[Union[Multicall, RPCRequest]] = [], 
-        jid: Optional[BatchId] = None
+        jid: Optional[BatchId] = None,
+        rebatched: bool = False,
     ) -> None:  # sourcery skip: default-mutable-arg
         super().__init__(controller, calls)
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
         self._status = Status.QUEUED
+        self._rebatched = rebatched
 
     def __repr__(self) -> str:
         return f"<JSONRPCBatch jid={self.jid} len={len(self)} status={self._status.name}>"
@@ -813,7 +822,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         If one chunk is just a single multicall, it will be handled alone, not be placed into a batch.
         Calls `self._done.set()` when finished.
         """
-        if max(len(self), self.weight)  <= ENVS.MAX_JSONRPC_BATCH_SIZE * 0.2:
+        if not self._rebatched and max(len(self), self.weight) <= ENVS.MAX_JSONRPC_BATCH_SIZE * 0.2:
             failure_logger.debug("%s had exception %s, rebatching and retrying", self, e)
             return await asyncio.gather(*[self.controller.rebatcher.rebatch(call) for call in self.calls])
         failure_logger.debug("%s had exception %s, bisecting and retrying", self, e)
