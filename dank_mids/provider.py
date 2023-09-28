@@ -107,9 +107,10 @@ class DankProvider:
             self._pools_open.set()
         
     def _throttle(self) -> None:
-        throttle_by = max(self._concurrency - self._active_requests, 1)
-        if self._concurrency - throttle_by < self._min_concurrency:
+        throttle_to = max(self._active_requests - 1, self._min_concurrency)
+        if self._concurrency <= throttle_to:
             return
+        throttle_by = self._concurrency - throttle_to
         self._throttled_by += throttle_by
         self._semaphore._value -= throttle_by
         for _ in range(throttle_by):
