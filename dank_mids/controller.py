@@ -90,7 +90,7 @@ class DankMiddlewareController:
         call_semaphore = self.method_semaphores[method][params[1]] if method == "eth_call" else self.method_semaphores[method]
         async with call_semaphore:
             await self.pools_open
-            logger.debug(f'making {self.provider._request_selector.type.__name__} {method} with params {params}')
+            logger.debug('making %s %s with params %s', self.provider._request_selector.type.__name__, method, params)
             call = eth_call(self, params) if method == "eth_call" and params[0]["to"] not in self.no_multicall else RPCRequest(self, method, params)
             return await call
 
@@ -101,10 +101,10 @@ class DankMiddlewareController:
             self.num_pending_eth_calls = 0
             rpc_calls = self.pending_rpc_calls[:]
             self.pending_rpc_calls = JSONRPCBatch(self)
-        demo_logger.info(f'executing dank batch (current cid: {self.call_uid.latest})')  # type: ignore
+        demo_logger.info('executing dank batch (current cid: %s)', self.call_uid.latest)  # type: ignore
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
-        demo_logger.info(f'{batch} done')
+        demo_logger.info('%s done', batch)
     
     @property
     def pools_open(self) -> Awaitable[bool]:

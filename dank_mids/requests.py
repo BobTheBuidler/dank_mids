@@ -138,7 +138,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 self.controller.pending_eth_calls[self.block].append(self)
             else:
                 self.controller.pending_rpc_calls.append(self)
-        demo_logger.info(f'added to queue (cid: {self.uid})')  # type: ignore
+        demo_logger.info('added to queue (cid: %s)', self.uid)  # type: ignore
         if logger.isEnabledFor(logging.DEBUG):
             self._daemon = asyncio.create_task(self._debug_daemon())
     
@@ -172,7 +172,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     async def get_response(self) -> RPCResponse:
         try:
             if not self.should_batch:
-                logger.debug(f"bypassed, method is {self.method}")
+                logger.debug("bypassed, method is %s", self.method)
                 await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)
                 return self.response.decode(partial=True).to_dict(method=self.method)
             
@@ -494,7 +494,7 @@ class Multicall(_Batch[eth_call]):
         #if len(self) < 50: # TODO play with later
         #    return await JSONRPCBatch(self.controller, self.calls)
         rid = self.controller.request_uid.next
-        demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
+        demo_logger.info('request %s for multicall %s starting', rid, self.bid)  # type: ignore
         try:
             await self.spoof_response(await self.provider.make_request(self.method, self.params, request_id=self.uid))
         except internal_err_types.__args__ as e:
@@ -512,7 +512,7 @@ class Multicall(_Batch[eth_call]):
         except Exception as e:
             _log_exception(e)
             await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
-        demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
+        demo_logger.info('request %s for multicall %s complete', rid, self.bid)  # type: ignore
     
     def should_retry(self, e: Exception) -> bool:
         """Should the Multicall be retried based on `e`?"""
@@ -665,7 +665,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         rid = self.controller.request_uid.next
         if ENVS.DEMO_MODE:
             # When demo mode is disabled, we can save some CPU time by skipping this sum
-            demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
+            demo_logger.info('request %s for jsonrpc batch %s (%s calls) starting', rid, self.jid, sum(len(batch) for batch in self.calls))  # type: ignore
         try:
             # NOTE: We do this inline so we never have to allocate the response to memory
             await self.spoof_response(self.post())
@@ -687,7 +687,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 # TODO: the useful stuff in should_retry should probably be moved elsewhere
                 raise e
             await self.bisect_and_retry(e)
-        demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} complete')  # type: ignore
+        demo_logger.info('request %s for jsonrpc batch %s complete', rid, self.jid)  # type: ignore
     
     async def post(self) -> AsyncGenerator[RawResponse, None]:
         retries = 0
