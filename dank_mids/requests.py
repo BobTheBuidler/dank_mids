@@ -103,13 +103,21 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
                     elif len(self) == 1 and self.calls[0]._status == Status.CANCELED:
                         logger.debug("but its only call was cancelled %s", call)
                         return
-                    for call in self.calls:
+                    for call in self.calls[:]:
                         if call._status == Status.CANCELED:
                             logger.debug("this call was cancelled though %s", call)
-                        if call._status == Status.FAILED:
+                        elif call._status == Status.FAILED:
                             logger.debug("this call failed though %s", call)
-                        if call._status == Status.QUEUED:
+                        elif call._status == Status.COMPLETE:
+                            logger.debug('%s is complete, removing from %s', call, self)
+                            if call._done.is_set():
+                                self.calls.remove(call)
+                                continue
+                            logger.debug('%s status is %s but %s is not set', call, call._status.name, call._done)
+                        elif call._status == Status.QUEUED:
                             logger.warning("%s is started but %s is still queued. this should not happen.", self, call)
+                        else:
+                            logger.debug("%s status is %s", self, self._status)
                     
 
 ### Single requests:
@@ -197,6 +205,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
             await asyncio.wait_for(self._done.wait(), timeout=ENVS.STUCK_CALL_TIMEOUT)
         except asyncio.TimeoutError:
             return await self.create_duplicate(timed_out=True)
+        
+        # Call has results, time to decode...
 
         # JIT json decoding
         if isinstance(self.response, RawResponse):
@@ -274,19 +284,26 @@ class RPCRequest(_RequestMeta[RawResponse]):
             semaphore = semaphore[self.params[1]]
         return semaphore
     
-    async def create_duplicate(self, timed_out: bool = False) -> Self: # Not actually self, but for typing purposes it is.
+    @Status.set
+    async def create_duplicate(self, timed_out: bool = False) -> RPCResponse: # Not actually self, but for typing purposes it is.
         # We need to make room since the stalled call is still holding the semaphore
         self.semaphore.release()
-        # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
-        # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
-        # and then the task will try to acquire at the very next event loop _run_once cycle
-        self._status = Status.CANCELED
+        self.provider._pools_open.set()
         if timed_out:
             logger.warning(f"call {self.uid} got stuck, we're creating a new one")
-        retval = await self.controller(self.method, self.params)
+        else:
+            self._status = Status.DUPLICATED
+            
+        futs = asyncio.as_completed([self.controller(self.method, self.params), self._done.wait()])
+        if (result := await next(futs)) == True:  # the original completed first
+            pass
+        else:  # the clone completed first
+            self._response = await next(futs)
         if not isinstance(self.semaphore, DummySemaphore):
             self.semaphore._value -= 1
-        return retval
+        # This suppresses an unawaited coroutine warning
+        asyncio.create_task(next(futs))
+        return self._response
 
 revert_threads = PruningThreadPoolExecutor(4)
 

@@ -22,6 +22,7 @@ class Status(IntEnum):
     CANCELED = 3
     FAILED = 4
     TIMED_OUT = 5
+    DUPLICATED = 6
     
     @staticmethod
     def for_exc(e: Exception):
