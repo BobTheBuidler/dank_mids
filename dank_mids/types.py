@@ -39,14 +39,15 @@ nested_dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, dict_of_stuff]]
 class _DictStruct(msgspec.Struct):
     def __getitem__(self, attr: str) -> Any:
         return getattr(self, attr)
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self, **kwargs) -> Dict[str, Any]:
         data = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
             if isinstance(attr, _DictStruct):
-                attr = attr.to_dict()
+                attr = attr.to_dict(**kwargs)
             data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
         return data
+    _logger = logging.getLogger("struct")
   
 class PartialRequest(_DictStruct):
     method: str
@@ -60,11 +61,18 @@ class PartialRequest(_DictStruct):
 class Request(PartialRequest):
     # NOTE: While technially part of a request, we can successfully make requests without including the `jsonrpc` field.
     jsonrpc: Literal["2.0"] = "2.0"
+    def to_dict(self) -> Dict[str, str]:
+        return super().to_dict()
 
 class Error(_DictStruct):
     code: int
     message: str
     data: Optional[Any] = ''
+    def to_dict(self, *, request: Optional["PartialRequest"] = None) -> Dict[str, str]:
+        data = super().to_dict()
+        if request:
+            data['dankmids_added_context'] = request.to_dict()
+        return data
 
 # some devving tools that will go away eventually
 _dict_responses = set()
@@ -113,17 +121,23 @@ class PartialResponse(_DictStruct):
     def payload_too_large(self) -> bool:
         return any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)
         
-    def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
+    def to_dict(self, method: Optional[str] = None, request: Optional[PartialRequest] = None) -> Dict[str, Any]:
         data = {}
+        if self.result:
+            data["result"] = self.decode_result(method=method, _caller=self)
+        if self.error:
+            data['error'] = self.error.to_dict(request=request)
         for field in self.__struct_fields__:
+            if field in {"result", "error"}:
+                continue
             attr = getattr(self, field)
             if attr is None:
+                self._logger.debug("does this even run anymore?")
                 continue
-            if field == "result":
-                attr = self.decode_result(method=method, _caller=self)
-            if isinstance(attr, _DictStruct):
+            elif isinstance(attr, _DictStruct):
+                self._logger.debug("does this even run anymore?")
                 attr = attr.to_dict()
-            data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr
+                data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
         return data
 
     def decode_result(self, method: Optional[str] = None, _caller = None) -> Any:

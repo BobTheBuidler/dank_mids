@@ -174,7 +174,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             if not self.should_batch:
                 logger.debug(f"bypassed, method is {self.method}")
                 await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)
-                return self.response.decode(partial=True).to_dict(self.method)
+                return self.response.decode(partial=True).to_dict(method=self.method)
             
             if self._batch and self._batch._status == Status.QUEUED:
                 # NOTE: If this call has a batch assigned, we filled a batch. Let's await it now so we can send something to the node.
@@ -199,14 +199,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
             response = self.response.decode(partial=True)
             if self.provider._should_retry_invalid_request(response.exception):
                 return await self.create_duplicate()
-                
-            response_dict = response.to_dict(self.method)
+            response_dict = response.to_dict(method=self.method, request=self.request)
             if response.error:
-                response_dict['error']['dankmids_added_context'] = self.request.to_dict()
-                # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
-                # But I'll check it anyway to be safe
-                if result := response_dict.pop('result', None):
-                    response_dict['result'] = result
                 logger.debug("error response for %s: %s", self, response_dict)
             return response_dict
     
@@ -246,14 +240,12 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                 self._response = await self.create_duplicate()
                 return
-            error = data.response.error.to_dict()
-            error['dankmids_added_context'] = self.request.to_dict()
-            self._response = {"error": error}
+            self._response = data.response.to_dict(request=self.request)
             logger.debug("%s _response set to rpc error response %s", self, self._response)
             
         elif isinstance(data, Exception):
-            logger.debug("%s _response set to Exception %s", self, data)
             self._response = data
+            logger.debug("%s _response set to Exception %s", self, data)
             
         # From multicalls
         elif isinstance(data, bytes):
@@ -547,7 +539,7 @@ class Multicall(_Batch[eth_call]):
             response = data.decode(partial=True)
             if response.error:
                 # TODO: This logic should probably live somewhere else
-                if isinstance(response.exception, OutOfGas) or (isinstance(response.exception, InvalidRequest) and self.provider._should_retry_invalid_request()):
+                if isinstance(response.exception, OutOfGas) or self.provider._should_retry_invalid_request(response.exception):
                     await self.bisect_and_retry(response.exception)
                     return
                 logger.debug("%s received an 'error' response from the rpc: %s", self, response.exception)
