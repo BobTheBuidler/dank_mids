@@ -8,6 +8,7 @@ from typing_extensions import ParamSpec
 from web3.exceptions import ContractLogicError
 
 from dank_mids import constants
+from dank_mids._exceptions import BadRequest, BadGateway, BrokenPipe
 
 if TYPE_CHECKING:
     from dank_mids.requests import RPCRequest
@@ -23,9 +24,10 @@ class Status(IntEnum):
     COMPLETE = 2
     CANCELED = 3
     FAILED = 4
-    TIMED_OUT = 5
-    DUPLICATED = 6
-    
+    REBATCHED = 5
+    TIMED_OUT = 6
+    DUPLICATED = 7
+        
     @staticmethod
     def for_exc(e: Exception):
         if isinstance(e, asyncio.CancelledError):
@@ -45,9 +47,11 @@ class Status(IntEnum):
                 self._done.set()
                 self._status = Status.COMPLETE
                 return retval
-            except (asyncio.TimeoutError, asyncio.CancelledError) as e:
+            except (asyncio.TimeoutError, BadGateway, BadRequest, BrokenPipe, asyncio.CancelledError) as e:
                 from dank_mids.requests import _Batch
-                if not isinstance(self, _Batch):
+                if isinstance(self, _Batch):
+                    self._status = Status.REBATCHED
+                else:
                     self._status = Status.for_exc(e)
                 raise e
             except Exception as e:
