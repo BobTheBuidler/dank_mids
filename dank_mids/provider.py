@@ -36,7 +36,7 @@ class DankProvider:
         self._pools_open = a_sync.Event()
         self._pools_open.set()
         self._throttled_by = 0
-        self._next_dethrottle
+        self._next_dethrottle = None
         
         self._successes = 0
         self._failures = 0

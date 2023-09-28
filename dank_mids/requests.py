@@ -496,9 +496,9 @@ class Multicall(_Batch[eth_call]):
         rid = self.controller.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
-            await self.spoof_response(await self.controller.provider.make_request(self.method, self.params, request_id=self.uid))
+            await self.spoof_response(await self.provider.make_request(self.method, self.params, request_id=self.uid))
         except internal_err_types.__args__ as e:
-            raise DankMidsInternalError(e)
+            raise DankMidsInternalError(e) from e
         except GatewayPayloadTooLarge as e:
             logger.debug("multicall payload too large.  calls: %s  response headers: %s", len(self), e.headers)
             self.controller.reduce_multicall_size(len(self))
