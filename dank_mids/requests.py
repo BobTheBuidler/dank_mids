@@ -22,6 +22,7 @@ from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from typing_extensions import Self
+from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
@@ -33,7 +34,7 @@ from dank_mids._exceptions import (ArchiveNodeRequired, BadGateway, BadRequest,
                                    DankMidsInternalError, EmptyBatch,
                                    ExceedsMaxBatchSize, GatewayPayloadTooLarge,
                                    InvalidRequest, NodePayloadTooLarge,
-                                   OutOfGas, PayloadTooLarge, ResponseNotReady,
+                                   PayloadTooLarge, ResponseNotReady, Revert,
                                    internal_err_types)
 from dank_mids.helpers import Status, decode, session, stream
 from dank_mids.types import (BatchId, BlockId, JsonrpcParams, PartialRequest,
@@ -211,6 +212,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # We raise it here so it traces back up to the caller
         if isinstance(self.response, ClientResponseError):
             raise DankMidsClientResponseError(self.response, self.request) from self.response
+        if isinstance(self.response, ContractLogicError):
+            raise self.response
         if isinstance(self.response, Exception):
             try:
                 more_detailed_exc = self.response.__class__(self.response, self.request)
@@ -542,7 +545,7 @@ class Multicall(_Batch[eth_call]):
             response = data.decode(partial=True)
             if response.error:
                 # TODO: This logic should probably live somewhere else
-                if isinstance(response.exception, OutOfGas) or self.provider._should_retry_invalid_request(response.exception):
+                if isinstance(response.exception, Revert) or self.provider._should_retry_invalid_request(response.exception):
                     await self.bisect_and_retry(response.exception)
                     return
                 logger.debug("%s received an 'error' response from the rpc: %s", self, response.exception)
@@ -783,9 +786,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 def _log_exception(e: Exception) -> None:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
-    dont_need_to_see_errs = constants.RETRY_ERRS + ['out of gas','error processing call revert', 'non_empty_data', 'invalid ether transfer']
     stre = str(e).lower()
-    if any(err in stre for err in dont_need_to_see_errs):
+    if any(err in stre for err in constants.RETRY_ERRS):
         return
     logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
     logger.warning(e, exc_info=True)
