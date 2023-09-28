@@ -18,7 +18,6 @@ from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 
 from dank_mids.types import AsyncMiddleware
 
-logger = logging.getLogger(__name__)
 dank_w3s: List[Web3] = []
 
 
@@ -145,7 +144,7 @@ def _apply_response_formatters(
         return assoc(
             response, response_type, method_response_formatter(appropriate_response)
         )
-    logger.debug(f'formatters: {result_formatters}')
+        
     if "result" in response and method in result_formatters:
         return _format_response("result", result_formatters[method])
     elif "error" in response and method in error_formatters:
