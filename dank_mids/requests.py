@@ -542,6 +542,7 @@ class Multicall(_Batch[eth_call]):
                 self._might_want_to_reduce_batch_size_indicators += 1
             if (i := self._might_want_to_reduce_batch_size_indicators / 5) == int(i):
                 self.controller.reduce_multicall_size(len(self))
+            await sleep_random(e, multiplier=1 + str(self.bid).count("_"))
             await self.bisect_and_retry(e)
         except GatewayPayloadTooLarge as e:
             logger.debug("multicall payload too large.  calls: %s  response headers: %s", len(self), e.headers)
@@ -727,7 +728,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             await self.bisect_and_retry(e)
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
-        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError, ExceedsMaxBatchSize, PayloadTooLarge) as e:
+        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError) as e:
+            await sleep_random(e, multiplier=1 + str(self.jid).count("_"))
+            await self.bisect_and_retry(e)
+        except (ExceedsMaxBatchSize, PayloadTooLarge) as e:
             await self.bisect_and_retry(e)
         except Exception as e:
             _log_exception(e)
@@ -848,3 +852,8 @@ _err_details = {
     asyncio.TimeoutError: "timed out",
     BrokenPipe: "broke the pipe",
 }
+
+async def sleep_random(e: Exception, multiplier: int) -> None:
+    sleep = session.random() * 10 * multiplier
+    logger.debug("response failed with %s, retrying in %ss", e, round(sleep, 2))
+    await asyncio.sleep(sleep)
