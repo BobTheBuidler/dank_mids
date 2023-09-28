@@ -211,6 +211,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
     
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
         # We raise it here so it traces back up to the caller
+        if isinstance(self.response, ClientResponseError):
+            raise DankMidsClientResponseError(self.response, self.request) from self.response
         if isinstance(self.response, Exception):
             try:
                 more_detailed_exc = self.response.__class__(self.response, self.request)

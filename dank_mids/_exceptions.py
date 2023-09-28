@@ -1,7 +1,7 @@
 
 import logging
 import re
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from aiohttp.client_exceptions import ClientOSError, ClientResponseError
 
@@ -66,17 +66,26 @@ class BrokenPipe(ClientOSError):
 # Client Response Errors #
 ##########################
 
-class DankMidsClientResponseError(ClientResponseError):
+class _EasyInitClientResponseError(ClientResponseError):
+    def __init__(
+        self,
+        e: ClientResponseError,
+    ) -> None:
+        super().__init__(e.request_info, e.history, status=e.status, message=e.message, headers=e.headers)
+        self._exception = e
+    
+class DankMidsClientResponseError(_EasyInitClientResponseError):
     """A wrapper around the standard aiohttp ClientResponseError that attaches the request that generated the error."""
     def __init__(
         self,
-        exc: ClientResponseError,
+        e: ClientResponseError,
+        request: Optional[PartialRequest] = None,
     ) -> None:
-        super().__init__(exc.request_info, exc.history, code=exc.code, status=exc.status, message=exc.message, headers=exc.headers)
-        self.args = (*exc.request_info, exc.history)
-        self._exception = exc
+        super().__init__(e)
+        self.args = (*e.request_info, e.history, request)
+        self.request = request
         
-class TooManyRequests(DankMidsClientResponseError):
+class TooManyRequests(_EasyInitClientResponseError):
     _limited: List["ClientSession"] = []
     
     def __init__(self, e: ClientResponseError, host: str, try_after: float) -> None:
@@ -88,11 +97,11 @@ class TooManyRequests(DankMidsClientResponseError):
             logger.info("Its all good, dank_mids has this handled, but you might get results slower than you'd like")
         logger.info(f"rate limited: retrying after {self.try_after}s")
 
-class GatewayPayloadTooLarge(DankMidsClientResponseError, PayloadTooLarge):
+class GatewayPayloadTooLarge(_EasyInitClientResponseError, PayloadTooLarge):
     pass
 
-class BadRequest(DankMidsClientResponseError):
+class BadRequest(_EasyInitClientResponseError):
     pass
 
-class BadGateway(DankMidsClientResponseError):
+class BadGateway(_EasyInitClientResponseError):
     pass
