@@ -98,7 +98,7 @@ class ClientSession(DefaultClientSession):
             # NOTE: This logic should probably go on the provider not the session
             # NOTE: On second thought, why do we still need ClientSession? 
             await asyncio.sleep(e.try_after)
-            async for b in self.post(endpoint, *args, _retry_after=e.try_after, **kwargs):
+            async for b in self.post(endpoint, *args, _retry_after=e.try_after * 2, **kwargs):
                 yield b
                 
     async def _post_and_handle_excs(self, endpoint: str, *args, _retry_after: int = 1, **kwargs) -> BytesStream:
@@ -106,11 +106,17 @@ class ClientSession(DefaultClientSession):
             try:
                 async with super().post(endpoint, *args, **kwargs) as response:
                     logger.debug("received response %s", response)
+                    empty = 0
                     while not response.content.at_eof():
                         try:
-                            yield await asyncio.wait_for(response.content.readany(), timeout=ENVS.STREAM_READER_TIMEOUT)
+                            b = await asyncio.wait_for(response.content.readany(), timeout=ENVS.STREAM_READER_TIMEOUT)
                         except asyncio.TimeoutError as e:
                             raise StreamReaderTimeout from e
+                        if b == b'':
+                            empty += 1
+                        if empty >= 50:
+                            raise Exception('can this even happen?')
+                        yield b
             except ClientOSError as e:
                 if e.errno == errno.EPIPE:
                     raise BrokenPipe(*e.args) from e
