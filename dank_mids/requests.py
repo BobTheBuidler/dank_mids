@@ -815,7 +815,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         """
         if max(len(self), self.weight)  <= ENVS.MAX_JSONRPC_BATCH_SIZE * 0.2:
             failure_logger.debug("%s had exception %s, rebatching and retrying", self, e)
-            return await asyncio.gather(self.controller.rebatcher.rebatch(call) for call in self.calls)
+            return await asyncio.gather(*[self.controller.rebatcher.rebatch(call) for call in self.calls])
         failure_logger.debug("%s had exception %s, bisecting and retrying", self, e)
         batches = [
             Multicall(self.controller, chunk, f"jrpcbatch{self.jid}_{i}")  # type: ignore [misc]
