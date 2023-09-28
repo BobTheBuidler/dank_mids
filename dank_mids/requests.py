@@ -452,7 +452,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         return len(self) > 1
     
     def delete_refs_to_completed_calls(self) -> None:
-        self.calls = [call for call in self.calls if call._status in {Status.ACTIVE, Status.QUEUED}]
+        self.calls = [call for call in self.calls if call._status not in {Status.COMPLETE, Status.CANCELED}]
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
