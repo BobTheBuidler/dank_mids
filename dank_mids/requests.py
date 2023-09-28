@@ -138,6 +138,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         self.params = params
         self.should_batch = _should_batch_method(method)
         self._started = False
+        self._batch = None
         self._retry = retry
         super().__init__()
 
@@ -184,8 +185,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)
                 return self.response.decode(partial=True).to_dict(self.method)
             
-            if self._status == Status.ACTIVE and self._batch._status == Status.QUEUED:
-                # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
+            if self._batch and self._batch._status == Status.QUEUED:
+                # NOTE: If this call has a batch assigned, we filled a batch. Let's await it now so we can send something to the node.
                 await self._batch
             elif self._status == Status.QUEUED:
                 # NOTE: We want to force the event loop to make one full _run_once call before we execute.
