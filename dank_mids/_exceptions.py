@@ -3,7 +3,7 @@ import logging
 import re
 from typing import TYPE_CHECKING, List, Union
 
-from aiohttp.client_exceptions import ClientResponseError
+from aiohttp.client_exceptions import ClientOSError, ClientResponseError
 
 if TYPE_CHECKING:
     from dank_mids.helpers.session import ClientSession
@@ -55,6 +55,13 @@ class ExceedsMaxBatchSize(BadResponse):
     def limit(self) -> int:
         return int(re.search(r'batch limit (\d+) exceeded', self.response.error.message).group(1))
 
+#################
+# Client Errors #
+#################
+
+class BrokenPipe(ClientOSError):
+    pass
+
 ##########################
 # Client Response Errors #
 ##########################
@@ -71,9 +78,6 @@ class DankMidsClientResponseError(ClientResponseError):
         self.args = (*exc.request_info, exc.history, request)
         self._exception = exc
         
-class BrokenPipe(DankMidsClientResponseError):
-    pass
-
 class TooManyRequests(DankMidsClientResponseError):
     _limited: List["ClientSession"] = []
     

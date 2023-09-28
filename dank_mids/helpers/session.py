@@ -1,25 +1,23 @@
 
 import asyncio
+import errno
 import http
 import logging
 from enum import IntEnum
 from itertools import chain
 from random import random
 from threading import get_ident
-from typing import Any, overload
 
-import msgspec
 from aiohttp import ClientSession as DefaultClientSession
 from aiohttp import ClientTimeout
-from aiohttp.client_exceptions import ClientResponseError
-from aiohttp.typedefs import JSONDecoder
+from aiohttp.client_exceptions import ClientOSError, ClientResponseError
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids._exceptions import GatewayPayloadTooLarge, TooManyRequests, BrokenPipe
-from dank_mids.helpers import decode
-from dank_mids.types import PartialRequest, RawResponse, BytesStream
+from dank_mids._exceptions import (BrokenPipe, GatewayPayloadTooLarge,
+                                   TooManyRequests)
+from dank_mids.types import BytesStream
 
 logger = logging.getLogger("dank_mids.session")
 
@@ -117,13 +115,15 @@ class ClientSession(DefaultClientSession):
                     logger.debug("received response %s", response)
                     while response.content._buffer or not response.content._eof:
                         yield await response.content.readany()
+            except ClientOSError as e:
+                if e.errno == errno.EPIPE:
+                    raise BrokenPipe(*e.args) from e
+                raise e
             except ClientResponseError as e:
                 if e.status == HTTPStatusExtended.TOO_MANY_REQUESTS:
                     raise TooManyRequests(e, endpoint, _retry_after) from e
                 elif e.message == "Payload Too Large":
                     raise GatewayPayloadTooLarge(e)
-                elif "broken pipe" in str(e).lower():
-                    raise BrokenPipe(e)
                 raise e
 
 
