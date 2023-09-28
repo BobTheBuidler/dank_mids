@@ -48,14 +48,15 @@ class Status(IntEnum):
                     self._status = Status.for_exc(e)
                 raise e
             except Exception as e:
-                from dank_mids.requests import RPCRequest
+                from dank_mids.requests import eth_call
 
                 # TODO this if clause should live elsewhere
                 # NOTE: these come from the sync w3 and will need a logic change when the sync w3 is removed
-                if isinstance(self, RPCRequest) and isinstance(e, ContractLogicError):
+                ok = isinstance(self, eth_call) and isinstance(e, ContractLogicError)
+                if ok and self._response:
                     # This is a successful failure response from the rpc and is handled further up the stack
                     self._status = Status.COMPLETE
-                    return
+                    raise e
                 self._status = Status.FAILED
                 logger.warning("%s failed due to the following exc:", self)
                 logger.exception(e)
