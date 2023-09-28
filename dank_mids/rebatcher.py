@@ -47,7 +47,7 @@ class Rebatcher:
     async def __rebatch_daemon_job(self) -> NoReturn:
         try:
             while True:
-                self.__eth_calls = defaultdict(list)
+                self.__eth_calls.clear()
                 self.__rpc_calls = []
                 request = await self.__queue.get()
                 self.__sort_call(request)
