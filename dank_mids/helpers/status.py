@@ -2,14 +2,18 @@ import asyncio
 import logging
 from enum import IntEnum
 from functools import wraps
-from typing import Awaitable, Callable, TypeVar
+from typing import TYPE_CHECKING, Awaitable, Callable, TypeVar
 
 from typing_extensions import ParamSpec
 from web3.exceptions import ContractLogicError
 
-logger = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from dank_mids.requests import RPCRequest
+
 T = TypeVar("T")
 P = ParamSpec("P")
+
+logger = logging.getLogger(__name__)
 
 class Status(IntEnum):
     QUEUED = 0
@@ -29,10 +33,9 @@ class Status(IntEnum):
     
     @staticmethod
     def set(fn: Callable[P, Awaitable[T]]):
-        from dank_mids.requests import RPCRequest, _Batch
-        logger = logging.getLogger(f"{__name__}.set_done.{fn.__name__}")
+        logger = logging.getLogger(f"{__name__}.set.{fn.__name__}")
         @wraps(fn)
-        async def set_status_wrap(self: RPCRequest, *args: P.args, **kwargs: P.kwargs) -> T:
+        async def set_status_wrap(self: "RPCRequest", *args: P.args, **kwargs: P.kwargs) -> T:
             try:
                 self._status = Status.ACTIVE
                 retval = await fn(self, *args, **kwargs)
@@ -40,10 +43,13 @@ class Status(IntEnum):
                 self._status = Status.COMPLETE
                 return retval
             except (asyncio.TimeoutError, asyncio.CancelledError) as e:
+                from dank_mids.requests import _Batch
                 if not isinstance(self, _Batch):
                     self._status = Status.for_exc(e)
                 raise e
             except Exception as e:
+                from dank_mids.requests import RPCRequest
+
                 # TODO this if clause should live elsewhere
                 # NOTE: these come from the sync w3 and will need a logic change when the sync w3 is removed
                 if isinstance(self, RPCRequest) and isinstance(e, ContractLogicError):
