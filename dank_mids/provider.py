@@ -26,7 +26,8 @@ logger = logging.getLogger(__name__)
 
 time = lambda: asyncio.get_event_loop().time()
 
-        
+_throttle_errs = asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError
+
 class DankProvider:
     def __init__(
         self,
@@ -87,21 +88,24 @@ class DankProvider:
     async def _post(self, data: bytes) -> BytesStream:
         try:
             async with self._semaphore:
-                if self._semaphore._waiters:
-                    self._pools_open.clear()
-                async for chunk in session.post(self.endpoint, data=data):
-                    yield chunk
+                try:
+                    if self._semaphore._waiters:
+                        self._pools_open.clear()
+                    async for chunk in session.post(self.endpoint, data=data):
+                        yield chunk
+                except _throttle_errs:
+                    async with self._err_limiter:
+                        # lets slow the pace down a bit and see if we get a better response when we handle the exc
+                        raise
             self._successes += 1
             if not self._semaphore._waiters:
                 self._pools_open.set()
-        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError):
+        except _throttle_errs:
             self._failures += 1
             self._throttle()
             if not self._semaphore._waiters:
                 self._pools_open.set()
-            async with self._err_limiter:
-                # lets slow the pace down a bit and see if we get a better response when we handle the exc
-                raise
+            raise
         except Exception:
             self._failures += 1
             if not self._semaphore._waiters:
