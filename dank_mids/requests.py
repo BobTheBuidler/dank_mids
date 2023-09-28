@@ -164,22 +164,19 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
     @set_done
     async def get_response(self) -> RPCResponse:
-        if not self.should_batch:
-            logger.debug(f"bypassed, method is {self.method}")
-            try:
+        try:
+            if not self.should_batch:
+                logger.debug(f"bypassed, method is {self.method}")
                 await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)
-            except asyncio.TimeoutError:
-                return await self.create_duplicate()
-            return self.response.decode(partial=True).to_dict(self.method)
-        
-        if self._status == Status.ACTIVE and not self._batch._started:
-            # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
-            await self._batch
-        if self._status == Status.QUEUED:
-            # NOTE: We want to force the event loop to make one full _run_once call before we execute.
-            await asyncio.sleep(0)
-        if self._status == Status.QUEUED:
-            try:
+                return self.response.decode(partial=True).to_dict(self.method)
+            
+            if self._status == Status.ACTIVE and not self._batch._started:
+                # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
+                await self._batch
+            if self._status == Status.QUEUED:
+                # NOTE: We want to force the event loop to make one full _run_once call before we execute.
+                await asyncio.sleep(0)
+            if self._status == Status.QUEUED:
                 await asyncio.wait_for(
                     # If this timeout fails, we go nuclear and destroy the batch.
                     # Any calls that already succeeded will have already completed on the client side.
@@ -187,22 +184,15 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     self.controller.execute_batch(),
                     timeout=ENVS.STUCK_CALL_TIMEOUT,
                 )
-            except asyncio.TimeoutError:
-                self._status = Status.CANCELED
-                return await self.create_duplicate()
-        
-        try:
             await asyncio.wait_for(self._done.wait(), timeout=ENVS.STUCK_CALL_TIMEOUT)
         except asyncio.TimeoutError:
-            return await self.create_duplicate()
+            return await self.create_duplicate(timed_out=True)
 
         # JIT json decoding
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True)
-            if isinstance(response.exception, InvalidRequest):
-                if self.provider._should_retry_invalid_request():
-                    logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
-                    return await self.controller(self.method, self.params)
+            if isinstance(response.exception, InvalidRequest) and self.provider._should_retry_invalid_request():
+                return await self.create_duplicate()
                 
             response_dict = response.to_dict(self.method)
             if response.error:
@@ -280,14 +270,15 @@ class RPCRequest(_RequestMeta[RawResponse]):
             semaphore = semaphore[self.params[1]]
         return semaphore
     
-    async def create_duplicate(self) -> Self: # Not actually self, but for typing purposes it is.
+    async def create_duplicate(self, timed_out: bool = False) -> Self: # Not actually self, but for typing purposes it is.
         # We need to make room since the stalled call is still holding the semaphore
         self.semaphore.release()
         # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
         # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
         # and then the task will try to acquire at the very next event loop _run_once cycle
         self._status = Status.CANCELED
-        logger.warning(f"call {self.uid} got stuck, we're creating a new one")
+        if timed_out:
+            logger.warning(f"call {self.uid} got stuck, we're creating a new one")
         retval = await self.controller(self.method, self.params)
         self.semaphore._value -= 1
         return retval
