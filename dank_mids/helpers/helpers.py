@@ -55,11 +55,17 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
         del fut
 
 def set_done(fn: Callable[P, Awaitable[T]]):
+    from dank_mids.requests import Status
 	@wraps(fn)
 	async def set_done_wrap(self: "RPCRequest", *args: P.args, **kwargs: P.kwargs) -> T:
-		retval = await fn(self, *args, **kwargs)
-		self._done.set()
-		return retval
+        try:
+            retval = await fn(self, *args, **kwargs)
+            self._done.set()
+            self._status = Status.COMPLETE
+            return retval
+        except (asyncio.TimeoutError, asyncio.CancelledError):
+            self._status = Status.CANCELED
+            raise
 	return set_done_wrap   
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.

@@ -6,11 +6,8 @@ import time
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
+from enum import IntEnum
 from functools import cached_property, lru_cache
-from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
-                    Iterable, Iterator, List, NoReturn, Optional, Tuple,
-                    TypeVar, Union)
-from functools import cached_property
 from typing import (TYPE_CHECKING, Any, AsyncGenerator, DefaultDict, Dict,
                     Generator, Generic, Iterable, Iterator, List, NoReturn,
                     Optional, Tuple, TypeVar, Union)
@@ -53,6 +50,12 @@ logger = logging.getLogger(__name__)
 
 _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPCResponse])
 
+class Status(IntEnum):
+    QUEUED = 0
+    ACTIVE = 1
+    COMPLETE = 2
+    CANCELED = 3
+
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
         super().__init__(debug_daemon_interval=300)
@@ -74,6 +77,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         self._response: Optional[_Response] = None
         self._done = _RequestEvent(self)
         self._start = time.time()
+        self._status = Status.QUEUED
     
     def __await__(self) -> Generator[Any, None, Optional[_Response]]:
         return self.get_response().__await__()
@@ -93,11 +97,10 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         pass
 
     async def _debug_daemon(self) -> NoReturn:
-        while not self._done.is_set():
+        while self._status in {Status.QUEUED, Status.ACTIVE}:
             await asyncio.sleep(60)
             if not self._done.is_set():
-                logger.debug(f"{self} has not received data after {time.time() - self._start}s")
-            
+                logger.debug(f"{self} has not received data after {time.time() - self._start}s")            
 
 ### Single requests:
 
@@ -155,7 +158,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return self.provider._request_type(method=self.method, params=self.params, id=self.uid)
     
     def start(self, batch: "_Batch") -> None:
-        self._started = True
+        self._status = Status.ACTIVE
         self._batch = batch
 
     @set_done
@@ -168,13 +171,13 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 return await self.create_duplicate()
             return self.response.decode(partial=True).to_dict(self.method)
         
-        if self._started and not self._batch._started:
+        if self._status == Status.ACTIVE and not self._batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
             await self._batch
-        if not self._started:
+        if self._status == Status.QUEUED:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
             await asyncio.sleep(0)
-        if not self._started:
+        if self._status == Status.QUEUED:
             try:
                 await asyncio.wait_for(
                     # If this timeout fails, we go nuclear and destroy the batch.
@@ -184,6 +187,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     timeout=ENVS.STUCK_CALL_TIMEOUT,
                 )
             except asyncio.TimeoutError:
+                self._status = Status.CANCELED
                 return await self.create_duplicate()
         
         try:
@@ -263,8 +267,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
     @set_done
     async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
-        self._started = True
-        self._response = await self.controller.provider.make_request(self.method, self.params, request_id=self.uid)
+        self._status = Status.ACTIVE
+        self._response = await self.provider.make_request(self.method, self.params, request_id=self.uid)
         return self._response
     
     @property
@@ -424,7 +428,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         return len(self) > 1
     
     def delete_refs_to_completed_calls(self) -> None:
-        self.calls = [call for call in self.calls if not call._done.is_set()]
+        self.calls = [call for call in self.calls if call._status in {Status.ACTIVE, Status.QUEUED}]
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
