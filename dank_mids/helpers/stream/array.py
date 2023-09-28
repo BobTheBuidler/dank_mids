@@ -1,12 +1,16 @@
 
+import asyncio
 import logging
 from datetime import datetime
 from typing import Optional
 
 import a_sync
 
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids._exceptions import StreamReaderTimeout
 from dank_mids.helpers import decode
-from dank_mids.types import BytesStream, StreamedJSONArrayOfObjects, StreamedJSONObject
+from dank_mids.types import (BytesStream, StreamedJSONArrayOfObjects,
+                             StreamedJSONObject)
 
 END_OF_ARRAY = b']\n'
 
@@ -20,8 +24,10 @@ async def of_objects(stream: BytesStream) -> StreamedJSONArrayOfObjects:
     chunk_num = 0
     started_at = datetime.now()
     proceed_to_next = a_sync.Event()
-    
-    working = await stream.__anext__()
+    try:
+        working = await asyncio.wait_for(stream.__anext__(), timeout=ENVS.STREAM_READER_TIMEOUT)
+    except asyncio.TimeoutError as e:
+        raise StreamReaderTimeout(str(e)) from e
     if working[0:1] == b'{':
         # This means we received an err response from the rpc
         # NOTE: We assume such a small response was fully received, this assumption may turn out to be incorrect
@@ -50,13 +56,19 @@ async def of_objects(stream: BytesStream) -> StreamedJSONArrayOfObjects:
             sent += len(to_send)
             logger.debug("read %s responses from chunk %s in %s", done, chunk_num, datetime.now() - started_at)
             chunk_num += 1
-            working += await stream.__anext__()
+            try:
+                working += await asyncio.wait_for(stream.__anext__(), timeout=ENVS.STREAM_READER_TIMEOUT)
+            except asyncio.TimeoutError as e:
+                raise StreamReaderTimeout(str(e)) from e
              
     while working != END_OF_ARRAY:
         next_object_generator = stream_next_object()
         logger.debug('yielding next object generator')
         yield next_object_generator
-        await proceed_to_next.wait()
+        try:
+            await asyncio.wait_for(proceed_to_next.wait(), timeout=ENVS.STREAM_READER_TIMEOUT)
+        except asyncio.TimeoutError as e:
+            raise StreamReaderTimeout(str(e)) from e
         done += 1
         proceed_to_next.clear()
     logger.debug('stream done')
