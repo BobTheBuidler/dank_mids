@@ -205,14 +205,15 @@ class RPCRequest(_RequestMeta[RawResponse]):
             await asyncio.wait_for(self._done.wait(), timeout=ENVS.STUCK_CALL_TIMEOUT)
         except asyncio.TimeoutError:
             return await self.create_duplicate(timed_out=True)
-        
+        return await self.decode_response()
         # Call has results, time to decode...
 
+    async def decode_response(self) -> Dict[str, str]:
         # JIT json decoding
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True)
             if self.provider._should_retry_invalid_request(response.exception):
-                return await self.create_duplicate()
+                return await self.create_duplicate(cancel_old=True)
             response_dict = response.to_dict(method=self.method, request=self.request)
             if response.error:
                 logger.debug("error response for %s: %s", self, response_dict)
@@ -285,7 +286,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return semaphore
     
     @Status.set
-    async def create_duplicate(self, timed_out: bool = False) -> RPCResponse: # Not actually self, but for typing purposes it is.
+    async def create_duplicate(self, timed_out: bool = False, cancel_old: bool = False) -> RPCResponse: # Not actually self, but for typing purposes it is.
         # We need to make room since the stalled call is still holding the semaphore
         self.semaphore.release()
         self.provider._pools_open.set()
@@ -293,17 +294,22 @@ class RPCRequest(_RequestMeta[RawResponse]):
             logger.warning(f"call {self.uid} got stuck, we're creating a new one")
         else:
             self._status = Status.DUPLICATED
-            
-        futs = asyncio.as_completed([self.controller(self.method, self.params), self._done.wait()])
-        if (result := await next(futs)) == True:  # the original completed first
-            pass
-        else:  # the clone completed first
-            self._response = await next(futs)
+        
+        clone = self.controller(self.method, self.params)
+        if cancel_old:
+            response = await clone
+        else:
+            futs = asyncio.as_completed([clone, self._done.wait()])
+            if isinstance(result := await next(futs), bool):  # the original completed first
+                response = await self.decode_response()
+            else:  # the clone completed first
+                response = result
+                # This suppresses an unawaited coroutine warning
+            asyncio.create_task(next(futs))
         if not isinstance(self.semaphore, DummySemaphore):
             self.semaphore._value -= 1
-        # This suppresses an unawaited coroutine warning
-        asyncio.create_task(next(futs))
-        return self._response
+        return response
+        
 
 revert_threads = PruningThreadPoolExecutor(4)
 
