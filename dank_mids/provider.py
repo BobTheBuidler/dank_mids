@@ -79,14 +79,7 @@ class DankProvider:
     
     @property
     def _active_requests(self) -> int:
-        return self._max_concurrency - self._semaphore._value
-    
-    @property
-    def _should_retry_invalid_request(self):
-        if self._request_type_changed_at == 0:
-            self._request_type = Request
-            self._request_type_changed_at = time()
-        return time() - self._request_type_changed_at <= 600
+        return self._concurrency - self._semaphore._value
     
     async def _post(self, data: bytes) -> BytesStream: 
         async with self._semaphore:
