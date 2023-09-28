@@ -8,7 +8,7 @@ from typing_extensions import ParamSpec
 from web3.exceptions import ContractLogicError
 
 from dank_mids import constants
-from dank_mids._exceptions import BadRequest, BadGateway, BrokenPipe
+from dank_mids._exceptions import BadRequest, BadGateway, BrokenPipe, _Timeout
 from aiohttp.client_exceptions import ClientConnectorError, ClientResponseError
 
 if TYPE_CHECKING:
@@ -48,7 +48,7 @@ class Status(IntEnum):
                 self._done.set()
                 self._status = Status.COMPLETE
                 return retval
-            except (asyncio.TimeoutError, BadGateway, BadRequest, BrokenPipe, asyncio.CancelledError, ClientConnectorError, ClientResponseError) as e:
+            except (asyncio.TimeoutError, BadGateway, BadRequest, BrokenPipe, asyncio.CancelledError, ClientConnectorError, ClientResponseError, _Timeout) as e:
                 from dank_mids.requests import _Batch
                 if isinstance(self, _Batch):
                     self._status = Status.REBATCHED
