@@ -626,6 +626,9 @@ class Multicall(_Batch[eth_call]):
         Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
         Calls `self._done.set()` when finished.
         """
+        if not isinstance(e, Revert) and len(self) <= self.controller.batcher.step * 0.2:
+            logger.debug("%s had exception %s, rebatching and retrying", self, e)
+            return await asyncio.gather(*[self.controller.rebatcher.rebatch(call) for call in self.calls])
         logger.debug("%s had exception %s, bisecting and retrying", self, e)
         batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected) if chunk]
         for batch in batches:
@@ -809,7 +812,10 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         If one chunk is just a single multicall, it will be handled alone, not be placed into a batch.
         Calls `self._done.set()` when finished.
         """
-        logger.debug("%s had exception %s, retrying", self, e)
+        if max(len(self), self.weight)  <= ENVS.MAX_JSONRPC_BATCH_SIZE * 0.2:
+            logger.debug("%s had exception %s, rebatching and retrying", self, e)
+            return await asyncio.gather(self.controller.rebatcher.rebatch(call) for call in self.calls)
+        logger.debug("%s had exception %s, bisecting and retrying", self, e)
         batches = [
             Multicall(self.controller, chunk, f"jrpcbatch{self.jid}_{i}")  # type: ignore [misc]
             if len(chunk) == 1 and isinstance(chunk[0], eth_call)

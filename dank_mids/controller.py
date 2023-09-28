@@ -14,6 +14,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants
 from dank_mids._demo_mode import demo_logger
+from dank_mids.rebatcher import Rebatcher
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids.batch import DankBatch
 from dank_mids.helpers import decode, session
@@ -79,6 +80,8 @@ class DankMiddlewareController:
         self.request_uid: UIDGenerator = UIDGenerator()
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
         self.pools_closed_lock = _AlertingRLock(name='pools closed')
+        
+        self.rebatcher = Rebatcher(self)
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
         self.pending_rpc_calls = JSONRPCBatch(self)
