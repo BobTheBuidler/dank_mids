@@ -470,7 +470,8 @@ def mcall_decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:
 class Multicall(_Batch[eth_call]):
     __slots__ = 'bid', '_started', '__dict__'  # We need to specify __dict__ for the cached properties to work
     method = "eth_call"
-    fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")    
+    fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
+    _might_want_to_reduce_batch_size_indicators = 0
 
     def __init__(self, controller: "DankMiddlewareController", calls: List[eth_call] = [], bid: Optional[BatchId] = None):
         # sourcery skip: default-mutable-arg
@@ -534,6 +535,10 @@ class Multicall(_Batch[eth_call]):
         except internal_err_types.__args__ as e:
             raise DankMidsInternalError(e) from e
         except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError) as e:
+            if len(self) >= self.controller.batcher.step:
+                self._might_want_to_reduce_batch_size_indicators += 1
+            if (i := self._might_want_to_reduce_batch_size_indicators / 5) == int(i):
+                self.controller.reduce_multicall_size(len(self))
             await self.bisect_and_retry(e)
         except GatewayPayloadTooLarge as e:
             logger.debug("multicall payload too large.  calls: %s  response headers: %s", len(self), e.headers)
@@ -642,6 +647,8 @@ async def _await_batch(batch) -> Tuple[str, Optional[Exception]]:
 
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     __slots__ = 'jid', '_started'
+    _might_want_to_reduce_batch_size_indicators = 0
+    
     def __init__(
         self,
         controller: "DankMiddlewareController",
@@ -740,6 +747,14 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 detail = _err_details.get(e.__class__, "failed to connect")
                 if isinstance(e, asyncio.TimeoutError) or len(self) > 100:
                     logger.warning("This batch %s: %s", detail, self.method_counts)
+                if (this := max(len(self), self.weight)) >= ENVS.MAX_JSONRPC_BATCH_SIZE:
+                    self._might_want_to_reduce_batch_size_indicators += 1
+                    if (i := self._might_want_to_reduce_batch_size_indicators / 5) == int(i):
+                        self.controller.reduce_batch_size(this)
+                elif self.total_calls >= self.controller.batcher.step:
+                    Multicall._might_want_to_reduce_batch_size_indicators += 1
+                    if (i := Multicall._might_want_to_reduce_batch_size_indicators / 5) == int(i):
+                        self.controller.reduce_multicall_size(self.total_calls)
                 raise e
             except ExceedsMaxBatchSize as e:
                 logger.warning("exceeded max batch size for your node")
@@ -826,7 +841,7 @@ def _log_exception(e: Exception) -> None:
     logger.warning(e, exc_info=True)
 
 _err_details = {
-    StreamReaderError: "timed out mid stream",
+    StreamReaderTimeout: "timed out mid stream",
     asyncio.TimeoutError: "timed out",
     BrokenPipe: "broke the pipe",
 }
