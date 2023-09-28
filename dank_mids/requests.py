@@ -544,14 +544,8 @@ class Multicall(_Batch[eth_call]):
             response = data.decode(partial=True)
             if response.error:
                 # TODO: This logic should probably live somewhere else
-                if isinstance(response.exception, InvalidRequest):
-                    if self.provider._should_retry_invalid_request():
-                        # we can await this now since all calls in a batch should fail for the same reason
-                        await self.bisect_and_retry(response.exception)
-                        return
-                elif isinstance(response.exception, OutOfGas):
-                    # we dont want to await this yet so JSONRPCBatch.spoof_response can proceed to the next item
-                    self._t = asyncio.create_task(self.bisect_and_retry(response.exception))
+                if isinstance(response.exception, OutOfGas) or (isinstance(response.exception, InvalidRequest) and self.provider._should_retry_invalid_request()):
+                    await self.bisect_and_retry(response.exception)
                     return
                 logger.debug("%s received an 'error' response from the rpc: %s", self, response.exception)
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
@@ -616,7 +610,7 @@ async def _await_batch(batch) -> Tuple[str, Optional[Exception]]:
         return batch, None
     except Exception as e:
         return batch, e  
-    
+
 class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     __slots__ = 'jid', '_started'
     def __init__(
