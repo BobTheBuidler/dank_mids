@@ -112,7 +112,7 @@ class PartialResponse(_DictStruct):
             else ExceedsMaxBatchSize(self) if re.search(r'batch limit (\d+) exceeded', self.error.message)
             else InvalidRequest(self) if self.error.message in ["invalid request", "Parse error"]
             else OutOfGas(self) if self.error.message == "out of gas"
-            else Revert if "revert" in self.error.message.lower()
+            else Revert(self) if "revert" in self.error.message.lower()
             else ArchiveNodeRequired(self) if self.error.message.startswith("No state available for block")
             else BadResponse(self)
         )
