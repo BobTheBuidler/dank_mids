@@ -94,7 +94,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         while self._status in {Status.ACTIVE, Status.QUEUED, Status.FAILED, Status.TIMED_OUT}:
             await asyncio.sleep(60)
             if not self._done.is_set():
-                logger.debug("%s has not received data after %ss", self, round(time.time() - self._start, 2))  
+                logger.debug("%s has not received data after %sm", self, round((time.time() - self._start)/60, 2))  
                 if isinstance(self, Multicall):
                     if all(call._status == Status.COMPLETE for call in self.calls):
                         logger.debug('oh but wait, all calls are completed')
