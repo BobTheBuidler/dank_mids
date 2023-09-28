@@ -668,6 +668,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         with self._lock:
             return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
 
+    @eth_retry.auto_retry
     async def get_response(self) -> None:
         if self._started:
             logger.warning(f"{self} exiting early. This shouldn't really happen bro")
