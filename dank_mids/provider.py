@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import a_sync
 import eth_retry
+import msgspec
 from aiohttp.client_exceptions import ClientConnectorError
+from aiolimiter import AsyncLimiter
 from msgspec.json import encode
 from web3 import Web3
 from web3.providers import HTTPProvider
@@ -43,6 +45,7 @@ class DankProvider:
         self._min_concurrency = min_concurrency
         self._max_concurrency = max_concurrency
         self._semaphore = a_sync.Semaphore(max_concurrency, self)
+        self._err_limiter = AsyncLimiter(max_rate=1, time_period=1)
         self._pools_open = a_sync.Event()
         self._pools_open.set()
         self._throttled_by = 0
@@ -80,21 +83,23 @@ class DankProvider:
     def _active_requests(self) -> int:
         return self._concurrency - self._semaphore._value
     
-    async def _post(self, data: bytes) -> BytesStream: 
-        async with self._semaphore:
-            if self._semaphore._waiters:
-                self._pools_open.clear()
-            try:
+    async def _post(self, data: bytes) -> BytesStream:
+        try:
+            async with self._semaphore:
+                if self._semaphore._waiters:
+                    self._pools_open.clear()
                 async for chunk in session.post(self.endpoint, data=data):
                     yield chunk
                 self._successes += 1
-            except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError):
-                self._failures += 1
-                self._throttle()
+        except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError):
+            self._failures += 1
+            self._throttle()
+            async with self._err_limiter:
+                # lets slow the pace down a bit and see if we get a better response when we handle the exc
                 raise
-            except Exception:
-                self._failures += 1
-                raise
+        except Exception:
+            self._failures += 1
+            raise
         if not self._semaphore._waiters:
             self._pools_open.set()
     
