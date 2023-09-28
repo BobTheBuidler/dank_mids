@@ -58,19 +58,28 @@ class DankBatch:
             except IndexError:
                 working_batch.extend(mcall, skip_check=True)
             if working_batch.is_full:
+                for request in working_batch:
+                    request.start(working_batch)
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
         
         rpc_calls_to_batch = self.rpc_calls[:]
         while rpc_calls_to_batch:
             if working_batch.is_full:
+                for request in working_batch:
+                    request.start(working_batch)
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
             working_batch.append(rpc_calls_to_batch.pop(), skip_check=True)
         if working_batch:
             if working_batch.is_single_multicall:
+                mcall = working_batch[0]
+                for call in mcall:
+                    call.start(mcall)
                 yield working_batch[0]  # type: ignore [misc]
             elif len(working_batch) == 1:
                 yield working_batch[0].make_request()
             else:
+                for request in working_batch:
+                    request.start(working_batch)
                 yield working_batch
