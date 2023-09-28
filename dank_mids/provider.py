@@ -109,6 +109,8 @@ class DankProvider:
             except Exception:
                 self._failures += 1
                 raise
+        if not self._semaphore._waiters:
+            self._pools_open.set()
         
     def _throttle(self) -> None:
         if self._at_min_speed:
