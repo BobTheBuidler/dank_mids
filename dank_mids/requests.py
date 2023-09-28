@@ -705,7 +705,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 async for raw_response in decode.jsonrpc_batch(data_stream):
                     yield raw_response
                 return
-            except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError):
+            except (asyncio.TimeoutError, BadRequest, BadGateway, BrokenPipe, ClientConnectorError) as e:
                 detail = _err_details.get(e.__class__, "failed to connect")
                 if isinstance(e, asyncio.TimeoutError) or len(self) > 100:
                     logger.warning("This batch %s: %s", detail, self.method_counts)
