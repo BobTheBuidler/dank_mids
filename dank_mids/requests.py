@@ -101,7 +101,7 @@ def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
 class RPCRequest(_RequestMeta[RawResponse]):
-    __slots__ = 'method', 'params', 'should_batch', '_started', '_retry'
+    __slots__ = 'method', 'params', 'should_batch', '_started', '_retry', '_daemon'
     dict_responses = set()
     str_responses = set()
 
@@ -330,7 +330,7 @@ class eth_call(RPCRequest):
 _Request = TypeVar("_Request")
 
 class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
-    __slots__ = 'calls', '_fut', '_lock'
+    __slots__ = 'calls', '_fut', '_lock', '_daemon'
     calls: List[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
