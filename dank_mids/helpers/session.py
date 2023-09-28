@@ -72,7 +72,7 @@ RETRY_FOR_CODES = {
     HTTPStatusExtended.CLOUDFLARE_TIMEOUT,
 }
 
-limiter = AsyncLimiter(5, 0.1)  # 50 requests/second
+limiter = AsyncLimiter(1, 0.05)  # 20 requests/second
 
 async def post(endpoint: str, *args, **kwargs) -> BytesStream:
     """Returns decoded json data from `endpoint`"""
@@ -87,27 +87,19 @@ async def get_session() -> "ClientSession":
 class ClientSession(DefaultClientSession):
     async def post(self, endpoint: str, *args, _retry_after: int = 1, **kwargs) -> BytesStream:
         logger.debug("making request with (args, kwargs): (%s %s)", tuple(chain((endpoint), args)), kwargs)
-        tried = 0
         # Try the request until success or 5 failures.
-        while True:
-            try:
-                async for chunk in self._post_and_handle_excs(endpoint, *args, _retry_after=_retry_after, **kwargs):
-                    yield chunk
-                return
-            except TooManyRequests as e:
-                if e.try_after > 30:
-                    logger.warning('severe rate limiting from your provider')
-                await asyncio.sleep(e.try_after)
-                _retry_after = e.try_after
-                async for b in self.post(endpoint, *args, _retry_after=e.try_after, **kwargs):
-                    yield b
-            except ClientResponseError as e:
-                tried += 1
-                if tried >= 5 or not _should_retry(e):
-                    raise e
-                sleep = random() * 4 * tried
-                logger.debug("response failed with status %s, retrying in %ss", HTTPStatusExtended(e.status), round(sleep, 2))
-                await asyncio.sleep(sleep)
+        try:
+            async for chunk in self._post_and_handle_excs(endpoint, *args, _retry_after=_retry_after, **kwargs):
+                yield chunk
+            return
+        except TooManyRequests as e:
+            if e.try_after > 30:
+                logger.warning('severe rate limiting from your provider')
+            # NOTE: This logic should probably go on the provider not the session
+            # NOTE: On second thought, why do we still need ClientSession? 
+            await asyncio.sleep(e.try_after)
+            async for b in self.post(endpoint, *args, _retry_after=e.try_after, **kwargs):
+                yield b
                 
     async def _post_and_handle_excs(self, endpoint: str, *args, _retry_after: int = 1, **kwargs) -> BytesStream:
         async with limiter:
@@ -143,15 +135,3 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     """
     timeout = ClientTimeout(ENVS.AIOHTTP_TIMEOUT)
     return ClientSession(headers={'content-type': 'application/json'}, timeout=timeout, raise_for_status=True)
-
-def _should_retry(e: ClientResponseError) -> bool:
-    try:
-        if e.status not in RETRY_FOR_CODES:
-            logger.debug("response failed with status %s", HTTPStatusExtended(e.status))
-            return False
-        return True
-    except ValueError as _e:
-        if not str(_e).endswith("is not a valid HTTPStatusExtended"):
-            raise _e from e
-        logger.debug("response failed with status %s %s", e.status, e.message)
-        raise e from _e
