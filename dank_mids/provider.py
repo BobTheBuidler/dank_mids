@@ -22,7 +22,13 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 class DankProvider:
-    def __init__(self, controller: "DankMiddlewareController", w3: Web3, min_concurrency: int = 4, max_concurrency: int = 64) -> None:
+    def __init__(
+        self,
+        controller: "DankMiddlewareController", 
+        w3: Web3, 
+        min_concurrency: int = 4, 
+        max_concurrency: int = 32,
+    ) -> None:
         self.controller = controller
         endpoint = w3.provider.endpoint_uri
         _validate_endpoint(endpoint)
