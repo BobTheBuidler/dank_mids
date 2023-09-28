@@ -50,9 +50,7 @@ class DankProvider:
         self._successes = 0
         self._failures = 0
         
-        # NOTE: We need this mutable for node types that require the full jsonrpc spec
-        self._request_type = PartialRequest
-        self._request_type_changed_at = 0
+        self._request_selector = _RequestSpecSelector()
         
     def __repr__(self) -> str:
         return f"<Provider host={self.endpoint} successes={self._successes} failures={self._failures}>"
@@ -69,7 +67,7 @@ class DankProvider:
         return decode.raw(response)
     
     async def stream_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> BytesStream:
-        request = self._request_type(method=method, params=params, id=request_id or self.controller.call_uid.next)
+        request = self._request_selector(method=method, params=params, id=request_id or self.controller.call_uid.next)
         async for chunk in self._post(encode(request)):
             yield chunk
     
@@ -98,7 +96,10 @@ class DankProvider:
                 raise
         if not self._semaphore._waiters:
             self._pools_open.set()
-        
+    
+    def _should_retry_invalid_request(self) -> bool:
+        return self._request_selector._should_retry_invalid_request()
+    
     def _throttle(self) -> None:
         throttle_to = max(self._active_requests - 1, self._min_concurrency)
         if self._concurrency <= throttle_to:
@@ -135,3 +136,30 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     sync_w3.middleware_onion.clear()
     sync_w3.provider.middlewares = ()
     return sync_w3
+
+
+class _RequestSpecSelector:
+    """
+    Contains logic to determine appropriate request type for your node.
+    Some nodes will only work when we use the full spec.
+    """
+    def __init__(self) -> None:
+        self._full_request_spec_enforced_at = 0
+        self.type = PartialRequest
+    
+    def __call__(self, *args, **kwargs) -> PartialRequest:
+        return self.type(*args, **kwargs)
+    
+    def _should_retry_invalid_request(self) -> bool:
+        """
+        Configures the RequestSpecSelector to use the fully compliant request type.
+        Returns: boolean value indicating whether the request type was recently changed and the call should be retried with the full spec.
+        """
+        if self._request_type_changed_at == 0:
+            self.type = Request
+            self._request_type_changed_at = time()
+        retval = time() - self._request_type_changed_at <= 600
+        if retval:
+            logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
+        return retval
+    

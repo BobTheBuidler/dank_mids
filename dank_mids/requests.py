@@ -156,7 +156,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
     @property
     def request(self) -> Union[Request, PartialRequest]:
-        return self.provider._request_type(method=self.method, params=self.params, id=self.uid)
+        return self.provider._request_selector(method=self.method, params=self.params, id=self.uid)
     
     def start(self, batch: "_Batch") -> None:
         self._status = Status.ACTIVE
@@ -200,7 +200,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True)
             if isinstance(response.exception, InvalidRequest):
-                if self.provider._should_retry_invalid_request:
+                if self.provider._should_retry_invalid_request():
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     return await self.controller(self.method, self.params)
                 
@@ -245,10 +245,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(data, RawResponse):
             self._response = data
         elif isinstance(data, BadResponse):
-            if isinstance(data, InvalidRequest) and self.provider._should_retry_invalid_request:
+            if isinstance(data, InvalidRequest) and self.provider._should_retry_invalid_request():
                 logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                 self._response = await self.create_duplicate()
-                return       
+                return
             error = data.response.error.to_dict()
             error['dankmids_added_context'] = self.request.to_dict()
             self._response = {"error": error}
@@ -286,9 +286,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
         # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
         # and then the task will try to acquire at the very next event loop _run_once cycle
+        self._status = Status.CANCELED
         logger.warning(f"call {self.uid} got stuck, we're creating a new one")
         retval = await self.controller(self.method, self.params)
-        await self.semaphore.acquire()
+        self.semaphore._value -= 1
         return retval
 
 revert_threads = PruningThreadPoolExecutor(4)
@@ -486,7 +487,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def request(self) -> Union[Request, PartialRequest]:
-        return self.provider._request_type(method=self.method, params=self.params, id=self.uid)
+        return self.provider._request_selector(method=self.method, params=self.params, id=self.uid)
     
     @property
     def is_full(self) -> bool:
@@ -549,7 +550,14 @@ class Multicall(_Batch[eth_call]):
         elif isinstance(data, RawResponse):
             response = data.decode(partial=True)
             if response.error:
-                if isinstance(response.exception, OutOfGas):
+                # TODO: This logic should probably live somewhere else
+                if isinstance(response.exception, InvalidRequest):
+                    if self.provider._should_retry_invalid_request():
+                        # we can await this now since all calls in a batch should fail for the same reason
+                        await self.bisect_and_retry(response.exception)
+                        return
+                elif isinstance(response.exception, OutOfGas):
+                    # we dont want to await this yet so JSONRPCBatch.spoof_response can proceed to the next item
                     self._t = asyncio.create_task(self.bisect_and_retry(response.exception))
                     return
                 logger.debug("%s received an 'error' response from the rpc: %s", self, response.exception)
