@@ -87,7 +87,11 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} provider={self.provider}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        call_semaphore = self.method_semaphores[method][params[1]] if method == "eth_call" else self.method_semaphores[method]
+        if method in self.method_semaphores._use_block_semaphore:
+            block = params[0 if method == 'erigon_getHeaderByNumber' else 1]
+            call_semaphore = self.method_semaphores[method][block]
+        else:
+            call_semaphore = self.method_semaphores[method]
         async with call_semaphore:
             await self.pools_open
             logger.debug('making %s %s with params %s', self.provider._request_selector.type.__name__, method, params)

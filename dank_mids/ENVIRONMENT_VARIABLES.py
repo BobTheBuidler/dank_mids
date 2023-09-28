@@ -72,6 +72,7 @@ method_semaphores = {
     "eth_getLogs": _envs.create_env("ETH_GETLOGS_SEMAPHORE", a_sync.Semaphore, default=64, string_converter=int, verbose=False),
     "eth_getTransaction": _envs.create_env("ETH_GETTRANSACTION_SEMAPHORE", a_sync.Semaphore, default=200, string_converter=int, verbose=False),
     "eth_getCode": _envs.create_env("ETH_GETCODE_SEMAPHORE", BlockSemaphore, default=200, string_converter=int, verbose=False),
+    "erigon_getHeaderByNumber": _envs.create_env("ERIGON_GETHEADERBYNUMBER_SEMAPHORE", BlockSemaphore, default=200, string_converter=int, verbose=False),
 }
 
 if not typed_envs.logger.disabled:
