@@ -39,7 +39,7 @@ class Status(IntEnum):
     
     @staticmethod
     def set(fn: Callable[P, Awaitable[T]]):
-        logger = logging.getLogger(f"{__name__}.set.{fn.__name__}")
+        logger = logging.getLogger(f"dank_mids.failures.set.{fn.__name__}")
         @wraps(fn)
         async def set_status_wrap(self: "RPCRequest", *args: P.args, **kwargs: P.kwargs) -> T:
             try:
