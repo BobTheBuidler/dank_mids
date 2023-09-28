@@ -100,7 +100,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         pass
 
     async def _debug_daemon(self) -> None:
-        while self._status in {Status.QUEUED, Status.ACTIVE}:
+        while self._status in {Status.ACTIVE, Status.QUEUED, Status.FAILED}:
             await asyncio.sleep(60)
             if not self._done.is_set():
                 logger.debug("%s has not received data after %ss", self, round(time.time() - self._start, 2))  
