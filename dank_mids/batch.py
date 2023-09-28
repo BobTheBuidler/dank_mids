@@ -66,7 +66,7 @@ class DankBatch:
                 working_batch.extend(mcall, skip_check=True)
             if working_batch.is_full:
                 for request in working_batch:
-                    request.start(working_batch)
+                    request.start(working_batch, cleanup=not self.rebatched)
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller, rebatched=self.rebatched)
         
