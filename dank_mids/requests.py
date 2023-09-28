@@ -13,6 +13,7 @@ from typing import (TYPE_CHECKING, Any, AsyncGenerator, DefaultDict, Dict,
                     Optional, Tuple, TypeVar, Union)
 
 import a_sync
+import eth_retry
 import msgspec
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
 from aiohttp.client_exceptions import ClientConnectorError, ClientResponseError
@@ -495,6 +496,7 @@ class Multicall(_Batch[eth_call]):
     def needs_override_code(self) -> bool:
         return self.mcall.needs_override_code_for_block(self.block)
         
+    @eth_retry.auto_retry
     async def get_response(self) -> None:
         if self._started:
             logger.error(f'{self} early exit')
