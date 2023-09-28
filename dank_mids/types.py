@@ -1,5 +1,6 @@
 import logging
 import re
+from functools import cached_property
 from time import time
 from typing import (TYPE_CHECKING, Any, AsyncGenerator, Callable, Coroutine,
                     DefaultDict, Dict, List, Literal, NewType, Optional,
@@ -95,7 +96,7 @@ class PartialResponse(_DictStruct):
     result: msgspec.Raw = None  # type: ignore
     error: Optional[Error] = None
 
-    @property
+    @cached_property
     def exception(self) -> Optional[BadResponse]:
         if self.error is None:
             return None
@@ -129,7 +130,9 @@ class PartialResponse(_DictStruct):
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
-                return msgspec.json.decode(self.result, type=typ)
+                decoded = msgspec.json.decode(self.result, type=typ)
+                return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
+
             try:
                 start = time()
                 decoded = msgspec.json.decode(self.result, type=typ)
