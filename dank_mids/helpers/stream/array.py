@@ -36,19 +36,20 @@ async def of_objects(stream: BytesStream) -> StreamedJSONArrayOfObjects:
         sent = 0
         while True:
             if working == END_OF_ARRAY:
-                raise EndOfStreamError('end of response reached')
-            start = _find_object_start(working)
-            end = _find_object_end(working, start)
-            if end:
-                yield working[start+sent:end]
-                working = working[end:]
-                proceed_to_next.set()
-                logger.debug('exiting json object stream generator')
-                return
-            to_send = working[start+sent:]
-            yield to_send
-            sent += len(to_send)
-            logger.debug("read %s responses from chunk %s in %s", done, chunk_num, datetime.now() - started_at)
+                raise EndOfStreamError('end of response reached, this should not occur')
+            if len(working[0:1]) == 2:
+                start = _find_object_start(working)
+                end = _find_object_end(working, start)
+                if end:
+                    yield working[start+sent:end]
+                    working = working[end:]
+                    proceed_to_next.set()
+                    logger.debug('exiting json object stream generator')
+                    return
+                to_send = working[start+sent:]
+                yield to_send
+                sent += len(to_send)
+                logger.debug("read %s responses from chunk %s in %s", done, chunk_num, datetime.now() - started_at)
             chunk_num += 1
             working += await stream.__anext__()
              
