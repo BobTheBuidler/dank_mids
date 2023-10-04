@@ -100,7 +100,7 @@ class ClientSession(DefaultClientSession):
             try:
                 async with limiter:
                     async with super().post(endpoint, *args, **kwargs) as response:
-                        response = await response.json(loads=loads)
+                        response = await response.json(loads=loads, content_type=None)
                         logger.debug("received response %s", response)
                         return response
             except ClientResponseError as ce:
