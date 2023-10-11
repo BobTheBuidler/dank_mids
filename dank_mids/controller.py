@@ -1,6 +1,5 @@
 
 import logging
-import os
 from collections import defaultdict
 from functools import lru_cache
 from typing import Any, DefaultDict, List, Literal, Optional
@@ -55,7 +54,7 @@ class DankMiddlewareController:
 
         self.chain_id = self.sync_w3.eth.chain_id
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
-        self.request_type = PartialRequest if not os.environ.get("DANKMIDS_USE_FULL_REQUEST") else Request
+        self.request_type = Request if ENVS.USE_FULL_REQUEST else PartialRequest
         self._time_of_request_type_change = 0
         self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
