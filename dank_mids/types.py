@@ -100,6 +100,7 @@ class PartialResponse(_DictStruct):
         return (
             PayloadTooLarge(self) if self.payload_too_large
             else ExceedsMaxBatchSize(self) if re.search(r'batch limit (\d+) exceeded', self.error.message)
+            else TypeError(self.error.message, "You're probably passing what should be an integer type as a string type. The usual culprit is a block number.") if self.error.message == 'invalid argument 1: hex string without 0x prefix'
             else BadResponse(self)
         )
     

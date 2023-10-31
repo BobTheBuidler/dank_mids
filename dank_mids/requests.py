@@ -489,7 +489,7 @@ class Multicall(_Batch[eth_call]):
         try:
             await self.spoof_response(await self.controller.make_request(self.method, self.params, request_id=self.uid))
         except internal_err_types.__args__ as e:
-            raise DankMidsInternalError(e)
+            raise e if 'invalid argument' in str(e) else DankMidsInternalError(e) from e
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 logger.info("Payload too large. response headers: %s", e.headers)
@@ -645,7 +645,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             await self.spoof_response(await self.post())
         # I want to see these asap when working on the lib.
         except internal_err_types.__args__ as e:
-            raise DankMidsInternalError(e) from e
+            raise e if 'invalid argument' in str(e) else DankMidsInternalError(e) from e
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
         except ExceedsMaxBatchSize as e:
