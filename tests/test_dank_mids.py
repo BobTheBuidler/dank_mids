@@ -1,11 +1,12 @@
 
 
+import pytest
 from brownie import chain
-from dank_mids import instances
 from multicall import Call
 from multicall.utils import await_awaitable, gather
 from web3._utils.rpc_abi import RPC
 
+from dank_mids import instances
 from tests.fixtures import dank_w3
 
 CHAI = '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215'
@@ -64,3 +65,7 @@ def test_AttributeDict():
     block = await_awaitable(dank_w3.eth.get_block("0xe25822"))
     assert block['timestamp']
     assert block.timestamp
+
+def test_string_block():
+    with pytest.raises(TypeError):
+        await_awaitable(Call(CHAI, 'totalSupply()(uint)', block_id="14000000").coroutine())
