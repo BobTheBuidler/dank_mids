@@ -422,10 +422,15 @@ def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
 def mcall_decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:        
     try:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
-        data = bytes.fromhex(data.decode_result("eth_call")[2:])
+        data = data.decode_result("eth_call")[2:]
+        data = bytes.fromhex(data)
         return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
     except Exception as e:
-        return e
+        try:
+            # We do this goofy thing since we can't `return Exc() from e`
+            raise e.__class__(*e.args, data.decode_result() if isinstance(data, PartialResponse) else data) from e
+        except Exception as new_e:
+            return new_e
     
 
 class Multicall(_Batch[eth_call]):
@@ -555,7 +560,7 @@ class Multicall(_Batch[eth_call]):
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
         # Raise any Exceptions that may have come out of the process pool.
         if isinstance(retval, Exception):
-            raise retval    
+            raise retval.__class__(*retval.args, self.request.to_dict(), f"response: {data.to_dict()}", f"error: {data.error.to_dict() if data.error else None}")
         return retval
     
     @set_done
