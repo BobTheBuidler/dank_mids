@@ -732,7 +732,19 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     @set_done
     async def spoof_response(self, response: List[RawResponse]) -> None:
         # This means we got results. That doesn't mean they're good, but we got 'em.
-        for r in await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(self.calls, response)], return_exceptions=True):
+        
+        if "tenderly" or "chainstack" in self.controller.endpoint:
+            # NOTE: these providers don't always return batch results in the correct ordering
+            # NOTE: is it maybe because they 
+            calls = sorted(self.calls, key=lambda call: call.uid)
+            for i, (call, raw) in enumerate(zip(calls, response)):
+                # TODO: make sure this doesn't ever raise and then delete it
+                decoded = raw.decode()
+                assert call.uid == decoded.id, (i, call, decoded, response, [[call.uid for call in calls], [raw.decode() for raw in response]])
+        else:
+            calls = self.calls
+            
+        for r in await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(calls, response)], return_exceptions=True):
             # NOTE: By doing this with the exceptions we allow any successful calls to get their results sooner
             #       without being interrupted by the first exc in the gather and having to wait for the bisect and retry process
             # TODO: stop retrying ones that succeed, that's wasteful
