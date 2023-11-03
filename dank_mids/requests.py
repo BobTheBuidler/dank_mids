@@ -482,7 +482,9 @@ class Multicall(_Batch[eth_call]):
             logger.error(f'{self} early exit')
             return
         self._started = True
-        #if len(self) < 50: # TODO play with later
+        if (l := len(self)) == 1:
+            return await self._exec_single_call()
+        #elif l < 50: # TODO play with later
         #    return await JSONRPCBatch(self.controller, self.calls)
         rid = self.controller.request_uid.next
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
@@ -571,6 +573,10 @@ class Multicall(_Batch[eth_call]):
                 if not isinstance(result, DankMidsInternalError):
                     logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
                 raise result
+
+    @set_done
+    async def _exec_single_call(self) -> None:
+        await self.calls[0].make_request()
 
     def _post_future_cleanup(self) -> None:
         with suppress(KeyError):
