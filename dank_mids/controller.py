@@ -59,13 +59,7 @@ class DankMiddlewareController:
         self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
         self.endpoint = self.w3.provider.endpoint_uri
-        if "tenderly" in self.endpoint:
-            # NOTE: Tenderly does funky things sometimes
-            logger.warning(
-                "We see you're using a tenderly rpc.\n" +
-                "There is a known conflict between dank and tenderly which causes issues not present with other providers.\n" + 
-                "Your milage may vary. Debugging efforts welcome."
-            )
+        self._sort_calls = "tenderly" in self.endpoint or "chainstack" in self.endpoint
             
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore

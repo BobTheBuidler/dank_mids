@@ -733,7 +733,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     async def spoof_response(self, response: List[RawResponse]) -> None:
         # This means we got results. That doesn't mean they're good, but we got 'em.
         
-        if "tenderly" or "chainstack" in self.controller.endpoint:
+        if self.controller._sort_calls:
             # NOTE: these providers don't always return batch results in the correct ordering
             # NOTE: is it maybe because they 
             calls = sorted(self.calls, key=lambda call: call.uid)
