@@ -38,7 +38,7 @@ class DankMidsClientResponseError(ClientResponseError):
         request: "PartialRequest",
     ) -> None:
         self.request = request
-        super().__init__(exc.request_info, exc.history, code=exc.code, status=exc.status, message=exc.message, headers=exc.headers)
+        super().__init__(exc.request_info, exc.history, status=exc.status, message=exc.message, headers=exc.headers)
         self.args = (*exc.request_info, exc.history, request)
         self._exception = exc
 
