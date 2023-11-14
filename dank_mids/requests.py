@@ -660,7 +660,6 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
         except ExceedsMaxBatchSize as e:
-            print('asd')
             logger.warning("exceeded max batch size for your node")
             self.controller.set_batch_size_limit(e.limit)
             await self.bisect_and_retry(e)
@@ -717,6 +716,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 self.controller._time_of_request_type_change = time.time()
             if time.time() - self.controller._time_of_request_type_change <= 600:
                 logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
+        elif response.error.message == "batch limit exceeded":
+            self.adjust_batch_size()
         raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
