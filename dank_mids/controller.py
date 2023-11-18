@@ -60,6 +60,9 @@ class DankMiddlewareController:
 
         self.endpoint = self.w3.provider.endpoint_uri
         self._sort_calls = "tenderly" in self.endpoint or "chainstack" in self.endpoint
+        if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:
+            logger.info("max jsonrpc batch size for tenderly is 10, overriding existing max")
+            self.set_batch_size_limit(10)
             
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
