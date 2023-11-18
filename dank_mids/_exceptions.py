@@ -39,7 +39,7 @@ class DankMidsClientResponseError(ClientResponseError):
     ) -> None:
         self.request = request
         super().__init__(exc.request_info, exc.history, status=exc.status, message=exc.message, headers=exc.headers)
-        self.args = (*exc.request_info, exc.history, request)
+        self.args = (*self.args, request)
         self._exception = exc
 
 internal_err_types = Union[AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError, SyntaxError]
