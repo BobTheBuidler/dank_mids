@@ -1,6 +1,6 @@
 # Dank Mids
 
-Dank Mids is a EVM RPC batching library that helps reduce the number of HTTP requests to a node, saving time and resources. It automatically collects eth_call calls into multicalls and bundles all RPC calls together in [jsonrpc batch](https://www.jsonrpc.org/specification#batch) calls. Its basically fast as fuck.
+Dank Mids is a EVM RPC batching library that helps reduce the number of HTTP requests to a node, saving time and resources. It automatically collects eth_call calls into multicalls and bundles all RPC calls together in [jsonrpc](https://www.jsonrpc.org/specification#batch) [batch](https://geth.ethereum.org/docs/interacting-with-geth/rpc/batch) calls. Its basically fast as fuck.
 
 The goal of this tool is to reduce the workload on RPC nodes and allow users to make calls to their preferred node more efficiently. This optimization is especially useful for developers writing scripts that perform large-scale blockchain analysis, as it can save development time and resources.
 
