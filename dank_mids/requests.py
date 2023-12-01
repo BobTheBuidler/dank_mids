@@ -409,7 +409,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
             logger.debug('Dank too loud. Bisecting batch and retrying.')
         elif isinstance(e, BadResponse) and ('invalid request' in f"{e}" or 'Parse error' in f"{e}"):
             pass
-        elif "error processing call Revert" not in f"{e}" and "429" not in f"{e}":
+        elif "error processing call Revert" not in f"{e}" and "429" not in f"{e}" and "resource not found" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
 
