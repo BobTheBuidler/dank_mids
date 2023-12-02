@@ -23,6 +23,8 @@ if not typed_envs.logger.disabled:
 # TODO: fix the other modes, set default='default', and make this verbose again
 OPERATION_MODE = _envs.create_env("OPERATION_MODE", OperationMode, default="infura", verbose=False)
 
+# Max number of eth calls to include in one multicall
+MAX_MULTICALL_SIZE = _envs.create_env("MAX_MULTICALL_SIZE", int, default=10_000)
 # Max number of rpc calls to include in one batch call
 MAX_JSONRPC_BATCH_SIZE = _envs.create_env("MAX_JSONRPC_BATCH_SIZE", int, default=500)
 

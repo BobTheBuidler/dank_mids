@@ -97,6 +97,7 @@ class DankMiddlewareController:
         
         self.method_semaphores = MethodSemaphores(self)
         self.batcher = NotSoBrightBatcher()
+        self.batcher.step = ENVS.MAX_MULTICALL_SIZE
 
         self.call_uid = UIDGenerator()
         self.multicall_uid: UIDGenerator = UIDGenerator()
