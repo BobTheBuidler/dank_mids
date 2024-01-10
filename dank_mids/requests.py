@@ -275,7 +275,25 @@ class RPCRequest(_RequestMeta[RawResponse]):
         await self.semaphore.acquire()
         return retval
 
+
+INDIVIDUAL_CALL_REVERT_STRINGS = {
+    "invalid opcode",
+    "missing trie node",
+    "resource not found",
+    "invalid ether transfer", 
+    "error processing call revert", 
+}
+    
 revert_threads = PruningThreadPoolExecutor(4)
+
+def _is_call_revert(e: BadResponse) -> bool:
+    """Returns True if a particular `BadResponse` for a multicall was caused by a failure in one of the individual calls it contained, False for any other reason"""
+    stre = f"{e}"
+    return any(s in stre for s in INDIVIDUAL_CALL_REVERT_STRINGS)
+
+def _needs_full_request_spec(e: BadResponse):
+    """Returns True if this particular `BadResponse` indicates that the node we are using requires the full request spec. Dank mids will detect this and changeover automagically."""
+
 
 class eth_call(RPCRequest):
     __slots__ = 'block'
@@ -407,9 +425,9 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             logger.debug('Dank too loud. Bisecting batch and retrying.')
-        elif isinstance(e, BadResponse) and ('invalid request' in f"{e}" or 'Parse error' in f"{e}" or 'invalid opcode: SHR' in f"{e}"):
+        elif isinstance(e, BadResponse) and (_needs_full_request_spec(e) or _is_call_revert(e)):
             pass
-        elif "error processing call Revert" not in f"{e}" and "429" not in f"{e}" and "resource not found" not in f"{e}":
+        elif "429" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
 
@@ -794,10 +812,14 @@ def _log_exception(e: Exception) -> None:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
     dont_need_to_see_errs = constants.RETRY_ERRS + ['out of gas', 'non_empty_data', 'exceeding --rpc.returndata.limit', "'code': 429", 'payload too large']
-    # We catch and correct these
-    dont_need_to_see_errs += ["invalid request"]
-    # We pass these down to the call they originated from
-    dont_need_to_see_errs += ["invalid ether transfer", "error processing call revert", "invalid opcode", "resource not found"]
+    
+    dont_need_to_see_errs += [
+        # We catch and correct these
+        "invalid request",
+        # We pass these down to the call they originated from
+        *INDIVIDUAL_CALL_REVERT_STRINGS
+    ]
+    
     stre = str(e).lower()
     if any(err in stre for err in dont_need_to_see_errs):
         return
