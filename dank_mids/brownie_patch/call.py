@@ -14,12 +14,14 @@ from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
+from eth_abi.exceptions import InsufficientDataBytes
 from eth_utils import to_checksum_address
 from hexbytes import HexBytes
 from multicall.constants import MULTICALL2_ADDRESSES
 from web3 import Web3
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids.exceptions import Revert
 
 logger = logging.getLogger(__name__)
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)
@@ -48,8 +50,11 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             data = await encode_input(self, len_inputs, get_request_data, *args)
             async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:
                 output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
-        return await decode_output(self, output)
-        
+        try:
+            return await decode_output(self, output)
+        except InsufficientDataBytes as e:
+            raise InsufficientDataBytes(str(e), self, self._address, output) from e
+
     return coroutine
 
 async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> bytes:
@@ -95,7 +100,11 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         if isinstance(decoded, Exception):
             raise decoded
         return decoded
-    except AttributeError: # NOTE: Not sure why this happens as we set the attr while patching the call but w/e, this works for now
+    except AttributeError as e: 
+        # NOTE: Not sure why this happens as we set the attr while patching the call but w/e, this works for now
+        if str(e) != "'ContractCall' object has no attribute '_skip_decoder_proc_pool'":
+            raise e
+        logger.debug("DEBUG ME BRO: %s", e)
         call._skip_decoder_proc_pool = call._address in _skip_proc_pool
         return await decode_output(call, data)
 
@@ -130,16 +139,18 @@ def __validate_output(abi: Dict[str, Any], hexstr: str):
         selector = HexBytes(hexstr)[:4].hex()
         if selector == "0x08c379a0":
             revert_str = eth_abi.decode_abi(["string"], HexBytes(hexstr)[4:])[0]
-            raise ValueError(f"Call reverted: {revert_str}")
+            raise Revert(f"Call reverted: {revert_str}")
         elif selector == "0x4e487b71":
             error_code = int(HexBytes(hexstr)[4:].hex(), 16)
             if error_code in SOLIDITY_ERROR_CODES:
                 revert_str = SOLIDITY_ERROR_CODES[error_code]
             else:
                 revert_str = f"Panic (error code: {error_code})"
-            raise ValueError(f"Call reverted: {revert_str}")
+            raise Revert(f"Call reverted: {revert_str}")
+        elif selector == "0xc1b84b2f":
+            raise Revert(f"Call reverted: execution reverted")
         if abi["outputs"] and not hexstr:
-            raise ValueError("No data was returned - the call likely reverted")
+            raise Revert("No data was returned - the call likely reverted")
     except ValueError as e:
         try:
             raise VirtualMachineError(e) from None
