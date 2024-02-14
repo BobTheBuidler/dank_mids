@@ -102,7 +102,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         return decoded
     except AttributeError as e: 
         # NOTE: Not sure why this happens as we set the attr while patching the call but w/e, this works for now
-        if str(e) != "'ContractCall' object has no attribute '_skip_decoder_proc_pool'":
+        if not str(e).endswith(" object has no attribute '_skip_decoder_proc_pool'"):
             raise e
         logger.debug("DEBUG ME BRO: %s", e)
         call._skip_decoder_proc_pool = call._address in _skip_proc_pool
