@@ -5,7 +5,7 @@ from dank_mids.helpers import setup_dank_w3_from_sync
 try:
     from brownie import network, web3
     if network.is_connected():
-        from dank_mids.brownie_patch.contract import patch_contract
+        from dank_mids.brownie_patch.contract import Contract, patch_contract
         dank_web3 = setup_dank_w3_from_sync(web3)
 except ImportError:
     pass
