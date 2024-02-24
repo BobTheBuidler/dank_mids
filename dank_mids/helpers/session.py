@@ -154,7 +154,7 @@ def log_with_dots(message):
         #sys.stdout.write('\033[K' + f'\r{message}')
         logger.info('\033[K' + f'\r{message}')
         #logger.info(message)
-        sys.stdout.flush()
+        #sys.stdout.flush()
     else:
         last_message = message
         count = 0
