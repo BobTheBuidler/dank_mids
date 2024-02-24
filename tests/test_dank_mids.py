@@ -6,14 +6,13 @@ from multicall import Call
 from multicall.utils import await_awaitable, gather
 from web3._utils.rpc_abi import RPC
 
-from dank_mids import instances
-from tests.fixtures import dank_w3
+from dank_mids import dank_web3, instances
 
 CHAI = '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215'
 height = chain.height
-BIG_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]], block_id=height - (i // 25000), _w3=dank_w3).coroutine() for i in range(100_000)]
+BIG_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]], block_id=height - (i // 25000), _w3=dank_web3).coroutine() for i in range(100_000)]
 height = chain.height
-MULTIBLOCK_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]], _w3=dank_w3, block_id=height-i).coroutine() for i in range(100_000)]
+MULTIBLOCK_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]], _w3=dank_web3, block_id=height-i).coroutine() for i in range(100_000)]
 
 
 def _get_controller():
@@ -56,13 +55,13 @@ def test_next_bid():
     assert _get_controller().multicall_uid.next + 1 == _get_controller().multicall_uid.next
 
 def test_other_methods():
-    work = [dank_w3.eth.get_block_number() for i in range(50)]
-    work.append(dank_w3.eth.get_block('0xe25822'))
-    work.append(dank_w3.manager.coro_request(RPC.web3_clientVersion, []))
+    work = [dank_web3.eth.get_block_number() for i in range(50)]
+    work.append(dank_web3.eth.get_block('0xe25822'))
+    work.append(dank_web3.manager.coro_request(RPC.web3_clientVersion, []))
     assert await_awaitable(gather(work))
 
 def test_AttributeDict():
-    block = await_awaitable(dank_w3.eth.get_block("0xe25822"))
+    block = await_awaitable(dank_web3.eth.get_block("0xe25822"))
     assert block['timestamp']
     assert block.timestamp
 
