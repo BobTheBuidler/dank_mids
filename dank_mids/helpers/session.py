@@ -2,6 +2,7 @@
 import asyncio
 import http
 import logging
+import sys
 from enum import IntEnum
 from itertools import chain
 from threading import get_ident
@@ -110,7 +111,7 @@ class ClientSession(DefaultClientSession):
                         _limited.append(self)
                         logger.info("You're being rate limited by your node provider")
                         logger.info("Its all good, dank_mids has this handled, but you might get results slower than you'd like")
-                    logger.info(f"rate limited: retrying after {try_after}s")
+                    log_with_dots(f"rate limited: retrying after {try_after}s")
                     await asyncio.sleep(try_after)
                     if try_after > 30:
                         logger.warning('severe rate limiting from your provider')
@@ -138,3 +139,21 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     return ClientSession(headers={'content-type': 'application/json'}, timeout=timeout, raise_for_status=True)
 
 _limited = []
+
+# Initialize variables to track the last log message and its count
+last_message = None
+count = 0
+
+def log_with_dots(message):
+    # we use this to overwrite some log msgs to clean up the overall output and prevent spam
+    global last_message, count
+    if message == last_message and last_message is not None:
+        # Clear the line, print the new message, and add dots if repeated
+        sys.stdout.write('\033[K' + f'\r')
+        sys.stdout.flush()
+        count += 1
+        message += '.' * count
+    else:
+        last_message = message
+        count = 0
+    logger.info(message)
