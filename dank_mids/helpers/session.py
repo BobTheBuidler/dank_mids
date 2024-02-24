@@ -150,10 +150,11 @@ def log_with_dots(message):
     if message == last_message and last_message is not None:
         # Clear the line, print the new message, and add dots if repeated
         sys.stdout.write('\033[K' + f'\r')
-        sys.stdout.flush()
         count += 1
         message += '.' * count
+        logger.info(message)
+        sys.stdout.flush()
     else:
         last_message = message
         count = 0
-    logger.info(message)
+        logger.info(message)
