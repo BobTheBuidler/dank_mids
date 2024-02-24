@@ -22,8 +22,6 @@ def patch_contract(contract: Contract, w3: Optional[Web3] = None) -> Contract:..
 def patch_contract(contract: Union[brownie.Contract, str], w3: Optional[Web3] = None) -> brownie.Contract:...
 def patch_contract(contract: Union[Contract, brownie.Contract, str], w3: Optional[Web3] = None) -> Union[Contract, brownie.Contract]:
     """returns a patched version of `contract` with async and call batchings functionalities"""
-    if isinstance(contract, Contract):
-        return contract
     if not isinstance(contract, brownie.Contract):
         contract = brownie.Contract(contract)
     if w3 is None and brownie.network.is_connected():
