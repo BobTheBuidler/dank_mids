@@ -419,15 +419,16 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
 
     def should_retry(self, e: Exception) -> bool:
         """Should the _Batch be retried based on `e`?"""
-        if "out of gas" in f"{e}":
+        stre = f"{e}".lower()
+        if "out of gas" in stre:
             # TODO Remember which contracts/calls are gas guzzlers
             logger.debug('out of gas. cut in half, trying again')
-        elif any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
+        elif any(err in stre for err in constants.TOO_MUCH_NODE_ABUSE_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             logger.debug('Dank too loud. Bisecting batch and retrying.')
         elif isinstance(e, BadResponse) and (_needs_full_request_spec(e) or _is_call_revert(e)):
             pass
-        elif "429" not in f"{e}":
+        elif "429" not in stre:
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
 
@@ -529,10 +530,12 @@ class Multicall(_Batch[eth_call]):
     
     def should_retry(self, e: Exception) -> bool:
         """Should the Multicall be retried based on `e`?"""
-        if any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
+        # NOTE: While it might look weird, f-string is faster than `str(e)`.
+        stre = f"{e}".lower()
+        if any(err in stre for err in constants.TOO_MUCH_NODE_ABUSE_ERRS):
             logger.debug('dank too loud, trying again')
             return True
-        elif "No state available for block" in f"{e}":  # NOTE: While it might look weird, f-string is faster than `str(e)`.
+        elif "no state available for block" in stre:
             e.args[0]["dankmids_note"] = "You're not using an archive node, and you need one for the application you are attempting to run."
             return False
         elif super().should_retry(e):
@@ -811,7 +814,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 def _log_exception(e: Exception) -> None:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
-    dont_need_to_see_errs = constants.RETRY_ERRS + ['out of gas', 'non_empty_data', 'exceeding --rpc.returndata.limit', "'code': 429", 'payload too large']
+    dont_need_to_see_errs = constants.TOO_MUCH_NODE_ABUSE_ERRS + ['out of gas', 'non_empty_data', 'exceeding --rpc.returndata.limit', "'code': 429", 'payload too large']
     
     dont_need_to_see_errs += [
         # We catch and correct these
