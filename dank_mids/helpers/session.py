@@ -148,11 +148,12 @@ def log_with_dots(message):
     # we use this to overwrite some log msgs to clean up the overall output and prevent spam
     global last_message, count
     if message == last_message and last_message is not None:
-        # Clear the line, print the new message, and add dots if repeated
-        sys.stdout.write('\033[K' + f'\r')
         count += 1
         message += '.' * count
-        logger.info(message)
+        # Clear the line, print the new message, and add dots if repeated
+        #sys.stdout.write('\033[K' + f'\r{message}')
+        logger.info('\033[K' + f'\r{message}')
+        #logger.info(message)
         sys.stdout.flush()
     else:
         last_message = message
