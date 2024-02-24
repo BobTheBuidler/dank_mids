@@ -5,20 +5,16 @@ Take note of the liberal use of `asyncio.gather`.
 This is how you ensure that all of the various parts of your code are running at the same time, and are therefore batchable.
 """
 
-# Import the necessary packages and set up the dank_w3 instance.
-# This instance wraps your sync Web3 instance and injects the dank middleware for batching
 import asyncio
 
-from brownie import Contract, web3
-from dank_mids.brownie_patch import patch_contract
-from dank_mids.helpers import setup_dank_w3_from_sync
-
-dank_w3 = setup_dank_w3_from_sync(web3)
 
 # Define the main function and the blocks we want to get information from.
 # Also define the Uniswap pools we want to get data from.
 def main():
     asyncio.run(_main())
+
+# Import dank's modified Contract class
+from dank_mids import Contract
 
 async def _main():
     blocks = [15_000_000, 15_100_000, 15_200_000, 15_300_000, 15_400_000, 15_500_000]
@@ -29,11 +25,10 @@ async def _main():
         "0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11",
     ]
 
-# Initialize the pools as brownie Contract objects and patch them to define an additional coroutine method for each ContractCall.
-    uniswap_pool_contracts = [Contract(pool) for pool in uniswap_pools]
-    dank_pool_contracts = [patch_contract(pool, dank_w3) for pool in uniswap_pool_contracts]
+    # Initialize the pools as `dank_mids.Contract` objects.
+    dank_pool_contracts = [Contract(pool) for pool in uniswap_pools]
 
-# Use asyncio.gather to collect the data from the various pools and blocks and store them in variables.
+    # Use asyncio.gather to collect the data from the various pools and blocks and store them in variables.
     tokens, timestamps, balances = await asyncio.gather(
         asyncio.gather(*[get_tokens_for_pool(pool) for pool in dank_pool_contracts]),
         asyncio.gather(*[get_timestamp_at_block(block) for block in blocks]),
@@ -54,6 +49,11 @@ async def get_tokens_for_pool(pool):
         pool.token1.coroutine(),
     )
 
+
+# To batch other rpc calls, import and use the dank_web3 instance.
+# This instance wraps the connected brownie Web3 instance and injects the dank middleware for batching
+from dank_mids import dank_web3
+
 async def get_timestamp_at_block(block):
-    block = await dank_w3.eth.get_block(block)
+    block = await dank_web3.eth.get_block(block)
     return block.timestamp
