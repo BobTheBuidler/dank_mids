@@ -50,10 +50,10 @@ async def get_tokens_for_pool(pool):
     )
 
 
-# To batch other rpc calls, import and use the dank_web3 instance.
-# This instance wraps the connected brownie Web3 instance and injects the dank middleware for batching
-from dank_mids import dank_web3
+# To batch other rpc calls, use the `dank_mids.eth` object like you would brownie's `web3.eth` object.
+# This object wraps the connected brownie Web3 instance and injects the dank middleware for batching
+import dank_mids
 
 async def get_timestamp_at_block(block):
-    block = await dank_web3.eth.get_block(block)
+    block = await dank_mids.eth.get_block(block)
     return block.timestamp
