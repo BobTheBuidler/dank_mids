@@ -14,14 +14,18 @@ To install Dank Mids, use pip:
 
 ### Usage with web3.py
 
-The primary function you need to use Dank Mids is `setup_dank_w3_from_sync`. This function takes a sync Web3 instance and wraps it for async use.
+The primary function you need to use Dank Mids is `setup_dank_w3_from_sync`. This function takes a sync Web3 instance and wraps it for async use. If using dank_mids with eth-brownie, you can just import the premade dank_web3 object as well
 
 Example usage of Dank Mids with web3py:
 
 ```python
-from dank_mids import setup_dank_w3_from_sync
-dank_w3 = setup_dank_w3_from_sync(w3)
-random_block = await dank_w3.eth.get_block(123)
+from dank_mids.helpers import setup_dank_w3_from_sync
+dank_web3 = setup_dank_w3_from_sync(w3)
+# OR
+from dank_mids.helpers import dank_web3
+
+# Then:
+random_block = await dank_web3.eth.get_block(123)
 ```
 
 ### Usage with eth-brownie

@@ -60,7 +60,7 @@ def set_done(fn: Callable[P, Awaitable[T]]):
 		retval = await fn(self, *args, **kwargs)
 		self._done.set()
 		return retval
-	return set_done_wrap   
+	return set_done_wrap
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 
