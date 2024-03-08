@@ -627,7 +627,16 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def data(self) -> bytes:
         if not self.calls:
             raise EmptyBatch(f"batch {self.uid} is empty and should not be processed.")
-        return msgspec.json.encode([call.request for call in self.calls])
+        try:
+            return msgspec.json.encode([call.request for call in self.calls])
+        except TypeError:
+            # If we can't encode one of the calls, lets figure out which one and pass some useful info downstream
+            for call in self.calls:
+                try:
+                    msgspec.json.encode(call.request)
+                except TypeError as e:
+                    raise TypeError(e, call.request) from None
+            raise
     
     @property
     def is_multicalls_only(self) -> bool:
