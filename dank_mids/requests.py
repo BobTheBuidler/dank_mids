@@ -129,11 +129,13 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return self.uid == __o.uid if isinstance(__o, self.__class__) else False 
     
     def __len__(self) -> int:
-        # NOTE: These are totally arbitrary
-        if self.method == "eth_getTransactionReceipt":
-            return 10
-        elif any(m in self.method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]):
-            return 6
+        # we dont need to consider this for v small batch sizes
+        if ENVS.MAX_JSONRPC_BATCH_SIZE > 50:
+            # NOTE: These are totally arbitrary
+            if self.method == "eth_getTransactionReceipt":
+                return 10
+            elif any(m in self.method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]):
+                return 6
         return 1
     
     def __repr__(self) -> str:
