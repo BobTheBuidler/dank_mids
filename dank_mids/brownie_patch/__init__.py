@@ -1,5 +1,6 @@
 
 from dank_mids.helpers import setup_dank_w3_from_sync
+from dank_mids.brownie_patch.types import DankContractCall, DankContractMethod, DankContractTx, DankOverloadedMethod
 
 # If using dank_mids wih brownie, and brownie is connected when this file executes, you will get a 'dank_w3' async web3 instance with Dank Middleware here.
 try:
