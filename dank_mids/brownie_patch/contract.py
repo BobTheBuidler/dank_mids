@@ -28,7 +28,6 @@ class Contract(brownie.Contract):
         return super().from_explorer(*args, **kwargs)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        patch_contract(self)
         for name in self.__method_names__:
             # get rid of the contract call objects, we can materialize them on a jit basis
             object.__setattr__(self, name, _ContractMethodPlaceholder)
@@ -65,7 +64,7 @@ class Contract(brownie.Contract):
                 continue
             overloaded._add_fn(abi, natspec)
         _patch_overloaded_method(overloaded, web3)
-        return overloaded
+        return overloaded  # type: ignore [return-value]
 
     
 @overload
