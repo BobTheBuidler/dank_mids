@@ -1,12 +1,13 @@
 
-from types import MethodType
-from typing import Any, Optional, Union, overload
+import functools
+from typing import Dict, List, Optional, Union, overload
 
 import brownie
-from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
+from brownie.network.contract import (ContractCall, ContractTx, OverloadedMethod, 
+                                      build_function_signature, _get_method_object)
 from web3 import Web3
 
-from dank_mids.brownie_patch.call import _get_coroutine_fn
+from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
 from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod
 
@@ -27,11 +28,44 @@ class Contract(brownie.Contract):
         return super().from_explorer(*args, **kwargs)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        patch_contract(self)
-    def __getattr__(self, name: str) -> DankContractMethod:
+        for name in self.__method_names__:
+            # get rid of the contract call objects, we can materialize them on a jit basis
+            object.__setattr__(self, name, _ContractMethodPlaceholder)
+    def __getattribute__(self, name: str) -> DankContractMethod:
         """This doesn't functionally do anythiing, it just enables type hints"""
-        return super().__getattr__(name)
+        attr = super().__getattribute__(name)
+        if attr is _ContractMethodPlaceholder:
+            attr = self.__get_method_object__(name)
+            object.__setattr__(self, name, attr)
+        return attr
+    @functools.cached_property
+    def __method_names__(self) -> List[str]:
+        return [i["name"] for i in self.abi if i["type"] == "function"]
+    def __get_method_object__(self, name: str) -> DankContractMethod:
+        from dank_mids import web3
+        overloaded = self.__method_names__.count(name) > 1
+        for abi in [i for i in self.abi if i["type"] == "function"]:
+            if abi["name"] != name:
+                continue
+            full_name = f"{self._name}.{name}"
+            sig = build_function_signature(abi)
+            natspec: Dict = {}
+            if self._build.get("natspec"):
+                natspec = self._build["natspec"]["methods"].get(sig, {})
 
+            if overloaded is False:
+                fn = _get_method_object(self.address, abi, full_name, self._owner, natspec)
+                _patch_call(fn, web3)
+                return fn
+
+            # special logic to handle function overloading
+            elif overloaded is True:
+                overloaded = OverloadedMethod(self.address, full_name, self._owner)
+            overloaded._add_fn(abi, natspec)
+        _patch_overloaded_method(overloaded, web3)
+        return overloaded  # type: ignore [return-value]
+
+    
 @overload
 def patch_contract(contract: Contract, w3: Optional[Web3] = None) -> Contract:...
 @overload
@@ -53,3 +87,6 @@ def _patch_if_method(method: ContractMethod, w3: Web3) -> None:
         _patch_call(method, w3)
     elif isinstance(method, OverloadedMethod):
         _patch_overloaded_method(method, w3)
+
+class _ContractMethodPlaceholder:
+    """A sentinel object that indicates a Contract does have a member by a specific name."""

@@ -1,4 +1,5 @@
 
+from dank_mids.brownie_patch import DankContractCall, DankContractMethod, DankContractTx, DankOverloadedMethod
 from dank_mids.controller import instances
 from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
 from dank_mids.middleware import dank_middleware
