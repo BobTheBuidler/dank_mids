@@ -35,7 +35,7 @@ class Contract(brownie.Contract):
     def __getattr__(self, name: str) -> DankContractMethod:
         """This doesn't functionally do anythiing, it just enables type hints"""
         attr = super().__getattr__(name)
-        if isinstance(attr, _ContractMethodPlaceholder):
+        if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
             setattr(self, name, attr)
         return attr
