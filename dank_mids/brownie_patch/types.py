@@ -40,4 +40,4 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
     """This class serves only to enable proper type checking, you will not encounter a `DankOverloadedMethod` instance. Instead, you will have a money-patched `OverloadedMethod`."""
 
 DankContractMethod = Union[DankContractCall, DankContractTx, DankOverloadedMethod]
-    """These classes serve only to enable proper type checking, you will not encounter a `DankContractCall`, `DankContractTx`, or `DankOverloadedMethod` instance. Instead, you will have a money-patched `ContractCall`, `ContractTx`, or `OverloadedMethod`."""
+"""These classes serve only to enable proper type checking, you will not encounter a `DankContractCall`, `DankContractTx`, or `DankOverloadedMethod` instance. Instead, you will have a money-patched `ContractCall`, `ContractTx`, or `OverloadedMethod`."""
