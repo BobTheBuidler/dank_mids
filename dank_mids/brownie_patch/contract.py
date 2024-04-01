@@ -28,9 +28,9 @@ class Contract(brownie.Contract):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         patch_contract(self)
-    def __getattribute__(self, name: str) -> DankContractMethod:
+    def __getattr__(self, name: str) -> DankContractMethod:
         """This doesn't functionally do anythiing, it just enables type hints"""
-        return super().__getattribute__(name)
+        return super().__getattr__(name)
 
 @overload
 def patch_contract(contract: Contract, w3: Optional[Web3] = None) -> Contract:...
