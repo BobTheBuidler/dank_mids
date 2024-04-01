@@ -8,6 +8,7 @@ from web3 import Web3
 
 from dank_mids.brownie_patch.call import _get_coroutine_fn
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
+from dank_mids.brownie_patch.types import ContractMethod
 
 
 class Contract(brownie.Contract):
@@ -31,8 +32,6 @@ def patch_contract(contract: Union[Contract, brownie.Contract, str], w3: Optiona
     for k, v in contract.__dict__.items():
         _patch_if_method(v, w3)
     return contract
-
-ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
 
 def _patch_if_method(method: ContractMethod, w3: Web3) -> None:
     if isinstance(method, (ContractCall, ContractTx)):

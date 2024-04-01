@@ -1,7 +1,8 @@
 
+import functools
 import logging
 from concurrent.futures.process import BrokenProcessPool
-from functools import lru_cache
+from decimal import Decimal
 from pickle import PicklingError
 from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
@@ -30,18 +31,20 @@ decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
     call._skip_decoder_proc_pool = call._address in _skip_proc_pool
     call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
+    call.__await__ = MethodType(__await_no_args__, call)
     
-@lru_cache
+@functools.lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
-    if ENVS.OPERATION_MODE.application:
+    if ENVS.OPERATION_MODE.application or len_inputs:
         get_request_data = encode
     else:
-        get_request_data = encode if len_inputs else __request_data_no_args
+        get_request_data = __request_data_no_args
     
     async def coroutine(
         self: ContractCall,
         *args: Tuple[Any,...],
         block_identifier: Optional[Union[int, str, bytes]] = None,
+        decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None
     ) -> Any:
         if override:
@@ -51,11 +54,16 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
             async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:
                 output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
         try:
-            return await decode_output(self, output)
+            decoded = await decode_output(self, output)
         except InsufficientDataBytes as e:
             raise InsufficientDataBytes(str(e), self, self._address, output) from e
+        
+        return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
 
     return coroutine
+
+def __await_no_args__(self: ContractMethod):
+    return self.coroutine().__await__()
 
 async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> bytes:
     if any(isinstance(arg, Contract) for arg in args) or any(hasattr(arg, "__contains__") for arg in args): # We will just assume containers contain a Contract object until we have a better way to handle this
