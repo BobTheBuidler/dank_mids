@@ -61,7 +61,6 @@ class Contract(brownie.Contract):
             # special logic to handle function overloading
             elif overloaded is True:
                 overloaded = OverloadedMethod(self.address, full_name, self._owner)
-                continue
             overloaded._add_fn(abi, natspec)
         _patch_overloaded_method(overloaded, web3)
         return overloaded  # type: ignore [return-value]
