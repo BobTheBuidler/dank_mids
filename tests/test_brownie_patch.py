@@ -30,6 +30,8 @@ def test_patch_contract():
     weth = patch_contract(Contract.from_explorer('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), dank_web3)
     assert hasattr(weth.totalSupply, 'coroutine')
     assert await_awaitable(weth.totalSupply.coroutine(block_identifier=13_000_000)) == 6620041514474872981393155
+    assert await_awaitable(weth.totalSupply.coroutine(block_identifier=13_000_000, decimals=18)) == Decimal(6620041.514474872981393155)
+    assert await_awaitable(weth.totalSupply)
 
     # ContractTx
     # must use from_explorer for gh testing workflow
@@ -39,6 +41,9 @@ def test_patch_contract():
     assert await_awaitable(
         uni_v3_quoter.quoteExactInput.coroutine(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000)
     ) == 3169438072
+    assert await_awaitable(
+        uni_v3_quoter.quoteExactInput.coroutine(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000, decimals=8)
+    ) == Decimal(31.69438072)
 
 def test_call_setup_twice_on_same_web3():
     w3_a = setup_dank_w3_from_sync(web3)
