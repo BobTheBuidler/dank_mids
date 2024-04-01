@@ -32,9 +32,9 @@ class Contract(brownie.Contract):
         for name in self.__method_names__:
             # get rid of the contract call objects, we can materialize them on a jit basis
             object.__setattr__(self, name, _ContractMethodPlaceholder)
-    def __getattr__(self, name: str) -> DankContractMethod:
+    def __getattribute__(self, name: str) -> DankContractMethod:
         """This doesn't functionally do anythiing, it just enables type hints"""
-        attr = super().__getattr__(name)
+        attr = super().__getattribute__(name)
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
             setattr(self, name, attr)
