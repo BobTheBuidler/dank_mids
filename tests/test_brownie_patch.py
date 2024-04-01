@@ -2,6 +2,7 @@
 import asyncio
 
 from brownie import Contract, web3
+from decimal import Decimal
 from multicall.utils import await_awaitable
 
 from dank_mids import dank_web3, patch_contract, setup_dank_w3_from_sync
