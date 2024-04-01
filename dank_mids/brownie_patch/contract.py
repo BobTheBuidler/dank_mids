@@ -37,7 +37,7 @@ class Contract(brownie.Contract):
         attr = super().__getattribute__(name)
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
-            setattr(self, name, attr)
+            object.__setattr__(self, name, attr)
         return attr
     @functools.cached_property
     def __method_names__(self) -> List[str]:
