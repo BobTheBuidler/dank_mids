@@ -22,6 +22,7 @@ from multicall.constants import MULTICALL2_ADDRESSES
 from web3 import Web3
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.exceptions import Revert
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,7 @@ decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
     call._skip_decoder_proc_pool = call._address in _skip_proc_pool
     call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
-    call.__await__ = MethodType(__await_no_args__, call)
+    call.__await__ = MethodType(_call_no_args, call)
     
 @functools.lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
@@ -62,7 +63,8 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
 
     return coroutine
 
-def __await_no_args__(self: ContractMethod):
+def _call_no_args(self: ContractMethod):
+    """Asynchronously call `self` with no arguments at the latest block."""
     return self.coroutine().__await__()
 
 async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> bytes:
