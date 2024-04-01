@@ -135,7 +135,7 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     Most everything should be run in main thread though.
     """
     return ClientSession(
-        connector = TCPConnector(force_close=True),
+        connector = TCPConnector(limit=50),
         headers = {'content-type': 'application/json'}, 
         timeout = ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT),  # type: ignore [arg-type]
         raise_for_status = True,
