@@ -13,7 +13,7 @@ class _DankMethodMixin(Generic[_EVMType]):
     async def __await__(self):
         """Asynchronously call the contract method without arguments at the latest block and await the result."""
         return self.coroutine().__await__()
-    async def coroutine(
+    async def coroutine(  # type: ignore [empty-body]
         self, 
         *args: Any, 
         block_identifier: Optional[int] = None, 
