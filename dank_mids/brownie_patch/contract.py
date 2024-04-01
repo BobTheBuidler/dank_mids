@@ -50,6 +50,6 @@ def patch_contract(contract: Union[Contract, brownie.Contract, str], w3: Optiona
 
 def _patch_if_method(method: ContractMethod, w3: Web3) -> None:
     if isinstance(method, (ContractCall, ContractTx)):
-        method.coroutine = MethodType(_get_coroutine_fn(w3, len(method.abi['inputs'])), method)
+        _patch_call(method, w3)
     elif isinstance(method, OverloadedMethod):
         _patch_overloaded_method(method, w3)
