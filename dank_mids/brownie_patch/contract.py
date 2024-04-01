@@ -43,6 +43,7 @@ class Contract(brownie.Contract):
     def __method_names__(self) -> List[str]:
         return [i["name"] for i in self.abi if i["type"] == "function"]
     def __get_method_object__(self, name: str) -> DankContractMethod:
+        from dank_mids import web3
         overloaded = self.__method_names__.count(name) > 1
         for abi in [i for i in self.abi if i["type"] == "function"]:
             if abi["name"] != name:
@@ -55,14 +56,14 @@ class Contract(brownie.Contract):
 
             if overloaded is False:
                 fn = _get_method_object(self.address, abi, full_name, self._owner, natspec)
-                return _patch_call(fn)
+                return _patch_call(fn, web3)
 
             # special logic to handle function overloading
             elif overloaded is True:
                 overloaded = OverloadedMethod(self.address, full_name, self._owner)
                 continue
             overloaded._add_fn(abi, natspec)
-        return _patch_overloaded_method(overloaded)
+        return _patch_overloaded_method(overloaded, web3)
 
     
 @overload
