@@ -1,6 +1,6 @@
 
 from types import MethodType
-from typing import Optional, Union, overload
+from typing import Any, Optional, Union, overload
 
 import brownie
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
@@ -8,14 +8,29 @@ from web3 import Web3
 
 from dank_mids.brownie_patch.call import _get_coroutine_fn
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
-from dank_mids.brownie_patch.types import ContractMethod
+from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod
 
 
 class Contract(brownie.Contract):
     """a modified `brownie.Contract` with async and call batching functionalities"""
+    @classmethod
+    def from_abi(cls, *args, **kwargs) -> "Contract":
+        # NOTE: just forces type checkers to work
+        return super().from_abi(*args, **kwargs)
+    @classmethod
+    def from_ethpm(cls, *args, **kwargs) -> "Contract":
+        # NOTE: just forces type checkers to work
+        return super().from_ethpm(*args, **kwargs)
+    @classmethod
+    def from_explorer(cls, *args, **kwargs) -> "Contract":
+        # NOTE: just forces type checkers to work
+        return super().from_explorer(*args, **kwargs)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         patch_contract(self)
+    def __getattribute__(self, name: str) -> DankContractMethod:
+        """This doesn't functionally do anythiing, it just enables type hints"""
+        return super().__getattribute__(name)
 
 @overload
 def patch_contract(contract: Contract, w3: Optional[Web3] = None) -> Contract:...
