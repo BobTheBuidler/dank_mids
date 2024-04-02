@@ -28,8 +28,11 @@ class Contract(brownie.Contract):
         return super().from_explorer(*args, **kwargs)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # get rid of the contract call objects, we can materialize them on a jit basis
         for name in self.__method_names__:
-            # get rid of the contract call objects, we can materialize them on a jit basis
+            if name == "_name":
+                # this is a property defined on _ContractBase and cannot be written to
+                continue
             object.__setattr__(self, name, _ContractMethodPlaceholder)
     def __getattribute__(self, name: str) -> DankContractMethod:
         """This doesn't functionally do anythiing, it just enables type hints"""
