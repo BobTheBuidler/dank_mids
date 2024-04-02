@@ -4,7 +4,7 @@ import multicall
 from multicall.constants import Network
 
 TOO_MUCH_DATA_ERRS = ["Payload Too Large", "content length too large", "request entity too large", "batch limit exceeded"]
-RETRY_ERRS = ["connection reset by peer", "server disconnected", "execution aborted (timeout =", "batch limit exceeded"]
+RETRY_ERRS = ["connection reset by peer", "server disconnected", "execution aborted (timeout =", "batch limit exceeded", "request timed out"]
 
 GAS_LIMIT = multicall.constants.GAS_LIMIT
 MULTICALL2_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
