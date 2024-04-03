@@ -30,7 +30,7 @@ class Contract(brownie.Contract):
         super().__init__(*args, **kwargs)
         # get rid of the contract call objects, we can materialize them on a jit basis
         for name in self.__method_names__:
-            if name == "_name":
+            if name in {"_name", "_owner"}:
                 # this is a property defined on _ContractBase and cannot be written to
                 continue
             object.__setattr__(self, name, _ContractMethodPlaceholder)
