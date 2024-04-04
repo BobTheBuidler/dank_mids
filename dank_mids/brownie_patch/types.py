@@ -1,7 +1,7 @@
 
 import functools
 from decimal import Decimal
-from typing import Any, Awaitable, Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import Any, Awaitable, Callable, Dict, Generic, Optional, Tuple, TypeVar, Union
 
 from brownie.typing import AccountsType
 from brownie.convert.utils import build_function_selector, build_function_signature
@@ -134,7 +134,7 @@ class DankOverloadedMethod(_DankMethod, OverloadedMethod):
     """
     def __init__(self, address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Optional[Dict] = None) -> None:
         _DankMethod().__init__(self, address, abi, name, owner, natspec)
-        self.methods: Dict[, _NonOverloaded] = {}
+        self.methods: Dict[Tuple[str], _NonOverloaded] = {}
     __slots__ = "methods", 
 
 DankContractMethod = Union[DankContractCall, DankContractTx, DankOverloadedMethod]
