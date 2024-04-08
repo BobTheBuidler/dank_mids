@@ -1,6 +1,6 @@
 
 import functools
-from typing import Dict, List, Optional, Union, overload
+from typing import Dict, List, NewType, Optional, Union, overload
 
 import brownie
 from brownie.network.contract import (ContractCall, ContractTx, OverloadedMethod, 
@@ -11,6 +11,11 @@ from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
 from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod
 
+
+EventName = NewType("EventName", str)
+LogTopic = NewType("LogTopic", str)
+Method = NewType("Method", str)
+Signature = NewType("Signature", str)
 
 class Contract(brownie.Contract):
     """a modified `brownie.Contract` with async and call batching functionalities"""
@@ -26,6 +31,8 @@ class Contract(brownie.Contract):
     def from_explorer(cls, *args, **kwargs) -> "Contract":
         # NOTE: just forces type checkers to work
         return super().from_explorer(*args, **kwargs)
+    topics: Dict[str, str]
+    signatures: Dict[Method, Signature]
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # get rid of the contract call objects, we can materialize them on a jit basis
