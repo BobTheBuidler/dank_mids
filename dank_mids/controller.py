@@ -55,7 +55,12 @@ class DankMiddlewareController:
         w3_version_major = int(w3_version.split(".")[0])
         if w3_version_major >= 6:
             from web3.middleware import async_attrdict_middleware
-            self.w3.middleware_onion.add(async_attrdict_middleware)
+            try:
+                self.w3.middleware_onion.add(async_attrdict_middleware)
+            except ValueError as e:
+                if str(e) != "You can't add the same un-named instance twice":
+                    raise e
+                # NOTE: the web3 instance already has the middleware
         self.sync_w3 = _sync_w3_from_async(w3)
 
         self.chain_id = self.sync_w3.eth.chain_id
