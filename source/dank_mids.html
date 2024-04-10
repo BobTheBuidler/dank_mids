@@ -94,7 +94,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.eth_callParams"><code class="docutils literal notranslate"><span class="pre">eth_callParams</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.BlockSemaphore"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.Contract"><code class="docutils literal notranslate"><span class="pre">Contract</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.dank_middleware"><code class="docutils literal notranslate"><span class="pre">dank_middleware()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.patch_contract"><code class="docutils literal notranslate"><span class="pre">patch_contract()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.setup_dank_w3"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.setup_dank_w3_from_sync"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3_from_sync()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -1196,6 +1204,400 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 </section>
 <section id="module-dank_mids">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dank_mids" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">BlockSemaphore</span></span><a class="headerlink" href="#dank_mids.BlockSemaphore" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://bobthebuidler.github.io/ez-a-sync/source/a_sync.primitives.locks.html#a_sync.primitives.locks.prio_semaphore._AbstractPrioritySemaphore" title="(in ez-a-sync)"><code class="xref py py-class docutils literal notranslate"><span class="pre">_AbstractPrioritySemaphore</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_BlockSemaphoreContextManager</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.__call__" title="Link to this definition"></a></dt>
+<dd><p>Call self as a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>~P</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a><em>[</em><em>T</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[~P], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a>[<em>T</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.__getitem__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><em>Literal</em></a><em>[</em><em>'latest'</em><em>, </em><em>None</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>_BlockSemaphoreContextManager</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.__init__" title="Link to this definition"></a></dt>
+<dd><p><cite>name</cite> is used only in debug logs to provide useful context</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.acquire">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire a semaphore.</p>
+<p>If the internal counter is larger than zero on entry,
+decrement it by one and return True immediately.  If it is
+zero on entry, block, waiting until some other coroutine has
+called release() to make it larger than 0, and then return
+True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><em>Literal</em></a>[True]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.decorate">
+<span class="sig-name descname"><span class="pre">decorate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.decorate" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>~P</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a><em>[</em><em>T</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[~P], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a>[<em>T</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.locked">
+<span class="sig-name descname"><span class="pre">locked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.locked" title="Link to this definition"></a></dt>
+<dd><p>Returns True if semaphore cannot be acquired immediately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.release" title="Link to this definition"></a></dt>
+<dd><p>Release a semaphore, incrementing the internal counter by one.</p>
+<p>When it was zero on entry and another coroutine is waiting for it to
+become larger than zero again, wake up that coroutine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.debug_logs_enabled">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">debug_logs_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#dank_mids.BlockSemaphore.debug_logs_enabled" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.logger">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.12)"><span class="pre">Logger</span></a></em><a class="headerlink" href="#dank_mids.BlockSemaphore.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.BlockSemaphore.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.Contract">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">Contract</span></span><a class="headerlink" href="#dank_mids.Contract" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></p>
+<p>a modified <cite>brownie.Contract</cite> with async and call batching functionalities</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.__init__" title="Link to this definition"></a></dt>
+<dd><p>Recreate a <cite>Contract</cite> object from the local database.</p>
+<p>The init method is used to access deployments that have already previously
+been stored locally. For new deployments use <cite>from_abi</cite> or <cite>from_etherscan</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address_or_alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Address or user-defined alias of the deployment.</p></li>
+<li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field
+will be performed using this account.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.balance">
+<span class="sig-name descname"><span class="pre">balance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.balance" title="Link to this definition"></a></dt>
+<dd><p>Returns the current ether balance of the contract, in wei.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Wei</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.decode_input">
+<span class="sig-name descname"><span class="pre">decode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.decode_input" title="Link to this definition"></a></dt>
+<dd><p>Decode input calldata for this contract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>) – Calldata for a call to this contract</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>str</em> – Signature of the function that was called</p></li>
+<li><p><em>Any</em> – Decoded input arguments</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.from_abi">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_abi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.from_abi" title="Link to this definition"></a></dt>
+<dd><p>Create a new <cite>Contract</cite> object from an ABI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the contract.</p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Address where the contract is deployed.</p></li>
+<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Contract ABI, given as a dictionary.</p></li>
+<li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field
+will be performed using this account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.from_ethpm">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_ethpm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.from_ethpm" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.from_explorer">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_explorer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.from_explorer" title="Link to this definition"></a></dt>
+<dd><p>Create a new <cite>Contract</cite> object with source code queried from a block explorer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Address where the contract is deployed.</p></li>
+<li><p><strong>as_proxy_for</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Address of the implementation contract, if <cite>address</cite> is a proxy contract.
+The generated object will send transactions to <cite>address</cite>, but use the ABI
+and NatSpec of <cite>as_proxy_for</cite>. This field is only required when the
+block explorer API does not provide an implementation address.</p></li>
+<li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field will be
+performed using this account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.get_method">
+<span class="sig-name descname"><span class="pre">get_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.get_method" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.get_method_object">
+<span class="sig-name descname"><span class="pre">get_method_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.get_method_object" title="Link to this definition"></a></dt>
+<dd><p>Given a calldata hex string, returns a <cite>ContractMethod</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>_ContractMethod</em> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.get_solc_version">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_solc_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compiler_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.get_solc_version" title="Link to this definition"></a></dt>
+<dd><p>Return the solc compiler version either from the passed compiler string
+or try to find the latest available patch semver compiler version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>compiler_str</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The compiler string passed from the contract metadata.</p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The contract address to check for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Version</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.info" title="Link to this definition"></a></dt>
+<dd><p>Display NatSpec documentation for this contract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.remove_deployment">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_deployment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.remove_deployment" title="Link to this definition"></a></dt>
+<dd><p>Removes this contract from the internal deployments db
+with the passed address or alias.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – An address to apply</p></li>
+<li><p><strong>alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – An alias to apply</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a> | None, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a> | None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.set_alias">
+<span class="sig-name descname"><span class="pre">set_alias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.set_alias" title="Link to this definition"></a></dt>
+<dd><p>Apply a unique alias this object. The alias can be used to restore the
+object in future sessions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – An alias to apply. If <cite>None</cite>, any existing alias is removed.</p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.Contract.abi">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a></em><a class="headerlink" href="#dank_mids.Contract.abi" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.Contract.alias">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alias</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.Contract.alias" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.Contract.signatures">
+<span class="sig-name descname"><span class="pre">signatures</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Method</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Signature</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.Contract.signatures" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.Contract.topics">
+<span class="sig-name descname"><span class="pre">topics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.Contract.topics" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.dank_middleware">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">dank_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">make_request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">web3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.dank_middleware" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>make_request</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
+<li><p><strong>web3</strong> (<em>Web3</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.12)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <em>RPCResponse</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.patch_contract">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">patch_contract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contract</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.patch_contract" title="Link to this definition"></a></dt>
+<dd><p>returns a patched version of <cite>contract</cite> with async and call batchings functionalities</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contract</strong> (<a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a><em> | </em><em>Contract</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
+<li><p><strong>w3</strong> (<em>Web3</em><em> | </em><em>None</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a> | <em>Contract</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.setup_dank_w3">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.setup_dank_w3" title="Link to this definition"></a></dt>
+<dd><p>Injects Dank Middleware into an async Web3 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>async_w3</strong> (<em>Web3</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Web3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.setup_dank_w3_from_sync">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3_from_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sync_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.setup_dank_w3_from_sync" title="Link to this definition"></a></dt>
+<dd><p>Creates a new async Web3 instance from <cite>w3.provider.endpoint_uri</cite> and injects it with Dank Middleware.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sync_w3</strong> (<em>Web3</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Web3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
