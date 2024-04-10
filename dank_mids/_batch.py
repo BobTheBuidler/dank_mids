@@ -4,7 +4,7 @@ import logging
 from typing import TYPE_CHECKING, Any, Generator, List
 
 from dank_mids._exceptions import DankMidsInternalError
-from dank_mids.requests import JSONRPCBatch, RPCRequest, _Batch
+from dank_mids._requests import JSONRPCBatch, RPCRequest, _Batch
 from dank_mids.types import Multicalls
 
 if TYPE_CHECKING:

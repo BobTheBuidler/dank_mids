@@ -14,7 +14,7 @@ from dank_mids import constants, stats
 from dank_mids._exceptions import BadResponse, ExceedsMaxBatchSize, PayloadTooLarge
 
 if TYPE_CHECKING:
-    from dank_mids.requests import Multicall
+    from dank_mids._requests import Multicall
 
 ChainId = NewType("ChainId", int)
 BlockId = NewType("BlockId", str)
