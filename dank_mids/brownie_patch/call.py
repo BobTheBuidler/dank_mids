@@ -121,11 +121,15 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
 async def __request_data_no_args(call: ContractCall) -> str:
     return call.signature
 
+# These methods were renamed in eth-abi 4.0.0
+__eth_abi_encode = eth_abi.encode if hasattr(eth_abi, 'encode') else eth_abi.encode_abi
+__eth_abi_decode = eth_abi.decode if hasattr(eth_abi, 'decode') else eth_abi.decode_abi
+
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
     try:
         data = format_input(abi, args)
         types_list = get_type_strings(abi["inputs"])
-        return signature + eth_abi.encode_abi(types_list, data).hex()
+        return signature + __eth_abi_encode(types_list, data).hex()
     except Exception as e:
         return e
 
@@ -136,7 +140,7 @@ if multicall2 := MULTICALL2_ADDRESSES.get(chain.id, None):
 def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
     try:
         types_list = get_type_strings(abi["outputs"])
-        result = eth_abi.decode_abi(types_list, HexBytes(hexstr))
+        result = __eth_abi_decode(types_list, HexBytes(hexstr))
         result = format_output(abi, result)
         if len(result) == 1:
             result = result[0]
