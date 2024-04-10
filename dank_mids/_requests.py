@@ -32,7 +32,7 @@ from dank_mids._exceptions import (BadResponse, DankMidsClientResponseError,
                                    ResponseNotReady, internal_err_types)
 from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import _decode, _session
-from dank_mids.helpers.helpers import set_done
+from dank_mids.helpers._helpers import set_done
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
                              RawResponse, Request, Response)
