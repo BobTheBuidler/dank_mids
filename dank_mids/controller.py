@@ -2,6 +2,7 @@
 import logging
 from collections import defaultdict
 from functools import lru_cache
+from importlib.metadata import version
 from typing import Any, DefaultDict, List, Literal, Optional
 
 import eth_retry
@@ -50,6 +51,11 @@ class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
         logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         self.w3: Web3 = w3
+        w3_version = version("web3")
+        w3_version_major = int(w3_version.split(".")[0])
+        if w3_version_major >= 6:
+            from web3.middleware import async_attrdict_middleware
+            self.w3.middleware_onion.add(async_attrdict_middleware)
         self.sync_w3 = _sync_w3_from_async(w3)
 
         self.chain_id = self.sync_w3.eth.chain_id
@@ -59,6 +65,7 @@ class DankMiddlewareController:
         self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
         self.endpoint = self.w3.provider.endpoint_uri
+
         self._sort_calls = "tenderly" in self.endpoint or "chainstack" in self.endpoint
         if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:
             logger.info("max jsonrpc batch size for tenderly is 10, overriding existing max")
