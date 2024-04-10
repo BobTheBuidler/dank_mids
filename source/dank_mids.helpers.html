@@ -53,17 +53,17 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-environment-variables-module">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-constants-module">dank_mids.constants module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-controller-module">dank_mids.controller module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-exceptions-module">dank_mids.exceptions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-executor-module">dank_mids.executor module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-middleware-module">dank_mids.middleware module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-semaphore-module">dank_mids.semaphore module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-semaphores-module">dank_mids.semaphores module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-stats-module">dank_mids.stats module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-types-module">dank_mids.types module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-contents">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.ENVIRONMENT_VARIABLES">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.constants">dank_mids.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.controller">dank_mids.controller module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.exceptions">dank_mids.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.executor">dank_mids.executor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.middleware">dank_mids.middleware module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.semaphore">dank_mids.semaphore module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.semaphores">dank_mids.semaphores module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.stats">dank_mids.stats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.types">dank_mids.types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -98,8 +98,36 @@
              
   <section id="dank-mids-helpers-package">
 <h1>dank_mids.helpers package<a class="headerlink" href="#dank-mids-helpers-package" title="Link to this heading"></a></h1>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.helpers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dank_mids.helpers" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.setup_dank_w3">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.setup_dank_w3" title="Link to this definition"></a></dt>
+<dd><p>Injects Dank Middleware into an async Web3 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>async_w3</strong> (<em>Web3</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Web3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.setup_dank_w3_from_sync">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3_from_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sync_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.setup_dank_w3_from_sync" title="Link to this definition"></a></dt>
+<dd><p>Creates a new async Web3 instance from <cite>w3.provider.endpoint_uri</cite> and injects it with Dank Middleware.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sync_w3</strong> (<em>Web3</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Web3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 

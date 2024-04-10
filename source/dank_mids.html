@@ -54,17 +54,53 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-environment-variables-module">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-constants-module">dank_mids.constants module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-controller-module">dank_mids.controller module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-exceptions-module">dank_mids.exceptions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-executor-module">dank_mids.executor module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-middleware-module">dank_mids.middleware module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-semaphore-module">dank_mids.semaphore module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-semaphores-module">dank_mids.semaphores module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-stats-module">dank_mids.stats module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-types-module">dank_mids.types module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.ENVIRONMENT_VARIABLES">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.constants">dank_mids.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.controller">dank_mids.controller module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.controller.DankMiddlewareController"><code class="docutils literal notranslate"><span class="pre">DankMiddlewareController</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.exceptions">dank_mids.exceptions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.exceptions.Revert"><code class="docutils literal notranslate"><span class="pre">Revert</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.executor">dank_mids.executor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.middleware">dank_mids.middleware module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.middleware.dank_middleware"><code class="docutils literal notranslate"><span class="pre">dank_middleware()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.semaphore">dank_mids.semaphore module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.semaphores">dank_mids.semaphores module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.semaphores.BlockSemaphore"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.stats">dank_mids.stats module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.devhint"><code class="docutils literal notranslate"><span class="pre">devhint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.log"><code class="docutils literal notranslate"><span class="pre">log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.log_duration"><code class="docutils literal notranslate"><span class="pre">log_duration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.log_errd_batch"><code class="docutils literal notranslate"><span class="pre">log_errd_batch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.types">dank_mids.types module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Error"><code class="docutils literal notranslate"><span class="pre">Error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.OverrideParams"><code class="docutils literal notranslate"><span class="pre">OverrideParams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.PartialRequest"><code class="docutils literal notranslate"><span class="pre">PartialRequest</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.PartialResponse"><code class="docutils literal notranslate"><span class="pre">PartialResponse</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.RawResponse"><code class="docutils literal notranslate"><span class="pre">RawResponse</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Request"><code class="docutils literal notranslate"><span class="pre">Request</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Response"><code class="docutils literal notranslate"><span class="pre">Response</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.eth_callParams"><code class="docutils literal notranslate"><span class="pre">eth_callParams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.BlockSemaphore"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.Contract"><code class="docutils literal notranslate"><span class="pre">Contract</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.dank_middleware"><code class="docutils literal notranslate"><span class="pre">dank_middleware()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.patch_contract"><code class="docutils literal notranslate"><span class="pre">patch_contract()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.setup_dank_w3"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.setup_dank_w3_from_sync"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3_from_sync()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -104,15 +140,175 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dank_mids.brownie_patch.html">dank_mids.brownie_patch package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#dank-mids-brownie-patch-call-module">dank_mids.brownie_patch.call module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#dank-mids-brownie-patch-contract-module">dank_mids.brownie_patch.contract module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#dank-mids-brownie-patch-overloaded-module">dank_mids.brownie_patch.overloaded module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#dank-mids-brownie-patch-types-module">dank_mids.brownie_patch.types module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch.call">dank_mids.brownie_patch.call module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.call.decode"><code class="docutils literal notranslate"><span class="pre">decode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.call.decode_output"><code class="docutils literal notranslate"><span class="pre">decode_output()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.call.encode"><code class="docutils literal notranslate"><span class="pre">encode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.call.encode_input"><code class="docutils literal notranslate"><span class="pre">encode_input()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch.contract">dank_mids.brownie_patch.contract module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract"><code class="docutils literal notranslate"><span class="pre">Contract</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.__init__"><code class="docutils literal notranslate"><span class="pre">Contract.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.balance"><code class="docutils literal notranslate"><span class="pre">Contract.balance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.decode_input"><code class="docutils literal notranslate"><span class="pre">Contract.decode_input()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.from_abi"><code class="docutils literal notranslate"><span class="pre">Contract.from_abi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.from_ethpm"><code class="docutils literal notranslate"><span class="pre">Contract.from_ethpm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.from_explorer"><code class="docutils literal notranslate"><span class="pre">Contract.from_explorer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.get_method"><code class="docutils literal notranslate"><span class="pre">Contract.get_method()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.get_method_object"><code class="docutils literal notranslate"><span class="pre">Contract.get_method_object()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.get_solc_version"><code class="docutils literal notranslate"><span class="pre">Contract.get_solc_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.info"><code class="docutils literal notranslate"><span class="pre">Contract.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.remove_deployment"><code class="docutils literal notranslate"><span class="pre">Contract.remove_deployment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.set_alias"><code class="docutils literal notranslate"><span class="pre">Contract.set_alias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.abi"><code class="docutils literal notranslate"><span class="pre">Contract.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.alias"><code class="docutils literal notranslate"><span class="pre">Contract.alias</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.signatures"><code class="docutils literal notranslate"><span class="pre">Contract.signatures</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.topics"><code class="docutils literal notranslate"><span class="pre">Contract.topics</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.patch_contract"><code class="docutils literal notranslate"><span class="pre">patch_contract()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch.overloaded">dank_mids.brownie_patch.overloaded module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch.types">dank_mids.brownie_patch.types module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall"><code class="docutils literal notranslate"><span class="pre">DankContractCall</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.__call__"><code class="docutils literal notranslate"><span class="pre">DankContractCall.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.__init__"><code class="docutils literal notranslate"><span class="pre">DankContractCall.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.call"><code class="docutils literal notranslate"><span class="pre">DankContractCall.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.coroutine"><code class="docutils literal notranslate"><span class="pre">DankContractCall.coroutine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.decode_output"><code class="docutils literal notranslate"><span class="pre">DankContractCall.decode_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.estimate_gas"><code class="docutils literal notranslate"><span class="pre">DankContractCall.estimate_gas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.info"><code class="docutils literal notranslate"><span class="pre">DankContractCall.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.transact"><code class="docutils literal notranslate"><span class="pre">DankContractCall.transact()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.abi"><code class="docutils literal notranslate"><span class="pre">DankContractCall.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.decode_input"><code class="docutils literal notranslate"><span class="pre">DankContractCall.decode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.encode_input"><code class="docutils literal notranslate"><span class="pre">DankContractCall.encode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.natspec"><code class="docutils literal notranslate"><span class="pre">DankContractCall.natspec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.payable"><code class="docutils literal notranslate"><span class="pre">DankContractCall.payable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractCall.signature"><code class="docutils literal notranslate"><span class="pre">DankContractCall.signature</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx"><code class="docutils literal notranslate"><span class="pre">DankContractTx</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.__call__"><code class="docutils literal notranslate"><span class="pre">DankContractTx.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.__init__"><code class="docutils literal notranslate"><span class="pre">DankContractTx.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.call"><code class="docutils literal notranslate"><span class="pre">DankContractTx.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.coroutine"><code class="docutils literal notranslate"><span class="pre">DankContractTx.coroutine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.decode_output"><code class="docutils literal notranslate"><span class="pre">DankContractTx.decode_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.estimate_gas"><code class="docutils literal notranslate"><span class="pre">DankContractTx.estimate_gas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.info"><code class="docutils literal notranslate"><span class="pre">DankContractTx.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.transact"><code class="docutils literal notranslate"><span class="pre">DankContractTx.transact()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.abi"><code class="docutils literal notranslate"><span class="pre">DankContractTx.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.decode_input"><code class="docutils literal notranslate"><span class="pre">DankContractTx.decode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.encode_input"><code class="docutils literal notranslate"><span class="pre">DankContractTx.encode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.natspec"><code class="docutils literal notranslate"><span class="pre">DankContractTx.natspec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.payable"><code class="docutils literal notranslate"><span class="pre">DankContractTx.payable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.signature"><code class="docutils literal notranslate"><span class="pre">DankContractTx.signature</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.__call__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.__getitem__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__getitem__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.__init__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.call"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.coroutine"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.coroutine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.decode_output"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.decode_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.info"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.transact"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.transact()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.abi"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.decode_input"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.decode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.encode_input"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.encode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.methods"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.methods</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.natspec"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.natspec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.signature"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.signature</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.FunctionABI"><code class="docutils literal notranslate"><span class="pre">FunctionABI()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractMethod"><code class="docutils literal notranslate"><span class="pre">DankContractMethod</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract"><code class="docutils literal notranslate"><span class="pre">Contract</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.__init__"><code class="docutils literal notranslate"><span class="pre">Contract.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.balance"><code class="docutils literal notranslate"><span class="pre">Contract.balance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.decode_input"><code class="docutils literal notranslate"><span class="pre">Contract.decode_input()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.from_abi"><code class="docutils literal notranslate"><span class="pre">Contract.from_abi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.from_ethpm"><code class="docutils literal notranslate"><span class="pre">Contract.from_ethpm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.from_explorer"><code class="docutils literal notranslate"><span class="pre">Contract.from_explorer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.get_method"><code class="docutils literal notranslate"><span class="pre">Contract.get_method()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.get_method_object"><code class="docutils literal notranslate"><span class="pre">Contract.get_method_object()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.get_solc_version"><code class="docutils literal notranslate"><span class="pre">Contract.get_solc_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.info"><code class="docutils literal notranslate"><span class="pre">Contract.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.remove_deployment"><code class="docutils literal notranslate"><span class="pre">Contract.remove_deployment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.set_alias"><code class="docutils literal notranslate"><span class="pre">Contract.set_alias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.abi"><code class="docutils literal notranslate"><span class="pre">Contract.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.alias"><code class="docutils literal notranslate"><span class="pre">Contract.alias</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.signatures"><code class="docutils literal notranslate"><span class="pre">Contract.signatures</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.topics"><code class="docutils literal notranslate"><span class="pre">Contract.topics</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall"><code class="docutils literal notranslate"><span class="pre">DankContractCall</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.__call__"><code class="docutils literal notranslate"><span class="pre">DankContractCall.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.__init__"><code class="docutils literal notranslate"><span class="pre">DankContractCall.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.call"><code class="docutils literal notranslate"><span class="pre">DankContractCall.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.coroutine"><code class="docutils literal notranslate"><span class="pre">DankContractCall.coroutine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.decode_output"><code class="docutils literal notranslate"><span class="pre">DankContractCall.decode_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.estimate_gas"><code class="docutils literal notranslate"><span class="pre">DankContractCall.estimate_gas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.info"><code class="docutils literal notranslate"><span class="pre">DankContractCall.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.transact"><code class="docutils literal notranslate"><span class="pre">DankContractCall.transact()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.abi"><code class="docutils literal notranslate"><span class="pre">DankContractCall.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.decode_input"><code class="docutils literal notranslate"><span class="pre">DankContractCall.decode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.encode_input"><code class="docutils literal notranslate"><span class="pre">DankContractCall.encode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.natspec"><code class="docutils literal notranslate"><span class="pre">DankContractCall.natspec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.payable"><code class="docutils literal notranslate"><span class="pre">DankContractCall.payable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall.signature"><code class="docutils literal notranslate"><span class="pre">DankContractCall.signature</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx"><code class="docutils literal notranslate"><span class="pre">DankContractTx</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.__call__"><code class="docutils literal notranslate"><span class="pre">DankContractTx.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.__init__"><code class="docutils literal notranslate"><span class="pre">DankContractTx.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.call"><code class="docutils literal notranslate"><span class="pre">DankContractTx.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.coroutine"><code class="docutils literal notranslate"><span class="pre">DankContractTx.coroutine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.decode_output"><code class="docutils literal notranslate"><span class="pre">DankContractTx.decode_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.estimate_gas"><code class="docutils literal notranslate"><span class="pre">DankContractTx.estimate_gas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.info"><code class="docutils literal notranslate"><span class="pre">DankContractTx.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.transact"><code class="docutils literal notranslate"><span class="pre">DankContractTx.transact()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.abi"><code class="docutils literal notranslate"><span class="pre">DankContractTx.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.decode_input"><code class="docutils literal notranslate"><span class="pre">DankContractTx.decode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.encode_input"><code class="docutils literal notranslate"><span class="pre">DankContractTx.encode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.natspec"><code class="docutils literal notranslate"><span class="pre">DankContractTx.natspec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.payable"><code class="docutils literal notranslate"><span class="pre">DankContractTx.payable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractTx.signature"><code class="docutils literal notranslate"><span class="pre">DankContractTx.signature</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.__call__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.__getitem__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__getitem__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.__init__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.call"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.coroutine"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.coroutine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.decode_output"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.decode_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.info"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.transact"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.transact()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.abi"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.decode_input"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.decode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.encode_input"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.encode_input</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.methods"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.methods</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.natspec"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.natspec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankOverloadedMethod.signature"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.signature</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.patch_contract"><code class="docutils literal notranslate"><span class="pre">patch_contract()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dank_mids.helpers.html">dank_mids.helpers package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.helpers.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.helpers.html#module-dank_mids.helpers">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.helpers.html#dank_mids.helpers.setup_dank_w3"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.helpers.html#dank_mids.helpers.setup_dank_w3_from_sync"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3_from_sync()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -121,38 +317,1285 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="dank-mids-environment-variables-module">
-<h2>dank_mids.ENVIRONMENT_VARIABLES module<a class="headerlink" href="#dank-mids-environment-variables-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.ENVIRONMENT_VARIABLES">
+<span id="dank-mids-environment-variables-module"></span><h2>dank_mids.ENVIRONMENT_VARIABLES module<a class="headerlink" href="#module-dank_mids.ENVIRONMENT_VARIABLES" title="Link to this heading"></a></h2>
 </section>
-<section id="dank-mids-constants-module">
-<h2>dank_mids.constants module<a class="headerlink" href="#dank-mids-constants-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.constants">
+<span id="dank-mids-constants-module"></span><h2>dank_mids.constants module<a class="headerlink" href="#module-dank_mids.constants" title="Link to this heading"></a></h2>
 </section>
-<section id="dank-mids-controller-module">
-<h2>dank_mids.controller module<a class="headerlink" href="#dank-mids-controller-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.controller">
+<span id="dank-mids-controller-module"></span><h2>dank_mids.controller module<a class="headerlink" href="#module-dank_mids.controller" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.controller.</span></span><span class="sig-name descname"><span class="pre">DankMiddlewareController</span></span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.__call__">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.__call__" title="Link to this definition"></a></dt>
+<dd><p>Call self as a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>RPCEndpoint</em>) – </p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>RPCResponse</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>w3</strong> (<em>Web3</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.early_start">
+<span class="sig-name descname"><span class="pre">early_start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.early_start" title="Link to this definition"></a></dt>
+<dd><p>Used to start all queued calls when we have enough for a full batch</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.execute_batch">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_batch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.execute_batch" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.make_request">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.make_request" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
+<li><p><strong>request_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#dank_mids.types.RawResponse" title="dank_mids.types.RawResponse"><em>RawResponse</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.reduce_batch_size">
+<span class="sig-name descname"><span class="pre">reduce_batch_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_calls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.reduce_batch_size" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_calls</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.reduce_multicall_size">
+<span class="sig-name descname"><span class="pre">reduce_multicall_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_calls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.reduce_multicall_size" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_calls</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.set_batch_size_limit">
+<span class="sig-name descname"><span class="pre">set_batch_size_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_limit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.set_batch_size_limit" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.set_multicall_size_limit">
+<span class="sig-name descname"><span class="pre">set_multicall_size_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_limit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.set_multicall_size_limit" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.queue_is_full">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">queue_is_full</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.queue_is_full" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="dank-mids-exceptions-module">
-<h2>dank_mids.exceptions module<a class="headerlink" href="#dank-mids-exceptions-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.exceptions">
+<span id="dank-mids-exceptions-module"></span><h2>dank_mids.exceptions module<a class="headerlink" href="#module-dank_mids.exceptions" title="Link to this heading"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="dank_mids.exceptions.Revert">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.exceptions.</span></span><span class="sig-name descname"><span class="pre">Revert</span></span><a class="headerlink" href="#dank_mids.exceptions.Revert" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.exceptions.Revert.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.Revert.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.exceptions.Revert.__new__">
+<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.Revert.__new__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.exceptions.Revert.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.Revert.with_traceback" title="Link to this definition"></a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.exceptions.Revert.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#dank_mids.exceptions.Revert.args" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="dank-mids-executor-module">
-<h2>dank_mids.executor module<a class="headerlink" href="#dank-mids-executor-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.executor">
+<span id="dank-mids-executor-module"></span><h2>dank_mids.executor module<a class="headerlink" href="#module-dank_mids.executor" title="Link to this heading"></a></h2>
 </section>
-<section id="dank-mids-middleware-module">
-<h2>dank_mids.middleware module<a class="headerlink" href="#dank-mids-middleware-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.middleware">
+<span id="dank-mids-middleware-module"></span><h2>dank_mids.middleware module<a class="headerlink" href="#module-dank_mids.middleware" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.middleware.dank_middleware">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.middleware.</span></span><span class="sig-name descname"><span class="pre">dank_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">make_request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">web3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.middleware.dank_middleware" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>make_request</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
+<li><p><strong>web3</strong> (<em>Web3</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.12)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <em>RPCResponse</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="dank-mids-semaphore-module">
-<h2>dank_mids.semaphore module<a class="headerlink" href="#dank-mids-semaphore-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.semaphore">
+<span id="dank-mids-semaphore-module"></span><h2>dank_mids.semaphore module<a class="headerlink" href="#module-dank_mids.semaphore" title="Link to this heading"></a></h2>
 </section>
-<section id="dank-mids-semaphores-module">
-<h2>dank_mids.semaphores module<a class="headerlink" href="#dank-mids-semaphores-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.semaphores">
+<span id="dank-mids-semaphores-module"></span><h2>dank_mids.semaphores module<a class="headerlink" href="#module-dank_mids.semaphores" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.semaphores.</span></span><span class="sig-name descname"><span class="pre">BlockSemaphore</span></span><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://bobthebuidler.github.io/ez-a-sync/source/a_sync.primitives.locks.html#a_sync.primitives.locks.prio_semaphore._AbstractPrioritySemaphore" title="(in ez-a-sync)"><code class="xref py py-class docutils literal notranslate"><span class="pre">_AbstractPrioritySemaphore</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_BlockSemaphoreContextManager</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.__call__" title="Link to this definition"></a></dt>
+<dd><p>Call self as a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>~P</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a><em>[</em><em>T</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[~P], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a>[<em>T</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.__getitem__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><em>Literal</em></a><em>[</em><em>'latest'</em><em>, </em><em>None</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>_BlockSemaphoreContextManager</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.__init__" title="Link to this definition"></a></dt>
+<dd><p><cite>name</cite> is used only in debug logs to provide useful context</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.acquire">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire a semaphore.</p>
+<p>If the internal counter is larger than zero on entry,
+decrement it by one and return True immediately.  If it is
+zero on entry, block, waiting until some other coroutine has
+called release() to make it larger than 0, and then return
+True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><em>Literal</em></a>[True]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.decorate">
+<span class="sig-name descname"><span class="pre">decorate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.decorate" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>~P</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a><em>[</em><em>T</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[~P], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a>[<em>T</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.locked">
+<span class="sig-name descname"><span class="pre">locked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.locked" title="Link to this definition"></a></dt>
+<dd><p>Returns True if semaphore cannot be acquired immediately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.release" title="Link to this definition"></a></dt>
+<dd><p>Release a semaphore, incrementing the internal counter by one.</p>
+<p>When it was zero on entry and another coroutine is waiting for it to
+become larger than zero again, wake up that coroutine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.debug_logs_enabled">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">debug_logs_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.debug_logs_enabled" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.logger">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.12)"><span class="pre">Logger</span></a></em><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.semaphores.BlockSemaphore.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.semaphores.BlockSemaphore.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="dank-mids-stats-module">
-<h2>dank_mids.stats module<a class="headerlink" href="#dank-mids-stats-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.stats">
+<span id="dank-mids-stats-module"></span><h2>dank_mids.stats module<a class="headerlink" href="#module-dank_mids.stats" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.stats.devhint">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">devhint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.stats.devhint" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.stats.log">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.stats.log" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.stats.log_duration">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">log_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">work_descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.stats.log_duration" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>work_descriptor</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.stats.log_errd_batch">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">log_errd_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.stats.log_errd_batch" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>batch</strong> (<em>JSONRPCBatch</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="dank-mids-types-module">
-<h2>dank_mids.types module<a class="headerlink" href="#dank-mids-types-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.types">
+<span id="dank-mids-types-module"></span><h2>dank_mids.types module<a class="headerlink" href="#module-dank_mids.types" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.Error">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">Error</span></span><a class="headerlink" href="#dank_mids.types.Error" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DictStruct</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.Error.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Error.__getitem__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.Error.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Error.to_dict" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Error.code">
+<span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#dank_mids.types.Error.code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Error.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.Error.data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Error.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Error.message" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">OverrideParams</span></span><a class="headerlink" href="#dank_mids.types.OverrideParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.__getitem__" title="Link to this definition"></a></dt>
+<dd><p>x.__getitem__(y) &lt;==&gt; x[y]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.__iter__" title="Link to this definition"></a></dt>
+<dd><p>Implement iter(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.__new__">
+<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.__new__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None.</span>&#160; <span class="pre">Remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">D.</span></span></span><a class="headerlink" href="#dank_mids.types.OverrideParams.clear" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">a</span> <span class="pre">shallow</span> <span class="pre">copy</span> <span class="pre">of</span> <span class="pre">D</span></span></span><a class="headerlink" href="#dank_mids.types.OverrideParams.copy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.fromkeys">
+<span class="sig-name descname"><span class="pre">fromkeys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.fromkeys" title="Link to this definition"></a></dt>
+<dd><p>Create a new dictionary with keys from iterable and values set to value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.get" title="Link to this definition"></a></dt>
+<dd><p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">a</span> <span class="pre">set-like</span> <span class="pre">object</span> <span class="pre">providing</span> <span class="pre">a</span> <span class="pre">view</span> <span class="pre">on</span> <span class="pre">D's</span> <span class="pre">items</span></span></span><a class="headerlink" href="#dank_mids.types.OverrideParams.items" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">a</span> <span class="pre">set-like</span> <span class="pre">object</span> <span class="pre">providing</span> <span class="pre">a</span> <span class="pre">view</span> <span class="pre">on</span> <span class="pre">D's</span> <span class="pre">keys</span></span></span><a class="headerlink" href="#dank_mids.types.OverrideParams.keys" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">v,</span> <span class="pre">remove</span> <span class="pre">specified</span> <span class="pre">key</span> <span class="pre">and</span> <span class="pre">return</span> <span class="pre">the</span> <span class="pre">corresponding</span> <span class="pre">value.</span></span></span><a class="headerlink" href="#dank_mids.types.OverrideParams.pop" title="Link to this definition"></a></dt>
+<dd><p>If the key is not found, return the default if given; otherwise,
+raise a KeyError.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.popitem">
+<span class="sig-name descname"><span class="pre">popitem</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.popitem" title="Link to this definition"></a></dt>
+<dd><p>Remove and return a (key, value) pair as a 2-tuple.</p>
+<p>Pairs are returned in LIFO (last-in, first-out) order.
+Raises KeyError if the dict is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.setdefault">
+<span class="sig-name descname"><span class="pre">setdefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.setdefault" title="Link to this definition"></a></dt>
+<dd><p>Insert key with a value of default if key is not in the dictionary.</p>
+<p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <span class="optional">]</span><em class="sig-param"><span class="n"><span class="pre">**F</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None.</span>&#160; <span class="pre">Update</span> <span class="pre">D</span> <span class="pre">from</span> <span class="pre">dict/iterable</span> <span class="pre">E</span> <span class="pre">and</span> <span class="pre">F.</span></span></span><a class="headerlink" href="#dank_mids.types.OverrideParams.update" title="Link to this definition"></a></dt>
+<dd><p>If E is present and has a .keys() method, then does:  for k in E: D[k] = E[k]
+If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v
+In either case, this is followed by: for k in F:  D[k] = F[k]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">an</span> <span class="pre">object</span> <span class="pre">providing</span> <span class="pre">a</span> <span class="pre">view</span> <span class="pre">on</span> <span class="pre">D's</span> <span class="pre">values</span></span></span><a class="headerlink" href="#dank_mids.types.OverrideParams.values" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.code">
+<span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.OverrideParams.code" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.PartialRequest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">PartialRequest</span></span><a class="headerlink" href="#dank_mids.types.PartialRequest" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DictStruct</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.PartialRequest.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.PartialRequest.__getitem__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.PartialRequest.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.PartialRequest.to_dict" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.types.PartialRequest.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#dank_mids.types.PartialRequest.data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.PartialRequest.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#dank_mids.types.PartialRequest.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.PartialRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.PartialRequest.method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.PartialRequest.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.PartialRequest.params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.PartialResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">PartialResponse</span></span><a class="headerlink" href="#dank_mids.types.PartialResponse" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DictStruct</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.PartialResponse.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.PartialResponse.__getitem__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.PartialResponse.decode_result">
+<span class="sig-name descname"><span class="pre">decode_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.PartialResponse.decode_result" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.PartialResponse.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.PartialResponse.to_dict" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.PartialResponse.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.types.Error" title="dank_mids.types.Error"><span class="pre">Error</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.PartialResponse.error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.types.PartialResponse.exception">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">BadResponse</span></em><a class="headerlink" href="#dank_mids.types.PartialResponse.exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.types.PartialResponse.payload_too_large">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">payload_too_large</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#dank_mids.types.PartialResponse.payload_too_large" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.PartialResponse.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Raw</span></em><a class="headerlink" href="#dank_mids.types.PartialResponse.result" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.RawResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">RawResponse</span></span><a class="headerlink" href="#dank_mids.types.RawResponse" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Wraps a Raw object that we know represents a Response with a <cite>decode</cite> helper method.
+A <cite>RawResponse</cite> is a properly shaped response for one rpc call, received back from a jsonrpc batch request.
+They represent either a successful or a failed response, stored as pre-decoded bytes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.RawResponse.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.RawResponse.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>raw</strong> (<em>Raw</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.RawResponse.decode">
+<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dank_mids.types.PartialResponse" title="dank_mids.types.PartialResponse"><span class="pre">PartialResponse</span></a></span></span><a class="headerlink" href="#dank_mids.types.RawResponse.decode" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dank_mids.types.Response" title="dank_mids.types.Response"><span class="pre">Response</span></a></span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.Request">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">Request</span></span><a class="headerlink" href="#dank_mids.types.Request" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dank_mids.types.PartialRequest" title="dank_mids.types.PartialRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialRequest</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.Request.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Request.__getitem__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.Request.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Request.to_dict" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.types.Request.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#dank_mids.types.Request.data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Request.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#dank_mids.types.Request.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Request.jsonrpc">
+<span class="sig-name descname"><span class="pre">jsonrpc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'2.0'</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.types.Request.jsonrpc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Request.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Request.method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Request.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.Request.params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.Response">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><a class="headerlink" href="#dank_mids.types.Response" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dank_mids.types.PartialResponse" title="dank_mids.types.PartialResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialResponse</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.Response.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Response.__getitem__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.Response.decode_result">
+<span class="sig-name descname"><span class="pre">decode_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_caller</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Response.decode_result" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.Response.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Response.to_dict" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Response.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.types.Error" title="dank_mids.types.Error"><span class="pre">Error</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.Response.error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.types.Response.exception">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exception</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">BadResponse</span></em><a class="headerlink" href="#dank_mids.types.Response.exception" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Response.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.Response.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Response.jsonrpc">
+<span class="sig-name descname"><span class="pre">jsonrpc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'2.0'</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.types.Response.jsonrpc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.types.Response.payload_too_large">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">payload_too_large</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#dank_mids.types.Response.payload_too_large" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Response.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Raw</span></em><a class="headerlink" href="#dank_mids.types.Response.result" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">eth_callParams</span></span><a class="headerlink" href="#dank_mids.types.eth_callParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.__getitem__" title="Link to this definition"></a></dt>
+<dd><p>x.__getitem__(y) &lt;==&gt; x[y]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.__iter__" title="Link to this definition"></a></dt>
+<dd><p>Implement iter(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.__new__">
+<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.__new__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None.</span>&#160; <span class="pre">Remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">D.</span></span></span><a class="headerlink" href="#dank_mids.types.eth_callParams.clear" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">a</span> <span class="pre">shallow</span> <span class="pre">copy</span> <span class="pre">of</span> <span class="pre">D</span></span></span><a class="headerlink" href="#dank_mids.types.eth_callParams.copy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.fromkeys">
+<span class="sig-name descname"><span class="pre">fromkeys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.fromkeys" title="Link to this definition"></a></dt>
+<dd><p>Create a new dictionary with keys from iterable and values set to value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.get" title="Link to this definition"></a></dt>
+<dd><p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">a</span> <span class="pre">set-like</span> <span class="pre">object</span> <span class="pre">providing</span> <span class="pre">a</span> <span class="pre">view</span> <span class="pre">on</span> <span class="pre">D's</span> <span class="pre">items</span></span></span><a class="headerlink" href="#dank_mids.types.eth_callParams.items" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">a</span> <span class="pre">set-like</span> <span class="pre">object</span> <span class="pre">providing</span> <span class="pre">a</span> <span class="pre">view</span> <span class="pre">on</span> <span class="pre">D's</span> <span class="pre">keys</span></span></span><a class="headerlink" href="#dank_mids.types.eth_callParams.keys" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">v,</span> <span class="pre">remove</span> <span class="pre">specified</span> <span class="pre">key</span> <span class="pre">and</span> <span class="pre">return</span> <span class="pre">the</span> <span class="pre">corresponding</span> <span class="pre">value.</span></span></span><a class="headerlink" href="#dank_mids.types.eth_callParams.pop" title="Link to this definition"></a></dt>
+<dd><p>If the key is not found, return the default if given; otherwise,
+raise a KeyError.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.popitem">
+<span class="sig-name descname"><span class="pre">popitem</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.popitem" title="Link to this definition"></a></dt>
+<dd><p>Remove and return a (key, value) pair as a 2-tuple.</p>
+<p>Pairs are returned in LIFO (last-in, first-out) order.
+Raises KeyError if the dict is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.setdefault">
+<span class="sig-name descname"><span class="pre">setdefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.setdefault" title="Link to this definition"></a></dt>
+<dd><p>Insert key with a value of default if key is not in the dictionary.</p>
+<p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <span class="optional">]</span><em class="sig-param"><span class="n"><span class="pre">**F</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None.</span>&#160; <span class="pre">Update</span> <span class="pre">D</span> <span class="pre">from</span> <span class="pre">dict/iterable</span> <span class="pre">E</span> <span class="pre">and</span> <span class="pre">F.</span></span></span><a class="headerlink" href="#dank_mids.types.eth_callParams.update" title="Link to this definition"></a></dt>
+<dd><p>If E is present and has a .keys() method, then does:  for k in E: D[k] = E[k]
+If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v
+In either case, this is followed by: for k in F:  D[k] = F[k]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">an</span> <span class="pre">object</span> <span class="pre">providing</span> <span class="pre">a</span> <span class="pre">view</span> <span class="pre">on</span> <span class="pre">D's</span> <span class="pre">values</span></span></span><a class="headerlink" href="#dank_mids.types.eth_callParams.values" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.eth_callParams.data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.to">
+<span class="sig-name descname"><span class="pre">to</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ChecksumAddress</span></em><a class="headerlink" href="#dank_mids.types.eth_callParams.to" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-dank_mids">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dank_mids" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">BlockSemaphore</span></span><a class="headerlink" href="#dank_mids.BlockSemaphore" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://bobthebuidler.github.io/ez-a-sync/source/a_sync.primitives.locks.html#a_sync.primitives.locks.prio_semaphore._AbstractPrioritySemaphore" title="(in ez-a-sync)"><code class="xref py py-class docutils literal notranslate"><span class="pre">_AbstractPrioritySemaphore</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_BlockSemaphoreContextManager</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.__call__" title="Link to this definition"></a></dt>
+<dd><p>Call self as a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>~P</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a><em>[</em><em>T</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[~P], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a>[<em>T</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.__getitem__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><em>Literal</em></a><em>[</em><em>'latest'</em><em>, </em><em>None</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>_BlockSemaphoreContextManager</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.__init__" title="Link to this definition"></a></dt>
+<dd><p><cite>name</cite> is used only in debug logs to provide useful context</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.acquire">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire a semaphore.</p>
+<p>If the internal counter is larger than zero on entry,
+decrement it by one and return True immediately.  If it is
+zero on entry, block, waiting until some other coroutine has
+called release() to make it larger than 0, and then return
+True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><em>Literal</em></a>[True]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.decorate">
+<span class="sig-name descname"><span class="pre">decorate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.decorate" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>~P</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a><em>[</em><em>T</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[~P], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a>[<em>T</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.locked">
+<span class="sig-name descname"><span class="pre">locked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.locked" title="Link to this definition"></a></dt>
+<dd><p>Returns True if semaphore cannot be acquired immediately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.BlockSemaphore.release" title="Link to this definition"></a></dt>
+<dd><p>Release a semaphore, incrementing the internal counter by one.</p>
+<p>When it was zero on entry and another coroutine is waiting for it to
+become larger than zero again, wake up that coroutine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.debug_logs_enabled">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">debug_logs_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#dank_mids.BlockSemaphore.debug_logs_enabled" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.logger">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.12)"><span class="pre">Logger</span></a></em><a class="headerlink" href="#dank_mids.BlockSemaphore.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.BlockSemaphore.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.BlockSemaphore.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.Contract">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">Contract</span></span><a class="headerlink" href="#dank_mids.Contract" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.19.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a></p>
+<p>a modified <cite>brownie.Contract</cite> with async and call batching functionalities</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.__init__" title="Link to this definition"></a></dt>
+<dd><p>Recreate a <cite>Contract</cite> object from the local database.</p>
+<p>The init method is used to access deployments that have already previously
+been stored locally. For new deployments use <cite>from_abi</cite> or <cite>from_etherscan</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address_or_alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Address or user-defined alias of the deployment.</p></li>
+<li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field
+will be performed using this account.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.balance">
+<span class="sig-name descname"><span class="pre">balance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.balance" title="Link to this definition"></a></dt>
+<dd><p>Returns the current ether balance of the contract, in wei.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-convert.html#brownie.convert.datatypes.Wei" title="(in Brownie v1.19.5)"><em>Wei</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.decode_input">
+<span class="sig-name descname"><span class="pre">decode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.decode_input" title="Link to this definition"></a></dt>
+<dd><p>Decode input calldata for this contract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>) – Calldata for a call to this contract</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>str</em> – Signature of the function that was called</p></li>
+<li><p><em>Any</em> – Decoded input arguments</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.from_abi">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_abi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.from_abi" title="Link to this definition"></a></dt>
+<dd><p>Create a new <cite>Contract</cite> object from an ABI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the contract.</p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Address where the contract is deployed.</p></li>
+<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Contract ABI, given as a dictionary.</p></li>
+<li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field
+will be performed using this account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.from_ethpm">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_ethpm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.from_ethpm" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.from_explorer">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_explorer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.from_explorer" title="Link to this definition"></a></dt>
+<dd><p>Create a new <cite>Contract</cite> object with source code queried from a block explorer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Address where the contract is deployed.</p></li>
+<li><p><strong>as_proxy_for</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Address of the implementation contract, if <cite>address</cite> is a proxy contract.
+The generated object will send transactions to <cite>address</cite>, but use the ABI
+and NatSpec of <cite>as_proxy_for</cite>. This field is only required when the
+block explorer API does not provide an implementation address.</p></li>
+<li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field will be
+performed using this account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.get_method">
+<span class="sig-name descname"><span class="pre">get_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.get_method" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.get_method_object">
+<span class="sig-name descname"><span class="pre">get_method_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.get_method_object" title="Link to this definition"></a></dt>
+<dd><p>Given a calldata hex string, returns a <cite>ContractMethod</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>_ContractMethod</em> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.get_solc_version">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_solc_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compiler_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.get_solc_version" title="Link to this definition"></a></dt>
+<dd><p>Return the solc compiler version either from the passed compiler string
+or try to find the latest available patch semver compiler version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>compiler_str</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The compiler string passed from the contract metadata.</p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The contract address to check for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Version</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.info" title="Link to this definition"></a></dt>
+<dd><p>Display NatSpec documentation for this contract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.remove_deployment">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_deployment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.remove_deployment" title="Link to this definition"></a></dt>
+<dd><p>Removes this contract from the internal deployments db
+with the passed address or alias.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – An address to apply</p></li>
+<li><p><strong>alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – An alias to apply</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a> | None, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a> | None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.Contract.set_alias">
+<span class="sig-name descname"><span class="pre">set_alias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.Contract.set_alias" title="Link to this definition"></a></dt>
+<dd><p>Apply a unique alias this object. The alias can be used to restore the
+object in future sessions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – An alias to apply. If <cite>None</cite>, any existing alias is removed.</p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.Contract.abi">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a></em><a class="headerlink" href="#dank_mids.Contract.abi" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.Contract.alias">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alias</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.Contract.alias" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.Contract.signatures">
+<span class="sig-name descname"><span class="pre">signatures</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Method</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Signature</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.Contract.signatures" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.Contract.topics">
+<span class="sig-name descname"><span class="pre">topics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.Contract.topics" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.dank_middleware">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">dank_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">make_request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">web3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.dank_middleware" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>make_request</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
+<li><p><strong>web3</strong> (<em>Web3</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.12)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <em>RPCResponse</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.patch_contract">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">patch_contract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contract</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.patch_contract" title="Link to this definition"></a></dt>
+<dd><p>returns a patched version of <cite>contract</cite> with async and call batchings functionalities</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contract</strong> (<a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a><em> | </em><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.19.5)"><em>Contract</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
+<li><p><strong>w3</strong> (<em>Web3</em><em> | </em><em>None</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a> | <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.19.5)"><em>Contract</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.setup_dank_w3">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.setup_dank_w3" title="Link to this definition"></a></dt>
+<dd><p>Injects Dank Middleware into an async Web3 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>async_w3</strong> (<em>Web3</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Web3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.setup_dank_w3_from_sync">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3_from_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sync_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.setup_dank_w3_from_sync" title="Link to this definition"></a></dt>
+<dd><p>Creates a new async Web3 instance from <cite>w3.provider.endpoint_uri</cite> and injects it with Dank Middleware.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sync_w3</strong> (<em>Web3</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Web3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
