@@ -21,14 +21,6 @@ dank\_mids.ENVIRONMENT\_VARIABLES module
    :undoc-members:
    :show-inheritance:
 
-dank\_mids.batch module
------------------------
-
-.. automodule:: dank_mids.batch
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 dank\_mids.constants module
 ---------------------------
 
@@ -69,14 +61,6 @@ dank\_mids.middleware module
    :undoc-members:
    :show-inheritance:
 
-dank\_mids.requests module
---------------------------
-
-.. automodule:: dank_mids.requests
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 dank\_mids.semaphore module
 ---------------------------
 
@@ -105,14 +89,6 @@ dank\_mids.types module
 -----------------------
 
 .. automodule:: dank_mids.types
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dank\_mids.uid module
----------------------
-
-.. automodule:: dank_mids.uid
    :members:
    :undoc-members:
    :show-inheritance:
