@@ -32,7 +32,7 @@ jobs:
 
       - name: Setup brownie networks
         run: |
-          brownie networks modify mainnet host=${{ secrets.WEB3_PROVIDER }}
+          brownie networks modify mainnet host=${{ secrets.ALCHEMY_PROVIDER }}
         continue-on-error: true
         
       - name: Build documentation config
