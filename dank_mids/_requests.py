@@ -30,12 +30,12 @@ from dank_mids._exceptions import (BadResponse, DankMidsClientResponseError,
                                    DankMidsInternalError, EmptyBatch,
                                    ExceedsMaxBatchSize, PayloadTooLarge,
                                    ResponseNotReady, internal_err_types)
-from dank_mids.helpers import decode, session
+from dank_mids._uid import _AlertingRLock
+from dank_mids.helpers import _decode, _session
 from dank_mids.helpers.helpers import set_done
 from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              JsonrpcParams, PartialRequest, PartialResponse,
                              RawResponse, Request, Response)
-from dank_mids.uid import _AlertingRLock
 
 if TYPE_CHECKING:
     from dank_mids.controller import (DankMiddlewareController,
@@ -719,7 +719,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     async def post(self) -> List[RawResponse]:
         "this function raises `BadResponse` if a successful 'error' response was received from the rpc"
         try:
-            response: JSONRPCBatchResponse = await session.post(self.controller.endpoint, data=self.data, loads=decode.jsonrpc_batch)
+            response: JSONRPCBatchResponse = await _session.post(self.controller.endpoint, data=self.data, loads=_decode.jsonrpc_batch)
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 logger.warning("Payload Too Large")

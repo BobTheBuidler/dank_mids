@@ -17,7 +17,7 @@ from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids.helpers import decode
+from dank_mids.helpers import _decode
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
 logger = logging.getLogger("dank_mids.session")

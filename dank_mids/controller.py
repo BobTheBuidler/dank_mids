@@ -17,15 +17,15 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import constants
+from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
-from dank_mids.batch import DankBatch
-from dank_mids.helpers import decode, session
-from dank_mids.requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
+from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
+from dank_mids._uid import UIDGenerator, _AlertingRLock
+from dank_mids.helpers import _decode, _session
 from dank_mids.semaphores import MethodSemaphores
 from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
                              Request)
-from dank_mids.uid import UIDGenerator, _AlertingRLock
 
 try:
     from multicall.constants import MULTICALL3_ADDRESSES
@@ -133,7 +133,7 @@ class DankMiddlewareController:
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
         request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
-        return await session.post(self.endpoint, data=request, loads=decode.raw)
+        return await _session.post(self.endpoint, data=request, loads=_decode.raw)
 
     async def execute_batch(self) -> None:
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do

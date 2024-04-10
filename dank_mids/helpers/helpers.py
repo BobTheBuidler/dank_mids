@@ -20,7 +20,7 @@ from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 from dank_mids.types import AsyncMiddleware
 
 if TYPE_CHECKING:
-    from dank_mids.requests import RPCRequest
+    from dank_mids._requests import RPCRequest
 
 dank_w3s: List[Web3] = []
 

@@ -16,7 +16,7 @@ from web3.types import RPCEndpoint
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 
 if TYPE_CHECKING:
-    from dank_mids.requests import JSONRPCBatch
+    from dank_mids._requests import JSONRPCBatch
     from dank_mids.types import Request
 
 _LogLevel = Union[int, str]
