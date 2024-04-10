@@ -23,7 +23,7 @@ from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers import _decode, _session
-from dank_mids.semaphores import MethodSemaphores
+from dank_mids.semaphores import _MethodSemaphores
 from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
                              Request)
 
@@ -85,14 +85,14 @@ class DankMiddlewareController:
         if multicall2 is None and multicall3 is None:
             raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
         
-        self.mc2 = MulticallContract(
+        self.mc2 = _MulticallContract(
             address = to_checksum_address(multicall2), 
             # TODO: copypasta deploy block dict
             deploy_block = constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
             bytecode = constants.MULTICALL2_OVERRIDE_CODE,
         ) if multicall2 else None
         
-        self.mc3 = MulticallContract(
+        self.mc3 = _MulticallContract(
             address = to_checksum_address(multicall3), 
             # TODO: copypasta deploy block dict
             deploy_block = constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
@@ -107,7 +107,7 @@ class DankMiddlewareController:
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
         
-        self.method_semaphores = MethodSemaphores(self)
+        self.method_semaphores = _MethodSemaphores(self)
         self.batcher = NotSoBrightBatcher()
         self.batcher.step = ENVS.MAX_MULTICALL_SIZE
 
@@ -202,7 +202,7 @@ class DankMiddlewareController:
             logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))
     
     @lru_cache(maxsize=1024)
-    def _select_mcall_target_for_block(self, block) -> "MulticallContract":
+    def _select_mcall_target_for_block(self, block) -> "_MulticallContract":
         if block == 'latest':
             return self.mc3 if self.mc3 else self.mc2
         if self.mc3 and not self.mc3.needs_override_code_for_block(block):
@@ -212,7 +212,7 @@ class DankMiddlewareController:
             return self.mc2
         return self.mc3
 
-class MulticallContract(Struct):
+class _MulticallContract(Struct):
     address: str
     deploy_block: Optional[int]
     bytecode: str

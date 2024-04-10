@@ -39,7 +39,7 @@ from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
 
 if TYPE_CHECKING:
     from dank_mids.controller import (DankMiddlewareController,
-                                      MulticallContract)
+                                      _MulticallContract)
 
 
 logger = logging.getLogger(__name__)
@@ -480,7 +480,7 @@ class Multicall(_Batch[eth_call]):
         return self.mcall.address
     
     @cached_property
-    def mcall(self) -> "MulticallContract":
+    def mcall(self) -> "_MulticallContract":
         return self.controller._select_mcall_target_for_block(self.block)
     
     @property
