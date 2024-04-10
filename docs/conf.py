@@ -30,6 +30,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 intersphinx_mapping = {
     'a_sync': ('https://bobthebuidler.github.io/ez-a-sync', None),
+    'brownie': ('https://eth-brownie.readthedocs.io/en/stable/', None),
     'hexbytes': ('https://hexbytes.readthedocs.io/en/stable/', None),
     'python': ('https://docs.python.org/3', None),
     'web3': ('https://web3py.readthedocs.io/en/stable/', None),
