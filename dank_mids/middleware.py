@@ -18,9 +18,3 @@ async def dank_middleware(
     web3: Web3
 ) -> AsyncMiddleware:
     return DankMiddlewareController(web3)
-""" testing something
-    cache_key = web3, current_thread()
-    if (cache_key) not in _controllers:
-        logger.debug(f"cache key {cache_key} not known to dank mids, starting new controller")
-        _controllers[(cache_key)] = DankMiddlewareController(web3)
-    return _controllers[(cache_key)]"""
