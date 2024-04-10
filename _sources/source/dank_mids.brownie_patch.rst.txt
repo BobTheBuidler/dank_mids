@@ -1,0 +1,45 @@
+dank\_mids.brownie\_patch package
+=================================
+
+Submodules
+----------
+
+dank\_mids.brownie\_patch.call module
+-------------------------------------
+
+.. automodule:: dank_mids.brownie_patch.call
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dank\_mids.brownie\_patch.contract module
+-----------------------------------------
+
+.. automodule:: dank_mids.brownie_patch.contract
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dank\_mids.brownie\_patch.overloaded module
+-------------------------------------------
+
+.. automodule:: dank_mids.brownie_patch.overloaded
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dank\_mids.brownie\_patch.types module
+--------------------------------------
+
+.. automodule:: dank_mids.brownie_patch.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: dank_mids.brownie_patch
+   :members:
+   :undoc-members:
+   :show-inheritance:
