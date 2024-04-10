@@ -1,17 +1,6 @@
 dank\_mids.helpers package
 ==========================
 
-Submodules
-----------
-
-dank\_mids.helpers.helpers module
----------------------------------
-
-.. automodule:: dank_mids.helpers.helpers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

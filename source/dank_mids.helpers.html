@@ -98,83 +98,11 @@
              
   <section id="dank-mids-helpers-package">
 <h1>dank_mids.helpers package<a class="headerlink" href="#dank-mids-helpers-package" title="Link to this heading"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
-</section>
-<section id="module-dank_mids.helpers.helpers">
-<span id="dank-mids-helpers-helpers-module"></span><h2>dank_mids.helpers.helpers module<a class="headerlink" href="#module-dank_mids.helpers.helpers" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.helpers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dank_mids.helpers" title="Link to this heading"></a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.helpers.async_construct_formatting_middleware">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">async_construct_formatting_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_formatters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_formatters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_formatters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers.async_construct_formatting_middleware" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>request_formatters</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>...</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – </p></li>
-<li><p><strong>result_formatters</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>...</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – </p></li>
-<li><p><strong>error_formatters</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>...</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.12)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <em>RPCResponse</em>]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.helpers.async_construct_web3_formatting_middleware">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">async_construct_web3_formatting_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_web3_formatters_builder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers.async_construct_web3_formatting_middleware" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>async_web3_formatters_builder</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>Web3</em><em>, </em><em>RPCEndpoint</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.12)"><em>Coroutine</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>, </em><em>FormattersDict</em><em>]</em><em>]</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>], <em>Web3</em>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.12)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.12)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <em>RPCResponse</em>]]]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.helpers.await_all">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">await_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">futs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers.await_all" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>futs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a><em>]</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.helpers.geth_poa_middleware">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">geth_poa_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">make_request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers.geth_poa_middleware" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>make_request</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
-<li><p><strong>w3</strong> (<em>Web3</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.12)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>, <em>RPCResponse</em>]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.helpers.set_done">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">set_done</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers.set_done" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>~P</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.12)"><em>Awaitable</em></a><em>[</em><em>T</em><em>]</em><em>]</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.helpers.setup_dank_w3">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers.setup_dank_w3" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.helpers.setup_dank_w3">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.setup_dank_w3" title="Link to this definition"></a></dt>
 <dd><p>Injects Dank Middleware into an async Web3 instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -187,8 +115,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.helpers.setup_dank_w3_from_sync">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3_from_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sync_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers.setup_dank_w3_from_sync" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.helpers.setup_dank_w3_from_sync">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3_from_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sync_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.setup_dank_w3_from_sync" title="Link to this definition"></a></dt>
 <dd><p>Creates a new async Web3 instance from <cite>w3.provider.endpoint_uri</cite> and injects it with Dank Middleware.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -200,9 +128,6 @@
 </dl>
 </dd></dl>
 
-</section>
-<section id="module-dank_mids.helpers">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dank_mids.helpers" title="Link to this heading"></a></h2>
 </section>
 </section>
 
