@@ -20,7 +20,9 @@
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="dank_mids.helpers package" href="dank_mids.helpers.html" />
+    <link rel="prev" title="dank_mids package" href="dank_mids.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,102 +44,36 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">dank_mids.brownie_patch package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dank_mids.brownie_patch.call">dank_mids.brownie_patch.call module</a><ul>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.call.decode"><code class="docutils literal notranslate"><span class="pre">decode()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.call.decode_output"><code class="docutils literal notranslate"><span class="pre">decode_output()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.call.encode"><code class="docutils literal notranslate"><span class="pre">encode()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.call.encode_input"><code class="docutils literal notranslate"><span class="pre">encode_input()</span></code></a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">dank_mids</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="dank_mids.html">dank_mids package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="dank_mids.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">dank_mids.brownie_patch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.helpers.html">dank_mids.helpers package</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-dank_mids.brownie_patch.contract">dank_mids.brownie_patch.contract module</a><ul>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract"><code class="docutils literal notranslate"><span class="pre">Contract</span></code></a><ul>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.__init__"><code class="docutils literal notranslate"><span class="pre">Contract.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.balance"><code class="docutils literal notranslate"><span class="pre">Contract.balance()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.decode_input"><code class="docutils literal notranslate"><span class="pre">Contract.decode_input()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.from_abi"><code class="docutils literal notranslate"><span class="pre">Contract.from_abi()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.from_ethpm"><code class="docutils literal notranslate"><span class="pre">Contract.from_ethpm()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.from_explorer"><code class="docutils literal notranslate"><span class="pre">Contract.from_explorer()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.get_method"><code class="docutils literal notranslate"><span class="pre">Contract.get_method()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.get_method_object"><code class="docutils literal notranslate"><span class="pre">Contract.get_method_object()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.get_solc_version"><code class="docutils literal notranslate"><span class="pre">Contract.get_solc_version()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.info"><code class="docutils literal notranslate"><span class="pre">Contract.info()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.remove_deployment"><code class="docutils literal notranslate"><span class="pre">Contract.remove_deployment()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.set_alias"><code class="docutils literal notranslate"><span class="pre">Contract.set_alias()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.abi"><code class="docutils literal notranslate"><span class="pre">Contract.abi</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.alias"><code class="docutils literal notranslate"><span class="pre">Contract.alias</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.signatures"><code class="docutils literal notranslate"><span class="pre">Contract.signatures</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract.topics"><code class="docutils literal notranslate"><span class="pre">Contract.topics</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.contract.patch_contract"><code class="docutils literal notranslate"><span class="pre">patch_contract()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-dank_mids.brownie_patch.overloaded">dank_mids.brownie_patch.overloaded module</a></li>
-<li><a class="reference internal" href="#module-dank_mids.brownie_patch.types">dank_mids.brownie_patch.types module</a><ul>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall"><code class="docutils literal notranslate"><span class="pre">DankContractCall</span></code></a><ul>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.__call__"><code class="docutils literal notranslate"><span class="pre">DankContractCall.__call__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.__init__"><code class="docutils literal notranslate"><span class="pre">DankContractCall.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.call"><code class="docutils literal notranslate"><span class="pre">DankContractCall.call()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.coroutine"><code class="docutils literal notranslate"><span class="pre">DankContractCall.coroutine()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.decode_output"><code class="docutils literal notranslate"><span class="pre">DankContractCall.decode_output()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.estimate_gas"><code class="docutils literal notranslate"><span class="pre">DankContractCall.estimate_gas()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.info"><code class="docutils literal notranslate"><span class="pre">DankContractCall.info()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.transact"><code class="docutils literal notranslate"><span class="pre">DankContractCall.transact()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.abi"><code class="docutils literal notranslate"><span class="pre">DankContractCall.abi</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.decode_input"><code class="docutils literal notranslate"><span class="pre">DankContractCall.decode_input</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.encode_input"><code class="docutils literal notranslate"><span class="pre">DankContractCall.encode_input</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.natspec"><code class="docutils literal notranslate"><span class="pre">DankContractCall.natspec</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.payable"><code class="docutils literal notranslate"><span class="pre">DankContractCall.payable</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall.signature"><code class="docutils literal notranslate"><span class="pre">DankContractCall.signature</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx"><code class="docutils literal notranslate"><span class="pre">DankContractTx</span></code></a><ul>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.__call__"><code class="docutils literal notranslate"><span class="pre">DankContractTx.__call__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.__init__"><code class="docutils literal notranslate"><span class="pre">DankContractTx.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.call"><code class="docutils literal notranslate"><span class="pre">DankContractTx.call()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.coroutine"><code class="docutils literal notranslate"><span class="pre">DankContractTx.coroutine()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.decode_output"><code class="docutils literal notranslate"><span class="pre">DankContractTx.decode_output()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.estimate_gas"><code class="docutils literal notranslate"><span class="pre">DankContractTx.estimate_gas()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.info"><code class="docutils literal notranslate"><span class="pre">DankContractTx.info()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.transact"><code class="docutils literal notranslate"><span class="pre">DankContractTx.transact()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.abi"><code class="docutils literal notranslate"><span class="pre">DankContractTx.abi</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.decode_input"><code class="docutils literal notranslate"><span class="pre">DankContractTx.decode_input</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.encode_input"><code class="docutils literal notranslate"><span class="pre">DankContractTx.encode_input</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.natspec"><code class="docutils literal notranslate"><span class="pre">DankContractTx.natspec</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.payable"><code class="docutils literal notranslate"><span class="pre">DankContractTx.payable</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx.signature"><code class="docutils literal notranslate"><span class="pre">DankContractTx.signature</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod</span></code></a><ul>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.__call__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__call__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.__getitem__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__getitem__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.__init__"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.call"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.call()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.coroutine"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.coroutine()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.decode_output"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.decode_output()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.info"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.info()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.transact"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.transact()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.abi"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.abi</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.decode_input"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.decode_input</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.encode_input"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.encode_input</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.methods"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.methods</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.natspec"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.natspec</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.signature"><code class="docutils literal notranslate"><span class="pre">DankOverloadedMethod.signature</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.FunctionABI"><code class="docutils literal notranslate"><span class="pre">FunctionABI()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractMethod"><code class="docutils literal notranslate"><span class="pre">DankContractMethod</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-dank_mids.brownie_patch">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.ENVIRONMENT_VARIABLES">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.batch">dank_mids.batch module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.constants">dank_mids.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.controller">dank_mids.controller module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.exceptions">dank_mids.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.executor">dank_mids.executor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.middleware">dank_mids.middleware module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.requests">dank_mids.requests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.semaphore">dank_mids.semaphore module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.semaphores">dank_mids.semaphores module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.stats">dank_mids.stats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.types">dank_mids.types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.uid">dank_mids.uid module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids">Module contents</a></li>
 </ul>
 </li>
 </ul>
-</div>
+</li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -152,6 +88,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">dank_mids</a></li>
+          <li class="breadcrumb-item"><a href="dank_mids.html">dank_mids package</a></li>
       <li class="breadcrumb-item active">dank_mids.brownie_patch package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/source/dank_mids.brownie_patch.rst.txt" rel="nofollow"> View page source</a>
@@ -221,8 +159,7 @@
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.contract.Contract.__init__" title="Link to this definition"></a></dt>
 <dd><p>Recreate a <cite>Contract</cite> object from the local database.</p>
 <p>The init method is used to access deployments that have already previously
-been stored locally. For new deployments use <cite>from_abi</cite>, <cite>from_ethpm</cite> or
-<cite>from_etherscan</cite>.</p>
+been stored locally. For new deployments use <cite>from_abi</cite> or <cite>from_etherscan</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -289,21 +226,9 @@ will be performed using this account.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.contract.Contract.from_ethpm">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_ethpm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.contract.Contract.from_ethpm" title="Link to this definition"></a></dt>
-<dd><p>Create a new <cite>Contract</cite> object from an ethPM manifest.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the contract.</p></li>
-<li><p><strong>manifest_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – erc1319 registry URI where the manifest is located</p></li>
-<li><p><strong>address</strong> (<em>str optional</em>) – Address where the contract is deployed. Only required if the
-manifest contains more than one deployment with the given name
-on the active chain.</p></li>
-<li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field
-will be performed using this account.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a></p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -600,7 +525,7 @@ overrides for the context of the call.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall.transact">
-<span class="sig-name descname"><span class="pre">transact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.transact" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.transact" title="Link to this definition"></a></dt>
 <dd><p>Broadcast a transaction that calls this contract method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -608,7 +533,6 @@ overrides for the context of the call.</p></li>
 <li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs. You can optionally provide a
 dictionary of transaction properties as the last arg.</p></li>
 <li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>*args</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -793,7 +717,7 @@ overrides for the context of the call.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx.transact">
-<span class="sig-name descname"><span class="pre">transact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.transact" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.transact" title="Link to this definition"></a></dt>
 <dd><p>Broadcast a transaction that calls this contract method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -801,7 +725,6 @@ overrides for the context of the call.</p></li>
 <li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs. You can optionally provide a
 dictionary of transaction properties as the last arg.</p></li>
 <li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>*args</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1061,7 +984,10 @@ dictionary of transaction properties as the last arg.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dank_mids.html" class="btn btn-neutral float-left" title="dank_mids package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dank_mids.helpers.html" class="btn btn-neutral float-right" title="dank_mids.helpers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
