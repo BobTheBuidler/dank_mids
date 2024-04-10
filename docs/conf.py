@@ -39,7 +39,6 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 autodoc_default_options = {
-    'private-members': True,
     'special-members': ','.join([
         '__init__',
         '__call__',
