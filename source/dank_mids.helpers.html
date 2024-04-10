@@ -47,14 +47,12 @@
 <li><a class="reference internal" href="#">dank_mids.helpers package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-dank_mids.helpers.decode">dank_mids.helpers.decode module</a><ul>
-<li><a class="reference internal" href="#dank_mids.helpers.decode._map_raw"><code class="docutils literal notranslate"><span class="pre">_map_raw()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.decode.jsonrpc_batch"><code class="docutils literal notranslate"><span class="pre">jsonrpc_batch()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.decode.nested_dict"><code class="docutils literal notranslate"><span class="pre">nested_dict()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.decode.raw"><code class="docutils literal notranslate"><span class="pre">raw()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-dank_mids.helpers.helpers">dank_mids.helpers.helpers module</a><ul>
-<li><a class="reference internal" href="#dank_mids.helpers.helpers._apply_response_formatters"><code class="docutils literal notranslate"><span class="pre">_apply_response_formatters()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.helpers.async_construct_formatting_middleware"><code class="docutils literal notranslate"><span class="pre">async_construct_formatting_middleware()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.helpers.async_construct_web3_formatting_middleware"><code class="docutils literal notranslate"><span class="pre">async_construct_web3_formatting_middleware()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.helpers.await_all"><code class="docutils literal notranslate"><span class="pre">await_all()</span></code></a></li>
@@ -67,10 +65,6 @@
 <li><a class="reference internal" href="#module-dank_mids.helpers.session">dank_mids.helpers.session module</a><ul>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession"><code class="docutils literal notranslate"><span class="pre">ClientSession</span></code></a><ul>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.__init__"><code class="docutils literal notranslate"><span class="pre">ClientSession.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession._build_url"><code class="docutils literal notranslate"><span class="pre">ClientSession._build_url()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession._prepare_headers"><code class="docutils literal notranslate"><span class="pre">ClientSession._prepare_headers()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession._request"><code class="docutils literal notranslate"><span class="pre">ClientSession._request()</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession._ws_connect"><code class="docutils literal notranslate"><span class="pre">ClientSession._ws_connect()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.close"><code class="docutils literal notranslate"><span class="pre">ClientSession.close()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.delete"><code class="docutils literal notranslate"><span class="pre">ClientSession.delete()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.detach"><code class="docutils literal notranslate"><span class="pre">ClientSession.detach()</span></code></a></li>
@@ -83,8 +77,6 @@
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.request"><code class="docutils literal notranslate"><span class="pre">ClientSession.request()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.ws_connect"><code class="docutils literal notranslate"><span class="pre">ClientSession.ws_connect()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.ATTRS"><code class="docutils literal notranslate"><span class="pre">ClientSession.ATTRS</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession._connector"><code class="docutils literal notranslate"><span class="pre">ClientSession._connector</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession._source_traceback"><code class="docutils literal notranslate"><span class="pre">ClientSession._source_traceback</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.auth"><code class="docutils literal notranslate"><span class="pre">ClientSession.auth</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.auto_decompress"><code class="docutils literal notranslate"><span class="pre">ClientSession.auto_decompress</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.ClientSession.closed"><code class="docutils literal notranslate"><span class="pre">ClientSession.closed</span></code></a></li>
@@ -173,15 +165,6 @@
 <li><a class="reference internal" href="#dank_mids.helpers.session.HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR"><code class="docutils literal notranslate"><span class="pre">HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dank_mids.helpers.session._HTTPStatusExtension"><code class="docutils literal notranslate"><span class="pre">_HTTPStatusExtension</span></code></a><ul>
-<li><a class="reference internal" href="#dank_mids.helpers.session._HTTPStatusExtension.CLOUDFLARE_CONNECTION_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">_HTTPStatusExtension.CLOUDFLARE_CONNECTION_TIMEOUT</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session._HTTPStatusExtension.CLOUDFLARE_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">_HTTPStatusExtension.CLOUDFLARE_TIMEOUT</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session._HTTPStatusExtension.SITE_FROZEN"><code class="docutils literal notranslate"><span class="pre">_HTTPStatusExtension.SITE_FROZEN</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session._HTTPStatusExtension.WEB_SERVER_IS_DOWN"><code class="docutils literal notranslate"><span class="pre">_HTTPStatusExtension.WEB_SERVER_IS_DOWN</span></code></a></li>
-<li><a class="reference internal" href="#dank_mids.helpers.session._HTTPStatusExtension.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR"><code class="docutils literal notranslate"><span class="pre">_HTTPStatusExtension.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dank_mids.helpers.session._get_session_for_thread"><code class="docutils literal notranslate"><span class="pre">_get_session_for_thread()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.get_session"><code class="docutils literal notranslate"><span class="pre">get_session()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.post"><code class="docutils literal notranslate"><span class="pre">post()</span></code></a></li>
 <li><a class="reference internal" href="#dank_mids.helpers.session.random"><code class="docutils literal notranslate"><span class="pre">random()</span></code></a></li>
@@ -224,11 +207,6 @@
 <section id="module-dank_mids.helpers.decode">
 <span id="dank-mids-helpers-decode-module"></span><h2>dank_mids.helpers.decode module<a class="headerlink" href="#module-dank_mids.helpers.decode" title="Link to this heading"></a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.decode._map_raw">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.decode.</span></span><span class="sig-name descname"><span class="pre">_map_raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decoded</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.decode._map_raw" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.helpers.decode.jsonrpc_batch">
 <span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.decode.</span></span><span class="sig-name descname"><span class="pre">jsonrpc_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.decode.jsonrpc_batch" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -246,24 +224,6 @@
 </section>
 <section id="module-dank_mids.helpers.helpers">
 <span id="dank-mids-helpers-helpers-module"></span><h2>dank_mids.helpers.helpers module<a class="headerlink" href="#module-dank_mids.helpers.helpers" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.helpers._apply_response_formatters">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">_apply_response_formatters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_formatters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_formatters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers._apply_response_formatters" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<em>RPCEndpoint</em>) – </p></li>
-<li><p><strong>response</strong> (<em>RPCResponse</em>) – </p></li>
-<li><p><strong>result_formatters</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>...</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>error_formatters</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><em>Callable</em></a><em>[</em><em>[</em><em>...</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>RPCResponse</em></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.helpers.helpers.async_construct_formatting_middleware">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.helpers.</span></span><span class="sig-name descname"><span class="pre">async_construct_formatting_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_formatters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_formatters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_formatters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.helpers.async_construct_formatting_middleware" title="Link to this definition"></a></dt>
@@ -401,108 +361,6 @@
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.helpers.session.ClientSession._build_url">
-<span class="sig-name descname"><span class="pre">_build_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str_or_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.session.ClientSession._build_url" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>str_or_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>URL</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>URL</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.helpers.session.ClientSession._prepare_headers">
-<span class="sig-name descname"><span class="pre">_prepare_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.session.ClientSession._prepare_headers" title="Link to this definition"></a></dt>
-<dd><p>Add default headers and transform it to CIMultiDict</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>headers</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>istr</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>CIMultiDict</em><em> | </em><em>CIMultiDictProxy</em><em> | </em><em>None</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>CIMultiDict</em>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.helpers.session.ClientSession._request">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_or_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cookies=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_auto_headers=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_redirects=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_redirects=10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunked=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect100=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_until_eof=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_auth=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify_ssl=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fingerprint=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl_context=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_headers=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace_request_ctx=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_bufsize=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.session.ClientSession._request" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>str_or_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>URL</em>) – </p></li>
-<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>) – </p></li>
-<li><p><strong>json</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>) – </p></li>
-<li><p><strong>cookies</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>BaseCookie</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>Morsel</em><em>[</em><em>Any</em><em>]</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>BaseCookie</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>Morsel</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>] </em><em>| </em><em>BaseCookie</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
-<li><p><strong>headers</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>istr</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>CIMultiDict</em><em> | </em><em>CIMultiDictProxy</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>skip_auto_headers</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
-<li><p><strong>auth</strong> (<em>BasicAuth</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>allow_redirects</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>max_redirects</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p></li>
-<li><p><strong>compress</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>chunked</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>expect100</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>raise_for_status</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>read_until_eof</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>proxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>URL</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>proxy_auth</strong> (<em>BasicAuth</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>timeout</strong> (<em>ClientTimeout</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><em>object</em></a>) – </p></li>
-<li><p><strong>verify_ssl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>fingerprint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>ssl_context</strong> (<a class="reference external" href="https://docs.python.org/3/library/ssl.html#ssl.SSLContext" title="(in Python v3.12)"><em>SSLContext</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>ssl</strong> (<a class="reference external" href="https://docs.python.org/3/library/ssl.html#ssl.SSLContext" title="(in Python v3.12)"><em>SSLContext</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> | </em><em>Fingerprint</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>proxy_headers</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>istr</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>CIMultiDict</em><em> | </em><em>CIMultiDictProxy</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>trace_request_ctx</strong> (<a class="reference external" href="https://docs.python.org/3/library/types.html#types.SimpleNamespace" title="(in Python v3.12)"><em>SimpleNamespace</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>read_bufsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>ClientResponse</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.helpers.session.ClientSession._ws_connect">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_ws_connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'GET'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receive_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoclose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heartbeat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_auth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify_ssl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fingerprint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_headers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_msg_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4194304</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.session.ClientSession._ws_connect" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>URL</em>) – </p></li>
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>protocols</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – </p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – </p></li>
-<li><p><strong>receive_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>autoclose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>autoping</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>heartbeat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>auth</strong> (<em>BasicAuth</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>origin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
-<li><p><strong>headers</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>istr</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>CIMultiDict</em><em> | </em><em>CIMultiDictProxy</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>proxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>URL</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>proxy_auth</strong> (<em>BasicAuth</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>ssl</strong> (<a class="reference external" href="https://docs.python.org/3/library/ssl.html#ssl.SSLContext" title="(in Python v3.12)"><em>SSLContext</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> | </em><em>None</em><em> | </em><em>Fingerprint</em>) – </p></li>
-<li><p><strong>verify_ssl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>fingerprint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>ssl_context</strong> (<a class="reference external" href="https://docs.python.org/3/library/ssl.html#ssl.SSLContext" title="(in Python v3.12)"><em>SSLContext</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>proxy_headers</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.12)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>istr</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>CIMultiDict</em><em> | </em><em>CIMultiDictProxy</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>compress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p></li>
-<li><p><strong>max_msg_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>ClientWebSocketResponse</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -713,16 +571,6 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.helpers.session.ClientSession.ATTRS">
 <span class="sig-name descname"><span class="pre">ATTRS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'_auto_decompress',</span> <span class="pre">'_base_url',</span> <span class="pre">'_connector',</span> <span class="pre">'_connector_owner',</span> <span class="pre">'_cookie_jar',</span> <span class="pre">'_default_auth',</span> <span class="pre">'_default_headers',</span> <span class="pre">'_json_serialize',</span> <span class="pre">'_loop',</span> <span class="pre">'_raise_for_status',</span> <span class="pre">'_read_bufsize',</span> <span class="pre">'_request_class',</span> <span class="pre">'_requote_redirect_url',</span> <span class="pre">'_response_class',</span> <span class="pre">'_skip_auto_headers',</span> <span class="pre">'_source_traceback',</span> <span class="pre">'_timeout',</span> <span class="pre">'_trace_configs',</span> <span class="pre">'_trust_env',</span> <span class="pre">'_version',</span> <span class="pre">'_ws_response_class',</span> <span class="pre">'requote_redirect_url'})</span></em><a class="headerlink" href="#dank_mids.helpers.session.ClientSession.ATTRS" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.helpers.session.ClientSession._connector">
-<span class="sig-name descname"><span class="pre">_connector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">BaseConnector</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#dank_mids.helpers.session.ClientSession._connector" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.helpers.session.ClientSession._source_traceback">
-<span class="sig-name descname"><span class="pre">_source_traceback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/traceback.html#traceback.StackSummary" title="(in Python v3.12)"><span class="pre">traceback.StackSummary</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#dank_mids.helpers.session.ClientSession._source_traceback" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -1166,53 +1014,6 @@ or ~/.netrc file if present.</p>
 <span class="sig-name descname"><span class="pre">WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">520</span></em><a class="headerlink" href="#dank_mids.helpers.session.HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="dank_mids.helpers.session._HTTPStatusExtension">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.session.</span></span><span class="sig-name descname"><span class="pre">_HTTPStatusExtension</span></span><a class="headerlink" href="#dank_mids.helpers.session._HTTPStatusExtension" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.IntEnum" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.helpers.session._HTTPStatusExtension.CLOUDFLARE_CONNECTION_TIMEOUT">
-<span class="sig-name descname"><span class="pre">CLOUDFLARE_CONNECTION_TIMEOUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">522</span></em><a class="headerlink" href="#dank_mids.helpers.session._HTTPStatusExtension.CLOUDFLARE_CONNECTION_TIMEOUT" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.helpers.session._HTTPStatusExtension.CLOUDFLARE_TIMEOUT">
-<span class="sig-name descname"><span class="pre">CLOUDFLARE_TIMEOUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">524</span></em><a class="headerlink" href="#dank_mids.helpers.session._HTTPStatusExtension.CLOUDFLARE_TIMEOUT" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.helpers.session._HTTPStatusExtension.SITE_FROZEN">
-<span class="sig-name descname"><span class="pre">SITE_FROZEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">530</span></em><a class="headerlink" href="#dank_mids.helpers.session._HTTPStatusExtension.SITE_FROZEN" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.helpers.session._HTTPStatusExtension.WEB_SERVER_IS_DOWN">
-<span class="sig-name descname"><span class="pre">WEB_SERVER_IS_DOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">521</span></em><a class="headerlink" href="#dank_mids.helpers.session._HTTPStatusExtension.WEB_SERVER_IS_DOWN" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.helpers.session._HTTPStatusExtension.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR">
-<span class="sig-name descname"><span class="pre">WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">520</span></em><a class="headerlink" href="#dank_mids.helpers.session._HTTPStatusExtension.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.helpers.session._get_session_for_thread">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.session.</span></span><span class="sig-name descname"><span class="pre">_get_session_for_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread_ident</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.session._get_session_for_thread" title="Link to this definition"></a></dt>
-<dd><p>This makes our ClientSession threadsafe just in case.
-Most everything should be run in main thread though.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>thread_ident</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#dank_mids.helpers.session.ClientSession" title="dank_mids.helpers.session.ClientSession"><em>ClientSession</em></a></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
