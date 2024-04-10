@@ -10,7 +10,7 @@ Welcome to dank_mids's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   dank_mids
+   modules
 
 Indices and tables
 ==================
