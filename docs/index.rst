@@ -10,7 +10,7 @@ Welcome to dank_mids's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules.rst
+   source/modules.rst
 
 Indices and tables
 ==================
