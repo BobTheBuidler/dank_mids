@@ -8,6 +8,9 @@
 
 import os
 import sys
+from brownie import network
+
+network.connect('mainnet')
 
 project = 'dank_mids'
 copyright = '2024, BobTheBuidler'
