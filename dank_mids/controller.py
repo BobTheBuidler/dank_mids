@@ -23,7 +23,7 @@ from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers import _decode, _session
-from dank_mids.semaphores import MethodSemaphores
+from dank_mids.semaphores import _MethodSemaphores
 from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
                              Request)
 
@@ -107,7 +107,7 @@ class DankMiddlewareController:
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
         
-        self.method_semaphores = MethodSemaphores(self)
+        self.method_semaphores = _MethodSemaphores(self)
         self.batcher = NotSoBrightBatcher()
         self.batcher.step = ENVS.MAX_MULTICALL_SIZE
 

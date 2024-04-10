@@ -27,7 +27,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
         )
 
 
-class MethodSemaphores:
+class _MethodSemaphores:
     def __init__(self, controller: "DankMiddlewareController") -> None:
         from dank_mids import ENVIRONMENT_VARIABLES
         self.controller = controller
