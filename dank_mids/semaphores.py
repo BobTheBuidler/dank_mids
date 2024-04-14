@@ -1,6 +1,6 @@
 
-import logging
-from typing import TYPE_CHECKING, Literal, Union
+from decimal import Decimal
+from typing import TYPE_CHECKING, Literal, Optional, Union
 
 from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
 from a_sync.primitives.locks.prio_semaphore import (
@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 
 class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
     _priority_name = "block"
+    def __init__(self, parent: "BlockSemaphore", priority: Union[int, float, Decimal], name: Optional[str] = None) -> None:
+        if not isinstance(priority, (int, float, Decimal)):
+            raise TypeError(priority)
+        super().__init__(parent, priority, name)
     
 class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):
     _context_manager_class = _BlockSemaphoreContextManager
