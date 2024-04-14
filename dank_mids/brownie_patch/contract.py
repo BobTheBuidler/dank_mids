@@ -4,12 +4,13 @@ from typing import Dict, List, NewType, Optional, Union, overload
 
 import brownie
 from brownie.network.contract import (ContractCall, ContractTx, OverloadedMethod, 
-                                      build_function_signature, _get_method_object)
+                                      build_function_signature)
+from brownie.typing import AccountsType
 from web3 import Web3
 
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
-from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod
+from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod, DankContractCall, DankContractTx, DankOverloadedMethod
 
 
 EventName = NewType("EventName", str)
@@ -21,16 +22,13 @@ class Contract(brownie.Contract):
     """a modified `brownie.Contract` with async and call batching functionalities"""
     @classmethod
     def from_abi(cls, *args, **kwargs) -> "Contract":
-        # NOTE: just forces type checkers to work
-        return super().from_abi(*args, **kwargs)
+        return Contract(brownie.Contract.from_abi(*args, **kwargs).address)
     @classmethod
     def from_ethpm(cls, *args, **kwargs) -> "Contract":
-        # NOTE: just forces type checkers to work
-        return super().from_ethpm(*args, **kwargs)
+        return Contract(brownie.Contract.from_ethpm(*args, **kwargs).address)
     @classmethod
     def from_explorer(cls, *args, **kwargs) -> "Contract":
-        # NOTE: just forces type checkers to work
-        return super().from_explorer(*args, **kwargs)
+        return Contract(brownie.Contract.from_explorer(*args, **kwargs).address)
     topics: Dict[str, str]
     signatures: Dict[Method, Signature]
     def __init__(self, *args, **kwargs):
@@ -65,14 +63,12 @@ class Contract(brownie.Contract):
 
             if overloaded is False:
                 fn = _get_method_object(self.address, abi, full_name, self._owner, natspec)
-                _patch_call(fn, web3)
                 return fn
 
             # special logic to handle function overloading
             elif overloaded is True:
-                overloaded = OverloadedMethod(self.address, full_name, self._owner)
+                overloaded = DankOverloadedMethod(self.address, full_name, self._owner)
             overloaded._add_fn(abi, natspec)
-        _patch_overloaded_method(overloaded, web3)
         return overloaded  # type: ignore [return-value]
 
     
@@ -97,6 +93,18 @@ def _patch_if_method(method: ContractMethod, w3: Web3) -> None:
         _patch_call(method, w3)
     elif isinstance(method, OverloadedMethod):
         _patch_overloaded_method(method, w3)
+
+def _get_method_object(
+    address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Dict
+) -> Union["ContractCall", "ContractTx"]:
+    if "constant" in abi:
+        constant = abi["constant"]
+    else:
+        constant = abi["stateMutability"] in ("view", "pure")
+
+    if constant:
+        return DankContractCall(address, abi, name, owner, natspec)
+    return DankContractTx(address, abi, name, owner, natspec)
 
 class _ContractMethodPlaceholder:
     """A sentinel object that indicates a Contract does have a member by a specific name."""

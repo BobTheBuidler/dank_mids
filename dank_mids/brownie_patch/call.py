@@ -39,7 +39,7 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
     if ENVS.OPERATION_MODE.application or len_inputs:
         get_request_data = encode
     else:
-        get_request_data = __request_data_no_args
+        get_request_data = _request_data_no_args
     
     async def coroutine(
         self: ContractCall,
@@ -118,7 +118,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         call._skip_decoder_proc_pool = call._address in _skip_proc_pool
         return await decode_output(call, data)
 
-async def __request_data_no_args(call: ContractCall) -> str:
+async def _request_data_no_args(call: ContractCall) -> str:
     return call.signature
 
 # These methods were renamed in eth-abi 4.0.0

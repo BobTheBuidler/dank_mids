@@ -9,6 +9,7 @@ from brownie.convert.utils import build_function_selector, build_function_signat
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from eth_abi.exceptions import InsufficientDataBytes
 from web3 import Web3
+from web3.datastructures import AttributeDict
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 
@@ -26,10 +27,17 @@ class FunctionABI:
         self.signature = build_function_selector(abi)
 
 
+def _make_hashable(obj: Any) -> Any:
+    if isinstance(obj, (list, tuple)):
+        return tuple((_make_hashable(o) for o in obj))
+    elif isinstance(obj, dict):
+        return AttributeDict({k: _make_hashable(v) for k, v in obj.items()})
+    return obj
+
 class _DankMethod(Generic[_EVMType]):
     """A mixin class that gives brownie objects async support and reduces memory usage"""
     __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "encode_input", "decode_input"
-    async def __await__(self):
+    def __await__(self):
         """Asynchronously call the contract method without arguments at the latest block and await the result."""
         return self.coroutine().__await__()
     async def coroutine(  # type: ignore [empty-body]
@@ -77,14 +85,14 @@ class _DankMethod(Generic[_EVMType]):
         natspec: Optional[Dict] = None,
     ) -> None:
         self._address = address
-        self._abi = FunctionABI(**{key: abi[key] for key in sorted(abi)})
+        self._abi = FunctionABI(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
         self._name = name
         self._owner = owner
         self.natspec = natspec or {}
         # TODO: refactor this
-        from dank_mids.brownie_patch.call import decode_output, encode_input
-        self.encode_input = encode_input
-        self.decode_output = decode_output
+        from dank_mids.brownie_patch import call
+        self.encode_input = call.encode_input
+        self.decode_output = call.decode_output
     @property
     def abi(self) -> dict:
         return self._abi.abi
@@ -111,7 +119,7 @@ class _DankMethod(Generic[_EVMType]):
         if ENVS.OPERATION_MODE.application or self._len_inputs:
             return call.encode
         else:
-            return call.__request_data_no_args
+            return call._request_data_no_args
 
 class DankContractCall(_DankMethod, ContractCall):
     """
@@ -123,7 +131,7 @@ class DankContractCall(_DankMethod, ContractCall):
     """
 class DankContractTx(_DankMethod, ContractTx):
     """
-    It's a `brownie.network.contract.ContractTx` object with async support via the `coroutine` method.
+    A `brownie.network.contract.ContractTx` subclass with async support via the `coroutine` method.
 
     It uses less memory than a `ContractTx` by using __slots__ along with the `FunctionABI` singleton to hold the function abi and related logic.
 
@@ -134,7 +142,7 @@ _NonOverloaded = Union[DankContractCall, DankContractTx]
 
 class DankOverloadedMethod(_DankMethod, OverloadedMethod):
     """
-    It's a `brownie.network.contract.OverloadedMethod` object with async support via the `coroutine` method.
+    A `brownie.network.contract.OverloadedMethod` subclass with async support via the `coroutine` method.
 
     It uses less memory than a `OverloadedMethod` by using __slots__ along with the `FunctionABI` singleton to hold the function abi and related logic.
 
