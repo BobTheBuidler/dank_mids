@@ -7,4 +7,3 @@ dank_mids.egg-info
 .eggs
 .mypy_cache
 __pycache__
-*.log*

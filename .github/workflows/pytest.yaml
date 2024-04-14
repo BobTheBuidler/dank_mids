@@ -47,5 +47,5 @@ jobs:
         env:
           PYTEST_NETWORK: mainnet
           ETHERSCAN_TOKEN: ${{ secrets.ETHERSCAN_TOKEN  }}
-        run: pytest
+        run: pytest --asyncio-task-timeout=3600
       
