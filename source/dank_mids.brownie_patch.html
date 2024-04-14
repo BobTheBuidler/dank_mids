@@ -594,7 +594,7 @@ dictionary of transaction properties as the last arg.</p></li>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.types.</span></span><span class="sig-name descname"><span class="pre">DankContractTx</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethod</span></code>, <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractTx" title="(in Brownie v1.19.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractTx</span></code></a></p>
-<p>It’s a <cite>brownie.network.contract.ContractTx</cite> object with async support via the <cite>coroutine</cite> method.</p>
+<p>A <cite>brownie.network.contract.ContractTx</cite> subclass with async support via the <cite>coroutine</cite> method.</p>
 <p>It uses less memory than a <cite>ContractTx</cite> by using __slots__ along with the <cite>FunctionABI</cite> singleton to hold the function abi and related logic.</p>
 <p>You can await this object directly to call the contract method with no arguments at the latest block.</p>
 <dl class="py method">
@@ -803,7 +803,7 @@ dictionary of transaction properties as the last arg.</p></li>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.types.</span></span><span class="sig-name descname"><span class="pre">DankOverloadedMethod</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethod</span></code>, <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.OverloadedMethod" title="(in Brownie v1.19.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OverloadedMethod</span></code></a></p>
-<p>It’s a <cite>brownie.network.contract.OverloadedMethod</cite> object with async support via the <cite>coroutine</cite> method.</p>
+<p>A <cite>brownie.network.contract.OverloadedMethod</cite> subclass with async support via the <cite>coroutine</cite> method.</p>
 <p>It uses less memory than a <cite>OverloadedMethod</cite> by using __slots__ along with the <cite>FunctionABI</cite> singleton to hold the function abi and related logic.</p>
 <p>You can await this object directly to call the contract method with no arguments at the latest block.</p>
 <dl class="py method">
@@ -1460,7 +1460,7 @@ dictionary of transaction properties as the last arg.</p></li>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.</span></span><span class="sig-name descname"><span class="pre">DankContractTx</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethod</span></code>, <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractTx" title="(in Brownie v1.19.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractTx</span></code></a></p>
-<p>It’s a <cite>brownie.network.contract.ContractTx</cite> object with async support via the <cite>coroutine</cite> method.</p>
+<p>A <cite>brownie.network.contract.ContractTx</cite> subclass with async support via the <cite>coroutine</cite> method.</p>
 <p>It uses less memory than a <cite>ContractTx</cite> by using __slots__ along with the <cite>FunctionABI</cite> singleton to hold the function abi and related logic.</p>
 <p>You can await this object directly to call the contract method with no arguments at the latest block.</p>
 <dl class="py method">
@@ -1669,7 +1669,7 @@ dictionary of transaction properties as the last arg.</p></li>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.</span></span><span class="sig-name descname"><span class="pre">DankOverloadedMethod</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethod</span></code>, <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.OverloadedMethod" title="(in Brownie v1.19.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OverloadedMethod</span></code></a></p>
-<p>It’s a <cite>brownie.network.contract.OverloadedMethod</cite> object with async support via the <cite>coroutine</cite> method.</p>
+<p>A <cite>brownie.network.contract.OverloadedMethod</cite> subclass with async support via the <cite>coroutine</cite> method.</p>
 <p>It uses less memory than a <cite>OverloadedMethod</cite> by using __slots__ along with the <cite>FunctionABI</cite> singleton to hold the function abi and related logic.</p>
 <p>You can await this object directly to call the contract method with no arguments at the latest block.</p>
 <dl class="py method">
