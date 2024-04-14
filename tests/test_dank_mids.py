@@ -16,6 +16,7 @@ MULTIBLOCK_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]],
 
 
 def _get_controller():
+    assert len(instances[chain.id]) == 1
     return instances[chain.id][0]
 
 @pytest.mark.asyncio_cooperative
