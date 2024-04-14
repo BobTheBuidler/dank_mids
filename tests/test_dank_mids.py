@@ -1,5 +1,6 @@
 
 import asyncio
+import importlib
 import pytest
 import sys
 from brownie import chain
@@ -16,7 +17,10 @@ MULTIBLOCK_WORK = [Call(CHAI, 'totalSupply()(uint)', [[f'totalSupply{i}',None]],
 
 
 def _get_controller():
-    assert len(instances[chain.id]) == 1
+    brownie_version = tuple(int(x) for x in importlib.metadata.version('eth-brownie').split('.'))
+    if brownie_version >= (1, 20):
+        # Not sure why but 1.20 creates 2 instances
+        return instances[chain.id][1]
     return instances[chain.id][0]
 
 @pytest.mark.asyncio_cooperative
