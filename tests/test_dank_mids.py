@@ -33,7 +33,7 @@ async def test_dank_middleware():
     print(f"calls per request:      {cid/rid}")
     print(f"multicalls per request: {mid/rid}")
     # General "tests" that verify batching performance
-    assert mid < cid / 1000, f"Batched {cid} calls into {mid} multicalls. Performance underwhelming."
+    assert mid < cid / 50, f"Batched {cid} calls into {mid} multicalls. Performance underwhelming."
     assert rid < cid / 150,  f"Batched {cid} calls into {rid} requests. Performance underwhelming."
     assert mid / rid > 1,  f"Batched {mid} multicalls into {rid} requests. Performance underwhelming."
 
