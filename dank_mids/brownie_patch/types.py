@@ -1,7 +1,8 @@
 
+import asyncio
 import functools
 from decimal import Decimal
-from typing import Any, Awaitable, Callable, Dict, Generic, Optional, Tuple, TypeVar, Union
+from typing import Any, Awaitable, Callable, Dict, Generic, Iterable, List, Optional, Tuple, TypeVar, Union
 
 from brownie.typing import AccountsType
 from brownie.convert.utils import build_function_selector, build_function_signature
@@ -60,6 +61,13 @@ class _DankMethod(Generic[_EVMType]):
         except InsufficientDataBytes as e:
             raise InsufficientDataBytes(str(e), self, self._address, output) from e
         return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
+    async def map(
+        self, 
+        args: Iterable[Any], 
+        block_identifier: Optional[int] = None,
+        decimals: Optional[int] = None,
+    ) -> List[_EVMType]:
+        return await asyncio.gather(*[self.coroutine(arg, block_identifier=block_identifier, decimals=decimals) for arg in args])
     def __init__(
         self,
         address: str,
