@@ -8,6 +8,7 @@ from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
 
 import eth_abi
+import eth_retry
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
 from brownie.convert.normalize import format_input, format_output
@@ -134,7 +135,15 @@ def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -
         return e
 
 _skip_proc_pool = {"0xcA11bde05977b3631167028862bE2a173976CA11"}  # multicall3
-if multicall2 := MULTICALL2_ADDRESSES.get(chain.id, None):
+# NOTE: retry 429 errors if running multiple services on same rpc
+while True:
+    try:
+        chainid = chain.id
+        break
+    except Exception as e:
+        if "429" not in str(e):
+            raise e
+if multicall2 := MULTICALL2_ADDRESSES.get(chainid, None):
     _skip_proc_pool.add(to_checksum_address(multicall2))
     
 def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
