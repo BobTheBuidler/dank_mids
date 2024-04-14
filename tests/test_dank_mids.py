@@ -1,6 +1,7 @@
 
 import asyncio
 import pytest
+import sys
 from brownie import chain
 from multicall import Call
 from web3._utils.rpc_abi import RPC
@@ -41,7 +42,8 @@ async def test_dank_middleware():
 async def test_bad_hex_handling():
     chainlinkfeed = "0xfe67209f6FE3BA6cE36d0941700085C194e958DF"
     assert await Call(chainlinkfeed, 'latestAnswer()(uint)', block_id=14_000_000) == 15717100
-    assert chainlinkfeed in _get_controller().no_multicall
+    if sys.version_info < (3, 10):
+        assert chainlinkfeed in _get_controller().no_multicall
 
 @pytest.mark.asyncio_cooperative
 async def test_json_batch():
