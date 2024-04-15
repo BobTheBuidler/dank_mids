@@ -36,7 +36,7 @@ def _make_hashable(obj: Any) -> Any:
 
 class _DankMethod(Generic[_EVMType]):
     """A mixin class that gives brownie objects async support and reduces memory usage"""
-    __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "encode_input", "decode_input"
+    __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_input"
     def __await__(self):
         """Asynchronously call the contract method without arguments at the latest block and await the result."""
         return self.coroutine().__await__()
@@ -61,11 +61,11 @@ class _DankMethod(Generic[_EVMType]):
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
         async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:
-            data = await self.encode_input(self, self._len_inputs, self._prep_request_data, *args)
+            data = await self._encode_input(self, self._len_inputs, self._prep_request_data, *args)
             async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:
                 output = await self._web3.eth.call({"to": self._address, "data": data}, block_identifier)
         try:
-            decoded = await self.decode_output(self, output)
+            decoded = await self._decode_output(self, output)
         except InsufficientDataBytes as e:
             raise InsufficientDataBytes(str(e), self, self._address, output) from e
         return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
@@ -91,8 +91,8 @@ class _DankMethod(Generic[_EVMType]):
         self.natspec = natspec or {}
         # TODO: refactor this
         from dank_mids.brownie_patch import call
-        self.encode_input = call.encode_input
-        self.decode_output = call.decode_output
+        self._encode_input = call.encode_input
+        self._decode_output = call.decode_output
     @property
     def abi(self) -> dict:
         return self._abi.abi

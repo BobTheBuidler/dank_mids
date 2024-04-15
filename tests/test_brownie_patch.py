@@ -58,6 +58,7 @@ async def test_dank_contract_call():
     dank_weth = get_dank_contract('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')
     assert isinstance(dank_weth, dank_mids.Contract)
     assert isinstance(dank_weth.totalSupply, dank_mids.DankContractCall)
+    assert dank_weth.totalSupply(block_identifier=13_000_000) == 6620041514474872981393155
     assert await dank_weth.totalSupply.coroutine(block_identifier=13_000_000) == 6620041514474872981393155
     assert await dank_weth.totalSupply.coroutine(block_identifier=13_000_000, decimals=18) == Decimal("6620041.514474872981393155")
     assert await dank_weth.totalSupply
@@ -70,6 +71,9 @@ async def test_dank_contract_tx():
     assert isinstance(uni_v3_quoter, dank_mids.Contract)
     assert isinstance(uni_v3_quoter.quoteExactInput, dank_mids.DankContractTx)
     assert hasattr(uni_v3_quoter.quoteExactInput, 'coroutine')
+    assert (
+        uni_v3_quoter.quoteExactInput.call(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000)
+    ) == 3169438072
     assert await (
         uni_v3_quoter.quoteExactInput.coroutine(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000)
     ) == 3169438072
