@@ -71,19 +71,26 @@ async def test_dank_contract_tx():
     assert isinstance(uni_v3_quoter, dank_mids.Contract)
     assert isinstance(uni_v3_quoter.quoteExactInput, dank_mids.DankContractTx)
     assert hasattr(uni_v3_quoter.quoteExactInput, 'coroutine')
-    assert (
-        uni_v3_quoter.quoteExactInput.call(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000)
-    ) == 3169438072
-    assert await (
-        uni_v3_quoter.quoteExactInput.coroutine(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000)
-    ) == 3169438072
-    assert await (
-        uni_v3_quoter.quoteExactInput.coroutine(b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18, block_identifier=13_000_000, decimals=8)
-    ) == Decimal("31.69438072")
+    args = b"\xc0*\xaa9\xb2#\xfe\x8d\n\x0e\\O'\xea\xd9\x08<ul\xc2\x00\x01\xf4\xa0\xb8i\x91\xc6!\x8b6\xc1\xd1\x9dJ.\x9e\xb0\xce6\x06\xebH", 1e18
+    assert uni_v3_quoter.quoteExactInput.call(*args, block_identifier=13_000_000) == 3169438072
+    assert await uni_v3_quoter.quoteExactInput.coroutine(*args, block_identifier=13_000_000) == 3169438072
+    assert await uni_v3_quoter.quoteExactInput.coroutine(*args, block_identifier=13_000_000, decimals=8) == Decimal("31.69438072")
 
 def test_call_setup_twice_on_same_web3():
     w3_a = dank_mids.setup_dank_w3_from_sync(brownie.web3)
     w3_a.test = True
     w3_b = dank_mids.setup_dank_w3_from_sync(brownie.web3)
     assert hasattr(w3_b, 'test')
+
+@pytest.mark.asyncio_cooperative
+async def test_dank_overloaded_method():
+    curve_factory = get_dank_contract('0xF98B45FA17DE75FB1aD0e7aFD971b0ca00e379fC')
+    pool = '0x9432242D9Dc10AD5e2Fe570b8FC053A16597Caf6'
+    assert isinstance(curve_factory, dank_mids.Contract)
+    assert isinstance(curve_factory.get_lp_token, dank_mids.DankOverloadedMethod)
+    assert hasattr(curve_factory.get_lp_token, 'coroutine')
+    assert len(curve_factory.get_lp_token.methods) == 2
+    call = curve_factory.get_lp_token._get_fn_from_args((pool,))
+    assert isinstance(call, dank_mids.DankContractCall)
+    assert call(pool) == curve_factory.get_lp_token(pool) == await curve_factory.get_lp_token.coroutine(pool) == "0x9432242D9Dc10AD5e2Fe570b8FC053A16597Caf6"
     
