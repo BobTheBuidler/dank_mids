@@ -10,7 +10,7 @@ from web3 import Web3
 
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
-from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod, DankContractCall, DankContractTx, DankOverloadedMethod
+from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod, DankOverloadedMethod, _get_method_object
 
 
 EventName = NewType("EventName", str)
@@ -93,18 +93,6 @@ def _patch_if_method(method: ContractMethod, w3: Web3) -> None:
         _patch_call(method, w3)
     elif isinstance(method, OverloadedMethod):
         _patch_overloaded_method(method, w3)
-
-def _get_method_object(
-    address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Dict
-) -> Union["ContractCall", "ContractTx"]:
-    if "constant" in abi:
-        constant = abi["constant"]
-    else:
-        constant = abi["stateMutability"] in ("view", "pure")
-
-    if constant:
-        return DankContractCall(address, abi, name, owner, natspec)
-    return DankContractTx(address, abi, name, owner, natspec)
 
 class _ContractMethodPlaceholder:
     """A sentinel object that indicates a Contract does have a member by a specific name."""

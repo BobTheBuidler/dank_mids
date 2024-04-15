@@ -176,6 +176,11 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
         """
         call: Union[DankContractCall, DankContractTx] = self._get_fn_from_args(args)
         return await call.coroutine(*args, block_identifier=block_identifier, decimals=decimals, override=override)
+    def _add_fn(self, abi: Dict, natspec: Dict) -> None:
+        fn = _get_method_object(self._address, abi, self._name, self._owner, natspec)
+        key = tuple(i["type"].replace("256", "") for i in abi["inputs"])
+        self.methods[key] = fn
+        self.natspec.update(natspec)
 
 DankContractMethod = Union[DankContractCall, DankContractTx, DankOverloadedMethod]
 """
@@ -185,3 +190,15 @@ They use less memory than `ContractMethod` objects by using `FunctionABI` single
 
 You can await this object directly to call the contract method with no arguments at the latest block.
 """
+
+def _get_method_object(
+    address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Dict
+) -> Union["ContractCall", "ContractTx"]:
+    if "constant" in abi:
+        constant = abi["constant"]
+    else:
+        constant = abi["stateMutability"] in ("view", "pure")
+
+    if constant:
+        return DankContractCall(address, abi, name, owner, natspec)
+    return DankContractTx(address, abi, name, owner, natspec)
