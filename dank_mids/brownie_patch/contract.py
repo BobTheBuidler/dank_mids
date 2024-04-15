@@ -1,6 +1,6 @@
 
 import functools
-from typing import Dict, List, NewType, Optional, Union, overload
+from typing import Dict, List, Literal, NewType, Optional, Union, overload
 
 import brownie
 from brownie.network.contract import (ContractCall, ContractTx, OverloadedMethod, 
@@ -21,14 +21,38 @@ Signature = NewType("Signature", str)
 class Contract(brownie.Contract):
     """a modified `brownie.Contract` with async and call batching functionalities"""
     @classmethod
-    def from_abi(cls, *args, **kwargs) -> "Contract":
-        return Contract(brownie.Contract.from_abi(*args, **kwargs).address)
+    def from_abi(
+        cls, 
+        name: str, 
+        address: str, 
+        abi: List[dict], 
+        owner: Optional[AccountsType] = None, 
+        persist: bool = True,
+    ) -> "Contract":
+        persisted = brownie.Contract.from_abi(name, address, abi, owner, _check_persist(persist))
+        return Contract(persisted.address)
     @classmethod
-    def from_ethpm(cls, *args, **kwargs) -> "Contract":
-        return Contract(brownie.Contract.from_ethpm(*args, **kwargs).address)
+    def from_ethpm(
+        cls, 
+        name: str, 
+        manifest_uri: str, 
+        address: Optional[str] = None, 
+        owner: Optional[AccountsType] = None, 
+        persist: bool = True,
+    ) -> "Contract":
+        persisted = brownie.Contract.from_ethpm(name, manifest_uri, address, owner, _check_persist(persist))
+        return Contract(persisted.address)
     @classmethod
-    def from_explorer(cls, *args, **kwargs) -> "Contract":
-        return Contract(brownie.Contract.from_explorer(*args, **kwargs).address)
+    def from_explorer(
+        cls, 
+        address: str, 
+        as_proxy_for: Optional[str] = None, 
+        owner: Optional[AccountsType] = None, 
+        silent: bool = False, 
+        persist: bool = True,
+    ) -> "Contract":
+        persisted = brownie.Contract.from_explorer(address, as_proxy_for, owner, silent, _check_persist(persist))
+        return Contract(persisted.address)
     topics: Dict[str, str]
     signatures: Dict[Method, Signature]
     def __init__(self, *args, **kwargs):
@@ -96,3 +120,8 @@ def _patch_if_method(method: ContractMethod, w3: Web3) -> None:
 
 class _ContractMethodPlaceholder:
     """A sentinel object that indicates a Contract does have a member by a specific name."""
+
+def _check_persist(persist: bool) -> Literal[True]:
+    if persist is False:
+        raise NotImplementedError("persist: False")
+    return persist
