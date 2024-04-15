@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Tuple, Union
 from brownie.typing import AccountsType
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 
-from dank_mids.brownie_patch._method import _DankMethod, _DankMethodMixin
+from dank_mids.brownie_patch._method import _DankMethod, _DankMethodMixin, _EVMType
 
 
 ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
