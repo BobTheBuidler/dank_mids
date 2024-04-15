@@ -478,6 +478,20 @@ overrides for the context of the call.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall.decode_input">
+<span class="sig-name descname"><span class="pre">decode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.decode_input" title="Link to this definition"></a></dt>
+<dd><p>Decode input call data for this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hexstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Hexstring of input call data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall.decode_output">
 <span class="sig-name descname"><span class="pre">decode_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.decode_output" title="Link to this definition"></a></dt>
 <dd><p>Decode hexstring data returned by this method.</p>
@@ -487,6 +501,23 @@ overrides for the context of the call.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall.encode_input">
+<span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.encode_input" title="Link to this definition"></a></dt>
+<dd><p>Generate encoded ABI data to call the method with the given arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hexstring of encoded ABI data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -561,16 +592,6 @@ dictionary of transaction properties as the last arg.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall.abi">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></em><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.abi" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall.decode_input">
-<span class="sig-name descname"><span class="pre">decode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.decode_input" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall.encode_input">
-<span class="sig-name descname"><span class="pre">encode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.encode_input" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -687,6 +708,20 @@ overrides for the context of the call.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx.decode_input">
+<span class="sig-name descname"><span class="pre">decode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.decode_input" title="Link to this definition"></a></dt>
+<dd><p>Decode input call data for this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hexstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Hexstring of input call data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx.decode_output">
 <span class="sig-name descname"><span class="pre">decode_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.decode_output" title="Link to this definition"></a></dt>
 <dd><p>Decode hexstring data returned by this method.</p>
@@ -696,6 +731,23 @@ overrides for the context of the call.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx.encode_input">
+<span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.encode_input" title="Link to this definition"></a></dt>
+<dd><p>Generate encoded ABI data to call the method with the given arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hexstring of encoded ABI data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -770,16 +822,6 @@ dictionary of transaction properties as the last arg.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx.abi">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></em><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.abi" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx.decode_input">
-<span class="sig-name descname"><span class="pre">decode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.decode_input" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx.encode_input">
-<span class="sig-name descname"><span class="pre">encode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.encode_input" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -909,6 +951,20 @@ overrides for the context of the call.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.decode_input">
+<span class="sig-name descname"><span class="pre">decode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.decode_input" title="Link to this definition"></a></dt>
+<dd><p>Decode input call data for this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hexstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Hexstring of input call data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.decode_output">
 <span class="sig-name descname"><span class="pre">decode_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.decode_output" title="Link to this definition"></a></dt>
 <dd><p>Decode hexstring data returned by this method.</p>
@@ -918,6 +974,23 @@ overrides for the context of the call.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.encode_input">
+<span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.encode_input" title="Link to this definition"></a></dt>
+<dd><p>Generate encoded ABI data to call the method with the given arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hexstring of encoded ABI data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -974,16 +1047,6 @@ dictionary of transaction properties as the last arg.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.abi">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></em><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.abi" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.decode_input">
-<span class="sig-name descname"><span class="pre">decode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.decode_input" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.encode_input">
-<span class="sig-name descname"><span class="pre">encode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.encode_input" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1344,6 +1407,20 @@ overrides for the context of the call.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractCall.decode_input">
+<span class="sig-name descname"><span class="pre">decode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractCall.decode_input" title="Link to this definition"></a></dt>
+<dd><p>Decode input call data for this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hexstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Hexstring of input call data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractCall.decode_output">
 <span class="sig-name descname"><span class="pre">decode_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractCall.decode_output" title="Link to this definition"></a></dt>
 <dd><p>Decode hexstring data returned by this method.</p>
@@ -1353,6 +1430,23 @@ overrides for the context of the call.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractCall.encode_input">
+<span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractCall.encode_input" title="Link to this definition"></a></dt>
+<dd><p>Generate encoded ABI data to call the method with the given arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hexstring of encoded ABI data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1427,16 +1521,6 @@ dictionary of transaction properties as the last arg.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractCall.abi">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></em><a class="headerlink" href="#dank_mids.brownie_patch.DankContractCall.abi" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractCall.decode_input">
-<span class="sig-name descname"><span class="pre">decode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractCall.decode_input" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractCall.encode_input">
-<span class="sig-name descname"><span class="pre">encode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractCall.encode_input" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1553,6 +1637,20 @@ overrides for the context of the call.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx.decode_input">
+<span class="sig-name descname"><span class="pre">decode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx.decode_input" title="Link to this definition"></a></dt>
+<dd><p>Decode input call data for this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hexstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Hexstring of input call data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx.decode_output">
 <span class="sig-name descname"><span class="pre">decode_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx.decode_output" title="Link to this definition"></a></dt>
 <dd><p>Decode hexstring data returned by this method.</p>
@@ -1562,6 +1660,23 @@ overrides for the context of the call.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx.encode_input">
+<span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx.encode_input" title="Link to this definition"></a></dt>
+<dd><p>Generate encoded ABI data to call the method with the given arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hexstring of encoded ABI data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1636,16 +1751,6 @@ dictionary of transaction properties as the last arg.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx.abi">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></em><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx.abi" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx.decode_input">
-<span class="sig-name descname"><span class="pre">decode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx.decode_input" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx.encode_input">
-<span class="sig-name descname"><span class="pre">encode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx.encode_input" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1775,6 +1880,20 @@ overrides for the context of the call.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.decode_input">
+<span class="sig-name descname"><span class="pre">decode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.decode_input" title="Link to this definition"></a></dt>
+<dd><p>Decode input call data for this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hexstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Hexstring of input call data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.decode_output">
 <span class="sig-name descname"><span class="pre">decode_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.decode_output" title="Link to this definition"></a></dt>
 <dd><p>Decode hexstring data returned by this method.</p>
@@ -1784,6 +1903,23 @@ overrides for the context of the call.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Decoded values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.encode_input">
+<span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.encode_input" title="Link to this definition"></a></dt>
+<dd><p>Generate encoded ABI data to call the method with the given arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hexstring of encoded ABI data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1840,16 +1976,6 @@ dictionary of transaction properties as the last arg.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.abi">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></em><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.abi" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.decode_input">
-<span class="sig-name descname"><span class="pre">decode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.decode_input" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.encode_input">
-<span class="sig-name descname"><span class="pre">encode_input</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.encode_input" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
