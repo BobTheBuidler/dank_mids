@@ -52,6 +52,7 @@ BROWNIE_ENCODER_SEMAPHORE = _envs.create_env("BROWNIE_ENCODER_SEMAPHORE", BlockS
 BROWNIE_ENCODER_PROCESSES = _envs.create_env("BROWNIE_ENCODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
 BROWNIE_DECODER_PROCESSES = _envs.create_env("BROWNIE_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
 MULTICALL_DECODER_PROCESSES = _envs.create_env("MULTICALL_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
+COLLECTION_FACTOR = _envs.create_env("COLLECTION_FACTOR", int, default=10 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
 
 # We use a modified version of the request spec that doesn't contain unnecessary fields, and switch to the full spec if necessary for your node.
 # Set this env var to any value to force the full request spec always
