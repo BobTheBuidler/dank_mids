@@ -5,6 +5,7 @@ from decimal import Decimal
 from typing import Any, Awaitable, Callable, Dict, Generic, Iterable, List, Optional, Tuple, TypeVar, Union
 
 from brownie.typing import AccountsType
+from brownie.convert.datatypes import EthAddress
 from brownie.convert.utils import build_function_selector, build_function_signature
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from eth_abi.exceptions import InsufficientDataBytes
@@ -34,12 +35,68 @@ def _make_hashable(obj: Any) -> Any:
         return AttributeDict({k: _make_hashable(v) for k, v in obj.items()})
     return obj
 
-class _DankMethod(Generic[_EVMType]):
+class _DankMethodMixin(Generic[_EVMType]):
+    _address: EthAddress
+    _abi: FunctionABI
     """A mixin class that gives brownie objects async support and reduces memory usage"""
     __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_input"
     def __await__(self):
         """Asynchronously call the contract method without arguments at the latest block and await the result."""
         return self.coroutine().__await__()
+    async def map(
+        self, 
+        args: Iterable[Any], 
+        block_identifier: Optional[int] = None,
+        decimals: Optional[int] = None,
+    ) -> List[_EVMType]:
+        return await asyncio.gather(*[self.coroutine(arg, block_identifier=block_identifier, decimals=decimals) for arg in args])
+    @property
+    def abi(self) -> dict:
+        return self._abi.abi
+    @property
+    def signature(self) -> str:
+        return self._abi.signature
+    @property
+    def _input_sig(self) -> str:
+        return self._abi.input_sig
+    @functools.cached_property
+    def _len_inputs(self) -> int:
+        return len(self.abi['inputs'])
+    @functools.cached_property
+    def _skip_decoder_proc_pool(self) -> bool:
+        from dank_mids.brownie_patch.call import _skip_proc_pool
+        return self._address in _skip_proc_pool
+    @functools.cached_property
+    def _web3(cls) -> Web3:
+        from dank_mids import web3
+        return web3
+    @functools.cached_property
+    def _prep_request_data(self) -> Callable[..., Awaitable[bytes]]:
+        from dank_mids.brownie_patch import call
+        if ENVS.OPERATION_MODE.application or self._len_inputs:
+            return call.encode
+        else:
+            return call._request_data_no_args
+
+class _DankMethod(_DankMethodMixin):
+    __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_output"
+    def __init__(
+        self,
+        address: str,
+        abi: Dict,
+        name: str,
+        owner: Optional[AccountsType],
+        natspec: Optional[Dict] = None,
+    ) -> None:
+        self._address = address
+        self._abi = FunctionABI(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
+        self._name = name
+        self._owner = owner
+        self.natspec = natspec or {}
+        # TODO: refactor this
+        from dank_mids.brownie_patch import call
+        self._encode_input = call.encode_input
+        self._decode_output = call.decode_output
     async def coroutine(  # type: ignore [empty-body]
         self, 
         *args: Any, 
@@ -69,57 +126,6 @@ class _DankMethod(Generic[_EVMType]):
         except InsufficientDataBytes as e:
             raise InsufficientDataBytes(str(e), self, self._address, output) from e
         return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
-    async def map(
-        self, 
-        args: Iterable[Any], 
-        block_identifier: Optional[int] = None,
-        decimals: Optional[int] = None,
-    ) -> List[_EVMType]:
-        return await asyncio.gather(*[self.coroutine(arg, block_identifier=block_identifier, decimals=decimals) for arg in args])
-    def __init__(
-        self,
-        address: str,
-        abi: Dict,
-        name: str,
-        owner: Optional[AccountsType],
-        natspec: Optional[Dict] = None,
-    ) -> None:
-        self._address = address
-        self._abi = FunctionABI(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
-        self._name = name
-        self._owner = owner
-        self.natspec = natspec or {}
-        # TODO: refactor this
-        from dank_mids.brownie_patch import call
-        self._encode_input = call.encode_input
-        self._decode_output = call.decode_output
-    @property
-    def abi(self) -> dict:
-        return self._abi.abi
-    @property
-    def signature(self) -> str:
-        return self._abi.signature
-    @property
-    def _input_sig(self) -> str:
-        return self._abi.input_sig
-    @functools.cached_property
-    def _len_inputs(self) -> int:
-        return len(self.abi['inputs'])
-    @functools.cached_property
-    def _skip_decoder_proc_pool(self) -> bool:
-        from dank_mids.brownie_patch.call import _skip_proc_pool
-        return self._address in _skip_proc_pool
-    @functools.cached_property
-    def _web3(cls) -> Web3:
-        from dank_mids import web3
-        return web3
-    @functools.cached_property
-    def _prep_request_data(self) -> Callable[..., Awaitable[bytes]]:
-        from dank_mids.brownie_patch import call
-        if ENVS.OPERATION_MODE.application or self._len_inputs:
-            return call.encode
-        else:
-            return call._request_data_no_args
 
 class DankContractCall(_DankMethod, ContractCall):
     """
@@ -140,7 +146,7 @@ class DankContractTx(_DankMethod, ContractTx):
 
 _NonOverloaded = Union[DankContractCall, DankContractTx]
 
-class DankOverloadedMethod(_DankMethod, OverloadedMethod):
+class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
     """
     A `brownie.network.contract.OverloadedMethod` subclass with async support via the `coroutine` method.
 
@@ -148,10 +154,33 @@ class DankOverloadedMethod(_DankMethod, OverloadedMethod):
 
     You can await this object directly to call the contract method with no arguments at the latest block.
     """
-    def __init__(self, address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Optional[Dict] = None) -> None:
-        _DankMethod().__init__(self, address, abi, name, owner, natspec)
-        self.methods: Dict[Tuple[str], _NonOverloaded] = {}
-    __slots__ = "methods", 
+    methods: Dict[Tuple[str], _NonOverloaded]
+    __slots__ = "_address", "_name", "_owner", "methods", "natspec"
+    async def coroutine(  # type: ignore [empty-body]
+        self, 
+        *args: Any, 
+        block_identifier: Optional[int] = None, 
+        decimals: Optional[int] = None,
+        override: Optional[Dict[str, str]] = None,
+    ) -> _EVMType:
+        """
+        Asynchronously call the contract method via dank mids and await the result.
+        
+        Arguments:
+            - *args: The arguments for the contract method.
+            - block_identifier (optional): The block at which the chain will be read. If not provided, will read the chain at latest block.
+            - decimals (optional): if provided, the output will be `result / 10 ** decimals`
+        
+        Returns:
+            - Whatever the node sends back as the output for this contract method.
+        """
+        call: Union[DankContractCall, DankContractTx] = self._get_fn_from_args(args)
+        return await call.coroutine(*args, block_identifier=block_identifier, decimals=decimals, override=override)
+    def _add_fn(self, abi: Dict, natspec: Dict) -> None:
+        fn = _get_method_object(self._address, abi, self._name, self._owner, natspec)
+        key = tuple(i["type"].replace("256", "") for i in abi["inputs"])
+        self.methods[key] = fn
+        self.natspec.update(natspec)
 
 DankContractMethod = Union[DankContractCall, DankContractTx, DankOverloadedMethod]
 """
@@ -161,3 +190,15 @@ They use less memory than `ContractMethod` objects by using `FunctionABI` single
 
 You can await this object directly to call the contract method with no arguments at the latest block.
 """
+
+def _get_method_object(
+    address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Dict
+) -> Union["ContractCall", "ContractTx"]:
+    if "constant" in abi:
+        constant = abi["constant"]
+    else:
+        constant = abi["stateMutability"] in ("view", "pure")
+
+    if constant:
+        return DankContractCall(address, abi, name, owner, natspec)
+    return DankContractTx(address, abi, name, owner, natspec)
