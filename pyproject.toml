@@ -1,3 +1,23 @@
-
 [tool.mypy]
 exclude = ["build/","cache/","env/","tests/"]
+
+[tool.poetry]
+name = "dank_mids"
+version = "0.1.0"
+description = "Multicall batching middleware for asynchronous scripts using web3.py"
+authors = ["BobTheBuidler <bobthebuidlerdefi@gmail.com>"]
+license = "MIT"
+homepage = "https://github.com/BobTheBuidler/dank_mids"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.10"
+eth_retry = ">=0.1.15,<0.2"
+ez-a-sync = ">=0.6.3"
+msgspec = "*"
+multicall = ">=0.6.2,<1"
+typed-envs = ">=0.0.2"
+# web3 5.29 thru 5.31.2 are unable to use async provider in subthreads
+web3 = { version = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2" }
+
+[tool.poetry.dev-dependencies]
+eth-brownie = ">1.16.0"
