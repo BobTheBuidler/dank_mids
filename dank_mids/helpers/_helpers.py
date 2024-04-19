@@ -13,6 +13,7 @@ from multicall.utils import get_async_w3
 from typing_extensions import ParamSpec
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
+from web3.eth import AsyncEth
 from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
@@ -27,7 +28,11 @@ dank_w3s: List[Web3] = []
 T = TypeVar("T")
 P = ParamSpec("P")
 
-def setup_dank_w3(async_w3: Web3) -> Web3:
+class DankWeb3:
+    """This is just a helper for type checkers. Your object will just be a modified `Web3` object."""
+    eth: AsyncEth
+
+def setup_dank_w3(async_w3: Web3) -> DankWeb3:
     """ Injects Dank Middleware into an async Web3 instance. """
     assert async_w3.eth.is_async and isinstance(async_w3.provider, AsyncBaseProvider)
     # NOTE: We use this lookup to prevent errs where 2 project dependencies both depend on dank_mids and eth-brownie.
@@ -44,7 +49,7 @@ def setup_dank_w3(async_w3: Web3) -> Web3:
     async_w3.eth.get_block_number = get_block_number
     return async_w3
 
-def setup_dank_w3_from_sync(sync_w3: Web3) -> Web3:
+def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
     """ Creates a new async Web3 instance from `w3.provider.endpoint_uri` and injects it with Dank Middleware. """
     assert not sync_w3.eth.is_async and isinstance(sync_w3.provider, BaseProvider)
     return setup_dank_w3(get_async_w3(sync_w3))
