@@ -16,7 +16,7 @@
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -115,8 +115,8 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>call</strong> (<a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.19.5)"><em>ContractCall</em></a>) – </p></li>
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>) – </p></li>
+<li><p><strong>call</strong> (<a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.19.5)"><em>ContractCall</em></a>)</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -135,7 +135,7 @@
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">len_inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_request_data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.encode_input" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>call</strong> (<a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.19.5)"><em>ContractCall</em></a>) – </p>
+<dd class="field-odd"><p><strong>call</strong> (<a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.19.5)"><em>ContractCall</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)">bytes</a></p>
@@ -212,7 +212,7 @@ will be performed using this account.</p></li>
 <li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Contract ABI, given as a dictionary.</p></li>
 <li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field
 will be performed using this account.</p></li>
-<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -227,11 +227,11 @@ will be performed using this account.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>manifest_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>manifest_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -254,8 +254,8 @@ and NatSpec of <cite>as_proxy_for</cite>. This field is only required when the
 block explorer API does not provide an implementation address.</p></li>
 <li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field will be
 performed using this account.</p></li>
-<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -269,7 +269,7 @@ performed using this account.</p></li>
 <span class="sig-name descname"><span class="pre">get_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.contract.Contract.get_method" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a> | None</p>
@@ -283,7 +283,7 @@ performed using this account.</p></li>
 <dd><p>Given a calldata hex string, returns a <cite>ContractMethod</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>_ContractMethod</em> | None</p>
@@ -347,7 +347,7 @@ object in future sessions.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – An alias to apply. If <cite>None</cite>, any existing alias is removed.</p></li>
-<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -427,11 +427,11 @@ overrides for the context of the call.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>) – </p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>natspec</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>)</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>natspec</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -473,8 +473,8 @@ overrides for the context of the call.</p></li>
 </p></li>
 <li><p><strong>block_identifier</strong> (<em>-</em>) – The block at which the chain will be read. If not provided, will read the chain at latest block.</p></li>
 <li><p><strong>decimals</strong> (<em>-</em>) – if provided, the output will be <cite>result / 10 ** decimals</cite></p></li>
-<li><p><strong>*args</strong> – </p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>*args</strong></p></li>
+<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -569,9 +569,9 @@ overrides for the context of the call.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
-<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -589,7 +589,7 @@ overrides for the context of the call.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs. You can optionally provide a
 dictionary of transaction properties as the last arg.</p></li>
-<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -639,7 +639,7 @@ dictionary of transaction properties as the last arg.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs. You can optionally provide a
 dictionary of transaction properties as the last arg.</p></li>
-<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -657,11 +657,11 @@ dictionary of transaction properties as the last arg.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>) – </p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>natspec</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>)</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>natspec</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -703,8 +703,8 @@ overrides for the context of the call.</p></li>
 </p></li>
 <li><p><strong>block_identifier</strong> (<em>-</em>) – The block at which the chain will be read. If not provided, will read the chain at latest block.</p></li>
 <li><p><strong>decimals</strong> (<em>-</em>) – if provided, the output will be <cite>result / 10 ** decimals</cite></p></li>
-<li><p><strong>*args</strong> – </p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>*args</strong></p></li>
+<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -799,9 +799,9 @@ overrides for the context of the call.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
-<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -819,7 +819,7 @@ overrides for the context of the call.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs. You can optionally provide a
 dictionary of transaction properties as the last arg.</p></li>
-<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -867,9 +867,9 @@ dictionary of transaction properties as the last arg.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – </p></li>
-<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>)</p></li>
+<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -883,7 +883,7 @@ dictionary of transaction properties as the last arg.</p></li>
 <span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.__getitem__" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>_ContractMethod</em></p>
@@ -897,9 +897,9 @@ dictionary of transaction properties as the last arg.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -941,8 +941,8 @@ overrides for the context of the call.</p></li>
 </p></li>
 <li><p><strong>block_identifier</strong> (<em>-</em>) – The block at which the chain will be read. If not provided, will read the chain at latest block.</p></li>
 <li><p><strong>decimals</strong> (<em>-</em>) – if provided, the output will be <cite>result / 10 ** decimals</cite></p></li>
-<li><p><strong>*args</strong> – </p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>*args</strong></p></li>
+<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1019,9 +1019,9 @@ overrides for the context of the call.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
-<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1079,7 +1079,7 @@ dictionary of transaction properties as the last arg.</p>
 <dd><p>These are <cite>ContractMethod</cite> objects with async support via an added <cite>coroutine</cite> method.</p>
 <p>They use less memory than <cite>ContractMethod</cite> objects by using <cite>FunctionABI</cite> singleton to hold the function abi and related logic.</p>
 <p>You can await this object directly to call the contract method with no arguments at the latest block.</p>
-<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall" title="dank_mids.brownie_patch.types.DankContractCall"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankContractCall</span></code></a>, <a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx" title="dank_mids.brownie_patch.types.DankContractTx"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankContractTx</span></code></a>, <a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod" title="dank_mids.brownie_patch.types.DankOverloadedMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankOverloadedMethod</span></code></a>]</p>
+<p>alias of <a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall" title="dank_mids.brownie_patch.types.DankContractCall"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankContractCall</span></code></a> | <a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx" title="dank_mids.brownie_patch.types.DankContractTx"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankContractTx</span></code></a> | <a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod" title="dank_mids.brownie_patch.types.DankOverloadedMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankOverloadedMethod</span></code></a></p>
 </dd></dl>
 
 </section>
@@ -1151,7 +1151,7 @@ will be performed using this account.</p></li>
 <li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Contract ABI, given as a dictionary.</p></li>
 <li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field
 will be performed using this account.</p></li>
-<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1166,11 +1166,11 @@ will be performed using this account.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>manifest_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>manifest_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1193,8 +1193,8 @@ and NatSpec of <cite>as_proxy_for</cite>. This field is only required when the
 block explorer API does not provide an implementation address.</p></li>
 <li><p><strong>owner</strong> (<em>Account</em><em>, </em><em>optional</em>) – Contract owner. If set, transactions without a <cite>from</cite> field will be
 performed using this account.</p></li>
-<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
-<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1208,7 +1208,7 @@ performed using this account.</p></li>
 <span class="sig-name descname"><span class="pre">get_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calldata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.Contract.get_method" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a> | None</p>
@@ -1222,7 +1222,7 @@ performed using this account.</p></li>
 <dd><p>Given a calldata hex string, returns a <cite>ContractMethod</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>calldata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>_ContractMethod</em> | None</p>
@@ -1286,7 +1286,7 @@ object in future sessions.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>alias</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><em>None</em>) – An alias to apply. If <cite>None</cite>, any existing alias is removed.</p></li>
-<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>persist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1352,11 +1352,11 @@ overrides for the context of the call.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>) – </p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>natspec</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>)</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>natspec</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1398,8 +1398,8 @@ overrides for the context of the call.</p></li>
 </p></li>
 <li><p><strong>block_identifier</strong> (<em>-</em>) – The block at which the chain will be read. If not provided, will read the chain at latest block.</p></li>
 <li><p><strong>decimals</strong> (<em>-</em>) – if provided, the output will be <cite>result / 10 ** decimals</cite></p></li>
-<li><p><strong>*args</strong> – </p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>*args</strong></p></li>
+<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1494,9 +1494,9 @@ overrides for the context of the call.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
-<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1514,7 +1514,7 @@ overrides for the context of the call.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs. You can optionally provide a
 dictionary of transaction properties as the last arg.</p></li>
-<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1564,7 +1564,7 @@ dictionary of transaction properties as the last arg.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs. You can optionally provide a
 dictionary of transaction properties as the last arg.</p></li>
-<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1582,11 +1582,11 @@ dictionary of transaction properties as the last arg.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>) – </p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>natspec</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>)</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>natspec</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1628,8 +1628,8 @@ overrides for the context of the call.</p></li>
 </p></li>
 <li><p><strong>block_identifier</strong> (<em>-</em>) – The block at which the chain will be read. If not provided, will read the chain at latest block.</p></li>
 <li><p><strong>decimals</strong> (<em>-</em>) – if provided, the output will be <cite>result / 10 ** decimals</cite></p></li>
-<li><p><strong>*args</strong> – </p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>*args</strong></p></li>
+<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1724,9 +1724,9 @@ overrides for the context of the call.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
-<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1744,7 +1744,7 @@ overrides for the context of the call.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – Contract method inputs. You can optionally provide a
 dictionary of transaction properties as the last arg.</p></li>
-<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – </p></li>
+<li><p><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1792,9 +1792,9 @@ dictionary of transaction properties as the last arg.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>) – </p></li>
-<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a>)</p></li>
+<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><em>bytes</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1808,7 +1808,7 @@ dictionary of transaction properties as the last arg.</p></li>
 <span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.__getitem__" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><em>Tuple</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>_ContractMethod</em></p>
@@ -1822,9 +1822,9 @@ dictionary of transaction properties as the last arg.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>owner</strong> (<em>AccountsType</em><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1866,8 +1866,8 @@ overrides for the context of the call.</p></li>
 </p></li>
 <li><p><strong>block_identifier</strong> (<em>-</em>) – The block at which the chain will be read. If not provided, will read the chain at latest block.</p></li>
 <li><p><strong>decimals</strong> (<em>-</em>) – if provided, the output will be <cite>result / 10 ** decimals</cite></p></li>
-<li><p><strong>*args</strong> – </p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>*args</strong></p></li>
+<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1944,9 +1944,9 @@ overrides for the context of the call.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>) – </p></li>
-<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
-<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>block_identifier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2005,8 +2005,8 @@ dictionary of transaction properties as the last arg.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>contract</strong> (<a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a><em> | </em><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.19.5)"><em>Contract</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p></li>
-<li><p><strong>w3</strong> (<em>Web3</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>contract</strong> (<a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a><em> | </em><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.19.5)"><em>Contract</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>w3</strong> (<em>Web3</em><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
