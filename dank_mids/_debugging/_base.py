@@ -9,7 +9,7 @@ from aiofiles.threadpool.text import AsyncTextIOWrapper
 
 
 class _FileHelper(metaclass=abc.ABCMeta):
-    path = "~/.dank_mids"
+    path = "~/.dank_mids/debug"
     def __init__(self):
         self.ensure_dir()
     @lru_cache(maxsize=1)
