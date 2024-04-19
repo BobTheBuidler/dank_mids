@@ -138,6 +138,7 @@ class DankMiddlewareController:
         except Exception as e:
             if ENVS.DEBUG:
                 await _debugging.failures.record(e, request.data)
+            raise
 
     async def execute_batch(self) -> None:
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
