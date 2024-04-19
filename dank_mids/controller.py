@@ -16,7 +16,7 @@ from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids import constants
+from dank_mids import _debugging, constants
 from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
@@ -133,7 +133,11 @@ class DankMiddlewareController:
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
         request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
-        return await _session.post(self.endpoint, data=request, loads=_decode.raw)
+        try:
+            return await _session.post(self.endpoint, data=request, loads=_decode.raw)
+        except Exception as e:
+            if ENVS.DEBUG:
+                await _debugging.failures.record(e, request.data)
 
     async def execute_batch(self) -> None:
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do

@@ -732,10 +732,14 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             elif 'broken pipe' in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
             logger.debug("caught %s for %s, reraising", e, self)
+            if ENVS.DEBUG:
+                _debugging.failures.record(e, self.data)
             raise e
         except Exception as e:
             if 'broken pipe' in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
+            if ENVS.DEBUG:
+                _debugging.failures.record(e, self.data)
             raise e
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
@@ -751,6 +755,9 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
         elif response.error.message == "batch limit exceeded":
             self.adjust_batch_size()
+            
+        if ENVS.DEBUG:
+            _debugging.failures.record(response.exception, self.data)
         raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
