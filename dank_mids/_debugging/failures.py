@@ -17,7 +17,7 @@ class FailedRequestWriter(_CSVWriter):
         self.record_failure = ProcessingQueue(self._record_failure, num_workers=1, return_data=True)
     @cached_property
     def filename(self) -> str:
-        return f"/{self.chainid}/{int(datetime.now().timestamp())}_{self.failure_type.__name__}s.csv"
+        return f"{int(datetime.now().timestamp())}_{self.failure_type.__name__}s.csv"
     async def _record_failure(self, e: Exception, request_data: bytes):
         if not isinstance(e, self.failure_type):
             raise TypeError(e, self.failure_type)

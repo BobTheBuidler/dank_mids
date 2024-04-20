@@ -35,7 +35,7 @@ class _CSVWriter(_FileHelper):
     mode = "a"
     @cached_property
     def uri(self) -> str:
-        return self.path + self.filename
+        return f"{self.path}/{self.filename}"
     async def write_row(self, row: str) -> None:
         async with self.open() as file:
             logger.debug("writing row %s to file %s", row, file)
