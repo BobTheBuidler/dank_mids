@@ -10,9 +10,9 @@ import dank_mids
 from dank_mids.brownie_patch.call import _patch_call
 
 
-# must use from_explorer for gh testing workflow
 # NOTE: we don't want tests to fail due to api limits
-get_contract = eth_retry.auto_retry(brownie.Contract.from_explorer)
+get_contract = eth_retry.auto_retry(brownie.Contract)
+# must try from_explorer too
 get_dank_contract = eth_retry.auto_retry(dank_mids.Contract.from_explorer)
 
 @pytest.mark.asyncio_cooperative
