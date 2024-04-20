@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from functools import cached_property, lru_cache
-from typing import TYPE_CHECKING, List, Type, Union
+from typing import TYPE_CHECKING, List, Literal, Type, Union
 
 from a_sync import ProcessingQueue
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 @lru_cache(maxsize=None)
 class FailedRequestWriter(_CSVWriter):
-    column_names = "request_type", "request_uid", "error", "request_data"
+    column_names = "request_type", "request_uid", "request_length", "error", "request_data"
     def __init__(self, chainid: int, failure_type: Type[BaseException]):
         super().__init__(chainid)
         if not issubclass(failure_type, BaseException):
@@ -22,10 +22,10 @@ class FailedRequestWriter(_CSVWriter):
     @cached_property
     def filename(self) -> str:
         return f"{int(datetime.now().timestamp())}_{self.failure_type.__name__}s.csv"
-    async def _record_failure(self, e: Exception, request_type: str, request_uid: Union[str, int], request_data: Union[List["Request"], List["PartialRequest"], bytes]):
+    async def _record_failure(self, e: Exception, request_type: str, request_uid: Union[str, int], request_length: Union[int, Literal["unknown"]], request_data: Union[List["Request"], List["PartialRequest"], bytes]):
         if not isinstance(e, self.failure_type):
             raise TypeError(e, self.failure_type)
-        await self.write_row(request_type, request_uid, e, request_data)
+        await self.write_row(request_type, request_uid, request_length, e, request_data)
 
-def record(chainid: int, e: Exception, request_type: str, request_uid: Union[int, str], request_data: Union[List["Request"], List["PartialRequest"], bytes]) -> None:
+def record(chainid: int, e: Exception, request_type: str, request_uid: Union[int, str], request_length: Union[int, Literal["unknown"]], request_data: Union[List["Request"], List["PartialRequest"], bytes]) -> None:
     FailedRequestWriter(chainid, type(e)).record_failure(e, request_type, request_uid, request_data)
