@@ -3,11 +3,12 @@ import abc
 import logging
 import os
 from functools import cached_property, lru_cache
-from typing import Any
+from typing import Any, Iterable
 
 import aiofiles
 from aiofiles.base import AiofilesContextManager
 from aiofiles.threadpool.text import AsyncTextIOWrapper
+from async_lru import alru_cache
 
 logger = logging.getLogger("dank_mids.debugging")
 
@@ -38,10 +39,19 @@ class _CSVWriter(_FileHelper):
     def uri(self) -> str:
         return f"{self.path}/{self.filename}"
     async def write_row(self, *values: Any) -> None:
+        await self._ensure_headers()
+        await self._write_row(*values)
+    @alru_cache(maxsize=None)
+    async def _ensure_headers(self) -> None:
+        await self._write_row(*self.column_names)
+    async def _write_row(self, *values: Any) -> None:
         row = '\n' + ','.join(str(obj) for obj in values)
         async with self.open() as file:
             logger.debug("writing row %s to file %s", row, file)
             await file.write(row)
     @abc.abstractproperty
     def filename(self) -> str:
+        ...
+    @abc.abstractproperty
+    def column_names(self) -> Iterable[str]:
         ...

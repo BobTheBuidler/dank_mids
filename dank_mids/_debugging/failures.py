@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 @lru_cache(maxsize=None)
 class FailedRequestWriter(_CSVWriter):
+    column_names = "request_type", "request_uid", "error", "request_data"
     def __init__(self, chainid: int, failure_type: Type[BaseException]):
         super().__init__(chainid)
         if not issubclass(failure_type, BaseException):
