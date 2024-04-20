@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from functools import cached_property, lru_cache
-from typing import TYPE_CHECKING, Type, Union
+from typing import TYPE_CHECKING, List, Type, Union
 
 from a_sync import ProcessingQueue
 
@@ -9,6 +9,7 @@ from dank_mids._debugging._base import _CSVWriter
 
 if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch, RPCRequest
+    from dank_mids.types import PartialRequest, Request
 
 @lru_cache(maxsize=None)
 class FailedRequestWriter(_CSVWriter):
@@ -21,10 +22,10 @@ class FailedRequestWriter(_CSVWriter):
     @cached_property
     def filename(self) -> str:
         return f"{int(datetime.now().timestamp())}_{self.failure_type.__name__}s.csv"
-    async def _record_failure(self, e: Exception, request_type: str, request_uid: Union[str, int], request_data: bytes):
+    async def _record_failure(self, e: Exception, request_type: str, request_uid: Union[str, int], request_data: Union[List[Request], List[PartialRequest], bytes]):
         if not isinstance(e, self.failure_type):
             raise TypeError(e, self.failure_type)
-        await self.write_row(request_type, request_uid, e, request_data.hex())
+        await self.write_row(request_type, request_uid, e, request_data)
 
-def record(chainid: int, e: Exception, request_type: str, request_uid: Union[int, str], request_data: bytes) -> None:
+def record(chainid: int, e: Exception, request_type: str, request_uid: Union[int, str], request_data: Union[List[Request], List[PartialRequest], bytes]) -> None:
     FailedRequestWriter(chainid, type(e)).record_failure(e, request_type, request_uid, request_data)
