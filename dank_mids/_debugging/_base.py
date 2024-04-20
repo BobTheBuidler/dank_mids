@@ -43,9 +43,11 @@ class _CSVWriter(_FileHelper):
         await self._write_row(*values)
     @alru_cache(maxsize=None)
     async def _ensure_headers(self) -> None:
-        await self._write_row(*self.column_names)
-    async def _write_row(self, *values: Any) -> None:
-        row = '\n' + ','.join(str(obj) for obj in values)
+        await self._write_row(*self.column_names, new_line=False)
+    async def _write_row(self, *values: Any, new_line: bool = True) -> None:
+        row = ','.join(str(obj) for obj in values)
+        if new_line:
+            row = f'\n{row}'
         async with self.open() as file:
             logger.debug("writing row %s to file %s", row, file)
             await file.write(row)
