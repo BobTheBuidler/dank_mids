@@ -137,7 +137,7 @@ class DankMiddlewareController:
             return await _session.post(self.endpoint, data=request, loads=_decode.raw)
         except Exception as e:
             if ENVS.DEBUG:
-                await _debugging.failures.record(self.chain_id, e, request.data)
+                _debugging.failures.record(self.chain_id, e, "unknown", request.data)
             raise
 
     async def execute_batch(self) -> None:

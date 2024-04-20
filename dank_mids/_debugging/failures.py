@@ -1,11 +1,14 @@
 
 from datetime import datetime
 from functools import cached_property, lru_cache
-from typing import Type
+from typing import TYPE_CHECKING, Type, Union
 
 from a_sync import ProcessingQueue
 
 from dank_mids._debugging._base import _CSVWriter
+
+if TYPE_CHECKING:
+    from dank_mids._requests import JSONRPCBatch, RPCRequest
 
 @lru_cache(maxsize=None)
 class FailedRequestWriter(_CSVWriter):
@@ -18,11 +21,11 @@ class FailedRequestWriter(_CSVWriter):
     @cached_property
     def filename(self) -> str:
         return f"{int(datetime.now().timestamp())}_{self.failure_type.__name__}s.csv"
-    async def _record_failure(self, e: Exception, request_data: bytes):
+    async def _record_failure(self, e: Exception, request_type: str, request_uid: Union[str, int], request_data: bytes):
         if not isinstance(e, self.failure_type):
             raise TypeError(e, self.failure_type)
-        row = str(e), request_data.hex()
+        row = request_type, str(request_uid), str(e), request_data.hex()
         await self.write_row(','.join(row))
 
-def record(chainid: int, e: Exception, request_data: bytes) -> None:
-    return FailedRequestWriter(chainid, type(e)).record_failure(e, request_data)
+def record(chainid: int, e: Exception, request_type: str, request_data: bytes) -> None:
+    return FailedRequestWriter(chainid, type(e)).record_failure(e, request_type, request_data)
