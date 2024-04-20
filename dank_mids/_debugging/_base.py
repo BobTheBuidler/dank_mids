@@ -18,7 +18,7 @@ class _FileHelper(metaclass=abc.ABCMeta):
     def ensure_dir(cls) -> None:
         os.makedirs(cls.path, exist_ok=True)
     def open(self) -> "AiofilesContextManager[None, None, AsyncTextIOWrapper]":
-        print("opening %s with mode %s", self.uri, self.mode)
+        logger.info("opening %s with mode %s", self.uri, self.mode)
         return aiofiles.open(self.uri, self.mode)
     @abc.abstractproperty
     def uri(self) -> str:
@@ -34,7 +34,7 @@ class _CSVWriter(_FileHelper):
         return self.path + self.filename
     async def write_row(self, row: str) -> None:
         async with self.open() as file:
-            print("writing row %s to file %s", row, file)
+            logger.debug("writing row %s to file %s", row, file)
             await file.write(row)
     @abc.abstractproperty
     def filename(self) -> str:
