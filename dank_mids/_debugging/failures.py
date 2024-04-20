@@ -24,8 +24,7 @@ class FailedRequestWriter(_CSVWriter):
     async def _record_failure(self, e: Exception, request_type: str, request_uid: Union[str, int], request_data: bytes):
         if not isinstance(e, self.failure_type):
             raise TypeError(e, self.failure_type)
-        row = request_type, str(request_uid), str(e), request_data.hex()
-        await self.write_row(','.join(row))
+        await self.write_row(request_type, request_uid, e, request_data.hex())
 
-def record(chainid: int, e: Exception, request_type: str, request_data: bytes) -> None:
-    return FailedRequestWriter(chainid, type(e)).record_failure(e, request_type, request_data)
+def record(chainid: int, e: Exception, request_type: str, request_uid: Union[int, str], request_data: bytes) -> None:
+    FailedRequestWriter(chainid, type(e)).record_failure(e, request_type, request_uid, request_data)

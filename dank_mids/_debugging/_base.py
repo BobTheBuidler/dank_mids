@@ -3,6 +3,7 @@ import abc
 import logging
 import os
 from functools import cached_property, lru_cache
+from typing import Any
 
 import aiofiles
 from aiofiles.base import AiofilesContextManager
@@ -36,7 +37,8 @@ class _CSVWriter(_FileHelper):
     @cached_property
     def uri(self) -> str:
         return f"{self.path}/{self.filename}"
-    async def write_row(self, row: str) -> None:
+    async def write_row(self, *values: Any) -> None:
+        row = '\n' + ','.join(str(obj) for obj in values)
         async with self.open() as file:
             logger.debug("writing row %s to file %s", row, file)
             await file.write(row)
