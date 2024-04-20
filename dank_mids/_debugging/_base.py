@@ -19,7 +19,7 @@ class _FileHelper(metaclass=abc.ABCMeta):
         self.path = self.path + f"/{self.chainid}"
         self.ensure_dir()
     @lru_cache(maxsize=1)
-    def ensure_dir(cls) -> None:
+    def ensure_dir(self) -> None:
         os.makedirs(self.path, exist_ok=True)
     def open(self) -> "AiofilesContextManager[None, None, AsyncTextIOWrapper]":
         logger.info("opening %s with mode %s", self.uri, self.mode)
