@@ -24,7 +24,7 @@ from typing_extensions import Self
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids import constants, stats
+from dank_mids import _debugging, constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import (BadResponse, DankMidsClientResponseError,
                                    DankMidsInternalError, EmptyBatch,
@@ -521,11 +521,14 @@ class Multicall(_Batch[eth_call]):
             if e.message == "Payload Too Large":
                 logger.info("Payload too large. response headers: %s", e.headers)
                 self.controller.reduce_multicall_size(len(self))
+                _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, self.request.data)
             else:
-                _log_exception(e)
+                if _log_exception(e):
+                    _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, self.request.data)
             await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         except Exception as e:
-            _log_exception(e)
+            if _log_exception(e):
+                _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, self.request.data)
             await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         demo_logger.info(f'request {rid} for multicall {self.bid} complete')  # type: ignore
     
@@ -697,7 +700,8 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             self.adjust_batch_size()
             await self.bisect_and_retry(e)
         except Exception as e:
-            _log_exception(e)
+            if _log_exception(e):
+                _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, self.data)
             stats.log_errd_batch(self)
             if self.should_retry(e):
                 await self.bisect_and_retry(e)
@@ -728,10 +732,14 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             elif 'broken pipe' in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
             logger.debug("caught %s for %s, reraising", e, self)
+            if ENVS.DEBUG:
+                _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, self.data)
             raise e
         except Exception as e:
             if 'broken pipe' in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
+            if ENVS.DEBUG:
+                _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, self.data)
             raise e
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
@@ -747,6 +755,9 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
                 logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
         elif response.error.message == "batch limit exceeded":
             self.adjust_batch_size()
+            
+        if ENVS.DEBUG:
+            _debugging.failures.record(self.controller.chain_id, response.exception, type(self).__name__, self.uid, self.data)
         raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
@@ -819,7 +830,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         with self.controller.pools_closed_lock:
             self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)
 
-def _log_exception(e: Exception) -> None:
+def _log_exception(e: Exception) -> bool:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
     dont_need_to_see_errs = constants.RETRY_ERRS + ['out of gas', 'non_empty_data', 'exceeding --rpc.returndata.limit', "'code': 429", 'payload too large']
@@ -830,9 +841,12 @@ def _log_exception(e: Exception) -> None:
         # We pass these down to the call they originated from
         *INDIVIDUAL_CALL_REVERT_STRINGS
     ]
+
+    
     
     stre = str(e).lower()
     if any(err in stre for err in dont_need_to_see_errs):
-        return
+        return ENVS.DEBUG
     logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
     logger.warning(e, exc_info=True)
+    return ENVS.DEBUG

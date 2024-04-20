@@ -58,6 +58,7 @@ COLLECTION_FACTOR = _envs.create_env("COLLECTION_FACTOR", int, default=10 if OPE
 # Set this env var to any value to force the full request spec always
 USE_FULL_REQUEST = _envs.create_env("USE_FULL_REQUEST", bool, default=False, verbose=False)
 
+DEBUG = _envs.create_env("DEBUG", bool, default=False, verbose=False)
 # NOTE: EXPORT_STATS is not implemented
 # TODO: implement this
 EXPORT_STATS = _envs.create_env("EXPORT_STATS", bool, default=False, verbose=False)
