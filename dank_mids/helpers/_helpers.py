@@ -28,9 +28,14 @@ dank_w3s: List[Web3] = []
 T = TypeVar("T")
 P = ParamSpec("P")
 
+class DankEth(AsyncEth):
+    @alru_cache(ttl=0)
+    async def get_block_number(self) -> int:
+        return await super().get_block_number()
+    
 class DankWeb3:
-    """This is just a helper for type checkers. Your object will just be a modified `Web3` object."""
-    eth: AsyncEth
+    """This is just a helper for type checkers. Your object will just be a modified ``web3.Web3`` object."""
+    eth: DankEth
 
 def setup_dank_w3(async_w3: Web3) -> DankWeb3:
     """ Injects Dank Middleware into an async Web3 instance. """
@@ -42,11 +47,7 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
         async_w3.middleware_onion.inject(dank_middleware, layer=0)
         async_w3.middleware_onion.add(geth_poa_middleware)
         dank_w3s.append(async_w3)
-    async_w3.eth._get_block_number = async_w3.eth.get_block_number
-    @alru_cache(ttl=0)
-    async def get_block_number() -> int:
-        return await async_w3.eth._get_block_number()
-    async_w3.eth.get_block_number = get_block_number
+    async_w3.eth = DankEth(async_w3)
     return async_w3
 
 def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
