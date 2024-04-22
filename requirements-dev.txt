@@ -1,3 +1,0 @@
-eth-brownie>1.16.0
-pytest
-pytest-asyncio-cooperative
