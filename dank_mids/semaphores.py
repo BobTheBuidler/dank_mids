@@ -1,7 +1,9 @@
 
+import functools
 from decimal import Decimal
 from typing import TYPE_CHECKING, Literal, Optional, Union
 
+import a_sync
 from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
 from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore, _PrioritySemaphoreContextManager)
@@ -41,6 +43,24 @@ class _MethodSemaphores:
         }
         self.keys = self.method_semaphores.keys()
         self.dummy = DummySemaphore()
-    
+    @functools.lru_cache(maxsize=None)
     def __getitem__(self, method: RPCEndpoint) -> Union[ThreadsafeSemaphore, DummySemaphore]:
         return next((self.method_semaphores[key] for key in self.keys if key in method), self.dummy)
+
+class _MethodQueues:
+    def __init__(self, controller: "DankMiddlewareController") -> None:
+        from dank_mids import ENVIRONMENT_VARIABLES
+        from dank_mids._requests import RPCRequest
+        self.controller = controller
+        self.method_queues = {
+            method: a_sync.SmartProcessingQueue(RPCRequest, num_workers=sem._value, name=f"{method} {controller}")
+            for method, sem in ENVIRONMENT_VARIABLES.method_semaphores.items()
+            if method != "eth_call"
+        }
+        self.keys = self.method_queues.keys()
+    @functools.lru_cache(maxsize=None)
+    def __getitem__(self, method: RPCEndpoint) -> a_sync.SmartProcessingQueue:
+        try:
+            return next(self.method_queues[key] for key in self.keys if key in method)
+        except StopIteration:
+            raise KeyError(method) from None

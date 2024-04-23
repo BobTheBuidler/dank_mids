@@ -23,7 +23,7 @@ from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers import _decode, _session
-from dank_mids.semaphores import _MethodSemaphores
+from dank_mids.semaphores import _MethodQueues, _MethodSemaphores
 from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
                              Request)
 
@@ -108,6 +108,8 @@ class DankMiddlewareController:
             self.no_multicall.add(self.mc3.address)
         
         self.method_semaphores = _MethodSemaphores(self)
+        # semaphores soon to be deprecated for smart queue
+        self.method_queues = _MethodQueues(self)
         self.batcher = NotSoBrightBatcher()
         self.batcher.step = ENVS.MAX_MULTICALL_SIZE
 
@@ -124,11 +126,18 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        call_semaphore = self.method_semaphores[method][params[1]] if method == "eth_call" else self.method_semaphores[method]
-        async with call_semaphore:
+        try:
+            # some methods go thru a SmartProcessingQueue, we try this first
+            return await self.method_queues[method](self, method, params)
+        except KeyError:
+            # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
             logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
-            call = eth_call(self, params) if method == "eth_call" and params[0]["to"] not in self.no_multicall else RPCRequest(self, method, params)
-            return await call
+            if method != "eth_call":
+                return await RPCRequest(self, method, params)
+            async with self.method_semaphores[method][params[1]]:
+                if params[0]["to"] not in self.no_multicall:
+                    return await eth_call(self, params)
+                return await RPCRequest(self, method, params)
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
