@@ -12,6 +12,7 @@ from hexbytes import HexBytes
 from multicall.utils import get_async_w3
 from typing_extensions import ParamSpec
 from web3 import Web3
+from web3.datastructures import AttributeDict
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
 from web3.providers.async_base import AsyncBaseProvider
@@ -172,3 +173,11 @@ def _apply_response_formatters(
         return _format_response("error", error_formatters[method])
     else:
         return response
+
+    
+def _make_hashable(obj: Any) -> Any:
+    if isinstance(obj, (list, tuple)):
+        return tuple((_make_hashable(o) for o in obj))
+    elif isinstance(obj, dict):
+        return AttributeDict({k: _make_hashable(v) for k, v in obj.items()})
+    return obj

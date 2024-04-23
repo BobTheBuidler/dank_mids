@@ -10,7 +10,8 @@ from eth_abi.exceptions import InsufficientDataBytes
 from web3 import Web3
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids.brownie_patch._abi import FunctionABI, _make_hashable
+from dank_mids.brownie_patch._abi import FunctionABI
+from dank_mids.helpers._helpers import _make_hashable
 
 _EVMType = TypeVar("_EVMType")
 

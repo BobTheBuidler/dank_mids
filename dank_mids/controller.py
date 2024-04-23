@@ -22,7 +22,7 @@ from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
-from dank_mids.helpers import _decode, _session
+from dank_mids.helpers import _decode, _helpers, _session
 from dank_mids.semaphores import _MethodQueues, _MethodSemaphores
 from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
                              Request)
@@ -128,7 +128,12 @@ class DankMiddlewareController:
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
         try:
             # some methods go thru a SmartProcessingQueue, we try this first
-            return await self.method_queues[method](self, method, params)
+            try:
+                return await self.method_queues[method](self, method, params)
+            except TypeError as e:
+                if "unhashable type" not in str(e):
+                    raise e
+                return await self.method_queues[method](self, method, _helpers._make_hashable(params))
         except KeyError:
             # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
             logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
