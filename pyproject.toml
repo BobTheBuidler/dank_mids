@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Multicall batching middleware for asynchronous scripts using web3.py"
 authors = ["BobTheBuidler <bobthebuidlerdefi@gmail.com>"]
 homepage = "https://github.com/BobTheBuidler/dank_mids"
+repository = "https://github.com/BobTheBuidler/dank_mids"
+documentation = "https://BobTheBuidler.github.io/dank_mids"
 license = "MIT"
 readme = "README.md"
 
@@ -11,11 +13,11 @@ readme = "README.md"
 python = ">=3.8,<3.13"
 aiofiles = "^23.2.1"
 eth-retry = "^0.1.19"
-ez-a-sync = "^0.19.4"
+ez-a-sync = ">=0.19.4,<0.21"
 msgspec = "^0.18.6"
 multicall = "^0.9.0"
 typed-envs = "^0.0.4"
-web3 = {version = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2"}
+web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2"
 
 [tool.poetry.group.dev.dependencies]
 eth_brownie = [
