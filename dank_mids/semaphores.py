@@ -35,6 +35,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
 
 class _MethodSemaphores:
     def __init__(self, controller: "DankMiddlewareController") -> None:
+        # TODO: refactor this out, just use BlockSemaphore for eth_call and SmartProcessingQueue to limit other methods
         from dank_mids import ENVIRONMENT_VARIABLES
         self.controller = controller
         self.method_semaphores = {
