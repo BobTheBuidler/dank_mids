@@ -24,6 +24,8 @@ eth_brownie = [
 ]
 pytest = ">=6.2.5"
 pytest-asyncio-cooperative = "^0.36.0"
+pytest-cov = "^5.0.0"
+pytest-sugar = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]
