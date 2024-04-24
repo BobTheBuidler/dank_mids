@@ -53,7 +53,7 @@ class PartialRequest(_DictStruct):
 
     @property
     def data(self) -> bytes:
-        return msgspec.json.encode(self, )
+        return msgspec.json.encode(self)
 
 class Request(PartialRequest):
     # NOTE: While technially part of a request, we can successfully make requests without including the `jsonrpc` field.
