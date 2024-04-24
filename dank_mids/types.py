@@ -12,7 +12,6 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
 from dank_mids._exceptions import BadResponse, ExceedsMaxBatchSize, PayloadTooLarge
-from dank_mids.helpers import _codec
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
