@@ -723,7 +723,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     async def post(self) -> List[RawResponse]:
         "this function raises `BadResponse` if a successful 'error' response was received from the rpc"
         try:
-            response: JSONRPCBatchResponse = await _session.post(self.controller.endpoint, data=self.data, loads=_codec.jsonrpc_batch)
+            response: JSONRPCBatchResponse = await _session.post(self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch)
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 logger.warning("Payload Too Large")

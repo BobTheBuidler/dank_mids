@@ -148,7 +148,7 @@ class DankMiddlewareController:
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
         request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
         try:
-            return await _session.post(self.endpoint, data=request, loads=_codec.raw)
+            return await _session.post(self.endpoint, data=request, loads=_codec.decode_raw)
         except Exception as e:
             if ENVS.DEBUG:
                 _debugging.failures.record(self.chain_id, e, "eth_call" if method == "eth_call" else "RPCRequest", "unknown", "unknown", request.data)
