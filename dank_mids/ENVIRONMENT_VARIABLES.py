@@ -1,4 +1,4 @@
-
+# type: ignore [attr-defined]
 import logging
 
 import a_sync
