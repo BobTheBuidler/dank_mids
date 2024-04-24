@@ -27,8 +27,8 @@ from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.exceptions import Revert
 
 logger = logging.getLogger(__name__)
-encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)
-decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)
+encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
+decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 
 def _patch_call(call: ContractCall, w3: Web3) -> None:
     call._skip_decoder_proc_pool = call._address in _skip_proc_pool
@@ -37,7 +37,7 @@ def _patch_call(call: ContractCall, w3: Web3) -> None:
     
 @functools.lru_cache
 def _get_coroutine_fn(w3: Web3, len_inputs: int):
-    if ENVS.OPERATION_MODE.application or len_inputs:
+    if ENVS.OPERATION_MODE.application or len_inputs:  # type: ignore [attr-defined]
         get_request_data = encode
     else:
         get_request_data = _request_data_no_args
@@ -51,9 +51,9 @@ def _get_coroutine_fn(w3: Web3, len_inputs: int):
     ) -> Any:
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
-        async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:
+        async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined]
             data = await encode_input(self, len_inputs, get_request_data, *args)
-            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:
+            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined]
                 output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
         try:
             decoded = await decode_output(self, output)
@@ -80,9 +80,9 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
             data = __encode_input(call.abi, call.signature, *args)
         # TODO: move this somewhere else
         except BrokenProcessPool:
-            logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_ENCODER_PROCESSES, data, call.abi)
+            logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_ENCODER_PROCESSES, data, call.abi)  # type: ignore [attr-defined]
             # Let's fix that right up
-            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)
+            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)  # type: ignore [attr-defined]
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
         except PicklingError:  # But if that fails, don't worry. I got you.
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
@@ -104,8 +104,8 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
             # TODO: move this somewhere else
             except BrokenProcessPool:
                 # Let's fix that right up
-                logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_DECODER_PROCESSES, data, call.abi)
-                ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)
+                logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_DECODER_PROCESSES, data, call.abi)  # type: ignore [attr-defined]
+                ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)  # type: ignore [attr-defined]
                 decoded = __decode_output(data, call.abi)
         # We have to do it like this so we don't break the process pool.
         if isinstance(decoded, Exception):

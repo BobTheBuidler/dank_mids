@@ -85,7 +85,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     async def get_response(self) -> Optional[_Response]:
         pass
 
-    async def _debug_daemon(self) -> NoReturn:
+    async def _debug_daemon(self) -> None:
         while not self._done.is_set():
             await asyncio.sleep(60)
             if not self._done.is_set():
@@ -233,7 +233,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             if data.response.error.message.lower() in ['invalid request', 'parse error']:
                 if self.controller._time_of_request_type_change == 0:
                     self.controller.request_type = Request
-                    self.controller._time_of_request_type_change = time.time()
+                    self.controller._time_of_request_type_change = int(time.time())
                 if time.time() - self.controller._time_of_request_type_change <= 600:
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     self._response = await self.create_duplicate()
@@ -266,7 +266,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             semaphore = semaphore[self.params[1]]
         return semaphore
     
-    async def create_duplicate(self) -> Self: # Not actually self, but for typing purposes it is.
+    async def create_duplicate(self) -> RPCResponse: # Not actually self, but for typing purposes it is.
         # We need to make room since the stalled call is still holding the semaphore
         self.semaphore.release()
         # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
@@ -566,19 +566,19 @@ class Multicall(_Batch[eth_call]):
     
     async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
         start = time.time()
-        if ENVS.OPERATION_MODE.infura:
+        if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
             retval = mcall_decode(data)
         else:
             try:  # NOTE: Quickly check for length without counting each item with `len`.
-                if not ENVS.OPERATION_MODE.application:
+                if not ENVS.OPERATION_MODE.application:  # type: ignore [attr-defined]
                     self[100]
-                retval = await ENVS.MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)
+                retval = await ENVS.MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)  # type: ignore [attr-defined]
             except IndexError:
                 retval = mcall_decode(data)
             except BrokenProcessPool:
                 # TODO: Move this somewhere else
-                logger.critical("Oh fuck, you broke the %s while decoding %s", ENVS.MULTICALL_DECODER_PROCESSES, data)
-                ENVS.MULTICALL_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)
+                logger.critical("Oh fuck, you broke the %s while decoding %s", ENVS.MULTICALL_DECODER_PROCESSES, data)  # type: ignore [attr-defined]
+                ENVS.MULTICALL_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)  # type: ignore [attr-defined]
                 retval = mcall_decode(data)
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
         # Raise any Exceptions that may have come out of the process pool.
@@ -672,7 +672,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     @property
     def is_full(self) -> bool:
         with self._lock:
-            return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE
+            return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
 
     async def get_response(self) -> None:
         if self._started:
@@ -680,7 +680,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             return
         self._started = True
         rid = self.controller.request_uid.next
-        if ENVS.DEMO_MODE:
+        if ENVS.DEMO_MODE:  # type: ignore [attr-defined]
             # When demo mode is disabled, we can save some CPU time by skipping this sum
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self.calls)} calls) starting')  # type: ignore
         try:
@@ -732,13 +732,13 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             elif 'broken pipe' in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
             logger.debug("caught %s for %s, reraising", e, self)
-            if ENVS.DEBUG:
+            if ENVS.DEBUG:  # type: ignore [attr-defined]
                 _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, len(self), self.data)
             raise e
         except Exception as e:
             if 'broken pipe' in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
-            if ENVS.DEBUG:
+            if ENVS.DEBUG:  # type: ignore [attr-defined]
                 _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, len(self), self.data)
             raise e
         # NOTE: A successful response will be a list of `RawResponse` objects.
@@ -846,7 +846,7 @@ def _log_exception(e: Exception) -> bool:
     
     stre = str(e).lower()
     if any(err in stre for err in dont_need_to_see_errs):
-        return ENVS.DEBUG
+        return ENVS.DEBUG  # type: ignore [attr-defined]
     logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
     logger.warning(e, exc_info=True)
-    return ENVS.DEBUG
+    return ENVS.DEBUG  # type: ignore [attr-defined]
