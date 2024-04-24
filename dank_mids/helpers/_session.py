@@ -92,7 +92,6 @@ class ClientSession(DefaultClientSession):
         if isinstance(kwargs.get('data'), PartialRequest):
             logger.debug("making request for %s", kwargs['data'])
             kwargs['data'] = _codec.encode(kwargs['data'])
-            kwargs['data'] = msgspec.json.encode(kwargs['data'], enc_hook=_codec.encode_hook)
         logger.debug("making request with (args, kwargs): (%s %s)", tuple(endpoint, *args), kwargs)
 
         # Try the request until success or 5 failures.
