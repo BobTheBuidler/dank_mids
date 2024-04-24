@@ -10,8 +10,10 @@ jsonrpc_batch = lambda data: decoded if isinstance(decoded := json.decode(data, 
 
 _map_raw = lambda decoded: list(map(RawResponse, decoded))
 
+def encode(obj: Any) -> bytes:
+    return json.encode(obj, enc_hook=_encode_hook)
 
-def encode_hook(obj: Any) -> Any:
+def _encode_hook(obj: Any) -> Any:
     if isinstance(obj, AttributeDict):
         return dict(obj)
     raise NotImplementedError(type(obj))

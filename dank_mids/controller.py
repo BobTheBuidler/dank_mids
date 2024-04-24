@@ -22,7 +22,7 @@ from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
-from dank_mids.helpers import _decode, _helpers, _session
+from dank_mids.helpers import _codec, _helpers, _session
 from dank_mids.semaphores import _MethodQueues, _MethodSemaphores
 from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
                              Request)
@@ -148,7 +148,7 @@ class DankMiddlewareController:
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
         request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
         try:
-            return await _session.post(self.endpoint, data=request, loads=_decode.raw)
+            return await _session.post(self.endpoint, data=request, loads=_codec.raw)
         except Exception as e:
             if ENVS.DEBUG:
                 _debugging.failures.record(self.chain_id, e, "eth_call" if method == "eth_call" else "RPCRequest", "unknown", "unknown", request.data)
