@@ -1,6 +1,7 @@
 
 import logging
 from collections import defaultdict
+from contextlib import suppress
 from functools import lru_cache
 from importlib.metadata import version
 from typing import Any, DefaultDict, List, Literal, Optional
@@ -126,23 +127,24 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        try:
+        with suppress(KeyError):
             # some methods go thru a SmartProcessingQueue, we try this first
             try:
-                return await self.method_queues[method](self, method, params)
+                queue = self.method_queues[method]
+                return await queue(self, method, params)
             except TypeError as e:
-                if "unhashable type" not in str(e):
-                    raise e
-                return await self.method_queues[method](self, method, _helpers._make_hashable(params))
-        except KeyError:
-            # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
-            logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
-            if method != "eth_call":
-                return await RPCRequest(self, method, params)
-            async with self.method_semaphores[method][params[1]]:
-                if params[0]["to"] not in self.no_multicall:
-                    return await eth_call(self, params)
-                return await RPCRequest(self, method, params)
+                if "unhashable type" in str(e):
+                    return await queue(self, method, _helpers._make_hashable(params))
+                raise e
+            
+        # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
+        logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
+        if method != "eth_call":
+            return await RPCRequest(self, method, params)
+        async with self.method_semaphores[method][params[1]]:
+            if params[0]["to"] not in self.no_multicall:
+                return await eth_call(self, params)
+            return await RPCRequest(self, method, params)
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
@@ -169,8 +171,8 @@ class DankMiddlewareController:
     @property
     def queue_is_full(self) -> bool:
         with self.pools_closed_lock:
-            if ENVS.OPERATION_MODE.infura:
-                return sum(len(call) for call in self.pending_rpc_calls) >= ENVS.MAX_JSONRPC_BATCH_SIZE
+            if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
+                return sum(len(call) for call in self.pending_rpc_calls) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
             eth_calls = sum(len(calls) for calls in self.pending_eth_calls.values())
             other_calls = sum(len(call) for call in self.pending_rpc_calls)
             return eth_calls + other_calls >= self.batcher.step
@@ -213,9 +215,9 @@ class DankMiddlewareController:
             logger.info("new multicall size limit %s is not lower than existing limit %s", new_limit, existing_limit)
             
     def set_batch_size_limit(self, new_limit: int) -> None:
-        existing_limit = ENVS.MAX_JSONRPC_BATCH_SIZE
+        existing_limit = ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
         if new_limit < existing_limit:
-            ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit
+            ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit  # type: ignore [attr-defined]
             logger.warning("jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit)
         else:
             logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))
