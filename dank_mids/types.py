@@ -2,7 +2,7 @@ import logging
 import re
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    List, Literal, NewType, Optional, TypedDict, TypeVar,
+                    List, Literal, NewType, Optional, Set, TypedDict, TypeVar,
                     Union, overload)
 
 import msgspec
@@ -37,6 +37,7 @@ class _DictStruct(msgspec.Struct):
     def __getitem__(self, attr: str) -> Any:
         return getattr(self, attr)
     def to_dict(self) -> Dict[str, Any]:
+        """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
         data = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
@@ -64,8 +65,8 @@ class Error(_DictStruct):
     data: Optional[Any] = ''
 
 # some devving tools that will go away eventually
-_dict_responses = set()
-_str_responses = set()
+_dict_responses: Set[str] = set()
+_str_responses: Set[str] = set()
 
 # TODO: use the types from snek
 Log = Dict[str, Union[bool, str, None, List[str]]]
@@ -91,24 +92,28 @@ decoder_logger = logging.getLogger('dank_mids.decoder')
 
 class PartialResponse(_DictStruct):
     result: msgspec.Raw = None  # type: ignore
+    "If the rpc response contains a 'result' field, it is set here"
     error: Optional[Error] = None
+    "If the rpc response contains an 'error' field, it is set here"
 
     @property
-    def exception(self) -> BadResponse:
+    def exception(self) -> Exception:
+        "If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
         return (
             PayloadTooLarge(self) if self.payload_too_large
             else ExceedsMaxBatchSize(self) if re.search(r'batch limit (\d+) exceeded', self.error.message)
-            else TypeError(self.error.message, "You're probably passing what should be an integer type as a string type. The usual culprit is a block number.") if self.error.message == 'invalid argument 1: hex string without 0x prefix'
+            else TypeError(self.error.message, "DANKMIDS NOTE: You're probably passing what should be an integer type as a string type. The usual culprit is a block number.") if self.error.message == 'invalid argument 1: hex string without 0x prefix'
             else BadResponse(self)
         )
     
     @property
     def payload_too_large(self) -> bool:
-        return any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)
+        return any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)  # type: ignore [union-attr]
         
-    def to_dict(self, method: Optional[str] = None) -> Dict[str, Any]:
+    def to_dict(self, method: Optional[RPCEndpoint] = None) -> Dict[str, Any]:
+        """Returns a complete dictionary representation of this response ``Struct``."""
         data = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
@@ -121,7 +126,7 @@ class PartialResponse(_DictStruct):
             data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr
         return data
 
-    def decode_result(self, method: Optional[str] = None, _caller = None) -> Any:
+    def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Any:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
@@ -174,15 +179,22 @@ class RawResponse:
     """
     def __init__(self, raw: msgspec.Raw) -> None:
         self._raw = raw
+        """The `msgspec.Raw` object wrapped by this wrapper."""
     @overload
-    def decode(self, partial = True) -> PartialResponse:...
+    def decode(self, partial: Literal[True]) -> PartialResponse:...
     @overload
-    def decode(self, partial = False) -> Response:...
+    def decode(self, partial: Literal[False]) -> Response:...
     def decode(self, partial: bool = False) -> Union[Response, PartialResponse]:
+        """Decode the wrapped `msgspec.Raw` object into a `Response` or a `PartialResponse`."""
         return msgspec.json.decode(self._raw, type=PartialResponse if partial else Response)
 
 JSONRPCBatchRequest = List[Request]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
 JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
 # We need this for proper decoding.
-_JSONRPCBatchResponse = Union[List[msgspec.Raw], PartialResponse]
+JSONRPCBatchResponseRaw = Union[List[msgspec.Raw], PartialResponse]
+
+def _encode_hook(obj: Any) -> Any:
+    if isinstance(obj, AttributeDict):
+        return dict(obj)
+    raise NotImplementedError(type(obj))

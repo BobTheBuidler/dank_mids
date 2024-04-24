@@ -17,7 +17,7 @@ from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids.helpers import _decode
+from dank_mids.helpers import _codec
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
 logger = logging.getLogger("dank_mids.session")
@@ -91,7 +91,7 @@ class ClientSession(DefaultClientSession):
         # Process input arguments.
         if isinstance(kwargs.get('data'), PartialRequest):
             logger.debug("making request for %s", kwargs['data'])
-            kwargs['data'] = msgspec.json.encode(kwargs['data'])
+            kwargs['data'] = _codec.encode(kwargs['data'])
         logger.debug("making request with (args, kwargs): (%s %s)", tuple(endpoint, *args), kwargs)
 
         # Try the request until success or 5 failures.
