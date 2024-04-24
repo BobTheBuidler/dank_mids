@@ -27,6 +27,12 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
+        exclude:
+        # gh runner throws "Error: Version ${{ matrix.pyversion }} with arch arm64 not found"
+        - os: macos-latest
+          pyversion: "3.8"
+        - os: macos-latest
+          pyversion: "3.9"
 
     steps:
       - name: Check out repository code
