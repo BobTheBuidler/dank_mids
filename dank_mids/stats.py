@@ -73,7 +73,7 @@ class _StatsLogger(logging.Logger):
         self._log_fn_result(level, _Writer.event_loop)
 
     def log_subprocess_stats(self, *, level: _LogLevel = STATS) -> None:
-        for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:
+        for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:  # type: ignore [attr-defined]
             self._log_fn_result(level, _Writer.queue, pool)
     
     # Internal helpers
@@ -97,7 +97,7 @@ class _StatsLogger(logging.Logger):
     # Daemon
 
     def _ensure_daemon(self) -> None:
-        if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:
+        if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:  # type: ignore [attr-defined]
             self._daemon = asyncio.create_task(self._stats_daemon())
         elif self._daemon.done():
             raise self._daemon.exception()
@@ -159,19 +159,19 @@ class _Collector:
         return sum(collector.event_loop_times) / len(collector.event_loop_times)
     @property
     def count_active_brownie_calls(self) -> int:
-        return ENVS.BROWNIE_CALL_SEMAPHORE.default_value - ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._value
+        return ENVS.BROWNIE_CALL_SEMAPHORE.default_value - ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._value  # type: ignore [attr-defined]
     @property
     def count_queued_brownie_calls(self) -> int:
-        return len(ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._waiters)
+        return len(ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._waiters)  # type: ignore [attr-defined]
     @property
     def encoder_queue_len(self) -> int:
-        return ENVS.BROWNIE_ENCODER_PROCESSES._queue_count
+        return ENVS.BROWNIE_ENCODER_PROCESSES._queue_count  # type: ignore [attr-defined]
     @property
     def decoder_queue_len(self) -> int:
-        return ENVS.BROWNIE_DECODER_PROCESSES._queue_count
+        return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
     @property
     def mcall_decoder_queue_len(self) -> int:
-        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count
+        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
         
 
 class _Writer:

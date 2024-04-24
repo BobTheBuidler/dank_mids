@@ -10,7 +10,7 @@ import asyncio
 from typing import List
 
 import dank_mids
-
+from web3.types import Timestamp
 
 # For the purpose of this example, we will define the Uniswap pools we want to get data from 
 # and the blocks at which we wish to fetch data.
@@ -60,6 +60,11 @@ async def get_tokens_for_pool(pool: dank_mids.Contract):
 # To batch other rpc calls, use the `dank_mids.eth` object like you would brownie's `web3.eth` object.
 # This object wraps the connected brownie Web3 instance and injects the dank middleware for batching
 
-async def get_timestamp_at_block(block: int):
-    block = await dank_mids.eth.get_block(block)
-    return block.timestamp
+async def get_timestamp_at_block(block: int) -> Timestamp:
+    data = await dank_mids.eth.get_block(block)
+    # dank mids will turn all dict responses into attr dicts for easier key lookup
+    # the syntax below will work but won't type check correctly
+    not_typed = data.timestamp  # type: ignore [attr-defined]
+    # the syntax below is more annoying to type out everywhere but will work with type checkers
+    typed =  data['timestamp']
+    return typed

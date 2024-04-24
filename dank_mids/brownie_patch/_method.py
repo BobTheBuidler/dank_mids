@@ -97,9 +97,9 @@ class _DankMethod(_DankMethodMixin):
         """
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
-        async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:
+        async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined]
             data = await self._encode_input(self, self._len_inputs, self._prep_request_data, *args)
-            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:
+            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined]
                 output = await self._web3.eth.call({"to": self._address, "data": data}, block_identifier)
         try:
             decoded = await self._decode_output(self, output)

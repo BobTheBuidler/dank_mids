@@ -66,10 +66,10 @@ class _HTTPStatusExtension(IntEnum):
 HTTPStatusExtended = IntEnum('HTTPStatusExtended', [(i.name, i.value) for i in chain(http.HTTPStatus, _HTTPStatusExtension)])
 
 RETRY_FOR_CODES = {
-    HTTPStatusExtended.BAD_GATEWAY,
-    HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR,
-    HTTPStatusExtended.CLOUDFLARE_CONNECTION_TIMEOUT,
-    HTTPStatusExtended.CLOUDFLARE_TIMEOUT,
+    HTTPStatusExtended.BAD_GATEWAY,  # type: ignore [attr-defined]
+    HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR,  # type: ignore [attr-defined]
+    HTTPStatusExtended.CLOUDFLARE_CONNECTION_TIMEOUT,  # type: ignore [attr-defined]
+    HTTPStatusExtended.CLOUDFLARE_TIMEOUT,  # type: ignore [attr-defined]
 }
 
 limiter = AsyncLimiter(5, 0.1)  # 50 requests/second
@@ -137,7 +137,7 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
     return ClientSession(
         connector = TCPConnector(limit=32),
         headers = {'content-type': 'application/json'}, 
-        timeout = ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT),  # type: ignore [arg-type]
+        timeout = ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT),  # type: ignore [arg-type, attr-defined]
         raise_for_status = True,
     )
 

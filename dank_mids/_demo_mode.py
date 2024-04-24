@@ -9,4 +9,4 @@ class DummyLogger:
     def info(self, *args: Any, **kwargs: Any) -> None:
         ...
 
-demo_logger = logging.getLogger("dank_mids.demo") if ENVIRONMENT_VARIABLES.DEMO_MODE else DummyLogger()
+demo_logger = logging.getLogger("dank_mids.demo") if ENVIRONMENT_VARIABLES.DEMO_MODE else DummyLogger()  # type: ignore [attr-defined]

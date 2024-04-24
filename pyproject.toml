@@ -1,3 +1,6 @@
 
 [tool.mypy]
 exclude = ["build/","cache/","env/","tests/"]
+ignore_missing_imports = true
+check_untyped_defs = true
+disable_error_code = ["return"]
