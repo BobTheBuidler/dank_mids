@@ -352,7 +352,7 @@ _Request = TypeVar("_Request")
 
 class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     _fut = None
-    __slots__ = 'calls', '_fut', '_lock', '_daemon'
+    __slots__ = 'calls', '_lock', '_daemon'
     calls: List[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
