@@ -440,7 +440,10 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     
     def _remove(self, proxy: weakref.CallableProxyType) -> None:
         try:
-            self.calls.remove(proxy)
+            try:
+                self.calls.remove(proxy)
+            except weakrefs.ReferenceError:
+                self.calls.remove(None)
         except ValueError:
             pass
 
