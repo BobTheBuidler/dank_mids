@@ -7,7 +7,7 @@ import weakref
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
-from functools import cached_property, lru_cache
+from functools import cached_property, lru_cache, partial
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, NoReturn, Optional, Tuple,
                     TypeVar, Union)
@@ -357,8 +357,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         self.controller = weakref.proxy(controller)
-        self.calls = []
-        self.calls.extend(weakref.proxy(call, self.calls.remove) for call in calls)
+        self.calls = [weakref.proxy(call, callback=self._remove) for call in calls]
         self._lock = _AlertingRLock(name=self.__class__.__name__)
         super().__init__()
     
@@ -433,6 +432,12 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif "429" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
+      
+    def _remove(self, proxy: weakref.CallableProxyType) -> None:
+        try:
+            self.calls.remove(proxy)
+        except ValueError:
+            pass
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
