@@ -835,7 +835,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     def _post_future_cleanup(self) -> None:
         with self.controller.pools_closed_lock:
             # a hacky way to get the real controller obj from the weak reference proxy
-            controller = self.controller.__getitem__.__self__
+            controller = self.controller.__repr__.__self__
             self.controller.pending_rpc_calls = JSONRPCBatch(controller)
 
 def _log_exception(e: Exception) -> bool:
