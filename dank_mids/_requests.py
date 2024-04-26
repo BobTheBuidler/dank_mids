@@ -447,7 +447,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         try:
             try:
                 self.calls.remove(proxy)
-            except weakrefs.ReferenceError:
+            except weakref.ReferenceError:
                 self.calls.remove(None)
         except ValueError:
             pass
