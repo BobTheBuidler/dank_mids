@@ -108,7 +108,7 @@ class DankMiddlewareController:
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
         
-        self.method_semaphores = _MethodSemaphores(self)
+        self.eth_call_semaphores = _MethodSemaphores(self)["eth_call"]  # TODO: refactor this out
         # semaphores soon to be deprecated for smart queue
         self.method_queues = _MethodQueues(self)
         self.batcher = NotSoBrightBatcher()
@@ -141,7 +141,7 @@ class DankMiddlewareController:
         logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
         if method != "eth_call":
             return await RPCRequest(self, method, params)
-        async with self.method_semaphores[method][params[1]]:
+        async with self.eth_call_semaphores[params[1]]:
             if params[0]["to"] not in self.no_multicall:
                 return await eth_call(self, params)
             return await RPCRequest(self, method, params)

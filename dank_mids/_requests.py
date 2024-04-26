@@ -3,10 +3,11 @@ import abc
 import asyncio
 import logging
 import time
+import weakref
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
-from functools import cached_property, lru_cache
+from functools import cached_property, lru_cache, partial
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, NoReturn, Optional, Tuple,
                     TypeVar, Union)
@@ -49,7 +50,7 @@ _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPC
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
         super().__init__(debug_daemon_interval=300)
-        self._owner = owner
+        self._owner = weakref.proxy(owner)
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
     def set(self):
@@ -60,7 +61,7 @@ class _RequestEvent(a_sync.Event):
             self._loop.call_soon_threadsafe(super().set)
 
 class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
-    __slots__ = 'controller', 'uid', '_response', '_done', '_start', '_batch'
+    __slots__ = 'controller', 'uid', '_response', '_done', '_start', '_batch', '__weakref__'
     controller: "DankMiddlewareController"
     def __init__(self) -> None:
         self.uid = self.controller.call_uid.next
@@ -108,7 +109,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     _types = set()
 
     def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any, retry: bool = False):
-        self.controller = controller
+        self.controller = weakref.proxy(controller)
         self.method = method
         self.params = params
         self.should_batch = _should_batch_method(method)
@@ -350,15 +351,14 @@ class eth_call(RPCRequest):
 _Request = TypeVar("_Request")
 
 class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
-    __slots__ = 'calls', '_fut', '_lock', '_daemon'
+    _fut = None
+    __slots__ = 'calls', '_lock', '_daemon'
     calls: List[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
-        self.controller = controller
-        self.calls = list(calls)  # type: ignore
-        self._fut = None
+        self.controller = weakref.proxy(controller)
+        self.calls = [weakref.proxy(call, callback=self._remove) for call in calls]
         self._lock = _AlertingRLock(name=self.__class__.__name__)
-        #self._len = 0
         super().__init__()
     
     def __bool__(self) -> bool:
@@ -432,6 +432,12 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif "429" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
+      
+    def _remove(self, proxy: weakref.CallableProxyType) -> None:
+        try:
+            self.calls.remove(proxy)
+        except ValueError:
+            pass
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
@@ -828,7 +834,9 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 
     def _post_future_cleanup(self) -> None:
         with self.controller.pools_closed_lock:
-            self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)
+            # a hacky way to get the real controller obj from the weak reference proxy
+            controller = self.controller.__repr__.__self__
+            self.controller.pending_rpc_calls = JSONRPCBatch(controller)
 
 def _log_exception(e: Exception) -> bool:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
