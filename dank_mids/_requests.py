@@ -384,11 +384,11 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         
     @property
     def chunk0(self) -> List[_Request]:
-        return self.calls[:self.halfpoint]
+        return [call.__repr__.__self__ for call in self.calls[:self.halfpoint]]
     
     @property
     def chunk1(self) -> List[_Request]:
-        return self.calls[self.halfpoint:]
+        return [call.__repr__.__self__ for call in self.calls[self.halfpoint:]]
     
     def append(self, call: _Request, skip_check: bool = False) -> None:
         with self._lock:
@@ -432,6 +432,11 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif "429" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
+
+    @property
+    def _true_calls(self) -> List[_Request]:
+        "A hacky way to get the actual call objects back from the weakref proxy."
+        return [call.__repr__.__self__ for call in self.calls]
 
     @property
     def _true_controller(self) -> "DankMiddlewareController":
@@ -815,7 +820,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         """
         logger.debug("%s had exception %s, retrying", self, e)
         batches = [
-            Multicall(self._true_controller, chunk[0].calls, f"json{self.jid}_{i}")  # type: ignore [misc]
+            Multicall(self._true_controller, chunk[0]._true_calls, f"json{self.jid}_{i}")  # type: ignore [misc]
             if len(chunk) == 1 and isinstance(chunk[0], Multicall)
             else JSONRPCBatch(self._true_controller, chunk, f"{self.jid}_{i}")
             for i, chunk in enumerate(self.bisected)
