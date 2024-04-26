@@ -357,7 +357,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         self.controller = weakref.proxy(controller)
-        self.calls = [weakref.proxy(call, callback=self._remove) for call in calls]
+        self.calls = [weakref.proxy(call, self._remove) for call in calls]
         self._lock = _AlertingRLock(name=self.__class__.__name__)
         super().__init__()
     
