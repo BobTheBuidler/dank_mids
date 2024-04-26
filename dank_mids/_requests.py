@@ -432,7 +432,12 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
         elif "429" not in f"{e}":
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
-      
+
+    @property
+    def _true_controller(self) -> "DankMiddlewareController":
+        "A hacky way to get the actual controller object back from the weakref proxy."
+        return self.controller.__repr__.__self__
+    
     def _remove(self, proxy: weakref.CallableProxyType) -> None:
         try:
             self.calls.remove(proxy)
@@ -599,7 +604,7 @@ class Multicall(_Batch[eth_call]):
         Calls `self._done.set()` when finished.
         """
         logger.debug("%s had exception %s, bisecting and retrying", self, e)
-        batches = [Multicall(self.controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
+        batches = [Multicall(self._true_controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)]
         for batch in batches:
             batch.start(cleanup=False)
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
@@ -834,9 +839,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
 
     def _post_future_cleanup(self) -> None:
         with self.controller.pools_closed_lock:
-            # a hacky way to get the real controller obj from the weak reference proxy
-            controller = self.controller.__repr__.__self__
-            self.controller.pending_rpc_calls = JSONRPCBatch(controller)
+            self.controller.pending_rpc_calls = JSONRPCBatch(self._true_controller)
 
 def _log_exception(e: Exception) -> bool:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
