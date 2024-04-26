@@ -3,6 +3,7 @@ import abc
 import asyncio
 import logging
 import time
+import weakref
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
@@ -49,7 +50,7 @@ _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPC
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
         super().__init__(debug_daemon_interval=300)
-        self._owner = owner
+        self._owner = weakref.ref(owner)
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
     def set(self):
@@ -108,7 +109,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     _types = set()
 
     def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any, retry: bool = False):
-        self.controller = controller
+        self.controller = weakref.proxy(controller)
         self.method = method
         self.params = params
         self.should_batch = _should_batch_method(method)
@@ -350,15 +351,15 @@ class eth_call(RPCRequest):
 _Request = TypeVar("_Request")
 
 class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
+    _fut = None
     __slots__ = 'calls', '_fut', '_lock', '_daemon'
     calls: List[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
-        self.controller = controller
-        self.calls = list(calls)  # type: ignore
-        self._fut = None
+        self.controller = weakref.ref(controller)
+        self.calls = []
+        self.calls.extend(weakref.ref(call, self.calls.remove) for call in calls)
         self._lock = _AlertingRLock(name=self.__class__.__name__)
-        #self._len = 0
         super().__init__()
     
     def __bool__(self) -> bool:
