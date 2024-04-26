@@ -50,7 +50,7 @@ _Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPC
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
         super().__init__(debug_daemon_interval=300)
-        self._owner = weakref.ref(owner)
+        self._owner = weakref.proxy(owner)
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
     def set(self):
@@ -356,9 +356,9 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     calls: List[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
-        self.controller = weakref.ref(controller)
+        self.controller = weakref.proxy(controller)
         self.calls = []
-        self.calls.extend(weakref.ref(call, self.calls.remove) for call in calls)
+        self.calls.extend(weakref.proxy(call, self.calls.remove) for call in calls)
         self._lock = _AlertingRLock(name=self.__class__.__name__)
         super().__init__()
     
