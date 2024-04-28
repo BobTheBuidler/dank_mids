@@ -33,6 +33,7 @@ intersphinx_mapping = {
     'brownie': ('https://eth-brownie.readthedocs.io/en/stable/', None),
     'hexbytes': ('https://hexbytes.readthedocs.io/en/stable/', None),
     'python': ('https://docs.python.org/3', None),
+    'typing_extensions': ('https://typing-extensions.readthedocs.io/en/latest/', None),
     'web3': ('https://web3py.readthedocs.io/en/stable/', None),
 }
 
