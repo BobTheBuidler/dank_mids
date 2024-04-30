@@ -21,6 +21,7 @@ from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from web3.types import RPCEndpoint, RPCResponse
+from web3.types import RPCError as _RPCError
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import _debugging, constants, stats
@@ -44,7 +45,10 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-_Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPCResponse])
+_Response = TypeVar("_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse)
+
+class RPCError(_RPCError, total=False):
+    dankmids_added_context: Dict[str, Any]
 
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
@@ -64,7 +68,7 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     controller: "DankMiddlewareController"
     def __init__(self) -> None:
         self.uid = self.controller.call_uid.next
-        self._response: Union[_Response, Exception, None] = None
+        self._response: Union[_Response, RPCResponse, Exception, None] = None
         self._done = _RequestEvent(self)
         self._start = time.time()
     
@@ -104,7 +108,7 @@ BYPASS_METHODS = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
 def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
-class RPCRequest(_RequestMeta[RPCResponse]):
+class RPCRequest(_RequestMeta[RawResponse]):
     __slots__ = 'method', 'params', 'should_batch', '_started', '_retry', '_daemon'
     def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any, retry: bool = False):
         self.controller = weakref.proxy(controller)
@@ -148,12 +152,12 @@ class RPCRequest(_RequestMeta[RPCResponse]):
     def request(self) -> Union[Request, PartialRequest]:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
     
-    def start(self, batch: Union["_Batch", "DankBatch"]) -> None:
+    def start(self, batch: Union["_Batch", "DankBatch"]) -> None:  # type: ignore [override]
         self._started = True
         self._batch = batch
 
     @set_done
-    async def get_response(self) -> RPCResponse:
+    async def get_response(self) -> RPCResponse:  # type: ignore [override]
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
             try:
@@ -188,15 +192,16 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         # JIT json decoding
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True).to_dict(self.method)
-            if 'error' in response:
-                if response['error']['message'].lower() in ['invalid request', 'parse error']:
+            error: Optional[RPCError]
+            if error := response.get('error'):  # type: ignore [assignment]
+                if error['message'].lower() in ['invalid request', 'parse error']:
                     if self.controller._time_of_request_type_change == 0:
                         self.controller.request_type = Request
                         self.controller._time_of_request_type_change = time.time()
                     if time.time() - self.controller._time_of_request_type_change <= 600:
                         logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                         return await self.controller(self.method, self.params)
-                response['error']['dankmids_added_context'] = self.request.to_dict()
+                error['dankmids_added_context'] = self.request.to_dict()
                 # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
                 # But I'll check it anyway to be safe
                 if result := response.pop('result', None):
@@ -446,11 +451,8 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
       
-    def _remove(self, proxy: weakref.CallableProxyType) -> None:
-        try:
-            self.calls.remove(proxy)
-        except ValueError:
-            pass
+    def _post_future_cleanup(self) -> None:
+        raise NotImplementedError
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
@@ -460,11 +462,11 @@ def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
 
 def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:        
     try:
-        # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
-        data = data.decode_result("eth_call")[2:]  # type: ignore [arg-type]
-        data = bytes.fromhex(data)
-        return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
+        decoded = data.decode_result("eth_call")[2:]  # type: ignore [arg-type]
+        decoded = bytes.fromhex(decoded)
+        return mcall_decoder(decoding.ContextFramesBytesIO(decoded))[2]
     except Exception as e:
+        # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         try:
             # We do this goofy thing since we can't `return Exc() from e`
             raise e.__class__(*e.args, data.decode_result() if isinstance(data, PartialResponse) else data) from e
@@ -472,7 +474,7 @@ def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Excep
             return new_e
     
 
-class Multicall(_Batch[eth_call]):
+class Multicall(_Batch[RPCResponse, eth_call]):
     __slots__ = 'bid', '_started', '__dict__'  # We need to specify __dict__ for the cached properties to work
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")    
@@ -492,7 +494,7 @@ class Multicall(_Batch[eth_call]):
     
     @property
     def calldata(self) -> str:
-        return (self.fourbyte + mcall_encode([[call.target, call.calldata] for call in self.calls])).hex()
+        return (self.fourbyte + mcall_encode([[call.target, call.calldata] for call in self.calls])).hex()  # type: ignore [misc]
     
     @property
     def target(self) -> ChecksumAddress:
@@ -507,7 +509,7 @@ class Multicall(_Batch[eth_call]):
         params = [{'to': self.target, 'data': f'0x{self.calldata}'}, self.block]
         if self.needs_override_code and not self.controller.state_override_not_supported:
             params.append({self.target: {'code': self.mcall.bytecode}})
-        return params
+        return params  # type: ignore [return-value]
     
     @property
     def request(self) -> Union[Request, PartialRequest]:
@@ -521,7 +523,7 @@ class Multicall(_Batch[eth_call]):
     def needs_override_code(self) -> bool:
         return self.mcall.needs_override_code_for_block(self.block)
         
-    async def get_response(self) -> None:
+    async def get_response(self) -> None:  # type: ignore [override]
         if self._started:
             logger.error(f'{self} early exit')
             return
@@ -534,7 +536,7 @@ class Multicall(_Batch[eth_call]):
         demo_logger.info(f'request {rid} for multicall {self.bid} starting')  # type: ignore
         try:
             await self.spoof_response(await self.controller.make_request(self.method, self.params, request_id=self.uid))
-        except internal_err_types.__args__ as e:
+        except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
             raise e if 'invalid argument' in str(e) else DankMidsInternalError(e) from e
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
@@ -632,7 +634,7 @@ class Multicall(_Batch[eth_call]):
                 self.controller.pending_eth_calls.pop(self.block)
 
 
-class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
+class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     __slots__ = 'jid', '_started'
     def __init__(
         self,
@@ -693,7 +695,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         with self._lock:
             return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
 
-    async def get_response(self) -> None:
+    async def get_response(self) -> None:  # type: ignore [override]
         if self._started:
             logger.warning(f"{self} exiting early. This shouldn't really happen bro")
             return
@@ -706,7 +708,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             # NOTE: We do this inline so we never have to allocate the response to memory
             await self.spoof_response(await self.post())
         # I want to see these asap when working on the lib.
-        except internal_err_types.__args__ as e:
+        except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
             raise e if 'invalid argument' in str(e) else DankMidsInternalError(e) from e
         except EmptyBatch as e:
             logger.warning("These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon.")
