@@ -7,6 +7,7 @@ from importlib.metadata import version
 from typing import Any, DefaultDict, List, Literal, Optional
 
 import eth_retry
+from eth_typing import ChecksumAddress
 from eth_utils import to_checksum_address
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
@@ -24,7 +25,7 @@ from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers import _codec, _helpers, _session
-from dank_mids.semaphores import _MethodQueues, _MethodSemaphores
+from dank_mids.semaphores import _MethodQueues, _MethodSemaphores, BlockSemaphore
 from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
                              Request)
 
@@ -108,11 +109,12 @@ class DankMiddlewareController:
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
         
-        self.eth_call_semaphores = _MethodSemaphores(self)["eth_call"]  # TODO: refactor this out
+        self.method_semaphores = _MethodSemaphores(self)  # TODO: refactor this out
+        self.eth_call_semaphores: BlockSemaphore = self.method_semaphores["eth_call"]  # type: ignore [assignment]
         # semaphores soon to be deprecated for smart queue
         self.method_queues = _MethodQueues(self)
         self.batcher = NotSoBrightBatcher()
-        self.batcher.step = ENVS.MAX_MULTICALL_SIZE
+        self.batcher.step = ENVS.MAX_MULTICALL_SIZE  # type: ignore [attr-defined]
 
         self.call_uid = UIDGenerator()
         self.multicall_uid: UIDGenerator = UIDGenerator()
@@ -225,16 +227,16 @@ class DankMiddlewareController:
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(self, block) -> "_MulticallContract":
         if block == 'latest':
-            return self.mc3 if self.mc3 else self.mc2
+            return self.mc3 if self.mc3 else self.mc2  # type: ignore [return-value]
         if self.mc3 and not self.mc3.needs_override_code_for_block(block):
             return self.mc3
         if self.mc2:
             # We don't care if mc2 needs override code, mc2 override code is shorter
             return self.mc2
-        return self.mc3
+        return self.mc3  # type: ignore [return-value]
 
 class _MulticallContract(Struct):
-    address: str
+    address: ChecksumAddress
     deploy_block: Optional[int]
     bytecode: str
     
