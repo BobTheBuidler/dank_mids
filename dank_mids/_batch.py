@@ -1,11 +1,11 @@
 
 import asyncio
 import logging
-from typing import TYPE_CHECKING, Any, Generator, List
+from typing import TYPE_CHECKING, Any, Awaitable, Generator, List, Union
 
 from dank_mids._exceptions import DankMidsInternalError
-from dank_mids._requests import JSONRPCBatch, RPCRequest, _Batch
-from dank_mids.types import Multicalls
+from dank_mids._requests import _Batch, JSONRPCBatch, Multicall, RPCRequest
+from dank_mids.types import Multicalls, RawResponse
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class DankBatch:
     __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
     """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
-    def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[RPCRequest]):
+    def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[Union[Multicall, RPCRequest]]):
         self.controller = controller
         self.multicalls = multicalls
         self.rpc_calls = rpc_calls
@@ -44,7 +44,7 @@ class DankBatch:
         self._started = True
     
     @property
-    def coroutines(self) -> Generator["_Batch", None, None]:
+    def coroutines(self) -> Generator[Union["_Batch", Awaitable[RawResponse]], None, None]:
         # Combine multicalls into one or more jsonrpc batches
 
         # Create empty batch
@@ -73,6 +73,6 @@ class DankBatch:
             if working_batch.is_single_multicall:
                 yield working_batch[0]  # type: ignore [misc]
             elif len(working_batch) == 1:
-                yield working_batch[0].make_request()
+                yield working_batch[0].make_request()  # type: ignore [union-attr]
             else:
                 yield working_batch

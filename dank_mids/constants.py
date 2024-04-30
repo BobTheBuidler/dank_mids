@@ -1,6 +1,8 @@
-
+# mypy: disable-error-code="attr-defined, dict-item"
+from typing import Dict
 
 import multicall
+from eth_typing import BlockNumber
 from multicall.constants import Network
 
 TOO_MUCH_DATA_ERRS = ["Payload Too Large", "content length too large", "request entity too large", "batch limit exceeded"]
@@ -13,14 +15,14 @@ try:
 except AttributeError:
     MULTICALL3_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
 
-MULTICALL2_DEPLOY_BLOCKS = {
+MULTICALL2_DEPLOY_BLOCKS: Dict[Network, BlockNumber] = {
     Network.Mainnet: 12336033,
     Network.Fantom: 16572242,
     Network.Arbitrum: 821923,
     Network.Optimism: 722566,
 }
 
-MULTICALL3_DEPLOY_BLOCKS = {
+MULTICALL3_DEPLOY_BLOCKS: Dict[Network, BlockNumber] = {
     Network.Mainnet: 14353601,
     Network.Fantom: 33001987,
     Network.Arbitrum: 7654707,

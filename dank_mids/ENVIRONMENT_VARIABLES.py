@@ -1,5 +1,6 @@
-# type: ignore [attr-defined]
+# mypy: disable-error-code="attr-defined,dict-item"
 import logging
+from typing import Dict
 
 import a_sync
 import typed_envs
@@ -69,7 +70,7 @@ COLLECT_STATS = _envs.create_env("COLLECT_STATS", bool, default=EXPORT_STATS, ve
 STUCK_CALL_TIMEOUT = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60*60*2)
 
 # Method-specific Semaphores
-method_semaphores = {
+method_semaphores: Dict[str, a_sync.Semaphore] = {
     "eth_call": _envs.create_env("ETH_CALL_SEMAPHORE", BlockSemaphore, default=BROWNIE_CALL_SEMAPHORE._value, string_converter=int, verbose=False),
     "eth_getBlock": _envs.create_env("ETH_GETBLOCK_SEMAPHORE", a_sync.Semaphore, default=1_000, string_converter=int, verbose=False),
     "eth_getLogs": _envs.create_env("ETH_GETLOGS_SEMAPHORE", a_sync.Semaphore, default=64, string_converter=int, verbose=False),

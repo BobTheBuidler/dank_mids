@@ -11,7 +11,8 @@ from web3 import Web3
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
 from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod, DankOverloadedMethod, _get_method_object
-
+from dank_mids.helpers._helpers import DankWeb3
+    
 
 EventName = NewType("EventName", str)
 LogTopic = NewType("LogTopic", str)
@@ -97,10 +98,10 @@ class Contract(brownie.Contract):
 
     
 @overload
-def patch_contract(contract: Contract, w3: Optional[Web3] = None) -> Contract:...
+def patch_contract(contract: Contract, w3: Optional[DankWeb3] = None) -> Contract:...
 @overload
-def patch_contract(contract: Union[brownie.Contract, str], w3: Optional[Web3] = None) -> brownie.Contract:...
-def patch_contract(contract: Union[Contract, brownie.Contract, str], w3: Optional[Web3] = None) -> Union[Contract, brownie.Contract]:
+def patch_contract(contract: Union[brownie.Contract, str], w3: Optional[DankWeb3] = None) -> brownie.Contract:...
+def patch_contract(contract: Union[Contract, brownie.Contract, str], w3: Optional[DankWeb3] = None) -> Union[Contract, brownie.Contract]:
     """returns a patched version of `contract` with async and call batchings functionalities"""
     if not isinstance(contract, brownie.Contract):
         contract = brownie.Contract(contract)
@@ -112,7 +113,7 @@ def patch_contract(contract: Union[Contract, brownie.Contract, str], w3: Optiona
         _patch_if_method(v, w3)
     return contract
 
-def _patch_if_method(method: ContractMethod, w3: Web3) -> None:
+def _patch_if_method(method: ContractMethod, w3: DankWeb3) -> None:
     if isinstance(method, (ContractCall, ContractTx)):
         _patch_call(method, w3)
     elif isinstance(method, OverloadedMethod):

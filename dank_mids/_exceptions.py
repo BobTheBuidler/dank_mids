@@ -46,7 +46,7 @@ class DankMidsClientResponseError(ClientResponseError):
 internal_err_types = Union[AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError, SyntaxError]
 
 class DankMidsInternalError(Exception):
-    def __init__(self, e: internal_err_types) -> None:
+    def __init__(self, e: Union[ValueError, internal_err_types]) -> None:
         logger.warning(f"unhandled exception inside dank mids internals: {e}", exc_info=True)
         self._original_exception = e
         super().__init__(e.__repr__())

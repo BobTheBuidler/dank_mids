@@ -12,7 +12,7 @@ import msgspec
 from aiohttp import ClientSession as DefaultClientSession
 from aiohttp import ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
-from aiohttp.typedefs import JSONDecoder
+from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
@@ -58,12 +58,12 @@ class _HTTPStatusExtension(IntEnum):
     def __new__(cls, value, phrase, description=''):
         obj = int.__new__(cls, value)
         obj._value_ = value
-        obj.phrase = phrase
-        obj.description = description
+        obj.phrase = phrase  # type: ignore [attr-defined]
+        obj.description = description  # type: ignore [attr-defined]
         return obj
 
 # Then, combine the standard HTTPStatus enum and the custom extension to get the full custom HTTPStatus enum we need.
-HTTPStatusExtended = IntEnum('HTTPStatusExtended', [(i.name, i.value) for i in chain(http.HTTPStatus, _HTTPStatusExtension)])
+HTTPStatusExtended = IntEnum('HTTPStatusExtended', [(i.name, i.value) for i in chain(http.HTTPStatus, _HTTPStatusExtension)])  # type: ignore [misc]
 
 RETRY_FOR_CODES = {
     HTTPStatusExtended.BAD_GATEWAY,  # type: ignore [attr-defined]
@@ -78,7 +78,7 @@ limiter = AsyncLimiter(5, 0.1)  # 50 requests/second
 async def post(endpoint: str, *args, loads: Callable[[Any], RawResponse], **kwargs) -> RawResponse:...
 @overload
 async def post(endpoint: str, *args, loads: Callable[[Any], JSONRPCBatchResponse], **kwargs) -> JSONRPCBatchResponse:...
-async def post(endpoint: str, *args, loads: Optional[JSONDecoder] = None, **kwargs) -> Any:
+async def post(endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> Any:
     """Returns decoded json data from `endpoint`"""
     session = await get_session()
     return await session.post(endpoint, *args, loads=loads, **kwargs)
@@ -87,7 +87,7 @@ async def get_session() -> "ClientSession":
     return await _get_session_for_thread(get_ident())
 
 class ClientSession(DefaultClientSession):
-    async def post(self, endpoint: str, *args, loads: Optional[JSONDecoder] = None, _retry_after: int = 1, **kwargs) -> bytes:  # type: ignore [override]
+    async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, _retry_after: float = 1, **kwargs) -> bytes:  # type: ignore [override]
         # Process input arguments.
         if isinstance(kwargs.get('data'), PartialRequest):
             logger.debug("making request for %s", kwargs['data'])
@@ -100,12 +100,12 @@ class ClientSession(DefaultClientSession):
             try:
                 async with limiter:
                     async with super().post(endpoint, *args, **kwargs) as response:
-                        response = await response.json(loads=loads, content_type=None)
-                        logger.debug("received response %s", response)
-                        return response
+                        response_data = await response.json(loads=loads, content_type=None)
+                        logger.debug("received response %s", response_data)
+                        return response_data
             except ClientResponseError as ce:
-                if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:
-                    try_after = float(ce.headers.get("Retry-After", _retry_after * 1.5))
+                if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
+                    try_after = float(ce.headers.get("Retry-After", _retry_after * 1.5))  # type: ignore [union-attr]
                     if self not in _limited:
                         _limited.append(self)
                         logger.info("You're being rate limited by your node provider")

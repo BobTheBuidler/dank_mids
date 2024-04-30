@@ -7,11 +7,11 @@ from typing import Any, Awaitable, Callable, Dict, Generic, Iterable, List, Opti
 from brownie.typing import AccountsType
 from brownie.convert.datatypes import EthAddress
 from eth_abi.exceptions import InsufficientDataBytes
-from web3 import Web3
+from hexbytes.main import BytesLike
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.brownie_patch._abi import FunctionABI
-from dank_mids.helpers._helpers import _make_hashable
+from dank_mids.helpers._helpers import DankWeb3, _make_hashable
 
 _EVMType = TypeVar("_EVMType")
 
@@ -36,6 +36,14 @@ class _DankMethodMixin(Generic[_EVMType]):
     @property
     def signature(self) -> str:
         return self._abi.signature
+    async def coroutine(  # type: ignore [empty-body]
+        self, 
+        *args: Any, 
+        block_identifier: Optional[int] = None, 
+        decimals: Optional[int] = None,
+        override: Optional[Dict[str, str]] = None,
+    ) -> _EVMType:
+        raise NotImplementedError
     @property
     def _input_sig(self) -> str:
         return self._abi.input_sig
@@ -47,13 +55,13 @@ class _DankMethodMixin(Generic[_EVMType]):
         from dank_mids.brownie_patch.call import _skip_proc_pool
         return self._address in _skip_proc_pool
     @functools.cached_property
-    def _web3(cls) -> Web3:
+    def _web3(cls) -> DankWeb3:
         from dank_mids import web3
         return web3
     @functools.cached_property
-    def _prep_request_data(self) -> Callable[..., Awaitable[bytes]]:
+    def _prep_request_data(self) -> Callable[..., Awaitable[BytesLike]]:
         from dank_mids.brownie_patch import call
-        if ENVS.OPERATION_MODE.application or self._len_inputs:
+        if ENVS.OPERATION_MODE.application or self._len_inputs:  # type: ignore [attr-defined]
             return call.encode
         else:
             return call._request_data_no_args
@@ -97,9 +105,9 @@ class _DankMethod(_DankMethodMixin):
         """
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
-        async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined]
+        async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
             data = await self._encode_input(self, self._len_inputs, self._prep_request_data, *args)
-            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined]
+            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
                 output = await self._web3.eth.call({"to": self._address, "data": data}, block_identifier)
         try:
             decoded = await self._decode_output(self, output)

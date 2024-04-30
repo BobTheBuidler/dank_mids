@@ -5,12 +5,13 @@ from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
                     Iterable, List, Literal, Optional, TypeVar)
 
 from async_lru import alru_cache
+from eth_typing import BlockNumber
 from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
                                apply_key_map, is_null)
 from eth_utils.toolz import assoc, complement, compose, merge
 from hexbytes import HexBytes
 from multicall.utils import get_async_w3
-from typing_extensions import ParamSpec
+from typing_extensions import Concatenate, ParamSpec
 from web3 import Web3
 from web3.datastructures import AttributeDict
 from web3._utils.rpc_abi import RPC
@@ -22,7 +23,7 @@ from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 from dank_mids.types import AsyncMiddleware
 
 if TYPE_CHECKING:
-    from dank_mids._requests import RPCRequest
+    from dank_mids._requests import _Request
 
 dank_w3s: List[Web3] = []
 
@@ -31,8 +32,9 @@ P = ParamSpec("P")
 
 class DankEth(AsyncEth):
     @alru_cache(ttl=0)
-    async def get_block_number(self) -> int:
-        return await super().get_block_number()
+    async def get_block_number(self) -> BlockNumber:  # type: ignore [override]
+        block = await super().get_block_number()  # type: ignore [misc]
+        return block
     
 class DankWeb3:
     """This is just a helper for type checkers. Your object will just be a modified ``web3.Web3`` object."""
@@ -61,9 +63,9 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
         await fut
         del fut
 
-def set_done(fn: Callable[P, Awaitable[T]]):
+def set_done(fn: Callable[Concatenate["_Request", P], Awaitable[T]]) -> Callable[Concatenate["_Request", P], Awaitable[T]]:
 	@wraps(fn)
-	async def set_done_wrap(self: "RPCRequest", *args: P.args, **kwargs: P.kwargs) -> T:
+	async def set_done_wrap(self: "_Request", *args: P.args, **kwargs: P.kwargs) -> T:
 		retval = await fn(self, *args, **kwargs)
 		self._done.set()
 		return retval

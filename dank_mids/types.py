@@ -2,8 +2,8 @@ import logging
 import re
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    List, Literal, NewType, Optional, Set, TypedDict, TypeVar,
-                    Union, overload)
+                    List, Literal, NewType, Optional, Set, Tuple, TypedDict, 
+                    TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
@@ -95,7 +95,6 @@ class PartialResponse(_DictStruct):
     "If the rpc response contains a 'result' field, it is set here"
     error: Optional[Error] = None
     "If the rpc response contains an 'error' field, it is set here"
-
     @property
     def exception(self) -> Exception:
         "If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."
@@ -112,9 +111,9 @@ class PartialResponse(_DictStruct):
     def payload_too_large(self) -> bool:
         return any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)  # type: ignore [union-attr]
         
-    def to_dict(self, method: Optional[RPCEndpoint] = None) -> Dict[str, Any]:
+    def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
-        data = {}
+        data: RPCResponse = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
             if attr is None:
@@ -123,10 +122,10 @@ class PartialResponse(_DictStruct):
                 attr = self.decode_result(method=method, _caller=self)
             if isinstance(attr, _DictStruct):
                 attr = attr.to_dict()
-            data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr
+            data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr  # type: ignore [literal-required]
         return data
 
-    def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Any:
+    def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Union[str, AttributeDict]:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
