@@ -262,10 +262,9 @@ class RPCRequest(_RequestMeta[RawResponse]):
     @property
     def semaphore(self) -> a_sync.Semaphore:
         # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
-        semaphore = self.controller.method_semaphores[self.method]
         if self.method == 'eth_call':
-            semaphore = semaphore[self.params[1]]
-        return semaphore
+            return self.controller.eth_call_semaphores[self.params[1]]
+        return self.controller.method_semaphores[self.method]  # type: ignore [return-value]
     
     async def create_duplicate(self) -> RPCResponse: # Not actually self, but for typing purposes it is.
         # We need to make room since the stalled call is still holding the semaphore
@@ -299,7 +298,11 @@ def _needs_full_request_spec(e: BadResponse):
 
 
 class eth_call(RPCRequest):
+    block: BlockId
+    """The block height at which the contract will be called."""
+
     __slots__ = 'block'
+
     def __init__(self, controller: "DankMiddlewareController", params: Any, retry: bool = False) -> None:
         """ Adds a call to the DankMiddlewareContoller's `pending_eth_calls`. """
         self.block = params[1]
@@ -342,7 +345,7 @@ class eth_call(RPCRequest):
     @property
     def semaphore(self) -> a_sync.Semaphore:
         # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
-        return self.controller.method_semaphores['eth_call'][self.block]
+        return self.controller.eth_call_semaphores[self.block]
     
     
 
@@ -389,6 +392,10 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     @property
     def chunk1(self) -> List[_Request]:
         return self.calls[self.halfpoint:]
+
+    @property
+    def is_full(self) -> bool:
+        raise NotImplementedError(type(self).__name__)
     
     def append(self, call: _Request, skip_check: bool = False) -> None:
         with self._lock:
@@ -715,7 +722,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
             #       I include this elif clause as a failsafe. This is rare and should not impact performance.
             elif not self.is_single_multicall:
                 # Just to force my IDE to resolve types correctly
-                calls : List[RPCRequest] = self.calls
+                calls : List[RPCRequest] = self.calls # type: ignore [assignment]
                 logger.debug("%s had exception %s, aborting and setting Exception as call._response", self, e)
                 # NOTE: This means an exception occurred during the post request
                 # AND that the json batch is made of just one rpc request that is not a multicall.
