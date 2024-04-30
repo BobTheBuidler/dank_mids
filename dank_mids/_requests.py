@@ -360,7 +360,7 @@ class eth_call(RPCRequest):
 
 _Request = TypeVar("_Request", bound=_RequestMeta)
 
-class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
+class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
     _fut = None
     __slots__ = 'calls', '_lock', '_daemon'
     calls: List[_Request]
