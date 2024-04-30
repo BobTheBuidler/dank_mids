@@ -298,14 +298,11 @@ def _needs_full_request_spec(e: BadResponse):
 
 
 class eth_call(RPCRequest):
-    block: BlockId
-    """The block height at which the contract will be called."""
-
     __slots__ = 'block'
-
     def __init__(self, controller: "DankMiddlewareController", params: Any, retry: bool = False) -> None:
         """ Adds a call to the DankMiddlewareContoller's `pending_eth_calls`. """
-        self.block = params[1]
+        self.block: BlockId = params[1]
+        """The block height at which the contract will be called."""
         super().__init__(controller, "eth_call", params)  # type: ignore
     
     @property
