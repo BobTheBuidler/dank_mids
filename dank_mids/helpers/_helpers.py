@@ -23,7 +23,7 @@ from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 from dank_mids.types import AsyncMiddleware
 
 if TYPE_CHECKING:
-    from dank_mids._requests import RPCRequest
+    from dank_mids._requests import _Request
 
 dank_w3s: List[Web3] = []
 
@@ -63,9 +63,9 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
         await fut
         del fut
 
-def set_done(fn: Callable[Concatenate["RPCRequest", P], Awaitable[T]]):
+def set_done(fn: Callable[Concatenate["_Request", P], Awaitable[T]]) -> Callable[Concatenate["_Request", P], Awaitable[T]]:
 	@wraps(fn)
-	async def set_done_wrap(self: "RPCRequest", *args: P.args, **kwargs: P.kwargs) -> T:
+	async def set_done_wrap(self: "_Request", *args: P.args, **kwargs: P.kwargs) -> T:
 		retval = await fn(self, *args, **kwargs)
 		self._done.set()
 		return retval

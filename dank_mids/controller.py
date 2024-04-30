@@ -4,10 +4,10 @@ from collections import defaultdict
 from contextlib import suppress
 from functools import lru_cache
 from importlib.metadata import version
-from typing import Any, DefaultDict, List, Literal, Optional
+from typing import Any, DefaultDict, List, Literal, Optional, Set
 
 import eth_retry
-from eth_typing import ChecksumAddress
+from eth_typing import BlockNumber, ChecksumAddress
 from eth_utils import to_checksum_address
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
@@ -69,12 +69,14 @@ class DankMiddlewareController:
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
         self.request_type = Request if ENVS.USE_FULL_REQUEST else PartialRequest
         self._time_of_request_type_change = 0
-        self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # Gnosis Chain does not support state override.
 
-        self.endpoint = self.w3.provider.endpoint_uri
+        # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
+        self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # type: ignore [assignment]
+
+        self.endpoint = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
 
         self._sort_calls = "tenderly" in self.endpoint or "chainstack" in self.endpoint
-        if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:
+        if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
             logger.info("max jsonrpc batch size for tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
             
@@ -101,7 +103,7 @@ class DankMiddlewareController:
             bytecode = constants.MULTICALL3_OVERRIDE_CODE,
         ) if multicall3 else None
                     
-        self.no_multicall = set()
+        self.no_multicall: Set[ChecksumAddress] = set()
         if multicall:
             self.no_multicall.add(to_checksum_address(multicall))
         if self.mc2:
@@ -190,15 +192,15 @@ class DankMiddlewareController:
         self._reduce_chunk_size(num_calls, "multicall")
     
     def reduce_batch_size(self, num_calls: int) -> None:
-        self._reduce_chunk_size(num_calls, "jsonrpc batch")
+        self._reduce_chunk_size(num_calls, "batch")
     
-    def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "jsonrpc"]) -> None:
+    def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "batch"]) -> None:
         new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
         if new_chunk_size < 30:
             logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue earlier? You might want to restart your script. {chunk_name} chunk size will not be further lowered.")
             return
         # NOTE: We need the 2nd check because one of the other calls in a batch might have already reduced the chunk size
-        if chunk_name == "jsonrpc batch":
+        if chunk_name == "batch":
             self.set_batch_size_limit(new_chunk_size)
             logger.info("The failed batch had %s calls", num_calls)
             return
@@ -218,7 +220,7 @@ class DankMiddlewareController:
             
     def set_batch_size_limit(self, new_limit: int) -> None:
         existing_limit = ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
-        if new_limit < existing_limit:
+        if new_limit < existing_limit:  # type: ignore [operator]
             ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit  # type: ignore [attr-defined,assignment]
             logger.warning("jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit)
         else:
@@ -237,11 +239,11 @@ class DankMiddlewareController:
 
 class _MulticallContract(Struct):
     address: ChecksumAddress
-    deploy_block: Optional[int]
+    deploy_block: Optional[BlockNumber]
     bytecode: str
     
     @lru_cache(maxsize=1024)
-    def needs_override_code_for_block(self, block: BlockId) -> bool:
+    def needs_override_code_for_block(self, block: BlockNumber) -> bool:
         if block == 'latest':
             return False
         if self.deploy_block is None:

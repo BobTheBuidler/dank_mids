@@ -126,7 +126,7 @@ class PartialResponse(_DictStruct):
             data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr
         return data
 
-    def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Any:
+    def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Union[str, AttributeDict]:
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:

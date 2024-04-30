@@ -1,10 +1,10 @@
 
 import asyncio
 import logging
-from typing import TYPE_CHECKING, Any, Generator, List
+from typing import TYPE_CHECKING, Any, Generator, List, Union
 
 from dank_mids._exceptions import DankMidsInternalError
-from dank_mids._requests import JSONRPCBatch, RPCRequest, _Batch
+from dank_mids._requests import _Batch, JSONRPCBatch, Multicall, RPCRequest
 from dank_mids.types import Multicalls
 
 if TYPE_CHECKING:
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class DankBatch:
     __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
     """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
-    def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[RPCRequest]):
+    def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[Union[Multicall, RPCRequest]]):
         self.controller = controller
         self.multicalls = multicalls
         self.rpc_calls = rpc_calls

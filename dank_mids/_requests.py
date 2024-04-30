@@ -64,11 +64,11 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
     controller: "DankMiddlewareController"
     def __init__(self) -> None:
         self.uid = self.controller.call_uid.next
-        self._response: Optional[_Response] = None
+        self._response: Union[_Response, Exception, None] = None
         self._done = _RequestEvent(self)
         self._start = time.time()
     
-    def __await__(self) -> Generator[Any, None, Optional[_Response]]:
+    def __await__(self) -> Generator[Any, None, _Response]:
         return self.get_response().__await__()
     
     @abc.abstractmethod
@@ -82,7 +82,11 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
         return self._response
 
     @abc.abstractmethod
-    async def get_response(self) -> Optional[_Response]:
+    async def get_response(self) -> _Response:
+        pass
+    
+    @abc.abstractmethod
+    def start(self, batch: Union["_Batch", "DankBatch", None] = None) -> None:
         pass
 
     async def _debug_daemon(self) -> None:
@@ -102,16 +106,15 @@ def _should_batch_method(method: str) -> bool:
 
 class RPCRequest(_RequestMeta[RPCResponse]):
     __slots__ = 'method', 'params', 'should_batch', '_started', '_retry', '_daemon'
-    dict_responses = set()
-    str_responses = set()
-
-    _types = set()
-
     def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any, retry: bool = False):
         self.controller = weakref.proxy(controller)
+        """The DankMiddlewareController that created this request."""
         self.method = method
+        """The rpc method for this request."""
         self.params = params
+        """The parameters to send with this request, if any."""
         self.should_batch = _should_batch_method(method)
+        """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
         self._started = False
         self._retry = retry
         super().__init__()
@@ -130,7 +133,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
     
     def __len__(self) -> int:
         # we dont need to consider this for v small batch sizes
-        if ENVS.MAX_JSONRPC_BATCH_SIZE > 50:
+        if ENVS.MAX_JSONRPC_BATCH_SIZE > 50:  # type: ignore [operator]
             # NOTE: These are totally arbitrary
             if self.method == "eth_getTransactionReceipt":
                 return 10
@@ -154,7 +157,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
             try:
-                await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)
+                await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
             except asyncio.TimeoutError:
                 return await self.create_duplicate()
             return self.response.decode(partial=True).to_dict(self.method)
@@ -172,13 +175,13 @@ class RPCRequest(_RequestMeta[RPCResponse]):
                     # Any calls that already succeeded will have already completed on the client side.
                     # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
                     self.controller.execute_batch(),
-                    timeout=ENVS.STUCK_CALL_TIMEOUT,
+                    timeout=ENVS.STUCK_CALL_TIMEOUT,  # type: ignore [arg-type]
                 )
             except asyncio.TimeoutError:
                 return await self.create_duplicate()
         
         try:
-            await asyncio.wait_for(self._done.wait(), timeout=ENVS.STUCK_CALL_TIMEOUT)
+            await asyncio.wait_for(self._done.wait(), timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
         except asyncio.TimeoutError:
             return await self.create_duplicate()
 
@@ -230,7 +233,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
         if isinstance(data, RawResponse):
             self._response = data
         elif isinstance(data, BadResponse):
-            if data.response.error.message.lower() in ['invalid request', 'parse error']:
+            if data.response.error.message.lower() in ['invalid request', 'parse error']:  # type: ignore [union-attr]
                 if self.controller._time_of_request_type_change == 0:
                     self.controller.request_type = Request
                     self.controller._time_of_request_type_change = int(time.time())
@@ -238,7 +241,7 @@ class RPCRequest(_RequestMeta[RPCResponse]):
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     self._response = await self.create_duplicate()
                     return
-            error = data.response.error.to_dict()
+            error = data.response.error.to_dict()  # type: ignore [union-attr]
             error['dankmids_added_context'] = self.request.to_dict()
             self._response = {"error": error}
             logger.debug("%s _response set to rpc error response %s", self, self._response)
@@ -315,7 +318,7 @@ class eth_call(RPCRequest):
         return self.target not in self.controller.no_multicall
 
     @property
-    def target(self) -> str:
+    def target(self) -> ChecksumAddress:
         """The contract address for the call."""
         return self.params[0]["to"]
 
@@ -455,10 +458,10 @@ mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,
 def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
     return mcall_encoder([False, data])
 
-def mcall_decode(data: PartialResponse) -> List[Tuple[bool, bytes]]:        
+def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:        
     try:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
-        data = data.decode_result("eth_call")[2:]
+        data = data.decode_result("eth_call")[2:]  # type: ignore [arg-type]
         data = bytes.fromhex(data)
         return mcall_decoder(decoding.ContextFramesBytesIO(data))[2]
     except Exception as e:
@@ -594,7 +597,7 @@ class Multicall(_Batch[eth_call]):
             except BrokenProcessPool:
                 # TODO: Move this somewhere else
                 logger.critical("Oh fuck, you broke the %s while decoding %s", ENVS.MULTICALL_DECODER_PROCESSES, data)  # type: ignore [attr-defined]
-                ENVS.MULTICALL_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)  # type: ignore [attr-defined]
+                ENVS.MULTICALL_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)  # type: ignore [attr-defined,assignment]
                 retval = mcall_decode(data)
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
         # Raise any Exceptions that may have come out of the process pool.
@@ -688,7 +691,7 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
     @property
     def is_full(self) -> bool:
         with self._lock:
-            return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
+            return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
 
     async def get_response(self) -> None:
         if self._started:
@@ -762,14 +765,14 @@ class JSONRPCBatch(_Batch[Union[Multicall, RPCRequest]]):
         if isinstance(response, list):
             return response
         # Oops, we failed.
-        if response.error.message.lower() in ['invalid request', 'parse error']:
+        if response.error.message.lower() in ['invalid request', 'parse error']:  # type: ignore [union-attr]
             # NOT SURE IF THIS ACTUALLY RUNS, CAN WE RECEIVE THIS TYPE RESPONSE FOR A JSON BATCH?
             if self.controller._time_of_request_type_change == 0:
                 self.controller.request_type = Request
                 self.controller._time_of_request_type_change = time.time()
             if time.time() - self.controller._time_of_request_type_change <= 600:
                 logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
-        elif response.error.message == "batch limit exceeded":
+        elif response.error.message == "batch limit exceeded":  # type: ignore [union-attr]
             self.adjust_batch_size()
             
         if ENVS.DEBUG:
@@ -864,7 +867,7 @@ def _log_exception(e: Exception) -> bool:
     
     stre = str(e).lower()
     if any(err in stre for err in dont_need_to_see_errs):
-        return ENVS.DEBUG  # type: ignore [attr-defined]
+        return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
     logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
     logger.warning(e, exc_info=True)
-    return ENVS.DEBUG  # type: ignore [attr-defined]
+    return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
