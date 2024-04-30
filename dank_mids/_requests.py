@@ -570,7 +570,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return len(self) > 1
     
     @set_done
-    async def spoof_response(self, data: Union[RawResponse, Exception], calls: List[RPCRequest] = None) -> None:
+    async def spoof_response(self, data: Union[RawResponse, Exception], calls: Optional[List[eth_call]] = None) -> None:
         # NOTE: we pass in the calls to create a strong reference so when we zip up the results everything gets to the right place
         if calls is None:
             calls = self.calls
