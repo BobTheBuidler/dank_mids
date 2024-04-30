@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch
     from dank_mids.types import Request
 
-_LogLevel = Union[int, str]
+_LogLevel = int
 
 # New logging levels:
 # DEBUG=10, INFO=20, 
@@ -97,10 +97,10 @@ class _StatsLogger(logging.Logger):
     # Daemon
 
     def _ensure_daemon(self) -> None:
-        if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:  # type: ignore [attr-defined]
+        if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:  # type: ignore [attr-defined,has-type]
             self._daemon = asyncio.create_task(self._stats_daemon())
         elif self._daemon.done():
-            raise self._daemon.exception()
+            raise self._daemon.exception()  # type: ignore [misc]
         
     async def _stats_daemon(self) -> None:
         start = time()
@@ -147,12 +147,12 @@ _Times = Deque[float]
 class _Collector:
     def __init__(self):
         """Handles the collection and computation of stats-related data."""
-        self.errd_batches = deque(maxlen=500)
+        self.errd_batches: Deque["JSONRPCBatch"] = deque(maxlen=500)
         self.durations: DefaultDict[str, _Times] = defaultdict(lambda: deque(maxlen=50_000))
         self.types: Set[Type] = set()
         self.event_loop_times: _Times = deque(maxlen=50_000)
         # not implemented
-        self.validation_errors: DefaultDict[RPCEndpoint, Deque["Request"]] = defaultdict(lambda: deque(maxlen=100))
+        self.validation_errors: DefaultDict[RPCEndpoint, Deque[msgspec.ValidationError]] = defaultdict(lambda: deque(maxlen=100))
 
     @property
     def avg_loop_time(self) -> float:
