@@ -388,11 +388,7 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
     @property
     def calls(self) -> List[_Request]:
         "Returns a list of calls. Creates a temporary strong reference to each call in the batch, if it still exists."
-        calls = []
-        for ref in self._calls:
-            if call := ref():
-                calls.append(call)
-        return calls
+        return [call for ref in self._calls if (call := ref())]
 
     @property
     def halfpoint(self) -> int:
