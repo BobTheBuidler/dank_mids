@@ -91,7 +91,6 @@ RETURN_TYPES = {
 decoder_logger = logging.getLogger('dank_mids.decoder')
 
 class PartialResponse(_DictStruct):
-    __struct_fields__: Tuple[Literal["jsonrpc", "id", "result", "error"], ...]  # type: ignore [misc]
     result: msgspec.Raw = None  # type: ignore
     "If the rpc response contains a 'result' field, it is set here"
     error: Optional[Error] = None
@@ -123,7 +122,7 @@ class PartialResponse(_DictStruct):
                 attr = self.decode_result(method=method, _caller=self)
             if isinstance(attr, _DictStruct):
                 attr = attr.to_dict()
-            data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr
+            data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr  # type: ignore [literal-required]
         return data
 
     def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Union[str, AttributeDict]:

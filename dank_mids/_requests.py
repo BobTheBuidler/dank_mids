@@ -361,10 +361,8 @@ class eth_call(RPCRequest):
 _Request = TypeVar("_Request", bound=_RequestMeta)
 
 class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
-    _fut = None
     __slots__ = 'calls', '_lock', '_daemon'
     calls: List[_Request]
-
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         self.controller = weakref.proxy(controller)
         self.calls = [weakref.proxy(call, callback=self._remove) for call in calls]
