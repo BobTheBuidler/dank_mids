@@ -307,14 +307,17 @@ class eth_call(RPCRequest):
     
     @property
     def calldata(self) -> HexBytes:
+        """The calldata for the call."""
         return HexBytes(self.params[0]['data'])
     
     @property
     def multicall_compatible(self) -> bool:
+        """True if this contract is multicall compatible, False if not."""
         return self.target not in self.controller.no_multicall
 
     @property
     def target(self) -> str:
+        """The contract address for the call."""
         return self.params[0]["to"]
 
     async def spoof_response(self, data: Union[bytes, Exception, RawResponse]) -> None:  # type: ignore
