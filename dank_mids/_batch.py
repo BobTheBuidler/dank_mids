@@ -1,11 +1,11 @@
 
 import asyncio
 import logging
-from typing import TYPE_CHECKING, Any, Generator, List, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Generator, List, Union
 
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import _Batch, JSONRPCBatch, Multicall, RPCRequest
-from dank_mids.types import Multicalls
+from dank_mids.types import Multicalls, RawResponse
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -44,7 +44,7 @@ class DankBatch:
         self._started = True
     
     @property
-    def coroutines(self) -> Generator["_Batch", None, None]:
+    def coroutines(self) -> Generator[Union["_Batch", Awaitable[RawResponse]], None, None]:
         # Combine multicalls into one or more jsonrpc batches
 
         # Create empty batch

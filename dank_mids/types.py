@@ -2,8 +2,8 @@ import logging
 import re
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    List, Literal, NewType, Optional, Set, TypedDict, TypeVar,
-                    Union, overload)
+                    List, Literal, NewType, Optional, Set, Tuple, TypedDict, 
+                    TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
@@ -91,11 +91,11 @@ RETURN_TYPES = {
 decoder_logger = logging.getLogger('dank_mids.decoder')
 
 class PartialResponse(_DictStruct):
+    __struct_fields__: Tuple[Literal["jsonrpc", "id", "result", "error"], ...]  # type: ignore [misc]
     result: msgspec.Raw = None  # type: ignore
     "If the rpc response contains a 'result' field, it is set here"
     error: Optional[Error] = None
     "If the rpc response contains an 'error' field, it is set here"
-
     @property
     def exception(self) -> Exception:
         "If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."
@@ -112,9 +112,9 @@ class PartialResponse(_DictStruct):
     def payload_too_large(self) -> bool:
         return any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)  # type: ignore [union-attr]
         
-    def to_dict(self, method: Optional[RPCEndpoint] = None) -> Dict[str, Any]:
+    def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
-        data = {}
+        data: RPCResponse = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
             if attr is None:

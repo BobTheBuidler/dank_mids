@@ -4,7 +4,7 @@ from collections import defaultdict
 from contextlib import suppress
 from functools import lru_cache
 from importlib.metadata import version
-from typing import Any, DefaultDict, List, Literal, Optional, Set
+from typing import Any, DefaultDict, List, Literal, Optional, Set, Union
 
 import eth_retry
 from eth_typing import BlockNumber, ChecksumAddress
@@ -68,7 +68,7 @@ class DankMiddlewareController:
         self.chain_id = self.sync_w3.eth.chain_id
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
         self.request_type = Request if ENVS.USE_FULL_REQUEST else PartialRequest
-        self._time_of_request_type_change = 0
+        self._time_of_request_type_change: Union[int, float] = 0
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
         self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # type: ignore [assignment]
