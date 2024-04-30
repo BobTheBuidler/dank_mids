@@ -111,7 +111,7 @@ def _should_batch_method(method: str) -> bool:
 class RPCRequest(_RequestMeta[RawResponse]):
     __slots__ = 'method', 'params', 'should_batch', '_started', '_retry', '_daemon'
     def __init__(self, controller: "DankMiddlewareController", method: RPCEndpoint, params: Any, retry: bool = False):
-        self.controller = weakref.proxy(controller)
+        self.controller = controller
         """The DankMiddlewareController that created this request."""
         self.method = method
         """The rpc method for this request."""
@@ -364,7 +364,7 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
     __slots__ = 'calls', '_lock', '_daemon'
     calls: List[_Request]
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
-        self.controller = weakref.proxy(controller)
+        self.controller = controller
         self.calls = [weakref.proxy(call, callback=self._remove) for call in calls]
         self._lock = _AlertingRLock(name=self.__class__.__name__)
         super().__init__()
