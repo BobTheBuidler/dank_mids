@@ -22,11 +22,11 @@ class UIDGenerator:
             self._value = new
             return new
 
-class _AlertingRLock(threading._RLock):
+class _AlertingRLock(threading._RLock):  # type: ignore [misc]
     def __init__(self, name: str) -> None:
         super().__init__()
         self.name = name
-    def acquire(self, blocking: bool = True, timeout: int = -1) -> bool:
+    def acquire(self, blocking: bool = True, timeout: int = -1) -> bool:  # type: ignore [override]
         acquired = super().acquire(blocking=False, timeout=5)
         if not acquired:
             logger.warning("wtf?! %s with name %s is locked!", self, self.name)

@@ -7,21 +7,19 @@ import weakref
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
-from functools import cached_property, lru_cache, partial
+from functools import cached_property, lru_cache
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
-                    Iterable, Iterator, List, NoReturn, Optional, Tuple,
-                    TypeVar, Union)
+                    Iterable, Iterator, List, Optional, Tuple, TypeVar, Union,
+                    overload)
 
 import a_sync
 import eth_retry
-import msgspec
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
-from typing_extensions import Self
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
@@ -39,6 +37,7 @@ from dank_mids.types import (BatchId, BlockId, JSONRPCBatchResponse,
                              RawResponse, Request, Response)
 
 if TYPE_CHECKING:
+    from dank_mids._batch import DankBatch
     from dank_mids.controller import (DankMiddlewareController,
                                       _MulticallContract)
 
@@ -101,7 +100,7 @@ BYPASS_METHODS = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
 def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
-class RPCRequest(_RequestMeta[RawResponse]):
+class RPCRequest(_RequestMeta[RPCResponse]):
     __slots__ = 'method', 'params', 'should_batch', '_started', '_retry', '_daemon'
     dict_responses = set()
     str_responses = set()
@@ -146,7 +145,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     def request(self) -> Union[Request, PartialRequest]:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
     
-    def start(self, batch: "_Batch") -> None:
+    def start(self, batch: Union["_Batch", "DankBatch"]) -> None:
         self._started = True
         self._batch = batch
 
@@ -351,7 +350,7 @@ class eth_call(RPCRequest):
 
 ### Batch requests:
 
-_Request = TypeVar("_Request")
+_Request = TypeVar("_Request", bound=_RequestMeta)
 
 class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     _fut = None
@@ -367,7 +366,11 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
     def __bool__(self) -> bool:
         return bool(self.calls)
     
-    def __getitem__(self, ix: int) -> _Request:
+    @overload
+    def __getitem__(self, ix: int) -> _Request:...
+    @overload
+    def __getitem__(self, ix: slice) -> List[_Request]:...
+    def __getitem__(self, ix: Union[int, slice]) -> Union[_Request, List[_Request]]:
         return self.calls[ix]
 
     def __iter__(self) -> Iterator[_Request]:
@@ -417,7 +420,7 @@ class _Batch(_RequestMeta[List[RPCResponse]], Iterable[_Request]):
                 elif self.controller.queue_is_full:
                     self.controller.early_start()
 
-    def start(self, batch: Optional["_Batch"] = None, cleanup=True) -> None:
+    def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
         if logger.isEnabledFor(logging.DEBUG):
             self._daemon = asyncio.create_task(self._debug_daemon())
         with self._lock:

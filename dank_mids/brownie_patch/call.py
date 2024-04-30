@@ -8,7 +8,6 @@ from types import MethodType
 from typing import Any, Dict, Optional, Tuple, Union
 
 import eth_abi
-import eth_retry
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
 from brownie.convert.normalize import format_input, format_output
@@ -17,43 +16,46 @@ from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from eth_abi.exceptions import InsufficientDataBytes
+from eth_typing import HexStr
 from eth_utils import to_checksum_address
 from hexbytes import HexBytes
+from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
-from web3 import Web3
+from web3.types import BlockIdentifier
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.exceptions import Revert
+from dank_mids.helpers._helpers import DankWeb3
 
 logger = logging.getLogger(__name__)
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
 decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 
-def _patch_call(call: ContractCall, w3: Web3) -> None:
+def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
     call._skip_decoder_proc_pool = call._address in _skip_proc_pool
     call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
     call.__await__ = MethodType(_call_no_args, call)
     
 @functools.lru_cache
-def _get_coroutine_fn(w3: Web3, len_inputs: int):
+def _get_coroutine_fn(w3: DankWeb3, len_inputs: int):
     if ENVS.OPERATION_MODE.application or len_inputs:  # type: ignore [attr-defined]
         get_request_data = encode
     else:
-        get_request_data = _request_data_no_args
+        get_request_data = _request_data_no_args  # type: ignore [assignment]
     
     async def coroutine(
         self: ContractCall,
         *args: Tuple[Any,...],
-        block_identifier: Optional[Union[int, str, bytes]] = None,
+        block_identifier: Optional[BlockIdentifier] = None,
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None
     ) -> Any:
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
-        async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined]
+        async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined, index]
             data = await encode_input(self, len_inputs, get_request_data, *args)
-            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined]
+            async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined, index]
                 output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
         try:
             decoded = await decode_output(self, output)
@@ -68,7 +70,7 @@ def _call_no_args(self: ContractMethod):
     """Asynchronously call `self` with no arguments at the latest block."""
     return self.coroutine().__await__()
 
-async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> bytes:
+async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> HexStr:
     if any(isinstance(arg, Contract) for arg in args) or any(hasattr(arg, "__contains__") for arg in args): # We will just assume containers contain a Contract object until we have a better way to handle this
         # We can't unpickle these because of the added `coroutine` method.
         data = __encode_input(call.abi, call.signature, *args)
@@ -82,7 +84,7 @@ async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) 
         except BrokenProcessPool:
             logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_ENCODER_PROCESSES, data, call.abi)  # type: ignore [attr-defined]
             # Let's fix that right up
-            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)  # type: ignore [attr-defined]
+            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)  # type: ignore [attr-defined,assignment]
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
         except PicklingError:  # But if that fails, don't worry. I got you.
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
@@ -105,7 +107,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
             except BrokenProcessPool:
                 # Let's fix that right up
                 logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_DECODER_PROCESSES, data, call.abi)  # type: ignore [attr-defined]
-                ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)  # type: ignore [attr-defined]
+                ENVS.BROWNIE_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_DECODER_PROCESSES._max_workers)  # type: ignore [attr-defined, assignment]
                 decoded = __decode_output(data, call.abi)
         # We have to do it like this so we don't break the process pool.
         if isinstance(decoded, Exception):
@@ -119,14 +121,14 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         call._skip_decoder_proc_pool = call._address in _skip_proc_pool
         return await decode_output(call, data)
 
-async def _request_data_no_args(call: ContractCall) -> str:
+async def _request_data_no_args(call: ContractCall) -> HexStr:
     return call.signature
 
 # These methods were renamed in eth-abi 4.0.0
 __eth_abi_encode = eth_abi.encode if hasattr(eth_abi, 'encode') else eth_abi.encode_abi
 __eth_abi_decode = eth_abi.decode if hasattr(eth_abi, 'decode') else eth_abi.decode_abi
 
-def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> str:
+def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> Union[HexStr, Exception]:
     try:
         data = format_input(abi, args)
         types_list = get_type_strings(abi["inputs"])
@@ -146,7 +148,7 @@ while True:
 if multicall2 := MULTICALL2_ADDRESSES.get(chainid, None):
     _skip_proc_pool.add(to_checksum_address(multicall2))
     
-def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
+def __decode_output(hexstr: BytesLike, abi: Dict[str, Any]) -> Any:
     try:
         types_list = get_type_strings(abi["outputs"])
         result = __eth_abi_decode(types_list, HexBytes(hexstr))
@@ -157,7 +159,7 @@ def __decode_output(hexstr: str, abi: Dict[str, Any]) -> Any:
     except Exception as e:
         return e
 
-def __validate_output(abi: Dict[str, Any], hexstr: str):
+def __validate_output(abi: Dict[str, Any], hexstr: BytesLike):
     try:
         selector = HexBytes(hexstr)[:4].hex()
         if selector == "0x08c379a0":

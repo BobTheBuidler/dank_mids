@@ -174,7 +174,7 @@ class DankMiddlewareController:
     def queue_is_full(self) -> bool:
         with self.pools_closed_lock:
             if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
-                return sum(len(call) for call in self.pending_rpc_calls) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
+                return sum(len(call) for call in self.pending_rpc_calls) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
             eth_calls = sum(len(calls) for calls in self.pending_eth_calls.values())
             other_calls = sum(len(call) for call in self.pending_rpc_calls)
             return eth_calls + other_calls >= self.batcher.step
@@ -219,10 +219,10 @@ class DankMiddlewareController:
     def set_batch_size_limit(self, new_limit: int) -> None:
         existing_limit = ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
         if new_limit < existing_limit:
-            ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit  # type: ignore [attr-defined]
+            ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit  # type: ignore [attr-defined,assignment]
             logger.warning("jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit)
         else:
-            logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))
+            logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))  # type: ignore [call-overload]
     
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(self, block) -> "_MulticallContract":

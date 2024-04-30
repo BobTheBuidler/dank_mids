@@ -73,6 +73,6 @@ class DankBatch:
             if working_batch.is_single_multicall:
                 yield working_batch[0]  # type: ignore [misc]
             elif len(working_batch) == 1:
-                yield working_batch[0].make_request()
+                yield working_batch[0].make_request()  # type: ignore [union-attr]
             else:
                 yield working_batch

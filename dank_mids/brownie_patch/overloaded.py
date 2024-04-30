@@ -6,10 +6,10 @@ from brownie import Contract
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from dank_mids.brownie_patch.call import _get_coroutine_fn, _skip_proc_pool
 from dank_mids.brownie_patch.types import ContractMethod
-from web3 import Web3
+from dank_mids.helpers._helpers import DankWeb3
 
 
-def _patch_overloaded_method(call: OverloadedMethod, w3: Web3) -> None:
+def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
     # sourcery skip: avoid-builtin-shadow
     @functools.wraps(call)
     async def coroutine(

@@ -20,17 +20,17 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
             raise TypeError(priority)
         super().__init__(parent, priority, name)
     
-class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):
-    _context_manager_class = _BlockSemaphoreContextManager
-    _top_priority = -1
-    def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":
-        return super().__getitem__(
-            block if isinstance(block, int)
-            else int(block.hex(), 16) if isinstance(block, bytes)
+class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+    _context_manager_class = _BlockSemaphoreContextManager  # type: ignore [assignment]
+    _top_priority: int = -1  # type: ignore [assignment]
+    def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
+        return super().__getitem__(  # type: ignore [return-value]
+            block if isinstance(block, int)  # type: ignore [index]
+            else int(block.hex(), 16) if isinstance(block, bytes)  # type: ignore [union-attr]
             else int(block, 16) if isinstance(block, str) and "0x" in block
             else block if block not in [None, 'latest']  # NOTE: We do this to generate an err if an unsuitable value was provided
             else self._top_priority
-        )
+        )  # type: ignore [index]
 
 
 class _MethodSemaphores:
