@@ -36,16 +36,18 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.4
 
       - name: Setup Python (faster than using Python container)
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.pyversion }}
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt -r requirements-dev.txt
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install Dependencies
+        run: poetry install --no-interaction
       
       - name: Setup brownie networks
         run: |
@@ -56,5 +58,6 @@ jobs:
         env:
           PYTEST_NETWORK: mainnet
           ETHERSCAN_TOKEN: ${{ secrets.ETHERSCAN_TOKEN  }}
-        run: pytest --asyncio-task-timeout=3600
+        run: |
+          poetry run pytest --asyncio-task-timeout=3600
       
