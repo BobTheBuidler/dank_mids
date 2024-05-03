@@ -51,7 +51,7 @@ jobs:
       
       - name: Setup brownie networks
         run: |
-          brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
+          poetry run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
         continue-on-error: true
 
       - name: Run test suite
