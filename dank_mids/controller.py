@@ -128,24 +128,29 @@ class DankMiddlewareController:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+        
+        # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
+        if method == "eth_call":
+            async with self.eth_call_semaphores[params[1]]:
+                # create a strong ref to the call that will be held until the caller completes or is cancelled
+                logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
+                request = RPCRequest(self, method, params) if params[0]["to"] in self.no_multicall else eth_call(self, params)
+                return await request
+
+        logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
+
+        # some methods go thru a SmartProcessingQueue, we try this first
         with suppress(KeyError):
-            # some methods go thru a SmartProcessingQueue, we try this first
+            queue = self.method_queues[method]         
             try:
-                queue = self.method_queues[method]
                 return await queue(self, method, params)
             except TypeError as e:
-                if "unhashable type" in str(e):
-                    return await queue(self, method, _helpers._make_hashable(params))
-                raise e
-            
-        # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
-        logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
-        if method != "eth_call":
-            return await RPCRequest(self, method, params)
-        async with self.eth_call_semaphores[params[1]]:
-            if params[0]["to"] not in self.no_multicall:
-                return await eth_call(self, params)
-            return await RPCRequest(self, method, params)
+                if "unhashable type" not in str(e):
+                    raise e
+            return await queue(self, method, _helpers._make_hashable(params))
+                    
+        request = RPCRequest(self, method, params)
+        return await request
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
