@@ -134,29 +134,26 @@ class DankMiddlewareController:
             async with self.eth_call_semaphores[params[1]]:
                 # create a strong ref to the call that will be held until the caller completes or is cancelled
                 logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
-                strongref = RPCRequest(self, method, params) if params[0]["to"] in self.no_multicall else eth_call(self, params)
-                return await strongref
+                if params[0]["to"] in self.no_multicall:
+                    return await RPCRequest(self, method, params)
+                return await eth_call(self, params)
 
+        # some methods go thru a SmartProcessingQueue, we check those next
+        queue = self.method_queues[method]
         logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
 
-        # some methods go thru a SmartProcessingQueue, we try this first
+        # no queue, we can make the request normally
+        if queue is None:
+            return await RPCRequest(self, method, params)
+        
+        # queue found, queue up the call and await the future
         try:
-            queue = self.method_queues[method]   
-            try:
-                # NOTE: is this a strong enough ref? 
-                strongref = queue(self, method, params)
-            except TypeError as e:
-                if "unhashable type" not in str(e):
-                    raise e
-                strongref = queue(self, method, _helpers._make_hashable(params))
-        except KeyError:
-            strongref = RPCRequest(self, method, params)
-        try:
-            return await strongref
-        except Exception as e:
-            logger.error("weakref trial err")
-            logger.exception(e)
-            raise e
+            # NOTE: is this a strong enough ref? 
+            return await queue(self, method, params)
+        except TypeError as e:
+            if "unhashable type" not in str(e):
+                raise e
+        return await queue(self, method, _helpers._make_hashable(params))
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
