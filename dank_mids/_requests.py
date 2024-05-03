@@ -146,7 +146,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return 1
     
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} uid={self.uid} method={self.method}>"
+        return f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}>"
 
     @property
     def request(self) -> Union[Request, PartialRequest]:
@@ -279,7 +279,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
         # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
         # and then the task will try to acquire at the very next event loop _run_once cycle
-        logger.warning(f"call {self.uid} got stuck, we're creating a new one")
+        logger.warning("%s got stuck, we're creating a new one", self)
         retval = await self.controller(self.method, self.params)
         await self.semaphore.acquire()
         return retval
@@ -311,6 +311,9 @@ class eth_call(RPCRequest):
         self.block: BlockId = params[1]
         """The block height at which the contract will be called."""
         super().__init__(controller, "eth_call", params)  # type: ignore
+    
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} uid={self.uid} params={self.params}>"
     
     @property
     def calldata(self) -> HexBytes:
