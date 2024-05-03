@@ -3,7 +3,6 @@ import logging
 from collections import defaultdict
 from contextlib import suppress
 from functools import lru_cache
-from importlib.metadata import version
 from typing import Any, DefaultDict, List, Literal, Optional, Set, Union
 
 import eth_retry
@@ -53,15 +52,13 @@ class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
         logger.info('Dank Middleware initializing... Strap on your rocket boots...')
         self.w3: Web3 = w3
-        w3_version = version("web3")
-        w3_version_major = int(w3_version.split(".")[0])
-        if w3_version_major >= 6:
+        if _helpers.w3_version_major >= 6:
             from web3.middleware import async_attrdict_middleware
             try:
                 self.w3.middleware_onion.add(async_attrdict_middleware)
             except ValueError as e:
                 if str(e) != "You can't add the same un-named instance twice":
-                    raise e
+                    raise
                 # NOTE: the web3 instance already has the middleware
         self.sync_w3 = _sync_w3_from_async(w3)
 

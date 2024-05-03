@@ -1,6 +1,7 @@
 
 import asyncio
 from functools import wraps
+from importlib.metadata import version
 from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
                     Iterable, List, Literal, Optional, TypeVar)
 
@@ -26,9 +27,12 @@ if TYPE_CHECKING:
     from dank_mids._requests import _Request
 
 dank_w3s: List[Web3] = []
+sync_w3s: List[Web3] = []
 
 T = TypeVar("T")
 P = ParamSpec("P")
+
+w3_version_major = int(version("web3").split(".")[0])
 
 class DankEth(AsyncEth):
     @alru_cache(ttl=0)
@@ -56,6 +60,22 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
 def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
     """ Creates a new async Web3 instance from `w3.provider.endpoint_uri` and injects it with Dank Middleware. """
     assert not sync_w3.eth.is_async and isinstance(sync_w3.provider, BaseProvider)
+    if sync_w3 not in sync_w3s:
+        if w3_version_major >= 6:
+            from web3.middleware import attrdict_middleware
+            try:
+                sync_w3.middleware_onion.add(attrdict_middleware)
+            except ValueError as e:
+                if str(e) != "You can't add the same un-named instance twice":
+                    raise e
+        if w3_version_major >= 7:
+            # we need to make sure our sync w3 instance is compatible with poa chains
+            from web3.middleware.proof_of_authority import ExtraDataToPOAMiddleware
+            sync_w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
+        elif w3_version_major >= 6:
+            from web3.middleware import geth_poa_middleware
+            sync_w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+        sync_w3s.append(sync_w3)
     return setup_dank_w3(get_async_w3(sync_w3))
 
 async def await_all(futs: Iterable[Awaitable]) -> None:
