@@ -92,7 +92,7 @@ class ClientSession(DefaultClientSession):
         if isinstance(kwargs.get('data'), PartialRequest):
             logger.debug("making request for %s", kwargs['data'])
             kwargs['data'] = _codec.encode(kwargs['data'])
-        logger.debug("making request with (args, kwargs): (%s %s)", tuple(endpoint, *args), kwargs)
+        logger.debug("making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs)
 
         # Try the request until success or 5 failures.
         tried = 0

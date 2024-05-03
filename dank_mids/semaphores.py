@@ -60,8 +60,8 @@ class _MethodQueues:
         }
         self.keys = self.method_queues.keys()
     @functools.lru_cache(maxsize=None)
-    def __getitem__(self, method: RPCEndpoint) -> a_sync.SmartProcessingQueue:
+    def __getitem__(self, method: RPCEndpoint) -> Optional[a_sync.SmartProcessingQueue]:
         try:
             return next(self.method_queues[key] for key in self.keys if key in method)
         except StopIteration:
-            raise KeyError(method) from None
+            return None
