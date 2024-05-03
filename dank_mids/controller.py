@@ -134,23 +134,29 @@ class DankMiddlewareController:
             async with self.eth_call_semaphores[params[1]]:
                 # create a strong ref to the call that will be held until the caller completes or is cancelled
                 logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
-                request = RPCRequest(self, method, params) if params[0]["to"] in self.no_multicall else eth_call(self, params)
-                return await request
+                strongref = RPCRequest(self, method, params) if params[0]["to"] in self.no_multicall else eth_call(self, params)
+                return await strongref
 
         logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
 
         # some methods go thru a SmartProcessingQueue, we try this first
-        with suppress(KeyError):
-            queue = self.method_queues[method]         
+        try:
+            queue = self.method_queues[method]   
             try:
-                return await queue(self, method, params)
+                # NOTE: is this a strong enough ref? 
+                strongref = queue(self, method, params)
             except TypeError as e:
                 if "unhashable type" not in str(e):
                     raise e
-            return await queue(self, method, _helpers._make_hashable(params))
-                    
-        request = RPCRequest(self, method, params)
-        return await request
+                strongref = queue(self, method, _helpers._make_hashable(params))
+        except KeyError:
+            strongref = RPCRequest(self, method, params)
+        try:
+            return await strongref
+        except Exception as e:
+            logger.error("weakref trial err")
+            logger.exception(e)
+            raise e
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
