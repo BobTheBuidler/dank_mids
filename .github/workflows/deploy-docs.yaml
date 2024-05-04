@@ -20,28 +20,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install Dependencies
         run: |
-          pip install wheel
-          pip install --no-build-isolation "Cython<3" "pyyaml==5.4.1"
-          pip install -r requirements.txt -r requirements-dev.txt
-          pip install sphinx sphinx-rtd-theme
+          poetry install --no-interaction
+
+      - name: Install dependencies
+        # pip will install despite the conflicts, poetry will prevent it
+        run: |
+          poetry run pip install wheel
+          poetry run pip install --no-build-isolation "Cython<3" "pyyaml==5.4.1"
+          poetry run pip install sphinx sphinx-rtd-theme
 
       - name: Setup brownie networks
         run: |
-          brownie networks modify mainnet host=${{ secrets.ALCHEMY_PROVIDER }}
+          poetry run brownie networks modify mainnet host=${{ secrets.ALCHEMY_PROVIDER }}
         continue-on-error: true
         
       - name: Build documentation config
         run: |
-          pip install .
           make docs
 
       - name: Build documentation

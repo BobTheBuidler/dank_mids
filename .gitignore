@@ -7,3 +7,6 @@ dank_mids.egg-info
 .eggs
 .mypy_cache
 __pycache__
+.env
+.tox/
+.python-version
