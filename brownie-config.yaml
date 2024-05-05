@@ -1,0 +1,2 @@
+#disables brownie's eager cache thread on eth-brownie>=1.20.3
+eager_caching: false
