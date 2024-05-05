@@ -64,7 +64,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.exceptions.Revert"><code class="docutils literal notranslate"><span class="pre">Revert</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#dank-mids-executor-module">dank_mids.executor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.executor">dank_mids.executor module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.middleware">dank_mids.middleware module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.middleware.dank_middleware"><code class="docutils literal notranslate"><span class="pre">dank_middleware()</span></code></a></li>
 </ul>
@@ -488,8 +488,8 @@ set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 </section>
-<section id="dank-mids-executor-module">
-<h2>dank_mids.executor module<a class="headerlink" href="#dank-mids-executor-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.executor">
+<span id="dank-mids-executor-module"></span><h2>dank_mids.executor module<a class="headerlink" href="#module-dank_mids.executor" title="Link to this heading"></a></h2>
 </section>
 <section id="module-dank_mids.middleware">
 <span id="dank-mids-middleware-module"></span><h2>dank_mids.middleware module<a class="headerlink" href="#module-dank_mids.middleware" title="Link to this heading"></a></h2>
@@ -1335,7 +1335,7 @@ become larger than zero again, wake up that coroutine.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dank_mids.Contract">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">Contract</span></span><a class="headerlink" href="#dank_mids.Contract" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.19.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a></p>
 <p>a modified <cite>brownie.Contract</cite> with async and call batching functionalities</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.Contract.__init__">
@@ -1360,7 +1360,7 @@ will be performed using this account.</p></li>
 <dd><p>Returns the current ether balance of the contract, in wei.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-convert.html#brownie.convert.datatypes.Wei" title="(in Brownie v1.19.5)"><em>Wei</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-convert.html#brownie.convert.datatypes.Wei" title="(in Brownie v1.20.3)"><em>Wei</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1587,12 +1587,12 @@ object in future sessions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>contract</strong> (<a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a><em> | </em><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.19.5)"><em>Contract</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
+<li><p><strong>contract</strong> (<a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a><em> | </em><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.20.3)"><em>Contract</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p></li>
 <li><p><strong>w3</strong> (<em>DankWeb3</em><em> | </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a> | <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.19.5)"><em>Contract</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a> | <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.20.3)"><em>Contract</em></a></p>
 </dd>
 </dl>
 </dd></dl>
