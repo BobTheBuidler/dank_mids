@@ -11,23 +11,25 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.13"
-aiofiles = "^23.2.1"
-eth-retry = "^0.1.19"
-ez-a-sync = ">=0.20.7,<0.22"
-msgspec = "^0.18.6"
-multicall = "^0.9.0"
-typed-envs = "^0.0.4"
-web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2"
+aiofiles = "*"
+eth-retry = "^0.1.15"
+ez-a-sync = ">=0.20.7,<0.24"
+msgspec = "*"
+multicall = ">=0.6.2,<1"
+typed-envs = ">=0.0.2"
+web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<7"
 
 [tool.poetry.group.dev.dependencies]
-eth_brownie = [
-    {version = ">=1.18,<=1.19.5", python = ">=3.8,<3.10"},
-    {version = ">1.19.5", python = ">=3.10,<4"}
+eth-brownie = [
+    {version = ">=1.16,<1.20", python = ">=3.8,<3.10"},
+    {version = ">=1.20.3", python = ">=3.10,<4"}
 ]
-pytest = ">=6.2.5"
-pytest-asyncio-cooperative = "^0.36.0"
-pytest-cov = "^5.0.0"
-pytest-sugar = "^1.0.0"
+pytest = "*"
+pytest-asyncio-cooperative = "*"
+pytest-cov = "*"
+pytest-sugar = "*"
+# need this to resolve brownie locally, didn't before
+importlib-resources = ">=6.4.0"
 
 [build-system]
 requires = ["poetry-core"]
