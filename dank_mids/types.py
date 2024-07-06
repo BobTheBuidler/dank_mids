@@ -85,7 +85,7 @@ RETURN_TYPES = {
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
     "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Log]]], 
-    "erigon_getHeaderByNumber": Dict[str, Optional[str]],
+    "erigon_getHeaderByNumber": Dict[str, Union[str, int, None]],
 }
 
 decoder_logger = logging.getLogger('dank_mids.decoder')
