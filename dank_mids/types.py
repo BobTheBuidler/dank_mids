@@ -129,7 +129,10 @@ class PartialResponse(_DictStruct):
         # NOTE: These must be added to the `RETURN_TYPES` constant above manually
         if method and (typ := RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
-                return msgspec.json.decode(self.result, type=typ)
+                try:
+                    return msgspec.json.decode(self.result, type=typ)
+                except msgspec.ValidationError as e:
+                    raise ValueError(e, f'method: {method}  result: {msgspec.json.decode(self.result)}').with_traceback(e.__traceback__)
             try:
                 start = time()
                 decoded = msgspec.json.decode(self.result, type=typ)
