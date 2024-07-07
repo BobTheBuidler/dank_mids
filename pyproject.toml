@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dank-mids"
-version = "0.1.0"
+version = "4.20.94"
 description = "Multicall batching middleware for asynchronous scripts using web3.py"
 authors = ["BobTheBuidler <bobthebuidlerdefi@gmail.com>"]
 homepage = "https://github.com/BobTheBuidler/dank_mids"
