@@ -9,8 +9,7 @@ from random import random
 from typing import Any, Callable, List, Optional, overload
 
 import msgspec
-from aiohttp import ClientSession as DefaultClientSession
-from aiohttp import ClientTimeout, TCPConnector
+from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from aiolimiter import AsyncLimiter
@@ -83,10 +82,10 @@ async def post(endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, 
     session = await get_session()
     return await session.post(endpoint, *args, loads=loads, **kwargs)
 
-async def get_session() -> "ClientSession":
+async def get_session() -> "DankClientSession":
     return await _get_session_for_thread(get_ident())
 
-class ClientSession(DefaultClientSession):
+class DankClientSession(ClientSession):
     async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, _retry_after: float = 1, **kwargs) -> bytes:  # type: ignore [override]
         # Process input arguments.
         if isinstance(kwargs.get('data'), PartialRequest):
@@ -129,12 +128,12 @@ class ClientSession(DefaultClientSession):
                 tried += 1
 
 @alru_cache(maxsize=None)
-async def _get_session_for_thread(thread_ident: int) -> ClientSession:
+async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
     """
     This makes our ClientSession threadsafe just in case.
     Most everything should be run in main thread though.
     """
-    return ClientSession(
+    return DankClientSession(
         connector = TCPConnector(limit=32),
         headers = {'content-type': 'application/json'}, 
         timeout = ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT),  # type: ignore [arg-type, attr-defined]
@@ -142,4 +141,4 @@ async def _get_session_for_thread(thread_ident: int) -> ClientSession:
         read_bufsize=2**20,  # 1mb
     )
 
-_limited: List[ClientSession] = []
+_limited: List[DankClientSession] = []
