@@ -718,6 +718,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         try:
             # NOTE: We do this inline so we never have to allocate the response to memory
             await self.spoof_response(*await self.post())
+        except BatchResponseSortError:
+            raise
         # I want to see these asap when working on the lib.
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
             raise e if 'invalid argument' in str(e) else DankMidsInternalError(e) from e
