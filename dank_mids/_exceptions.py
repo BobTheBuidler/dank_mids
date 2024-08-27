@@ -1,12 +1,13 @@
 
 import logging
 import re
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, List, Union
 
 from aiohttp.client_exceptions import ClientResponseError
 
 if TYPE_CHECKING:
-    from dank_mids.types import PartialRequest, PartialResponse
+    from dank_mids._requests import RPCRequest
+    from dank_mids.types import PartialRequest, PartialResponse, RawResponse, Response
 
 
 logger = logging.getLogger("dank_mids.exceptions")
@@ -50,3 +51,10 @@ class DankMidsInternalError(Exception):
         logger.warning(f"unhandled exception inside dank mids internals: {e}", exc_info=True)
         self._original_exception = e
         super().__init__(e.__repr__())
+
+class BatchResponseSortError(Exception):
+    """A `BatchResponseSortError` indicates your rpc needs some special handling to properly handle batch calls / responses."""
+    def __init__(self, calls: List["RPCRequest"], response: List["RawResponse"]) -> None:
+        self.calls = calls
+        self.results = [raw.decode() for raw in response]
+        super().__init__([call.uid for call in calls], self.results)
