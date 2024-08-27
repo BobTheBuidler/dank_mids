@@ -166,7 +166,7 @@ class PartialResponse(_DictStruct):
             if method:
                 _dict_responses.add(method)
             return AttributeDict(decoded)
-        raise TypeError(f"type {type(decoded)} is not supported.", decoded)
+        raise TypeError(f"type {type(decoded)} is not supported.  method: {method}  decoded: {decoded}")
         
 
 class Response(PartialResponse):
