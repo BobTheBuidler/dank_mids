@@ -26,9 +26,9 @@ from web3.types import RPCError as _RPCError
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import _debugging, constants, stats
 from dank_mids._demo_mode import demo_logger
-from dank_mids._exceptions import (BadResponse, DankMidsClientResponseError,
-                                   DankMidsInternalError, EmptyBatch,
-                                   ExceedsMaxBatchSize, PayloadTooLarge,
+from dank_mids._exceptions import (BadResponse, BatchResponseSortError,
+                                   DankMidsClientResponseError, DankMidsInternalError, 
+                                   EmptyBatch, ExceedsMaxBatchSize, PayloadTooLarge,
                                    ResponseNotReady, internal_err_types)
 from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import _codec, _session
@@ -814,10 +814,11 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             # NOTE: these providers don't always return batch results in the correct ordering
             # NOTE: is it maybe because they 
             calls = sorted(calls, key=lambda call: call.uid)
-            for i, (call, raw) in enumerate(zip(calls, response)):
+            for call, raw in zip(calls, response):
                 # TODO: make sure this doesn't ever raise and then delete it
                 decoded = raw.decode()
-                assert call.uid == decoded.id, (i, call, decoded, response, [[call.uid for call in calls], [raw.decode() for raw in response]])
+                if call.uid != decoded.id:
+                    raise BatchResponseSortError(calls, response)
             
         for r in await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(calls, response)], return_exceptions=True):
             # NOTE: By doing this with the exceptions we allow any successful calls to get their results sooner
