@@ -45,26 +45,10 @@ dank\_mids.exceptions module
    :undoc-members:
    :show-inheritance:
 
-dank\_mids.executor module
---------------------------
-
-.. automodule:: dank_mids.executor
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 dank\_mids.middleware module
 ----------------------------
 
 .. automodule:: dank_mids.middleware
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dank\_mids.semaphore module
----------------------------
-
-.. automodule:: dank_mids.semaphore
    :members:
    :undoc-members:
    :show-inheritance:
