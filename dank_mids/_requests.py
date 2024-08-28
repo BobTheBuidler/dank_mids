@@ -8,6 +8,7 @@ from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
 from functools import cached_property, lru_cache
+from itertools import chain
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
                     Iterable, Iterator, List, Optional, Tuple, TypeVar, Union,
                     overload)
@@ -453,7 +454,7 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
             logger.debug('Dank too loud. Bisecting batch and retrying.')
         elif isinstance(e, BadResponse) and (_needs_full_request_spec(e) or _is_call_revert(e)):
             pass
-        elif "429" not in f"{e}":
+        elif "429" not in f"{e}" and all(err not in f"{e}".lower() for err in constants.TOO_MUCH_DATA_ERRS):
             logger.warning(f"unexpected {e.__class__.__name__}: {e}")
         return len(self) > 1
       
@@ -870,7 +871,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
 def _log_exception(e: Exception) -> bool:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
-    dont_need_to_see_errs = constants.RETRY_ERRS + ['out of gas', 'non_empty_data', 'exceeding --rpc.returndata.limit', "'code': 429", 'payload too large']
+    dont_need_to_see_errs = ['out of gas', 'non_empty_data', 'exceeding --rpc.returndata.limit', "'code': 429"]
     
     dont_need_to_see_errs += [
         # We catch and correct these
@@ -879,11 +880,8 @@ def _log_exception(e: Exception) -> bool:
         *INDIVIDUAL_CALL_REVERT_STRINGS
     ]
 
-    
-    
     stre = str(e).lower()
-    if any(err in stre for err in dont_need_to_see_errs):
-        return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
-    logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
-    logger.warning(e, exc_info=True)
+    if all(err not in stre for err in chain(dont_need_to_see_errs, constants.RETRY_ERRS, constants.TOO_MUCH_DATA_ERRS)):
+        logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
+        logger.warning(e, exc_info=True)
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]

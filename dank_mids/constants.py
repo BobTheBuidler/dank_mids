@@ -5,8 +5,11 @@ import multicall
 from eth_typing import BlockNumber
 from multicall.constants import Network
 
-TOO_MUCH_DATA_ERRS = ["Payload Too Large", "content length too large", "request entity too large", "batch limit exceeded"]
+TOO_MUCH_DATA_ERRS = ["payload too large", "content length too large", "request entity too large", "batch limit exceeded"]
+"""These errors indicate the request sent to the rpc was too large and must be split up."""
+
 RETRY_ERRS = ["connection reset by peer", "server disconnected", "execution aborted (timeout =", "batch limit exceeded", "request timed out"]
+"""These errors are expected during normal use and are not indicative of any problem(s), we simply retry until success."""
 
 GAS_LIMIT = multicall.constants.GAS_LIMIT
 MULTICALL2_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
