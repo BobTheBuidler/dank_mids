@@ -63,8 +63,10 @@ class DankMiddlewareController:
         self.sync_w3 = _sync_w3_from_async(w3)
 
         self.chain_id = self.sync_w3.eth.chain_id
+        self.client_version = self.sync_w3.clientVersion
+
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
-        self.request_type = Request if ENVS.USE_FULL_REQUEST else PartialRequest
+        self.request_type = Request if ENVS.USE_FULL_REQUEST or "reth" in self.client_version else PartialRequest
         self._time_of_request_type_change: Union[int, float] = 0
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
