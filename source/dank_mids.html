@@ -55,7 +55,11 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.ENVIRONMENT_VARIABLES">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.constants">dank_mids.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.constants">dank_mids.constants module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.constants.RETRY_ERRS"><code class="docutils literal notranslate"><span class="pre">RETRY_ERRS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.constants.TOO_MUCH_DATA_ERRS"><code class="docutils literal notranslate"><span class="pre">TOO_MUCH_DATA_ERRS</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.controller">dank_mids.controller module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.controller.DankMiddlewareController"><code class="docutils literal notranslate"><span class="pre">DankMiddlewareController</span></code></a></li>
 </ul>
@@ -275,6 +279,18 @@
 </section>
 <section id="module-dank_mids.constants">
 <span id="dank-mids-constants-module"></span><h2>dank_mids.constants module<a class="headerlink" href="#module-dank_mids.constants" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="dank_mids.constants.RETRY_ERRS">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.constants.</span></span><span class="sig-name descname"><span class="pre">RETRY_ERRS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['connection</span> <span class="pre">reset</span> <span class="pre">by</span> <span class="pre">peer',</span> <span class="pre">'server</span> <span class="pre">disconnected',</span> <span class="pre">'execution</span> <span class="pre">aborted</span> <span class="pre">(timeout</span> <span class="pre">=',</span> <span class="pre">'batch</span> <span class="pre">limit</span> <span class="pre">exceeded',</span> <span class="pre">'request</span> <span class="pre">timed</span> <span class="pre">out']</span></em><a class="headerlink" href="#dank_mids.constants.RETRY_ERRS" title="Link to this definition"></a></dt>
+<dd><p>These errors are expected during normal use and are not indicative of any problem(s), we simply retry until success.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dank_mids.constants.TOO_MUCH_DATA_ERRS">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.constants.</span></span><span class="sig-name descname"><span class="pre">TOO_MUCH_DATA_ERRS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['payload</span> <span class="pre">too</span> <span class="pre">large',</span> <span class="pre">'content</span> <span class="pre">length</span> <span class="pre">too</span> <span class="pre">large',</span> <span class="pre">'request</span> <span class="pre">entity</span> <span class="pre">too</span> <span class="pre">large',</span> <span class="pre">'batch</span> <span class="pre">limit</span> <span class="pre">exceeded']</span></em><a class="headerlink" href="#dank_mids.constants.TOO_MUCH_DATA_ERRS" title="Link to this definition"></a></dt>
+<dd><p>These errors indicate the request sent to the rpc was too large and must be split up.</p>
+</dd></dl>
+
 </section>
 <section id="module-dank_mids.controller">
 <span id="dank-mids-controller-module"></span><h2>dank_mids.controller module<a class="headerlink" href="#module-dank_mids.controller" title="Link to this heading"></a></h2>
