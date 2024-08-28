@@ -37,8 +37,7 @@ w3_version_major = int(version("web3").split(".")[0])
 class DankEth(AsyncEth):
     @alru_cache(ttl=0)
     async def get_block_number(self) -> BlockNumber:  # type: ignore [override]
-        block = await super().get_block_number()  # type: ignore [misc]
-        return block
+        return await super().get_block_number()  # type: ignore [misc]
     
 class DankWeb3:
     """This is just a helper for type checkers. Your object will just be a modified ``web3.Web3`` object."""
