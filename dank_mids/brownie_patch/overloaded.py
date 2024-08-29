@@ -26,7 +26,7 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
                 exc_str = str(e)
                 breakpoint = exc_str.find("(*args)")
                 raise ValueError(f"{exc_str[:breakpoint]}.coroutine{exc_str[breakpoint:]}")
-            raise e
+            raise
 
         kwargs = {"block_identifier": block_identifier, "decimals": decimals, "override": override}
         kwargs = {k: v for k, v in kwargs.items() if v is not None}

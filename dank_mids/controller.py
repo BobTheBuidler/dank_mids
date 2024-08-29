@@ -168,7 +168,7 @@ class DankMiddlewareController:
             return await queue(self, method, params)
         except TypeError as e:
             if "unhashable type" not in str(e):
-                raise e
+                raise
         return await queue(self, method, _helpers._make_hashable(params))
     
     @eth_retry.auto_retry
