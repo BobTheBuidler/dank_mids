@@ -63,7 +63,7 @@ class DankMiddlewareController:
         self.sync_w3 = _sync_w3_from_async(w3)
 
         self.chain_id = self.sync_w3.eth.chain_id
-        self.client_version = self.sync_w3.clientVersion
+        self.client_version: str = self.sync_w3.client_version if _helpers.w3_version_major >= 6 else self.sync_w3.clientVersion
 
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
         self.request_type = Request if ENVS.USE_FULL_REQUEST or "reth" in self.client_version else PartialRequest

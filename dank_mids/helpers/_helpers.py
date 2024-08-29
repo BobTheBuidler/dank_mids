@@ -33,6 +33,11 @@ T = TypeVar("T")
 P = ParamSpec("P")
 
 w3_version_major = int(version("web3").split(".")[0])
+"""
+The 'major' component of the currently installed web3.py's version
+
+Example: for `web3==6.0.1`, the major version is 6.
+"""
 
 class DankEth(AsyncEth):
     @alru_cache(ttl=0)
