@@ -132,7 +132,10 @@ class PartialResponse(_DictStruct):
                 try:
                     return msgspec.json.decode(self.result, type=typ)
                 except msgspec.ValidationError as e:
-                    raise ValueError(e, f'method: {method}  result: {msgspec.json.decode(self.result)}').with_traceback(e.__traceback__)
+                    raise ValueError(
+                        e,
+                        f'method: {method}  result: {msgspec.json.decode(self.result)}',
+                    ).with_traceback(e.__traceback__) from e
             try:
                 start = time()
                 decoded = msgspec.json.decode(self.result, type=typ)

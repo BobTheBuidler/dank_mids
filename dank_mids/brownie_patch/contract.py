@@ -87,8 +87,7 @@ class Contract(brownie.Contract):
                 natspec = self._build["natspec"]["methods"].get(sig, {})
 
             if overloaded is False:
-                fn = _get_method_object(self.address, abi, full_name, self._owner, natspec)
-                return fn
+                return _get_method_object(self.address, abi, full_name, self._owner, natspec)
 
             # special logic to handle function overloading
             elif overloaded is True:
@@ -123,6 +122,6 @@ class _ContractMethodPlaceholder:
     """A sentinel object that indicates a Contract does have a member by a specific name."""
 
 def _check_persist(persist: bool) -> Literal[True]:
-    if persist is False:
+    if not persist:
         raise NotImplementedError("persist: False")
     return persist

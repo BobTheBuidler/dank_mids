@@ -18,7 +18,7 @@ class _FileHelper(metaclass=abc.ABCMeta):
         if not isinstance(chainid, int):
             raise TypeError(f"`chainid` must be an integer. You passed {chainid}") from None
         self.chainid = chainid
-        self.path = self.path + f"/{self.chainid}"
+        self.path += f"/{self.chainid}"
         self.ensure_dir()
     @lru_cache(maxsize=1)
     def ensure_dir(self) -> None:
