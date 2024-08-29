@@ -51,30 +51,39 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
         logger.info('Dank Middleware initializing... Strap on your rocket boots...')
+
         self.w3: Web3 = w3
+        """The Web3 instance used to make rpc requests."""
+
         if _helpers.w3_version_major >= 6:
-            from web3.middleware import async_attrdict_middleware
-            try:
-                self.w3.middleware_onion.add(async_attrdict_middleware)
-            except ValueError as e:
-                if str(e) != "You can't add the same un-named instance twice":
-                    raise
-                # NOTE: the web3 instance already has the middleware
+            self.__setup_attrdict_middleware()
+
         self.sync_w3 = _sync_w3_from_async(w3)
+        """A sync Web3 instance connected to the same rpc, used to make calls during init."""
 
         self.chain_id = self.sync_w3.eth.chain_id
-        self.client_version: str = self.sync_w3.client_version if _helpers.w3_version_major >= 6 else self.sync_w3.clientVersion
+        """The chainid for the currently connected rpc."""
+
+        self.client_version: str = self.sync_w3.client_version if _helpers.w3_version_major >= 6 else self.sync_w3.clientVersion  # type: ignore [attr-defined]
+        """The client version for the currently connected rpc."""
 
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
         self.request_type = Request if ENVS.USE_FULL_REQUEST or "reth" in self.client_version else PartialRequest
+        """The Struct class the controller will use to encode requests."""
+
         self._time_of_request_type_change: Union[int, float] = 0
+        """The time at which the request type was automatically updated by dank's internals. Zero if never updated after init."""
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
         self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # type: ignore [assignment]
+        """A boolean that indicates whether the connected rpc supports state override functionality."""
 
         self.endpoint = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
+        """The uri for the connected rpc."""
 
         self._sort_calls = "tenderly" in self.endpoint or "chainstack" in self.endpoint
+        """A boolean that indicates whether calls must be sorted by id in order for dank to work with the connected rpc."""
+
         if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
             logger.info("max jsonrpc batch size for tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
@@ -103,6 +112,8 @@ class DankMiddlewareController:
         ) if multicall3 else None
                     
         self.no_multicall: Set[ChecksumAddress] = set()
+        """A set of addresses that have issues when called from the multicall contract. Calls to these contracts will not be batched in multicalls."""
+
         if multicall:
             self.no_multicall.add(to_checksum_address(multicall))
         if self.mc2:
@@ -124,7 +135,10 @@ class DankMiddlewareController:
         self.pools_closed_lock = _AlertingRLock(name='pools closed')
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
+        """A dictionary of pending Multicalls by block. The Multicalls hold all pending eth_calls."""
+
         self.pending_rpc_calls = JSONRPCBatch(self)
+        """A JSONRPCBatch containing all pending rpc requests."""
     
     def __repr__(self) -> str:
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
@@ -243,6 +257,16 @@ class DankMiddlewareController:
             # We don't care if mc2 needs override code, mc2 override code is shorter
             return self.mc2
         return self.mc3  # type: ignore [return-value]
+    
+    def __setup_attrdict_middleware(self) -> None:
+        """This will only run for web3 versions > 6.0. It runs one time when the instance is initialized."""
+        from web3.middleware import async_attrdict_middleware
+        try:
+            self.w3.middleware_onion.add(async_attrdict_middleware)
+        except ValueError as e:
+            if str(e) != "You can't add the same un-named instance twice":
+                raise
+            # NOTE: the web3 instance already has the middleware
 
 class _MulticallContract(Struct):
     address: ChecksumAddress
