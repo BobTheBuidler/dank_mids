@@ -66,19 +66,9 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
     assert not sync_w3.eth.is_async and isinstance(sync_w3.provider, BaseProvider)
     if sync_w3 not in sync_w3s:
         if w3_version_major >= 6:
-            from web3.middleware import attrdict_middleware
-            try:
-                sync_w3.middleware_onion.add(attrdict_middleware)
-            except ValueError as e:
-                if str(e) != "You can't add the same un-named instance twice":
-                    raise e
-        if w3_version_major >= 7:
-            # we need to make sure our sync w3 instance is compatible with poa chains
-            from web3.middleware.proof_of_authority import ExtraDataToPOAMiddleware
-            sync_w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
-        elif w3_version_major >= 6:
-            from web3.middleware import geth_poa_middleware
-            sync_w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+            # this was default in prior versions but now optional. We want it.
+            __add_sync_attrdict_middleware(sync_w3)
+        __add_sync_poa_middleware(sync_w3)
         sync_w3s.append(sync_w3)
     return setup_dank_w3(get_async_w3(sync_w3))
 
@@ -207,3 +197,24 @@ def _make_hashable(obj: Any) -> Any:
     elif isinstance(obj, dict):
         return AttributeDict({k: _make_hashable(v) for k, v in obj.items()})
     return obj
+
+def __add_sync_attrdict_middleware(sync_w3: Web3) -> None:
+    # we do the import here because it is only present in web3 >= 6
+    from web3.middleware import attrdict_middleware
+    if sync_w3.eth.is_async:
+        raise ValueError("You must pass in a sync Web3 instance.")
+    try:
+        sync_w3.middleware_onion.add(attrdict_middleware)
+    except ValueError as e:
+        if str(e) != "You can't add the same un-named instance twice":
+            raise
+        # The middleware is already added
+
+def __add_sync_poa_middleware(sync_w3: Web3) -> None:
+    """We need to make sure our sync w3 instance is compatible with poa chains."""
+    if w3_version_major >= 7:
+        from web3.middleware.proof_of_authority import ExtraDataToPOAMiddleware
+        sync_w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
+    elif w3_version_major >= 6:
+        from web3.middleware import geth_poa_middleware
+        sync_w3.middleware_onion.inject(geth_poa_middleware, layer=0)
