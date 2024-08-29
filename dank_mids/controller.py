@@ -266,6 +266,7 @@ class DankMiddlewareController:
                 raise
             # NOTE: the web3 instance already has the middleware
 
+
 class _MulticallContract(Struct):
     address: ChecksumAddress
     deploy_block: Optional[BlockNumber]
