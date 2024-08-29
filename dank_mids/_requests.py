@@ -773,13 +773,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             logger.debug("caught %s for %s, reraising", e, self)
             if ENVS.DEBUG:  # type: ignore [attr-defined]
                 _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, len(self), self.data)
-            raise e
+            raise
         except Exception as e:
             if 'broken pipe' in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
             if ENVS.DEBUG:  # type: ignore [attr-defined]
                 _debugging.failures.record(self.controller.chain_id, e, type(self).__name__, self.uid, len(self), self.data)
-            raise e
+            raise
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
         if isinstance(response, list):

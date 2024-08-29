@@ -116,7 +116,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
     except AttributeError as e: 
         # NOTE: Not sure why this happens as we set the attr while patching the call but w/e, this works for now
         if not str(e).endswith(" object has no attribute '_skip_decoder_proc_pool'"):
-            raise e
+            raise
         logger.debug("DEBUG ME BRO: %s", e)
         call._skip_decoder_proc_pool = call._address in _skip_proc_pool
         return await decode_output(call, data)
@@ -144,7 +144,7 @@ while True:
         break
     except Exception as e:
         if "429" not in str(e):
-            raise e
+            raise
 if multicall2 := MULTICALL2_ADDRESSES.get(chainid, None):
     _skip_proc_pool.add(to_checksum_address(multicall2))
     
@@ -180,5 +180,5 @@ def __validate_output(abi: Dict[str, Any], hexstr: BytesLike):
         try:
             raise VirtualMachineError(e) from None
         except:
-            raise e
+            raise e from e.__cause__
 
