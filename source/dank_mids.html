@@ -413,10 +413,70 @@
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.chain_id">
+<span class="sig-name descname"><span class="pre">chain_id</span></span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.chain_id" title="Link to this definition"></a></dt>
+<dd><p>The chainid for the currently connected rpc.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.client_version">
+<span class="sig-name descname"><span class="pre">client_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.client_version" title="Link to this definition"></a></dt>
+<dd><p>The client version for the currently connected rpc.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.endpoint">
+<span class="sig-name descname"><span class="pre">endpoint</span></span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.endpoint" title="Link to this definition"></a></dt>
+<dd><p>The uri for the connected rpc.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.no_multicall">
+<span class="sig-name descname"><span class="pre">no_multicall</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.12)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ChecksumAddress</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.no_multicall" title="Link to this definition"></a></dt>
+<dd><p>A set of addresses that have issues when called from the multicall contract. Calls to these contracts will not be batched in multicalls.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.pending_eth_calls">
+<span class="sig-name descname"><span class="pre">pending_eth_calls</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.DefaultDict" title="(in Python v3.12)"><span class="pre">DefaultDict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">BlockId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Multicall</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.pending_eth_calls" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of pending Multicalls by block. The Multicalls hold all pending eth_calls.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.pending_rpc_calls">
+<span class="sig-name descname"><span class="pre">pending_rpc_calls</span></span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.pending_rpc_calls" title="Link to this definition"></a></dt>
+<dd><p>A JSONRPCBatch containing all pending rpc requests.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.queue_is_full">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">queue_is_full</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.queue_is_full" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.request_type">
+<span class="sig-name descname"><span class="pre">request_type</span></span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.request_type" title="Link to this definition"></a></dt>
+<dd><p>The Struct class the controller will use to encode requests.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.state_override_not_supported">
+<span class="sig-name descname"><span class="pre">state_override_not_supported</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.state_override_not_supported" title="Link to this definition"></a></dt>
+<dd><p>A boolean that indicates whether the connected rpc supports state override functionality.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.sync_w3">
+<span class="sig-name descname"><span class="pre">sync_w3</span></span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.sync_w3" title="Link to this definition"></a></dt>
+<dd><p>A sync Web3 instance connected to the same rpc, used to make calls during init.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.w3">
+<span class="sig-name descname"><span class="pre">w3</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Web3</span></em><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.w3" title="Link to this definition"></a></dt>
+<dd><p>The Web3 instance used to make rpc requests.</p>
+</dd></dl>
 
 </dd></dl>
 
