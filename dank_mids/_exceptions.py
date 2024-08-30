@@ -58,7 +58,7 @@ class BatchResponseSortError(Exception):
     def __init__(self, controller: "DankMiddlewareController", calls: List["RPCRequest"], response: List["RawResponse"]) -> None:
         self.calls = calls
         self.results = [raw.decode() for raw in response]
-        super().__init__(controller.endpoint, controller.client_version, [call.uid for call in calls], self.results)
+        super().__init__(f"This will not mess up your run but will make things needlessly slow. Please show this to Bob.  endpoint={controller.endpoint} client_version={controller.client_version} calls={[call.uid for call in calls]} response={self.results}")
 
 class ChainstackRateLimited(BadResponse):
     """
