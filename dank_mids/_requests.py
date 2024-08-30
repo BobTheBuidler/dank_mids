@@ -771,8 +771,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             response: JSONRPCBatchResponse = await _session.post(self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch)
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
-                logger.warning("Payload Too Large")
-                logger.warning("This is what was too large: %s", self.method_counts)
+                logger.warning("Payload too large: %s", self.method_counts)
                 self.adjust_batch_size()
             elif 'broken pipe' in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
