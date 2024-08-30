@@ -58,3 +58,17 @@ class BatchResponseSortError(Exception):
         self.calls = calls
         self.results = [raw.decode() for raw in response]
         super().__init__([call.uid for call in calls], self.results)
+
+class ChainstackRateLimited(BadResponse):
+    """
+    Chainstack doesn't use 429 for rate limiting, it sends a successful 200 response back to the rpc with an error message so our usual rate-limiting handlers don't work and we need to handle that case with bespoke logic.
+    """
+    @property
+    def try_again_in(self) -> float:
+        decimal_string = self.response.error.data['try_again_in']
+        if "ms" in decimal_string:
+            ms = float(decimal_string[:-2])
+            s = ms / 1000
+            logger.info("rate limited by chainstack, retrying in %sms", s)
+            return s
+        raise NotImplementedError(f"must define a handler for decimal_string {decimal_string}")
