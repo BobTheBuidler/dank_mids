@@ -811,7 +811,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     
     @set_done
     async def spoof_response(self, response: List[RawResponse], calls: List[RPCRequest]) -> None:
-        # This means we got results. That doesn't mean they're good, but we got 'em.
+        # Reaching this point means we made a batch call and cwe got results. That doesn't mean they're good, but we got 'em.
         
         if self.controller._sort_calls:
             # NOTE: these providers don't always return batch results in the correct ordering
