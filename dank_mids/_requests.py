@@ -831,7 +831,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 decoded = raw.decode()
                 if call.uid != decoded.id:
                     # Not sure why it works this way
-                    raise BatchResponseSortError(calls, response)
+                    raise BatchResponseSortError(self.controller, calls, response)
             
         for r in await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(calls, response)], return_exceptions=True):
             # NOTE: By doing this with the exceptions we allow any successful calls to get their results sooner
