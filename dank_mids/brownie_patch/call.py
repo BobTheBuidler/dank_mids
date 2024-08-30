@@ -173,7 +173,7 @@ def __validate_output(abi: Dict[str, Any], hexstr: BytesLike):
                 revert_str = f"Panic (error code: {error_code})"
             raise Revert(f"Call reverted: {revert_str}")
         elif selector == "0xc1b84b2f":
-            raise Revert(f"Call reverted: execution reverted")
+            raise Revert("Call reverted: execution reverted")
         if abi["outputs"] and not hexstr:
             raise Revert("No data was returned - the call likely reverted")
     except ValueError as e:

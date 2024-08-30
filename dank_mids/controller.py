@@ -250,23 +250,22 @@ class DankMiddlewareController:
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(self, block) -> "_MulticallContract":
         if block == 'latest':
-            return self.mc3 if self.mc3 else self.mc2  # type: ignore [return-value]
+            return self.mc3 or self.mc2  # type: ignore [return-value]
         if self.mc3 and not self.mc3.needs_override_code_for_block(block):
             return self.mc3
-        if self.mc2:
-            # We don't care if mc2 needs override code, mc2 override code is shorter
-            return self.mc2
-        return self.mc3  # type: ignore [return-value]
+        # We don't care if mc2 needs override code, mc2 override code is shorter
+        return self.mc2 or self.mc3  # type: ignore [return-value]
     
     def __setup_attrdict_middleware(self) -> None:
         """This will only run for web3 versions > 6.0. It runs one time when the instance is initialized."""
-        from web3.middleware import async_attrdict_middleware
+        from web3.middleware import async_attrdict_middleware  # type: ignore [attr-defined]
         try:
             self.w3.middleware_onion.add(async_attrdict_middleware)
         except ValueError as e:
             if str(e) != "You can't add the same un-named instance twice":
                 raise
             # NOTE: the web3 instance already has the middleware
+
 
 class _MulticallContract(Struct):
     address: ChecksumAddress
