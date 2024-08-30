@@ -27,7 +27,7 @@ from web3.types import RPCError as _RPCError
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import _debugging, constants, stats
 from dank_mids._demo_mode import demo_logger
-from dank_mids._exceptions import (BadResponse, BatchResponseSortError,
+from dank_mids._exceptions import (BadResponse, BatchResponseSortError, ChainstackRateLimited,
                                    DankMidsClientResponseError, DankMidsInternalError, 
                                    EmptyBatch, ExceedsMaxBatchSize, PayloadTooLarge,
                                    ResponseNotReady, internal_err_types)
@@ -717,8 +717,16 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             # When demo mode is disabled, we can save some CPU time by skipping this sum
             demo_logger.info(f'request {rid} for jsonrpc batch {self.jid} ({sum(len(batch) for batch in self)} calls) starting')  # type: ignore
         try:
-            # NOTE: We do this inline so we never have to allocate the response to memory
-            await self.spoof_response(*await self.post())
+            while True:
+                try:
+                # NOTE: We do this inline so we never have to allocate the response to memory
+                    await self.spoof_response(*await self.post())
+                    break
+                except ChainstackRateLimited as e:
+                    # Chainstack doesn't use 429 for rate limiting, it sends a successful response back to the rpc
+                    # with an error message so our usual rate-limiting handlers don't work and we need to handle that case with bespoke logic.
+                    await asyncio.sleep(e.try_again_in)
+
         # I want to see these asap when working on the lib.
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
             raise e if 'invalid argument' in str(e) else DankMidsInternalError(e) from e

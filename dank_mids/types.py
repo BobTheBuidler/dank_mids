@@ -11,7 +11,7 @@ from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
-from dank_mids._exceptions import BadResponse, ExceedsMaxBatchSize, PayloadTooLarge
+from dank_mids._exceptions import BadResponse, ChainstackRateLimited, ExceedsMaxBatchSize, PayloadTooLarge
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
@@ -90,6 +90,8 @@ RETURN_TYPES = {
 
 decoder_logger = logging.getLogger('dank_mids.decoder')
 
+_chainstack_429_msg = "You've exceeded the RPS limit available on the current plan."
+
 class PartialResponse(_DictStruct):
     result: msgspec.Raw = None  # type: ignore
     "If the rpc response contains a 'result' field, it is set here"
@@ -104,6 +106,8 @@ class PartialResponse(_DictStruct):
             PayloadTooLarge(self) if self.payload_too_large
             else ExceedsMaxBatchSize(self) if re.search(r'batch limit (\d+) exceeded', self.error.message)
             else TypeError(self.error.message, "DANKMIDS NOTE: You're probably passing what should be an integer type as a string type. The usual culprit is a block number.") if self.error.message == 'invalid argument 1: hex string without 0x prefix'
+            # chainstack doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
+            else ChainstackRateLimited(self) if _chainstack_429_msg in self.error.message
             else BadResponse(self)
         )
     
