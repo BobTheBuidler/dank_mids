@@ -7,6 +7,7 @@ from aiohttp.client_exceptions import ClientResponseError
 
 if TYPE_CHECKING:
     from dank_mids._requests import RPCRequest
+    from dank_mids.controller import DankMiddlewareController
     from dank_mids.types import PartialRequest, PartialResponse, RawResponse, Response
 
 
@@ -54,10 +55,10 @@ class DankMidsInternalError(Exception):
 
 class BatchResponseSortError(Exception):
     """A `BatchResponseSortError` indicates your rpc needs some special handling to properly handle batch calls / responses."""
-    def __init__(self, calls: List["RPCRequest"], response: List["RawResponse"]) -> None:
+    def __init__(self, controller: "DankMiddlewareController", calls: List["RPCRequest"], response: List["RawResponse"]) -> None:
         self.calls = calls
         self.results = [raw.decode() for raw in response]
-        super().__init__([call.uid for call in calls], self.results)
+        super().__init__(controller.endpoint, controller.client_version, [call.uid for call in calls], self.results)
 
 class ChainstackRateLimited(BadResponse):
     """
