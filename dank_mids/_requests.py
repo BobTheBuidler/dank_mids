@@ -821,11 +821,16 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         if self.controller._sort_calls:
             # NOTE: these providers don't always return batch results in the correct ordering
             # NOTE: is it maybe because they 
-            calls = sorted(calls, key=lambda call: call.uid)
+            calls.sort(key=lambda call: call.uid)
+
+        if self.controller._sort_response:
+            response.sort(key = lambda raw: raw.decode().id)
+        else:
             for call, raw in zip(calls, response):
                 # TODO: make sure this doesn't ever raise and then delete it
                 decoded = raw.decode()
                 if call.uid != decoded.id:
+                    # Not sure why it works this way
                     raise BatchResponseSortError(calls, response)
             
         for r in await asyncio.gather(*[call.spoof_response(raw) for call, raw in zip(calls, response)], return_exceptions=True):

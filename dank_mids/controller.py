@@ -84,6 +84,9 @@ class DankMiddlewareController:
         self._sort_calls = "tenderly" in self.endpoint or "chainstack" in self.endpoint
         """A boolean that indicates whether calls must be sorted by id in order for dank to work with the connected rpc."""
 
+        self._sort_response = "chainstack" in self.endpoint
+        """A boolean that indicates whether a jsonrpc batch response must be sorted by id in order for dank to work with the connected rpc."""
+
         if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
             logger.info("max jsonrpc batch size for tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
