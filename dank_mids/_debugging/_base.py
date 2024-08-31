@@ -22,8 +22,17 @@ class _FileHelper(metaclass=abc.ABCMeta):
         self.ensure_dir()
     @lru_cache(maxsize=1)
     def ensure_dir(self) -> None:
+        """
+        Ensure that the directory for the file exists, creating it if necessary.
+        """
         os.makedirs(self.path, exist_ok=True)
     def open(self) -> "AiofilesContextManager[None, None, AsyncTextIOWrapper]":
+        """
+        Open the file asynchronously.
+
+        Returns:
+            An asynchronous context manager for the file.
+        """
         logger.info("opening %s with mode %s", self.uri, self.mode)
         return aiofiles.open(self.uri, self.mode)
     @abc.abstractproperty
@@ -43,8 +52,18 @@ class _CSVWriter(_FileHelper):
         await self._write_row(*values)
     @alru_cache(maxsize=None)
     async def _ensure_headers(self) -> None:
+        """
+        Ensure that the CSV file has headers, writing them if necessary.
+        """
         await self._write_row(*self.column_names, new_line=False)
     async def _write_row(self, *values: Any, new_line: bool = True) -> None:
+        """
+        Write a row to the CSV file.
+
+        Args:
+            *values: The values to write as a row.
+            new_line: Whether to start a new line before writing. Defaults to True.
+        """
         row = ','.join(str(obj) for obj in values)
         if new_line:
             row = f'\n{row}'

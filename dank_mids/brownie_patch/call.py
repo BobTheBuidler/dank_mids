@@ -1,4 +1,3 @@
-
 import functools
 import logging
 from concurrent.futures.process import BrokenProcessPool
@@ -30,6 +29,17 @@ from dank_mids.helpers._helpers import DankWeb3
 
 logger = logging.getLogger(__name__)
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
+"""
+A lambda function that encodes input data for contract calls.
+It uses the BROWNIE_ENCODER_PROCESSES to run the __encode_input function asynchronously.
+
+Args:
+    self: The contract method instance.
+    *args: The arguments to be encoded.
+
+Returns:
+    The encoded input data for the contract call.
+"""
 decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 
 def _patch_call(call: ContractCall, w3: DankWeb3) -> None:

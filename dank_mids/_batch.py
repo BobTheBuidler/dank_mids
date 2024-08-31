@@ -11,24 +11,58 @@ if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
 MIN_SIZE = 1  # TODO: Play with this
+"""The minimum size for a batch operation."""
+
 CHECK = MIN_SIZE - 1
+"""A constant used for checking batch sizes."""
 
 logger = logging.getLogger(__name__)
 
 class DankBatch:
     __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
-    """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
+    """
+    A batch of JSON-RPC batches.
+
+    This class represents a collection of multicalls and RPC calls that can be executed as a batch.
+    It is used internally by the DankMiddlewareController to manage and execute batches of calls.
+
+    Note:
+        This class is considered "pretty much deprecated" and needs refactoring in future versions.
+    """
+
     def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[Union[Multicall, RPCRequest]]):
         self.controller = controller
+        """The controller managing this batch."""
+
         self.multicalls = multicalls
+        """A collection of multicalls to be executed."""
+
         self.rpc_calls = rpc_calls
+        """A list of individual RPC calls or multicalls."""
+
         self._started = False
+        """A flag indicating whether the batch has been started."""
     
     def __await__(self) -> Generator[Any, None, Any]:
+        """
+        Makes the DankBatch awaitable.
+
+        This method allows the batch to be used with the `await` keyword,
+        starting the batch execution if it hasn't been started yet.
+
+        Returns:
+            A generator that can be awaited to execute the batch.
+        """
         self.start()
         return self._await().__await__()
     
     async def _await(self) -> None:
+        """
+        Internal method to await the completion of all coroutines in the batch.
+        
+        This method gathers all coroutines in the batch and awaits their completion,
+        logging any exceptions that may occur during execution.
+        """
         batches = tuple(self.coroutines)
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
             if isinstance(result, Exception):

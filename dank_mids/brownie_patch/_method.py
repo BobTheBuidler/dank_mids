@@ -16,9 +16,14 @@ from dank_mids.helpers._helpers import DankWeb3, _make_hashable
 _EVMType = TypeVar("_EVMType")
 
 class _DankMethodMixin(Generic[_EVMType]):
+    """
+    A mixin class that is used internally to enhance Brownie's contract methods
+    with asynchronous support and memory optimization.
+    """
     _address: EthAddress
+    """The contract address."""
     _abi: FunctionABI
-    """A mixin class that gives brownie objects async support and reduces memory usage"""
+    """The ABI of the contract function."""
     __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_input"
     def __await__(self):
         """Asynchronously call the contract method without arguments at the latest block and await the result."""
@@ -32,6 +37,7 @@ class _DankMethodMixin(Generic[_EVMType]):
         return await asyncio.gather(*[self.coroutine(arg, block_identifier=block_identifier, decimals=decimals) for arg in args])
     @property
     def abi(self) -> dict:
+        """The ABI of the contract function."""
         return self._abi.abi
     @property
     def signature(self) -> str:
@@ -43,6 +49,20 @@ class _DankMethodMixin(Generic[_EVMType]):
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None,
     ) -> _EVMType:
+        """
+        Asynchronously calls the contract method with the given arguments.
+
+        This method is the core of the asynchronous functionality while using dank_mids with eth_brownie.
+
+        Args:
+            *args: Variable length argument list for the contract method.
+            block_identifier: The block number or identifier for the call.
+            decimals: The number of decimals by which to scale numeric results.
+            override: Optional parameters to override chain state in the call.
+
+        Returns:
+            The result of the contract method call.
+        """
         raise NotImplementedError
     @property
     def _input_sig(self) -> str:
@@ -78,9 +98,16 @@ class _DankMethod(_DankMethodMixin):
     ) -> None:
         self._address = address
         self._abi = FunctionABI(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
+
         self._name = name
+        """The name of the contract method."""
+
         self._owner = owner
+        """The owner of the contract."""
+
         self.natspec = natspec or {}
+        """The NatSpec documentation for the function."""
+        
         # TODO: refactor this
         from dank_mids.brownie_patch import call
         self._encode_input = call.encode_input

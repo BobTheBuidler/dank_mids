@@ -38,7 +38,23 @@ logger = logging.getLogger(__name__)
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
 
 def _sync_w3_from_async(w3: Web3) -> Web3:
-    assert w3.eth.is_async and isinstance(w3.provider, AsyncBaseProvider), "Dank Middleware can only be applied to an asycnhronous Web3 instance."
+    """
+    Creates a synchronous Web3 instance from an asynchronous one.
+    
+    This function is used internally to create a sync Web3 instance
+    for operations that require synchronous execution.
+
+    Args:
+        w3: An asynchronous Web3 instance.
+
+    Returns:
+        A synchronous Web3 instance with the same endpoint URI.
+
+    Raises:
+        ValueError: If the input Web3 instance is not asynchronous.
+    """
+    if not w3.eth.is_async or not isinstance(w3.provider, AsyncBaseProvider):
+        raise ValueError("Dank Middleware can only be applied to an asycnhronous Web3 instance.")
     sync_provider = HTTPProvider(w3.provider.endpoint_uri)
     sync_w3: Web3 = Web3(provider = sync_provider)
     # We can't pickle middlewares to send to process executor.
@@ -50,6 +66,12 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
 
 class DankMiddlewareController:
     def __init__(self, w3: Web3) -> None:
+        """
+        Initialize the DankMiddlewareController.
+
+        Args:
+            w3: The Web3 instance used to make RPC requests.
+        """
         logger.info('Dank Middleware initializing... Strap on your rocket boots...')
 
         self.w3: Web3 = w3
@@ -176,6 +198,23 @@ class DankMiddlewareController:
     
     @eth_retry.auto_retry
     async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
+        """
+        Makes an RPC request to the Ethereum node.
+
+        This method creates an RPC request with the given method and parameters,
+        sends it to the node, and returns the raw response.
+
+        Args:
+            method: The RPC method to call.
+            params: The parameters for the RPC method.
+            request_id: An optional request ID. If not provided, a new ID will be generated.
+
+        Returns:
+            The raw response from the Ethereum node.
+
+        Raises:
+            Exception: If DEBUG environment variable is set, any exception that occurs during the request is logged and re-raised.
+        """
         request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
         try:
             return await _session.post(self.endpoint, data=request, loads=_codec.decode_raw)
@@ -271,12 +310,35 @@ class DankMiddlewareController:
 
 
 class _MulticallContract(Struct):
+
     address: ChecksumAddress
+    """
+    The Ethereum address of the multicall contract.
+    """
+        
     deploy_block: Optional[BlockNumber]
+    """
+    The block number at which the multicall contract was deployed.
+    If None, it means the deployment block is unknown.
+    """
+
     bytecode: str
+    """
+    The bytecode of the multicall contract.
+    This is used for state override if necessary.
+    """
     
     @lru_cache(maxsize=1024)
     def needs_override_code_for_block(self, block: BlockNumber) -> bool:
+        """
+        Determine if the contract needs override code for a specific block.
+
+        Args:
+            block: The block number to check.
+
+        Returns:
+            True if override code is needed, False otherwise.
+        """
         if block == 'latest':
             return False
         if self.deploy_block is None:
@@ -286,4 +348,10 @@ class _MulticallContract(Struct):
         return block < self.deploy_block
     
     def __hash__(self) -> int:
+        """
+        Generates a hash for the _MulticallContract instance.
+        
+        Returns:
+            A hash value based on the contract's address.
+        """
         return hash(self.address)

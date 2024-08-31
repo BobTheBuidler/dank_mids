@@ -105,6 +105,10 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 ### Single requests:
 
 BYPASS_METHODS = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
+"""
+A tuple of method names that should bypass batching.
+These methods are typically handled separately or have special requirements.
+"""
 
 @lru_cache(maxsize=None)
 def _should_batch_method(method: str) -> bool:
@@ -298,12 +302,28 @@ INDIVIDUAL_CALL_REVERT_STRINGS = {
 revert_threads = PruningThreadPoolExecutor(4)
 
 def _is_call_revert(e: BadResponse) -> bool:
-    """Returns True if a particular `BadResponse` for a multicall was caused by a failure in one of the individual calls it contained, False for any other reason"""
+    """
+    Determine if a BadResponse was caused by a revert in one of the individual calls within a multicall.
+
+    Args:
+        e: The error response to check.
+
+    Returns:
+        True if the error was caused by an individual call revert, False otherwise.
+    """
     stre = f"{e}"
     return any(s in stre for s in INDIVIDUAL_CALL_REVERT_STRINGS)
 
 def _needs_full_request_spec(e: BadResponse):
-    """Returns True if this particular `BadResponse` indicates that the node we are using requires the full request spec. Dank mids will detect this and changeover automagically."""
+    """
+    Determine if a BadResponse indicates that the node requires the full request specification.
+
+    Args:
+        e: The error response to check.
+
+    Returns:
+        True if the full request specification is needed, False otherwise.
+    """
 
 
 class eth_call(RPCRequest):

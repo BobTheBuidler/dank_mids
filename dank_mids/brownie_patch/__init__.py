@@ -14,6 +14,9 @@ with suppress(ImportError):
         from dank_mids.brownie_patch.contract import Contract, patch_contract
 
         dank_web3 = setup_dank_w3_from_sync(web3)
+        """An instance of DankWeb3, which is a wrapper around the standard Web3 object with Dank Middleware injected."""
+        
         dank_eth = dank_web3.eth
+        """An instance of AsyncEth, providing asynchronous access to Ethereum blockchain methods."""
 
         __all__ += ["Contract", "patch_contract", "dank_web3", "dank_eth"]

@@ -13,13 +13,19 @@ with suppress(ImportError):
     from dank_mids.brownie_patch import Contract, dank_eth, dank_web3, patch_contract
     from web3.eth import AsyncEth as _AsyncEth
     # aliased for cleanliness and convenience
-    web3 = dank_web3
-    eth = dank_eth
+    web3: DankWeb3 = dank_web3
+    eth: AsyncEth = dank_eth
 
     __all__ += ["Contract", "dank_web3", "web3", "dank_eth", "eth", "patch_contract"]
 
 
 def _configure_concurrent_future_work_queue_size():
+    """
+    Configures the concurrent futures process pool to allow for a larger number of queued calls.
+    
+    This function increases the EXTRA_QUEUED_CALLS value to 50,000, which allows for more
+    concurrent operations to be queued in the process pool.
+    """
     import concurrent.futures.process as _cfp
     _cfp.EXTRA_QUEUED_CALLS = 50_000
 

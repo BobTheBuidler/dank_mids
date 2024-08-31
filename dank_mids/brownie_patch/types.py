@@ -1,4 +1,3 @@
-
 from typing import Any, Dict, Optional, Tuple, Union
 
 from brownie.typing import AccountsType
@@ -8,6 +7,7 @@ from dank_mids.brownie_patch._method import _DankMethod, _DankMethodMixin, _EVMT
 
 
 ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
+"""Type alias for Brownie contract methods."""
 
 class DankContractCall(_DankMethod, ContractCall):
     """
@@ -17,6 +17,7 @@ class DankContractCall(_DankMethod, ContractCall):
 
     You can await this object directly to call the contract method with no arguments at the latest block.
     """
+
 class DankContractTx(_DankMethod, ContractTx):
     """
     A `brownie.network.contract.ContractTx` subclass with async support via the `coroutine` method.
@@ -27,6 +28,7 @@ class DankContractTx(_DankMethod, ContractTx):
     """
 
 _NonOverloaded = Union[DankContractCall, DankContractTx]
+"""Type alias for non-overloaded Dank contract methods."""
 
 class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
     """
@@ -59,6 +61,16 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
         call: Union[DankContractCall, DankContractTx] = self._get_fn_from_args(args)
         return await call.coroutine(*args, block_identifier=block_identifier, decimals=decimals, override=override)
     def _add_fn(self, abi: Dict, natspec: Dict) -> None:
+        """
+        Add a function to the overloaded method.
+
+        This method creates a new function object based on the provided ABI and NatSpec,
+        and adds it to the overloaded method's collection of functions.
+
+        Args:
+            abi: The ABI of the function to add.
+            natspec: The NatSpec documentation for the function.
+        """
         fn = _get_method_object(self._address, abi, self._name, self._owner, natspec)
         key = tuple(i["type"].replace("256", "") for i in abi["inputs"])
         self.methods[key] = fn

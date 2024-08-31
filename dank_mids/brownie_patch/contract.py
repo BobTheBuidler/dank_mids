@@ -1,4 +1,3 @@
-
 import functools
 from typing import Dict, List, Literal, NewType, Optional, Union, overload
 
@@ -20,7 +19,12 @@ Method = NewType("Method", str)
 Signature = NewType("Signature", str)
 
 class Contract(brownie.Contract):
-    """a modified `brownie.Contract` with async and call batching functionalities"""
+    """
+    An extended version of brownie.Contract with additional functionality for Dank Mids.
+
+    This class provides lazy initialization of contract methods and supports
+    asynchronous operations through Dank Mids middleware.
+    """
     @classmethod
     def from_abi(
         cls, 
@@ -57,6 +61,11 @@ class Contract(brownie.Contract):
     topics: Dict[str, str]
     signatures: Dict[Method, Signature]
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the Contract instance.
+
+        This method sets up lazy initialization for contract methods.
+        """
         super().__init__(*args, **kwargs)
         # get rid of the contract call objects, we can materialize them on a jit basis
         for name in self.__method_names__:
@@ -65,7 +74,18 @@ class Contract(brownie.Contract):
                 continue
             object.__setattr__(self, name, _ContractMethodPlaceholder)
     def __getattribute__(self, name: str) -> DankContractMethod:
-        """This doesn't functionally do anythiing, it just enables type hints"""
+        """
+        Get a contract method attribute.
+
+        This method implements lazy initialization of contract methods. 
+        If a method object does not yet exist, it is created and cached.
+
+        Args:
+            name: The name of the attribute to get.
+
+        Returns:
+            The contract method object.
+        """
         attr = super().__getattribute__(name)
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
@@ -73,8 +93,20 @@ class Contract(brownie.Contract):
         return attr
     @functools.cached_property
     def __method_names__(self) -> List[str]:
+        """List of method names defined in the contract ABI."""
         return [i["name"] for i in self.abi if i["type"] == "function"]
     def __get_method_object__(self, name: str) -> DankContractMethod:
+        """
+        Get a method object for the given method name.
+
+        This method handles both regular and overloaded contract methods.
+
+        Args:
+            name: The name of the method to get.
+
+        Returns:
+            The initialized contract method object.
+        """
         from dank_mids import web3
         overloaded = self.__method_names__.count(name) > 1
         for abi in [i for i in self.abi if i["type"] == "function"]:

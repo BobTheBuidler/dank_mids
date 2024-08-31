@@ -24,6 +24,11 @@ logger = logging.getLogger("dank_mids.session")
 # NOTE: You cannot subclass an IntEnum object so we have to do some hacky shit here.
 # First, set up custom error codes we might see.
 class _HTTPStatusExtension(IntEnum):
+    """
+    An extension of HTTP status codes, including custom codes used by specific services like Cloudflare.
+    
+    This enum includes status codes and descriptions for server errors that are not part of the standard HTTP specification.
+    """
     WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR = (520, 'Web Server is Returning an Unknown Error',
         'HTTP response status code 520 Web server is returning an unknown error is an unofficial server error\n'
         + 'that is specific to Cloudflare. This is a catch-all error that is used in the absence of having a\n'

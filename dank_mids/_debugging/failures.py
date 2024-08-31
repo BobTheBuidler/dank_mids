@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from functools import cached_property, lru_cache
 from typing import TYPE_CHECKING, List, Literal, Type, Union
@@ -19,6 +18,10 @@ class FailedRequestWriter(_CSVWriter):
             raise TypeError(f"`failure_type` must be an Exception type. You passed {failure_type}")
         self.failure_type = failure_type
         self.record_failure = ProcessingQueue(self._record_failure, num_workers=1, return_data=False)
+        """
+        A ProcessingQueue instance used to record failed requests asynchronously.
+        It processes failures using the _record_failure method with a single worker.
+        """
     @cached_property
     def filename(self) -> str:
         return f"{int(datetime.now().timestamp())}_{self.failure_type.__name__}s.csv"
