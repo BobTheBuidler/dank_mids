@@ -30,7 +30,7 @@ class ExceedsMaxBatchSize(BadResponse):
     """A special exception that occurs when you post a batch which exceeds the maximum batch size for the rpc."""
     @property
     def limit(self) -> int:
-        return int(re.search(r'batch limit (\d+) exceeded', self.response.error.message).group(1))  # type: ignore [union-attr]
+        return int(re.search(r'batch limit (\d+) exceeded', self.response.error.message)[1])  # type: ignore [index, union-attr]
 
 class DankMidsClientResponseError(ClientResponseError):
     """A wrapper around the standard aiohttp ClientResponseError that attaches the request that generated the error."""
