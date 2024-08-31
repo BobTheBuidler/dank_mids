@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 class UIDGenerator:
     def __init__(self) -> None:
         self._value: int = -1
-        self.lock: _AlertingRLock
+        self.lock = _AlertingRLock(name='uid')
         """
         A custom reentrant lock used to ensure thread-safe access to the UID generator.
         """
