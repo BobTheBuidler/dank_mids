@@ -74,9 +74,6 @@ class DankMidsInternalError(Exception):
 class BatchResponseSortError(Exception):
     """
     A `BatchResponseSortError` indicates your RPC needs some special handling to properly handle batch calls / responses.
-
-    See Also:
-        :class:`~dank_mids.controller.DankMiddlewareController`: The controller class that manages batches and RPC calls.
     """
     def __init__(self, controller: "DankMiddlewareController", calls: List["RPCRequest"], response: List["RawResponse"]) -> None:
         self.calls = calls
