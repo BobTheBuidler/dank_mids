@@ -1,7 +1,16 @@
-
 """
-This example demonstrates how to use dank_mids to write a highly efficient brownie script that you can run with `brownie run`
+This example demonstrates how to use dank_mids with Brownie for efficient blockchain data retrieval.
+
 The following code will send just one http call to your node.
+
+dank_mids integrates seamlessly with Brownie, allowing for batched and optimized RPC calls.
+This can significantly improve performance when fetching large amounts of data from the blockchain.
+
+Key features of dank_mids Brownie integration:
+1. Automatic batching of eth_call operations into multicalls
+2. Asynchronous execution of RPC calls
+3. Easy-to-use interface that mimics standard Brownie patterns
+
 Take note of the liberal use of `asyncio.gather`, this is how you ensure that all of the various parts of your code are running at the same time, and are therefore batchable.
 """
 
@@ -25,9 +34,20 @@ uniswap_pools = [
 
 # Define the main function and the async coroutine it will run
 def main() -> None:
+    """
+    The main entry point for the script.
+
+    This function sets up the asyncio event loop and runs the asynchronous :func:`_main` function that we define next.
+    """
     asyncio.run(_main())
 
 async def _main() -> None:
+    """
+    The main asynchronous function that demonstrates the usage of Dank Mids with Brownie.
+
+    This function initializes :class:`dank_mids.Contract` objects for Uniswap pools and fetches data
+    using asynchronous calls.
+    """
     # Initialize the pools as `dank_mids.Contract` objects.
     dank_pool_contracts = [dank_mids.Contract(pool) for pool in uniswap_pools]
 
@@ -49,11 +69,37 @@ async def _main() -> None:
 
 # Functions that we used to get the data from the pools and blocks:
 async def get_balances_for_blocks(pool: dank_mids.Contract, blocks: List[int]):
-    # we call getReserves using the `coroutine` method of the fetReserves DankContractMethod
+    """
+    Fetch balances for a pool across multiple blocks.
+
+    Args:
+        pool: The pool contract to query.
+        blocks: The list of block numbers to query.
+
+    Returns:
+        List[Tuple]: A list of balance tuples for each block.
+
+    Note:
+        We call getReserves using the :meth:`~dank_mids.brownie_patch.call.DankContractCall.coroutine` method of the fetReserves DankContractMethod
+
+    See Also:
+        :meth:`dank_mids.brownie_patch.call.DankContractCall.coroutine`: The function used to asynchronously make the call via dank_mids.
+    """
     return await asyncio.gather(*[pool.getReserves.coroutine(block_identifier=block) for block in blocks])
 
 async def get_tokens_for_pool(pool: dank_mids.Contract):
-    # since we can call token0 and token1 without args, and we're only interested in the latest block, we can simply await the DankContractMethod directly
+    """
+    Fetch token addresses for a pool using dank_mids.
+
+    This function shows how to directly await DankContractMethods for no-arg contract calls 
+    at 'latest' block. 
+
+    Args:
+        pool: The pool contract wrapped by dank_mids
+
+    Returns:
+        Tuple of token0 and token1 addresses
+    """
     return await asyncio.gather(pool.token0, pool.token1)
 
 
@@ -61,6 +107,20 @@ async def get_tokens_for_pool(pool: dank_mids.Contract):
 # This object wraps the connected brownie Web3 instance and injects the dank middleware for batching
 
 async def get_timestamp_at_block(block: int) -> Timestamp:
+    """
+    Fetch the timestamp for a specific block using dank_mids.eth.
+
+    This function demonstrates how to use dank_mids.eth for standard RPC calls,
+    which will be automatically batched with other calls.
+    
+    It also demonstrates how to access members of multi-field responses.
+
+    Args:
+        block: The block number to fetch the timestamp for
+
+    Returns:
+        The timestamp of the block
+    """
     data = await dank_mids.eth.get_block(block)
     # dank mids will turn all dict responses into attr dicts for easier key lookup
     # the syntax below will work but won't type check correctly

@@ -1,4 +1,3 @@
-
 import asyncio
 import logging
 from typing import TYPE_CHECKING, Any, Awaitable, Generator, List, Union
@@ -11,24 +10,68 @@ if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
 MIN_SIZE = 1  # TODO: Play with this
+"""The minimum size for a batch operation."""
+
 CHECK = MIN_SIZE - 1
+"""A constant used for checking batch sizes."""
 
 logger = logging.getLogger(__name__)
 
 class DankBatch:
+    """
+    A batch of JSON-RPC batches.
+
+    This class represents a collection of multicalls and RPC calls that can be executed as a batch.
+    It is used internally by the :class:`DankMiddlewareController` to manage and execute batches of calls.
+
+    Note:
+        This class is considered "pretty much deprecated" and needs refactoring in future versions.
+
+    See Also:
+        :class:`dank_mids._requests.Multicall`: The Multicall class used in this batch.
+        :class:`dank_mids._requests.RPCRequest`: The RPCRequest class used in this batch.
+    """
+
     __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
-    """ A batch of jsonrpc batches. This is pretty much deprecated and needs to be refactored away."""
+
     def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[Union[Multicall, RPCRequest]]):
         self.controller = controller
+        """The controller managing this batch."""
+
         self.multicalls = multicalls
+        """A collection of multicalls to be executed."""
+
         self.rpc_calls = rpc_calls
+        """A list of individual RPC calls or multicalls."""
+
         self._started = False
+        """A flag indicating whether the batch has been started."""
     
     def __await__(self) -> Generator[Any, None, Any]:
+        """
+        Makes the DankBatch awaitable.
+
+        This method allows the batch to be used with the `await` keyword,
+        starting the batch execution if it hasn't been started yet.
+
+        Returns:
+            A generator that can be awaited to execute the batch.
+        """
         self.start()
         return self._await().__await__()
     
     async def _await(self) -> None:
+        """
+        Internal method to await the completion of all coroutines in the batch.
+        
+        This method gathers all coroutines in the batch and awaits their completion,
+        logging any exceptions that may occur during execution. It's designed to
+        handle both successful completions and potential errors gracefully.
+
+        Raises:
+            Exception: If any of the coroutines in the batch raise an exception,
+                       it will be re-raised after all coroutines have been processed.
+        """
         batches = tuple(self.coroutines)
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
             if isinstance(result, Exception):
@@ -37,6 +80,17 @@ class DankBatch:
                 raise result
 
     def start(self) -> None:
+        """
+        Initiates the execution of all operations in the batch.
+
+        This method starts the processing of all multicalls and individual RPC calls
+        that have been added to the batch. It marks the batch as started to prevent
+        duplicate executions.
+
+        Note:
+            This method does not wait for the operations to complete. Use :meth:`~DankBatch._await()`
+            to wait for completion and handle results.
+        """
         for mcall in self.multicalls.values():
             mcall.start(self, cleanup=False)
         for call in self.rpc_calls:

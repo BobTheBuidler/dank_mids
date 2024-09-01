@@ -1,4 +1,20 @@
 
+"""
+stats.py
+
+This module provides functionality for logging and collecting statistics related to the Dank Mids library.
+It includes custom logging levels, a specialized logger, and classes for collecting and writing statistics.
+
+Key components:
+- Custom logging levels (STATS, DEVHINT)
+- _StatsLogger: A specialized logger for Dank Mids statistics
+- _Collector: Handles collection and computation of stats-related data
+- _Writer: Converts collected stats into human-readable format
+- _SentryExporter: Pushes metrics to Sentry
+
+This module is crucial for debugging, performance monitoring, and optimization of the Dank Mids library.
+"""
+
 # TODO: Robust and Refactor
 
 import asyncio
@@ -24,18 +40,36 @@ _LogLevel = int
 # New logging levels:
 # DEBUG=10, INFO=20, 
 STATS = 13
+"""Custom logging level for statistics, between DEBUG and INFO."""
+
 DEVHINT = 15
+"""Custom logging level for developer hints, between STATS and INFO."""
 
 COLLECT_STATS: bool = False  # TODO: enable this
+"""Flag to enable or disable stats collection."""
 
 # if you're both collecting data and logging something, put the function here:
 
 def log_errd_batch(batch: "JSONRPCBatch") -> None:
+    """
+    Log information about a failed JSON-RPC batch.
+
+    Args:
+        batch: The failed batch to log.
+    """
     collector.errd_batches.append(batch)
     logger.devhint(f"jsonrpc batch failed\njson batch id: {batch.jid} | len: {len(batch)} | total calls: {batch.total_calls}\n"
         + f"methods called: {batch.method_counts}")
-    
-def log_duration(work_descriptor: str, start: float, *, level=STATS) -> None:
+
+def log_duration(work_descriptor: str, start: float, *, level: _LogLevel = STATS) -> None:
+    """
+    Log the duration of a specific operation.
+
+    Args:
+        work_descriptor: Description of the work being timed.
+        start: Start time of the operation.
+        level: Logging level to use. Defaults to STATS.
+    """
     # sourcery skip: hoist-if-from-if
     enabled = logger.isEnabledFor(level)
     if COLLECT_STATS or enabled:
@@ -47,7 +81,12 @@ def log_duration(work_descriptor: str, start: float, *, level=STATS) -> None:
 
 
 class _StatsLogger(logging.Logger):
-    """A specialized logger for logging stats related to dank mids"""
+    """
+    A custom logger class for collecting and logging statistics about RPC method calls and responses.
+    
+    This logger extends the standard Python logging.Logger with methods for tracking validation errors,
+    response types, and other statistics related to RPC interactions.
+    """
 
     @property
     def enabled(self) -> bool:
@@ -97,12 +136,21 @@ class _StatsLogger(logging.Logger):
     # Daemon
 
     def _ensure_daemon(self) -> None:
+        """
+        Ensures that the stats daemon is running. If it's not running and conditions are met,
+        it creates and starts the daemon task. If the daemon has finished, it raises any exception
+        that occurred during its execution.
+        """
         if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:  # type: ignore [attr-defined,has-type]
             self._daemon = asyncio.create_task(self._stats_daemon())
         elif self._daemon.done():
             raise self._daemon.exception()  # type: ignore [misc]
         
     async def _stats_daemon(self) -> None:
+        """
+        The main loop of the stats daemon. It continuously collects event loop times
+        and periodically logs various statistics about the system's performance.
+        """
         start = time()
         time_since_notified = 0
         while True:
@@ -121,6 +169,13 @@ class _StatsLogger(logging.Logger):
     # TODO: MOVE COLLECTIONS UOT OF THIS CLASS
 
     def log_validation_error(self, method: RPCEndpoint, e: msgspec.ValidationError) -> None:
+        """
+        Log a validation error for a specific RPC method.
+        
+        Args:
+            method: The RPC method that encountered the error.
+            e: The validation error that occurred.
+        """
         enabled = self.isEnabledFor(DEVHINT)
         if COLLECT_STATS or enabled:
             collector.validation_errors[method].append(e)
@@ -128,6 +183,17 @@ class _StatsLogger(logging.Logger):
             self._log(DEVHINT, f"ValidationError when decoding response for {method}", ("This *should* not impact your script. If it does, you'll know."), e)
 
     def log_types(self, method: RPCEndpoint, decoded: Any) -> None:
+        """
+        Log the types of decoded values for a specific RPC method.
+        
+        This method analyzes the decoded response data from an RPC call and logs
+        information about the data types encountered. It's useful for understanding
+        the structure of responses from different RPC methods.
+
+        Args:
+            method: The RPC method being logged.
+            decoded: The decoded response data from the RPC call.
+        """
         # TODO fix this, use enabled check
         types = {type(v) for v in decoded.values()}
         self.devhint(f'my method and types: {method} {types}')
@@ -136,6 +202,17 @@ class _StatsLogger(logging.Logger):
         collector.types.update(types)
 
     def _log_list_types(self, values, level: _LogLevel = DEVHINT) -> None:
+        """
+        Log the types of items in a list.
+        
+        This internal method is used to analyze and log the types of elements
+        found in list structures within RPC responses. It's particularly useful
+        for understanding complex, nested data structures.
+
+        Args:
+            values: The list of values to analyze and log types for.
+            level: The logging level to use. Defaults to DEVHINT.
+        """
         list_types = {type(_) for v in values if isinstance(v, list) for _ in v}
         collector.types.update(list_types)
         if self.isEnabledFor(level):
@@ -145,32 +222,94 @@ class _StatsLogger(logging.Logger):
 _Times = Deque[float]
 
 class _Collector:
+    """Handles the collection and computation of stats-related data."""
     def __init__(self):
-        """Handles the collection and computation of stats-related data."""
         self.errd_batches: Deque["JSONRPCBatch"] = deque(maxlen=500)
+        """
+        A deque that stores information about failed JSON-RPC batches.
+        It has a maximum length of 500 to prevent unbounded memory usage.
+        """
+
         self.durations: DefaultDict[str, _Times] = defaultdict(lambda: deque(maxlen=50_000))
+        """
+        A default dictionary that stores timing information for various operations.
+        The keys are operation descriptors, and the values are deques of float values
+        representing durations. Each deque has a maximum length of 50,000.
+        """
+
         self.types: Set[Type] = set()
+        """
+        A set that stores all the types encountered during data collection.
+        This is used for debugging and analysis purposes.
+        """
+
         self.event_loop_times: _Times = deque(maxlen=50_000)
+        """
+        A deque that stores event loop execution times.
+        It has a maximum length of 50,000 to limit memory usage.
+        """
+
         # not implemented
         self.validation_errors: DefaultDict[RPCEndpoint, Deque[msgspec.ValidationError]] = defaultdict(lambda: deque(maxlen=100))
+        """
+        A default dictionary that stores validation errors encountered for each RPC endpoint.
+        The keys are RPC endpoints, and the values are deques of ValidationError objects.
+        Each deque has a maximum length of 100.
+        """
 
     @property
     def avg_loop_time(self) -> float:
+        """
+        Calculates and returns the average event loop execution time.
+
+        Returns:
+            The average time taken for event loop iterations.
+        """
         return sum(collector.event_loop_times) / len(collector.event_loop_times)
     @property
     def count_active_brownie_calls(self) -> int:
+        """
+        Returns the number of currently active Brownie calls.
+
+        Returns:
+            The count of active Brownie calls.
+        """
         return ENVS.BROWNIE_CALL_SEMAPHORE.default_value - ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._value  # type: ignore [attr-defined]
     @property
     def count_queued_brownie_calls(self) -> int:
+        """
+        Returns the number of Brownie calls currently in the queue.
+
+        Returns:
+            The count of queued Brownie calls.
+        """
         return len(ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._waiters)  # type: ignore [attr-defined]
     @property
     def encoder_queue_len(self) -> int:
+        """
+        Returns the current length of the Brownie encoder queue.
+
+        Returns:
+            The number of items in the encoder queue.
+        """
         return ENVS.BROWNIE_ENCODER_PROCESSES._queue_count  # type: ignore [attr-defined]
     @property
     def decoder_queue_len(self) -> int:
+        """
+        Returns the current length of the Brownie decoder queue.
+
+        Returns:
+            The number of items in the decoder queue.
+        """
         return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
     @property
     def mcall_decoder_queue_len(self) -> int:
+        """
+        Returns the current length of the multicall decoder queue.
+
+        Returns:
+            The number of items in the multicall decoder queue.
+        """
         return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
         
 
@@ -180,19 +319,48 @@ class _Writer:
     without wasting compute or cluttering `Collector` or `StatsLogger` class definitions.
     """
     def event_loop(self) -> str:
+        """
+        Generates a human-readable string describing the average event loop time.
+        
+        Returns:
+            A string containing the average event loop time.
+        """
         return f"Average event loop time: {collector.avg_loop_time}"
     def brownie(self) -> str:
+        """
+        Generates a human-readable string describing the current state of Brownie calls.
+        
+        Returns:
+            A string containing the number of active and queued Brownie calls.
+        """
         return f"{collector.count_active_brownie_calls} brownie calls are processing, {collector.count_queued_brownie_calls} are queued in {ENVS.BROWNIE_CALL_SEMAPHORE}."
     def queue(self, pool: ProcessPoolExecutor) -> str:
+        """
+        Generates a human-readable string describing the state of a process pool's queue.
+        
+        Args:
+            pool: The ProcessPoolExecutor to describe.
+        
+        Returns:
+            A string containing the number of items in the pool's queue.
+        """
         return f"{pool} has {pool._queue_count} items in its queue"
 
             
 class _SentryExporter:
     """
-    Pushes all metrics from the `metrics` dict to sentry.
+    A class for exporting statistics and metrics from the :obj:`metrics` dict to Sentry.
+
+    This class provides methods for setting tags and measurements in Sentry,
+    which can be used for monitoring and debugging purposes.
+
     Each metric value will be fetched by calling `getattr(collector, metrics[k])`.
     If the result is a callable object, it will be called without args.
+
+    See Also:
+        :mod:`sentry_sdk`: The Sentry SDK for Python.
     """
+
     metrics = {
         "active_eth_calls": "count_active_brownie_calls",
         "queued_eth_calls": "count_queued_brownie_calls",
@@ -203,7 +371,9 @@ class _SentryExporter:
     units = {"loop_time": "seconds"}
 
     def push_measurements(self) -> None:
-        """Pushes all metrics in `self._metrics` to sentry"""
+        """
+        Pushes all metrics in `self._metrics` to sentry
+        """
         if self._exc:
             raise self._exc
         for tag, attr_name in self.metrics.items():
@@ -222,8 +392,32 @@ class _SentryExporter:
     try:
         import sentry_sdk
         set_tag = sentry_sdk.set_tag
+        """
+        Set a tag for the current scope in Sentry.
+
+        This is a reference to :func:`sentry_sdk.set_tag`.
+
+        See Also:
+            Sentry documentation on using tags:
+            https://docs.sentry.io/platforms/python/enriching-events/tags/
+        """
+
         set_measurement = sentry_sdk.set_measurement
+        """
+        Set a measurement for the current scope in Sentry.
+
+        This is a reference to :func:`sentry_sdk.set_measurement`.
+
+        See Also:
+            Sentry documentation on using measurements:
+            https://docs.sentry.io/platforms/python/enriching-events/measurements/
+        """
+
         _exc = None
+        """
+        Stores any ImportError that occurred when trying to import sentry_sdk.
+        If this is not None, it indicates that Sentry integration is not available.
+        """
     except ImportError as e:
         _exc = e
 

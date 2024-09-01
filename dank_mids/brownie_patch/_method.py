@@ -1,4 +1,3 @@
-
 import asyncio
 import functools
 from decimal import Decimal
@@ -16,26 +15,68 @@ from dank_mids.helpers._helpers import DankWeb3, _make_hashable
 _EVMType = TypeVar("_EVMType")
 
 class _DankMethodMixin(Generic[_EVMType]):
+    """
+    A mixin class that is used internally to enhance Brownie's contract methods
+    with asynchronous support and memory optimization.
+    """
+
     _address: EthAddress
+    """The address of the contract."""
+
     _abi: FunctionABI
-    """A mixin class that gives brownie objects async support and reduces memory usage"""
+    """The ABI (Application Binary Interface) of the contract function."""
+
     __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_input"
+
     def __await__(self):
-        """Asynchronously call the contract method without arguments at the latest block and await the result."""
+        """
+        Allow the contract method to be awaited.
+        
+        This method enables using 'await' on the contract method, which will call
+        the method without arguments at the latest block and return the result.
+        """
         return self.coroutine().__await__()
+
     async def map(
         self, 
         args: Iterable[Any], 
         block_identifier: Optional[int] = None,
         decimals: Optional[int] = None,
     ) -> List[_EVMType]:
-        return await asyncio.gather(*[self.coroutine(arg, block_identifier=block_identifier, decimals=decimals) for arg in args])
+        """
+        Asynchronously call the contract method with multiple sets of arguments.
+
+        This method allows for efficient batch calling of the contract method
+        with different arguments.
+
+        Args:
+            args: An iterable of argument sets to be passed to the method.
+            block_identifier: The block number or identifier for the calls.
+            decimals: The number of decimal places by which to scale numeric results.
+
+        Returns:
+            A list of results from calling the method with each set of arguments.
+        """
+
     @property
     def abi(self) -> dict:
+        """
+        The ABI of the contract function.
+        
+        This property provides access to the complete ABI dictionary of the function.
+        """
         return self._abi.abi
+
     @property
     def signature(self) -> str:
+        """
+        The function signature.
+        
+        This property returns the unique signature of the contract function,
+        which is used to identify the function in transactions.
+        """
         return self._abi.signature
+
     async def coroutine(  # type: ignore [empty-body]
         self, 
         *args: Any, 
@@ -43,6 +84,20 @@ class _DankMethodMixin(Generic[_EVMType]):
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None,
     ) -> _EVMType:
+        """
+        Asynchronously call the contract method with the given arguments.
+
+        This method is the core of the asynchronous functionality while using dank_mids with eth_brownie.
+
+        Args:
+            *args: Variable length argument list for the contract method.
+            block_identifier: The block number or identifier for the call.
+            decimals: The number of decimals by which to scale numeric results.
+            override: Optional parameters to override chain state in the call.
+
+        Returns:
+            The result of the contract method call.
+        """
         raise NotImplementedError
     @property
     def _input_sig(self) -> str:
@@ -78,9 +133,16 @@ class _DankMethod(_DankMethodMixin):
     ) -> None:
         self._address = address
         self._abi = FunctionABI(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
+
         self._name = name
+        """The name of the contract method."""
+
         self._owner = owner
+        """The owner of the contract."""
+
         self.natspec = natspec or {}
+        """The NatSpec documentation for the function."""
+        
         # TODO: refactor this
         from dank_mids.brownie_patch import call
         self._encode_input = call.encode_input

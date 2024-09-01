@@ -17,27 +17,72 @@ if TYPE_CHECKING:
     from dank_mids._requests import Multicall
 
 ChainId = NewType("ChainId", int)
+"""A type representing the unique integer identifier for a blockchain network."""
+
 BlockId = NewType("BlockId", str)
+"""A type representing the identifier for a specific block in the blockchain."""
+
 BatchId = Union[int, str]
+"""A type representing the identifier for a batch of operations, which can be either an integer or a string."""
+
 Multicalls = Dict[BlockId, "Multicall"]
+"""
+A dictionary mapping BlockId to Multicall objects.
+
+See Also:
+    :class:`dank_mids._requests.Multicall`: The Multicall class used in this mapping.
+"""
 
 eth_callParams = TypedDict("eth_callParams", {"to": ChecksumAddress, "data": str})
+"""
+A typed dictionary representing the parameters for an eth_call.
+
+See Also:
+    :meth:`web3.eth.Eth.call`: Web3's method to perform a call without creating a transaction.
+"""
+
 OverrideParams = TypedDict("OverrideParams", {"code": str})
+"""A typed dictionary representing override parameters."""
+
 JsonrpcParams = List[Union[eth_callParams, BlockId, OverrideParams]]
+"""A list of parameters for JSON-RPC calls, which should be eth_callParams, BlockId, and OverrideParams, in that order."""
 
 
 # This type alias was introduced in web3 v5.28.0 but we like loose deps here so we recreate instead of import.
 AsyncMiddleware = Callable[[RPCEndpoint, Any], Coroutine[Any, Any, RPCResponse]]
+"""A type alias for asynchronous middleware functions."""
 
 list_of_stuff = List[Union[str, None, dict, list]]
+"""A type alias for a list that can contain strings, None, dictionaries, or lists."""
+
 dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, Dict[str, Optional[Any]]]]
+"""A type alias for a dictionary with string keys and values that can be strings, None, `list_of_stuff`, or dictionaries with optional values."""
+
 nested_dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, dict_of_stuff]]
+"""A type alias for a nested dictionary structure."""
 
 class _DictStruct(msgspec.Struct):
+    """A base class enhancing :class:`~msgspec.Struct` with additional dictionary-like functionality."""
+
     def __getitem__(self, attr: str) -> Any:
+        """
+        Allow dictionary-style access to attributes.
+
+        Args:
+            attr: The name of the attribute to access.
+
+        Returns:
+            The value of the attribute.
+        """
         return getattr(self, attr)
+
     def to_dict(self) -> Dict[str, Any]:
-        """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
+        """
+        Convert the struct to a dictionary.
+
+        Returns:
+            A dictionary representation of the struct's attributes and values.
+        """
         data = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
@@ -47,22 +92,52 @@ class _DictStruct(msgspec.Struct):
         return data
   
 class PartialRequest(_DictStruct):
+    """
+    Represents a partial JSON-RPC request. 
+    
+    While technially part of a request, we can successfully make requests to many nodes without including the `jsonrpc` field.
+    
+    This class leaves off the `jsonrpc` field reduce encoding burden and web traffic.
+
+    This works with many but not all nodes.
+    """
+
     method: str
+    """The RPC method to be called."""
+
     id: Union[str, int]
+    """The request identifier."""
+
     params: Optional[list] = None
+    """The parameters for the RPC method call."""
 
     @property
     def data(self) -> bytes:
         return msgspec.json.encode(self)
 
 class Request(PartialRequest):
-    # NOTE: While technially part of a request, we can successfully make requests without including the `jsonrpc` field.
+    """
+    Represents a complete JSON-RPC request.
+    
+    Inherits from PartialRequest and adds the JSON-RPC version.
+    """
+
     jsonrpc: Literal["2.0"] = "2.0"
+    """The JSON-RPC version, always set to "2.0"."""
 
 class Error(_DictStruct):
+    """
+    Represents an error in a JSON-RPC response.
+    """
+
     code: int
+    """The error code."""
+
     message: str
+    """The error message."""
+
     data: Optional[Any] = ''
+    """Additional error data, if any."""
 
 # some devving tools that will go away eventually
 _dict_responses: Set[str] = set()
@@ -87,19 +162,31 @@ RETURN_TYPES = {
     "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Log]]], 
     "erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
 }
+"""
+A dictionary mapping RPC method names to their expected return types.
+Used to enable more efficient decoding and validation of RPC responses.
+"""
 
 decoder_logger = logging.getLogger('dank_mids.decoder')
 
 _chainstack_429_msg = "You've exceeded the RPS limit available on the current plan."
 
 class PartialResponse(_DictStruct):
+    """
+    Represents a partial JSON-RPC response. 
+    
+    We use these to more efficiently decode responses from the node.
+    """
+
     result: msgspec.Raw = None  # type: ignore
-    "If the rpc response contains a 'result' field, it is set here"
+    """The result of the RPC call, if successful."""
+
     error: Optional[Error] = None
-    "If the rpc response contains an 'error' field, it is set here"
+    """The error object, if the call failed."""
+
     @property
     def exception(self) -> Exception:
-        "If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."
+        """If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."""
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
         return (
@@ -180,8 +267,17 @@ class PartialResponse(_DictStruct):
         
 
 class Response(PartialResponse):
+    """
+    Represents a complete JSON-RPC response.
+    
+    Inherits from PartialResponse and adds the response identifier and JSON-RPC version.
+    """
+
     id: Optional[Union[str, int]] = None
+    """The response identifier, matching the request."""
+
     jsonrpc: Literal["2.0"] = "2.0"
+    """The JSON-RPC version, always set to "2.0"."""
 
 class RawResponse:
     """
@@ -207,6 +303,18 @@ JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
 JSONRPCBatchResponseRaw = Union[List[msgspec.Raw], PartialResponse]
 
 def _encode_hook(obj: Any) -> Any:
+    """
+    A hook function for encoding objects during JSON serialization.
+
+    Args:
+        obj: The object to encode.
+
+    Returns:
+        The encoded object.
+
+    Raises:
+        NotImplementedError: If the object type is not supported for encoding.
+    """
     if isinstance(obj, AttributeDict):
         return dict(obj)
     raise NotImplementedError(type(obj))

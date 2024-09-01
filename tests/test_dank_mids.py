@@ -1,4 +1,3 @@
-
 import asyncio
 import importlib
 import pytest
@@ -47,24 +46,57 @@ async def test_dank_middleware():
 
 @pytest.mark.asyncio_cooperative
 async def test_bad_hex_handling():
+    """
+    Test the handling of bad hex values in contract calls.
+
+    This test ensures that the system can correctly handle and process
+    contract calls that might return unusual or malformed hex values.
+    """
     chainlinkfeed = "0xfe67209f6FE3BA6cE36d0941700085C194e958DF"
     assert await Call(chainlinkfeed, 'latestAnswer()(uint)', block_id=14_000_000) == 15717100
 
 @pytest.mark.asyncio_cooperative
 async def test_json_batch():
+    """
+    Test the JSON batch processing functionality.
+
+    This test verifies that the system can correctly handle and process
+    a batch of JSON-RPC requests across multiple blocks.
+    """
     await asyncio.gather(*MULTIBLOCK_WORK)
 
 def test_next_cid():
+    """
+    Test the generation of the next call ID.
+
+    This test ensures that the call ID generator correctly increments
+    and provides unique IDs for each call.
+    """
     assert _get_controller().call_uid.next + 1 == _get_controller().call_uid.next
     
 def test_next_mid():
+    """
+    Test the generation of the next request ID.
+
+    This test verifies that the request ID generator correctly increments
+    and provides unique IDs for each request.
+    """
     assert _get_controller().request_uid.next + 1 == _get_controller().request_uid.next
     
 def test_next_bid():
+    """
+    Test the generation of the next multicall ID.
+
+    This test checks that the multicall ID generator correctly increments
+    and provides unique IDs for each multicall.
+    """
     assert _get_controller().multicall_uid.next + 1 == _get_controller().multicall_uid.next
 
 @pytest.mark.asyncio_cooperative
 async def test_other_methods():
+    """
+    Test various other RPC methods.
+    """
     work = [dank_web3.eth.block_number for i in range(50)]
     work.append(dank_web3.eth.get_block('0xe25822'))
     work.append(dank_web3.manager.coro_request(RPC.web3_clientVersion, []))
@@ -74,6 +106,12 @@ async def test_other_methods():
 
 @pytest.mark.asyncio_cooperative
 async def test_AttributeDict():
+    """
+    Test the AttributeDict functionality.
+
+    This test verifies that a dictionary response from dank_mids correctly allows
+    both dictionary-style and attribute-style access to its contents.
+    """
     block = await dank_web3.eth.get_block("0xe25822")
     assert block['timestamp'] and block.timestamp and (block['timestamp'] == block.timestamp)
 

@@ -105,6 +105,10 @@ class _RequestMeta(Generic[_Response], metaclass=abc.ABCMeta):
 ### Single requests:
 
 BYPASS_METHODS = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
+"""
+A tuple of method names that should bypass batching.
+These methods are typically handled separately or have special requirements.
+"""
 
 @lru_cache(maxsize=None)
 def _should_batch_method(method: str) -> bool:
@@ -298,12 +302,28 @@ INDIVIDUAL_CALL_REVERT_STRINGS = {
 revert_threads = PruningThreadPoolExecutor(4)
 
 def _is_call_revert(e: BadResponse) -> bool:
-    """Returns True if a particular `BadResponse` for a multicall was caused by a failure in one of the individual calls it contained, False for any other reason"""
+    """
+    Determine if a BadResponse was caused by a revert in one of the individual calls within a multicall.
+
+    Args:
+        e: The error response to check.
+
+    Returns:
+        True if the error was caused by an individual call revert, False otherwise.
+    """
     stre = f"{e}"
     return any(s in stre for s in INDIVIDUAL_CALL_REVERT_STRINGS)
 
 def _needs_full_request_spec(e: BadResponse):
-    """Returns True if this particular `BadResponse` indicates that the node we are using requires the full request spec. Dank mids will detect this and changeover automagically."""
+    """
+    Determine if a BadResponse indicates that the node requires the full request specification.
+
+    Args:
+        e: The error response to check.
+
+    Returns:
+        True if the full request specification is needed, False otherwise.
+    """
 
 
 class eth_call(RPCRequest):
@@ -356,7 +376,15 @@ class eth_call(RPCRequest):
     
     @property
     def semaphore(self) -> a_sync.Semaphore:
-        # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
+        """
+        Get the semaphore for this eth_call operation.
+
+        Returns:
+            The semaphore for controlling concurrent access at this block height.
+
+        Note:
+            This property is not cached to ensure the semaphore control pattern in the `duplicate` function works as intended.
+        """
         return self.controller.eth_call_semaphores[self.block]
     
     
@@ -647,13 +675,30 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
 
 class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
+    """
+    Represents a batch of JSON-RPC requests.
+
+    This class manages a collection of JSON-RPC requests that will be sent
+    as a single batch to an Ethereum node, improving efficiency by reducing
+    the number of separate network calls.
+    """
+
     __slots__ = 'jid', '_started'
+
     def __init__(
         self,
         controller: "DankMiddlewareController",
         calls: List[Union[Multicall, RPCRequest]] = [], 
         jid: Optional[BatchId] = None
     ) -> None:  # sourcery skip: default-mutable-arg
+        """
+        Initialize a new JSONRPCBatch.
+
+        Args:
+            controller: The :class:`~DankMiddlewareController` instance that manages this batch.
+            calls: A list of :class:`~RPCRequest` or :class:`~Multicall` objects to be included in the batch.
+            jid: A unique identifier for this batch. If none is provided, one will be created.
+        """
         super().__init__(controller, calls)
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
         self._started = False
@@ -688,6 +733,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
 
     @property
     def method_counts(self) -> Dict[RPCEndpoint, int]:
+        """
+        Count the occurrences of each method in the batch.
+
+        Returns:
+            A dictionary where keys are method names and values are their counts.
+        """
         counts: DefaultDict[RPCEndpoint, int] = defaultdict(int)
         with self._lock:
             for call in self:
@@ -699,6 +750,14 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     
     @property
     def total_calls(self) -> int:
+        """
+        Get the total number of calls across all requests in the batch.
+
+        This may differ from __len__ if the batch includes multicalls.
+
+        Returns:
+            The total number of individual calls in the batch.
+        """
         with self._lock:
             return sum(len(call) for call in self)
 
@@ -762,7 +821,20 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     
     @eth_retry.auto_retry
     async def post(self) -> Tuple[List[RawResponse], List[Union[Multicall, RPCRequest]]]:
-        "this function raises `BadResponse` if a successful 'error' response was received from the rpc"
+        """
+        Send the batch of requests to the Ethereum node and process the responses.
+
+        This method sends the batch of requests to the Ethereum node and
+        processes the responses.
+
+        Returns:
+            A tuple containing the raw responses and the list of calls in the batch.
+
+        Raises:
+            BadResponse: If a successful 'error' response was received from the rpc.
+            ClientResponseError: If there was an error with the HTTP request.
+            Exception: For other unexpected errors.
+        """
         try:
             # we need strong refs so the results all get to the right place
             calls = self.calls
@@ -805,7 +877,15 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         raise response.exception
     
     def should_retry(self, e: Exception) -> bool:
-        """Should the JSONRPCBatch be retried based on `e`?"""
+        """
+        Determine whether the JSONRPCBatch should be retried based on the exception.
+
+        Args:
+            e: The exception that occurred during the batch request.
+
+        Returns:
+            True if the batch should be retried, False otherwise.
+        """
         # While it might look weird, f-string is faster than `str(e)`.
         if "No state available for block" in f"{e}":
             logger.debug('No state available for one of the blocks queried. Bisecting batch and retrying.')
@@ -816,6 +896,17 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     
     @set_done
     async def spoof_response(self, response: List[RawResponse], calls: List[RPCRequest]) -> None:
+        """
+        Process the responses from the Ethereum node and set the results for each call.
+
+        This method processes the responses from the Ethereum node and sets the results
+        for each call in the batch. It also handles any exceptions that occurred during
+        the processing.
+
+        Args:
+            response: A list of RawResponse objects containing the responses from the node.
+            calls: A list of RPCRequest objects that were included in the batch.
+        """
         # Reaching this point means we made a batch call and we got results. That doesn't mean they're good, but we got 'em.
         
         if self.controller._sort_calls:
@@ -843,9 +934,16 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
         """
-        Splits up the calls of a `JSONRPCBatch` into 2 chunks, then awaits both.
-        If one chunk is just a single multicall, it will be handled alone, not be placed into a batch.
-        Calls `self._done.set()` when finished.
+        Split the batch into two halves and retry each half separately.
+
+        This method splits the batch of calls into two halves and retries each half
+        separately. If one half is just a single multicall, it will be handled alone,
+        not placed into a batch.
+
+        Sets :attr:`~JSONRPCBatch._done` on the batch when finished.
+
+        Args:
+            e: The exception that occurred during the batch request.
         """
         logger.debug("%s had exception %s, retrying", self, e)
         batches = [
@@ -864,6 +962,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 raise result
     
     def adjust_batch_size(self) -> None:
+        """
+        Adjust the batch size on the controller based on the type of calls in the batch.
+
+        This method adjusts the batch size based on whether the batch contains
+        multicalls or regular JSON-RPC calls. It logs appropriate messages and
+        updates the batch size accordingly.
+        """
         if self.is_multicalls_only:
             logger.info('checking if we should reduce multicall batch size... (%s calls)', self.total_calls)
             self.controller.reduce_multicall_size(self.total_calls)
@@ -879,6 +984,18 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             self.controller.pending_rpc_calls = JSONRPCBatch(self.controller)
 
 def _log_exception(e: Exception) -> bool:
+    """
+    Log exceptions that occur during a multicall or batch.
+
+    This function logs exceptions that are unexpected and considered errors, 
+    allowing for better debugging and monitoring.
+
+    Args:
+        e: The exception to log.
+
+    Returns:
+        True if the exception should be logged, False otherwise.
+    """
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
     dont_need_to_see_errs = ['out of gas', 'non_empty_data', 'exceeding --rpc.returndata.limit', "'code': 429"]

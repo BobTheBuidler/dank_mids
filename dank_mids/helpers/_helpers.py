@@ -27,14 +27,27 @@ if TYPE_CHECKING:
     from dank_mids._requests import _Request
 
 dank_w3s: List[Web3] = []
+"""
+A list that stores instances of :class:`Web3` objects that have been set up with Dank Middleware.
+This list is used to keep track of all Dank-enabled Web3 instances created in the application.
+"""
+
 sync_w3s: List[Web3] = []
+"""
+A list that stores instances of synchronous Web3 objects.
+This list is used to keep track of all synchronous Web3 instances that have been created or modified.
+"""
 
 T = TypeVar("T")
+"""Generic type variable for use in type hints."""
+
 P = ParamSpec("P")
+"""Parameter specification for use in type hints."""
 
 w3_version_major = int(version("web3").split(".")[0])
 """
-The 'major' component of the currently installed web3.py's version
+The major version number of the currently installed web3.py package.
+This is extracted from the full version string and stored as an integer for easy comparison.
 
 Example: for `web3==6.0.1`, the major version is 6.
 """
@@ -49,7 +62,15 @@ class DankWeb3:
     eth: DankEth
 
 def setup_dank_w3(async_w3: Web3) -> DankWeb3:
-    """ Injects Dank Middleware into an async Web3 instance. """
+    """
+    Sets up a DankWeb3 instance from a given Web3 instance.
+    
+    Args:
+        async_w3: The Web3 instance to be wrapped.
+    
+    Returns:
+        A new DankWeb3 instance with Dank Middleware injected.
+    """
     assert async_w3.eth.is_async and isinstance(async_w3.provider, AsyncBaseProvider)
     # NOTE: We use this lookup to prevent errs where 2 project dependencies both depend on dank_mids and eth-brownie.
     if async_w3 not in dank_w3s:
@@ -62,7 +83,15 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
     return async_w3
 
 def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
-    """ Creates a new async Web3 instance from `w3.provider.endpoint_uri` and injects it with Dank Middleware. """
+    """
+    Sets up a DankWeb3 instance from a given synchronous Web3 instance.
+    
+    Args:
+        sync_w3: The synchronous Web3 instance to be wrapped.
+    
+    Returns:
+        A new DankWeb3 instance with Dank Middleware injected, supporting batched asynchronous operations.
+    """
     assert not sync_w3.eth.is_async and isinstance(sync_w3.provider, BaseProvider)
     if sync_w3 not in sync_w3s:
         if w3_version_major >= 6:
@@ -73,41 +102,76 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
     return setup_dank_w3(get_async_w3(sync_w3))
 
 async def await_all(futs: Iterable[Awaitable]) -> None:
+    """
+    Awaits all given awaitables in the order they complete.
+    
+    Args:
+        futs: An iterable of awaitables to be executed.
+    """
     for fut in asyncio.as_completed([*futs]):
         await fut
         del fut
 
 def set_done(fn: Callable[Concatenate["_Request", P], Awaitable[T]]) -> Callable[Concatenate["_Request", P], Awaitable[T]]:
-	@wraps(fn)
-	async def set_done_wrap(self: "_Request", *args: P.args, **kwargs: P.kwargs) -> T:
-		retval = await fn(self, *args, **kwargs)
-		self._done.set()
-		return retval
-	return set_done_wrap
+    """
+    A decorator that sets the '_done' flag of a _Request object after the decorated function completes.
+    
+    Args:
+        fn: The function to be decorated.
+    
+    Returns:
+        A wrapped version of the input function that sets the '_done' flag.
+    """
+    @wraps(fn)
+    async def set_done_wrap(self: "_Request", *args: P.args, **kwargs: P.kwargs) -> T:
+        retval = await fn(self, *args, **kwargs)
+        self._done.set()
+        return retval
+    return set_done_wrap
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 
 is_not_null = complement(is_null)
+"""
+A function that returns True if the input is not null, False otherwise.
+This is the complement of the `is_null` function.
+"""
 
 FORMATTER_DEFAULTS: FormattersDict = {
     "request_formatters": {},
     "result_formatters": {},
     "error_formatters": {},
 }
+"""
+Default formatters dictionary used in middleware configuration.
+It provides empty dictionaries for request, result, and error formatters.
+"""
 
 remap_geth_poa_fields = apply_key_map(
     {
         "extraData": "proofOfAuthorityData",
     }
 )
+"""
+A function that remaps Geth Proof of Authority (PoA) fields.
+It changes the key 'extraData' to 'proofOfAuthorityData'.
+"""
 
 pythonic_geth_poa = apply_formatters_to_dict(
     {
         "proofOfAuthorityData": HexBytes,
     }
 )
+"""
+A function that applies formatters to Geth Proof of Authority (PoA) fields.
+It converts the 'proofOfAuthorityData' field to HexBytes.
+"""
 
 geth_poa_cleanup = compose(pythonic_geth_poa, remap_geth_poa_fields)
+"""
+A composed function that applies both remapping and formatting to Geth PoA fields.
+It first remaps the fields and then applies the pythonic formatters.
+"""
 
 async def geth_poa_middleware(make_request: Callable[[RPCEndpoint, Any], Any], w3: Web3) -> AsyncMiddleware:
     middleware = await async_construct_formatting_middleware(
@@ -192,6 +256,18 @@ def _apply_response_formatters(
 
     
 def _make_hashable(obj: Any) -> Any:
+    """
+    Converts an object into a hashable type if possible.
+    
+    This function is used internally to ensure that objects can be used as 
+    dictionary keys or in sets.
+
+    Args:
+        obj (Any): The object to make hashable.
+
+    Returns:
+        Any: A hashable version of the input object.
+    """
     if isinstance(obj, (list, tuple)):
         return tuple((_make_hashable(o) for o in obj))
     elif isinstance(obj, dict):
@@ -199,6 +275,15 @@ def _make_hashable(obj: Any) -> Any:
     return obj
 
 def __add_sync_attrdict_middleware(sync_w3: Web3) -> None:
+    """
+    Add the attrdict middleware to a synchronous Web3 instance.
+    
+    Args:
+        sync_w3: The synchronous Web3 instance to add the middleware to.
+    
+    Raises:
+        ValueError: If the provided Web3 instance is asynchronous.
+    """
     # we do the import here because it is only present in web3 >= 6
     from web3.middleware import attrdict_middleware
     if sync_w3.eth.is_async:
@@ -211,7 +296,14 @@ def __add_sync_attrdict_middleware(sync_w3: Web3) -> None:
         # The middleware is already added
 
 def __add_sync_poa_middleware(sync_w3: Web3) -> None:
-    """We need to make sure our sync w3 instance is compatible with poa chains."""
+    """
+    Add the Proof of Authority (PoA) middleware to a synchronous Web3 instance.
+    
+    This ensures compatibility with PoA chains.
+    
+    Args:
+        sync_w3: The synchronous Web3 instance to add the middleware to.
+    """
     if w3_version_major >= 7:
         from web3.middleware.proof_of_authority import ExtraDataToPOAMiddleware
         sync_w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
