@@ -1,4 +1,3 @@
-
 import asyncio
 import http
 import logging
@@ -25,20 +24,23 @@ logger = logging.getLogger("dank_mids.session")
 # First, set up custom error codes we might see.
 class _HTTPStatusExtension(IntEnum):
     """
-    An extension of HTTP status codes, including custom codes used by specific services like Cloudflare.
+    A modification of HTTP status codes, for custom codes used by specific services like Cloudflare.
     
-    This enum includes status codes and descriptions for server errors that are not part of the standard HTTP specification.
+    This enum contains status codes and descriptions for server errors that are not part of the standard HTTP specification.
     """
+
     WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR = (520, 'Web Server is Returning an Unknown Error',
-        'HTTP response status code 520 Web server is returning an unknown error is an unofficial server error\n'
-        + 'that is specific to Cloudflare. This is a catch-all error that is used in the absence of having a\n'
-        + 'HTTP status code for one that is more specific.\n'
-        + 'Learn more at https://http.dev/520')
+        'HTTP response status code 520 is an unofficial server error specific to Cloudflare.\n'
+        'This is a catch-all error used when a more specific HTTP status code is not available.\n'
+        'It indicates that the origin server returned an unknown error.\n'
+        'Learn more at https://http.dev/520')
+
     WEB_SERVER_IS_DOWN = (521, 'Web Server Is Down',
-        'HTTP response status code 521 Web server is down is an unofficial server error that is specific to Cloudflare.\n'
-        + 'This HTTP status code occurs when the HTTP client was able to successfully connect to Cloudflare but it was\n'
-        + 'unable to connect to the origin server.'
-        + 'Learn more at https://http.dev/521')
+        'HTTP response status code 521 is an unofficial server error specific to Cloudflare.\n'
+        'This status code occurs when the HTTP client successfully connected to Cloudflare,\n'
+        'but Cloudflare could not connect to the origin server.\n'
+        'Learn more at https://http.dev/521')
+
     CLOUDFLARE_CONNECTION_TIMEOUT = (522, 'Cloudflare Connection Timeout',
         'Cloudflare is a content delivery network that acts as a gateway between a user and a website server.\n'
         + 'When the 522 Connection timed out status code is received, Cloudflare attempted to connect\n'
@@ -46,6 +48,7 @@ class _HTTPStatusExtension(IntEnum):
         + 'most likely because the IP addresses of Cloudflare are blocked by the origin server,\n'
         + 'the origin server settings are misconfigured, or the origin server is overloaded.'
         + 'Learn more at https://http.dev/522')
+
     CLOUDFLARE_TIMEOUT = (524, 'Cloudflare Timeout',
         '"524 A timeout occurred" is an unofficial server error that is specific to Cloudflare.\n'
         + 'When the 524 A timeout occurred status code is received, it implies that a successful\n'
@@ -53,12 +56,14 @@ class _HTTPStatusExtension(IntEnum):
         + 'timed out before the HTTP request was completed. Cloudflare typically waits 100 seconds\n'
         + 'for an HTTP response and returns this HTTP status code if nothing is received.\n'
         + 'Learn more at https://http.dev/524')
+
     SITE_FROZEN = (530, 'Site Frozen',
         'HTTP response status code 530 is an unofficial server error that is specific to Cloudflare\n'
         + 'and Pantheon. In the case of Cloudflare, a second HTTP status code 1XXX error message will be\n'
         + 'included to provide a more accurate description of the problem. For Pantheon, HTTP status code\n'
         + '530 Site Frozen indicates that a site has been restricted due to inactivity.\n'
         + 'Learn more at https://http.dev/530')
+
     def __new__(cls, value, phrase, description=''):
         obj = int.__new__(cls, value)
         obj._value_ = value
@@ -68,6 +73,11 @@ class _HTTPStatusExtension(IntEnum):
 
 # Then, combine the standard HTTPStatus enum and the custom extension to get the full custom HTTPStatus enum we need.
 HTTPStatusExtended = IntEnum('HTTPStatusExtended', [(i.name, i.value) for i in chain(http.HTTPStatus, _HTTPStatusExtension)])  # type: ignore [misc]
+"""
+An extension of HTTP status codes, including custom codes used by specific services like Cloudflare.
+
+This enum includes status codes and descriptions for server errors that are not part of the standard HTTP specification.
+"""
 
 RETRY_FOR_CODES = {
     HTTPStatusExtended.BAD_GATEWAY,  # type: ignore [attr-defined]

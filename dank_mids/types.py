@@ -43,14 +43,36 @@ AsyncMiddleware = Callable[[RPCEndpoint, Any], Coroutine[Any, Any, RPCResponse]]
 """A type alias for asynchronous middleware functions."""
 
 list_of_stuff = List[Union[str, None, dict, list]]
+"""A type alias for a list that can contain strings, None, dictionaries, or lists."""
+
 dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, Dict[str, Optional[Any]]]]
+"""A type alias for a dictionary with string keys and values that can be strings, None, `list_of_stuff`, or dictionaries with optional values."""
+
 nested_dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, dict_of_stuff]]
+"""A type alias for a nested dictionary structure."""
 
 class _DictStruct(msgspec.Struct):
+    """A base class enhancing :class:`~msgspec.Struct` with additional dictionary-like functionality."""
+
     def __getitem__(self, attr: str) -> Any:
+        """
+        Allow dictionary-style access to attributes.
+
+        Args:
+            attr: The name of the attribute to access.
+
+        Returns:
+            The value of the attribute.
+        """
         return getattr(self, attr)
+
     def to_dict(self) -> Dict[str, Any]:
-        """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
+        """
+        Convert the struct to a dictionary.
+
+        Returns:
+            A dictionary representation of the struct's attributes and values.
+        """
         data = {}
         for field in self.__struct_fields__:
             attr = getattr(self, field)
@@ -271,6 +293,18 @@ JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
 JSONRPCBatchResponseRaw = Union[List[msgspec.Raw], PartialResponse]
 
 def _encode_hook(obj: Any) -> Any:
+    """
+    A hook function for encoding objects during JSON serialization.
+
+    Args:
+        obj: The object to encode.
+
+    Returns:
+        The encoded object.
+
+    Raises:
+        NotImplementedError: If the object type is not supported for encoding.
+    """
     if isinstance(obj, AttributeDict):
         return dict(obj)
     raise NotImplementedError(type(obj))

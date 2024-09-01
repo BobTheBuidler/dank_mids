@@ -1,4 +1,3 @@
-
 import asyncio
 import functools
 from decimal import Decimal
@@ -20,28 +19,64 @@ class _DankMethodMixin(Generic[_EVMType]):
     A mixin class that is used internally to enhance Brownie's contract methods
     with asynchronous support and memory optimization.
     """
+
     _address: EthAddress
-    """The contract address."""
+    """The address of the contract."""
+
     _abi: FunctionABI
-    """The ABI of the contract function."""
+    """The ABI (Application Binary Interface) of the contract function."""
+
     __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_input"
+
     def __await__(self):
-        """Asynchronously call the contract method without arguments at the latest block and await the result."""
+        """
+        Allow the contract method to be awaited.
+        
+        This method enables using 'await' on the contract method, which will call
+        the method without arguments at the latest block and return the result.
+        """
         return self.coroutine().__await__()
+
     async def map(
         self, 
         args: Iterable[Any], 
         block_identifier: Optional[int] = None,
         decimals: Optional[int] = None,
     ) -> List[_EVMType]:
-        return await asyncio.gather(*[self.coroutine(arg, block_identifier=block_identifier, decimals=decimals) for arg in args])
+        """
+        Asynchronously call the contract method with multiple sets of arguments.
+
+        This method allows for efficient batch calling of the contract method
+        with different arguments.
+
+        Args:
+            args: An iterable of argument sets to be passed to the method.
+            block_identifier: The block number or identifier for the calls.
+            decimals: The number of decimal places by which to scale numeric results.
+
+        Returns:
+            A list of results from calling the method with each set of arguments.
+        """
+
     @property
     def abi(self) -> dict:
-        """The ABI of the contract function."""
+        """
+        The ABI of the contract function.
+        
+        This property provides access to the complete ABI dictionary of the function.
+        """
         return self._abi.abi
+
     @property
     def signature(self) -> str:
+        """
+        The function signature.
+        
+        This property returns the unique signature of the contract function,
+        which is used to identify the function in transactions.
+        """
         return self._abi.signature
+
     async def coroutine(  # type: ignore [empty-body]
         self, 
         *args: Any, 
@@ -50,7 +85,7 @@ class _DankMethodMixin(Generic[_EVMType]):
         override: Optional[Dict[str, str]] = None,
     ) -> _EVMType:
         """
-        Asynchronously calls the contract method with the given arguments.
+        Asynchronously call the contract method with the given arguments.
 
         This method is the core of the asynchronous functionality while using dank_mids with eth_brownie.
 

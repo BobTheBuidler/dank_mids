@@ -4,6 +4,12 @@ from functools import cached_property
 MODES = ["default", "application", "infura"]
 
 class OperationMode(str):
+    """
+    Enum-like class to define different operation modes for dank_mids.
+
+    These modes can affect how dank_mids optimizes requests and interacts
+    with different Ethereum node providers.
+    """
     @cached_property
     def application(self) -> bool:
         # This mode keeps the event loop as unblocked as possible so an asyncio application can run as designed

@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger("dank_mids.exceptions")
 
 class BadResponse(ValueError):
+    """Exception raised when an unexpected or invalid response is received."""
     def __init__(self, response: "PartialResponse") -> None:
         self.response = response
         super().__init__(response.to_dict())
@@ -24,10 +25,10 @@ class ResponseNotReady(ValueError):
     """Exception raised when trying to access a response that isn't ready yet."""
 
 class PayloadTooLarge(BadResponse):
-    """Exception raised when the payload sent to the RPC is too large."""
+    """Exception raised when the payload for a request is too large."""
 
 class ExceedsMaxBatchSize(BadResponse):
-    """A special exception that occurs when you post a batch which exceeds the maximum batch size for the rpc."""
+    """Exception raised when a batch operation exceeds the maximum allowed size for the RPC."""
     @property
     def limit(self) -> int:
         return int(re.search(r'batch limit (\d+) exceeded', self.response.error.message)[1])  # type: ignore [index, union-attr]

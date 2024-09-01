@@ -186,9 +186,13 @@ class _StatsLogger(logging.Logger):
         """
         Log the types of decoded values for a specific RPC method.
         
+        This method analyzes the decoded response data from an RPC call and logs
+        information about the data types encountered. It's useful for understanding
+        the structure of responses from different RPC methods.
+
         Args:
             method: The RPC method being logged.
-            decoded: The decoded response data.
+            decoded: The decoded response data from the RPC call.
         """
         # TODO fix this, use enabled check
         types = {type(v) for v in decoded.values()}
@@ -201,8 +205,12 @@ class _StatsLogger(logging.Logger):
         """
         Log the types of items in a list.
         
+        This internal method is used to analyze and log the types of elements
+        found in list structures within RPC responses. It's particularly useful
+        for understanding complex, nested data structures.
+
         Args:
-            values: The list of values to log types for.
+            values: The list of values to analyze and log types for.
             level: The logging level to use. Defaults to DEVHINT.
         """
         list_types = {type(_) for v in values if isinstance(v, list) for _ in v}

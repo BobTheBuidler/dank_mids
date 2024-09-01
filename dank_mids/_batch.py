@@ -1,4 +1,3 @@
-
 import asyncio
 import logging
 from typing import TYPE_CHECKING, Any, Awaitable, Generator, List, Union
@@ -61,7 +60,12 @@ class DankBatch:
         Internal method to await the completion of all coroutines in the batch.
         
         This method gathers all coroutines in the batch and awaits their completion,
-        logging any exceptions that may occur during execution.
+        logging any exceptions that may occur during execution. It's designed to
+        handle both successful completions and potential errors gracefully.
+
+        Raises:
+            Exception: If any of the coroutines in the batch raise an exception,
+                       it will be re-raised after all coroutines have been processed.
         """
         batches = tuple(self.coroutines)
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
@@ -71,6 +75,17 @@ class DankBatch:
                 raise result
 
     def start(self) -> None:
+        """
+        Initiates the execution of all operations in the batch.
+
+        This method starts the processing of all multicalls and individual RPC calls
+        that have been added to the batch. It marks the batch as started to prevent
+        duplicate executions.
+
+        Note:
+            This method does not wait for the operations to complete. Use :meth:`~DankBatch._await()`
+            to wait for completion and handle results.
+        """
         for mcall in self.multicalls.values():
             mcall.start(self, cleanup=False)
         for call in self.rpc_calls:

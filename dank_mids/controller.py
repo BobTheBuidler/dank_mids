@@ -65,6 +65,13 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
 
 
 class DankMiddlewareController:
+    """
+    The main class of Dank Middleware.
+
+    This class handles the initialization and management of various components
+    required for efficient RPC batching and multicall operations.
+    """
+
     def __init__(self, w3: Web3) -> None:
         """
         Initialize the DankMiddlewareController.
@@ -166,9 +173,28 @@ class DankMiddlewareController:
         """A JSONRPCBatch containing all pending rpc requests."""
     
     def __repr__(self) -> str:
+        """
+        Returns a string representation of the DankMiddlewareController instance.
+
+        Returns:
+            str: A string containing the instance number, chain ID, and endpoint.
+        """
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+        """
+        Asynchronous method to handle RPC calls.
+
+        This method routes different types of RPC calls to appropriate handlers,
+        including specialized handling for eth_call and other methods that may use queues.
+
+        Args:
+            method: The RPC method to be called.
+            params: The parameters for the RPC call.
+
+        Returns:
+            The response from the RPC call.
+        """
         
         # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
         if method == "eth_call":
@@ -224,6 +250,12 @@ class DankMiddlewareController:
             raise
 
     async def execute_batch(self) -> None:
+        """
+        Execute a batch of pending calls.
+
+        This method collects all pending eth calls and RPC calls, clears the pending queues,
+        and executes them as a single batch.
+        """
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
             multicalls = dict(self.pending_eth_calls)
             self.pending_eth_calls.clear()
@@ -237,6 +269,12 @@ class DankMiddlewareController:
 
     @property
     def queue_is_full(self) -> bool:
+        """
+        Check if the queue of pending calls is full.
+
+        Returns:
+            True if the queue is full, False otherwise.
+        """
         with self.pools_closed_lock:
             if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
                 return sum(len(call) for call in self.pending_rpc_calls) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
@@ -245,19 +283,57 @@ class DankMiddlewareController:
             return eth_calls + other_calls >= self.batcher.step
     
     def early_start(self):
-        """Used to start all queued calls when we have enough for a full batch"""
+        """
+        Initiate processing of queued calls when a full batch is available.
+
+        This method combines pending eth_calls and other RPC calls into a single batch,
+        clears the pending Ethereum calls queue, and starts processing the combined
+        batch. It's used to optimize processing by starting as soon as enough calls
+        are queued to form a full batch.
+        """
         with self.pools_closed_lock:
             self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
             self.pending_eth_calls.clear()
             self.pending_rpc_calls.start()
     
     def reduce_multicall_size(self, num_calls: int) -> None:
+        """
+        Decrease the size of multicall batches in response to failures.
+
+        This method is called when a multicall operation fails, allowing the system
+        to dynamically adjust the batch size to prevent future failures.
+
+        Args:
+            num_calls: The number of calls in the failed multicall operation.
+        """
         self._reduce_chunk_size(num_calls, "multicall")
     
     def reduce_batch_size(self, num_calls: int) -> None:
+        """
+        Decrease the size of JSON-RPC batches in response to failures.
+
+        Similar to :meth:`reduce_multicall_size`, this method is called when a JSON-RPC
+        batch operation fails, allowing for dynamic adjustment of batch sizes.
+
+        Args:
+            num_calls: The number of calls in the failed batch operation.
+        """
         self._reduce_chunk_size(num_calls, "batch")
     
     def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "batch"]) -> None:
+        """
+        Internal method to reduce the size of processing chunks.
+
+        This method is used by both reduce_multicall_size and reduce_batch_size
+        to implement the actual size reduction logic.
+
+        Args:
+            num_calls: The number of calls in the failed chunk.
+            chunk_name: The type of chunk to reduce, either "multicall" or "batch".
+
+        Raises:
+            DankMidsInternalError: If an invalid chunk_name is provided.
+        """
         new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
         if new_chunk_size < 30:
             logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue earlier? You might want to restart your script. {chunk_name} chunk size will not be further lowered.")
@@ -274,6 +350,12 @@ class DankMiddlewareController:
         raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
     
     def set_multicall_size_limit(self, new_limit: int) -> None:
+        """
+        Set a new limit for the multicall size.
+
+        Args:
+            new_limit: The new maximum number of calls in a multicall.
+        """
         existing_limit = self.batcher.step
         if new_limit < existing_limit:
             self.batcher.step = new_limit
@@ -282,6 +364,12 @@ class DankMiddlewareController:
             logger.info("new multicall size limit %s is not lower than existing limit %s", new_limit, existing_limit)
             
     def set_batch_size_limit(self, new_limit: int) -> None:
+        """
+        Set a new limit for the JSON-RPC batch size.
+
+        Args:
+            new_limit: The new maximum number of calls in a JSON-RPC batch.
+        """
         existing_limit = ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
         if new_limit < existing_limit:  # type: ignore [operator]
             ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit  # type: ignore [attr-defined,assignment]
@@ -291,6 +379,15 @@ class DankMiddlewareController:
     
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(self, block) -> "_MulticallContract":
+        """
+        Select the appropriate multicall contract for a given block.
+
+        Args:
+            block: The block number or 'latest'.
+
+        Returns:
+            The selected multicall contract.
+        """
         if block == 'latest':
             return self.mc3 or self.mc2  # type: ignore [return-value]
         if self.mc3 and not self.mc3.needs_override_code_for_block(block):
@@ -299,7 +396,9 @@ class DankMiddlewareController:
         return self.mc2 or self.mc3  # type: ignore [return-value]
     
     def __setup_attrdict_middleware(self) -> None:
-        """This will only run for web3 versions > 6.0. It runs one time when the instance is initialized."""
+        """
+        Set up the AttributeDict middleware for Web3 versions 6.0 and above.
+        """
         from web3.middleware import async_attrdict_middleware  # type: ignore [attr-defined]
         try:
             self.w3.middleware_onion.add(async_attrdict_middleware)
@@ -310,6 +409,9 @@ class DankMiddlewareController:
 
 
 class _MulticallContract(Struct):
+    """
+    Represents a multicall contract with its address, deployment block, and bytecode.
+    """
 
     address: ChecksumAddress
     """

@@ -39,7 +39,10 @@ This list is used to keep track of all synchronous Web3 instances that have been
 """
 
 T = TypeVar("T")
+"""Generic type variable for use in type hints."""
+
 P = ParamSpec("P")
+"""Parameter specification for use in type hints."""
 
 w3_version_major = int(version("web3").split(".")[0])
 """
