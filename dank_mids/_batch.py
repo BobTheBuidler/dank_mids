@@ -18,16 +18,21 @@ CHECK = MIN_SIZE - 1
 logger = logging.getLogger(__name__)
 
 class DankBatch:
-    __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
     """
     A batch of JSON-RPC batches.
 
     This class represents a collection of multicalls and RPC calls that can be executed as a batch.
-    It is used internally by the DankMiddlewareController to manage and execute batches of calls.
+    It is used internally by the :class:`DankMiddlewareController` to manage and execute batches of calls.
 
     Note:
         This class is considered "pretty much deprecated" and needs refactoring in future versions.
+
+    See Also:
+        :class:`dank_mids._requests.Multicall`: The Multicall class used in this batch.
+        :class:`dank_mids._requests.RPCRequest`: The RPCRequest class used in this batch.
     """
+
+    __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
 
     def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[Union[Multicall, RPCRequest]]):
         self.controller = controller

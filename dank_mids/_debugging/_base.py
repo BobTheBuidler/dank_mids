@@ -17,7 +17,10 @@ class _FileHelper(metaclass=abc.ABCMeta):
     def __init__(self, chainid: int):
         if not isinstance(chainid, int):
             raise TypeError(f"`chainid` must be an integer. You passed {chainid}") from None
+            
         self.chainid = chainid
+        """The ID of the blockchain network."""
+
         self.path += f"/{self.chainid}"
         self.ensure_dir()
     @lru_cache(maxsize=1)

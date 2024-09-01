@@ -29,8 +29,24 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
         super().__init__(parent, priority, name)
     
 class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+    """A semaphore for managing concurrency based on block numbers.
+
+    This class extends :class:`_AbstractPrioritySemaphore` to provide block-specific concurrency control.
+
+    Args:
+        value: The initial value of the semaphore.
+        name: An optional name for the semaphore.
+
+    See Also:
+        :class:`_BlockSemaphoreContextManager`: The context manager used by this semaphore.
+    """
+
     _context_manager_class = _BlockSemaphoreContextManager  # type: ignore [assignment]
+    """The context manager class used by this semaphore."""
+
     _top_priority: int = -1  # type: ignore [assignment]
+    """The highest priority value, set to -1."""
+    
     def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
         return super().__getitem__(  # type: ignore [return-value]
             block if isinstance(block, int)  # type: ignore [index]

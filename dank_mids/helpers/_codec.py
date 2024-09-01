@@ -62,5 +62,8 @@ def encode(obj: Any) -> bytes:
 
     Returns:
         The json-encoded bytes representation of the object.
+
+    See Also:
+        :func:`msgspec.json.encode`: The underlying JSON encoding function.
     """
     return json.encode(obj, enc_hook=_encode_hook)

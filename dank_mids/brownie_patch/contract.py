@@ -14,13 +14,25 @@ from dank_mids.helpers._helpers import DankWeb3
     
 
 EventName = NewType("EventName", str)
-"""A type representing the name of an event in a smart contract."""
+"""A type representing the name of an event in a smart contract.
+
+See Also:
+    :class:`brownie.network.contract.ContractEvents`: Brownie's implementation of contract events.
+"""
 
 LogTopic = NewType("LogTopic", str)
-"""A type representing a log topic in Ethereum transactions."""
+"""A type representing a log topic in Ethereum transactions.
+
+See Also:
+    :meth:`web3.eth.Eth.get_logs`: Web3.py method for retrieving logs.
+"""
 
 Method = NewType("Method", str)
-"""A type representing the name of a method in a smart contract."""
+"""A type representing the name of a method in a smart contract.
+
+See Also:
+    :class:`brownie.network.contract.ContractMethod`: Brownie's implementation of contract methods.
+"""
 
 Signature = NewType("Signature", str)
 """A type representing the signature of a method in a smart contract."""

@@ -349,10 +349,18 @@ class _Writer:
             
 class _SentryExporter:
     """
-    Pushes all metrics from the `metrics` dict to sentry.
+    A class for exporting statistics and metrics from the :obj:`metrics` dict to Sentry.
+
+    This class provides methods for setting tags and measurements in Sentry,
+    which can be used for monitoring and debugging purposes.
+
     Each metric value will be fetched by calling `getattr(collector, metrics[k])`.
     If the result is a callable object, it will be called without args.
+
+    See Also:
+        :mod:`sentry_sdk`: The Sentry SDK for Python.
     """
+
     metrics = {
         "active_eth_calls": "count_active_brownie_calls",
         "queued_eth_calls": "count_queued_brownie_calls",
@@ -385,14 +393,24 @@ class _SentryExporter:
         import sentry_sdk
         set_tag = sentry_sdk.set_tag
         """
-        A function imported from sentry_sdk that sets a tag for the current scope.
-        It's used to add custom tags to Sentry events.
+        Set a tag for the current scope in Sentry.
+
+        This is a reference to :func:`sentry_sdk.set_tag`.
+
+        See Also:
+            Sentry documentation on using tags:
+            https://docs.sentry.io/platforms/python/enriching-events/tags/
         """
 
         set_measurement = sentry_sdk.set_measurement
         """
-        A function imported from sentry_sdk that sets a measurement for the current scope.
-        It's used to add custom measurements to Sentry events.
+        Set a measurement for the current scope in Sentry.
+
+        This is a reference to :func:`sentry_sdk.set_measurement`.
+
+        See Also:
+            Sentry documentation on using measurements:
+            https://docs.sentry.io/platforms/python/enriching-events/measurements/
         """
 
         _exc = None

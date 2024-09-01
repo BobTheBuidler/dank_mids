@@ -47,19 +47,48 @@ AIOHTTP_TIMEOUT = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20*60, string
 #   We need a separate semaphore here because the method-specific semaphores are too late in the code to prevent this OOM issue.
 brownie_semaphore = _envs._deprecated_format.create_env("BROWNIE_CALL_SEMAPHORE", int, default=100_000, string_converter=int, verbose=False)
 BROWNIE_CALL_SEMAPHORE = _envs.create_env("BROWNIE_CALL_SEMAPHORE", BlockSemaphore, default=brownie_semaphore, string_converter=int, verbose=not OPERATION_MODE.infura)
-"""Semaphore for limiting concurrent Brownie calls."""
+"""
+Semaphore for limiting concurrent Brownie calls.
+
+See Also:
+    :class:`dank_mids.semaphores.BlockSemaphore`: The semaphore class used for concurrency control.
+"""
+
 BROWNIE_ENCODER_SEMAPHORE = _envs.create_env("BROWNIE_ENCODER_SEMAPHORE", BlockSemaphore, default=BROWNIE_CALL_SEMAPHORE._default_value * 2, string_converter=int, verbose=not OPERATION_MODE.infura)
-"""Semaphore for limiting concurrent Brownie encoding operations. This limits memory consumption."""
+"""
+Semaphore for limiting concurrent Brownie encoding operations. This limits memory consumption.
+
+See Also:
+    :class:`dank_mids.semaphores.BlockSemaphore`: The semaphore class used for concurrency control.
+"""
 
 # Processes for decoding. This determines process pool size, not total subprocess count.
 # There are 3 pools, each initialized with the same value.
 # NOTE: Don't stress, these are good for you and will not hog your cpu. You can disable them by setting the var = 0. #TODO: lol u cant yet
 BROWNIE_ENCODER_PROCESSES = _envs.create_env("BROWNIE_ENCODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
-"""Process pool for Brownie encoding operations."""
+"""
+Process pool for Brownie encoding operations.
+
+See Also:
+    :class:`a_sync.AsyncProcessPoolExecutor`: The executor class used for managing asynchronous processes.
+"""
+
 BROWNIE_DECODER_PROCESSES = _envs.create_env("BROWNIE_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
-"""Process pool for Brownie decoding operations."""
+"""
+Process pool for Brownie decoding operations.
+
+See Also:
+    :class:`a_sync.AsyncProcessPoolExecutor`: The executor class used for managing asynchronous processes.
+"""
+
 MULTICALL_DECODER_PROCESSES = _envs.create_env("MULTICALL_DECODER_PROCESSES", AsyncProcessPoolExecutor, default=0 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
-"""Process pool for multicall decoding operations."""
+"""
+Process pool for Multicall decoding operations.
+
+See Also:
+    :class:`a_sync.AsyncProcessPoolExecutor`: The executor class used for managing asynchronous processes.
+"""
+
 COLLECTION_FACTOR = _envs.create_env("COLLECTION_FACTOR", int, default=10 if OPERATION_MODE.infura else 1, string_converter=int, verbose=not OPERATION_MODE.infura)
 """Factor determining the size of data collection operations."""
 

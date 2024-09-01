@@ -1,4 +1,3 @@
-
 import logging
 from threading import Thread, current_thread
 from typing import Any, Callable, Dict, Tuple
@@ -28,6 +27,9 @@ async def dank_middleware(
         web3: The synchronous Web3 instance this middleware is attached to.
 
     Returns:
-        An AsyncMiddleware function that can be used with synchronous Web3.
+        An :type:`~AsyncMiddleware` function that can be used with synchronous Web3.
+
+    See Also:
+        :class:`dank_mids.controller.DankMiddlewareController`: The controller class that manages RPC requests sent thru the middleware.
     """
     return DankMiddlewareController(web3)

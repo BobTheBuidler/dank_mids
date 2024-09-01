@@ -24,22 +24,22 @@ logger = logging.getLogger("dank_mids.session")
 # First, set up custom error codes we might see.
 class _HTTPStatusExtension(IntEnum):
     """
-    A modification of HTTP status codes, for custom codes used by specific services like Cloudflare.
+    A modified version of :class:`http.HTTPStatus`, for custom codes used by specific services like Cloudflare.
     
     This enum contains status codes and descriptions for server errors that are not part of the standard HTTP specification.
     """
 
     WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR = (520, 'Web Server is Returning an Unknown Error',
-        'HTTP response status code 520 is an unofficial server error specific to Cloudflare.\n'
-        'This is a catch-all error used when a more specific HTTP status code is not available.\n'
-        'It indicates that the origin server returned an unknown error.\n'
-        'Learn more at https://http.dev/520')
+        'HTTP response status code 520 Web server is returning an unknown error is an unofficial server error\n'
+        + 'that is specific to Cloudflare. This is a catch-all error that is used in the absence of having a\n'
+        + 'HTTP status code for one that is more specific.\n'
+        + 'Learn more at https://http.dev/520')
 
     WEB_SERVER_IS_DOWN = (521, 'Web Server Is Down',
-        'HTTP response status code 521 is an unofficial server error specific to Cloudflare.\n'
-        'This status code occurs when the HTTP client successfully connected to Cloudflare,\n'
-        'but Cloudflare could not connect to the origin server.\n'
-        'Learn more at https://http.dev/521')
+        'HTTP response status code 521 Web server is down is an unofficial server error that is specific to Cloudflare.\n'
+        + 'This HTTP status code occurs when the HTTP client was able to successfully connect to Cloudflare but it was\n'
+        + 'unable to connect to the origin server.'
+        + 'Learn more at https://http.dev/521')
 
     CLOUDFLARE_CONNECTION_TIMEOUT = (522, 'Cloudflare Connection Timeout',
         'Cloudflare is a content delivery network that acts as a gateway between a user and a website server.\n'
@@ -74,7 +74,7 @@ class _HTTPStatusExtension(IntEnum):
 # Then, combine the standard HTTPStatus enum and the custom extension to get the full custom HTTPStatus enum we need.
 HTTPStatusExtended = IntEnum('HTTPStatusExtended', [(i.name, i.value) for i in chain(http.HTTPStatus, _HTTPStatusExtension)])  # type: ignore [misc]
 """
-An extension of HTTP status codes, including custom codes used by specific services like Cloudflare.
+An extension of :class:`http.HTTPStatus`, supporting both standard HTTP status codes as well as custom codes used by specific services like Cloudflare.
 
 This enum includes status codes and descriptions for server errors that are not part of the standard HTTP specification.
 """

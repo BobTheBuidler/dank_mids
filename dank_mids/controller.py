@@ -66,10 +66,13 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
 
 class DankMiddlewareController:
     """
-    The main class of Dank Middleware.
+    Controller for managing Dank Middleware operations.
 
-    This class handles the initialization and management of various components
-    required for efficient RPC batching and multicall operations.
+    This class handles the core functionality of Dank Mids, including request batching,
+    call execution, and error handling.
+
+    See Also:
+        :class:`dank_mids.semaphores.BlockSemaphore`: Used for managing concurrency of eth_calls made with the controller.
     """
 
     def __init__(self, w3: Web3) -> None:
@@ -155,14 +158,26 @@ class DankMiddlewareController:
         
         self.method_semaphores = _MethodSemaphores(self)  # TODO: refactor this out
         self.eth_call_semaphores: BlockSemaphore = self.method_semaphores["eth_call"]  # type: ignore [assignment]
+        """Used for managing concurrency of eth_calls."""
+
         # semaphores soon to be deprecated for smart queue
         self.method_queues = _MethodQueues(self)
+        """Queues for different method types."""
+
         self.batcher = NotSoBrightBatcher()
+        """Batcher for RPC calls."""
+
         self.batcher.step = ENVS.MAX_MULTICALL_SIZE  # type: ignore [attr-defined]
 
         self.call_uid = UIDGenerator()
+        """Unique identifier generator for individual calls."""
+
         self.multicall_uid: UIDGenerator = UIDGenerator()
+        """Unique identifier generator for multicall operations."""
+
         self.request_uid: UIDGenerator = UIDGenerator()
+        """Unique identifier generator for RPC requests."""
+
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
         self.pools_closed_lock = _AlertingRLock(name='pools closed')
 

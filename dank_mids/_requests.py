@@ -376,7 +376,15 @@ class eth_call(RPCRequest):
     
     @property
     def semaphore(self) -> a_sync.Semaphore:
-        # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
+        """
+        Get the semaphore for this eth_call operation.
+
+        Returns:
+            The semaphore for controlling concurrent access at this block height.
+
+        Note:
+            This property is not cached to ensure the semaphore control pattern in the `duplicate` function works as intended.
+        """
         return self.controller.eth_call_semaphores[self.block]
     
     

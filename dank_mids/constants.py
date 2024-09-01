@@ -21,7 +21,7 @@ These errors will be automatically retried until success is achieved.
 
 GAS_LIMIT = multicall.constants.GAS_LIMIT
 """
-The gas limit constant imported from the multicall library.
+The gas limit constant imported from the :mod:`multicall` library.
 
 This value is used as the default gas limit for multicall operations.
 """

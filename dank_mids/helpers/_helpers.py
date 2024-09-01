@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
 dank_w3s: List[Web3] = []
 """
-A list that stores instances of Web3 objects that have been set up with Dank Middleware.
+A list that stores instances of :class:`Web3` objects that have been set up with Dank Middleware.
 This list is used to keep track of all Dank-enabled Web3 instances created in the application.
 """
 
