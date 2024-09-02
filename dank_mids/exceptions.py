@@ -1,3 +1,7 @@
+"""
+.. automodule:: exceptions
+    :exclude-members: __init__, __new__, args, with_traceback
+"""
 
 class Revert(ValueError):
     ...

@@ -1,3 +1,7 @@
+"""
+.. automodule:: dank_mids.brownie_patch.contract
+    :exclude-members: __call__
+"""
 import functools
 from typing import Dict, List, Literal, NewType, Optional, Union, overload
 
