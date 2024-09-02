@@ -1,6 +1,6 @@
 """
-.. automodule:: types
-    :exclude-members: __call__, __iter__, update, clear, copy, fromkeys, pop, popitem, setdefault, 
+.. automodule:: dank_mids.types
+    :exclude-members: __call__, __iter__, get, update, clear, copy, keys, values, items, fromkeys, pop, popitem, setdefault
 """
 import logging
 import re

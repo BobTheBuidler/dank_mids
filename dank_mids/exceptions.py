@@ -1,5 +1,5 @@
 """
-.. automodule:: exceptions
+.. automodule:: dank_mids.exceptions
     :exclude-members: __init__, __new__, args, with_traceback
 """
 
