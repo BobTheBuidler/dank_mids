@@ -57,6 +57,7 @@ autodoc_default_options = {
     'member-order': 'groupwise',
     # hide private methods that aren't relevant to us here
     'exclude-members': ','.join([
+        '__new__',
         '_abc_impl',
         '_fget',
         '_fset',

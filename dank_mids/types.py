@@ -1,3 +1,7 @@
+"""
+.. automodule:: types
+    :exclude-members: __call__, __iter__, update, clear, copy, fromkeys, pop, popitem, setdefault, 
+"""
 import logging
 import re
 from time import time
@@ -52,13 +56,13 @@ JsonrpcParams = List[Union[eth_callParams, BlockId, OverrideParams]]
 AsyncMiddleware = Callable[[RPCEndpoint, Any], Coroutine[Any, Any, RPCResponse]]
 """A type alias for asynchronous middleware functions."""
 
-list_of_stuff = List[Union[str, None, dict, list]]
+_list_of_stuff = List[Union[str, None, dict, list]]
 """A type alias for a list that can contain strings, None, dictionaries, or lists."""
 
-dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, Dict[str, Optional[Any]]]]
-"""A type alias for a dictionary with string keys and values that can be strings, None, `list_of_stuff`, or dictionaries with optional values."""
+_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, Dict[str, Optional[Any]]]]
+"""A type alias for a dictionary with string keys and values that can be strings, None, :obj:`_list_of_stuff`, or dictionaries with optional values."""
 
-nested_dict_of_stuff = Dict[str, Union[str, None, list_of_stuff, dict_of_stuff]]
+_nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuff]]
 """A type alias for a nested dictionary structure."""
 
 class _DictStruct(msgspec.Struct):
@@ -148,7 +152,7 @@ Log = Dict[str, Union[bool, str, None, List[str]]]
 AccessList = List[Dict[str, Union[str, List[str]]]]
 Transaction = Dict[str, Union[str, None, AccessList]]
 
-RETURN_TYPES = {
+_RETURN_TYPES = {
     "eth_call": str,
     "eth_chainId": str,
     "eth_getCode": str,
@@ -217,8 +221,8 @@ class PartialResponse(_DictStruct):
         return data
 
     def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Union[str, AttributeDict]:
-        # NOTE: These must be added to the `RETURN_TYPES` constant above manually
-        if method and (typ := RETURN_TYPES.get(method)):
+        # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
+        if method and (typ := _RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
                 try:
                     return msgspec.json.decode(self.result, type=typ)
@@ -236,16 +240,16 @@ class PartialResponse(_DictStruct):
             except msgspec.ValidationError as e:
                 stats.logger.log_validation_error(self, e)
 
-        # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
+        # We have some semi-smart logic for providing decoder hints even if method not in `_RETURN_TYPES`
         if method:
             try:
                 if method in _dict_responses:
-                    decoded = AttributeDict(msgspec.json.decode(self.result, type=nested_dict_of_stuff))
+                    decoded = AttributeDict(msgspec.json.decode(self.result, type=_nested_dict_of_stuff))
                     stats.logger.log_types(method, decoded)
                     return decoded
                 elif method in _str_responses:
                     # TODO: finish adding methods and get rid of this
-                    stats.logger.devhint(f'Must add `{method}: str` to `RETURN_TYPES`')
+                    stats.logger.devhint(f'Must add `{method}: str` to `_RETURN_TYPES`')
                     return msgspec.json.decode(self.result, type=str)
             except msgspec.ValidationError as e:
                 stats.logger.log_validation_error(method, e)

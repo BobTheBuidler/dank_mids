@@ -2,7 +2,7 @@
 from msgspec import Raw, json
 
 from dank_mids.types import (Any, Callable, JSONRPCBatchResponseRaw, List, PartialResponse,
-                             RawResponse, Union, nested_dict_of_stuff, _encode_hook)
+                             RawResponse, Union, _nested_dict_of_stuff, _encode_hook)
 
 
 decode_raw = lambda data: RawResponse(json.decode(data, type=Raw))
@@ -16,7 +16,7 @@ Returns:
     The decoded data wrapped in a RawResponse object.
 """
 
-decode_nested_dict = lambda data: json.decode(data, type=nested_dict_of_stuff)
+decode_nested_dict = lambda data: json.decode(data, type=_nested_dict_of_stuff)
 """
 Decode json-encoded bytes into a nested dictionary.
 

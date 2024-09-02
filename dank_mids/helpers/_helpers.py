@@ -58,7 +58,7 @@ class DankEth(AsyncEth):
         return await super().get_block_number()  # type: ignore [misc]
     
 class DankWeb3:
-    """This is just a helper for type checkers. Your object will just be a modified ``web3.Web3`` object."""
+    """This is just a helper for type checkers. Your object will just be a modified :class:`~web3.Web3` object."""
     eth: DankEth
 
 def setup_dank_w3(async_w3: Web3) -> DankWeb3:
