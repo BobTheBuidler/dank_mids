@@ -5,7 +5,7 @@ import brownie
 from brownie.network.contract import (ContractCall, ContractTx, OverloadedMethod, 
                                       build_function_signature)
 from brownie.typing import AccountsType
-from web3 import Web3
+from eth_retry import auto_retry
 
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
@@ -24,7 +24,7 @@ LogTopic = NewType("LogTopic", str)
 """A type representing a log topic in Ethereum transactions.
 
 See Also:
-    :meth:`web3.eth.Eth.get_logs`: Web3.py method for retrieving logs.
+    :meth:`Web3.eth.get_logs`: Web3.py method for retrieving logs.
 """
 
 Method = NewType("Method", str)
@@ -46,6 +46,7 @@ class Contract(brownie.Contract):
     """
 
     @classmethod
+    @auto_retry
     def from_abi(
         cls, 
         name: str, 
@@ -75,6 +76,7 @@ class Contract(brownie.Contract):
         return Contract(persisted.address)
 
     @classmethod
+    @auto_retry
     def from_ethpm(
         cls, 
         name: str, 
@@ -103,6 +105,7 @@ class Contract(brownie.Contract):
         return Contract(persisted.address)
 
     @classmethod
+    @auto_retry
     def from_explorer(
         cls, 
         address: str, 
