@@ -13,4 +13,4 @@ class BrownieNotConnectedError(RuntimeError):
         Params:
             obj_name: The name of the object the user attempted to access, which requires brownie to be connected.
         """
-        super().__init__(f"Brownie is not connected to a network. You must be connected to a network in order to access `dank_mids.{obj_name}`")
+        super().__init__(f"Brownie is not connected to a network. You must be connected to a network in order to access `dank_mids.{obj_name}`.")
