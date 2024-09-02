@@ -119,10 +119,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.BatchId"><code class="docutils literal notranslate"><span class="pre">BatchId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.JsonrpcParams"><code class="docutils literal notranslate"><span class="pre">JsonrpcParams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Multicalls"><code class="docutils literal notranslate"><span class="pre">Multicalls</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.RETURN_TYPES"><code class="docutils literal notranslate"><span class="pre">RETURN_TYPES</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.dict_of_stuff"><code class="docutils literal notranslate"><span class="pre">dict_of_stuff</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.list_of_stuff"><code class="docutils literal notranslate"><span class="pre">list_of_stuff</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.nested_dict_of_stuff"><code class="docutils literal notranslate"><span class="pre">nested_dict_of_stuff</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids">Module contents</a><ul>
@@ -203,25 +199,21 @@
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName"><code class="docutils literal notranslate"><span class="pre">EventName</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName.__call__"><code class="docutils literal notranslate"><span class="pre">EventName.__call__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName.__init__"><code class="docutils literal notranslate"><span class="pre">EventName.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName.__new__"><code class="docutils literal notranslate"><span class="pre">EventName.__new__()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.LogTopic"><code class="docutils literal notranslate"><span class="pre">LogTopic</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.LogTopic.__call__"><code class="docutils literal notranslate"><span class="pre">LogTopic.__call__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.LogTopic.__init__"><code class="docutils literal notranslate"><span class="pre">LogTopic.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.LogTopic.__new__"><code class="docutils literal notranslate"><span class="pre">LogTopic.__new__()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Method"><code class="docutils literal notranslate"><span class="pre">Method</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Method.__call__"><code class="docutils literal notranslate"><span class="pre">Method.__call__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Method.__init__"><code class="docutils literal notranslate"><span class="pre">Method.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Method.__new__"><code class="docutils literal notranslate"><span class="pre">Method.__new__()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Signature"><code class="docutils literal notranslate"><span class="pre">Signature</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Signature.__call__"><code class="docutils literal notranslate"><span class="pre">Signature.__call__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Signature.__init__"><code class="docutils literal notranslate"><span class="pre">Signature.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Signature.__new__"><code class="docutils literal notranslate"><span class="pre">Signature.__new__()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.patch_contract"><code class="docutils literal notranslate"><span class="pre">patch_contract()</span></code></a></li>
@@ -808,26 +800,6 @@ to dynamically adjust the batch size to prevent future failures.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
 <p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> raised when brownie is not connected but needs to be in order to access functionality within <a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch" title="dank_mids.brownie_patch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dank_mids.brownie_patch</span></code></a>.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.exceptions.BrownieNotConnectedError.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.BrownieNotConnectedError.__init__" title="Link to this definition"></a></dt>
-<dd><p>Initializes a new BrownieNotConnectedError.</p>
-<dl class="simple">
-<dt>Params:</dt><dd><p>obj_name: The name of the object the user attempted to access, which requires brownie to be connected.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.exceptions.BrownieNotConnectedError.__new__">
-<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.BrownieNotConnectedError.__new__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.exceptions.BrownieNotConnectedError.with_traceback">
 <span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.BrownieNotConnectedError.with_traceback" title="Link to this definition"></a></dt>
 <dd><p>Exception.with_traceback(tb) –
@@ -848,11 +820,6 @@ set self.__traceback__ to tb and return self.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.exceptions.Revert.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.Revert.__init__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.exceptions.Revert.__new__">
-<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.Revert.__new__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1130,11 +1097,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.BlockId.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.BlockId.__new__">
-<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.BlockId.__new__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -1151,11 +1113,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.types.ChainId.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainId.__init__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.ChainId.__new__">
-<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainId.__new__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1237,11 +1194,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 <span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.__iter__" title="Link to this definition"></a></dt>
 <dd><p>Implement iter(self).</p>
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.OverrideParams.__new__">
-<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.OverrideParams.__new__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.types.OverrideParams.clear">
@@ -1668,11 +1620,6 @@ They represent either a successful or a failed response, stored as pre-decoded b
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.eth_callParams.__new__">
-<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.eth_callParams.__new__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.types.eth_callParams.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None.</span>&#160; <span class="pre">Remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">D.</span></span></span><a class="headerlink" href="#dank_mids.types.eth_callParams.clear" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -1781,34 +1728,6 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">dank_mids._requests.Multicall</span></code>: The Multicall class used in this mapping.</p>
 </div>
 <p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference internal" href="#dank_mids.types.BlockId" title="dank_mids.types.BlockId"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockId</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Multicall</span></code>]</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.types.RETURN_TYPES">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">RETURN_TYPES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'erigon_getHeaderByNumber':</span> <span class="pre">typing.Dict[str,</span> <span class="pre">typing.Union[str,</span> <span class="pre">int,</span> <span class="pre">bool,</span> <span class="pre">NoneType]],</span> <span class="pre">'eth_accounts':</span> <span class="pre">typing.List[str],</span> <span class="pre">'eth_blockNumber':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">'eth_call':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">'eth_chainId':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">'eth_getBalance':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">'eth_getBlockByNumber':</span> <span class="pre">typing.Dict[str,</span> <span class="pre">typing.Union[str,</span> <span class="pre">typing.List[typing.Union[str,</span> <span class="pre">typing.Dict[str,</span> <span class="pre">typing.Union[str,</span> <span class="pre">NoneType,</span> <span class="pre">typing.List[typing.Dict[str,</span> <span class="pre">typing.Union[str,</span> <span class="pre">typing.List[str]]]]]]]]]],</span> <span class="pre">'eth_getCode':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">'eth_getLogs':</span> <span class="pre">typing.List[typing.Dict[str,</span> <span class="pre">typing.Union[bool,</span> <span class="pre">str,</span> <span class="pre">NoneType,</span> <span class="pre">typing.List[str]]]],</span> <span class="pre">'eth_getTransactionByHash':</span> <span class="pre">typing.Dict[str,</span> <span class="pre">typing.Union[str,</span> <span class="pre">NoneType,</span> <span class="pre">typing.List[typing.Dict[str,</span> <span class="pre">typing.Union[str,</span> <span class="pre">typing.List[str]]]]]],</span> <span class="pre">'eth_getTransactionCount':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">'eth_getTransactionReceipt':</span> <span class="pre">typing.Dict[str,</span> <span class="pre">typing.Union[str,</span> <span class="pre">NoneType,</span> <span class="pre">typing.List[typing.Dict[str,</span> <span class="pre">typing.Union[bool,</span> <span class="pre">str,</span> <span class="pre">NoneType,</span> <span class="pre">typing.List[str]]]]]]}</span></em><a class="headerlink" href="#dank_mids.types.RETURN_TYPES" title="Link to this definition"></a></dt>
-<dd><p>A dictionary mapping RPC method names to their expected return types.
-Used to enable more efficient decoding and validation of RPC responses.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.types.dict_of_stuff">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">dict_of_stuff</span></span><a class="headerlink" href="#dank_mids.types.dict_of_stuff" title="Link to this definition"></a></dt>
-<dd><p>A type alias for a dictionary with string keys and values that can be strings, None, <cite>list_of_stuff</cite>, or dictionaries with optional values.</p>
-<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]]</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.types.list_of_stuff">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">list_of_stuff</span></span><a class="headerlink" href="#dank_mids.types.list_of_stuff" title="Link to this definition"></a></dt>
-<dd><p>A type alias for a list that can contain strings, None, dictionaries, or lists.</p>
-<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.types.nested_dict_of_stuff">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">nested_dict_of_stuff</span></span><a class="headerlink" href="#dank_mids.types.nested_dict_of_stuff" title="Link to this definition"></a></dt>
-<dd><p>A type alias for a nested dictionary structure.</p>
-<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]]]</p>
 </dd></dl>
 
 </section>
