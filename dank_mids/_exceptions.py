@@ -108,10 +108,10 @@ class ChainstackRateLimited(BadResponse):
         decimal_string = self.response.error.data['try_again_in']
         if "ms" in decimal_string:
             ms = float(decimal_string[:-2])
-            logger.info("rate limited by chainstack, retrying in %sms", ms)
+            logger.warning("rate limited by chainstack, retrying in %sms", ms)
             return ms / 1000
         elif "µs" in decimal_string:
             µs = float(decimal_string[:-2])
-            logger.info("rate limited by chainstack, retrying in %sµs", µs)
+            logger.warning("rate limited by chainstack, retrying in %sµs", µs)
             return µs / 1000000
         raise NotImplementedError(f"must define a handler for decimal_string {decimal_string}")

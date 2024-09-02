@@ -294,7 +294,11 @@ class RawResponse:
     def decode(self, partial: Literal[False] = False) -> Response:...
     def decode(self, partial: bool = False) -> Union[Response, PartialResponse]:
         """Decode the wrapped `msgspec.Raw` object into a `Response` or a `PartialResponse`."""
-        return msgspec.json.decode(self._raw, type=PartialResponse if partial else Response)
+        try:
+            return msgspec.json.decode(self._raw, type=PartialResponse if partial else Response)
+        except msgspec.ValidationError as e:
+            e.args = (*e.args, f"decoded: {msgspec.json.decode(self._raw)}")
+            raise
 
 JSONRPCBatchRequest = List[Request]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
