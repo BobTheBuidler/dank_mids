@@ -26,14 +26,13 @@ _configure_concurrent_future_work_queue_size()
 
 
 # Import brownie objects
+__brownie_objects = ["Contract", "dank_web3", "web3", "dank_eth", "eth", "patch_contract"]
 with suppress(ImportError):
     from dank_mids.brownie_patch import Contract, dank_eth, dank_web3, patch_contract
+    __all__ += __brownie_objects
     # aliased for cleanliness and convenience
     web3 = dank_web3
     eth = dank_eth
-
-    _brownie_objects = ["Contract", "dank_web3", "web3", "dank_eth", "eth", "patch_contract"]
-    __all__ += _brownie_objects
 
 
 # Define custom getattr
@@ -44,8 +43,8 @@ def __getattr__(name: str):
     This method is called when an attribute that is not found in the module's namespace
     is accessed. It allows for custom error handling for brownie-specific objects.
     """
-    if name in _brownie_objects:
-        raise BrownieNotConnectedError(f"dank_mids.{name}")
+    if name in __brownie_objects:
+        raise BrownieNotConnectedError(name)
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
