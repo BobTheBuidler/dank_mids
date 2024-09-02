@@ -45,7 +45,7 @@ def __getattr__(name: str):
     is accessed. It allows for custom error handling for brownie-specific objects.
     """
     if name in _brownie_objects:
-        raise BrownieNotConnectedError
+        raise BrownieNotConnectedError(f"dank_mids.{name}")
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
