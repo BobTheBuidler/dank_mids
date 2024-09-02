@@ -73,3 +73,22 @@ autodoc_class_signature = "separated"
 automodule_generate_module_stub = True
 
 sys.path.insert(0, os.path.abspath('./dank_mids'))
+
+
+def skip_specific_members(app, what, name, obj, skip, options):
+    """
+    Function to exclude specific members for a particular module.
+    """
+    exclusions = {
+        'dank_mids.exceptions': {'__init__', '__new__', 'args', 'with_traceback'},
+        'dank_mids.types': {'__call__', '__iter__', 'get', 'update', 'clear', 'copy', 'keys', 'values', 'items', 'fromkeys', 'pop', 'popitem', 'setdefault'},
+        'dank_mids.brownie_patch.contract': {'__call__', },
+    }
+    
+    current_module = getattr(obj, '__module__', None)
+    if current_module in exclusions and name in exclusions[current_module]:
+        return True
+    return skip
+
+def setup(app):
+    app.connect('autodoc-skip-member', skip_specific_members)
