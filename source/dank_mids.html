@@ -196,22 +196,10 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.topics"><code class="docutils literal notranslate"><span class="pre">Contract.topics</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName"><code class="docutils literal notranslate"><span class="pre">EventName</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName.__init__"><code class="docutils literal notranslate"><span class="pre">EventName.__init__()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.LogTopic"><code class="docutils literal notranslate"><span class="pre">LogTopic</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.LogTopic.__init__"><code class="docutils literal notranslate"><span class="pre">LogTopic.__init__()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Method"><code class="docutils literal notranslate"><span class="pre">Method</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Method.__init__"><code class="docutils literal notranslate"><span class="pre">Method.__init__()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Signature"><code class="docutils literal notranslate"><span class="pre">Signature</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Signature.__init__"><code class="docutils literal notranslate"><span class="pre">Signature.__init__()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName"><code class="docutils literal notranslate"><span class="pre">EventName</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.LogTopic"><code class="docutils literal notranslate"><span class="pre">LogTopic</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Method"><code class="docutils literal notranslate"><span class="pre">Method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Signature"><code class="docutils literal notranslate"><span class="pre">Signature</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.patch_contract"><code class="docutils literal notranslate"><span class="pre">patch_contract()</span></code></a></li>
 </ul>
 </li>
@@ -796,16 +784,19 @@ to dynamically adjust the batch size to prevent future failures.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
 <p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> raised when brownie is not connected but needs to be in order to access functionality within <a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch" title="dank_mids.brownie_patch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dank_mids.brownie_patch</span></code></a>.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.exceptions.BrownieNotConnectedError.with_traceback">
-<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.BrownieNotConnectedError.with_traceback" title="Link to this definition"></a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
+<dt class="sig sig-object py" id="dank_mids.exceptions.BrownieNotConnectedError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.BrownieNotConnectedError.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes a new BrownieNotConnectedError.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><p>obj_name: The name of the object the user attempted to access, which requires brownie to be connected.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
+</dd>
+</dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.exceptions.BrownieNotConnectedError.args">
-<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#dank_mids.exceptions.BrownieNotConnectedError.args" title="Link to this definition"></a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -813,23 +804,6 @@ set self.__traceback__ to tb and return self.</p>
 <dt class="sig sig-object py" id="dank_mids.exceptions.Revert">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.exceptions.</span></span><span class="sig-name descname"><span class="pre">Revert</span></span><a class="headerlink" href="#dank_mids.exceptions.Revert" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.exceptions.Revert.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.Revert.__init__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.exceptions.Revert.with_traceback">
-<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.exceptions.Revert.with_traceback" title="Link to this definition"></a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.exceptions.Revert.args">
-<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#dank_mids.exceptions.Revert.args" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </section>
@@ -1082,11 +1056,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">BlockId</span></span><a class="headerlink" href="#dank_mids.types.BlockId" title="Link to this definition"></a></dt>
 <dd><p>A type representing the identifier for a specific block in the blockchain.</p>
 <p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.BlockId.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.BlockId.__init__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -1094,11 +1063,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">ChainId</span></span><a class="headerlink" href="#dank_mids.types.ChainId" title="Link to this definition"></a></dt>
 <dd><p>A type representing the unique integer identifier for a blockchain network.</p>
 <p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.ChainId.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainId.__init__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
