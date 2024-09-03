@@ -84,14 +84,18 @@ def skip_specific_members(app, what, name, obj, skip, options):
     """
     exclusions = {
         'dank_mids.exceptions': {'__init__', 'args', 'with_traceback'},
-        'dank_mids.types': {'__call__', '__iter__', 'get', 'update', 'clear', 'copy', 'keys', 'values', 'items', 'fromkeys', 'pop', 'popitem', 'setdefault'},
-        'dank_mids.brownie_patch.contract': {'__call__', },
+        'dank_mids.types': {'__iter__', 'get', 'update', 'clear', 'copy', 'keys', 'values', 'items', 'fromkeys', 'pop', 'popitem', 'setdefault'},
     }
     
     current_module = getattr(obj, '__module__', None)
-    logger.info(f"module: {current_module}  obj: {obj}")
+    logger.info(f"module: {current_module}  name: {name}  obj: {obj}")
     if current_module in exclusions and name in exclusions[current_module]:
         return True
+
+    # Skip the __call__ member of any NewType objects we defined.
+    if current_module == "typing" and name == "__call__" and type(obj.__self__).__name__ == "NewType":
+        return True
+    
     return skip
 
 def setup(app):
