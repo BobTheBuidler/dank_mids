@@ -9,6 +9,9 @@
 import os
 import sys
 from brownie import network
+from sphinx.util import logging
+
+logger = logging.getLogger(__name__)
 
 network.connect('mainnet')
 
@@ -86,7 +89,7 @@ def skip_specific_members(app, what, name, obj, skip, options):
     }
     
     current_module = getattr(obj, '__module__', None)
-    app.logger.info(f"module: {current_module}  obj: {obj}")
+    logger.info(f"module: {current_module}  obj: {obj}")
     if current_module in exclusions and name in exclusions[current_module]:
         return True
     return skip
