@@ -98,6 +98,40 @@
 <h1>dank_mids.helpers package<a class="headerlink" href="#dank-mids-helpers-package" title="Link to this heading"></a></h1>
 <section id="module-dank_mids.helpers">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dank_mids.helpers" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.setup_dank_w3">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.setup_dank_w3" title="Link to this definition"></a></dt>
+<dd><p>Sets up a DankWeb3 instance from a given Web3 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>async_w3</strong> (<em>Web3</em>) – The Web3 instance to be wrapped.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DankWeb3 instance with Dank Middleware injected.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DankWeb3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.setup_dank_w3_from_sync">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3_from_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sync_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.setup_dank_w3_from_sync" title="Link to this definition"></a></dt>
+<dd><p>Sets up a DankWeb3 instance from a given synchronous Web3 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sync_w3</strong> (<em>Web3</em>) – The synchronous Web3 instance to be wrapped.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DankWeb3 instance with Dank Middleware injected, supporting batched asynchronous operations.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DankWeb3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
