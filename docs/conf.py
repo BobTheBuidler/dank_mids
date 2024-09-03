@@ -86,7 +86,7 @@ def skip_specific_members(app, what, name, obj, skip, options):
     }
     
     current_module = getattr(obj, '__module__', None)
-    app.info(f"module: {current_module}  obj: {obj}")
+    app.logger.info(f"module: {current_module}  obj: {obj}")
     if current_module in exclusions and name in exclusions[current_module]:
         return True
     return skip
