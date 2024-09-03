@@ -83,7 +83,6 @@ def skip_specific_members(app, what, name, obj, skip, options):
     Function to exclude specific members for a particular module.
     """
     exclusions = {
-        'dank_mids.exceptions': {'__init__', 'args', 'with_traceback'},
         'dank_mids.types': {'__iter__', 'get', 'update', 'clear', 'copy', 'keys', 'values', 'items', 'fromkeys', 'pop', 'popitem', 'setdefault'},
     }
     
@@ -94,6 +93,10 @@ def skip_specific_members(app, what, name, obj, skip, options):
 
     # Skip the __init__ and __call__ members of any NewType objects we defined.
     if current_module == "typing" and hasattr(obj, "__self__") and type(obj.__self__).__name__ == "NewType" and name in ["__init__", "__call__"]:
+        return True
+    
+    # Skip the __init__, args, and with_traceback members of all Exceptions
+    if current_module is None and hasattr(obj, '__objclass__') and issubclass(obj.__objclass__, BaseException) and name in ["__init__", "args", "with_traceback"]:
         return True
     
     return skip
