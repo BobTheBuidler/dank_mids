@@ -92,8 +92,8 @@ def skip_specific_members(app, what, name, obj, skip, options):
     if current_module in exclusions and name in exclusions[current_module]:
         return True
 
-    # Skip the __call__ member of any NewType objects we defined.
-    if current_module == "typing" and name == "__call__" and type(obj.__self__).__name__ == "NewType":
+    # Skip the __init__ and __call__ members of any NewType objects we defined.
+    if current_module == "typing" and hasattr(obj, "__self__") and type(obj.__self__).__name__ == "NewType" and name in ["__init__", "__call__"]:
         return True
     
     return skip
