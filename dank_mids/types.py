@@ -149,6 +149,14 @@ Log = Dict[str, Union[bool, str, None, List[str]]]
 AccessList = List[Dict[str, Union[str, List[str]]]]
 Transaction = Dict[str, Union[str, None, AccessList]]
 
+# arbitrum includes these with a tx receipt
+FeeStats = Dict[str, str]
+UnitsUsed = Dict[str, str]
+Prices = Dict[str, str]
+ArbiFields = Union[FeeStats, UnitsUsed, Prices]
+
+TransactionReceipt = Dict[str, Union[str, None, List[Log], ArbiFields]]
+
 _RETURN_TYPES = {
     "eth_call": str,
     "eth_chainId": str,
@@ -160,7 +168,7 @@ _RETURN_TYPES = {
     "eth_getBlockByNumber": Dict[str, Union[str, List[Union[str, Transaction]]]],
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
-    "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Log]]], 
+    "eth_getTransactionReceipt": TransactionReceipt, 
     "erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
 }
 """
