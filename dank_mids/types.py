@@ -236,8 +236,8 @@ class FeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
 class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """Arbitrum includes these with a tx receipt."""
     paid: FeeStats
-    unitsUsed: FeeStats
     prices: FeeStats
+    unitsUsed: FeeStats = msgspec.UNSET
 
 class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
     transactionHash: str
@@ -427,7 +427,7 @@ class RawResponse:
         """Decode the wrapped `msgspec.Raw` object into a `Response` or a `PartialResponse`."""
         try:
             return msgspec.json.decode(self._raw, type=PartialResponse if partial else Response)
-        except msgspec.ValidationError as e:
+        except (msgspec.ValidationError, TypeError) as e:
             e.args = (*e.args, f"decoded: {msgspec.json.decode(self._raw)}")
             raise
 
