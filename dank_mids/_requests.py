@@ -10,7 +10,7 @@ from contextlib import suppress
 from functools import cached_property, lru_cache
 from itertools import chain
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
-                    Iterable, Iterator, List, Mapping, Optional, Tuple, TypeVar, 
+                    Iterable, Iterator, List, NoReturn, Optional, Tuple, TypeVar, 
                     Union, overload)
 
 import a_sync
@@ -167,12 +167,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     async def get_response(self) -> RPCResponse:  # type: ignore [override]
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
-            try:
-                await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
-            except asyncio.TimeoutError:
-                # looks like its stuck for some reason, let's try another one
-                return await self.create_duplicate()
-            return self.response.decode(partial=True).to_dict(self.method)
+            return self.get_response_unbatched()
         
         if self._started and not self._batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
@@ -219,19 +214,27 @@ class RPCRequest(_RequestMeta[RawResponse]):
     
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
         # We raise it here so it traces back up to the caller
-        if isinstance(self.response, ClientResponseError):
-            raise DankMidsClientResponseError(self.response, self.request) from self.response
         if isinstance(self.response, Exception):
-            try:
-                more_detailed_exc = self.response.__class__(self.response, self.request)
-            except Exception as e:
-                self.response.request = self.request
-                self.response._dank_mids_exception = e
-                raise self.response
-            raise more_detailed_exc from None
+            __raise_more_detailed_exc(self.request, self.response)
         # Less optimal decoding
         # TODO: refactor this out
         return self.response
+    
+    @set_done
+    async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
+        task = asyncio.create_task(self.make_request())  # type: ignore [arg-type]
+        shielded = asyncio.shield(task)
+        try:
+            await asyncio.wait_for(shielded, timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
+        except asyncio.TimeoutError:
+            return await self.create_duplicate()
+            # looks like its stuck for some reason, let's try another one
+            done, pending = await asyncio.wait([task, self.create_duplicate()], return_when=asyncio.FIRST_COMPLETED)
+            for t in pending:
+                t.cancel()
+            for task in done:
+                return await task
+        return self.response.decode(partial=True).to_dict(self.method)
     
     @set_done
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
@@ -1021,3 +1024,14 @@ def __format_error(request: PartialRequest, response: PartialResponse) -> Attrib
     error = dict(response.error)  # type: ignore [arg-type]
     error['dankmids_added_context'] = request
     return AttributeDict.recursive(error)
+
+def __raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoReturn:
+    if isinstance(exc, ClientResponseError):
+        raise DankMidsClientResponseError(exc, request) from exc
+    try:
+        more_detailed_exc = exc.__class__(exc, request)
+    except Exception as e:
+        exc.request = request  # type: ignore [attr-defined]
+        exc._dank_mids_exception = e  # type: ignore [attr-defined]
+        raise e from exc
+    raise more_detailed_exc from exc
