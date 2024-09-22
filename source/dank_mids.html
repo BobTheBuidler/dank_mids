@@ -115,10 +115,14 @@
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Request"><code class="docutils literal notranslate"><span class="pre">Request</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Response"><code class="docutils literal notranslate"><span class="pre">Response</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.eth_callParams"><code class="docutils literal notranslate"><span class="pre">eth_callParams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.ArbitrumFeeStats"><code class="docutils literal notranslate"><span class="pre">ArbitrumFeeStats</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.AsyncMiddleware"><code class="docutils literal notranslate"><span class="pre">AsyncMiddleware</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.BatchId"><code class="docutils literal notranslate"><span class="pre">BatchId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.JsonrpcParams"><code class="docutils literal notranslate"><span class="pre">JsonrpcParams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Multicalls"><code class="docutils literal notranslate"><span class="pre">Multicalls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Paid"><code class="docutils literal notranslate"><span class="pre">Paid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Prices"><code class="docutils literal notranslate"><span class="pre">Prices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.UnitsUsed"><code class="docutils literal notranslate"><span class="pre">UnitsUsed</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids">Module contents</a><ul>
@@ -1647,6 +1651,13 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="dank_mids.types.ArbitrumFeeStats">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">ArbitrumFeeStats</span></span><a class="headerlink" href="#dank_mids.types.ArbitrumFeeStats" title="Link to this definition"></a></dt>
+<dd><p>Arbitrum includes these with a tx receipt.</p>
+<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="dank_mids.types.AsyncMiddleware">
 <span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">AsyncMiddleware</span></span><a class="headerlink" href="#dank_mids.types.AsyncMiddleware" title="Link to this definition"></a></dt>
 <dd><p>A type alias for asynchronous middleware functions.</p>
@@ -1676,6 +1687,27 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">dank_mids._requests.Multicall</span></code>: The Multicall class used in this mapping.</p>
 </div>
 <p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference internal" href="#dank_mids.types.BlockId" title="dank_mids.types.BlockId"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockId</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Multicall</span></code>]</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dank_mids.types.Paid">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">Paid</span></span><a class="headerlink" href="#dank_mids.types.Paid" title="Link to this definition"></a></dt>
+<dd><p>Arbitrum includes this in the <cite>feeStats</cite> field of a tx receipt.</p>
+<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dank_mids.types.Prices">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">Prices</span></span><a class="headerlink" href="#dank_mids.types.Prices" title="Link to this definition"></a></dt>
+<dd><p>Arbitrum includes this in the <cite>feeStats</cite> field of a tx receipt.</p>
+<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dank_mids.types.UnitsUsed">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">UnitsUsed</span></span><a class="headerlink" href="#dank_mids.types.UnitsUsed" title="Link to this definition"></a></dt>
+<dd><p>Arbitrum includes this in the <cite>feeStats</cite> field of a tx receipt.</p>
+<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
 </dd></dl>
 
 </section>
