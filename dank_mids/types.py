@@ -171,13 +171,13 @@ class FeeStats(_DictStruct):
     l1Transaction: str
     l2Computation: str
 
-class ArbitrumFeeStats(_DictStruct):
+class ArbitrumFeeStats(_DictStruct, tag=True):  # type: ignore [call-arg]
     """Arbitrum includes these with a tx receipt."""
     paid: FeeStats
     unitsUsed: FeeStats
     prices: FeeStats
 
-class TransactionReceipt(_DictStruct):
+class TransactionReceipt(_DictStruct, tag=True):  # type: ignore [call-arg]
     transactionHash: str
     blockHash: str
     blockNumber: str
