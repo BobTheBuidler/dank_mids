@@ -349,7 +349,7 @@ class PartialResponse(_DictStruct, frozen=True):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
                 try:
                     return msgspec.json.decode(self.result, type=typ)
-                except msgspec.ValidationError as e:
+                except (msgspec.ValidationError, TypeError) as e:
                     raise ValueError(
                         e,
                         f'method: {method}  result: {msgspec.json.decode(self.result)}',
