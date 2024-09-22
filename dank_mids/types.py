@@ -256,7 +256,7 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     # These fields are only present on Arbitrum.
     l1BlockNumber: str = msgspec.UNSET
     """This field is only present on Arbitrum."""
-    l1InboxBatchInfo: str = msgspec.UNSET
+    l1InboxBatchInfo: Optional[str] = msgspec.UNSET
     """This field is only present on Arbitrum."""
     feeStats: ArbitrumFeeStats = msgspec.UNSET
     """This field is only present on Arbitrum."""
