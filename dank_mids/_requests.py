@@ -10,8 +10,8 @@ from contextlib import suppress
 from functools import cached_property, lru_cache
 from itertools import chain
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
-                    Iterable, Iterator, List, Optional, Tuple, TypeVar, Union,
-                    overload)
+                    Iterable, Iterator, List, Mapping, Optional, Tuple, TypeVar, 
+                    Union, overload)
 
 import a_sync
 import eth_retry
@@ -21,6 +21,7 @@ from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
+from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
 
@@ -252,7 +253,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     self._response = await self.create_duplicate()
                     return
-            self._response = __format_error(self.request, data.response)
+            self._response = {"error": __format_error(self.request, data.response)}
             logger.debug("%s _response set to rpc error response %s", self, self._response)
         elif isinstance(data, Exception):
             logger.debug("%s _response set to Exception %s", self, data)
@@ -1016,6 +1017,6 @@ def _log_exception(e: Exception) -> bool:
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
 
 def __format_error(request: PartialRequest, response: PartialResponse) -> dict:
-    error = response.error.to_dict()  # type: ignore [union-attr]
+    error = {field: AttributeDict(attr) if isinstance(attr, Mapping) else attr for field, attr in response.error.items()}  # type: ignore [union-attr]
     error['dankmids_added_context'] = request
-    return {"error": error}
+    return error

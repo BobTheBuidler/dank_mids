@@ -185,17 +185,8 @@ class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
     message: str
     """The error message."""
 
-    data: Optional[Any] = ''
+    data: Optional[Any] = msgspec.UNSET
     """Additional error data, if any."""
-
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Convert the Error to a dictionary.
-
-        Returns:
-            A dictionary representation of the Error's keys and values.
-        """
-        return {field: AttributeDict(attr) if isinstance(attr, Mapping) else attr for field, attr in self.items()}
 
 # some devving tools that will go away eventually
 _dict_responses: Set[str] = set()
