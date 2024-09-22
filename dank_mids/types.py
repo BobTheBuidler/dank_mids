@@ -75,7 +75,28 @@ class _DictStruct(msgspec.Struct):
         Returns:
             The value of the attribute.
         """
-        return getattr(self, attr)
+        try:
+            return getattr(self, attr)
+        except AttributeError:
+            raise KeyError(attr) from None
+    
+    def __getattr__(self, attr: str) -> Any:
+        """
+        Get the value of an attribute, raising AttributeError if the value is :obj:`msgspec.UNSET`.
+        
+        Parameters:
+            attr: The name of the attribute to fetch.
+
+        Raises:
+            AttributeError: If the value is :obj:`~msgspec.UNSET`.
+    
+        Returns:
+            The value of the attribute.
+        """
+        attr = super().__getattr__(attr)
+        if attr is msgspec.UNSET:
+            raise AttributeError(f"'{type(self).__name__}' object has no attribute '{attr}'")
+        return attr
 
     def __iter__(self) -> Iterator[str]:
         """
@@ -84,7 +105,12 @@ class _DictStruct(msgspec.Struct):
         Yields:
             Struct key.
         """
-        yield from self.__struct_fields__
+        for field in self.__struct_fields__:
+            try:
+                if getattr(self, field) is not msgspec.UNSET:
+                    yield field
+            except AttributeError:
+                continue
     
     def __len__(self) -> int:
         """
@@ -93,7 +119,7 @@ class _DictStruct(msgspec.Struct):
         Returns:
             The number of keys.
         """
-        return len(self.__struct_fields__)
+        return len(list(self))
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -183,6 +209,7 @@ AccessList = List[AccessListEntry]
 # TODO: use the types from snek
 Transaction = Dict[str, Union[str, None, AccessList]]
 
+
 class FeeStats(_DictStruct):
     """Arbitrum includes this in the `feeStats` field of a tx receipt."""
     l1Calldata: str
@@ -196,7 +223,7 @@ class ArbitrumFeeStats(_DictStruct, tag=True):  # type: ignore [call-arg]
     unitsUsed: FeeStats
     prices: FeeStats
 
-class TransactionReceipt(_DictStruct, tag=True):  # type: ignore [call-arg]
+class TransactionReceipt(_DictStruct, omit_defaults=True):  # type: ignore [call-arg]
     transactionHash: str
     blockHash: str
     blockNumber: str
@@ -210,10 +237,13 @@ class TransactionReceipt(_DictStruct, tag=True):  # type: ignore [call-arg]
     returnData: str
     logs: List[Log]
 
-class ArbitrumTransactionReceipt(TransactionReceipt):
-    l1BlockNumber: str
-    l1InboxBatchInfo: str
-    feeStats: ArbitrumFeeStats
+    # These fields are only present on Arbitrum.
+    l1BlockNumber: str = msgspec.UNSET
+    """This field is only present on Arbitrum."""
+    l1InboxBatchInfo: str = msgspec.UNSET
+    """This field is only present on Arbitrum."""
+    feeStats: ArbitrumFeeStats = msgspec.UNSET
+    """This field is only present on Arbitrum."""
 
     
 class Block(_DictStruct):
@@ -233,12 +263,8 @@ class Block(_DictStruct):
     nonce: str
     size: str
     uncles: List[str]
-
-class BlockShort(Block, tag=True):  # type: ignore [call-arg]
-    transactions: List[str]
-
-class BlockExpanded(Block, tag=True):  # type: ignore [call-arg]
-    transactions: List[Transaction]
+    transactions: List[Union[str, Transaction]]
+    
 
 _RETURN_TYPES = {
     "eth_call": str,
@@ -248,10 +274,10 @@ _RETURN_TYPES = {
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_accounts": List[str],
-    "eth_getBlockByNumber": Union[BlockShort, BlockExpanded],
+    "eth_getBlockByNumber": Block,
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
-    "eth_getTransactionReceipt": Union[TransactionReceipt, ArbitrumTransactionReceipt], 
+    "eth_getTransactionReceipt": TransactionReceipt, 
     "erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
 }
 """
