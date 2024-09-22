@@ -252,9 +252,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     self._response = await self.create_duplicate()
                     return
-            error = data.response.error.to_dict()  # type: ignore [arg-type]
-            error['dankmids_added_context'] = self.request
-            self._response = {"error": error}
+            self._response = __format_error(self.request, data.response)
             logger.debug("%s _response set to rpc error response %s", self, self._response)
         elif isinstance(data, Exception):
             logger.debug("%s _response set to Exception %s", self, data)
@@ -1016,3 +1014,8 @@ def _log_exception(e: Exception) -> bool:
         logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
         logger.warning(e, exc_info=True)
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
+
+def __format_error(request: PartialRequest, response: PartialResponse) -> dict:
+    error = response.error.to_dict()  # type: ignore [union-attr]
+    error['dankmids_added_context'] = request
+    return {"error": error}

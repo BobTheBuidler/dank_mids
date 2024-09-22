@@ -193,12 +193,9 @@ class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
         Convert the Error to a dictionary.
 
         Returns:
-            A dictionary representation of the struct's attributes and values.
+            A dictionary representation of the Error's keys and values.
         """
-        data = {}
-        for field, attr in self.items():
-            data[field] = AttributeDict(attr) if isinstance(attr, Mapping) else attr
-        return data
+        return {field: AttributeDict(attr) if isinstance(attr, Mapping) else attr for field, attr in self.items()}
 
 # some devving tools that will go away eventually
 _dict_responses: Set[str] = set()
