@@ -3,8 +3,8 @@ import logging
 import re
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    Iterator, List, Literal, NewType, Optional, Set, Tuple, 
-                    TypedDict, TypeVar, Union, overload)
+                    Iterator, List, Literal, Mapping, NewType, Optional, Set, 
+                    Tuple, TypedDict, TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
@@ -131,9 +131,7 @@ class _DictStruct(msgspec.Struct):
         """
         data = {}
         for field, attr in self.items():
-            if isinstance(attr, _DictStruct):
-                attr = attr.to_dict()
-            data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
+            data[field] = AttributeDict(attr) if isinstance(attr, Mapping) else attr
         return data
 
     def keys(self) -> Iterator[str]:
@@ -341,15 +339,12 @@ class PartialResponse(_DictStruct, frozen=True):
     def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
         data: RPCResponse = {}
-        for field in self.__struct_fields__:
-            attr = getattr(self, field)
+        for field, attr in self.items():
             if attr is None:
                 continue
             if field == "result":
                 attr = self.decode_result(method=method, _caller=self)
-            if isinstance(attr, _DictStruct):
-                attr = attr.to_dict()
-            data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr  # type: ignore [literal-required]
+            data[field] = AttributeDict(attr) if isinstance(attr, Mapping) and field != "error" else attr  # type: ignore [literal-required]
         return data
 
     def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Union[str, AttributeDict]:
