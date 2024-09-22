@@ -144,21 +144,58 @@ class Error(_DictStruct):
 _dict_responses: Set[str] = set()
 _str_responses: Set[str] = set()
 
+
+class Log(_DictStruct):
+    removed: Optional[bool]
+    logIndex: Optional[str]
+    transactionIndex: Optional[str]
+    transactionHash: str
+    blockHash: Optional[str]
+    blockNumber: Optional[str]
+    address: Optional[str]
+    data: Optional[str]
+    topics: Optional[List[str]]
+
 # TODO: use the types from snek
-Log = Dict[str, Union[bool, str, None, List[str]]]
-AccessList = List[Dict[str, Union[str, List[str]]]]
+class AccessListEntry(_DictStruct):
+    address: str
+    storageKeys: List[str]
+
+AccessList = List[AccessListEntry]
 Transaction = Dict[str, Union[str, None, AccessList]]
 
-Paid = Dict[str, str]
-"""Arbitrum includes this in the `feeStats` field of a tx receipt."""
-UnitsUsed = Dict[str, str]
-"""Arbitrum includes this in the `feeStats` field of a tx receipt."""
-Prices = Dict[str, str]
-"""Arbitrum includes this in the `feeStats` field of a tx receipt."""
-ArbitrumFeeStats = Dict[str, Union[str, Paid, UnitsUsed, Prices]]
-"""Arbitrum includes these with a tx receipt."""
+class FeeStats(_DictStruct):
+    """Arbitrum includes this in the `feeStats` field of a tx receipt."""
+    l1Calldata: str
+    l2Storage: str
+    l1Transaction: str
+    l2Computation: str
 
-TransactionReceipt = Dict[str, Union[str, None, List[Log], ArbitrumFeeStats]]
+class ArbitrumFeeStats(_DictStruct):
+    """Arbitrum includes these with a tx receipt."""
+    paid: FeeStats
+    unitsUsed: FeeStats
+    prices: FeeStats
+
+class TransactionReceipt(_DictStruct):
+    transactionHash: str
+    blockHash: str
+    blockNumber: str
+    logsBloom: str
+    contractAddress: Optional[str]
+    transactionIndex: Optional[str]
+    returnCode: str
+    effectiveGasPrice: str
+    gasUsed: str
+    cumulativeGasUsed: str
+    returnData: str
+    logs: List[Log]
+
+class ArbitrumTransactionReceipt(TransactionReceipt):
+    l1BlockNumber: str
+    l1InboxBatchInfo: str
+    feeStats: ArbitrumFeeStats
+
 
 _RETURN_TYPES = {
     "eth_call": str,
@@ -171,7 +208,7 @@ _RETURN_TYPES = {
     "eth_getBlockByNumber": Dict[str, Union[str, List[Union[str, Transaction]]]],
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
-    "eth_getTransactionReceipt": TransactionReceipt, 
+    "eth_getTransactionReceipt": Union[TransactionReceipt, ArbitrumTransactionReceipt], 
     "erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
 }
 """
