@@ -236,8 +236,16 @@ class FeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
 class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """Arbitrum includes these with a tx receipt."""
     paid: FeeStats
-    prices: FeeStats
+    """
+    The breakdown of gas paid for the transaction.
+    
+    (price * unitsUsed)
+    """
+    # These 2 attributes do not always exist
     unitsUsed: FeeStats = msgspec.UNSET
+    """The breakdown of units of gas used for the transaction."""
+    prices: FeeStats = msgspec.UNSET
+    """The breakdown of gas prices for the transaction."""
 
 class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
     transactionHash: str
