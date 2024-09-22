@@ -170,6 +170,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             try:
                 await asyncio.wait_for(self.make_request(), timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
             except asyncio.TimeoutError:
+                # looks like its stuck for some reason, let's try another one
                 return await self.create_duplicate()
             return self.response.decode(partial=True).to_dict(self.method)
         
@@ -1016,7 +1017,7 @@ def _log_exception(e: Exception) -> bool:
         logger.warning(e, exc_info=True)
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
 
-def __format_error(request: PartialRequest, response: PartialResponse) -> dict:
-    error = {field: AttributeDict(attr) if isinstance(attr, Mapping) else attr for field, attr in response.error.items()}  # type: ignore [union-attr]
+def __format_error(request: PartialRequest, response: PartialResponse) -> AttributeDict:
+    error = dict(response.error)  # type: ignore [arg-type]
     error['dankmids_added_context'] = request
-    return error
+    return AttributeDict.recursive(error)
