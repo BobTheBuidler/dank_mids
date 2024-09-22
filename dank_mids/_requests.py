@@ -227,7 +227,6 @@ class RPCRequest(_RequestMeta[RawResponse]):
         try:
             await asyncio.wait_for(shielded, timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
         except asyncio.TimeoutError:
-            return await self.create_duplicate()
             # looks like its stuck for some reason, let's try another one
             done, pending = await asyncio.wait([task, self.create_duplicate()], return_when=asyncio.FIRST_COMPLETED)
             for t in pending:
