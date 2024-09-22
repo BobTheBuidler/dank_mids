@@ -122,18 +122,6 @@ class _DictStruct(msgspec.Struct):
         """
         return len(list(self))
 
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Convert the struct to a dictionary.
-
-        Returns:
-            A dictionary representation of the struct's attributes and values.
-        """
-        data = {}
-        for field, attr in self.items():
-            data[field] = AttributeDict(attr) if isinstance(attr, Mapping) else attr
-        return data
-
     def keys(self) -> Iterator[str]:
         yield from self
 
@@ -199,6 +187,18 @@ class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
 
     data: Optional[Any] = ''
     """Additional error data, if any."""
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert the Error to a dictionary.
+
+        Returns:
+            A dictionary representation of the struct's attributes and values.
+        """
+        data = {}
+        for field, attr in self.items():
+            data[field] = AttributeDict(attr) if isinstance(attr, Mapping) else attr
+        return data
 
 # some devving tools that will go away eventually
 _dict_responses: Set[str] = set()

@@ -207,7 +207,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     if time.time() - self.controller._time_of_request_type_change <= 600:
                         logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                         return await self.controller(self.method, self.params)
-                error['dankmids_added_context'] = self.request.to_dict()
+                error['dankmids_added_context'] = self.request
                 # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
                 # But I'll check it anyway to be safe
                 if result := response.pop('result', None):
@@ -252,8 +252,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     self._response = await self.create_duplicate()
                     return
-            error = data.response.error.to_dict()  # type: ignore [union-attr]
-            error['dankmids_added_context'] = self.request.to_dict()
+            error = data.response.error.to_dict()  # type: ignore [arg-type]
+            error['dankmids_added_context'] = self.request
             self._response = {"error": error}
             logger.debug("%s _response set to rpc error response %s", self, self._response)
         elif isinstance(data, Exception):
@@ -644,7 +644,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
         # Raise any Exceptions that may have come out of the process pool.
         if isinstance(retval, Exception):
-            raise retval.__class__(*retval.args, self.request.to_dict(), f"response: {data.to_dict()}", f"error: {data.error.to_dict() if data.error else None}")
+            raise retval.__class__(
+                *retval.args, 
+                self.request, 
+                f"response: {data}", 
+            )
         return retval
     
     @set_done
