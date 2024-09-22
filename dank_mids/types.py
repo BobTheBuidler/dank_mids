@@ -156,12 +156,13 @@ class Log(_DictStruct):
     data: Optional[str]
     topics: Optional[List[str]]
 
-# TODO: use the types from snek
 class AccessListEntry(_DictStruct):
     address: str
     storageKeys: List[str]
 
 AccessList = List[AccessListEntry]
+
+# TODO: use the types from snek
 Transaction = Dict[str, Union[str, None, AccessList]]
 
 class FeeStats(_DictStruct):
@@ -196,6 +197,30 @@ class ArbitrumTransactionReceipt(TransactionReceipt):
     l1InboxBatchInfo: str
     feeStats: ArbitrumFeeStats
 
+    
+class Block(_DictStruct):
+    parentHash: str
+    sha3Uncles: str
+    miner: str
+    stateRoot: str
+    transactionsRoot: str
+    receiptsRoot: str
+    logsBloom: str
+    number: str
+    gasLimit: str
+    gasUsed: str
+    timestamp: str
+    extraData: str
+    mixHash: str
+    nonce: str
+    size: str
+    uncles: List[str]
+
+class BlockShort(Block, tag=True):  # type: ignore [call-arg]
+    transactions: List[str]
+
+class BlockExpanded(Block, tag=True):  # type: ignore [call-arg]
+    transactions: List[Transaction]
 
 _RETURN_TYPES = {
     "eth_call": str,
@@ -205,7 +230,7 @@ _RETURN_TYPES = {
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_accounts": List[str],
-    "eth_getBlockByNumber": Dict[str, Union[str, List[Union[str, Transaction]]]],
+    "eth_getBlockByNumber": Union[BlockShort, BlockExpanded],
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
     "eth_getTransactionReceipt": Union[TransactionReceipt, ArbitrumTransactionReceipt], 
