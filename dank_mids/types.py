@@ -149,13 +149,16 @@ Log = Dict[str, Union[bool, str, None, List[str]]]
 AccessList = List[Dict[str, Union[str, List[str]]]]
 Transaction = Dict[str, Union[str, None, AccessList]]
 
-# arbitrum includes these with a tx receipt
-FeeStats = Dict[str, str]
+Paid = Dict[str, str]
+"""Arbitrum includes this in the `feeStats` field of a tx receipt."""
 UnitsUsed = Dict[str, str]
+"""Arbitrum includes this in the `feeStats` field of a tx receipt."""
 Prices = Dict[str, str]
-ArbiFields = Union[FeeStats, UnitsUsed, Prices]
+"""Arbitrum includes this in the `feeStats` field of a tx receipt."""
+ArbitrumFeeStats = Dict[str, Union[str, Paid, UnitsUsed, Prices]]
+"""Arbitrum includes these with a tx receipt."""
 
-TransactionReceipt = Dict[str, Union[str, None, List[Log], ArbiFields]]
+TransactionReceipt = Dict[str, Union[str, None, List[Log], ArbitrumFeeStats]]
 
 _RETURN_TYPES = {
     "eth_call": str,
