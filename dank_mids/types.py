@@ -3,8 +3,8 @@ import logging
 import re
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    List, Literal, NewType, Optional, Set, Tuple, TypedDict, 
-                    TypeVar, Union, overload)
+                    Iterator, List, Literal, NewType, Optional, Set, Tuple, 
+                    TypedDict, TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
@@ -76,6 +76,24 @@ class _DictStruct(msgspec.Struct):
             The value of the attribute.
         """
         return getattr(self, attr)
+
+    def __iter__(self) -> Iterator[str]:
+        """
+        Iterate thru the keys of the Struct.
+
+        Yields:
+            Struct key.
+        """
+        yield from self.__struct_fields__
+    
+    def __len__(self) -> int:
+        """
+        The number of keys in the Struct.
+        
+        Returns:
+            The number of keys.
+        """
+        return len(self.__struct_fields__)
 
     def to_dict(self) -> Dict[str, Any]:
         """
