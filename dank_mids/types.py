@@ -65,6 +65,10 @@ _nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuf
 class _DictStruct(msgspec.Struct):
     """A base class enhancing :class:`~msgspec.Struct` with additional dictionary-like functionality."""
 
+    def __bool__(self) -> bool:
+        """A Struct will always exist."""
+        return True
+    
     def __getitem__(self, attr: str) -> Any:
         """
         Allow dictionary-style access to attributes.
@@ -106,11 +110,8 @@ class _DictStruct(msgspec.Struct):
             Struct key.
         """
         for field in self.__struct_fields__:
-            try:
-                if getattr(self, field) is not msgspec.UNSET:
-                    yield field
-            except AttributeError:
-                continue
+            if getattr(self, field, msgspec.UNSET) is not msgspec.UNSET:
+                yield field
     
     def __len__(self) -> int:
         """
@@ -129,13 +130,24 @@ class _DictStruct(msgspec.Struct):
             A dictionary representation of the struct's attributes and values.
         """
         data = {}
-        for field in self.__struct_fields__:
-            attr = getattr(self, field)
+        for field, attr in self.items():
             if isinstance(attr, _DictStruct):
                 attr = attr.to_dict()
             data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
         return data
-  
+
+    def keys(self) -> Iterator[str]:
+        yield from self
+
+    def items(self) -> Iterator[Tuple[str, Any]]:
+        for key in self:
+            yield key, self[key]
+    
+    def values(self) -> Iterator[Any]:
+        for key in self:
+            yield self[key]
+
+
 class PartialRequest(_DictStruct):
     """
     Represents a partial JSON-RPC request. 
