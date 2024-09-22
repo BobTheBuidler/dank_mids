@@ -167,7 +167,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
     async def get_response(self) -> RPCResponse:  # type: ignore [override]
         if not self.should_batch:
             logger.debug(f"bypassed, method is {self.method}")
-            return self.get_response_unbatched()
+            return await self.get_response_unbatched()
         
         if self._started and not self._batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
