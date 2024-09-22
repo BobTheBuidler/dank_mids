@@ -140,15 +140,21 @@ class _DictStruct(msgspec.Struct):
         yield from self
 
     def items(self) -> Iterator[Tuple[str, Any]]:
-        for key in self:
-            yield key, self[key]
+        for key in self.__struct_fields__:
+            try:
+                yield key, getattr(self, key)
+            except AttributeError:
+                continue
     
     def values(self) -> Iterator[Any]:
-        for key in self:
-            yield self[key]
+        for key in self.__struct_fields__:
+            try:
+                yield getattr(self, key)
+            except AttributeError:
+                continue
 
 
-class PartialRequest(_DictStruct):
+class PartialRequest(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """
     Represents a partial JSON-RPC request. 
     
@@ -182,7 +188,7 @@ class Request(PartialRequest):
     jsonrpc: Literal["2.0"] = "2.0"
     """The JSON-RPC version, always set to "2.0"."""
 
-class Error(_DictStruct):
+class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """
     Represents an error in a JSON-RPC response.
     """
@@ -201,7 +207,7 @@ _dict_responses: Set[str] = set()
 _str_responses: Set[str] = set()
 
 
-class Log(_DictStruct):
+class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
     removed: Optional[bool]
     logIndex: Optional[str]
     transactionIndex: Optional[str]
@@ -212,7 +218,7 @@ class Log(_DictStruct):
     data: Optional[str]
     topics: Optional[List[str]]
 
-class AccessListEntry(_DictStruct):
+class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: str
     storageKeys: List[str]
 
@@ -222,20 +228,20 @@ AccessList = List[AccessListEntry]
 Transaction = Dict[str, Union[str, None, AccessList]]
 
 
-class FeeStats(_DictStruct):
+class FeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """Arbitrum includes this in the `feeStats` field of a tx receipt."""
     l1Calldata: str
     l2Storage: str
     l1Transaction: str
     l2Computation: str
 
-class ArbitrumFeeStats(_DictStruct, tag=True):  # type: ignore [call-arg]
+class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """Arbitrum includes these with a tx receipt."""
     paid: FeeStats
     unitsUsed: FeeStats
     prices: FeeStats
 
-class TransactionReceipt(_DictStruct, omit_defaults=True):  # type: ignore [call-arg]
+class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
     transactionHash: str
     blockHash: str
     blockNumber: str
@@ -258,7 +264,7 @@ class TransactionReceipt(_DictStruct, omit_defaults=True):  # type: ignore [call
     """This field is only present on Arbitrum."""
 
     
-class Block(_DictStruct):
+class Block(_DictStruct, frozen=True):
     parentHash: str
     sha3Uncles: str
     miner: str
@@ -301,7 +307,7 @@ decoder_logger = logging.getLogger('dank_mids.decoder')
 
 _chainstack_429_msg = "You've exceeded the RPS limit available on the current plan."
 
-class PartialResponse(_DictStruct):
+class PartialResponse(_DictStruct, frozen=True):
     """
     Represents a partial JSON-RPC response. 
     
