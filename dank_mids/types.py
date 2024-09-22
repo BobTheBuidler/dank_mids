@@ -360,7 +360,7 @@ class PartialResponse(_DictStruct, frozen=True):
                 if _caller:
                     stats.log_duration(f'decoding {type(_caller)} {method}', start)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
-            except msgspec.ValidationError as e:
+            except (msgspec.ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
 
         # We have some semi-smart logic for providing decoder hints even if method not in `_RETURN_TYPES`
@@ -374,7 +374,7 @@ class PartialResponse(_DictStruct, frozen=True):
                     # TODO: finish adding methods and get rid of this
                     stats.logger.devhint(f'Must add `{method}: str` to `_RETURN_TYPES`')
                     return msgspec.json.decode(self.result, type=str)
-            except msgspec.ValidationError as e:
+            except (msgspec.ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(method, e)
 
         # In this case we can provide no hints, let's let the decoder figure it out
@@ -386,7 +386,7 @@ class PartialResponse(_DictStruct, frozen=True):
         elif isinstance(decoded, dict):
             if method:
                 _dict_responses.add(method)
-            return AttributeDict(decoded)
+            return AttributeDict.recursive(decoded)
         elif isinstance(decoded, list):
             if method is None:
                 return decoded
