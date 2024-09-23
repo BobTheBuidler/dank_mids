@@ -107,7 +107,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.types">dank_mids.types module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.AccessListEntry"><code class="docutils literal notranslate"><span class="pre">AccessListEntry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.ArbitrumFeeStats"><code class="docutils literal notranslate"><span class="pre">ArbitrumFeeStats</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.ArbitrumTransactionReceipt"><code class="docutils literal notranslate"><span class="pre">ArbitrumTransactionReceipt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Block"><code class="docutils literal notranslate"><span class="pre">Block</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.BlockId"><code class="docutils literal notranslate"><span class="pre">BlockId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.ChainId"><code class="docutils literal notranslate"><span class="pre">ChainId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Error"><code class="docutils literal notranslate"><span class="pre">Error</span></code></a></li>
@@ -1078,20 +1078,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.AccessListEntry.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.AccessListEntry.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.AccessListEntry.address">
 <span class="sig-name descname"><span class="pre">address</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.AccessListEntry.address" title="Link to this definition"></a></dt>
@@ -1126,44 +1112,34 @@ It includes custom logging levels, a specialized logger, and classes for collect
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumFeeStats.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ArbitrumFeeStats.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.ArbitrumFeeStats.paid">
 <span class="sig-name descname"><span class="pre">paid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.types.FeeStats" title="dank_mids.types.FeeStats"><span class="pre">FeeStats</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumFeeStats.paid" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The breakdown of gas paid for the transaction.</p>
+<p>(price * unitsUsed)</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.ArbitrumFeeStats.prices">
 <span class="sig-name descname"><span class="pre">prices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.types.FeeStats" title="dank_mids.types.FeeStats"><span class="pre">FeeStats</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumFeeStats.prices" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The breakdown of gas prices for the transaction.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.ArbitrumFeeStats.unitsUsed">
 <span class="sig-name descname"><span class="pre">unitsUsed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.types.FeeStats" title="dank_mids.types.FeeStats"><span class="pre">FeeStats</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumFeeStats.unitsUsed" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The breakdown of units of gas used for the transaction.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">ArbitrumTransactionReceipt</span></span><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#dank_mids.types.TransactionReceipt" title="dank_mids.types.TransactionReceipt"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransactionReceipt</span></code></a></p>
+<dt class="sig sig-object py" id="dank_mids.types.Block">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">Block</span></span><a class="headerlink" href="#dank_mids.types.Block" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DictStruct</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.__getitem__">
-<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.__getitem__" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Block.__getitem__" title="Link to this definition"></a></dt>
 <dd><p>Allow dictionary-style access to attributes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1178,93 +1154,89 @@ It includes custom logging levels, a specialized logger, and classes for collect
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.blockHash">
-<span class="sig-name descname"><span class="pre">blockHash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.blockHash" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.extraData">
+<span class="sig-name descname"><span class="pre">extraData</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.extraData" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.blockNumber">
-<span class="sig-name descname"><span class="pre">blockNumber</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.blockNumber" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.gasLimit">
+<span class="sig-name descname"><span class="pre">gasLimit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.gasLimit" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.contractAddress">
-<span class="sig-name descname"><span class="pre">contractAddress</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.contractAddress" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.gasUsed">
+<span class="sig-name descname"><span class="pre">gasUsed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.gasUsed" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.cumulativeGasUsed">
-<span class="sig-name descname"><span class="pre">cumulativeGasUsed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.cumulativeGasUsed" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.logsBloom">
+<span class="sig-name descname"><span class="pre">logsBloom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.logsBloom" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.effectiveGasPrice">
-<span class="sig-name descname"><span class="pre">effectiveGasPrice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.effectiveGasPrice" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.miner">
+<span class="sig-name descname"><span class="pre">miner</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.miner" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.feeStats">
-<span class="sig-name descname"><span class="pre">feeStats</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.types.ArbitrumFeeStats" title="dank_mids.types.ArbitrumFeeStats"><span class="pre">ArbitrumFeeStats</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.feeStats" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.mixHash">
+<span class="sig-name descname"><span class="pre">mixHash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.mixHash" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.gasUsed">
-<span class="sig-name descname"><span class="pre">gasUsed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.gasUsed" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.nonce">
+<span class="sig-name descname"><span class="pre">nonce</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.nonce" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.l1BlockNumber">
-<span class="sig-name descname"><span class="pre">l1BlockNumber</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.l1BlockNumber" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.number">
+<span class="sig-name descname"><span class="pre">number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.number" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.l1InboxBatchInfo">
-<span class="sig-name descname"><span class="pre">l1InboxBatchInfo</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.l1InboxBatchInfo" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.parentHash">
+<span class="sig-name descname"><span class="pre">parentHash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.parentHash" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.logs">
-<span class="sig-name descname"><span class="pre">logs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dank_mids.types.Log" title="dank_mids.types.Log"><span class="pre">Log</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.logs" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.receiptsRoot">
+<span class="sig-name descname"><span class="pre">receiptsRoot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.receiptsRoot" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.logsBloom">
-<span class="sig-name descname"><span class="pre">logsBloom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.logsBloom" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.sha3Uncles">
+<span class="sig-name descname"><span class="pre">sha3Uncles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.sha3Uncles" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.returnCode">
-<span class="sig-name descname"><span class="pre">returnCode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.returnCode" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.size">
+<span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.size" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.returnData">
-<span class="sig-name descname"><span class="pre">returnData</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.returnData" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.stateRoot">
+<span class="sig-name descname"><span class="pre">stateRoot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.stateRoot" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.transactionHash">
-<span class="sig-name descname"><span class="pre">transactionHash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.transactionHash" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.timestamp" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.types.ArbitrumTransactionReceipt.transactionIndex">
-<span class="sig-name descname"><span class="pre">transactionIndex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.ArbitrumTransactionReceipt.transactionIndex" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="dank_mids.types.Block.transactions">
+<span class="sig-name descname"><span class="pre">transactions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dank_mids.types.AccessListEntry" title="dank_mids.types.AccessListEntry"><span class="pre">AccessListEntry</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.types.Block.transactions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Block.transactionsRoot">
+<span class="sig-name descname"><span class="pre">transactionsRoot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Block.transactionsRoot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.Block.uncles">
+<span class="sig-name descname"><span class="pre">uncles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.types.Block.uncles" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1301,20 +1273,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.Error.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Error.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1361,20 +1319,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.FeeStats.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.FeeStats.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.FeeStats.l1Calldata">
 <span class="sig-name descname"><span class="pre">l1Calldata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.FeeStats.l1Calldata" title="Link to this definition"></a></dt>
@@ -1414,20 +1358,6 @@ It includes custom logging levels, a specialized logger, and classes for collect
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.Log.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Log.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1600,20 +1530,6 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.PartialRequest.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.PartialRequest.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.types.PartialRequest.data">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#dank_mids.types.PartialRequest.data" title="Link to this definition"></a></dt>
@@ -1767,20 +1683,6 @@ They represent either a successful or a failed response, stored as pre-decoded b
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.Request.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.Request.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.types.Request.data">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#dank_mids.types.Request.data" title="Link to this definition"></a></dt>
@@ -1920,20 +1822,6 @@ They represent either a successful or a failed response, stored as pre-decoded b
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.TransactionReceipt.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.TransactionReceipt.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert the struct to a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary representation of the struct’s attributes and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><em>Any</em></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.TransactionReceipt.blockHash">
 <span class="sig-name descname"><span class="pre">blockHash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.TransactionReceipt.blockHash" title="Link to this definition"></a></dt>
@@ -1960,9 +1848,27 @@ They represent either a successful or a failed response, stored as pre-decoded b
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.TransactionReceipt.feeStats">
+<span class="sig-name descname"><span class="pre">feeStats</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.types.ArbitrumFeeStats" title="dank_mids.types.ArbitrumFeeStats"><span class="pre">ArbitrumFeeStats</span></a></em><a class="headerlink" href="#dank_mids.types.TransactionReceipt.feeStats" title="Link to this definition"></a></dt>
+<dd><p>This field is only present on Arbitrum.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.TransactionReceipt.gasUsed">
 <span class="sig-name descname"><span class="pre">gasUsed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.TransactionReceipt.gasUsed" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.TransactionReceipt.l1BlockNumber">
+<span class="sig-name descname"><span class="pre">l1BlockNumber</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.TransactionReceipt.l1BlockNumber" title="Link to this definition"></a></dt>
+<dd><p>This field is only present on Arbitrum.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.TransactionReceipt.l1InboxBatchInfo">
+<span class="sig-name descname"><span class="pre">l1InboxBatchInfo</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.TransactionReceipt.l1InboxBatchInfo" title="Link to this definition"></a></dt>
+<dd><p>This field is only present on Arbitrum.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.TransactionReceipt.logs">
