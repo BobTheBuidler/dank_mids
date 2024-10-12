@@ -1,3 +1,4 @@
+
 import logging
 import re
 from time import time
@@ -85,14 +86,22 @@ class PartialRequest(_DictStruct):
     """The RPC method to be called."""
 
     id: Union[str, int]
+    """The request identifier."""
+
     params: Optional[list] = None
+    """The parameters for the RPC method call."""
 
     @property
     def data(self) -> bytes:
         return msgspec.json.encode(self)
 
 class Request(PartialRequest):
-    # NOTE: While technially part of a request, we can successfully make requests without including the `jsonrpc` field.
+    """
+    Represents a complete JSON-RPC request.
+    
+    Inherits from PartialRequest and adds the JSON-RPC version.
+    """
+
     jsonrpc: Literal["2.0"] = "2.0"
     """The JSON-RPC version, always set to "2.0"."""
 
@@ -101,10 +110,14 @@ class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
     Represents an error in a JSON-RPC response.
     """
 
-class Error(_DictStruct):
     code: int
+    """The error code."""
+
     message: str
-    data: Optional[Any] = ''
+    """The error message."""
+
+    data: Optional[Any] = msgspec.UNSET
+    """Additional error data, if any."""
 
 # some devving tools that will go away eventually
 _dict_responses: Set[str] = set()
@@ -138,14 +151,22 @@ decoder_logger = logging.getLogger('dank_mids.decoder')
 
 _chainstack_429_msg = "You've exceeded the RPS limit available on the current plan."
 
-class PartialResponse(_DictStruct):
+class PartialResponse(_DictStruct, frozen=True):
+    """
+    Represents a partial JSON-RPC response. 
+    
+    We use these to more efficiently decode responses from the node.
+    """
+
     result: msgspec.Raw = None  # type: ignore
-    "If the rpc response contains a 'result' field, it is set here"
+    """The result of the RPC call, if successful."""
+
     error: Optional[Error] = None
-    "If the rpc response contains an 'error' field, it is set here"
+    """The error object, if the call failed."""
+
     @property
     def exception(self) -> Exception:
-        "If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."
+        """If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."""
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
         return (
