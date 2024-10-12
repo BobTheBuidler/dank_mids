@@ -10,8 +10,8 @@ from contextlib import suppress
 from functools import cached_property, lru_cache
 from itertools import chain
 from typing import (TYPE_CHECKING, Any, DefaultDict, Dict, Generator, Generic,
-                    Iterable, Iterator, List, Optional, Tuple, TypeVar, Union,
-                    overload)
+                    Iterable, Iterator, List, NoReturn, Optional, Tuple, TypeVar, 
+                    Union, overload)
 
 import a_sync
 import eth_retry
@@ -217,16 +217,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
     
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
         # We raise it here so it traces back up to the caller
-        if isinstance(self.response, ClientResponseError):
-            raise DankMidsClientResponseError(self.response, self.request) from self.response
         if isinstance(self.response, Exception):
-            try:
-                more_detailed_exc = self.response.__class__(self.response, self.request)
-            except Exception as e:
-                self.response.request = self.request
-                self.response._dank_mids_exception = e
-                raise self.response
-            raise more_detailed_exc from None
+            __raise_more_detailed_exc(self.request, self.response)
         # Less optimal decoding
         # TODO: refactor this out
         return self.response
@@ -1012,3 +1004,14 @@ def _log_exception(e: Exception) -> bool:
         logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
         logger.warning(e, exc_info=True)
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
+
+def __raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoReturn:
+    if isinstance(exc, ClientResponseError):
+        raise DankMidsClientResponseError(exc, request) from exc
+    try:
+        more_detailed_exc = exc.__class__(exc, request)
+    except Exception as e:
+        exc.request = request  # type: ignore [attr-defined]
+        exc._dank_mids_exception = e  # type: ignore [attr-defined]
+        raise e from exc
+    raise more_detailed_exc from exc
