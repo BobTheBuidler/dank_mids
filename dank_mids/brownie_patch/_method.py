@@ -41,6 +41,8 @@ class _DankMethodMixin(Generic[_EVMType]):
         self, 
         args: Iterable[Any], 
         block_identifier: Optional[int] = None,
+        *,
+        iter_args: bool = False,
         decimals: Optional[int] = None,
     ) -> List[_EVMType]:
         """
@@ -52,12 +54,16 @@ class _DankMethodMixin(Generic[_EVMType]):
         Args:
             args: An iterable of argument sets to be passed to the method.
             block_identifier: The block number or identifier for the calls.
+            iter_args: True if you are passing an Iterable of Iterables, False otherwise.
             decimals: The number of decimal places by which to scale numeric results.
 
         Returns:
             A list of results from calling the method with each set of arguments.
         """
-        return await asyncio.gather(*[self.coroutine(arg, block_identifier=block_identifier, decimals=decimals) for arg in args])
+        if iter_args:
+            return await asyncio.gather(*[self.coroutine(*call_args, block_identifier=block_identifier, decimals=decimals) for call_args in args])
+        else:
+            return await asyncio.gather(*[self.coroutine(call_arg, block_identifier=block_identifier, decimals=decimals) for call_arg in args])
 
 
     @property
