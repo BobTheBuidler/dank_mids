@@ -263,11 +263,13 @@ Transactions = List[Union[str, Transaction]]
 class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
     index: str
-    amount: str
+
+    amount: str = msgspec.UNSET
+    """This field is not always present."""
 
     address: str = msgspec.UNSET
     """This field is not always present."""
-    
+
     validatorIndex: str = msgspec.UNSET
     """This field is not always present."""
 
