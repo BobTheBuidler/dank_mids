@@ -107,10 +107,10 @@ class _DictStruct(msgspec.Struct):
         Returns:
             The value of the attribute.
         """
-        attr = super().__getattribute__(attr)
-        if attr is msgspec.UNSET:
+        value = super().__getattribute__(attr)
+        if value is msgspec.UNSET:
             raise AttributeError(f"'{type(self).__name__}' object has no attribute '{attr}'")
-        return attr
+        return value
 
     def __iter__(self) -> Iterator[str]:
         """
