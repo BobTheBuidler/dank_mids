@@ -70,18 +70,87 @@ class _DictStruct(msgspec.Struct):
         return True
     
     def __getitem__(self, attr: str) -> Any:
-        return getattr(self, attr)
-    def to_dict(self) -> Dict[str, Any]:
-        """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
-        data = {}
+        """
+        Allow dictionary-style access to attributes.
+
+        Args:
+            attr: The name of the attribute to access.
+
+        Returns:
+            The value of the attribute.
+        """
+        try:
+            return getattr(self, attr)
+        except AttributeError:
+            raise KeyError(attr) from None
+    
+    def __getattr__(self, attr: str) -> Any:
+        """
+        Get the value of an attribute, raising AttributeError if the value is :obj:`msgspec.UNSET`.
+        
+        Parameters:
+            attr: The name of the attribute to fetch.
+
+        Raises:
+            AttributeError: If the value is :obj:`~msgspec.UNSET`.
+    
+        Returns:
+            The value of the attribute.
+        """
+        attr = super().__getattr__(attr)
+        if attr is msgspec.UNSET:
+            raise AttributeError(f"'{type(self).__name__}' object has no attribute '{attr}'")
+        return attr
+
+    def __iter__(self) -> Iterator[str]:
+        """
+        Iterate thru the keys of the Struct.
+
+        Yields:
+            Struct key.
+        """
         for field in self.__struct_fields__:
-            attr = getattr(self, field)
-            if isinstance(attr, _DictStruct):
-                attr = attr.to_dict()
-            data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
-        return data
-  
-class PartialRequest(_DictStruct):
+            if getattr(self, field, msgspec.UNSET) is not msgspec.UNSET:
+                yield field
+    
+    def __len__(self) -> int:
+        """
+        The number of keys in the Struct.
+        
+        Returns:
+            The number of keys.
+        """
+        return len(list(self))
+
+    def keys(self) -> Iterator[str]:
+        yield from self
+
+    def items(self) -> Iterator[Tuple[str, Any]]:
+        for key in self.__struct_fields__:
+            try:
+                yield key, getattr(self, key)
+            except AttributeError:
+                continue
+    
+    def values(self) -> Iterator[Any]:
+        for key in self.__struct_fields__:
+            try:
+                yield getattr(self, key)
+            except AttributeError:
+                continue
+
+
+class PartialRequest(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    """
+    Represents a partial JSON-RPC request. 
+    
+    While technially part of a request, we can successfully make requests to many nodes without including the `jsonrpc` field.
+    
+    This class leaves off the `jsonrpc` field reduce encoding burden and web traffic.
+
+    This works with many but not all nodes.
+    """
+
     method: str
     """The RPC method to be called."""
 
