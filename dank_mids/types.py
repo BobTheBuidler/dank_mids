@@ -3,8 +3,8 @@ import logging
 import re
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    List, Literal, NewType, Optional, Set, Tuple, TypedDict, 
-                    TypeVar, Union, overload)
+                    Iterator, List, Literal, Mapping, NewType, Optional, Set, 
+                    Tuple, TypedDict, TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
