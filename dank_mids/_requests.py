@@ -21,6 +21,7 @@ from eth_abi import abi, decoding
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
+from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
 
@@ -255,9 +256,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                     self._response = await self.create_duplicate()
                     return
-            error = data.response.error.to_dict()  # type: ignore [union-attr]
-            error['dankmids_added_context'] = self.request.to_dict()
-            self._response = {"error": error}
+            self._response = {"error": __format_error(self.request, data.response)}
             logger.debug("%s _response set to rpc error response %s", self, self._response)
         elif isinstance(data, Exception):
             logger.debug("%s _response set to Exception %s", self, data)
@@ -1019,6 +1018,11 @@ def _log_exception(e: Exception) -> bool:
         logger.warning("The following exception is being logged for informational purposes and does not indicate failure:")
         logger.warning(e, exc_info=True)
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
+
+def __format_error(request: PartialRequest, response: PartialResponse) -> AttributeDict:
+    error = dict(response.error)  # type: ignore [arg-type]
+    error['dankmids_added_context'] = request
+    return AttributeDict.recursive(error)
 
 def __raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoReturn:
     if isinstance(exc, ClientResponseError):
