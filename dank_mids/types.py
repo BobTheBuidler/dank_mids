@@ -216,6 +216,51 @@ class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
 AccessList = List[AccessListEntry]
 Transaction = Dict[str, Union[str, None, AccessList]]
 
+
+class FeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    """Arbitrum includes this in the `feeStats` field of a tx receipt."""
+    l1Calldata: str
+    l2Storage: str
+    l1Transaction: str
+    l2Computation: str
+
+class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    """Arbitrum includes these with a tx receipt."""
+    paid: FeeStats
+    """
+    The breakdown of gas paid for the transaction.
+    
+    (price * unitsUsed)
+    """
+    # These 2 attributes do not always exist
+    unitsUsed: FeeStats = msgspec.UNSET
+    """The breakdown of units of gas used for the transaction."""
+    prices: FeeStats = msgspec.UNSET
+    """The breakdown of gas prices for the transaction."""
+
+class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
+    transactionHash: str
+    blockHash: str
+    blockNumber: str
+    logsBloom: str
+    contractAddress: Optional[str]
+    transactionIndex: Optional[str]
+    returnCode: str
+    effectiveGasPrice: str
+    gasUsed: str
+    cumulativeGasUsed: str
+    returnData: str
+    logs: List[Log]
+
+    # These fields are only present on Arbitrum.
+    l1BlockNumber: str = msgspec.UNSET
+    """This field is only present on Arbitrum."""
+    l1InboxBatchInfo: Optional[str] = msgspec.UNSET
+    """This field is only present on Arbitrum."""
+    feeStats: ArbitrumFeeStats = msgspec.UNSET
+    """This field is only present on Arbitrum."""
+
+
 RETURN_TYPES = {
     "eth_call": str,
     "eth_chainId": str,
@@ -227,7 +272,7 @@ RETURN_TYPES = {
     "eth_getBlockByNumber": Dict[str, Union[str, List[Union[str, Transaction]]]],
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
-    "eth_getTransactionReceipt": Dict[str, Union[str, None, List[Log]]], 
+    "eth_getTransactionReceipt": TransactionReceipt, 
     "erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
 }
 """
