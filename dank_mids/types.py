@@ -370,6 +370,7 @@ class PartialResponse(_DictStruct, frozen=True):
                     raise ValueError(
                         e,
                         f'method: {method}  result: {msgspec.json.decode(self.result)}',
+                        e.__dict__,
                     ).with_traceback(e.__traceback__) from e
             try:
                 start = time()
