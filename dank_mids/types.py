@@ -258,7 +258,11 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     """This field is only present on Arbitrum."""
 
     
-class Block(_DictStruct, frozen=True):
+TransactionHashes = List[str]
+FullTransactions = List[Transaction]
+Transactions = Union[TransactionHashes, FullTransactions]
+
+class Block(_DictStruct, frozen=True):  # type: ignore [call-arg]
     parentHash: str
     sha3Uncles: str
     miner: str
@@ -275,7 +279,7 @@ class Block(_DictStruct, frozen=True):
     nonce: str
     size: str
     uncles: List[str]
-    transactions: List[Union[str, Transaction]]
+    transactions: Transactions
     
 
 _RETURN_TYPES = {
