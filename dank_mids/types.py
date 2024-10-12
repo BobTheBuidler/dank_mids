@@ -84,7 +84,7 @@ class _DictStruct(msgspec.Struct):
         except AttributeError:
             raise KeyError(attr) from None
     
-    def __getattr__(self, attr: str) -> Any:
+    def __getattribute__(self, attr: str) -> Any:
         """
         Get the value of an attribute, raising AttributeError if the value is :obj:`msgspec.UNSET`.
         
@@ -97,7 +97,7 @@ class _DictStruct(msgspec.Struct):
         Returns:
             The value of the attribute.
         """
-        attr = super().__getattr__(attr)
+        attr = super().__getattribute__(attr)
         if attr is msgspec.UNSET:
             raise AttributeError(f"'{type(self).__name__}' object has no attribute '{attr}'")
         return attr
