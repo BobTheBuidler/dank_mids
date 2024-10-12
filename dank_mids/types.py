@@ -258,9 +258,7 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     """This field is only present on Arbitrum."""
 
     
-TransactionHashes = List[str]
-FullTransactions = List[Transaction]
-Transactions = Union[TransactionHashes, FullTransactions]
+Transactions = List[Union[str, Transaction]]
 
 class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
@@ -370,7 +368,6 @@ class PartialResponse(_DictStruct, frozen=True):
                     raise ValueError(
                         e,
                         f'method: {method}  result: {msgspec.json.decode(self.result)}',
-                        e.__dict__,
                     ).with_traceback(e.__traceback__) from e
             try:
                 start = time()
