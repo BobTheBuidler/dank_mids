@@ -65,6 +65,16 @@ _nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuf
 class _DictStruct(msgspec.Struct):
     """A base class enhancing :class:`~msgspec.Struct` with additional dictionary-like functionality."""
 
+    def to_dict(self) -> Dict[str, Any]:
+            """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
+            data = {}
+            for field in self.__struct_fields__:
+                attr = getattr(self, field)
+                if isinstance(attr, _DictStruct):
+                    attr = attr.to_dict()
+                data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
+            return data
+
     def __bool__(self) -> bool:
         """A Struct will always exist."""
         return True
