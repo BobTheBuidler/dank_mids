@@ -238,8 +238,10 @@ class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     prices: FeeStats = msgspec.UNSET
     """The breakdown of gas prices for the transaction."""
 
+TxHash = str
+
 class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
-    transactionHash: str
+    transactionHash: TxHash
     blockHash: str
     blockNumber: str
     logsBloom: str
@@ -260,8 +262,46 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     feeStats: ArbitrumFeeStats = msgspec.UNSET
     """This field is only present on Arbitrum."""
 
+class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    """A Struct representing an Ethereum staking withdrawal."""
+    index: str
 
-RETURN_TYPES = {
+    amount: str = msgspec.UNSET
+    """This field is not always present."""
+
+    address: str = msgspec.UNSET
+    """This field is not always present."""
+
+    validatorIndex: str = msgspec.UNSET
+    """This field is not always present."""
+
+class Block(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    parentHash: str
+    sha3Uncles: str
+    miner: str
+    stateRoot: str
+    transactionsRoot: str
+    receiptsRoot: str
+    logsBloom: str
+    number: str
+    gasLimit: str
+    gasUsed: str
+    timestamp: str
+    extraData: str
+    mixHash: str
+    nonce: str
+    size: str
+    uncles: List[str]
+    transactions: List[Union[TxHash, Transaction]]
+    
+    totalDifficulty: None = msgspec.UNSET
+    """This field is only present on Ethereum."""
+
+    withdrawals: List[StakingWithdrawal] = msgspec.UNSET
+    """This field is only present on Ethereum."""
+    
+
+_RETURN_TYPES = {
     "eth_call": str,
     "eth_chainId": str,
     "eth_getCode": str,
@@ -269,7 +309,7 @@ RETURN_TYPES = {
     "eth_getBalance": str,
     "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
     "eth_accounts": List[str],
-    "eth_getBlockByNumber": Dict[str, Union[str, List[Union[str, Transaction]]]],
+    "eth_getBlockByNumber": Block,
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
     "eth_getTransactionReceipt": TransactionReceipt, 
@@ -330,8 +370,8 @@ class PartialResponse(_DictStruct, frozen=True):
         return data
 
     def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Union[str, AttributeDict]:
-        # NOTE: These must be added to the `RETURN_TYPES` constant above manually
-        if method and (typ := RETURN_TYPES.get(method)):
+        # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
+        if method and (typ := _RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
                 try:
                     return msgspec.json.decode(self.result, type=typ)
@@ -349,7 +389,7 @@ class PartialResponse(_DictStruct, frozen=True):
             except (msgspec.ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
 
-        # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
+        # We have some semi-smart logic for providing decoder hints even if method not in `_RETURN_TYPES`
         if method:
             try:
                 if method in _dict_responses:
