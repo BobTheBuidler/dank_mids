@@ -262,6 +262,13 @@ TransactionHashes = List[str]
 FullTransactions = List[Transaction]
 Transactions = Union[TransactionHashes, FullTransactions]
 
+class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    """A Struct representing an Ethereum staking withdrawal."""
+    index: str
+    validatorIndex: str
+    address: str
+    amount: str
+
 class Block(_DictStruct, frozen=True):  # type: ignore [call-arg]
     parentHash: str
     sha3Uncles: str
@@ -282,6 +289,9 @@ class Block(_DictStruct, frozen=True):  # type: ignore [call-arg]
     transactions: Transactions
     
     totalDifficulty: None = msgspec.UNSET
+    """This field is only present on Ethereum."""
+
+    withdrawals: List[StakingWithdrawal] = msgspec.UNSET
     """This field is only present on Ethereum."""
     
 
