@@ -68,12 +68,7 @@ class _DictStruct(msgspec.Struct):
     def to_dict(self) -> Dict[str, Any]:
             """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
             data = {}
-            for field in self.__struct_fields__:
-                try:
-                    attr = getattr(self, field)
-                except AttributeError:
-                    # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
-                    continue
+            for field, attr in self.items():
                 if isinstance(attr, _DictStruct):
                     attr = attr.to_dict()
                 data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
@@ -124,8 +119,11 @@ class _DictStruct(msgspec.Struct):
             Struct key.
         """
         for field in self.__struct_fields__:
-            if getattr(self, field, msgspec.UNSET) is not msgspec.UNSET:
-                yield field
+            try:
+                yield getattr(self, field)
+            except AttributeError:
+                # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
+                continue
     
     def __len__(self) -> int:
         """
@@ -144,6 +142,7 @@ class _DictStruct(msgspec.Struct):
             try:
                 yield key, getattr(self, key)
             except AttributeError:
+                # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
                 continue
     
     def values(self) -> Iterator[Any]:
@@ -151,6 +150,7 @@ class _DictStruct(msgspec.Struct):
             try:
                 yield getattr(self, key)
             except AttributeError:
+                # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
                 continue
 
 
