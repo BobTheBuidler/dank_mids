@@ -302,7 +302,15 @@ INDIVIDUAL_CALL_REVERT_STRINGS = {
 revert_threads = PruningThreadPoolExecutor(4)
 
 def _is_call_revert(e: BadResponse) -> bool:
-    """Returns True if a particular `BadResponse` for a multicall was caused by a failure in one of the individual calls it contained, False for any other reason"""
+    """
+    Determine if a BadResponse was caused by a revert in one of the individual calls within a multicall.
+
+    Args:
+        e: The error response to check.
+
+    Returns:
+        True if the error was caused by an individual call revert, False otherwise.
+    """
     stre = f"{e}"
     return any(s in stre for s in INDIVIDUAL_CALL_REVERT_STRINGS)
 
