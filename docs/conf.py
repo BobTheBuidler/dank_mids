@@ -9,6 +9,9 @@
 import os
 import sys
 from brownie import network
+from sphinx.util import logging
+
+logger = logging.getLogger(__name__)
 
 network.connect('mainnet')
 
@@ -57,6 +60,7 @@ autodoc_default_options = {
     'member-order': 'groupwise',
     # hide private methods that aren't relevant to us here
     'exclude-members': ','.join([
+        '__new__',
         '_abc_impl',
         '_fget',
         '_fset',
@@ -72,3 +76,30 @@ autodoc_class_signature = "separated"
 automodule_generate_module_stub = True
 
 sys.path.insert(0, os.path.abspath('./dank_mids'))
+
+
+def skip_specific_members(app, what, name, obj, skip, options):
+    """
+    Function to exclude specific members for a particular module.
+    """
+    exclusions = {
+        'dank_mids.types': {'__iter__', 'get', 'update', 'clear', 'copy', 'keys', 'values', 'items', 'fromkeys', 'pop', 'popitem', 'setdefault'},
+    }
+    
+    current_module = getattr(obj, '__module__', None)
+    logger.info(f"module: {current_module}  name: {name}  obj: {obj}")
+    if current_module in exclusions and name in exclusions[current_module]:
+        return True
+
+    # Skip the __init__ and __call__ members of any NewType objects we defined.
+    if current_module == "typing" and hasattr(obj, "__self__") and type(obj.__self__).__name__ == "NewType" and name in ["__init__", "__call__"]:
+        return True
+    
+    # Skip the __init__, args, and with_traceback members of all Exceptions
+    if current_module is None and hasattr(obj, '__objclass__') and issubclass(obj.__objclass__, BaseException) and name in ["__init__", "args", "with_traceback"]:
+        return True
+    
+    return skip
+
+def setup(app):
+    app.connect('autodoc-skip-member', skip_specific_members)

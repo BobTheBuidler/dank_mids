@@ -10,6 +10,13 @@ from dank_mids.helpers._helpers import DankWeb3
 
 
 def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
+    """
+    Patch an overloaded contract method with async functionality.
+
+    Args:
+        call: The overloaded method to patch.
+        w3: The DankWeb3 instance.
+    """
     # sourcery skip: avoid-builtin-shadow
     @functools.wraps(call)
     async def coroutine(

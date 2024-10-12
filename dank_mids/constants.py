@@ -6,15 +6,40 @@ from eth_typing import BlockNumber
 from multicall.constants import Network
 
 TOO_MUCH_DATA_ERRS = ["payload too large", "content length too large", "request entity too large", "batch limit exceeded"]
-"""These errors indicate the request sent to the rpc was too large and must be split up."""
+"""
+A list of error messages indicating that the request sent to the RPC was too large and must be split up.
+
+These error messages are used to identify when a request needs to be broken into smaller chunks.
+"""
 
 RETRY_ERRS = ["connection reset by peer", "server disconnected", "execution aborted (timeout =", "batch limit exceeded", "request timed out"]
-"""These errors are expected during normal use and are not indicative of any problem(s), we simply retry until success."""
+"""
+A list of error messages that are expected during normal use and are not indicative of any problem(s).
+
+These errors will be automatically retried until success is achieved.
+"""
 
 GAS_LIMIT = multicall.constants.GAS_LIMIT
+"""
+The gas limit constant imported from the :mod:`multicall` library.
+
+This value is used as the default gas limit for multicall operations.
+"""
+
 MULTICALL2_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
+"""
+The bytecode for the Multicall2 contract.
+
+This is used for state override on blocks before the Multicall2 contract was deployed.
+"""
+
 try:
     MULTICALL3_OVERRIDE_CODE = multicall.constants.MULTICALL3_BYTECODE
+    """
+    The bytecode for the Multicall3 contract, if supported on the currently connected network.
+
+    If Multicall3 is not supported, this will fall back to the Multicall2 bytecode.
+    """
 except AttributeError:
     MULTICALL3_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
 
@@ -24,6 +49,7 @@ MULTICALL2_DEPLOY_BLOCKS: Dict[Network, BlockNumber] = {
     Network.Arbitrum: 821923,
     Network.Optimism: 722566,
 }
+"""A dictionary mapping networks to the block numbers where Multicall2 was deployed."""
 
 MULTICALL3_DEPLOY_BLOCKS: Dict[Network, BlockNumber] = {
     Network.Mainnet: 14353601,
@@ -32,6 +58,7 @@ MULTICALL3_DEPLOY_BLOCKS: Dict[Network, BlockNumber] = {
     Network.Optimism: 4286263,
     Network.Base: 5022,
 }
+"""A dictionary mapping networks to the block numbers where Multicall3 was deployed."""
 
 # When you get these call responses back from the multicall, we know there was some problem with execution.
 # If you make the exact same calls without multicall, you will get an Exception not a response. 
@@ -63,3 +90,8 @@ BAD_HEXES = [
 # NOTE: we leave off the '0x' so we can compare raw bytes
 # NOTE: The 2nd one here needs to be converted to the first format but I need to encounter one in the wild before I can do that
 REVERT_SELECTORS = [b'\x08\xc3y\xa0', b"4e487b71"]
+"""
+A list of byte strings representing revert selectors.
+
+These selectors are used to identify specific types of revert errors in Ethereum transactions.
+"""
