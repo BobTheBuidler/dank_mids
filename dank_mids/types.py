@@ -69,7 +69,11 @@ class _DictStruct(msgspec.Struct):
             """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
             data = {}
             for field in self.__struct_fields__:
-                attr = getattr(self, field)
+                try:
+                    attr = getattr(self, field)
+                except AttributeError:
+                    # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
+                    continue
                 if isinstance(attr, _DictStruct):
                     attr = attr.to_dict()
                 data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
