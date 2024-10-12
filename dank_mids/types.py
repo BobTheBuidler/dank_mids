@@ -202,7 +202,7 @@ class PartialResponse(_DictStruct, frozen=True):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
                 try:
                     return msgspec.json.decode(self.result, type=typ)
-                except msgspec.ValidationError as e:
+                except (msgspec.ValidationError, TypeError) as e:
                     raise ValueError(
                         e,
                         f'method: {method}  result: {msgspec.json.decode(self.result)}',
@@ -213,7 +213,7 @@ class PartialResponse(_DictStruct, frozen=True):
                 if _caller:
                     stats.log_duration(f'decoding {type(_caller)} {method}', start)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
-            except msgspec.ValidationError as e:
+            except (msgspec.ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
 
         # We have some semi-smart logic for providing decoder hints even if method not in `RETURN_TYPES`
@@ -225,9 +225,9 @@ class PartialResponse(_DictStruct, frozen=True):
                     return decoded
                 elif method in _str_responses:
                     # TODO: finish adding methods and get rid of this
-                    stats.logger.devhint(f'Must add `{method}: str` to `RETURN_TYPES`')
+                    stats.logger.devhint('Must add `%s: str` to `_RETURN_TYPES`', method)
                     return msgspec.json.decode(self.result, type=str)
-            except msgspec.ValidationError as e:
+            except (msgspec.ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(method, e)
 
         # In this case we can provide no hints, let's let the decoder figure it out
@@ -274,7 +274,11 @@ class RawResponse:
     def decode(self, partial: Literal[False] = False) -> Response:...
     def decode(self, partial: bool = False) -> Union[Response, PartialResponse]:
         """Decode the wrapped `msgspec.Raw` object into a `Response` or a `PartialResponse`."""
-        return msgspec.json.decode(self._raw, type=PartialResponse if partial else Response)
+        try:
+            return msgspec.json.decode(self._raw, type=PartialResponse if partial else Response)
+        except (msgspec.ValidationError, TypeError) as e:
+            e.args = (*e.args, f"decoded: {msgspec.json.decode(self._raw)}")
+            raise
 
 JSONRPCBatchRequest = List[Request]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
