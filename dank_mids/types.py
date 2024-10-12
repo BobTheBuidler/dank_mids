@@ -281,6 +281,9 @@ class Block(_DictStruct, frozen=True):  # type: ignore [call-arg]
     uncles: List[str]
     transactions: Transactions
     
+    totalDifficulty: None = msgspec.UNSET
+    """This field is only present on Ethereum."""
+    
 
 _RETURN_TYPES = {
     "eth_call": str,
