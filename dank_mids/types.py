@@ -115,7 +115,7 @@ class _DictStruct(msgspec.Struct):
         try:
             return getattr(self, attr)
         except AttributeError:
-            raise KeyError(attr) from None
+            raise KeyError(attr, self) from None
     
     def __getattribute__(self, attr: str) -> Any:
         """
