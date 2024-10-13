@@ -433,9 +433,9 @@ class Block(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
     """This field is only present on Ethereum."""
     
 class ErigonHeader(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
-    uncleHash: str
+    uncleHash: HexBytes
     coinbase: Address
-    root: str
+    root: HexBytes
     difficulty: uint
 
 _RETURN_TYPES = {
