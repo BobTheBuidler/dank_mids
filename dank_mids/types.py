@@ -401,30 +401,29 @@ class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """This field is not always present."""
 
 class _Timestampped(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    timestamp: str
+    timestamp: uint
 
 class _BlockHeaderBase(_Timestampped, frozen=True):  # type: ignore [call-arg]
-    parentHash: str
+    parentHash: HexBytes
 
 class Block(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
-    sha3Uncles: str
-    miner: str
-    stateRoot: str
-    transactionsRoot: str
-    receiptsRoot: str
-    logsBloom: str
-    number: str
-    gasLimit: str
-    gasUsed: str
-    timestamp: str
-    extraData: str
-    mixHash: str
-    nonce: str
-    size: str
-    uncles: List[str]
+    sha3Uncles: HexBytes
+    miner: Address
+    stateRoot: HexBytes
+    transactionsRoot: HexBytes
+    receiptsRoot: HexBytes
+    logsBloom: HexBytes
+    number: uint
+    gasLimit: uint
+    gasUsed: uint
+    extraData: HexBytes
+    mixHash: HexBytes
+    nonce: uint
+    size: uint
+    uncles: List[HexBytes]
     transactions: List[Union[str, Transaction]]
     
-    totalDifficulty: Optional[str] = msgspec.UNSET
+    totalDifficulty: Optional[uint] = msgspec.UNSET
     """This field is only present on Ethereum."""
 
     withdrawals: List[StakingWithdrawal] = msgspec.UNSET
