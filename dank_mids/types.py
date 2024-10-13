@@ -372,11 +372,7 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     gasUsed: uint
     cumulativeGasUsed: uint
     #returnData: str
-    _logs: msgspec.Raw = msgspec.field(name="logs")
-    
-    @cached_property
-    def logs(self) -> List[Log]:
-        return msgspec.json.decode(self._logs, typ=List[Log], dec_hook=_decode_hook)
+    logs: List[Log]
 
     # These fields are only present on Arbitrum.
     l1BlockNumber: uint = msgspec.UNSET
