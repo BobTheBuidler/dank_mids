@@ -249,9 +249,11 @@ def _apply_response_formatters(
         method_response_formatter: Callable[..., Any],
     ) -> RPCResponse:
         appropriate_response = response[response_type]
-        return assoc(
-            response, response_type, method_response_formatter(appropriate_response)
-        )
+        try:
+            intermediate_step_idk = method_response_formatter(appropriate_response)
+        except TypeError as e:
+            raise TypeError(*e.args, method, response_type, method_response_formatter, appropriate_response) from e
+        return assoc(response, response_type, intermediate_step_idk)
 
     if "result" in response and method in result_formatters:
         return _format_response("result", result_formatters[method])
