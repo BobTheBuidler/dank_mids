@@ -245,8 +245,13 @@ def checksum(address: str) -> Address:
 class uint(int):
     ...
 
-class Log(_DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
-    _removed: msgspec.Raw = msgspec.field(name="removed")
+class _LazyDictStruct(_DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
+    @cached_property
+    def _fields(self) -> List[str]:
+        return [field[1:] if field[0] == '_' else field for field in self.__struct_fields__]
+
+class Log(_LazyDictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
+    removed: Optional[bool]
     _logIndex: msgspec.Raw = msgspec.field(name="logIndex")
     _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
     _transactionHash: msgspec.Raw = msgspec.field(name="transactionHash")
@@ -266,9 +271,6 @@ class Log(_DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
     def address(self) -> Optional[List[HexBytes]]:
         return msgspec.json.decode(self._address, type=Optional[Address], dec_hook=_decode_hook)
     @cached_property
-    def removed(self) -> Optional[bool]:
-        return msgspec.json.decode(self._removed, type=Optional[bool])
-    @cached_property
     def logIndex(self) -> Optional[uint]:
         return msgspec.json.decode(self._logIndex, type=Optional[uint], dec_hook=_decode_hook)
     @cached_property
@@ -283,46 +285,107 @@ class Log(_DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
     @cached_property
     def blockNumber(self) -> Optional[uint]:
         return msgspec.json.decode(self._blockNumber, type=Optional[uint], dec_hook=_decode_hook)
-    
+
+
+class AccessListEntry(_LazyDictStruct, frozen=True):  # type: ignore [call-arg]
+    _address: msgspec.Raw = msgspec.field(name="address")
+    _storageKeys: msgspec.Raw = msgspec.field(name="storageKeys")
     @cached_property
-    def _fields(self) -> List[str]:
-        return [field[1:] for field in self.__struct_fields__]
+    def address(self) -> Address:
+        return msgspec.json.decode(self._address, type=Address, dec_hook=_decode_hook)
+    @cached_property
+    def storageKeys(self) -> List[HexBytes]:
+        return msgspec.json.decode(self._storageKeys, type=List[HexBytes], dec_hook=_decode_hook)
 
-
-class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    address: Address
-    storageKeys: List[HexBytes]
-
-class _TransactionBase(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class _TransactionBase(_LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
-    nonce: uint
-    to: Optional[Address]  # null for contract deployments
-    gas: uint
-    value: uint
     input: HexBytes
-    chainId: Optional[uint]  # null for v in {27, 28}, otherwise derived from eip-155
-    # details
-    blockHash: HexBytes
-    blockNumber: uint
-    sender: Address = msgspec.field(name="from")
     hash: HexBytes
-    transactionIndex: uint
+    _to: msgspec.Raw = msgspec.field(name="to")  # null for contract deployments
+    _gas: msgspec.Raw = msgspec.field(name="gas")
+    _value: msgspec.Raw = msgspec.field(name="value")
+    _nonce: msgspec.Raw = msgspec.field(name="nonce")
+    _chainId: msgspec.Raw = msgspec.field(name="chainId")  # null for v in {27, 28}, otherwise derived from eip-155
+    # details
+    _sender: msgspec.Raw = msgspec.field(name="from")
+    _blockHash: msgspec.Raw = msgspec.field(name="blockHash")
+    _blockNumber: msgspec.Raw = msgspec.field(name="blockNumber")
+    _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
+    
     # signature
     v: uint
     r: HexBytes
     s: HexBytes
 
+    @cached_property
+    def blockHash(self) -> HexBytes:
+        return msgspec.json.decode(self._blockHash, type=HexBytes, dec_hook=_decode_hook)
+
+    @cached_property
+    def to(self) -> Optional[Address]:
+        # null for contract deployments
+        return msgspec.json.decode(self._to, type=Optional[Address], dec_hook=_decode_hook)
+
+    @cached_property
+    def chainId(self) -> Optional[uint]:
+        return msgspec.json.decode(self._chainId, type=Optional[uint], dec_hook=_decode_hook)
+
+    @cached_property
+    def nonce(self) -> uint:
+        return msgspec.json.decode(self._nonce, type=uint, dec_hook=_decode_hook)
+
+    @cached_property
+    def gas(self) -> uint:
+        return msgspec.json.decode(self._gas, type=uint, dec_hook=_decode_hook)
+
+    @cached_property
+    def value(self) -> uint:
+        return msgspec.json.decode(self._value, type=uint, dec_hook=_decode_hook)
+
+    @cached_property
+    def blockNumber(self) -> uint:
+        return msgspec.json.decode(self._blockNumber, type=uint, dec_hook=_decode_hook)
+
+    @cached_property
+    def transactionIndex(self) -> uint:
+        return msgspec.json.decode(self._transactionIndex, type=uint, dec_hook=_decode_hook)
+
+    @cached_property
+    def sender(self) -> Address:
+        return msgspec.json.decode(self._sender, type=Address, dec_hook=_decode_hook)
+
+
+
 class TransactionLegacy(_TransactionBase, tag="0x0"):  # type: ignore [call-arg]
-    gasPrice: uint
+    _gasPrice: msgspec.Raw = msgspec.field(name="gasPrice")
+    @cached_property
+    def gasPrice(self) -> uint:
+        return msgspec.json.decode(self._gasPrice, type=uint, dec_hook=_decode_hook)
+
 
 class Transaction2930(_TransactionBase, tag="0x1"):  # type: ignore [call-arg]
-    gasPrice: uint
-    accessList: Optional[List[AccessListEntry]] = msgspec.UNSET
+    _gasPrice: msgspec.Raw = msgspec.field(name="gasPrice")
+    _accessList: msgspec.Raw = msgspec.field(name="accessList", default=msgspec.UNSET)
+    @cached_property
+    def gasPrice(self) -> uint:
+        return msgspec.json.decode(self._gasPrice, type=uint, dec_hook=_decode_hook)
+    @cached_property
+    def accessList(self) -> Optional[List[AccessListEntry]]:
+        return msgspec.json.decode(self._accessList, type=Optional[List[AccessListEntry]])
 
 class Transaction1559(_TransactionBase, tag="0x2"):  # type: ignore [call-arg]
-    maxFeePerGas: uint
-    maxPriorityFeePerGas: uint
-    accessList: Optional[List[AccessListEntry]] = msgspec.UNSET
+    _maxFeePerGas: msgspec.Raw = msgspec.field(name="maxFeePerGas")
+    _maxPriorityFeePerGas: msgspec.Raw = msgspec.field(name="maxPriorityFeePerGas")
+    _accessList: msgspec.Raw = msgspec.field(name="accessList", default=msgspec.UNSET)
+    @cached_property
+    def maxFeePerGas(self) -> uint:
+        return msgspec.json.decode(self._maxFeePerGas, type=uint, dec_hook=_decode_hook)
+    @cached_property
+    def maxPriorityFeePerGas(self) -> uint:
+        return msgspec.json.decode(self._maxPriorityFeePerGas, type=uint, dec_hook=_decode_hook)
+    @cached_property
+    def accessList(self) -> Optional[List[AccessListEntry]]:
+        return msgspec.json.decode(self._accessList, type=Optional[List[AccessListEntry]])
 
 Transaction = Union[TransactionLegacy, Transaction2930, Transaction1559]
 
@@ -348,7 +411,7 @@ class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     prices: FeeStats = msgspec.UNSET
     """The breakdown of gas prices for the transaction."""
 
-class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
+class TransactionReceipt(_LazyDictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
     transactionHash: HexBytes
     blockHash: HexBytes
     blockNumber: uint
@@ -360,15 +423,22 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     gasUsed: uint
     cumulativeGasUsed: uint
     #returnData: str
-    logs: List[Log]
+    _logs: msgspec.Raw = msgspec.field(name="logs")
+    
+    @cached_property
+    def logs(self) -> List[Log]:
+        return msgspec.json.decode(self._logs, type=List[Log], dec_hook=_decode_hook)
 
     # These fields are only present on Arbitrum.
     l1BlockNumber: uint = msgspec.UNSET
     """This field is only present on Arbitrum."""
     l1InboxBatchInfo: Optional[HexBytes] = msgspec.UNSET
     """This field is only present on Arbitrum."""
-    feeStats: ArbitrumFeeStats = msgspec.UNSET
+    _feeStats: msgspec.Raw = msgspec.field(name="feeStats", default=msgspec.UNSET)
     """This field is only present on Arbitrum."""
+    @cached_property
+    def feeStats(self) -> ArbitrumFeeStats:
+        return msgspec.json.decode(self._feeStats, type=ArbitrumFeeStats, dec_hook=_decode_hook)
 
 class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
@@ -383,13 +453,19 @@ class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
     validatorIndex: uint = msgspec.UNSET
     """This field is not always present."""
 
-class _Timestampped(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class _Timestampped(_LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     timestamp: uint
 
 class _BlockHeaderBase(_Timestampped, frozen=True):  # type: ignore [call-arg]
     parentHash: HexBytes
 
-class Block(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
+class TinyBlock(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
+    _transactions: msgspec.Raw = msgspec.field(name="transactions")
+    @cached_property
+    def transactions(self) -> List[Union[str, Transaction]]:
+        return msgspec.json.decode(self._transactions, type=List[Union[str, Transaction]], dec_hook=_decode_hook)
+
+class Block(TinyBlock, frozen=True):  # type: ignore [call-arg]
     sha3Uncles: HexBytes
     miner: Address
     stateRoot: HexBytes
@@ -404,13 +480,16 @@ class Block(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
     nonce: uint
     size: uint
     uncles: List[HexBytes]
-    transactions: List[Union[str, Transaction]]
     
     totalDifficulty: Optional[uint] = msgspec.UNSET
     """This field is only present on Ethereum."""
 
-    withdrawals: List[StakingWithdrawal] = msgspec.UNSET
+    _withdrawals: msgspec.Raw = msgspec.field(name="withdrawals", default=msgspec.UNSET)
     """This field is only present on Ethereum."""
+    @cached_property
+    def withdrawals(self) -> List[StakingWithdrawal]:
+        """This field is only present on Ethereum."""
+        return msgspec.json.decode(self._withdrawals, type=List[StakingWithdrawal], dec_hook=_decode_hook)
     
 class ErigonHeader(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
     uncleHash: HexBytes
