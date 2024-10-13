@@ -521,6 +521,7 @@ class PartialResponse(_DictStruct, frozen=True):
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
             except (msgspec.ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
+                raise
 
         # We have some semi-smart logic for providing decoder hints even if method not in `_RETURN_TYPES`
         if method:
@@ -547,7 +548,7 @@ class PartialResponse(_DictStruct, frozen=True):
                 _dict_responses.add(method)
             return AttributeDict(decoded)
         elif isinstance(decoded, list):
-            if method is None or method == "eth_getLogs":
+            if method is None:
                 return decoded
         raise TypeError(f"type {type(decoded)} is not supported.  method: {method}  decoded: {decoded}")
         
