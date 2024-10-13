@@ -88,13 +88,7 @@ class _DictStruct(msgspec.Struct):
         return True
     
     def __contains__(self, key: str) -> bool:
-        if key not in self._fields:
-            return False
-        try:
-            getattr(self, key)
-            return True
-        except AttributeError:
-            return False
+        return key in self._fields and getattr(self, key, msgspec.UNSET) is not msgspec.UNSET
     
     def get(self, key: str, default: Any = None) -> Any:
         return getattr(self, key, default)
@@ -143,11 +137,9 @@ class _DictStruct(msgspec.Struct):
             Struct key.
         """
         for field in self._fields:
-            try:
-                yield getattr(self, field)
-            except AttributeError:
-                # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
-                continue
+            value = getattr(self, field, msgspec.UNSET)
+            if value is not msgspec.UNSET:
+                yield field
     
     def __len__(self) -> int:
         """
@@ -169,11 +161,9 @@ class _DictStruct(msgspec.Struct):
 
     def items(self) -> Iterator[Tuple[str, Any]]:
         for key in self._fields:
-            try:
-                yield key, getattr(self, key)
-            except AttributeError:
-                # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
-                continue
+            value = getattr(self, key, msgspec.UNSET)
+            if value is not msgspec.UNSET:
+                yield key, value
     
     def values(self) -> Iterator[Any]:
         """
@@ -183,11 +173,9 @@ class _DictStruct(msgspec.Struct):
             An iterator over the field values.
         """
         for key in self._fields:
-            try:
-                yield getattr(self, key)
-            except AttributeError:
-                # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
-                continue
+            value = getattr(self, key, msgspec.UNSET)
+            if value is not msgspec.UNSET:
+                yield value
 
     @property
     def _fields(self) -> Iterable[str]:
