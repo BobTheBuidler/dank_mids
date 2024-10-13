@@ -259,7 +259,6 @@ def _apply_response_formatters(
         return assoc(response, response_type, intermediate_step_idk)
 
     if "result" in response and method in result_formatters:
-        
         return _format_response("result", result_formatters[method])
     elif "error" in response and method in error_formatters:
         return _format_response("error", error_formatters[method])
