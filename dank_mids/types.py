@@ -245,7 +245,7 @@ def checksum(address: str) -> Address:
 class uint(int):
     ...
 
-class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class Log(_DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
     _removed: msgspec.Raw = msgspec.field(name="removed")
     _logIndex: msgspec.Raw = msgspec.field(name="logIndex")
     _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
