@@ -258,51 +258,43 @@ class uint(int):
     ...
 
 class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    _removed: Optional[msgspec.Raw] = msgspec.field(name="removed")
-    _logIndex: Optional[msgspec.Raw] = msgspec.field(name="logIndex")
-    _transactionIndex: Optional[msgspec.Raw] = msgspec.field(name="transactionIndex")
+    _removed: msgspec.Raw = msgspec.field(name="removed")
+    _logIndex: msgspec.Raw = msgspec.field(name="logIndex")
+    _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
     _transactionHash: msgspec.Raw = msgspec.field(name="transactionHash")
-    _blockHash: Optional[msgspec.Raw] = msgspec.field(name="blockHash")
-    _blockNumber: Optional[msgspec.Raw] = msgspec.field(name="blockNumber")
-    _address: Optional[msgspec.Raw] = msgspec.field(name="address")
-    _data: Optional[msgspec.Raw] = msgspec.field(name="data")
-    _topics: Optional[msgspec.Raw] = msgspec.field(name="topics")
+    _blockHash: msgspec.Raw = msgspec.field(name="blockHash")
+    _blockNumber: msgspec.Raw = msgspec.field(name="blockNumber")
+    _address: msgspec.Raw = msgspec.field(name="address")
+    _data: msgspec.Raw = msgspec.field(name="data")
+    _topics: msgspec.Raw = msgspec.field(name="topics")
 
     @cached_property
     def topics(self) -> Optional[List[HexBytes]]:
-        if self._topics:
-            return msgspec.json.decode(self._topics, typ=Optional[List[HexBytes]])
+        return msgspec.json.decode(self._topics, typ=Optional[List[HexBytes]])
     @cached_property
     def data(self) -> Optional[List[HexBytes]]:
-        if self._data:
-            return msgspec.json.decode(self._data, typ=Optional[HexBytes])
+        return msgspec.json.decode(self._data, typ=Optional[HexBytes])
     @cached_property
     def address(self) -> Optional[List[HexBytes]]:
-        if self._address:
-            return msgspec.json.decode(self._address, typ=Optional[Address])
+        return msgspec.json.decode(self._address, typ=Optional[Address])
     @cached_property
     def removed(self) -> Optional[bool]:
-        if self._removed:
-            return msgspec.json.decode(self._removed, typ=Optional[bool])
+        return msgspec.json.decode(self._removed, typ=Optional[bool])
     @cached_property
     def logIndex(self) -> Optional[uint]:
-        if self._logIndex:
-            return msgspec.json.decode(self._logIndex, typ=Optional[uint])
+        return msgspec.json.decode(self._logIndex, typ=Optional[uint])
     @cached_property
     def transactionIndex(self) -> Optional[uint]:
-        if self._transactionIndex:
-            return msgspec.json.decode(self._transactionIndex, typ=Optional[uint])
+        return msgspec.json.decode(self._transactionIndex, typ=Optional[uint])
     @cached_property
     def transactionHash(self) -> HexBytes:
         return msgspec.json.decode(self._transactionHash, typ=HexBytes)
     @cached_property
     def blockHash(self) -> Optional[HexBytes]:
-        if self._blockHash:
-            return msgspec.json.decode(self._blockHash, typ=Optional[HexBytes])
+        return msgspec.json.decode(self._blockHash, typ=Optional[HexBytes])
     @cached_property
     def blockNumber(self) -> Optional[uint]:
-        if self._blockNumber:
-            return msgspec.json.decode(self._blockNumber, typ=Optional[uint])
+        return msgspec.json.decode(self._blockNumber, typ=Optional[uint])
     
     @cached_property
     def _fields(self) -> List[str]:
@@ -380,7 +372,11 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     gasUsed: uint
     cumulativeGasUsed: uint
     #returnData: str
-    logs: List[Log]
+    _logs: msgspec.Raw = msgspec.field(name="logs")
+    
+    @cached_property
+    def logs(self) -> List[Log]:
+        return msgspec.json.decode(self._logs, typ=List[Log], dec_hook=_decode_hook)
 
     # These fields are only present on Arbitrum.
     l1BlockNumber: uint = msgspec.UNSET
