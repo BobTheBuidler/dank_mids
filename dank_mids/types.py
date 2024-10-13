@@ -500,8 +500,8 @@ class PartialResponse(_DictStruct, frozen=True):
             if value is None:
                 continue
             if key == "result":
-                attr = self.decode_result(method=method, caller=self)
-            data[key] = AttributeDict(attr) if isinstance(attr, dict) else attr  # type: ignore [literal-required]
+                value = self.decode_result(method=method, caller=self)
+            data[key] = AttributeDict(value) if isinstance(value, dict) else value  # type: ignore [literal-required]
         return data
 
     def decode_result(self, method: Optional[RPCEndpoint] = None, *, caller = None) -> Union[HexBytes, uint, AttributeDict]:
