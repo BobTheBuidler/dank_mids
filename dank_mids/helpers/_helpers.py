@@ -5,8 +5,6 @@ from importlib.metadata import version
 from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
                     Iterable, List, Literal, Optional, TypeVar)
 
-from async_lru import alru_cache
-from eth_typing import BlockNumber
 from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
                                apply_key_map, is_null)
 from eth_utils.toolz import assoc, complement, compose, merge
@@ -14,15 +12,14 @@ from hexbytes import HexBytes
 from multicall.utils import get_async_w3
 from typing_extensions import Concatenate, ParamSpec
 from web3 import Web3
-from web3.datastructures import AttributeDict
 from web3._utils.rpc_abi import RPC
-from web3.eth import AsyncEth
 from web3.providers import HTTPProvider
+from web3.datastructures import AttributeDict
 from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 
-from dank_mids._method import bypass_formatters
+from dank_mids.eth import DankEth
 from dank_mids.types import AsyncMiddleware
 
 if TYPE_CHECKING:
@@ -54,13 +51,6 @@ This is extracted from the full version string and stored as an integer for easy
 Example: for `web3==6.0.1`, the major version is 6.
 """
 
-class DankEth(AsyncEth):
-    @alru_cache(ttl=0)
-    async def get_block_number(self) -> BlockNumber:  # type: ignore [override]
-        return await super().get_block_number()  # type: ignore [misc]
-    
-# TODO: this is super hacky, make it not.
-bypass_formatters(DankEth)
 
 class DankWeb3:
     """This is just a helper for type checkers. Your object will just be a modified :class:`~web3.Web3` object."""
