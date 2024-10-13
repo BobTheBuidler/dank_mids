@@ -16,7 +16,7 @@ class DankEth(AsyncEth):
     
     async def get_block_timestamp(self, block_identifier: int) -> uint:
         raw = await self._get_block_raw(block_identifier)
-        return msgspec.json.decode(raw, typ=_Timestampped).timestamp
+        return msgspec.json.decode(raw, type=_Timestampped).timestamp
     
     _get_block_raw = MethodNoFormat(
         method_choice_depends_on_args=select_method_for_block_identifier(**{k:f"{v}_raw" for k, v in _block_selectors.items()}),

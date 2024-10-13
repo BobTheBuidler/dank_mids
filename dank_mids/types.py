@@ -258,31 +258,31 @@ class Log(_DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
 
     @cached_property
     def topics(self) -> Optional[List[HexBytes]]:
-        return msgspec.json.decode(self._topics, typ=Optional[List[HexBytes]])
+        return msgspec.json.decode(self._topics, type=Optional[List[HexBytes]])
     @cached_property
     def data(self) -> Optional[List[HexBytes]]:
-        return msgspec.json.decode(self._data, typ=Optional[HexBytes])
+        return msgspec.json.decode(self._data, type=Optional[HexBytes])
     @cached_property
     def address(self) -> Optional[List[HexBytes]]:
-        return msgspec.json.decode(self._address, typ=Optional[Address])
+        return msgspec.json.decode(self._address, type=Optional[Address])
     @cached_property
     def removed(self) -> Optional[bool]:
-        return msgspec.json.decode(self._removed, typ=Optional[bool])
+        return msgspec.json.decode(self._removed, type=Optional[bool])
     @cached_property
     def logIndex(self) -> Optional[uint]:
-        return msgspec.json.decode(self._logIndex, typ=Optional[uint])
+        return msgspec.json.decode(self._logIndex, type=Optional[uint])
     @cached_property
     def transactionIndex(self) -> Optional[uint]:
-        return msgspec.json.decode(self._transactionIndex, typ=Optional[uint])
+        return msgspec.json.decode(self._transactionIndex, type=Optional[uint])
     @cached_property
     def transactionHash(self) -> HexBytes:
-        return msgspec.json.decode(self._transactionHash, typ=HexBytes)
+        return msgspec.json.decode(self._transactionHash, type=HexBytes)
     @cached_property
     def blockHash(self) -> Optional[HexBytes]:
-        return msgspec.json.decode(self._blockHash, typ=Optional[HexBytes])
+        return msgspec.json.decode(self._blockHash, type=Optional[HexBytes])
     @cached_property
     def blockNumber(self) -> Optional[uint]:
-        return msgspec.json.decode(self._blockNumber, typ=Optional[uint])
+        return msgspec.json.decode(self._blockNumber, type=Optional[uint])
     
     @cached_property
     def _fields(self) -> List[str]:
