@@ -313,9 +313,9 @@ class _TransactionBase(_LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
     
     # signature
-    v: uint
-    r: HexBytes
-    s: HexBytes
+    _v: msgspec.Raw = msgspec.field(name="v")
+    _r: msgspec.Raw = msgspec.field(name="r")
+    _s: msgspec.Raw = msgspec.field(name="s")
 
     @cached_property
     def blockHash(self) -> HexBytes:
@@ -353,6 +353,18 @@ class _TransactionBase(_LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     @cached_property
     def sender(self) -> Address:
         return msgspec.json.decode(self._sender, type=Address, dec_hook=_decode_hook)
+
+    @cached_property
+    def v(self) -> uint:
+        return msgspec.json.decode(self._v, type=uint, dec_hook=_decode_hook)
+
+    @cached_property
+    def r(self) -> HexBytes:
+        return msgspec.json.decode(self._r, type=HexBytes, dec_hook=_decode_hook)
+
+    @cached_property
+    def s(self) -> HexBytes:
+        return msgspec.json.decode(self._s, type=HexBytes, dec_hook=_decode_hook)
 
 
 
