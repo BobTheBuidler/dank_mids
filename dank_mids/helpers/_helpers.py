@@ -249,6 +249,9 @@ def _apply_response_formatters(
         method_response_formatter: Callable[..., Any],
     ) -> RPCResponse:
         appropriate_response = response[response_type]
+        if method == "eth_getBlockByNumber":
+            # TODO figure out why we have this in 2 places
+            return appropriate_response
         try:
             intermediate_step_idk = method_response_formatter(appropriate_response)
         except TypeError as e:
@@ -256,6 +259,7 @@ def _apply_response_formatters(
         return assoc(response, response_type, intermediate_step_idk)
 
     if "result" in response and method in result_formatters:
+        
         return _format_response("result", result_formatters[method])
     elif "error" in response and method in error_formatters:
         return _format_response("error", error_formatters[method])
