@@ -72,22 +72,24 @@ def bypass_transaction_receipt_formatter(eth: Type[BaseEth]) -> None:
 def bypass_transaction_formatter(eth: Type[BaseEth]) -> None:
     eth._get_transaction = MethodNoFormat.make(RPC.eth_getTransactionByHash)
 
+_block_selectors = dict(
+    if_predefined=RPC.eth_getBlockByNumber,
+    if_hash=RPC.eth_getBlockByHash,
+    if_number=RPC.eth_getBlockByNumber
+)
+
 def bypass_block_formatters(eth: Type[BaseEth]) -> None:
     if WEB3_MAJOR_VERSION >= 6:
-        get_block_munger = [eth.get_block_munger]
+        get_block_munger = eth.get_block_munger
     else:
         def get_block_munger(
             self, block_identifier: BlockIdentifier, full_transactions: bool = False
         ) -> Tuple[BlockIdentifier, bool]:
             return (block_identifier, full_transactions)
-        
+
     eth._get_block = MethodNoFormat(
-        method_choice_depends_on_args=select_method_for_block_identifier(
-            if_predefined=RPC.eth_getBlockByNumber,
-            if_hash=RPC.eth_getBlockByHash,
-            if_number=RPC.eth_getBlockByNumber,
-        ),
-        mungers=[get_block_munger]
+        method_choice_depends_on_args=select_method_for_block_identifier(**_block_selectors),
+        mungers=[get_block_munger],
     )
 
 def bypass_eth_call_formatter(eth: Type[BaseEth]) -> None:
