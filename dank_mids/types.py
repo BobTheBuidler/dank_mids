@@ -2,10 +2,11 @@
 import logging
 import re
 from cachetools.func import ttl_cache
+from functools import cached_property
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    Iterator, List, Literal, Mapping, NewType, Optional, Set, 
-                    Tuple, Type, TypedDict, TypeVar, Union, overload)
+                    Iterable, Iterator, List, Literal, Mapping, NewType, Optional,
+                    Set, Tuple, Type, TypedDict, TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
@@ -89,7 +90,7 @@ class _DictStruct(msgspec.Struct):
         return True
     
     def __contains__(self, key: str) -> bool:
-        if key not in self.__struct_fields__:
+        if key not in self._fields:
             return False
         try:
             getattr(self, key)
@@ -140,7 +141,7 @@ class _DictStruct(msgspec.Struct):
         Yields:
             Struct key.
         """
-        for field in self.__struct_fields__:
+        for field in self._fields:
             try:
                 yield getattr(self, field)
             except AttributeError:
@@ -166,7 +167,7 @@ class _DictStruct(msgspec.Struct):
         yield from self
 
     def items(self) -> Iterator[Tuple[str, Any]]:
-        for key in self.__struct_fields__:
+        for key in self._fields:
             try:
                 yield key, getattr(self, key)
             except AttributeError:
@@ -180,13 +181,16 @@ class _DictStruct(msgspec.Struct):
         Returns:
             An iterator over the field values.
         """
-        for key in self.__struct_fields__:
+        for key in self._fields:
             try:
                 yield getattr(self, key)
             except AttributeError:
                 # if value is msgspec.UNSET, an AttributeError is raised and we should skip.
                 continue
 
+    @property
+    def _fields(self) -> Iterable[str]:
+        return self.__struct_fields__
 
 class PartialRequest(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """
@@ -253,15 +257,55 @@ class uint(int):
     ...
 
 class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    removed: Optional[bool]
-    logIndex: Optional[uint]
-    transactionIndex: Optional[uint]
-    transactionHash: HexBytes
-    blockHash: Optional[HexBytes]
-    blockNumber: Optional[uint]
-    address: Optional[Address]
-    data: Optional[HexBytes]
-    topics: Optional[List[HexBytes]]
+    _removed: Optional[msgspec.Raw]
+    _logIndex: Optional[msgspec.Raw]
+    _transactionIndex: Optional[msgspec.Raw]
+    _transactionHash: msgspec.Raw
+    _blockHash: Optional[msgspec.Raw]
+    _blockNumber: Optional[msgspec.Raw]
+    _address: Optional[msgspec.Raw]
+    _data: Optional[msgspec.Raw]
+    _topics: Optional[msgspec.Raw]
+
+    @cached_property
+    def topics(self) -> Optional[List[HexBytes]]:
+        if self._topics:
+            return msgspec.json.decode(self._topics, typ=Optional[List[HexBytes]])
+    @cached_property
+    def data(self) -> Optional[List[HexBytes]]:
+        if self._data:
+            return msgspec.json.decode(self._data, typ=Optional[HexBytes])
+    @cached_property
+    def address(self) -> Optional[List[HexBytes]]:
+        if self._address:
+            return msgspec.json.decode(self._address, typ=Optional[Address])
+    @cached_property
+    def removed(self) -> Optional[bool]:
+        if self._removed:
+            return msgspec.json.decode(self._removed, typ=Optional[bool])
+    @cached_property
+    def logIndex(self) -> Optional[uint]:
+        if self._logIndex:
+            return msgspec.json.decode(self._logIndex, typ=Optional[uint])
+    @cached_property
+    def transactionIndex(self) -> Optional[uint]:
+        if self._transactionIndex:
+            return msgspec.json.decode(self._transactionIndex, typ=Optional[uint])
+    @cached_property
+    def transactionHash(self) -> HexBytes:
+        return msgspec.json.decode(self._transactionHash, typ=HexBytes)
+    @cached_property
+    def blockHash(self) -> Optional[HexBytes]:
+        if self._blockHash:
+            return msgspec.json.decode(self._blockHash, typ=Optional[HexBytes])
+    @cached_property
+    def blockNumber(self) -> Optional[uint]:
+        if self._blockNumber:
+            return msgspec.json.decode(self._blockNumber, typ=Optional[uint])
+    
+    @cached_property
+    def _fields(self) -> List[str]:
+        return [field[1:] for field in self.__struct_fields__]
 
 
 class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
