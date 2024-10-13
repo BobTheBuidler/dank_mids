@@ -57,9 +57,6 @@ class DankMiddlewareController:
         self.w3: Web3 = w3
         """The Web3 instance used to make rpc requests."""
 
-        if _helpers.w3_version_major >= 6:
-            self.__setup_attrdict_middleware()
-
         self.sync_w3 = _sync_w3_from_async(w3)
         """A sync Web3 instance connected to the same rpc, used to make calls during init."""
 
@@ -379,18 +376,6 @@ class DankMiddlewareController:
             return self.mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
         return self.mc2 or self.mc3  # type: ignore [return-value]
-    
-    def __setup_attrdict_middleware(self) -> None:
-        """
-        Set up the AttributeDict middleware for Web3 versions 6.0 and above.
-        """
-        from web3.middleware import async_attrdict_middleware  # type: ignore [attr-defined]
-        try:
-            self.w3.middleware_onion.add(async_attrdict_middleware)
-        except ValueError as e:
-            if str(e) != "You can't add the same un-named instance twice":
-                raise
-            # NOTE: the web3 instance already has the middleware
 
 
 class _MulticallContract(Struct):
