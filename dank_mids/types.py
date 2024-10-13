@@ -547,7 +547,7 @@ class PartialResponse(_DictStruct, frozen=True):
                 _dict_responses.add(method)
             return AttributeDict(decoded)
         elif isinstance(decoded, list):
-            if method is None:
+            if method is None or method == "eth_getLogs":
                 return decoded
         raise TypeError(f"type {type(decoded)} is not supported.  method: {method}  decoded: {decoded}")
         
