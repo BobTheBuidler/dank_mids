@@ -96,6 +96,9 @@ class _DictStruct(msgspec.Struct):
         except AttributeError:
             return False
     
+    def get(self, key: str, default: Any = msgspec.UNSET) -> Any:
+        return self[key] if default is msgspec.UNSET else getattr(self, key, default)
+    
     def __getitem__(self, attr: str) -> Any:
         """
         Lookup an attribute value via dictionary-style access.
