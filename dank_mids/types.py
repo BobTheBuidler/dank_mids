@@ -452,16 +452,15 @@ class PartialResponse(_DictStruct, frozen=True):
     def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
         data: RPCResponse = {}
-        for field in self.__struct_fields__:
-            attr = getattr(self, field)
-            if attr is None:
+        for key, value in self.items():
+            if value is None:
                 continue
-            if field == "result":
-                attr = self.decode_result(method=method, _caller=self)
-            data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr  # type: ignore [literal-required]
+            if key == "result":
+                attr = self.decode_result(method=method, caller=self)
+            data[key] = AttributeDict(attr) if isinstance(attr, dict) else attr  # type: ignore [literal-required]
         return data
 
-    def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Union[str, AttributeDict]:
+    def decode_result(self, method: Optional[RPCEndpoint] = None, *, caller = None) -> Union[HexBytes, uint, AttributeDict]:
         # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
         if method and (typ := _RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
@@ -475,8 +474,8 @@ class PartialResponse(_DictStruct, frozen=True):
             try:
                 start = time()
                 decoded = msgspec.json.decode(self.result, type=typ, dec_hook=_decode_hook)
-                if _caller:
-                    stats.log_duration(f'decoding {type(_caller)} {method}', start)
+                if caller:
+                    stats.log_duration(f'decoding {type(caller)} {method}', start)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
             except (msgspec.ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
