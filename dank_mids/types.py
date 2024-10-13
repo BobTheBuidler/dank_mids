@@ -389,15 +389,15 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
 
 class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
-    index: str
+    index: uint
 
-    amount: str = msgspec.UNSET
+    amount: uint = msgspec.UNSET
     """This field is not always present."""
 
-    address: str = msgspec.UNSET
+    address: Address = msgspec.UNSET
     """This field is not always present."""
 
-    validatorIndex: str = msgspec.UNSET
+    validatorIndex: uint = msgspec.UNSET
     """This field is not always present."""
 
 class _Timestampped(_DictStruct, frozen=True):  # type: ignore [call-arg]
