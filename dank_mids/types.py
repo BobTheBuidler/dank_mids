@@ -12,8 +12,6 @@ import msgspec
 from eth_typing import ChecksumAddress
 from eth_utils import to_checksum_address
 from hexbytes import HexBytes
-from web3._utils.rpc_abi import RPC
-from web3._utils.method_formatters import PYTHONIC_RESULT_FORMATTERS
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -257,15 +255,15 @@ class uint(int):
     ...
 
 class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    _removed: Optional[msgspec.Raw]
-    _logIndex: Optional[msgspec.Raw]
-    _transactionIndex: Optional[msgspec.Raw]
-    _transactionHash: msgspec.Raw
-    _blockHash: Optional[msgspec.Raw]
-    _blockNumber: Optional[msgspec.Raw]
-    _address: Optional[msgspec.Raw]
-    _data: Optional[msgspec.Raw]
-    _topics: Optional[msgspec.Raw]
+    _removed: Optional[msgspec.Raw] = msgspec.field(name="removed")
+    _logIndex: Optional[msgspec.Raw] = msgspec.field(name="logIndex")
+    _transactionIndex: Optional[msgspec.Raw] = msgspec.field(name="transactionIndex")
+    _transactionHash: msgspec.Raw = msgspec.field(name="transactionHash")
+    _blockHash: Optional[msgspec.Raw] = msgspec.field(name="blockHash")
+    _blockNumber: Optional[msgspec.Raw] = msgspec.field(name="blockNumber")
+    _address: Optional[msgspec.Raw] = msgspec.field(name="address")
+    _data: Optional[msgspec.Raw] = msgspec.field(name="data")
+    _topics: Optional[msgspec.Raw] = msgspec.field(name="topics")
 
     @cached_property
     def topics(self) -> Optional[List[HexBytes]]:
