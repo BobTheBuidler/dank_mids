@@ -12,8 +12,6 @@ from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
 from web3 import Web3
-from web3.providers import HTTPProvider
-from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
@@ -36,33 +34,6 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
-
-def _sync_w3_from_async(w3: Web3) -> Web3:
-    """
-    Creates a synchronous Web3 instance from an asynchronous one.
-    
-    This function is used internally to create a sync Web3 instance
-    for operations that require synchronous execution.
-
-    Args:
-        w3: An asynchronous Web3 instance.
-
-    Returns:
-        A synchronous Web3 instance with the same endpoint URI.
-
-    Raises:
-        ValueError: If the input Web3 instance is not asynchronous.
-    """
-    if not w3.eth.is_async or not isinstance(w3.provider, AsyncBaseProvider):
-        raise ValueError("Dank Middleware can only be applied to an asycnhronous Web3 instance.")
-    sync_provider = HTTPProvider(w3.provider.endpoint_uri)
-    sync_w3: Web3 = Web3(provider = sync_provider)
-    # We can't pickle middlewares to send to process executor.
-    # The call has already passed thru all middlewares on the user's Web3 instance.
-    sync_w3.middleware_onion.clear()
-    sync_w3.provider.middlewares = ()
-    return sync_w3
-
 
 class DankMiddlewareController:
     """
