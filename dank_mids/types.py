@@ -2,6 +2,7 @@
 import logging
 import re
 from cachetools.func import ttl_cache
+from importlib.metadata import version
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     Iterator, List, Literal, Mapping, NewType, Optional, Set, 
@@ -14,7 +15,7 @@ from hexbytes import HexBytes
 from web3._utils.rpc_abi import RPC
 from web3._utils.method_formatters import PYTHONIC_RESULT_FORMATTERS
 from web3.datastructures import AttributeDict
-from web3.eth import Eth
+from web3.eth import AsyncEth, Eth
 from web3.method import Method, default_root_munger
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -240,9 +241,22 @@ def bypass_web3py_log_formatters():
     for method in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]:
         PYTHONIC_RESULT_FORMATTERS.pop(method)
 
-    Eth.get_filter_changes = Method(RPC.eth_getFilterChanges, [default_root_munger])
-    Eth.get_filter_logs = Method(RPC.eth_getFilterLogs, [default_root_munger])
-    Eth._get_logs = Method(RPC.eth_getLogs, [default_root_munger])
+    replace_on = Eth if _get_major_version('web3') >= 6 else AsyncEth
+    _replace(replace_on, '_get_logs', _make_method(RPC.eth_getLogs))
+
+    _replace(Eth, 'get_filter_logs', _make_method(RPC.eth_getFilterLogs))
+    _replace(Eth, 'get_filter_changes', _make_method(RPC.eth_getFilterChanges))
+
+def _get_major_version(package: str) -> int:
+    return int(version(package).split('.')[0])
+
+def _make_method(method: RPC) -> Method:
+    return Method(method, [default_root_munger])
+
+def _replace(obj: Any, name: str, value: Any) -> None:
+    if not hasattr(obj, name):
+        raise AttributeError(obj, name)
+    setattr(obj, name, value)
 
 bypass_web3py_log_formatters()
 
