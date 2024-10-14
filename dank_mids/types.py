@@ -2,8 +2,6 @@
 import logging
 import re
 from cachetools.func import ttl_cache
-from contextlib import suppress
-from importlib.metadata import version
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     Iterator, List, Literal, Mapping, NewType, Optional, Set, 
@@ -12,20 +10,16 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
 import msgspec
 from eth_typing import ChecksumAddress
 from eth_utils import to_checksum_address
-from eth_utils.toolz import compose
 from hexbytes import HexBytes
 from web3._utils.rpc_abi import RPC
-from web3._utils.method_formatters import (FILTER_RESULT_FORMATTERS, 
-                                           PYTHONIC_RESULT_FORMATTERS, 
-                                           apply_module_to_formatters, 
-                                           combine_formatters)
+from web3._utils.method_formatters import PYTHONIC_RESULT_FORMATTERS
 from web3.datastructures import AttributeDict
-from web3.eth import AsyncEth, Eth
-from web3.method import Method, _apply_request_formatters, default_root_munger
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
 from dank_mids._exceptions import BadResponse, ChainstackRateLimited, ExceedsMaxBatchSize, PayloadTooLarge
+from dank_mids._method import (bypass_web3py_log_formatters, bypass_web3py_transaction_receipt_formatter, 
+                               bypass_web3py_tx_formatters)
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
