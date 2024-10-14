@@ -245,10 +245,11 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     logsBloom: str
     contractAddress: Optional[str]
     transactionIndex: Optional[str]
+    #returnCode: str
     effectiveGasPrice: str
     gasUsed: str
     cumulativeGasUsed: str
-    returnData: str
+    #returnData: str
     logs: List[Log]
 
     # These fields are only present on Arbitrum.
