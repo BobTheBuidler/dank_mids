@@ -18,8 +18,6 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
 from dank_mids._exceptions import BadResponse, ChainstackRateLimited, ExceedsMaxBatchSize, PayloadTooLarge
-from dank_mids._method import (bypass_web3py_log_formatters, bypass_web3py_transaction_receipt_formatter, 
-                               bypass_web3py_tx_formatters)
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
@@ -266,10 +264,6 @@ class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
     topics: Optional[List[HexBytes]]
 
 
-bypass_web3py_log_formatters()
-bypass_web3py_transaction_receipt_formatter()
-bypass_web3py_tx_formatters()
-
 class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: Address
     storageKeys: List[HexBytes]
@@ -402,21 +396,19 @@ class ErigonHeader(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
 
 _RETURN_TYPES = {
     "eth_call": str,
-    "eth_chainId": str,
+    "eth_chainId": uint,
     "eth_getCode": str,
     "eth_getLogs": List[Log],
-    "eth_getBalance": str,
-    "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
-    "eth_accounts": List[str],
+    "eth_getBalance": uint,
+    "eth_blockNumber": uint,
+    "eth_accounts": List[Address],
     "eth_getBlockByNumber": Block,
-    "eth_getTransactionCount": str,
+    "eth_getTransactionCount": uint,
     "eth_getTransactionByHash": Transaction,
     "eth_getTransactionReceipt": TransactionReceipt, 
     #"erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
     "erigon_getHeaderByNumber": ErigonHeader,
 }
-
-
 """
 A dictionary mapping RPC method names to their expected return types.
 Used to enable more efficient decoding and validation of RPC responses.

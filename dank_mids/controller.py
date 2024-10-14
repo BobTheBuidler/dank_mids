@@ -19,6 +19,7 @@ from dank_mids import _debugging, constants
 from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
+from dank_mids._method import bypass_formatters
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers import _codec, _helpers, _session
@@ -55,6 +56,8 @@ class DankMiddlewareController:
         """
         logger.info('Dank Middleware initializing... Strap on your rocket boots...')
 
+        bypass_formatters(w3)
+        
         self.w3: Web3 = w3
         """The Web3 instance used to make rpc requests."""
 
