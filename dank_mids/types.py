@@ -359,7 +359,7 @@ class Block(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
     uncles: List[str]
     transactions: List[Union[str, Transaction]]
     
-    totalDifficulty: None = msgspec.UNSET
+    totalDifficulty: Optional[str] = msgspec.UNSET
     """This field is only present on Ethereum."""
 
     withdrawals: List[StakingWithdrawal] = msgspec.UNSET
