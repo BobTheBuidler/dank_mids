@@ -204,7 +204,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                     if time.time() - self.controller._time_of_request_type_change <= 600:
                         logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
                         return await self.controller(self.method, self.params)
-                error['dankmids_added_context'] = self.request.to_dict()
+                error['dankmids_added_context'] = dict(self.request)
                 # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
                 # But I'll check it anyway to be safe
                 if result := response.pop('result', None):

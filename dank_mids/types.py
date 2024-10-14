@@ -86,12 +86,10 @@ class _DictStruct(msgspec.Struct):
 
     def to_dict(self) -> Dict[str, Any]:
             """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
-            data = {}
-            for field, attr in self.items():
-                if isinstance(attr, _DictStruct):
-                    attr = attr.to_dict()
-                data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr
-            return data
+        return {
+            field: AttributeDict(attr) if isinstance(attr, dict) else attr
+            for field, attr in self.items()
+        }
 
     def __bool__(self) -> bool:
         """A Struct will always exist."""
@@ -458,8 +456,6 @@ class PartialResponse(_DictStruct, frozen=True):
                 continue
             if field == "result":
                 attr = self.decode_result(method=method, _caller=self)
-            if isinstance(attr, _DictStruct):
-                attr = attr.to_dict()
             data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr  # type: ignore [literal-required]
         return data
 
