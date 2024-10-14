@@ -275,7 +275,7 @@ class _TransactionBase(_DictStruct, frozen=True):  # type: ignore [call-arg]
     gas: uint
     value: uint
     input: HexBytes
-    chain_id: Optional[uint]  # null for v in {27, 28}, otherwise derived from eip-155
+    chainId: Optional[uint]  # null for v in {27, 28}, otherwise derived from eip-155
     # details
     blockHash: HexBytes
     blockNumber: uint
