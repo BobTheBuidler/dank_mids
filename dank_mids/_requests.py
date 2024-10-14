@@ -194,22 +194,24 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
         # JIT json decoding
         if isinstance(self.response, RawResponse):
-            response = self.response.decode(partial=True).to_dict(self.method)
-            error: Optional[RPCError]
-            if error := response.get('error'):  # type: ignore [assignment]
-                if error['message'].lower() in ['invalid request', 'parse error']:
-                    if self.controller._time_of_request_type_change == 0:
-                        self.controller.request_type = Request
-                        self.controller._time_of_request_type_change = time.time()
-                    if time.time() - self.controller._time_of_request_type_change <= 600:
-                        logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
-                        return await self.controller(self.method, self.params)
-                error['dankmids_added_context'] = dict(self.request)
-                # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
-                # But I'll check it anyway to be safe
-                if result := response.pop('result', None):
-                    response['result'] = result
-                logger.debug("error response for %s: %s", self, response)
+            response = self.response.decode(partial=True)
+            if response.error is None:
+                return response.to_dict(self.method)
+            
+            if response.error.message.lower() in ['invalid request', 'parse error']:
+                if self.controller._time_of_request_type_change == 0:
+                    self.controller.request_type = Request
+                    self.controller._time_of_request_type_change = time.time()
+                if time.time() - self.controller._time_of_request_type_change <= 600:
+                    logger.debug("your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead")
+                    return await self.controller(self.method, self.params)
+                
+            error = dict(response.error.items())
+            error['dankmids_added_context'] = self.request
+
+            response = response.to_dict(self.method)
+            response["error"] = error
+            logger.debug("error response for %s: %s", self, response)
             return response
     
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.

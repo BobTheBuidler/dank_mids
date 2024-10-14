@@ -449,7 +449,7 @@ class PartialResponse(_DictStruct, frozen=True):
                 continue
             if field == "result":
                 attr = self.decode_result(method=method, _caller=self)
-            data[field] = AttributeDict(attr) if isinstance(attr, dict) and field != "error" else attr  # type: ignore [literal-required]
+            data[field] = AttributeDict(attr) if isinstance(attr, dict) else attr  # type: ignore [literal-required]
         return data
 
     def decode_result(self, method: Optional[RPCEndpoint] = None, _caller = None) -> Union[str, AttributeDict]:
