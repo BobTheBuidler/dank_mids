@@ -75,7 +75,7 @@ def bypass_transaction_formatter(eth: Type[BaseEth]) -> None:
 _block_selectors = dict(
     if_predefined=RPC.eth_getBlockByNumber,
     if_hash=RPC.eth_getBlockByHash,
-    if_number=RPC.eth_getBlockByNumber
+    if_number=RPC.eth_getBlockByNumber,
 )
 
 def bypass_block_formatters(eth: Type[BaseEth]) -> None:

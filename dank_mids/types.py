@@ -566,13 +566,11 @@ class PartialResponse(_DictStruct, frozen=True):
         
     def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
-        data: RPCResponse = {}
-        for key, value in self.items():
-            if value is None:
-                continue
-            if key == "result":
-                value = self.decode_result(method=method, caller=self)
-            data[key] = AttributeDict(value) if isinstance(value, dict) else value  # type: ignore [literal-required]
+        data: RPCResponse = {
+            key: self.decode_result(method=method, caller=self) if key == "result" else value
+            for key, value in self.items()
+            if value is not None
+        }
         return data
 
     def decode_result(self, method: Optional[RPCEndpoint] = None, *, caller = None) -> Union[HexBytes, uint, AttributeDict]:

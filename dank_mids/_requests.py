@@ -228,6 +228,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             _raise_more_detailed_exc(self.request, self.response)
         # Less optimal decoding
         # TODO: refactor this out
+        assert isinstance(self.response, dict), (self.response, type(self.response))
         return self.response
     
     @set_done
@@ -244,7 +245,9 @@ class RPCRequest(_RequestMeta[RawResponse]):
             for task in done:
                 return await task
         response = self.response.decode(partial=True)
-        return response.result if self.raw else response.to_dict(self.method)
+        retval = response.result if self.raw else response.to_dict(self.method)
+        assert isinstance(retval, dict), (retval, type(retval))
+        return retval
     
     @set_done
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
@@ -304,6 +307,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             method += "_raw"
         retval = await self.controller(method, self.params)
         await self.semaphore.acquire()
+        assert isinstance(retval, dict), (retval, type(retval))
         return retval
 
 
