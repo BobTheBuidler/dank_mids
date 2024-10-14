@@ -240,7 +240,7 @@ class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
 
 def bypass_web3py_log_formatters():
     for method in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]:
-        PYTHONIC_RESULT_FORMATTERS.pop(method)
+        print(PYTHONIC_RESULT_FORMATTERS.pop(method))
 
     replace_on = Eth if _get_major_version('web3') >= 6 else AsyncEth
     _replace(replace_on, '_get_logs', _make_method(RPC.eth_getLogs))
@@ -249,7 +249,7 @@ def bypass_web3py_log_formatters():
     _replace(Eth, 'get_filter_changes', _make_method(RPC.eth_getFilterChanges))
 
 def bypass_web3py_transaction_receipt_formatter():
-    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionReceipt)
+    print(PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionReceipt))
     if _get_major_version('web3') >= 6:
         setattr(AsyncEth, '_transaction_receipt', _make_method(RPC.eth_getTransactionReceipt))
     else:
