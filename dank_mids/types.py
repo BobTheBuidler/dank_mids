@@ -15,7 +15,7 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
 from dank_mids._exceptions import BadResponse, ChainstackRateLimited, ExceedsMaxBatchSize, PayloadTooLarge
-from dank_mids.structs import DictStruct, LazyDictStruct, Log, Transaction
+from dank_mids.structs import Block, DictStruct, ErigonHeader, Log, Transaction, TransactionReceipt
 from dank_mids.structs.data import Address, uint, _decode_hook
 
 if TYPE_CHECKING:
@@ -119,63 +119,6 @@ class Error(DictStruct, frozen=True):  # type: ignore [call-arg]
 _dict_responses: Set[str] = set()
 _str_responses: Set[str] = set()
 
-
-class StakingWithdrawal(DictStruct, frozen=True):  # type: ignore [call-arg]
-    """A Struct representing an Ethereum staking withdrawal."""
-    index: uint
-
-    amount: uint = msgspec.UNSET
-    """This field is not always present."""
-
-    address: Address = msgspec.UNSET
-    """This field is not always present."""
-
-    validatorIndex: uint = msgspec.UNSET
-    """This field is not always present."""
-
-class _Timestampped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
-    timestamp: uint
-
-class _BlockHeaderBase(_Timestampped, frozen=True):  # type: ignore [call-arg]
-    parentHash: HexBytes
-
-class TinyBlock(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
-    _transactions: msgspec.Raw = msgspec.field(name="transactions")
-    @cached_property
-    def transactions(self) -> List[Union[str, Transaction]]:
-        return msgspec.json.decode(self._transactions, type=List[Union[str, Transaction]], dec_hook=_decode_hook)
-
-class Block(TinyBlock, frozen=True):  # type: ignore [call-arg]
-    sha3Uncles: HexBytes
-    miner: Address
-    stateRoot: HexBytes
-    transactionsRoot: HexBytes
-    receiptsRoot: HexBytes
-    logsBloom: HexBytes
-    number: uint
-    gasLimit: uint
-    gasUsed: uint
-    extraData: HexBytes
-    mixHash: HexBytes
-    nonce: uint
-    size: uint
-    uncles: List[HexBytes]
-    
-    totalDifficulty: Optional[uint] = msgspec.UNSET
-    """This field is only present on Ethereum."""
-
-    _withdrawals: msgspec.Raw = msgspec.field(name="withdrawals", default=msgspec.UNSET)
-    """This field is only present on Ethereum."""
-    @cached_property
-    def withdrawals(self) -> List[StakingWithdrawal]:
-        """This field is only present on Ethereum."""
-        return msgspec.json.decode(self._withdrawals, type=List[StakingWithdrawal], dec_hook=_decode_hook)
-    
-class ErigonHeader(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
-    uncleHash: HexBytes
-    coinbase: Address
-    root: HexBytes
-    difficulty: uint
 
 _RETURN_TYPES = {
     "eth_call": HexBytes,
