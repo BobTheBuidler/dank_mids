@@ -43,6 +43,9 @@ class Log(SmallLog, frozen=True):  # type: ignore [call-arg]
     @cached_property
     def logIndex(self) -> Optional[uint]:
         return msgspec.json.decode(self._logIndex, type=Optional[uint], dec_hook=_decode_hook)
+    @property
+    def block(self) -> Optional[uint]:
+        return self.blockNumber
 
 class FullLog(Log, frozen=True):  # type: ignore [call-arg]
     _blockHash: msgspec.Raw = msgspec.field(name="blockHash")
