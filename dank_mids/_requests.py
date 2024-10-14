@@ -499,8 +499,9 @@ def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
 
 def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:        
     try:
-        hexbytes = data.decode_result("eth_call")[2:]
-        return mcall_decoder(decoding.ContextFramesBytesIO(hexbytes))[2]
+        return mcall_decoder(
+            decoding.ContextFramesBytesIO(data.decode_result("eth_call"))
+        )[2]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         try:
