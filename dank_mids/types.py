@@ -12,9 +12,13 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
 import msgspec
 from eth_typing import ChecksumAddress
 from eth_utils import to_checksum_address
+from eth_utils.toolz import compose
 from hexbytes import HexBytes
 from web3._utils.rpc_abi import RPC
-from web3._utils.method_formatters import PYTHONIC_RESULT_FORMATTERS
+from web3._utils.method_formatters import (FILTER_RESULT_FORMATTERS, 
+                                           PYTHONIC_RESULT_FORMATTERS, 
+                                           apply_module_to_formatters, 
+                                           combine_formatters)
 from web3.datastructures import AttributeDict
 from web3.eth import AsyncEth, Eth
 from web3.method import Method, default_root_munger
@@ -259,7 +263,29 @@ def _get_major_version(package: str) -> int:
     return int(version(package).split('.')[0])
 
 def _make_method(method: RPC) -> Method:
-    return Method(method, [default_root_munger])
+    if _get_major_version('web3') < 6 and ['eth_getLogs', 'eth_getFilterLogs', 'eth_getFilterChanges']:
+
+        def get_result_formatters(method_name, module) -> Dict[str, Callable[..., Any]]:
+            """Bypasses the recursive attributedict formatter"""
+            formatters = combine_formatters(
+                (PYTHONIC_RESULT_FORMATTERS,),
+                method_name
+            )
+            
+            formatters_requiring_module = combine_formatters(
+                (FILTER_RESULT_FORMATTERS,),
+                method_name
+            )
+            partial_formatters = apply_module_to_formatters(
+                formatters_requiring_module,
+                module,
+                method_name
+            )
+            return compose(*partial_formatters, *formatters)
+        
+        return Method(method, [default_root_munger], result_formatters=get_result_formatters)
+    else:
+        return Method(method, [default_root_munger])
 
 def _replace(obj: Any, name: str, value: Any) -> None:
     with suppress(TypeError):
