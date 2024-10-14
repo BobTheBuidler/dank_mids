@@ -215,7 +215,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
         # We raise it here so it traces back up to the caller
         if isinstance(self.response, Exception):
-            __raise_more_detailed_exc(self.request, self.response)
+            _raise_more_detailed_exc(self.request, self.response)
         # Less optimal decoding
         # TODO: refactor this out
         return self.response
@@ -1024,7 +1024,7 @@ def __format_error(request: PartialRequest, response: PartialResponse) -> Attrib
     error['dankmids_added_context'] = request
     return AttributeDict.recursive(error)
 
-def __raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoReturn:
+def _raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoReturn:
     if isinstance(exc, ClientResponseError):
         raise DankMidsClientResponseError(exc, request) from exc
     try:
