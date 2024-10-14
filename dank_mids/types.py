@@ -359,10 +359,10 @@ class PartialResponse(_DictStruct, frozen=True):
     We use these to more efficiently decode responses from the node.
     """
 
-    result: msgspec.Raw = msgspec.UNSET  # type: ignore
+    result: msgspec.Raw = None  # type: ignore
     """The result of the RPC call, if successful."""
 
-    error: Optional[Error] = msgspec.UNSET
+    error: Optional[Error] = None
     """The error object, if the call failed."""
 
     @property
@@ -386,7 +386,10 @@ class PartialResponse(_DictStruct, frozen=True):
     def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
         data: RPCResponse = {}
-        for field, attr in self.items():
+        for field in self.__struct_fields__:
+            attr = getattr(self, field)
+            if attr is None:
+                continue
             if field == "result":
                 attr = self.decode_result(method=method, _caller=self)
             if isinstance(attr, _DictStruct):
