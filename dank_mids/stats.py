@@ -178,7 +178,11 @@ class _StatsLogger(logging.Logger):
         """
         enabled = self.isEnabledFor(DEVHINT)
         if COLLECT_STATS or enabled:
-            collector.validation_errors[method].append(e)
+            try:
+                collector.validation_errors[method].append(e)
+            except TypeError:
+                # unhashable type
+                pass
         if enabled:
             self._log(DEVHINT, f"ValidationError when decoding response for {method}", ("This *should* not impact your script. If it does, you'll know."), e)
 
