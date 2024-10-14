@@ -89,7 +89,13 @@ class _DictStruct(msgspec.Struct):
         return True
     
     def __contains__(self, key: str) -> bool:
-        return key in self.__struct_fields__
+        if key not in self.__struct_fields__:
+            return False
+        try:
+            getattr(self, key)
+            return True
+        except AttributeError:
+            return False
     
     def __getitem__(self, attr: str) -> Any:
         """
