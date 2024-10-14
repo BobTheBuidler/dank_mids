@@ -57,6 +57,8 @@ class _DankMethodMixin(Generic[_EVMType]):
         Returns:
             A list of results from calling the method with each set of arguments.
         """
+        return await asyncio.gather(*[self.coroutine(arg, block_identifier=block_identifier, decimals=decimals) for arg in args])
+
 
     @property
     def abi(self) -> dict:
