@@ -201,7 +201,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True)
             if response.error is None:
-                return response.result if self.raw else response.to_dict(self.method)
+                if self.raw:
+                    return {"result": response.result}
+                response_dict = response.to_dict(self.method)
+                assert isinstance(response_dict, dict), (response_dict, type(response_dict))
+                return response_dict
             
             if response.error.message.lower() in ['invalid request', 'parse error']:
                 if self.controller._time_of_request_type_change == 0:
