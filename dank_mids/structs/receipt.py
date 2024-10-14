@@ -16,7 +16,7 @@ class FeeStats(DictStruct, frozen=True):  # type: ignore [call-arg]
     l1Transaction: uint
     l2Computation: uint
 
-class ArbitrumFeeStats(DictStruct, frozen=True):  # type: ignore [call-arg]
+class ArbitrumFeeStats(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """Arbitrum includes these with a tx receipt."""
     paid: FeeStats
     """
@@ -30,7 +30,7 @@ class ArbitrumFeeStats(DictStruct, frozen=True):  # type: ignore [call-arg]
     prices: FeeStats = msgspec.UNSET
     """The breakdown of gas prices for the transaction."""
 
-class TransactionReceipt(LazyDictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
+class TransactionReceipt(LazyDictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     transactionHash: HexBytes
     blockHash: HexBytes
     blockNumber: uint

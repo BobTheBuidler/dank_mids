@@ -10,7 +10,7 @@ from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.transaction import Transaction
 
 
-class StakingWithdrawal(DictStruct, frozen=True):  # type: ignore [call-arg]
+class StakingWithdrawal(DictStruct, frozen=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
     index: uint
 
@@ -38,7 +38,7 @@ class TinyBlock(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
             transactions = [HexBytes(txhash) for txhash in transactions]
         return transactions
 
-class Block(TinyBlock, frozen=True):  # type: ignore [call-arg]
+class Block(TinyBlock, frozen=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     sha3Uncles: HexBytes
     miner: Address
     stateRoot: HexBytes
