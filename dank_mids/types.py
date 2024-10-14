@@ -210,8 +210,17 @@ class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
 _dict_responses: Set[str] = set()
 _str_responses: Set[str] = set()
 
-# TODO: use the types from snek
-Log = Dict[str, Union[bool, str, None, List[str]]]
+
+class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    removed: Optional[bool]
+    logIndex: Optional[str]
+    transactionIndex: Optional[str]
+    transactionHash: str
+    blockHash: Optional[str]
+    blockNumber: Optional[str]
+    address: Optional[str]
+    data: Optional[str]
+    topics: Optional[List[str]]
 
 # bypass the web3.py formatters for logs
 [PYTHONIC_RESULT_FORMATTERS.pop(x) for x in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]]
@@ -225,6 +234,8 @@ class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     storageKeys: List[str]
 
 AccessList = List[AccessListEntry]
+
+# TODO: use the types from snek
 Transaction = Dict[str, Union[str, None, AccessList]]
 
 
