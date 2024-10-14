@@ -1,7 +1,6 @@
 
 import logging
 import re
-from cachetools.func import ttl_cache
 from functools import cached_property
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
@@ -10,13 +9,14 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
 
 import msgspec
 from eth_typing import ChecksumAddress
-from eth_utils import to_checksum_address
 from hexbytes import HexBytes
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
 from dank_mids._exceptions import BadResponse, ChainstackRateLimited, ExceedsMaxBatchSize, PayloadTooLarge
+from dank_mids.structs import DictStruct, LazyDictStruct, Log, Transaction
+from dank_mids.structs.data import Address, uint, _decode_hook
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
@@ -65,123 +65,9 @@ _dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, Dict[str, Optional[A
 
 _nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuff]]
 """A type alias for a nested dictionary structure."""
-
-class _DictStruct(msgspec.Struct):
-    """
-    A base class that extends the :class:`~msgspec.Struct` class to provide dictionary-like access to struct fields.
-
-    Allows iteration over the fields of a struct and provides a dictionary-like interface for retrieving values by field name.
-
-    Example:
-        >>> class MyStruct(_DictStruct):
-        ...     field1: str
-        ...     field2: int
-        >>> s = MyStruct(field1="value", field2=42)
-        >>> list(s.keys())
-        ['field1', 'field2']
-        >>> s['field1']
-        'value'
-    """
-
-    def __bool__(self) -> bool:
-        """A Struct will always exist."""
-        return True
     
-    def __contains__(self, key: str) -> bool:
-        return key in self._fields and getattr(self, key, msgspec.UNSET) is not msgspec.UNSET
-    
-    def get(self, key: str, default: Any = None) -> Any:
-        return getattr(self, key, default)
-    
-    def __getitem__(self, attr: str) -> Any:
-        """
-        Lookup an attribute value via dictionary-style access.
 
-        Args:
-            attr: The name of the attribute to access.
-        
-        Raises:
-            KeyError: If the provided key is not a member of the struct.
-
-        Returns:
-            The value of the attribute.
-        """
-        try:
-            return getattr(self, attr)
-        except AttributeError:
-            raise KeyError(attr, self) from None
-    
-    def __getattribute__(self, attr: str) -> Any:
-        """
-        Get the value of an attribute, raising AttributeError if the value is :obj:`msgspec.UNSET`.
-        
-        Parameters:
-            attr: The name of the attribute to fetch.
-
-        Raises:
-            AttributeError: If the value is :obj:`~msgspec.UNSET`.
-    
-        Returns:
-            The value of the attribute.
-        """
-        value = super().__getattribute__(attr)
-        if value is msgspec.UNSET:
-            raise AttributeError(f"'{type(self).__name__}' object has no attribute '{attr}'")
-        return value
-
-    def __iter__(self) -> Iterator[str]:
-        """
-        Iterate thru the keys of the Struct.
-
-        Yields:
-            Struct key.
-        """
-        for field in self._fields:
-            value = getattr(self, field, msgspec.UNSET)
-            if value is not msgspec.UNSET:
-                yield field
-    
-    def __len__(self) -> int:
-        """
-        The number of keys in the Struct.
-        
-        Returns:
-            The number of keys.
-        """
-        return len(list(self))
-
-    def keys(self) -> Iterator[str]:
-        """
-        Returns an iterator over the field names of the struct.
-
-        Returns:
-            An iterator over the field names.
-        """
-        yield from self
-
-    def items(self) -> Iterator[Tuple[str, Any]]:
-        for key in self._fields:
-            value = getattr(self, key, msgspec.UNSET)
-            if value is not msgspec.UNSET:
-                yield key, value
-    
-    def values(self) -> Iterator[Any]:
-        """
-        Returns an iterator over the struct's field values.
-
-        Returns:
-            An iterator over the field values.
-        """
-        for key in self._fields:
-            value = getattr(self, key, msgspec.UNSET)
-            if value is not msgspec.UNSET:
-                yield value
-
-    @property
-    def _fields(self) -> Iterable[str]:
-        return self.__struct_fields__
-
-class PartialRequest(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class PartialRequest(DictStruct, frozen=True):  # type: ignore [call-arg]
     """
     Represents a partial JSON-RPC request. 
     
@@ -215,7 +101,7 @@ class Request(PartialRequest):
     jsonrpc: Literal["2.0"] = "2.0"
     """The JSON-RPC version, always set to "2.0"."""
 
-class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class Error(DictStruct, frozen=True):  # type: ignore [call-arg]
     """
     Represents an error in a JSON-RPC response.
     """
@@ -234,225 +120,7 @@ _dict_responses: Set[str] = set()
 _str_responses: Set[str] = set()
 
 
-class Address(str):
-    def __new__(cls, address: str):
-        return super().__new__(cls, to_checksum_address(address))
-
-@ttl_cache(ttl=600)
-def checksum(address: str) -> Address:
-    return Address(address)
-
-class uint(int):
-    ...
-
-class _LazyDictStruct(_DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
-    @cached_property
-    def _fields(self) -> List[str]:
-        return [field[1:] if field[0] == '_' else field for field in self.__struct_fields__]
-
-class Log(_LazyDictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
-    removed: Optional[bool]
-    _logIndex: msgspec.Raw = msgspec.field(name="logIndex")
-    _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
-    _transactionHash: msgspec.Raw = msgspec.field(name="transactionHash")
-    _blockHash: msgspec.Raw = msgspec.field(name="blockHash")
-    _blockNumber: msgspec.Raw = msgspec.field(name="blockNumber")
-    _address: msgspec.Raw = msgspec.field(name="address")
-    _data: msgspec.Raw = msgspec.field(name="data")
-    _topics: msgspec.Raw = msgspec.field(name="topics")
-
-    @cached_property
-    def topics(self) -> Optional[List[HexBytes]]:
-        return msgspec.json.decode(self._topics, type=Optional[List[HexBytes]], dec_hook=_decode_hook)
-    @cached_property
-    def data(self) -> Optional[List[HexBytes]]:
-        return msgspec.json.decode(self._data, type=Optional[HexBytes], dec_hook=_decode_hook)
-    @cached_property
-    def address(self) -> Optional[List[HexBytes]]:
-        return msgspec.json.decode(self._address, type=Optional[Address], dec_hook=_decode_hook)
-    @cached_property
-    def logIndex(self) -> Optional[uint]:
-        return msgspec.json.decode(self._logIndex, type=Optional[uint], dec_hook=_decode_hook)
-    @cached_property
-    def transactionIndex(self) -> Optional[uint]:
-        return msgspec.json.decode(self._transactionIndex, type=Optional[uint], dec_hook=_decode_hook)
-    @cached_property
-    def transactionHash(self) -> HexBytes:
-        return msgspec.json.decode(self._transactionHash, type=HexBytes, dec_hook=_decode_hook)
-    @cached_property
-    def blockHash(self) -> Optional[HexBytes]:
-        return msgspec.json.decode(self._blockHash, type=Optional[HexBytes], dec_hook=_decode_hook)
-    @cached_property
-    def blockNumber(self) -> Optional[uint]:
-        return msgspec.json.decode(self._blockNumber, type=Optional[uint], dec_hook=_decode_hook)
-
-
-class AccessListEntry(_LazyDictStruct, frozen=True):  # type: ignore [call-arg]
-    _address: msgspec.Raw = msgspec.field(name="address")
-    _storageKeys: msgspec.Raw = msgspec.field(name="storageKeys")
-    @cached_property
-    def address(self) -> Address:
-        return msgspec.json.decode(self._address, type=Address, dec_hook=_decode_hook)
-    @cached_property
-    def storageKeys(self) -> List[HexBytes]:
-        return msgspec.json.decode(self._storageKeys, type=List[HexBytes], dec_hook=_decode_hook)
-
-class _TransactionBase(_LazyDictStruct, frozen=True):  # type: ignore [call-arg]
-    # `type` field is omitted since it's used in the tagged union
-    input: HexBytes
-    hash: HexBytes
-    _to: msgspec.Raw = msgspec.field(name="to")  # null for contract deployments
-    _gas: msgspec.Raw = msgspec.field(name="gas")
-    _value: msgspec.Raw = msgspec.field(name="value")
-    _nonce: msgspec.Raw = msgspec.field(name="nonce")
-    _chainId: msgspec.Raw = msgspec.field(name="chainId")  # null for v in {27, 28}, otherwise derived from eip-155
-    # details
-    _sender: msgspec.Raw = msgspec.field(name="from")
-    _blockHash: msgspec.Raw = msgspec.field(name="blockHash")
-    _blockNumber: msgspec.Raw = msgspec.field(name="blockNumber")
-    _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
-    
-    # signature
-    _v: msgspec.Raw = msgspec.field(name="v")
-    _r: msgspec.Raw = msgspec.field(name="r")
-    _s: msgspec.Raw = msgspec.field(name="s")
-
-    @cached_property
-    def blockHash(self) -> HexBytes:
-        return msgspec.json.decode(self._blockHash, type=HexBytes, dec_hook=_decode_hook)
-
-    @cached_property
-    def to(self) -> Optional[Address]:
-        # null for contract deployments
-        return msgspec.json.decode(self._to, type=Optional[Address], dec_hook=_decode_hook)
-
-    @cached_property
-    def chainId(self) -> Optional[uint]:
-        return msgspec.json.decode(self._chainId, type=Optional[uint], dec_hook=_decode_hook)
-
-    @cached_property
-    def nonce(self) -> uint:
-        return msgspec.json.decode(self._nonce, type=uint, dec_hook=_decode_hook)
-
-    @cached_property
-    def gas(self) -> uint:
-        return msgspec.json.decode(self._gas, type=uint, dec_hook=_decode_hook)
-
-    @cached_property
-    def value(self) -> uint:
-        return msgspec.json.decode(self._value, type=uint, dec_hook=_decode_hook)
-
-    @cached_property
-    def blockNumber(self) -> uint:
-        return msgspec.json.decode(self._blockNumber, type=uint, dec_hook=_decode_hook)
-
-    @cached_property
-    def transactionIndex(self) -> uint:
-        return msgspec.json.decode(self._transactionIndex, type=uint, dec_hook=_decode_hook)
-
-    @cached_property
-    def sender(self) -> Address:
-        return msgspec.json.decode(self._sender, type=Address, dec_hook=_decode_hook)
-
-    @cached_property
-    def v(self) -> uint:
-        return msgspec.json.decode(self._v, type=uint, dec_hook=_decode_hook)
-
-    @cached_property
-    def r(self) -> HexBytes:
-        return msgspec.json.decode(self._r, type=HexBytes, dec_hook=_decode_hook)
-
-    @cached_property
-    def s(self) -> HexBytes:
-        return msgspec.json.decode(self._s, type=HexBytes, dec_hook=_decode_hook)
-
-
-
-class TransactionLegacy(_TransactionBase, tag="0x0"):  # type: ignore [call-arg]
-    _gasPrice: msgspec.Raw = msgspec.field(name="gasPrice")
-    @cached_property
-    def gasPrice(self) -> uint:
-        return msgspec.json.decode(self._gasPrice, type=uint, dec_hook=_decode_hook)
-
-
-class Transaction2930(_TransactionBase, tag="0x1"):  # type: ignore [call-arg]
-    _gasPrice: msgspec.Raw = msgspec.field(name="gasPrice")
-    _accessList: msgspec.Raw = msgspec.field(name="accessList", default=msgspec.UNSET)
-    @cached_property
-    def gasPrice(self) -> uint:
-        return msgspec.json.decode(self._gasPrice, type=uint, dec_hook=_decode_hook)
-    @cached_property
-    def accessList(self) -> Optional[List[AccessListEntry]]:
-        return msgspec.json.decode(self._accessList, type=Optional[List[AccessListEntry]])
-
-class Transaction1559(_TransactionBase, tag="0x2"):  # type: ignore [call-arg]
-    _maxFeePerGas: msgspec.Raw = msgspec.field(name="maxFeePerGas")
-    _maxPriorityFeePerGas: msgspec.Raw = msgspec.field(name="maxPriorityFeePerGas")
-    _accessList: msgspec.Raw = msgspec.field(name="accessList", default=msgspec.UNSET)
-    @cached_property
-    def maxFeePerGas(self) -> uint:
-        return msgspec.json.decode(self._maxFeePerGas, type=uint, dec_hook=_decode_hook)
-    @cached_property
-    def maxPriorityFeePerGas(self) -> uint:
-        return msgspec.json.decode(self._maxPriorityFeePerGas, type=uint, dec_hook=_decode_hook)
-    @cached_property
-    def accessList(self) -> Optional[List[AccessListEntry]]:
-        return msgspec.json.decode(self._accessList, type=Optional[List[AccessListEntry]])
-
-Transaction = Union[TransactionLegacy, Transaction2930, Transaction1559]
-
-
-class FeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    """Arbitrum includes this in the `feeStats` field of a tx receipt."""
-    l1Calldata: uint
-    l2Storage: uint
-    l1Transaction: uint
-    l2Computation: uint
-
-class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    """Arbitrum includes these with a tx receipt."""
-    paid: FeeStats
-    """
-    The breakdown of gas paid for the transaction.
-    
-    (price * unitsUsed)
-    """
-    # These 2 attributes do not always exist
-    unitsUsed: FeeStats = msgspec.UNSET
-    """The breakdown of units of gas used for the transaction."""
-    prices: FeeStats = msgspec.UNSET
-    """The breakdown of gas prices for the transaction."""
-
-class TransactionReceipt(_LazyDictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
-    transactionHash: HexBytes
-    blockHash: HexBytes
-    blockNumber: uint
-    logsBloom: HexBytes
-    contractAddress: Optional[Address]
-    transactionIndex: Optional[uint]
-    #returnCode: str
-    effectiveGasPrice: uint
-    gasUsed: uint
-    cumulativeGasUsed: uint
-    #returnData: str
-    _logs: msgspec.Raw = msgspec.field(name="logs")
-    
-    @cached_property
-    def logs(self) -> List[Log]:
-        return msgspec.json.decode(self._logs, type=List[Log], dec_hook=_decode_hook)
-
-    # These fields are only present on Arbitrum.
-    l1BlockNumber: uint = msgspec.UNSET
-    """This field is only present on Arbitrum."""
-    l1InboxBatchInfo: Optional[HexBytes] = msgspec.UNSET
-    """This field is only present on Arbitrum."""
-    _feeStats: msgspec.Raw = msgspec.field(name="feeStats", default=msgspec.UNSET)
-    """This field is only present on Arbitrum."""
-    @cached_property
-    def feeStats(self) -> ArbitrumFeeStats:
-        return msgspec.json.decode(self._feeStats, type=ArbitrumFeeStats, dec_hook=_decode_hook)
-
-class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class StakingWithdrawal(DictStruct, frozen=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
     index: uint
 
@@ -465,7 +133,7 @@ class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
     validatorIndex: uint = msgspec.UNSET
     """This field is not always present."""
 
-class _Timestampped(_LazyDictStruct, frozen=True):  # type: ignore [call-arg]
+class _Timestampped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     timestamp: uint
 
 class _BlockHeaderBase(_Timestampped, frozen=True):  # type: ignore [call-arg]
@@ -533,7 +201,7 @@ decoder_logger = logging.getLogger('dank_mids.decoder')
 
 _chainstack_429_msg = "You've exceeded the RPS limit available on the current plan."
 
-class PartialResponse(_DictStruct, frozen=True):
+class PartialResponse(DictStruct, frozen=True):
     """
     Represents a partial JSON-RPC response. 
     
@@ -681,11 +349,3 @@ def _encode_hook(obj: Any) -> Any:
         return dict(obj)
     raise NotImplementedError(type(obj))
 
-def _decode_hook(typ: Type, obj: str):
-    if typ is HexBytes:
-        return HexBytes(obj)
-    elif typ is Address:
-        return checksum(obj)
-    elif typ is uint:
-        return uint(obj, 16)
-    raise TypeError(typ)
