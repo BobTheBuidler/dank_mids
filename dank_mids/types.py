@@ -208,7 +208,12 @@ _str_responses: Set[str] = set()
 
 # TODO: use the types from snek
 Log = Dict[str, Union[bool, str, None, List[str]]]
-AccessList = List[Dict[str, Union[str, List[str]]]]
+
+class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    address: str
+    storageKeys: List[str]
+
+AccessList = List[AccessListEntry]
 Transaction = Dict[str, Union[str, None, AccessList]]
 
 RETURN_TYPES = {
