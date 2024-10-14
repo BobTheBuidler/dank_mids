@@ -248,6 +248,13 @@ def bypass_web3py_log_formatters():
     _replace(Eth, 'get_filter_logs', _make_method(RPC.eth_getFilterLogs))
     _replace(Eth, 'get_filter_changes', _make_method(RPC.eth_getFilterChanges))
 
+def bypass_web3py_transaction_receipt_formatter():
+    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionReceipt)
+    if _get_major_version('web3') >= 6:
+        setattr(AsyncEth, '_transaction_receipt', _make_method(RPC.eth_getTransactionReceipt))
+    else:
+        setattr(AsyncEth, '_get_transaction_receipt', _make_method(RPC.eth_getTransactionReceipt))
+
 def _get_major_version(package: str) -> int:
     return int(version(package).split('.')[0])
 
@@ -263,8 +270,8 @@ def _replace(obj: Any, name: str, value: Any) -> None:
 bypass_web3py_log_formatters()
 
 class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    address: str
-    storageKeys: List[str]
+    address: Address
+    storageKeys: List[HexBytes]
 
 AccessList = List[AccessListEntry]
 
@@ -274,10 +281,10 @@ Transaction = Dict[str, Union[str, None, AccessList]]
 
 class FeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """Arbitrum includes this in the `feeStats` field of a tx receipt."""
-    l1Calldata: str
-    l2Storage: str
-    l1Transaction: str
-    l2Computation: str
+    l1Calldata: uint
+    l2Storage: uint
+    l1Transaction: uint
+    l2Computation: uint
 
 class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     """Arbitrum includes these with a tx receipt."""
@@ -293,26 +300,24 @@ class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
     prices: FeeStats = msgspec.UNSET
     """The breakdown of gas prices for the transaction."""
 
-TxHash = str
-
 class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
-    transactionHash: TxHash
-    blockHash: str
-    blockNumber: str
-    logsBloom: str
-    contractAddress: Optional[str]
-    transactionIndex: Optional[str]
+    transactionHash: HexBytes
+    blockHash: HexBytes
+    blockNumber: uint
+    logsBloom: HexBytes
+    contractAddress: Optional[Address]
+    transactionIndex: Optional[uint]
     #returnCode: str
-    effectiveGasPrice: str
-    gasUsed: str
-    cumulativeGasUsed: str
+    effectiveGasPrice: uint
+    gasUsed: uint
+    cumulativeGasUsed: uint
     #returnData: str
     logs: List[Log]
 
     # These fields are only present on Arbitrum.
-    l1BlockNumber: str = msgspec.UNSET
+    l1BlockNumber: uint = msgspec.UNSET
     """This field is only present on Arbitrum."""
-    l1InboxBatchInfo: Optional[str] = msgspec.UNSET
+    l1InboxBatchInfo: Optional[HexBytes] = msgspec.UNSET
     """This field is only present on Arbitrum."""
     feeStats: ArbitrumFeeStats = msgspec.UNSET
     """This field is only present on Arbitrum."""
@@ -347,7 +352,7 @@ class Block(_DictStruct, frozen=True):  # type: ignore [call-arg]
     nonce: str
     size: str
     uncles: List[str]
-    transactions: List[Union[TxHash, Transaction]]
+    transactions: List[Union[HexBytes, Transaction]]
     
     totalDifficulty: None = msgspec.UNSET
     """This field is only present on Ethereum."""
