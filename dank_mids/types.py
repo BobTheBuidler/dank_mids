@@ -398,8 +398,13 @@ class StakingWithdrawal(_DictStruct, frozen=True):  # type: ignore [call-arg]
     validatorIndex: str = msgspec.UNSET
     """This field is not always present."""
 
-class Block(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class _Timestampped(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    timestamp: str
+
+class _BlockHeaderBase(_Timestampped, frozen=True):  # type: ignore [call-arg]
     parentHash: str
+
+class Block(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
     sha3Uncles: str
     miner: str
     stateRoot: str
@@ -423,6 +428,11 @@ class Block(_DictStruct, frozen=True):  # type: ignore [call-arg]
     withdrawals: List[StakingWithdrawal] = msgspec.UNSET
     """This field is only present on Ethereum."""
     
+class ErigonHeader(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
+    uncleHash: str
+    coinbase: Address
+    root: str
+    difficulty: uint
 
 _RETURN_TYPES = {
     "eth_call": str,
@@ -436,8 +446,11 @@ _RETURN_TYPES = {
     "eth_getTransactionCount": str,
     "eth_getTransactionByHash": Transaction,
     "eth_getTransactionReceipt": TransactionReceipt, 
-    "erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
+    #"erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
+    "erigon_getHeaderByNumber": ErigonHeader,
 }
+
+
 """
 A dictionary mapping RPC method names to their expected return types.
 Used to enable more efficient decoding and validation of RPC responses.
