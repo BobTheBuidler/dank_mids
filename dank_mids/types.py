@@ -357,7 +357,7 @@ class Block(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
     nonce: str
     size: str
     uncles: List[str]
-    transactions: List[Union[HexBytes, Transaction]]
+    transactions: List[Union[str, Transaction]]
     
     totalDifficulty: None = msgspec.UNSET
     """This field is only present on Ethereum."""
