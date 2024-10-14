@@ -21,7 +21,7 @@ from web3._utils.method_formatters import (FILTER_RESULT_FORMATTERS,
                                            combine_formatters)
 from web3.datastructures import AttributeDict
 from web3.eth import AsyncEth, Eth
-from web3.method import Method, default_root_munger
+from web3.method import Method, _apply_request_formatters, default_root_munger
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
@@ -242,67 +242,10 @@ class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
     data: Optional[HexBytes]
     topics: Optional[List[HexBytes]]
 
-def bypass_web3py_log_formatters():
-    for method in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]:
-        PYTHONIC_RESULT_FORMATTERS.pop(method)
-
-    replace_on = Eth if _get_major_version('web3') >= 6 else AsyncEth
-    _replace(replace_on, '_get_logs', _make_method(RPC.eth_getLogs))
-
-    _replace(Eth, 'get_filter_logs', _make_method(RPC.eth_getFilterLogs))
-    _replace(Eth, 'get_filter_changes', _make_method(RPC.eth_getFilterChanges))
-
-def bypass_web3py_transaction_receipt_formatter():
-    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionReceipt)
-    if _get_major_version('web3') >= 6:
-        setattr(AsyncEth, '_transaction_receipt', _make_method(RPC.eth_getTransactionReceipt))
-    else:
-        setattr(AsyncEth, '_get_transaction_receipt', _make_method(RPC.eth_getTransactionReceipt))
-
-def _get_major_version(package: str) -> int:
-    return int(version(package).split('.')[0])
-
-def _make_method(method: RPC) -> Method:
-    if _get_major_version('web3') < 6 and ['eth_getLogs', 'eth_getFilterLogs', 'eth_getFilterChanges']:
-
-        def get_result_formatters(method_name, module) -> Dict[str, Callable[..., Any]]:
-            """Bypasses the recursive attributedict formatter"""
-            formatters = combine_formatters(
-                (PYTHONIC_RESULT_FORMATTERS,),
-                method_name
-            )
-            
-            formatters_requiring_module = combine_formatters(
-                (FILTER_RESULT_FORMATTERS,),
-                method_name
-            )
-            partial_formatters = apply_module_to_formatters(
-                formatters_requiring_module,
-                module,
-                method_name
-            )
-            return compose(*partial_formatters, *formatters)
-        
-        return Method(method, [default_root_munger], result_formatters=get_result_formatters)
-    else:
-        return Method(method, [default_root_munger])
-
-def _replace(obj: Any, name: str, value: Any) -> None:
-    with suppress(TypeError):
-        if not hasattr(obj, name):
-            raise AttributeError(obj, name)
-    setattr(obj, name, value)
-
-def bypass_web3py_tx_formatters():
-    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionByBlockHashAndIndex)
-    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionByBlockNumberAndIndex)
-    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionByHash)
-    AsyncEth._get_transaction = _make_method(RPC.eth_getTransactionByHash)
 
 bypass_web3py_log_formatters()
 bypass_web3py_transaction_receipt_formatter()
 bypass_web3py_tx_formatters()
-
 
 class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: Address
