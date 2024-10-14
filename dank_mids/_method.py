@@ -2,7 +2,6 @@
 from importlib.metadata import version
 from typing import Tuple, Type
 
-from eth_utils.toolz import compose
 from typing_extensions import Self
 from web3.eth import BaseEth
 from web3._utils.method_formatters import ERROR_FORMATTERS, NULL_RESULT_FORMATTERS
@@ -118,4 +117,6 @@ skip_formatters = (
     bypass_transaction_formatter,
 )
 
-bypass_formatters = compose(*skip_formatters)
+def bypass_formatters(eth):
+    for bypass in skip_formatters:
+        bypass(eth)
