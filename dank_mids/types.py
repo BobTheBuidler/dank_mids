@@ -84,13 +84,6 @@ class _DictStruct(msgspec.Struct):
         'value'
     """
 
-    def to_dict(self) -> Dict[str, Any]:
-            """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
-        return {
-            field: AttributeDict(attr) if isinstance(attr, dict) else attr
-            for field, attr in self.items()
-        }
-
     def __bool__(self) -> bool:
         """A Struct will always exist."""
         return True
