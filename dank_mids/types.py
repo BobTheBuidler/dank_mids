@@ -1,6 +1,7 @@
 
 import logging
 import re
+from cachetools.func import ttl_cache
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     Iterator, List, Literal, Mapping, NewType, Optional, Set, 
@@ -216,6 +217,10 @@ _str_responses: Set[str] = set()
 class Address(str):
     def __new__(cls, *args, **kwargs):
         return super().__new__(to_checksum_address(args[0]), *args[1:], **kwargs)
+
+@ttl_cache(ttl=600)
+def checksum(address: str) -> Address:
+    return Address(address)
 
 class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
     removed: Optional[bool]
@@ -505,6 +510,8 @@ def _encode_hook(obj: Any) -> Any:
     raise NotImplementedError(type(obj))
 
 def _decode_hook(typ: Type, obj: str):
-    if typ in (Address, HexBytes):
-        return typ(obj)
+    if typ is HexBytes:
+        return HexBytes(obj)
+    elif typ is Address:
+        return checksum(obj)
     raise TypeError(typ)
