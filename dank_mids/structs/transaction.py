@@ -1,6 +1,6 @@
 
 from functools import cached_property
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 import msgspec
 from hexbytes import HexBytes
@@ -37,6 +37,14 @@ class _TransactionBase(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     _v: msgspec.Raw = msgspec.field(name="v")
     _r: msgspec.Raw = msgspec.field(name="r")
     _s: msgspec.Raw = msgspec.field(name="s")
+
+    def __getitem__(self, key: str) -> Any:
+        try:
+            return super().__getitem__(key)
+        except KeyError:
+            if key == "from":
+                return self.sender
+            raise
 
     @cached_property
     def blockHash(self) -> HexBytes:
