@@ -244,7 +244,7 @@ class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
 
 def bypass_web3py_log_formatters():
     for method in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]:
-        print(PYTHONIC_RESULT_FORMATTERS.pop(method))
+        PYTHONIC_RESULT_FORMATTERS.pop(method)
 
     replace_on = Eth if _get_major_version('web3') >= 6 else AsyncEth
     _replace(replace_on, '_get_logs', _make_method(RPC.eth_getLogs))
@@ -253,7 +253,7 @@ def bypass_web3py_log_formatters():
     _replace(Eth, 'get_filter_changes', _make_method(RPC.eth_getFilterChanges))
 
 def bypass_web3py_transaction_receipt_formatter():
-    print(PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionReceipt))
+    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionReceipt)
     if _get_major_version('web3') >= 6:
         setattr(AsyncEth, '_transaction_receipt', _make_method(RPC.eth_getTransactionReceipt))
     else:
@@ -293,8 +293,17 @@ def _replace(obj: Any, name: str, value: Any) -> None:
             raise AttributeError(obj, name)
     setattr(obj, name, value)
 
+def bypass_web3py_tx_formatters():
+    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionByBlockHashAndIndex)
+    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionByBlockNumberAndIndex)
+    PYTHONIC_RESULT_FORMATTERS.pop(RPC.eth_getTransactionByHash)
+    AsyncEth._get_transaction = _make_method(RPC.eth_getTransactionByHash)
+
 bypass_web3py_log_formatters()
 bypass_web3py_transaction_receipt_formatter()
+bypass_web3py_block_formatters()
+bypass_web3py_tx_formatters()
+
 
 class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: Address
