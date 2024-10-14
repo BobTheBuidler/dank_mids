@@ -393,7 +393,7 @@ class PartialResponse(_DictStruct, frozen=True):
         if method:
             try:
                 if method in _dict_responses:
-                    decoded = AttributeDict(msgspec.json.decode(self.result, type=nested_dict_of_stuff))
+                    decoded = AttributeDict(msgspec.json.decode(self.result, type=_nested_dict_of_stuff))
                     stats.logger.log_types(method, decoded)
                     return decoded
                 elif method in _str_responses:
