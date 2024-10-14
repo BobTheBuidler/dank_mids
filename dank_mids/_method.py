@@ -51,13 +51,13 @@ def bypass_chainid_formatter(eth: Type[BaseEth]) -> None:
     eth._chain_id = MethodNoFormat(RPC.eth_chainId, mungers=None)
 
 def bypass_getbalance_formatter(eth: Type[BaseEth]) -> None:
-    eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[w3.eth.block_id_munger])
+    eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[eth.block_id_munger])
 
 def bypass_blocknumber_formatter(eth: Type[BaseEth]) -> None:
     eth.get_block_number = MethodNoFormat(RPC.eth_getBalance, mungers=None)
 
 def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
-    eth._get_transaction_count = MethodNoFormat(RPC.eth_getTransactionCount, mungers=[w3.eth.block_id_munger])
+    eth._get_transaction_count = MethodNoFormat(RPC.eth_getTransactionCount, mungers=[eth.block_id_munger])
 
 def bypass_log_formatter(eth: Type[BaseEth]) -> None:
     eth._get_logs = MethodNoFormat.make(RPC.eth_getLogs)
@@ -98,12 +98,20 @@ def bypass_web3py_block_formatters(eth: Type[BaseEth]) -> None:
             mungers=[get_block_munger]
         )
 
+def bypass_eth_call_formatter(eth: Type[BaseEth]) -> None:
+    eth._call = MethodNoFormat(RPC.eth_call, mungers=[eth.call_munger])
+
+def bypass_get_code_formatter(eth: Type[BaseEth]) -> None:
+    eth._get_code = MethodNoFormat(RPC.eth_getCode, mungers=[eth.block_id_munger])
+
 
 skip_formatters = (
     bypass_chainid_formatter, 
     bypass_getbalance_formatter, 
     bypass_blocknumber_formatter, 
     bypass_transaction_count_formatter, 
+    bypass_eth_call_formatter,
+    bypass_get_code_formatter,
     bypass_log_formatter,
     bypass_transaction_receipt_formatter,
     bypass_transaction_formatter,

@@ -395,9 +395,9 @@ class ErigonHeader(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
     difficulty: uint
 
 _RETURN_TYPES = {
-    "eth_call": str,
+    "eth_call": HexBytes,
     "eth_chainId": uint,
-    "eth_getCode": str,
+    "eth_getCode": HexBytes,
     "eth_getLogs": List[Log],
     "eth_getBalance": uint,
     "eth_blockNumber": uint,
