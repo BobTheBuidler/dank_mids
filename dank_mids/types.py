@@ -8,7 +8,11 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
 
 import msgspec
 from eth_typing import ChecksumAddress
+from web3._utils.rpc_abi import RPC
+from web3._utils.method_formatters import PYTHONIC_RESULT_FORMATTERS
 from web3.datastructures import AttributeDict
+from web3.eth import Eth
+from web3.method import Method, default_root_munger
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
@@ -208,6 +212,13 @@ _str_responses: Set[str] = set()
 
 # TODO: use the types from snek
 Log = Dict[str, Union[bool, str, None, List[str]]]
+
+# bypass the web3.py formatters for logs
+[PYTHONIC_RESULT_FORMATTERS.pop(x) for x in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]]
+
+Eth.get_filter_changes = Method(RPC.eth_getFilterChanges, [default_root_munger])
+Eth.get_filter_logs = Method(RPC.eth_getFilterLogs, [default_root_munger])
+Eth._get_logs = Method(RPC.eth_getLogs, [default_root_munger])
 
 class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: str
