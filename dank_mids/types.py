@@ -215,8 +215,8 @@ _str_responses: Set[str] = set()
 
 
 class Address(str):
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(to_checksum_address(args[0]), *args[1:], **kwargs)
+    def __new__(cls, address: str):
+        return super().__new__(cls, to_checksum_address(address))
 
 @ttl_cache(ttl=600)
 def checksum(address: str) -> Address:
@@ -233,12 +233,15 @@ class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
     data: Optional[HexBytes]
     topics: Optional[List[HexBytes]]
 
-# bypass the web3.py formatters for logs
-[PYTHONIC_RESULT_FORMATTERS.pop(x) for x in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]]
+def bypass_web3py_log_formatters():
+    for method in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]:
+        PYTHONIC_RESULT_FORMATTERS.pop(method)
 
-Eth.get_filter_changes = Method(RPC.eth_getFilterChanges, [default_root_munger])
-Eth.get_filter_logs = Method(RPC.eth_getFilterLogs, [default_root_munger])
-Eth._get_logs = Method(RPC.eth_getLogs, [default_root_munger])
+    Eth.get_filter_changes = Method(RPC.eth_getFilterChanges, [default_root_munger])
+    Eth.get_filter_logs = Method(RPC.eth_getFilterLogs, [default_root_munger])
+    Eth._get_logs = Method(RPC.eth_getLogs, [default_root_munger])
+
+bypass_web3py_log_formatters()
 
 class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: str
@@ -514,4 +517,6 @@ def _decode_hook(typ: Type, obj: str):
         return HexBytes(obj)
     elif typ is Address:
         return checksum(obj)
+    elif typ is int and isinstance(obj, str):
+        return int(obj, 16)
     raise TypeError(typ)
