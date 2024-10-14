@@ -308,10 +308,38 @@ class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: Address
     storageKeys: List[HexBytes]
 
-AccessList = List[AccessListEntry]
+class TransactionBase(_DictStruct, frozen=True):  # type: ignore [call-arg]
+    # `type` field is omitted since it's used in the tagged union
+    nonce: uint
+    to: Optional[Address]  # null for contract deployments
+    gas: uint
+    value: uint
+    input: HexBytes
+    chain_id: Optional[uint]  # null for v in {27, 28}, otherwise derived from eip-155
+    # details
+    blockHash: HexBytes
+    blockNumber: uint
+    sender: Address = msgspec.field(name="from")
+    hash: HexBytes
+    transactionIndex: uint
+    # signature
+    v: uint
+    r: uint
+    s: uint
 
-# TODO: use the types from snek
-Transaction = Dict[str, Union[str, None, AccessList]]
+class TransactionLegacy(TransactionBase, tag="0x0"):  # type: ignore [call-arg]
+    gasPrice: uint
+
+class Transaction2930(TransactionBase, tag="0x1"):  # type: ignore [call-arg]
+    gasPrice: uint
+    accessList: Optional[List[AccessListEntry]] = msgspec.UNSET
+
+class Transaction1559(TransactionBase, tag="0x2"):  # type: ignore [call-arg]
+    maxFeePerGas: uint
+    maxPriorityFeePerGas: uint
+    accessList: Optional[List[AccessListEntry]] = msgspec.UNSET
+
+Transaction = Union[TransactionLegacy, Transaction2930, Transaction1559]
 
 
 class FeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
