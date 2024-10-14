@@ -15,6 +15,7 @@ from web3 import Web3
 from web3._utils.rpc_abi import RPC
 from web3.providers import HTTPProvider
 from web3.datastructures import AttributeDict
+from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
