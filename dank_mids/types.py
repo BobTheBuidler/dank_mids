@@ -4,10 +4,12 @@ import re
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     Iterator, List, Literal, Mapping, NewType, Optional, Set, 
-                    Tuple, TypedDict, TypeVar, Union, overload)
+                    Tuple, Type, TypedDict, TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
+from eth_utils import to_checksum_address
+from hexbytes import HexBytes
 from web3._utils.rpc_abi import RPC
 from web3._utils.method_formatters import PYTHONIC_RESULT_FORMATTERS
 from web3.datastructures import AttributeDict
@@ -211,16 +213,20 @@ _dict_responses: Set[str] = set()
 _str_responses: Set[str] = set()
 
 
+class Address(str):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(to_checksum_address(args[0]), *args[1:], **kwargs)
+
 class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
     removed: Optional[bool]
-    logIndex: Optional[str]
-    transactionIndex: Optional[str]
-    transactionHash: str
-    blockHash: Optional[str]
-    blockNumber: Optional[str]
-    address: Optional[str]
-    data: Optional[str]
-    topics: Optional[List[str]]
+    logIndex: Optional[int]
+    transactionIndex: Optional[int]
+    transactionHash: HexBytes
+    blockHash: Optional[HexBytes]
+    blockNumber: Optional[int]
+    address: Optional[Address]
+    data: Optional[HexBytes]
+    topics: Optional[List[HexBytes]]
 
 # bypass the web3.py formatters for logs
 [PYTHONIC_RESULT_FORMATTERS.pop(x) for x in [RPC.eth_getFilterChanges, RPC.eth_getFilterLogs, RPC.eth_getLogs]]
@@ -393,7 +399,7 @@ class PartialResponse(_DictStruct, frozen=True):
         if method and (typ := _RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
                 try:
-                    return msgspec.json.decode(self.result, type=typ)
+                    return msgspec.json.decode(self.result, type=typ, dec_hook=_decode_hook)
                 except (msgspec.ValidationError, TypeError) as e:
                     raise ValueError(
                         e,
@@ -401,7 +407,7 @@ class PartialResponse(_DictStruct, frozen=True):
                     ).with_traceback(e.__traceback__) from e
             try:
                 start = time()
-                decoded = msgspec.json.decode(self.result, type=typ)
+                decoded = msgspec.json.decode(self.result, type=typ, dec_hook=_decode_hook)
                 if _caller:
                     stats.log_duration(f'decoding {type(_caller)} {method}', start)
                 return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
@@ -494,3 +500,8 @@ def _encode_hook(obj: Any) -> Any:
     if isinstance(obj, AttributeDict):
         return dict(obj)
     raise NotImplementedError(type(obj))
+
+def _decode_hook(typ: Type, obj: str):
+    if typ in (Address, HexBytes):
+        return typ(obj)
+    raise TypeError(typ)
