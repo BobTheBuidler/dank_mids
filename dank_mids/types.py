@@ -88,6 +88,9 @@ class _DictStruct(msgspec.Struct):
         """A Struct will always exist."""
         return True
     
+    def __contains__(self, key: str) -> bool:
+        return key in self.__struct_fields__
+    
     def __getitem__(self, attr: str) -> Any:
         """
         Lookup an attribute value via dictionary-style access.
