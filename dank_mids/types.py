@@ -301,7 +301,6 @@ def bypass_web3py_tx_formatters():
 
 bypass_web3py_log_formatters()
 bypass_web3py_transaction_receipt_formatter()
-bypass_web3py_block_formatters()
 bypass_web3py_tx_formatters()
 
 
