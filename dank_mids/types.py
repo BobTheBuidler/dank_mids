@@ -275,8 +275,8 @@ class _TransactionBase(_DictStruct, frozen=True):  # type: ignore [call-arg]
     transactionIndex: uint
     # signature
     v: uint
-    r: uint
-    s: uint
+    r: HexBytes
+    s: HexBytes
 
 class TransactionLegacy(_TransactionBase, tag="0x0"):  # type: ignore [call-arg]
     gasPrice: uint
