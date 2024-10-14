@@ -268,6 +268,7 @@ def _replace(obj: Any, name: str, value: Any) -> None:
     setattr(obj, name, value)
 
 bypass_web3py_log_formatters()
+bypass_web3py_transaction_receipt_formatter()
 
 class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: Address
