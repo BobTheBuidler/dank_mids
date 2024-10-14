@@ -54,7 +54,7 @@ def bypass_getbalance_formatter(eth: Type[BaseEth]) -> None:
     eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[eth.block_id_munger])
 
 def bypass_blocknumber_formatter(eth: Type[BaseEth]) -> None:
-    eth.get_block_number = MethodNoFormat(RPC.eth_getBalance, mungers=None)
+    eth.get_block_number = MethodNoFormat(RPC.eth_blockNumber, mungers=None)
 
 def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
     eth._get_transaction_count = MethodNoFormat(RPC.eth_getTransactionCount, mungers=[eth.block_id_munger])
