@@ -70,7 +70,21 @@ _nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuf
 """A type alias for a nested dictionary structure."""
 
 class _DictStruct(msgspec.Struct):
-    """A base class enhancing :class:`~msgspec.Struct` with additional dictionary-like functionality."""
+    """
+    A base class that extends the :class:`~msgspec.Struct` class to provide dictionary-like access to struct fields.
+
+    Allows iteration over the fields of a struct and provides a dictionary-like interface for retrieving values by field name.
+
+    Example:
+        >>> class MyStruct(_DictStruct):
+        ...     field1: str
+        ...     field2: int
+        >>> s = MyStruct(field1="value", field2=42)
+        >>> list(s.keys())
+        ['field1', 'field2']
+        >>> s['field1']
+        'value'
+    """
 
     def to_dict(self) -> Dict[str, Any]:
             """Returns a complete dictionary representation of this ``Struct``'s attributes and values."""
@@ -87,10 +101,13 @@ class _DictStruct(msgspec.Struct):
     
     def __getitem__(self, attr: str) -> Any:
         """
-        Allow dictionary-style access to attributes.
+        Lookup an attribute value via dictionary-style access.
 
         Args:
             attr: The name of the attribute to access.
+        
+        Raises:
+            KeyError: If the provided key is not a member of the struct.
 
         Returns:
             The value of the attribute.
@@ -142,6 +159,12 @@ class _DictStruct(msgspec.Struct):
         return len(list(self))
 
     def keys(self) -> Iterator[str]:
+        """
+        Returns an iterator over the field names of the struct.
+
+        Returns:
+            An iterator over the field names.
+        """
         yield from self
 
     def items(self) -> Iterator[Tuple[str, Any]]:
@@ -153,6 +176,12 @@ class _DictStruct(msgspec.Struct):
                 continue
     
     def values(self) -> Iterator[Any]:
+        """
+        Returns an iterator over the struct's field values.
+
+        Returns:
+            An iterator over the field values.
+        """
         for key in self.__struct_fields__:
             try:
                 yield getattr(self, key)
@@ -245,7 +274,7 @@ class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
     address: Address
     storageKeys: List[HexBytes]
 
-class TransactionBase(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class _TransactionBase(_DictStruct, frozen=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
     nonce: uint
     to: Optional[Address]  # null for contract deployments
@@ -264,14 +293,14 @@ class TransactionBase(_DictStruct, frozen=True):  # type: ignore [call-arg]
     r: uint
     s: uint
 
-class TransactionLegacy(TransactionBase, tag="0x0"):  # type: ignore [call-arg]
+class TransactionLegacy(_TransactionBase, tag="0x0"):  # type: ignore [call-arg]
     gasPrice: uint
 
-class Transaction2930(TransactionBase, tag="0x1"):  # type: ignore [call-arg]
+class Transaction2930(_TransactionBase, tag="0x1"):  # type: ignore [call-arg]
     gasPrice: uint
     accessList: Optional[List[AccessListEntry]] = msgspec.UNSET
 
-class Transaction1559(TransactionBase, tag="0x2"):  # type: ignore [call-arg]
+class Transaction1559(_TransactionBase, tag="0x2"):  # type: ignore [call-arg]
     maxFeePerGas: uint
     maxPriorityFeePerGas: uint
     accessList: Optional[List[AccessListEntry]] = msgspec.UNSET
