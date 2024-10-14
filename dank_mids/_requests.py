@@ -647,7 +647,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         stats.log_duration(f"multicall decoding for {len(self)} calls", start)
         # Raise any Exceptions that may have come out of the process pool.
         if isinstance(retval, Exception):
-            raise retval.__class__(*retval.args, self.request.to_dict(), f"response: {data.to_dict()}", f"error: {data.error.to_dict() if data.error else None}")
+            raise retval.__class__(
+                *retval.args, 
+                self.request, 
+                f"response: {data}", 
+            )
         return retval
     
     @set_done
