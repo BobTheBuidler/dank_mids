@@ -22,6 +22,7 @@ from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 
+from dank_mids._method import bypass_formatters
 from dank_mids.types import AsyncMiddleware
 
 if TYPE_CHECKING:
@@ -58,6 +59,9 @@ class DankEth(AsyncEth):
     async def get_block_number(self) -> BlockNumber:  # type: ignore [override]
         return await super().get_block_number()  # type: ignore [misc]
     
+# TODO: this is super hacky, make it not.
+bypass_formatters(DankEth)
+
 class DankWeb3:
     """This is just a helper for type checkers. Your object will just be a modified :class:`~web3.Web3` object."""
     eth: DankEth

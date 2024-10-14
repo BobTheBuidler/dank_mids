@@ -1,10 +1,10 @@
 
-from contextlib import suppress
 from importlib.metadata import version
-from typing import Any, Tuple
+from typing import Tuple, Type
 
 from typing_extensions import Self
-from web3 import Web3
+from web3.eth import BaseEth
+from web3._utils.method_formatters import ERROR_FORMATTERS, NULL_RESULT_FORMATTERS
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.method import Method, _apply_request_formatters, default_root_munger
@@ -34,13 +34,12 @@ class MethodNoFormat(Method):
                 params = []
 
         method = self.method_selector_fn()
-        response_formatters = (return_as_is,
-                               self.error_formatters(method),
-                               self.null_result_formatters(method),)
-
-        request = (method,
-                   _apply_request_formatters(params, self.request_formatters(method)))
-
+        request = (method, _apply_request_formatters(params, self.request_formatters(method)))
+        response_formatters = (
+            return_as_is, 
+            ERROR_FORMATTERS.get(self.json_rpc_method, return_as_is), 
+            NULL_RESULT_FORMATTERS.get(self.json_rpc_method, return_as_is),
+        )
         return request, response_formatters
 
     @classmethod
@@ -48,48 +47,39 @@ class MethodNoFormat(Method):
         return cls(method, [default_root_munger])
 
 
-def bypass_chainid_formatter(w3: Web3) -> None:
-    w3.eth._chain_id = MethodNoFormat(RPC.eth_chainId, mungers=None)
+def bypass_chainid_formatter(eth: Type[BaseEth]) -> None:
+    eth._chain_id = MethodNoFormat(RPC.eth_chainId, mungers=None)
 
-def bypass_getbalance_formatter(w3: Web3) -> None:
-    w3.eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[w3.eth.block_id_munger])
+def bypass_getbalance_formatter(eth: Type[BaseEth]) -> None:
+    eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[w3.eth.block_id_munger])
 
-def bypass_blocknumber_formatter(w3: Web3) -> None:
-    w3.eth.get_block_number = MethodNoFormat(RPC.eth_getBalance, mungers=None)
+def bypass_blocknumber_formatter(eth: Type[BaseEth]) -> None:
+    eth.get_block_number = MethodNoFormat(RPC.eth_getBalance, mungers=None)
 
-def bypass_transaction_count_formatter(w3: Web3) -> None:
-    w3.eth._get_transaction_count = MethodNoFormat(RPC.eth_getTransactionCount, mungers=[w3.eth.block_id_munger])
+def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
+    eth._get_transaction_count = MethodNoFormat(RPC.eth_getTransactionCount, mungers=[w3.eth.block_id_munger])
 
-def bypass_log_formatter(w3: Web3):
-    w3.eth._get_logs = MethodNoFormat.make(RPC.eth_getLogs)
-    w3.eth.get_filter_logs = MethodNoFormat.make(RPC.eth_getFilterLogs)
-    w3.eth.get_filter_changes = MethodNoFormat.make(RPC.eth_getFilterChanges)
+def bypass_log_formatter(eth: Type[BaseEth]) -> None:
+    eth._get_logs = MethodNoFormat.make(RPC.eth_getLogs)
+    eth.get_filter_logs = MethodNoFormat.make(RPC.eth_getFilterLogs)
+    eth.get_filter_changes = MethodNoFormat.make(RPC.eth_getFilterChanges)
 
-def bypass_transaction_receipt_formatter(w3: Web3):
+def bypass_transaction_receipt_formatter(eth: Type[BaseEth]) -> None:
     attr_name = '_transaction_receipt' if WEB3_MAJOR_VERSION >= 6 else '_get_transaction_receipt'
-    setattr(w3.eth, attr_name, MethodNoFormat.make(RPC.eth_getTransactionReceipt))
+    setattr(eth, attr_name, MethodNoFormat.make(RPC.eth_getTransactionReceipt))
 
-def bypass_transaction_formatter(w3: Web3):
-    w3.eth._get_transaction = MethodNoFormat.make(RPC.eth_getTransactionByHash)
+def bypass_transaction_formatter(eth: Type[BaseEth]) -> None:
+    eth._get_transaction = MethodNoFormat.make(RPC.eth_getTransactionByHash)
 
-
-def _replace(obj: Any, name: str, value: MethodNoFormat) -> None:
-    if not isinstance(value, MethodNoFormat):
-        raise TypeError(value, type(value))
-    with suppress(TypeError):
-        if not hasattr(obj, name):
-            raise AttributeError(obj, name)
-    setattr(obj, name, value)
-
-def bypass_web3py_block_formatters(w3: Web3):
+def bypass_web3py_block_formatters(eth: Type[BaseEth]) -> None:
     if WEB3_MAJOR_VERSION >= 6:
-        w3.eth._get_block = MethodNoFormat(
+        eth._get_block = MethodNoFormat(
             method_choice_depends_on_args=select_method_for_block_identifier(
                 if_predefined=RPC.eth_getBlockByNumber,
                 if_hash=RPC.eth_getBlockByHash,
                 if_number=RPC.eth_getBlockByNumber,
             ),
-            mungers=[w3.eth.get_block_munger]
+            mungers=[eth.get_block_munger]
         )
     else:
         from web3.types import BlockIdentifier
@@ -99,7 +89,7 @@ def bypass_web3py_block_formatters(w3: Web3):
         ) -> Tuple[BlockIdentifier, bool]:
             return (block_identifier, full_transactions)
         
-        w3.eth._get_block = MethodNoFormat(
+        eth._get_block = MethodNoFormat(
             method_choice_depends_on_args=select_method_for_block_identifier(
                 if_predefined=RPC.eth_getBlockByNumber,
                 if_hash=RPC.eth_getBlockByHash,
@@ -119,6 +109,6 @@ skip_formatters = (
     bypass_transaction_formatter,
 )
 
-def bypass_formatters(w3: Web3) -> None:
+def bypass_formatters(eth: Type[BaseEth]) -> None:
     for skip in skip_formatters:
-        skip(w3)
+        skip(eth)
