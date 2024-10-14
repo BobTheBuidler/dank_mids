@@ -245,7 +245,6 @@ class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type:
     logsBloom: str
     contractAddress: Optional[str]
     transactionIndex: Optional[str]
-    returnCode: str
     effectiveGasPrice: str
     gasUsed: str
     cumulativeGasUsed: str
