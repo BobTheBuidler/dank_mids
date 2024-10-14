@@ -6,7 +6,8 @@ from web3._utils.blocks import select_method_for_block_identifier
 from web3.eth import AsyncEth
 
 from dank_mids._method import MethodNoFormat, bypass_formatters, _block_selectors
-from dank_mids.types import _Timestampped, uint
+from dank_mids.structs.block import _Timestamped
+from dank_mids.structs.data import uint
 
 
 class DankEth(AsyncEth):
@@ -16,7 +17,7 @@ class DankEth(AsyncEth):
     
     async def get_block_timestamp(self, block_identifier: int) -> uint:
         raw = await self._get_block_raw(block_identifier)
-        return msgspec.json.decode(raw, type=_Timestampped).timestamp
+        return msgspec.json.decode(raw, type=_Timestamped).timestamp
     
     _get_block_raw = MethodNoFormat(
         method_choice_depends_on_args=select_method_for_block_identifier(**{k:f"{v}_raw" for k, v in _block_selectors.items()}),

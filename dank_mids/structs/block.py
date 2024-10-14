@@ -23,10 +23,10 @@ class StakingWithdrawal(DictStruct, frozen=True):  # type: ignore [call-arg]
     validatorIndex: uint = msgspec.UNSET
     """This field is not always present."""
 
-class _Timestampped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
+class _Timestamped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     timestamp: uint
 
-class _BlockHeaderBase(_Timestampped, frozen=True):  # type: ignore [call-arg]
+class _BlockHeaderBase(_Timestamped, frozen=True):  # type: ignore [call-arg]
     parentHash: HexBytes
 
 class TinyBlock(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
