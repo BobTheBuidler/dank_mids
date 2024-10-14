@@ -57,7 +57,7 @@ class DankMiddlewareController:
         self.w3: Web3 = w3
         """The Web3 instance used to make rpc requests."""
 
-        self.sync_w3 = _sync_w3_from_async(w3)
+        self.sync_w3 = _helpers._sync_w3_from_async(w3)
         """A sync Web3 instance connected to the same rpc, used to make calls during init."""
 
         self.chain_id = self.sync_w3.eth.chain_id
