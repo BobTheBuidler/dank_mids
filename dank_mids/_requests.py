@@ -204,7 +204,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 if self.raw:
                     return {"result": response.result}
                 response_dict = response.to_dict(self.method)
-                assert isinstance(response_dict, dict), (response_dict, type(response_dict))
+                assert "result" in response_dict or "error" in response_dict, (response_dict, type(response_dict))
                 return response_dict
             
             if response.error.message.lower() in ['invalid request', 'parse error']:
@@ -232,7 +232,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             _raise_more_detailed_exc(self.request, self.response)
         # Less optimal decoding
         # TODO: refactor this out
-        assert isinstance(self.response, dict), (self.response, type(self.response))
+        assert "result" in self.response or "error" in self.response, (self.response, type(self.response))
         return self.response
     
     @set_done
@@ -249,8 +249,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
             for task in done:
                 return await task
         response = self.response.decode(partial=True)
-        retval = response.result if self.raw else response.to_dict(self.method)
-        assert isinstance(retval, dict), (retval, type(retval))
+        retval = {'result': response.result} if self.raw else response.to_dict(self.method)
+        assert "result" in retval or "error" in retval, (retval, type(retval))
         return retval
     
     @set_done
@@ -311,7 +311,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             method += "_raw"
         retval = await self.controller(method, self.params)
         await self.semaphore.acquire()
-        assert isinstance(retval, dict), (retval, type(retval))
+        assert "result" in retval or "error" in retval, (retval, type(retval))
         return retval
 
 
