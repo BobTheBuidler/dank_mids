@@ -222,13 +222,16 @@ class Address(str):
 def checksum(address: str) -> Address:
     return Address(address)
 
+class uint(int):
+    ...
+
 class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
     removed: Optional[bool]
-    logIndex: Optional[int]
-    transactionIndex: Optional[int]
+    logIndex: Optional[uint]
+    transactionIndex: Optional[uint]
     transactionHash: HexBytes
     blockHash: Optional[HexBytes]
-    blockNumber: Optional[int]
+    blockNumber: Optional[uint]
     address: Optional[Address]
     data: Optional[HexBytes]
     topics: Optional[List[HexBytes]]
@@ -517,6 +520,6 @@ def _decode_hook(typ: Type, obj: str):
         return HexBytes(obj)
     elif typ is Address:
         return checksum(obj)
-    elif typ is int and isinstance(obj, str):
-        return int(obj, 16)
+    elif typ is uint:
+        return uint(obj, 16)
     raise TypeError(typ)
