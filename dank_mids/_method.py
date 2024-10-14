@@ -52,13 +52,13 @@ def bypass_chainid_formatter(w3: Web3) -> None:
     w3.eth._chain_id = MethodNoFormat(RPC.eth_chainId, mungers=None)
 
 def bypass_getbalance_formatter(w3: Web3) -> None:
-    w3.eth._get_balance = MethodNoFormat.make(RPC.eth_getBalance)
+    w3.eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[w3.eth.block_id_munger])
 
 def bypass_blocknumber_formatter(w3: Web3) -> None:
-    w3.eth._block_number = MethodNoFormat.make(RPC.eth_getBalance)
+    w3.eth.get_block_number = MethodNoFormat(RPC.eth_getBalance, mungers=None)
 
 def bypass_transaction_count_formatter(w3: Web3) -> None:
-    w3.eth._transaction_count = MethodNoFormat.make(RPC.eth_getTransactionCount)
+    w3.eth._get_transaction_count = MethodNoFormat(RPC.eth_getTransactionCount, mungers=[w3.eth.block_id_munger])
 
 def bypass_log_formatter(w3: Web3):
     w3.eth._get_logs = MethodNoFormat.make(RPC.eth_getLogs)
