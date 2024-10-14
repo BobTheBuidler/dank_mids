@@ -36,16 +36,16 @@ class Log(SmallLog, frozen=True):  # type: ignore [call-arg]
     @cached_property
     def transactionHash(self) -> HexBytes:
         return msgspec.json.decode(self._transactionHash, type=HexBytes, dec_hook=_decode_hook)
+    _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
+    @cached_property
+    def transactionIndex(self) -> Optional[uint]:
+        return msgspec.json.decode(self._transactionIndex, type=Optional[uint], dec_hook=_decode_hook)
     @cached_property
     def logIndex(self) -> Optional[uint]:
         return msgspec.json.decode(self._logIndex, type=Optional[uint], dec_hook=_decode_hook)
 
 class FullLog(Log, frozen=True):  # type: ignore [call-arg]
     _blockHash: msgspec.Raw = msgspec.field(name="blockHash")
-    _transactionIndex: msgspec.Raw = msgspec.field(name="transactionIndex")
     @cached_property
     def blockHash(self) -> Optional[HexBytes]:
         return msgspec.json.decode(self._blockHash, type=Optional[HexBytes], dec_hook=_decode_hook)
-    @cached_property
-    def transactionIndex(self) -> Optional[uint]:
-        return msgspec.json.decode(self._transactionIndex, type=Optional[uint], dec_hook=_decode_hook)
