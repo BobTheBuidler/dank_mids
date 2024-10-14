@@ -2,6 +2,7 @@
 import logging
 import re
 from cachetools.func import ttl_cache
+from contextlib import suppress
 from importlib.metadata import version
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
@@ -254,8 +255,9 @@ def _make_method(method: RPC) -> Method:
     return Method(method, [default_root_munger])
 
 def _replace(obj: Any, name: str, value: Any) -> None:
-    if not hasattr(obj, name):
-        raise AttributeError(obj, name)
+    with suppress(TypeError):
+        if not hasattr(obj, name):
+            raise AttributeError(obj, name)
     setattr(obj, name, value)
 
 bypass_web3py_log_formatters()
