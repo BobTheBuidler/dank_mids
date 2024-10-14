@@ -12,12 +12,12 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.8,<3.13"
 aiofiles = "*"
-eth-retry = "^0.1.15"
+eth-retry = ">=0.1.15,<2"
 ez-a-sync = ">=0.20.7,<0.24"
 msgspec = "*"
 multicall = ">=0.6.2,<1"
 typed-envs = ">=0.0.2"
-web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<7"
+web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<8"
 
 [tool.poetry.group.dev.dependencies]
 eth-brownie = [
