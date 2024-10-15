@@ -54,6 +54,8 @@ class TransactionReceipt(LazyDictStruct, frozen=True, forbid_unknown_fields=True
     """This field is only present on Optimism."""
     l1GasUsed: uint = msgspec.UNSET
     """This field is only present on Optimism."""
+    l1GasPrice: uint = msgspec.UNSET
+    """This field is only present on Optimism."""
     l1Fee: uint = msgspec.UNSET
     """This field is only present on Optimism."""
 
