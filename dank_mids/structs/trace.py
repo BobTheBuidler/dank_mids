@@ -1,5 +1,6 @@
 
 from decimal import Decimal
+from enum import IntEnum
 from functools import cached_property
 from typing import List, Literal, Optional
 
@@ -10,13 +11,17 @@ from dank_mids.structs.data import Address, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
 
+class CallType(IntEnum):
+    call = 0
+    delegatecall = 1
+
 class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     The action performed, parity style.
     """
 
-    callType: Literal["call", "delegatecall"]
-    """The type of the call, either call or delegatecall."""
+    callType: CallType
+    """The type of the call."""
 
     _sender: Raw = field(name="from")
     """The sender address."""
@@ -72,6 +77,11 @@ class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, 
     """The amount of gas used by this transaction."""
 
 
+class Type(IntEnum):
+    call = 0
+    create = 1
+    reward = 2
+
 class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     blockNumber: uint
     """The number of the block where this action happened."""
@@ -88,8 +98,8 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     traceAddress: List[uint]
     """The trace addresses (array) where the call executed (every contract where code was executed)."""
 
-    type: Literal["call", "create", "reward"]
-    """The type of the transaction like call or create or reward."""
+    type: Type
+    """The type of the transaction."""
 
     _subtraces: Raw = field(name="subtraces")
     """The number of traces of internal transactions that happened during this transaction."""
