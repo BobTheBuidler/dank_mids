@@ -16,7 +16,9 @@ def checksum(address: str) -> Address:
     return Address(address)
 
 class uint(int):
-    ...
+    @classmethod
+    def _decode_hook(cls, typ: Type["uint"], obj: str):
+        return cls(obj, 16)
 
 def _decode_hook(typ: Type, obj: str):
     if typ is HexBytes:

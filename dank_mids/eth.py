@@ -10,7 +10,7 @@ from web3.eth import AsyncEth
 from dank_mids._method import MethodNoFormat, bypass_formatters, _block_selectors
 from dank_mids.structs import Transaction
 from dank_mids.structs.block import Timestamped, TinyBlock
-from dank_mids.structs.data import uint
+from dank_mids.structs.data import uint, _decode_hook
 
 
 class DankEth(AsyncEth):
@@ -39,7 +39,7 @@ class DankEth(AsyncEth):
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
-        return msgspec.json.decode(await self._get_block_raw(block_identifier), type=Timestamped).timestamp
+        return msgspec.json.decode(await self._get_block_raw(block_identifier), type=Timestamped, dec_hook=uint._decode_hook).timestamp
 
     async def get_transactions(self, block_identifier: int, hashes_only: bool = False) -> List[Transaction]:
         """
@@ -57,7 +57,7 @@ class DankEth(AsyncEth):
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
-        return msgspec.json.decode(await self._get_block_raw(block_identifier, not hashes_only), type=TinyBlock).transactions
+        return msgspec.json.decode(await self._get_block_raw(block_identifier, not hashes_only), type=TinyBlock, dec_hook=_decode_hook).transactions
 
     
 # TODO: this is super hacky, make it not.
