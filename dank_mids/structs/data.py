@@ -41,12 +41,7 @@ class Status(IntEnum):
         return cls._decode(obj)
     @classmethod
     def _decode(cls, obj) -> "Status":
-        try:
-            return cls(int(obj, 16))
-        except TypeError as e:
-            if str(e) == "int() can't convert non-string with explicit base":
-                return Status(int(obj))
-            raise
+        return Status(uint._decode(obj))
 
 def _decode_hook(typ: Type, obj: str):
     if typ is HexBytes:
