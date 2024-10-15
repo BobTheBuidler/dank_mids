@@ -42,7 +42,7 @@ def _enum_decode_hook(cls: Type[IntEnum], obj: Union[str, int]) -> IntEnum:
 def _decode_enum(cls: Type[IntEnum], obj: Union[str, int]) -> "IntEnum":
     try:
         return cls(uint._decode(obj))
-    except TypeError:
+    except Exception:
         return getattr(cls, obj)
 
 def _decode_hook(typ: Type, obj: str):
