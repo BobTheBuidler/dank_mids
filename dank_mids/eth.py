@@ -64,11 +64,11 @@ class DankEth(AsyncEth):
         """
         return msgspec.json.decode(await self._get_block_raw(block_identifier, not hashes_only), type=TinyBlock, dec_hook=_decode_hook).transactions
 
-    async def trace_filter(self, params) -> List[FilterTrace]:
-        return await self._trace_filter(params)
+    async def trace_filter(self, filter_params: TraceFilterParams) -> List[FilterTrace]:
+        return await self._trace_filter(filter_params)
     
-    async def trace_transaction(self, params) -> List[FilterTrace]:
-        return await self._trace_transaction(params)
+    async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
+        return await self._trace_transaction(transaction_hash)
     
     _get_block_raw = MethodNoFormat(
         method_choice_depends_on_args=select_method_for_block_identifier(**{k:f"{v}_raw" for k, v in _block_selectors.items()}),
