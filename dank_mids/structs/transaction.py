@@ -130,7 +130,7 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
 
     @cached_property
     def value(self) -> Decimal:
-        """The value transferred in wei encoded as hexadecimal."""
+        """The value transferred in wei."""
         return Decimal(json.decode(self._value, type=uint, dec_hook=uint._decode_hook)) / 10 ** 18
 
     @cached_property
