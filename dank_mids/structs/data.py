@@ -10,6 +10,9 @@ from eth_utils import to_checksum_address
 class Address(str):
     def __new__(cls, address: str):
         return super().__new__(cls, to_checksum_address(address))
+    @classmethod
+    def _decode_hook(cls, typ: Type["Address"], obj: str):
+        return checksum(obj)
 
 @ttl_cache(ttl=600)
 def checksum(address: str) -> Address:
@@ -28,3 +31,5 @@ def _decode_hook(typ: Type, obj: str):
     elif typ is uint:
         return uint(obj, 16)
     raise TypeError(typ)
+
+_decode_hexbytes = lambda _, obj: HexBytes(obj)
