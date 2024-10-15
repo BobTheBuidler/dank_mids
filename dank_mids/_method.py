@@ -44,7 +44,7 @@ class MethodNoFormat(Method):
         return request, response_formatters
 
     @classmethod
-    def make(cls, method: RPC) -> Self:
+    def default(cls, method: RPC) -> Self:
         return cls(method, [default_root_munger])
 
 
@@ -61,16 +61,16 @@ def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
     eth._get_transaction_count = MethodNoFormat(RPC.eth_getTransactionCount, mungers=[eth.block_id_munger])
 
 def bypass_log_formatter(eth: Type[BaseEth]) -> None:
-    eth._get_logs = MethodNoFormat.make(RPC.eth_getLogs)
-    eth.get_filter_logs = MethodNoFormat.make(RPC.eth_getFilterLogs)
-    eth.get_filter_changes = MethodNoFormat.make(RPC.eth_getFilterChanges)
+    eth._get_logs = MethodNoFormat.default(RPC.eth_getLogs)
+    eth.get_filter_logs = MethodNoFormat.default(RPC.eth_getFilterLogs)
+    eth.get_filter_changes = MethodNoFormat.default(RPC.eth_getFilterChanges)
 
 def bypass_transaction_receipt_formatter(eth: Type[BaseEth]) -> None:
     attr_name = '_transaction_receipt' if WEB3_MAJOR_VERSION >= 6 else '_get_transaction_receipt'
-    setattr(eth, attr_name, MethodNoFormat.make(RPC.eth_getTransactionReceipt))
+    setattr(eth, attr_name, MethodNoFormat.default(RPC.eth_getTransactionReceipt))
 
 def bypass_transaction_formatter(eth: Type[BaseEth]) -> None:
-    eth._get_transaction = MethodNoFormat.make(RPC.eth_getTransactionByHash)
+    eth._get_transaction = MethodNoFormat.default(RPC.eth_getTransactionByHash)
 
 _block_selectors = dict(
     if_predefined=RPC.eth_getBlockByNumber,

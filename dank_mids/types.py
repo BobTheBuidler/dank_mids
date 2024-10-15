@@ -4,8 +4,8 @@ import re
 from functools import cached_property
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
-                    Iterable, Iterator, List, Literal, Mapping, NewType, Optional,
-                    Set, Tuple, Type, TypedDict, TypeVar, Union, overload)
+                    Iterable, Iterator, List, Literal, Mapping, NewType, NoReturn,
+                    Optional, Set, Tuple, Type, TypedDict, TypeVar, Union, overload)
 
 import msgspec
 from eth_typing import ChecksumAddress
@@ -15,7 +15,7 @@ from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import constants, stats
 from dank_mids._exceptions import BadResponse, ChainstackRateLimited, ExceedsMaxBatchSize, PayloadTooLarge
-from dank_mids.structs import Block, DictStruct, ErigonHeader, Log, Trace, Transaction, TransactionReceipt
+from dank_mids.structs import Block, DictStruct, ErigonHeader, FilterTrace, Log, Transaction, TransactionReceipt
 from dank_mids.structs.data import Address, uint, _decode_hook
 
 if TYPE_CHECKING:
@@ -134,7 +134,8 @@ _RETURN_TYPES = {
     "eth_getTransactionReceipt": TransactionReceipt, 
     #"erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
     "erigon_getHeaderByNumber": ErigonHeader,
-    "trace_filter": List[Trace],
+    "trace_filter": List[FilterTrace],
+    "trace_transaction": List[FilterTrace],
 }
 """
 A dictionary mapping RPC method names to their expected return types.
