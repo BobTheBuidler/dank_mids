@@ -40,10 +40,10 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     """The block number that contains the transaction."""
 
     _contractAddress: Raw = field(name="contractAddress")
-    """The contract address created, if the transaction was a contract creation, otherwise null."""
+    """The contract address created, if the transaction was a contract creation, otherwise `None`."""
 
     _transactionIndex: Raw = field(name="transactionIndex")
-    """The position of the transaction where this log originates from. null when it's a pending transaction."""
+    """The position of the transaction where this log originates from. `None` when it's a pending transaction."""
 
     _status: Raw = field(name="status")
     """1 if the transaction succeeded, 0 if it failed."""
@@ -69,12 +69,12 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
 
     @cached_property
     def contractAddress(self) -> Optional[Address]:
-        """The contract address created, if the transaction was a contract creation, otherwise null."""
+        """The contract address created, if the transaction was a contract creation, otherwise `None`."""
         return json.decode(self._transactionIndex, type=Optional[Address], dec_hook=Address._decode_hook)
 
     @cached_property
     def transactionIndex(self) -> uint:
-        """The position of the transaction where this log originates from. null when it's a pending transaction."""
+        """The position of the transaction where this log originates from. `None` when it's a pending transaction."""
         return json.decode(self._transactionIndex, type=uint, dec_hook=uint._decode_hook)
 
     @cached_property
@@ -111,7 +111,7 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
 
     This field is only present on Mainnet.
     """
-    
+
     blobGasUsed: uint = UNSET
     """This field is sometimes present, only on Mainnet."""
 
