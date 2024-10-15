@@ -40,7 +40,10 @@ def _enum_decode_hook(cls: Type[IntEnum], obj: Union[str, int]) -> IntEnum:
     return _decode_enum(cls, obj)
 
 def _decode_enum(cls: Type[IntEnum], obj: Union[str, int]) -> "IntEnum":
-    return cls(uint._decode(obj))
+    try:
+        return cls(uint._decode(obj))
+    except TypeError:
+        return getattr(cls, obj)
 
 def _decode_hook(typ: Type, obj: str):
     if typ is HexBytes:
