@@ -48,6 +48,8 @@ class TransactionReceipt(LazyDictStruct, frozen=True, forbid_unknown_fields=True
     # These fields are only present on Mainnet.
     effectiveGasPrice: uint = msgspec.UNSET
     """This field is only present on Mainnet."""
+    type: uint = msgspec.UNSET
+    """This field is only present on Mainnet."""
 
     # These fields are only present on Optimism.
     l1FeeScalar: uint = msgspec.UNSET
