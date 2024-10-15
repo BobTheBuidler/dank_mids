@@ -290,7 +290,15 @@ def _encode_hook(obj: Any) -> Any:
     Raises:
         NotImplementedError: If the object type is not supported for encoding.
     """
-    if isinstance(obj, AttributeDict):
-        return dict(obj)
+    try:
+        # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
+        return int(obj)
+    except TypeError:
+        if isinstance(obj, AttributeDict):
+            return dict(obj)
+    except ValueError:
+        # NOTE: The error is probably this if `obj` is a string:
+        # ValueError: invalid literal for int() with base 10:"""
+        pass
     raise NotImplementedError(type(obj))
 
