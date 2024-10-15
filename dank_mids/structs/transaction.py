@@ -1,4 +1,5 @@
 
+from decimal import Decimal
 from functools import cached_property
 from typing import Any, List, Optional, Union
 
@@ -87,8 +88,8 @@ class _TransactionBase(LazyDictStruct, frozen=True, forbid_unknown_fields=True):
         return msgspec.json.decode(self._gas, type=uint, dec_hook=uint._decode_hook)
 
     @cached_property
-    def value(self) -> uint:
-        return msgspec.json.decode(self._value, type=uint, dec_hook=uint._decode_hook)
+    def value(self) -> Decimal:
+        return Decimal(msgspec.json.decode(self._value, type=uint, dec_hook=uint._decode_hook)) / 10 ** 18
 
     @cached_property
     def blockNumber(self) -> uint:

@@ -28,10 +28,6 @@ class FilterTrace(LazyDictStruct, frozen=True, forbid_unknown_fields=True, omit_
     _result: Raw = field(name="result", default=UNSET)
 
     @property
-    def value_scaled(self) -> Decimal:
-        return Decimal(self.value) / 10 ** 18
-
-    @property
     def block(self) -> uint:
         return self.blockNumber
 
@@ -48,8 +44,8 @@ class FilterTrace(LazyDictStruct, frozen=True, forbid_unknown_fields=True, omit_
         return json.decode(self._address, type=Address, dec_hook=Address._decode_hook)
 
     @cached_property
-    def value(self) -> uint:
-        return json.decode(self._value, type=uint, dec_hook=uint._decode_hook)
+    def value(self) -> Decimal:
+        return Decimal(json.decode(self._value, type=uint, dec_hook=uint._decode_hook)) / 10 ** 18
 
     @cached_property
     def gas(self) -> uint:
