@@ -5,10 +5,9 @@ from typing import List, Optional
 import msgspec
 from hexbytes import HexBytes
 
-from dank_mids.structs.data import Address, uint, _decode_hexbytes, _decode_hook
+from dank_mids.structs.data import Address, Status, uint, _decode_hexbytes, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.log import Log
-from dank_mids.structs.transaction import Status
 
 class FeeStats(DictStruct, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     """Arbitrum includes this in the `feeStats` field of a tx receipt."""
