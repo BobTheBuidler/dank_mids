@@ -67,7 +67,7 @@ _nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuf
 """A type alias for a nested dictionary structure."""
     
 
-class PartialRequest(DictStruct, frozen=True):  # type: ignore [call-arg]
+class PartialRequest(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents a partial JSON-RPC request. 
     
@@ -101,7 +101,7 @@ class Request(PartialRequest):
     jsonrpc: Literal["2.0"] = "2.0"
     """The JSON-RPC version, always set to "2.0"."""
 
-class Error(DictStruct, frozen=True):  # type: ignore [call-arg]
+class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents an error in a JSON-RPC response.
     """
@@ -144,7 +144,7 @@ decoder_logger = logging.getLogger('dank_mids.decoder')
 
 _chainstack_429_msg = "You've exceeded the RPS limit available on the current plan."
 
-class PartialResponse(DictStruct, frozen=True):
+class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):
     """
     Represents a partial JSON-RPC response. 
     
@@ -235,7 +235,7 @@ class PartialResponse(DictStruct, frozen=True):
         raise TypeError(f"type {type(decoded)} is not supported.  method: {method}  decoded: {decoded}")
         
 
-class Response(PartialResponse):
+class Response(PartialResponse, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents a complete JSON-RPC response.
     
