@@ -9,6 +9,7 @@ from hexbytes import HexBytes
 from dank_mids.structs.data import Address, uint, _decode_hexbytes
 from dank_mids.structs.dict import LazyDictStruct
 
+
 class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     """
     The :class:`~structs.AccessListEntry` class represents an entry in an Ethereum transaction access list.
