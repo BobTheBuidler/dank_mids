@@ -23,13 +23,10 @@ class StakingWithdrawal(DictStruct, frozen=True, omit_defaults=True, repr_omit_d
     validatorIndex: uint = msgspec.UNSET
     """This field is not always present."""
 
-class _Timestamped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
+class Timestamped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     timestamp: uint
 
-class _BlockHeaderBase(_Timestamped, frozen=True):  # type: ignore [call-arg]
-    parentHash: HexBytes
-
-class TinyBlock(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
+class TinyBlock(Timestamped, frozen=True):  # type: ignore [call-arg]
     _transactions: msgspec.Raw = msgspec.field(name="transactions")
     @cached_property
     def transactions(self) -> List[Union[HexBytes, Transaction]]:
@@ -49,6 +46,7 @@ class Block(TinyBlock, frozen=True, omit_defaults=True, repr_omit_defaults=True)
     gasLimit: uint
     gasUsed: uint
     extraData: HexBytes
+    parentHash: HexBytes
     mixHash: HexBytes
     nonce: uint
     size: uint
@@ -64,7 +62,8 @@ class Block(TinyBlock, frozen=True, omit_defaults=True, repr_omit_defaults=True)
         """This field is only present on Ethereum."""
         return msgspec.json.decode(self._withdrawals, type=List[StakingWithdrawal], dec_hook=_decode_hook)
     
-class ErigonHeader(_BlockHeaderBase, frozen=True):  # type: ignore [call-arg]
+class ErigonHeader(Timestamped, frozen=True):  # type: ignore [call-arg]
+    parentHash: HexBytes
     uncleHash: HexBytes
     coinbase: Address
     root: HexBytes

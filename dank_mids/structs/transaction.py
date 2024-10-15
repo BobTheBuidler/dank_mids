@@ -9,13 +9,32 @@ from dank_mids.structs.data import Address, uint, _decode_hook
 from dank_mids.structs.dict import LazyDictStruct
 
 class AccessListEntry(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
+    """
+    The :class:`~structs.AccessListEntry` class represents an entry in an Ethereum transaction access list.
+
+    Access lists are used in EIP-2930 and EIP-1559 transactions to specify storage slots
+    that the transaction plans to access, potentially reducing gas costs.
+
+    Example:
+        >>> entry = AccessListEntry(...)
+        >>> access_list_entry.address
+        '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        >>> len(access_list_entry.storage_keys)
+        2
+    """
     _address: msgspec.Raw = msgspec.field(name="address")
     _storageKeys: msgspec.Raw = msgspec.field(name="storageKeys")
     @cached_property
     def address(self) -> Address:
+        """
+        The Ethereum address of the contract whose storage is being accessed.
+        """
         return msgspec.json.decode(self._address, type=Address, dec_hook=_decode_hook)
     @cached_property
     def storageKeys(self) -> List[HexBytes]:
+        """
+        The specific storage slot keys within the contract that will be accessed.
+        """
         return msgspec.json.decode(self._storageKeys, type=List[HexBytes], dec_hook=_decode_hook)
 
 class _TransactionBase(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
@@ -40,11 +59,11 @@ class _TransactionBase(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
 
     def __getitem__(self, key: str) -> Any:
         try:
-            return super().__getitem__(key)
-        except KeyError:
+            return getattr(self, key)
+        except AttributeError:
             if key == "from":
                 return self.sender
-            raise
+            raise KeyError(key) from None
 
     @cached_property
     def blockHash(self) -> HexBytes:
