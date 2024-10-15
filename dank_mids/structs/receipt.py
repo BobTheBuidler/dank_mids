@@ -37,16 +37,25 @@ class TransactionReceipt(LazyDictStruct, frozen=True, omit_defaults=True, repr_o
     logsBloom: HexBytes
     contractAddress: Optional[Address]
     transactionIndex: Optional[uint]
-    #returnCode: str
-    effectiveGasPrice: uint
     gasUsed: uint
     cumulativeGasUsed: uint
-    #returnData: str
     _logs: msgspec.Raw = msgspec.field(name="logs")
     
     @cached_property
     def logs(self) -> List[Log]:
         return msgspec.json.decode(self._logs, type=List[Log], dec_hook=_decode_hook)
+
+    # These fields are only present on Mainnet.
+    effectiveGasPrice: uint = msgspec.UNSET
+    """This field is only present on Mainnet."""
+
+    # These fields are only present on Optimism.
+    l1FeeScalar: uint = msgspec.UNSET
+    """This field is only present on Optimism."""
+    l1GasUsed: uint = msgspec.UNSET
+    """This field is only present on Optimism."""
+    l1Fee: uint = msgspec.UNSET
+    """This field is only present on Optimism."""
 
     # These fields are only present on Arbitrum.
     l1BlockNumber: uint = msgspec.UNSET
