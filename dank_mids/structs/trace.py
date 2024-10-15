@@ -12,9 +12,9 @@ from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
 class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     callType: Literal["call", "delegatecall"]
-    _sender: Address = field(name="from")
-    _to: Address
-    _author: Address = field(name="author", default=UNSET)
+    _sender: Raw = field(name="from")
+    _to: Raw
+    _author: Raw = field(name="author", default=UNSET)
     input: HexBytes
     gas: uint
     rewardType: Optional[Literal["block", "uncle"]] = None

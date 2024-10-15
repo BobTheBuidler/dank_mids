@@ -5,7 +5,7 @@ from typing import List, Optional
 import msgspec
 from hexbytes import HexBytes
 
-from dank_mids.structs.data import Address, uint, _decode_hook
+from dank_mids.structs.data import Address, uint, _decode_hexbytes, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.log import Log
 
@@ -30,16 +30,44 @@ class ArbitrumFeeStats(DictStruct, frozen=True, forbid_unknown_fields=True, omit
     prices: FeeStats = msgspec.UNSET
     """The breakdown of gas prices for the transaction."""
 
+
 class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
-    transactionHash: HexBytes
-    blockHash: HexBytes
-    blockNumber: uint
-    logsBloom: HexBytes
-    contractAddress: Optional[Address]
-    transactionIndex: Optional[uint]
-    gasUsed: uint
-    cumulativeGasUsed: uint
+    _transactionHash: HexBytes
+    _blockNumber: uint
+    _contractAddress: Optional[Address]
+    _transactionIndex: Optional[uint]
+    _status: msgspec.Raw = msgspec.field(name="status")
+    _gasUsed: msgspec.Raw = msgspec.field(name="gasUsed")
+    _cumulativeGasUsed: msgspec.Raw = msgspec.field(name="cumulativeGasUsed")
     _logs: msgspec.Raw = msgspec.field(name="logs")
+
+    @cached_property
+    def transactionHash(self) -> HexBytes:
+        return msgspec.json.decode(self._transactionHash, type=uint, dec_hook=_decode_hexbytes)
+
+    @cached_property
+    def blockNumber(self) -> uint:
+        return msgspec.json.decode(self._blockNumber, type=uint, dec_hook=uint._decode_hook)
+
+    @cached_property
+    def contractAddress(self) -> Optional[Address]:
+        return msgspec.json.decode(self._transactionIndex, type=Optional[Address], dec_hook=Address._decode_hook)
+
+    @cached_property
+    def transactionIndex(self) -> uint:
+        return msgspec.json.decode(self._transactionIndex, type=uint, dec_hook=uint._decode_hook)
+
+    @cached_property
+    def status(self) -> uint:
+        return msgspec.json.decode(self._status, type=uint, dec_hook=uint._decode_hook)
+
+    @cached_property
+    def gasUsed(self) -> uint:
+        return msgspec.json.decode(self._gasUsed, type=uint, dec_hook=uint._decode_hook)
+
+    @cached_property
+    def cumulativeGasUsed(self) -> uint:
+        return msgspec.json.decode(self._cumulativeGasUsed, type=uint, dec_hook=uint._decode_hook)
     
     @cached_property
     def logs(self) -> List[Log]:
@@ -50,6 +78,7 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, forbid_unkno
     """This field is only present on Mainnet."""
     type: uint = msgspec.UNSET
     """This field is only present on Mainnet."""
+    blobGasUsed: uint = msgspec.UNSET
 
     # These fields are only present on Optimism.
     l1FeeScalar: uint = msgspec.UNSET
@@ -70,4 +99,8 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, forbid_unkno
     """This field is only present on Arbitrum."""
     @cached_property
     def feeStats(self) -> ArbitrumFeeStats:
-        return msgspec.json.decode(self._feeStats, type=ArbitrumFeeStats, dec_hook=_decode_hook)
+        return msgspec.json.decode(self._feeStats, type=ArbitrumFeeStats, dec_hook=uint._decode_hook)
+
+class FullTransactionReceipt(TransactionReceipt, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+    blockHash: HexBytes
+    logsBloom: HexBytes
