@@ -1,4 +1,5 @@
 
+from decimal import Decimal
 from functools import cached_property
 
 from hexbytes import HexBytes
@@ -25,6 +26,10 @@ class FilterTrace(LazyDictStruct, frozen=True, forbid_unknown_fields=True, omit_
     _gas: Raw = field(name="gas", default=UNSET)
     _action: Raw = field(name="action", default=UNSET)
     _result: Raw = field(name="result", default=UNSET)
+
+    @property
+    def value_scaled(self) -> Decimal:
+        return Decimal(self.value) / 10 ** 18
 
     @property
     def block(self) -> uint:
