@@ -2,9 +2,10 @@
 from functools import cached_property
 from typing import Any, Iterable, Iterator, List, Tuple
 
-import msgspec
+from msgspec import UNSET, Struct
 
-class DictStruct(msgspec.Struct):
+
+class DictStruct(Struct):
     """
     A base class that extends the :class:`~msgspec.Struct` class to provide dictionary-like access to struct fields.
 
@@ -26,7 +27,7 @@ class DictStruct(msgspec.Struct):
         return True
     
     def __contains__(self, key: str) -> bool:
-        return key in self._fields and getattr(self, key, msgspec.UNSET) is not msgspec.UNSET
+        return key in self._fields and getattr(self, key, UNSET) is not UNSET
     
     def get(self, key: str, default: Any = None) -> Any:
         return getattr(self, key, default)
@@ -51,19 +52,19 @@ class DictStruct(msgspec.Struct):
     
     def __getattribute__(self, attr: str) -> Any:
         """
-        Get the value of an attribute, raising AttributeError if the value is :obj:`msgspec.UNSET`.
+        Get the value of an attribute, raising AttributeError if the value is :obj:`UNSET`.
         
         Parameters:
             attr: The name of the attribute to fetch.
 
         Raises:
-            AttributeError: If the value is :obj:`~msgspec.UNSET`.
+            AttributeError: If the value is :obj:`~UNSET`.
     
         Returns:
             The value of the attribute.
         """
         value = super().__getattribute__(attr)
-        if value is msgspec.UNSET:
+        if value is UNSET:
             raise AttributeError(f"'{type(self).__name__}' object has no attribute '{attr}'")
         return value
 
@@ -75,8 +76,8 @@ class DictStruct(msgspec.Struct):
             Struct key.
         """
         for field in self._fields:
-            value = getattr(self, field, msgspec.UNSET)
-            if value is not msgspec.UNSET:
+            value = getattr(self, field, UNSET)
+            if value is not UNSET:
                 yield field
     
     def __len__(self) -> int:
@@ -99,8 +100,8 @@ class DictStruct(msgspec.Struct):
 
     def items(self) -> Iterator[Tuple[str, Any]]:
         for key in self._fields:
-            value = getattr(self, key, msgspec.UNSET)
-            if value is not msgspec.UNSET:
+            value = getattr(self, key, UNSET)
+            if value is not UNSET:
                 yield key, value
     
     def values(self) -> Iterator[Any]:
@@ -111,8 +112,8 @@ class DictStruct(msgspec.Struct):
             An iterator over the field values.
         """
         for key in self._fields:
-            value = getattr(self, key, msgspec.UNSET)
-            if value is not msgspec.UNSET:
+            value = getattr(self, key, UNSET)
+            if value is not UNSET:
                 yield value
 
     @property

@@ -1,9 +1,9 @@
 
 from typing import List, Sequence, TypedDict, Union
 
-import msgspec.json
 from async_lru import alru_cache
 from eth_typing import BlockNumber
+from msgspec import Struct, json
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
@@ -24,7 +24,7 @@ class TraceFilterParams(TypedDict, total=False):  # type: ignore [call-arg]
     toBlock: BlockIdentifier
 
 
-class _Statusable(msgspec.Struct):
+class _Statusable(Struct):
     status: Status
     
 
@@ -49,7 +49,7 @@ class DankEth(AsyncEth):
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
-        return msgspec.json.decode(await self._get_block_raw(block_identifier), type=Timestamped, dec_hook=uint._decode_hook).timestamp
+        return json.decode(await self._get_block_raw(block_identifier), type=Timestamped, dec_hook=uint._decode_hook).timestamp
 
     async def get_transactions(self, block_identifier: int, hashes_only: bool = False) -> List[Transaction]:
         """
@@ -67,11 +67,11 @@ class DankEth(AsyncEth):
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
-        return msgspec.json.decode(await self._get_block_raw(block_identifier, not hashes_only), type=TinyBlock, dec_hook=_decode_hook).transactions
+        return json.decode(await self._get_block_raw(block_identifier, not hashes_only), type=TinyBlock, dec_hook=_decode_hook).transactions
 
     async def get_transaction_status(self, transaction_hash: str) -> Status:
         tx = await self._get_transaction_receipt_raw(transaction_hash)
-        return msgspec.json.decode(tx, type=_Statusable, dec_hook=Status._decode_hook).status
+        return json.decode(tx, type=_Statusable, dec_hook=Status._decode_hook).status
 
     async def trace_filter(self, filter_params: TraceFilterParams) -> List[FilterTrace]:
         return await self._trace_filter(filter_params)
