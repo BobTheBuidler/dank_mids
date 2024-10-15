@@ -9,13 +9,13 @@ from dank_mids.structs.data import Address, uint, _decode_hexbytes
 from dank_mids.structs.dict import LazyDictStruct
 
 
-class TinyLog(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
+class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-arg]
     _topics: msgspec.Raw = msgspec.field(name="topics")
     @cached_property
     def topics(self) -> Optional[List[HexBytes]]:
         return msgspec.json.decode(self._topics, type=Optional[List[HexBytes]], dec_hook=_decode_hexbytes)
 
-class SmallLog(TinyLog, frozen=True):  # type: ignore [call-arg]
+class SmallLog(TinyLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
     _address: msgspec.Raw = msgspec.field(name="address")
     _data: msgspec.Raw = msgspec.field(name="data")
     @cached_property
@@ -25,7 +25,7 @@ class SmallLog(TinyLog, frozen=True):  # type: ignore [call-arg]
     def data(self) -> Optional[HexBytes]:
         return msgspec.json.decode(self._data, type=Optional[HexBytes], dec_hook=_decode_hexbytes)
 
-class Log(SmallLog, frozen=True):  # type: ignore [call-arg]
+class Log(SmallLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
     removed: Optional[bool]
     _blockNumber: msgspec.Raw = msgspec.field(name="blockNumber")
     _transactionHash: msgspec.Raw = msgspec.field(name="transactionHash")
@@ -47,7 +47,7 @@ class Log(SmallLog, frozen=True):  # type: ignore [call-arg]
     def block(self) -> Optional[uint]:
         return self.blockNumber
 
-class FullLog(Log, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+class FullLog(Log, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     _blockHash: msgspec.Raw = msgspec.field(name="blockHash")
     @cached_property
     def blockHash(self) -> Optional[HexBytes]:

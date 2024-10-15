@@ -10,7 +10,7 @@ from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.transaction import Transaction
 
 
-class StakingWithdrawal(DictStruct, frozen=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class StakingWithdrawal(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
     index: uint
 
@@ -26,7 +26,7 @@ class StakingWithdrawal(DictStruct, frozen=True, forbid_unknown_fields=True, omi
 class Timestamped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     timestamp: uint
 
-class TinyBlock(Timestamped, frozen=True):  # type: ignore [call-arg]
+class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-arg]
     _transactions: msgspec.Raw = msgspec.field(name="transactions")
     @cached_property
     def transactions(self) -> List[Union[HexBytes, Transaction]]:
@@ -35,7 +35,7 @@ class TinyBlock(Timestamped, frozen=True):  # type: ignore [call-arg]
             transactions = [HexBytes(txhash) for txhash in transactions]
         return transactions
 
-class Block(TinyBlock, frozen=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     sha3Uncles: HexBytes
     miner: Address
     stateRoot: HexBytes
@@ -62,7 +62,7 @@ class Block(TinyBlock, frozen=True, forbid_unknown_fields=True, omit_defaults=Tr
         """This field is only present on Ethereum."""
         return msgspec.json.decode(self._withdrawals, type=List[StakingWithdrawal], dec_hook=_decode_hook)
     
-class ErigonHeader(Timestamped, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+class ErigonHeader(Timestamped, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     parentHash: HexBytes
     uncleHash: HexBytes
     coinbase: Address

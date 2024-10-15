@@ -30,7 +30,7 @@ class ArbitrumFeeStats(DictStruct, frozen=True, forbid_unknown_fields=True, omit
     prices: FeeStats = msgspec.UNSET
     """The breakdown of gas prices for the transaction."""
 
-class TransactionReceipt(LazyDictStruct, frozen=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     transactionHash: HexBytes
     blockHash: HexBytes
     blockNumber: uint

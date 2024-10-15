@@ -15,7 +15,7 @@ class Action(DictStruct, frozen=True, forbid_unknown_fields=True, omit_defaults=
 #class Result(DictStruct, frozen=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     
 
-class FilterTrace(LazyDictStruct, frozen=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     blockNumber: uint
     transactionHash: HexBytes
     transactionPosition: int
