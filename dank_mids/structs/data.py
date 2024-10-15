@@ -28,8 +28,8 @@ class uint(int):
     def _decode(cls, obj) -> "uint":
         try:
             return cls(obj, 16)
-        except ValidationError as e:
-            if "int cant convert non-string with explicit base" in str(e):
+        except TypeError as e:
+            if "int() can't convert non-string with explicit base" in str(e):
                 return cls(obj)
             raise
 
