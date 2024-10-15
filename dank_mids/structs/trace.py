@@ -15,6 +15,10 @@ class CallType(IntEnum):
     call = 0
     delegatecall = 1
 
+class RewardType(IntEnum):
+    block = 0
+    uncle = 1
+
 class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     The action performed, parity style.
@@ -38,7 +42,7 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     gas: uint
     """The gas provided."""
 
-    rewardType: Optional[Literal["block", "uncle"]] = None
+    rewardType: Optional[RewardType] = None
     """The type of the reward, for reward transactions."""
 
     _value: Raw = field(name="value", default=UNSET)
@@ -83,6 +87,7 @@ class Type(IntEnum):
     reward = 2
 
 class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+    
     blockNumber: uint
     """The number of the block where this action happened."""
 
