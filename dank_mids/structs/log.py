@@ -47,7 +47,7 @@ class Log(SmallLog, frozen=True):  # type: ignore [call-arg]
     def block(self) -> Optional[uint]:
         return self.blockNumber
 
-class FullLog(Log, frozen=True):  # type: ignore [call-arg]
+class FullLog(Log, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     _blockHash: msgspec.Raw = msgspec.field(name="blockHash")
     @cached_property
     def blockHash(self) -> Optional[HexBytes]:

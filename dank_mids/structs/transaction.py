@@ -8,7 +8,7 @@ from hexbytes import HexBytes
 from dank_mids.structs.data import Address, uint, _decode_hook
 from dank_mids.structs.dict import LazyDictStruct
 
-class AccessListEntry(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
+class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     """
     The :class:`~structs.AccessListEntry` class represents an entry in an Ethereum transaction access list.
 
@@ -37,7 +37,7 @@ class AccessListEntry(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
         """
         return msgspec.json.decode(self._storageKeys, type=List[HexBytes], dec_hook=_decode_hook)
 
-class _TransactionBase(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
+class _TransactionBase(LazyDictStruct, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
     input: HexBytes
     hash: HexBytes
@@ -116,14 +116,14 @@ class _TransactionBase(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
 
 
 
-class TransactionLegacy(_TransactionBase, tag="0x0"):  # type: ignore [call-arg]
+class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     _gasPrice: msgspec.Raw = msgspec.field(name="gasPrice")
     @cached_property
     def gasPrice(self) -> uint:
         return msgspec.json.decode(self._gasPrice, type=uint, dec_hook=_decode_hook)
 
 
-class Transaction2930(_TransactionBase, tag="0x1"):  # type: ignore [call-arg]
+class Transaction2930(_TransactionBase, tag="0x1", frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     _gasPrice: msgspec.Raw = msgspec.field(name="gasPrice")
     _accessList: msgspec.Raw = msgspec.field(name="accessList", default=msgspec.UNSET)
     @cached_property
@@ -134,7 +134,7 @@ class Transaction2930(_TransactionBase, tag="0x1"):  # type: ignore [call-arg]
         return msgspec.json.decode(self._accessList, type=Optional[List[AccessListEntry]])
 
 
-class Transaction1559(_TransactionBase, tag="0x2"):  # type: ignore [call-arg]
+class Transaction1559(_TransactionBase, tag="0x2", frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     _maxFeePerGas: msgspec.Raw = msgspec.field(name="maxFeePerGas")
     _maxPriorityFeePerGas: msgspec.Raw = msgspec.field(name="maxPriorityFeePerGas")
     _accessList: msgspec.Raw = msgspec.field(name="accessList", default=msgspec.UNSET)
