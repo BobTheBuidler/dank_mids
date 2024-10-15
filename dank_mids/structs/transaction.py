@@ -147,6 +147,12 @@ class Transaction1559(_TransactionBase, tag="0x2", frozen=True, forbid_unknown_f
     @cached_property
     def accessList(self) -> Optional[List[AccessListEntry]]:
         return msgspec.json.decode(self._accessList, type=Optional[List[AccessListEntry]])
+    
+    # TODO: make sure this actually should go here
+    _gasPrice: msgspec.Raw = msgspec.field(name="gasPrice")
+    @cached_property
+    def gasPrice(self) -> uint:
+        return msgspec.json.decode(self._gasPrice, type=uint, dec_hook=uint._decode_hook)
 
 
 Transaction = Union[TransactionLegacy, Transaction2930, Transaction1559]
