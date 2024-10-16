@@ -45,11 +45,11 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
         except ValidationError as e:
             logger.exception(e)
             transactions = []
-            for tx in self._transactions:
+            for raw_tx in json.decode(self._transactions, type=List[Raw]):
                 try:
-                    transactions.append(json.decode(tx, type=Union[str, Transaction], dec_hook=_decode_hook))
+                    transactions.append(json.decode(raw_tx, type=Union[str, Transaction], dec_hook=_decode_hook))
                 except ValidationError as _e:
-                    raise ValueError(_e, json.decode(tx)) from _e
+                    raise ValueError(_e, json.decode(raw_tx)) from _e
         if transactions and isinstance(transactions[0], str):
             transactions = [HexBytes(txhash) for txhash in transactions]
         return transactions
