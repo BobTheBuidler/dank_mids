@@ -1,13 +1,11 @@
 
 import logging
 import re
-from functools import cached_property
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     Iterable, Iterator, List, Literal, Mapping, NewType, NoReturn,
                     Optional, Set, Tuple, Type, TypedDict, TypeVar, Union, overload)
 
-from dank_mids.helpers._codec import better_decode
 from eth_typing import ChecksumAddress
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, json
@@ -21,6 +19,9 @@ from dank_mids.structs.data import Address, uint, _decode_hook
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
+
+
+T = TypeVar("T")
 
 ChainId = NewType("ChainId", int)
 """A type representing the unique integer identifier for a blockchain network."""
@@ -193,15 +194,16 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
                 return better_decode(self.result, type=typ, dec_hook=_decode_hook, method=method)
 
+            start = time()
             try:
-                start = time()
                 decoded = json.decode(self.result, type=typ, dec_hook=_decode_hook)
-                if caller:
-                    stats.log_duration(f'decoding {type(caller)} {method}', start)
-                return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
             except (ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
                 raise
+
+            if caller:
+                stats.log_duration(f'decoding {type(caller)} {method}', start)
+            return decoded
 
         # We have some semi-smart logic for providing decoder hints even if method not in `_RETURN_TYPES`
         if method:
@@ -297,3 +299,19 @@ def _encode_hook(obj: Any) -> Any:
             return obj.hex()
         raise NotImplementedError(obj, type(obj)) from e
 
+
+def better_decode(
+    data: Raw, 
+    *, 
+    type: Optional[Type[T]] = None, 
+    dec_hook: Optional[Callable[[Type, object], T]] = None, 
+    method: Optional[str] = None,
+) -> T:
+    try:
+        return json.decode(data, type=type, dec_hook=dec_hook)
+    except (ValidationError, TypeError) as e:
+        extra_args = [f"result: {json.decode(data)}"]
+        if method:
+            extra_args.insert(0, f'method: {method}')
+        e.args = (*e.args, *extra_args)
+        raise

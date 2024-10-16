@@ -6,13 +6,13 @@ from typing import List, Optional, Union
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field, json
 
-from dank_mids.helpers._codec import better_decode
 from dank_mids.structs.data import Address, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.transaction import Transaction
 
 
 logger = logging.getLogger(__name__)
+
 class StakingWithdrawal(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
     index: uint
@@ -44,6 +44,7 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
         try:
             transactions = json.decode(self._transactions, type=List[Union[str, Transaction]], dec_hook=_decode_hook)
         except ValidationError as e:
+            from dank_mids.types import better_decode
             logger.exception(e)
             transactions = [
                 better_decode(raw_tx, type=Union[str, Transaction], dec_hook=_decode_hook)
