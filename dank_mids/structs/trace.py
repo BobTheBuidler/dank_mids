@@ -30,7 +30,7 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     _sender: Raw = field(name="from")
     """The sender address."""
 
-    _to: Raw
+    _to: Raw = field(name="to")
     """The receiver address."""
 
     _author: Raw = field(name="author", default=UNSET)
