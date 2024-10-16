@@ -7,6 +7,7 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     Iterable, Iterator, List, Literal, Mapping, NewType, NoReturn,
                     Optional, Set, Tuple, Type, TypedDict, TypeVar, Union, overload)
 
+from dank_mids.helpers._codec import better_decode
 from eth_typing import ChecksumAddress
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, json
@@ -190,13 +191,8 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
         if method and (typ := _RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:
-                try:
-                    return json.decode(self.result, type=typ, dec_hook=_decode_hook)
-                except (ValidationError, TypeError) as e:
-                    raise ValueError(
-                        e,
-                        f'method: {method}  result: {json.decode(self.result)}',
-                    ).with_traceback(e.__traceback__) from e
+                return better_decode(self.result, type=typ, dec_hook=_decode_hook, method=method)
+
             try:
                 start = time()
                 decoded = json.decode(self.result, type=typ, dec_hook=_decode_hook)
@@ -235,7 +231,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
             if method is None:
                 return decoded
         raise TypeError(f"type {type(decoded)} is not supported.  method: {method}  decoded: {decoded}")
-        
+
 
 class Response(PartialResponse, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
@@ -265,11 +261,8 @@ class RawResponse:
     def decode(self, partial: Literal[False] = False) -> Response:...
     def decode(self, partial: bool = False) -> Union[Response, PartialResponse]:
         """Decode the wrapped :class:`Raw` object into a :class:`Response` or a :class:`PartialResponse`."""
-        try:
-            return json.decode(self._raw, type=PartialResponse if partial else Response)
-        except (ValidationError, TypeError) as e:
-            e.args = (*e.args, f"decoded: {json.decode(self._raw)}")
-            raise
+        return better_decode(self._raw, type=PartialResponse if partial else Response)
+    
 
 JSONRPCBatchRequest = List[Request]
 # NOTE: A PartialResponse result implies a failure response from the rpc.

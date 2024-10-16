@@ -1,9 +1,13 @@
 
-from msgspec import Raw, json
+from typing import Optional, Type, TypeVar
+
+from msgspec import Raw, ValidationError, json
 
 from dank_mids.types import (Any, Callable, JSONRPCBatchResponseRaw, List, PartialResponse,
                              RawResponse, Union, _nested_dict_of_stuff, _encode_hook)
 
+
+T = TypeVar("T")
 
 decode_raw = lambda data: RawResponse(json.decode(data, type=Raw))
 """
@@ -67,3 +71,20 @@ def encode(obj: Any) -> bytes:
         :func:`msgspec.json.encode`: The underlying JSON encoding function.
     """
     return json.encode(obj, enc_hook=_encode_hook)
+
+
+def better_decode(
+    data: Raw, 
+    *, 
+    type: Optional[Type[T]] = None, 
+    dec_hook: Optional[Callable[[Type, object], T]] = None, 
+    method: Optional[str] = None,
+) -> T:
+    try:
+        return json.decode(data, type=type, dec_hook=dec_hook)
+    except (ValidationError, TypeError) as e:
+        extra_args = [f"result: {json.decode(data)}"]
+        if method:
+            extra_args.insert(0, f'method: {method}')
+        e.args = (*e.args, *extra_args)
+        raise

@@ -6,6 +6,7 @@ from typing import List, Optional, Union
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field, json
 
+from dank_mids.helpers._codec import better_decode
 from dank_mids.structs.data import Address, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.transaction import Transaction
@@ -44,12 +45,10 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
             transactions = json.decode(self._transactions, type=List[Union[str, Transaction]], dec_hook=_decode_hook)
         except ValidationError as e:
             logger.exception(e)
-            transactions = []
-            for raw_tx in json.decode(self._transactions, type=List[Raw]):
-                try:
-                    transactions.append(json.decode(raw_tx, type=Union[str, Transaction], dec_hook=_decode_hook))
-                except ValidationError as _e:
-                    raise ValueError(_e, json.decode(raw_tx)) from _e
+            transactions = [
+                better_decode(raw_tx, type=Union[str, Transaction], dec_hook=_decode_hook)
+                for raw_tx in json.decode(self._transactions, type=List[Raw])
+            ]
         if transactions and isinstance(transactions[0], str):
             transactions = [HexBytes(txhash) for txhash in transactions]
         return transactions

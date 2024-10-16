@@ -66,7 +66,7 @@ class Status(Enum, metaclass=HexStringToIntEnumMeta):
 enum_decode_hook = lambda cls, data: cls(data)
 
 
-def _decode_hook(typ: Type, obj: str):
+def _decode_hook(typ: Type, obj: object):
     if typ is HexBytes:
         return HexBytes(obj)
     elif typ is Address:
