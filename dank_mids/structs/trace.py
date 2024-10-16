@@ -14,6 +14,7 @@ from dank_mids.structs.dict import DictStruct, LazyDictStruct
 class CallType(Enum, metaclass=StringToIntEnumMeta):
     call = 0
     delegatecall = 1
+    staticcall = 2
 
 class RewardType(Enum, metaclass=StringToIntEnumMeta):
     block = 0
