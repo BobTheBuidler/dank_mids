@@ -47,7 +47,7 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     _transactionIndex: Raw = field(name="transactionIndex")
     """The position of the transaction where this log originates from. `None` when it's a pending transaction."""
 
-    _status: Raw = field(name="status")
+    status: Status
     """1 if the transaction succeeded, 0 if it failed."""
 
     _gasUsed: Raw = field(name="gasUsed")
@@ -78,11 +78,6 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     def transactionIndex(self) -> uint:
         """The position of the transaction where this log originates from. `None` when it's a pending transaction."""
         return json.decode(self._transactionIndex, type=uint, dec_hook=uint._decode_hook)
-
-    @cached_property
-    def status(self) -> Status:
-        """1 if the transaction succeeded, 0 if it failed."""
-        return json.decode(self._status, type=Status, dec_hook=enum_decode_hook)
 
     @cached_property
     def gasUsed(self) -> uint:

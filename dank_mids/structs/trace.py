@@ -109,10 +109,10 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     _subtraces: Raw = field(name="subtraces")
     """The number of traces of internal transactions that happened during this transaction."""
 
-    _action: Raw = field(name="action", default=UNSET)
+    action: Action
     """The action performed, parity style."""
 
-    _result: Raw = field(name="result", default=UNSET)
+    result: Result = UNSET
     """The result object, parity style."""
 
     @property
@@ -124,13 +124,3 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     def subtraces(self) -> Address:
         """The number of traces of internal transactions that happened during this transaction."""
         return json.decode(self._subtraces, type=uint, dec_hook=uint._decode_hook)
-
-    @cached_property
-    def action(self) -> Action:
-        """The action performed, parity style."""
-        return json.decode(self._action, type=Action, dec_hook=_decode_hook)
-
-    @cached_property
-    def result(self) -> Result:
-        """The result object, parity style."""
-        return json.decode(self._result, type=Result, dec_hook=_decode_hook)
