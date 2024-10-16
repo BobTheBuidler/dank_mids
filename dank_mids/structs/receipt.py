@@ -6,7 +6,7 @@ from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
 from dank_mids.structs.data import (Address, Status, uint, _decode_hexbytes, _decode_hook,
-                                    _enum_decode_hook)
+                                    enum_decode_hook)
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.log import Log
 
@@ -81,7 +81,7 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     @cached_property
     def status(self) -> Status:
         """1 if the transaction succeeded, 0 if it failed."""
-        return json.decode(self._status, type=Status, dec_hook=_enum_decode_hook)
+        return json.decode(self._status, type=Status, dec_hook=enum_decode_hook)
 
     @cached_property
     def gasUsed(self) -> uint:

@@ -2,7 +2,7 @@
 import logging
 from typing import Type, Union
 
-from enum import IntEnum
+from enum import Enum, EnumMeta
 from hexbytes import HexBytes
 
 from cachetools.func import ttl_cache
@@ -35,19 +35,21 @@ class uint(int):
                 return cls(obj)
             raise
 
-class Status(IntEnum):
+
+class StringToIntEnumMeta(EnumMeta):
+    def __call__(cls, value: Union[str, int], *args, **kw):
+        return super().__call__(cls._member_map_.get(value, value), *args, **kw)  # type: ignore [arg-type]
+    
+class HexStringToIntEnumMeta(EnumMeta):
+    def __call__(cls, value: str, *args, **kw):
+        return super().__call__(int(value, 16), *args, **kw)
+    
+class Status(Enum, metaclass=HexStringToIntEnumMeta):
     failure = 0
     success = 1
 
-def _enum_decode_hook(cls: Type[IntEnum], obj: Union[str, int]) -> IntEnum:
-    return _decode_enum(cls, obj)
+enum_decode_hook = lambda cls, data: cls(data)
 
-def _decode_enum(cls: Type[IntEnum], obj: Union[str, int]) -> "IntEnum":
-    logger.info('decoding %s obj %s', cls.__name__, obj)
-    try:
-        return cls(uint._decode(obj))
-    except Exception:
-        return getattr(cls, obj)
 
 def _decode_hook(typ: Type, obj: str):
     if typ is HexBytes:
@@ -56,6 +58,8 @@ def _decode_hook(typ: Type, obj: str):
         return checksum(obj)
     elif typ is uint:
         return uint._decode(obj)
+    elif issubclass(typ, Enum):
+        return typ(obj)
     raise NotImplementedError(typ, obj, type(obj))
 
 _decode_hexbytes = lambda _, obj: HexBytes(obj)

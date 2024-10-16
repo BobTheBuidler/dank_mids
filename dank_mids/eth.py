@@ -12,7 +12,7 @@ from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS
 from dank_mids._method import WEB3_MAJOR_VERSION, MethodNoFormat, bypass_formatters, _block_selectors
 from dank_mids.structs import FilterTrace, Transaction
 from dank_mids.structs.block import Timestamped, TinyBlock
-from dank_mids.structs.data import Status, uint, _decode_hook
+from dank_mids.structs.data import Status, uint, _decode_hook, enum_decode_hook
 
 
 class TraceFilterParams(TypedDict, total=False):  # type: ignore [call-arg]
@@ -71,7 +71,7 @@ class DankEth(AsyncEth):
 
     async def get_transaction_status(self, transaction_hash: str) -> Status:
         tx = await self._get_transaction_receipt_raw(transaction_hash)
-        return json.decode(tx, type=_Statusable, dec_hook=Status._decode_hook).status
+        return json.decode(tx, type=_Statusable, dec_hook=enum_decode_hook).status
 
     async def trace_filter(self, filter_params: TraceFilterParams) -> List[FilterTrace]:
         return await self._trace_filter(filter_params)

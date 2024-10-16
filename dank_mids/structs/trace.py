@@ -1,19 +1,15 @@
 
 from decimal import Decimal
-from enum import EnumMeta, Enum
+from enum import Enum
 from functools import cached_property
 from typing import List, Optional
 
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, uint, _decode_hook
+from dank_mids.structs.data import Address, StringToIntEnumMeta, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
-
-class StringToIntEnumMeta(EnumMeta):
-    def __call__(cls, value, *args, **kw):
-        return super().__call__(cls._member_map_.get(value, value), *args, **kw)
     
 class CallType(Enum, metaclass=StringToIntEnumMeta):
     call = 0
