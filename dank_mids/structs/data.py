@@ -23,6 +23,21 @@ def checksum(address: str) -> Address:
     return Address(address)
 
 class uint(int):
+    """
+    NOTE: Storing encoded data as string is cheaper than ints when integer value is sufficiently high:
+    
+    string: 0x1  integer: 1
+    string: 0x10  integer: 16
+    string: 0x100  integer: 256
+    string: 0x1000  integer: 4096
+    string: 0x10000  integer: 65536
+    string: 0x100000  integer: 1048576
+    string: 0x1000000  integer: 16777216
+    string: 0x10000000  integer: 268435456
+    string: 0x100000000  integer: 4294967296
+    string: 0x1000000000  integer: 68719476736
+    string: 0x10000000000  integer: 1099511627776
+"""
     @classmethod
     def _decode_hook(cls, typ: Type["uint"], obj: str):
         return cls(obj, 16)

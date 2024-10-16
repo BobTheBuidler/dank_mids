@@ -123,6 +123,13 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, array_like=Tru
     def s(self) -> HexBytes:
         """The S field of the signature."""
         return json.decode(self._s, type=HexBytes, dec_hook=_decode_hexbytes)
+    
+    @property
+    def block(self) -> uint:
+        """
+        A shorthand getter for blockNumber.
+        """
+        return self.blockNumber
 
 
 
