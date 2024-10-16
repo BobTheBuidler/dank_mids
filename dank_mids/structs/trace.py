@@ -115,6 +115,8 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     _result: Raw = field(name="result", default=UNSET)
     """The result object, parity style."""
 
+    error: str
+
     @property
     def block(self) -> uint:
         """A shorthand getter for 'blockNumber'."""
