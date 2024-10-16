@@ -294,6 +294,8 @@ def _encode_hook(obj: Any) -> Any:
         # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
         return int(obj)
     except TypeError:
+        if isinstance(obj, HexBytes):
+            return str(obj)[2:]
         if isinstance(obj, AttributeDict):
             return dict(obj)
         raise
