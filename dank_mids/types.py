@@ -294,14 +294,13 @@ def _encode_hook(obj: Any) -> Any:
         # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
         return int(obj)
     except TypeError:
-        if isinstance(obj, HexBytes):
-            return str(obj)[2:]
         if isinstance(obj, AttributeDict):
             return dict(obj)
         raise
     except ValueError:
         # NOTE: The error is probably this if `obj` is a string:
         # ValueError: invalid literal for int() with base 10:"""
-        pass
+        if isinstance(obj, HexBytes):
+            return str(obj)[2:]
     raise NotImplementedError(obj, type(obj))
 
