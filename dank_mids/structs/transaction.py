@@ -190,9 +190,9 @@ class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, fo
         return json.decode(self._gasPrice, type=uint, dec_hook=uint._decode_hook)
     
     @cached_property
-    def accessList(self) -> Optional[List[AccessListEntry]]:
+    def accessList(self) -> List[AccessListEntry]:
         """A list of addresses and storage keys that the transaction plans to access."""
-        return json.decode(self._accessList, type=Optional[List[AccessListEntry]])
+        return json.decode(self._accessList, type=List[AccessListEntry])
 
 
 class Transaction1559(_TransactionBase, tag="0x2", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]

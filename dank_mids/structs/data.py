@@ -1,4 +1,5 @@
 
+import logging
 from typing import Type, Union
 
 from enum import IntEnum
@@ -7,6 +8,8 @@ from hexbytes import HexBytes
 from cachetools.func import ttl_cache
 from eth_utils import to_checksum_address
 
+
+logger = logging.getLogger(__name__)
 
 class Address(str):
     def __new__(cls, address: str):
@@ -33,13 +36,14 @@ class uint(int):
             raise
 
 class Status(IntEnum):
-    Revert = 0
-    Success = 1
+    failure = 0
+    success = 1
 
 def _enum_decode_hook(cls: Type[IntEnum], obj: Union[str, int]) -> IntEnum:
     return _decode_enum(cls, obj)
 
 def _decode_enum(cls: Type[IntEnum], obj: Union[str, int]) -> "IntEnum":
+    logger.info('decoding %s obj %s', cls.__name__, obj)
     try:
         return cls(uint._decode(obj))
     except Exception:
@@ -52,8 +56,6 @@ def _decode_hook(typ: Type, obj: str):
         return checksum(obj)
     elif typ is uint:
         return uint._decode(obj)
-    elif issubclass(typ, IntEnum):
-        return _decode_enum(typ, obj)
-    raise TypeError(typ)
+    raise NotImplementedError(typ, obj, type(obj))
 
 _decode_hexbytes = lambda _, obj: HexBytes(obj)
