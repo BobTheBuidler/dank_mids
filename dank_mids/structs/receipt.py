@@ -1,4 +1,5 @@
 
+from decimal import Decimal
 from functools import cached_property
 from typing import List, Optional
 
@@ -117,7 +118,7 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     """This field is sometimes present, only on Mainnet."""
 
     # These fields are only present on Optimism.
-    l1FeeScalar: uint = UNSET
+    l1FeeScalar: Decimal = UNSET
     """This field is only present on Optimism."""
     l1GasUsed: uint = UNSET
     """This field is only present on Optimism."""
