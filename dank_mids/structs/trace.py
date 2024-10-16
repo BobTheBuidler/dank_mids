@@ -19,7 +19,7 @@ class RewardType(Enum, metaclass=StringToIntEnumMeta):
     block = 0
     uncle = 1
 
-class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class Action(LazyDictStruct, frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     The action performed, parity style.
     """
@@ -45,7 +45,7 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     rewardType: Optional[RewardType] = None
     """The type of the reward, for reward transactions."""
 
-    _value: Raw = field(name="value", default=UNSET)
+    value: uint = UNSET
     """The amount of ETH sent in this action (transaction)."""
 
     @cached_property
@@ -64,12 +64,12 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
         return json.decode(self._author, type=Address, dec_hook=Address._decode_hook)
 
     @cached_property
-    def value(self) -> Decimal:
+    def value_scaled(self) -> Decimal:
         """The amount of ETH sent in this action (transaction)."""
-        return Decimal(json.decode(self._value, type=uint, dec_hook=uint._decode_hook)) / 10 ** 18
+        return Decimal(self.value) / 10 ** 18
 
 
-class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class Result(DictStruct, frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     The result object, parity style.
     """
@@ -86,7 +86,7 @@ class Type(Enum, metaclass=StringToIntEnumMeta):
     create = 1
     reward = 2
 
-class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     
     blockNumber: uint
     """The number of the block where this action happened."""
@@ -106,7 +106,7 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     type: Type
     """The type of the transaction."""
 
-    _subtraces: Raw = field(name="subtraces")
+    subtraces: uint
     """The number of traces of internal transactions that happened during this transaction."""
 
     action: Action
@@ -121,8 +121,3 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     def block(self) -> uint:
         """A shorthand getter for 'blockNumber'."""
         return self.blockNumber
-
-    @cached_property
-    def subtraces(self) -> Address:
-        """The number of traces of internal transactions that happened during this transaction."""
-        return json.decode(self._subtraces, type=uint, dec_hook=uint._decode_hook)
