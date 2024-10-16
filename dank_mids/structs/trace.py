@@ -83,9 +83,14 @@ class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, 
 
 
 class Type(Enum, metaclass=StringToIntEnumMeta):
+    """
+    The type of internal operation (e.g., "call" for contract calls, "create" for contract creation,
+    "suicide" for contract self-destruct).
+    """
     call = 0
     create = 1
     reward = 2
+    suicide = 3
 
 class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     
