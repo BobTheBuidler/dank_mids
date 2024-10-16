@@ -114,6 +114,9 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
         """The address of the sender."""
         return json.decode(self._sender, type=Address, dec_hook=Address._decode_hook)
 
+    gasPrice: uint
+    """The gas price provided by the sender in wei."""
+    
     @cached_property
     def r(self) -> HexBytes:
         """The R field of the signature."""
@@ -131,19 +134,6 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
         """
         return self.blockNumber
 
-
-
-class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
-    
-    gasPrice: uint
-    """The gas price provided by the sender in wei."""
-
-
-class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
-    
-    gasPrice: uint
-    """The gas price provided by the sender in wei."""
-
     _accessList: Raw = field(name="accessList", default=UNSET)
     """A list of addresses and storage keys that the transaction plans to access."""
     
@@ -153,6 +143,14 @@ class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, fo
         return json.decode(self._accessList, type=List[AccessListEntry])
 
 
+class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+    ...
+
+
+class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+    ...
+
+
 class Transaction1559(_TransactionBase, tag="0x2", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     
     maxFeePerGas: uint
@@ -160,18 +158,6 @@ class Transaction1559(_TransactionBase, tag="0x2", frozen=True, kw_only=True, fo
 
     maxPriorityFeePerGas: uint
     """The maximum priority gas fee set in the transaction."""
-
-    _accessList: Raw = field(name="accessList", default=UNSET)
-    """A list of addresses and storage keys that the transaction plans to access."""
-    
-    @cached_property
-    def accessList(self) -> Optional[List[AccessListEntry]]:
-        """A list of addresses and storage keys that the transaction plans to access."""
-        return json.decode(self._accessList, type=Optional[List[AccessListEntry]])
-    
-    # TODO: make sure this actually should go here
-    gasPrice: uint
-    """The gas price provided by the sender in wei."""
 
 
 Transaction = Union[TransactionLegacy, Transaction2930, Transaction1559]
