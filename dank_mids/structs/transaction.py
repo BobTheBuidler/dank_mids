@@ -10,7 +10,7 @@ from dank_mids.structs.data import Address, uint, _decode_hexbytes
 from dank_mids.structs.dict import LazyDictStruct
 
 
-class AccessListEntry(LazyDictStruct, frozen=True, array_like=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     """
     The :class:`~structs.AccessListEntry` class represents an entry in an Ethereum transaction access list.
 
@@ -36,7 +36,7 @@ class AccessListEntry(LazyDictStruct, frozen=True, array_like=True, forbid_unkno
         """The specific storage slot keys within the contract that will be accessed."""
         return json.decode(self._storageKeys, type=List[HexBytes], dec_hook=_decode_hexbytes)
 
-class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
     input: HexBytes
     """The data sent along with the transaction."""
@@ -133,13 +133,13 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, array_like=Tru
 
 
 
-class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     
     gasPrice: uint
     """The gas price provided by the sender in wei."""
 
 
-class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     
     gasPrice: uint
     """The gas price provided by the sender in wei."""
@@ -153,7 +153,7 @@ class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, ar
         return json.decode(self._accessList, type=List[AccessListEntry])
 
 
-class Transaction1559(_TransactionBase, tag="0x2", frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+class Transaction1559(_TransactionBase, tag="0x2", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     
     maxFeePerGas: uint
     """The maximum fee per gas set in the transaction."""

@@ -19,7 +19,7 @@ class RewardType(Enum, metaclass=StringToIntEnumMeta):
     block = 0
     uncle = 1
 
-class Action(LazyDictStruct, frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     The action performed, parity style.
     """
@@ -69,7 +69,7 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, array_like=True, forbid_
         return Decimal(self.value) / 10 ** 18
 
 
-class Result(DictStruct, frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     The result object, parity style.
     """
@@ -86,7 +86,7 @@ class Type(Enum, metaclass=StringToIntEnumMeta):
     create = 1
     reward = 2
 
-class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, array_like=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     
     blockNumber: uint
     """The number of the block where this action happened."""
