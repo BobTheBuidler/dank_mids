@@ -1,15 +1,17 @@
 
+import logging
 from functools import cached_property
 from typing import List, Optional, Union
 
 from hexbytes import HexBytes
-from msgspec import UNSET, Raw, field, json
+from msgspec import UNSET, Raw, ValidationError, field, json
 
 from dank_mids.structs.data import Address, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.transaction import Transaction
 
 
+logger = logging.getLogger(__name__)
 class StakingWithdrawal(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
     index: uint
@@ -38,7 +40,16 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
     @cached_property
     def transactions(self) -> List[Union[HexBytes, Transaction]]:
         """Array of transaction objects, or 32 Bytes transaction hashes depending on the last given parameter."""
-        transactions = json.decode(self._transactions, type=List[Union[str, Transaction]], dec_hook=_decode_hook)
+        try:
+            transactions = json.decode(self._transactions, type=List[Union[str, Transaction]], dec_hook=_decode_hook)
+        except ValidationError as e:
+            logger.exception(e)
+            transactions = []
+            for tx in self._transactions:
+                try:
+                    transactions.append(json.decode(tx, type=Union[str, Transaction], dec_hook=_decode_hook))
+                except ValidationError as _e:
+                    raise ValueError(_e, json.decode(tx)) from _e
         if transactions and isinstance(transactions[0], str):
             transactions = [HexBytes(txhash) for txhash in transactions]
         return transactions
