@@ -38,22 +38,22 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     _transactionHash: Raw = field(name="transactionHash")
     """The position of this transaction."""
 
-    _blockNumber: Raw = field(name="blockNumber")
+    blockNumber: uint
     """The block number that contains the transaction."""
 
-    _contractAddress: Raw = field(name="contractAddress")
+    contractAddress: Optional[Address]
     """The contract address created, if the transaction was a contract creation, otherwise `None`."""
 
-    _transactionIndex: Raw = field(name="transactionIndex")
+    transactionIndex: uint
     """The position of the transaction where this log originates from. `None` when it's a pending transaction."""
 
     status: Status
     """1 if the transaction succeeded, 0 if it failed."""
 
-    _gasUsed: Raw = field(name="gasUsed")
+    gasUsed: uint
     """The amount of gas used by this transaction, not counting internal transactions, calls or delegate calls."""
 
-    _cumulativeGasUsed: Raw = field(name="cumulativeGasUsed")
+    cumulativeGasUsed: uint
     """The total amount of gas used during this transaction."""
 
     _logs: Raw = field(name="logs")
@@ -63,31 +63,6 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     def transactionHash(self) -> HexBytes:
         """The position of this transaction."""
         return json.decode(self._transactionHash, type=uint, dec_hook=_decode_hexbytes)
-
-    @cached_property
-    def blockNumber(self) -> uint:
-        """The block number that contains the transaction."""
-        return json.decode(self._blockNumber, type=uint, dec_hook=uint._decode_hook)
-
-    @cached_property
-    def contractAddress(self) -> Optional[Address]:
-        """The contract address created, if the transaction was a contract creation, otherwise `None`."""
-        return json.decode(self._transactionIndex, type=Optional[Address], dec_hook=Address._decode_hook)
-
-    @cached_property
-    def transactionIndex(self) -> uint:
-        """The position of the transaction where this log originates from. `None` when it's a pending transaction."""
-        return json.decode(self._transactionIndex, type=uint, dec_hook=uint._decode_hook)
-
-    @cached_property
-    def gasUsed(self) -> uint:
-        """The amount of gas used by this transaction, not counting internal transactions, calls or delegate calls."""
-        return json.decode(self._gasUsed, type=uint, dec_hook=uint._decode_hook)
-
-    @cached_property
-    def cumulativeGasUsed(self) -> uint:
-        """The total amount of gas used during this transaction."""
-        return json.decode(self._cumulativeGasUsed, type=uint, dec_hook=uint._decode_hook)
     
     @cached_property
     def logs(self) -> List[Log]:
