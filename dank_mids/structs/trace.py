@@ -1,8 +1,8 @@
 
 from decimal import Decimal
-from enum import IntEnum
+from enum import EnumMeta, Enum
 from functools import cached_property
-from typing import List, Literal, Optional
+from typing import List, Optional
 
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
@@ -11,11 +11,15 @@ from dank_mids.structs.data import Address, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
 
-class CallType(IntEnum):
+class StringToIntEnumMeta(EnumMeta):
+    def __call__(cls, value, *args, **kw):
+        return super().__call__(cls._member_map_.get(value, value), *args, **kw)
+    
+class CallType(Enum, metaclass=StringToIntEnumMeta):
     call = 0
     delegatecall = 1
 
-class RewardType(IntEnum):
+class RewardType(Enum, metaclass=StringToIntEnumMeta):
     block = 0
     uncle = 1
 
@@ -81,7 +85,7 @@ class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, 
     """The amount of gas used by this transaction."""
 
 
-class Type(IntEnum):
+class Type(Enum, metaclass=StringToIntEnumMeta):
     call = 0
     create = 1
     reward = 2
