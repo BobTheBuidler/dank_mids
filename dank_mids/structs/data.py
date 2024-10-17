@@ -83,17 +83,18 @@ ONE_BYTE = HexBytes("00")
 
 class HexBytes32(HexBytes):
     def __new__(cls, v):
-        if not isinstance(v, str):
+        if isinstance(v, str):
+            if v[:2] == "0x":
+                # if it has 0x prefix it came from the chain and should be the right size
+                # when it doesnt have the prefix it came out of one of my dbs in a downstream lib and we can trust the size.
+                l = len(v)
+                if l > 66:
+                    raise ValueError('too high', len(v), v)
+                elif l < 66:
+                    raise ValueError('too smol', len(v), v)
+                
+        elif type(v) is not bytes:  # bytes ONLY for unpickling, HexBytes dont count
             raise TypeError(type(v), v)
-        
-        if v[:2] == "0x":
-            # if it has 0x prefix it came from the chain and should be the right size
-            # when it doesnt have the prefix it came out of one of my dbs in a downstream lib and we can trust the size.
-            l = len(v)
-            if l > 66:
-                raise ValueError('too high', len(v), v)
-            elif l < 66:
-                raise ValueError('too smol', len(v), v)
             
         input_bytes = HexBytes(v)
         return super().__new__(cls, cls.get_missing_bytes(input_bytes) + input_bytes)
