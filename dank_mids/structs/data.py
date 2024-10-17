@@ -67,7 +67,7 @@ enum_decode_hook = lambda cls, data: cls(data)
 
 
 def _decode_hook(typ: Type, obj: object):
-    if typ in [HexBytes, HexBytes32]:
+    if issubclass(typ, HexBytes):
         return typ(obj)
     elif typ is Address:
         return checksum(obj)
