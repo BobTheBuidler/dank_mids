@@ -7,7 +7,7 @@ from typing import List, Optional
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, StringToIntEnumMeta, uint, _decode_hook
+from dank_mids.structs.data import Address, HexBytes32, StringToIntEnumMeta, uint
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
     
@@ -97,10 +97,10 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     blockNumber: uint
     """The number of the block where this action happened."""
 
-    blockHash: HexBytes
+    blockHash: HexBytes32
     """The hash of the block where this action happened."""
 
-    transactionHash: HexBytes
+    transactionHash: HexBytes32
     """The hash of the transaction being traced."""
 
     transactionPosition: int

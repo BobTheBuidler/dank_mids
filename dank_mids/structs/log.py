@@ -3,13 +3,13 @@ from typing import List, Optional
 
 from hexbytes import HexBytes
 
-from dank_mids.structs.data import Address, uint
+from dank_mids.structs.data import Address, HexBytes32, uint
 from dank_mids.structs.dict import LazyDictStruct
 
 
 class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
-    topics: List[HexBytes]
+    topics: List[HexBytes32]
     """
     An array of 0 to 4 32-byte topics. 
     The first topicis the event signature and the others are indexed filters on the event return data.
@@ -20,7 +20,7 @@ class SmallLog(TinyLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
     address: Optional[Address]
     """The address of the contract that generated the log."""
 
-    data: Optional[HexBytes]
+    data: Optional[HexBytes32]
     """Array of 32-bytes non-indexed return data of the log."""
 
 
@@ -32,7 +32,7 @@ class Log(SmallLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
     blockNumber: Optional[uint]
     """The block where the transaction was included where the log originated from. `None` for pending transactions."""
 
-    transactionHash: HexBytes
+    transactionHash: HexBytes32
     """The hash of the transaction that generated the log. `None` for pending transactions."""
 
     logIndex: uint
@@ -49,5 +49,5 @@ class Log(SmallLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
 class FullLog(Log, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
 
-    blockHash: Optional[HexBytes]
+    blockHash: Optional[HexBytes32]
     """The hash of the block where the transaction was included where the log originated from. `None` for pending transactions."""

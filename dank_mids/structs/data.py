@@ -67,8 +67,8 @@ enum_decode_hook = lambda cls, data: cls(data)
 
 
 def _decode_hook(typ: Type, obj: object):
-    if typ is HexBytes:
-        return HexBytes(obj)
+    if typ in [HexBytes, HexBytes32]:
+        return typ(obj)
     elif typ is Address:
         return checksum(obj)
     elif typ is uint:
@@ -77,4 +77,20 @@ def _decode_hook(typ: Type, obj: object):
         return typ(obj)
     raise NotImplementedError(typ, obj, type(obj))
 
-_decode_hexbytes = lambda _, obj: HexBytes(obj)
+
+class HexBytes32(HexBytes):
+    def __new__(cls, v):
+        if not isinstance(v, str):
+            raise TypeError(type(v), v)
+        b = HexBytes(v)
+        missing_length = 32 - len(b)
+        return super().__new__((HexBytes("00") * missing_length) + b)
+    def __eq__(self, other: object):
+        if not isinstance(other, bytes):
+            return False
+        return int(self.hex(), 16) == int(other.hex(), 16)
+
+def hexbytes_storage_encode_hook(obj):
+    return hex(int(obj.hex(), 16))[2:]
+
+decode_hexbytes = lambda hexbytes_type, obj: hexbytes_type(obj)

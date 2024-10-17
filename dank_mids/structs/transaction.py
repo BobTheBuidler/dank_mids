@@ -6,7 +6,7 @@ from typing import Any, ClassVar, List, Optional, Union
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, uint, _decode_hexbytes
+from dank_mids.structs.data import Address, HexBytes32, uint, decode_hexbytes
 from dank_mids.structs.dict import LazyDictStruct
 
 
@@ -32,16 +32,16 @@ class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True): 
     """The specific storage slot keys within the contract that will be accessed."""
     
     @cached_property
-    def storageKeys(self) -> List[HexBytes]:
+    def storageKeys(self) -> List[HexBytes32]:
         """The specific storage slot keys within the contract that will be accessed."""
-        return json.decode(self._storageKeys, type=List[HexBytes], dec_hook=_decode_hexbytes)
+        return json.decode(self._storageKeys, type=List[HexBytes32], dec_hook=decode_hexbytes)
 
 class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
     input: HexBytes
     """The data sent along with the transaction."""
 
-    hash: HexBytes
+    hash: HexBytes32
     """The hash of the transaction."""
 
     _to: Raw = field(name="to")
@@ -98,9 +98,9 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
             raise KeyError(key) from None
 
     @cached_property
-    def blockHash(self) -> Optional[HexBytes]:
+    def blockHash(self) -> Optional[HexBytes32]:
         """The hash of the block including this transaction. `None` when it's pending."""
-        return json.decode(self._blockHash, type=Optional[HexBytes], dec_hook=_decode_hexbytes)
+        return json.decode(self._blockHash, type=Optional[HexBytes32], dec_hook=decode_hexbytes)
 
     @cached_property
     def to(self) -> Optional[Address]:
@@ -123,12 +123,12 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     @cached_property
     def r(self) -> HexBytes:
         """The R field of the signature."""
-        return json.decode(self._r, type=HexBytes, dec_hook=_decode_hexbytes)
+        return json.decode(self._r, type=HexBytes, dec_hook=decode_hexbytes)
 
     @cached_property
     def s(self) -> HexBytes:
         """The S field of the signature."""
-        return json.decode(self._s, type=HexBytes, dec_hook=_decode_hexbytes)
+        return json.decode(self._s, type=HexBytes, dec_hook=decode_hexbytes)
     
     @property
     def block(self) -> uint:
