@@ -67,7 +67,7 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     @cached_property
     def value_scaled(self) -> Decimal:
         """The amount of ETH sent in this action (transaction)."""
-        return Decimal(self.value) / 10 ** 18
+        return Decimal(self.value) / 10 ** 18 or Decimal(0)
 
 
 class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]

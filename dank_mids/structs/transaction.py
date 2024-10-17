@@ -110,7 +110,7 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     @cached_property
     def value_scaled(self) -> Decimal:
         """The value transferred in wei."""
-        return Decimal(self.value) / 10 ** 18
+        return Decimal(self.value) / 10 ** 18 or Decimal(0)
 
     @cached_property
     def sender(self) -> Address:
