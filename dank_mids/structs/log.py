@@ -3,13 +3,24 @@ from typing import List, Optional
 
 from hexbytes import HexBytes
 
-from dank_mids.structs.data import Address, HexBytes32, uint
+from dank_mids.structs.data import Address, HexBytes32, uint, checksum
 from dank_mids.structs.dict import LazyDictStruct
 
 
+
+class Topic(HexBytes32):
+    @property
+    def as_uint(self) -> uint:
+        return uint(self.hex(), 16)
+    @property
+    def as_address(self) -> Address:
+        if self[:12] != HexBytes("0"*24)
+        return checksum(self[-20:].hex())
+    
+
 class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
-    topics: List[HexBytes32]
+    topics: List[Topic]
     """
     An array of 0 to 4 32-byte topics. 
     The first topicis the event signature and the others are indexed filters on the event return data.
