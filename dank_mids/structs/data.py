@@ -1,13 +1,19 @@
 
 import decimal
 import logging
-from typing import Type, Union
+from typing import TYPE_CHECKING, List, Type, Union
 
+from a_sync import a_sync
 from enum import Enum, EnumMeta
 from hexbytes import HexBytes
+from msgspec import json
 
 from cachetools.func import ttl_cache
 from eth_utils import to_checksum_address
+
+if TYPE_CHECKING:
+    from dank_mids.structs.log import Log
+    from dank_mids.structs.receipt import TransactionReceipt
 
 
 logger = logging.getLogger(__name__)
@@ -117,7 +123,16 @@ class HexBytes32(HexBytes):
         return hex(int(self.hex(), 16))[2:]
 
 class TransactionHash(HexBytes32):
-    ...
+    @a_sync("sync")
+    async def get_receipt(self) -> "TransactionReceipt":
+        import dank_mids
+        return await dank_mids.eth.get_transaction_receipt(self)
+    @a_sync("sync")
+    async def get_logs(self) -> List["Log"]:
+        import dank_mids
+        from dank_mids.structs.log import Log
+        receipt = await dank_mids.eth._get_transaction_receipt_raw(self)
+        return json.decode(receipt, type=List[Log], dec_hook=_decode_hook)
 
 class BlockHash(HexBytes32):
     ...
