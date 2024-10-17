@@ -99,6 +99,8 @@ class HexBytes32(HexBytes):
     # TODO: keep the instance small and just task on the length for operations as needed
     #def __len__(self) -> Literal[32]:
     #    return 32
+    def __hash__(self) -> int:
+        return hash(self.hex())
     
     def __eq__(self, other: object):
         if not isinstance(other, bytes):
