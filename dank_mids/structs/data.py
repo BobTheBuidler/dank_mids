@@ -95,7 +95,7 @@ class HexBytes32(HexBytes):
         b = HexBytes(v)
         missing_length = 32 - len(b)
         # TODO: keep the instance small and just task on the length for operations as needed
-        return super().__new__((HexBytes("00") * missing_length) + b)
+        return super().__new__(cls, (HexBytes("0") * missing_length) + b)
 
     #def __len__(self) -> Literal[32]:
     #    return 32
