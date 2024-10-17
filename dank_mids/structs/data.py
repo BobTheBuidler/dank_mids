@@ -79,6 +79,8 @@ def _decode_hook(typ: Type, obj: object):
     raise NotImplementedError(typ, obj, type(obj))
 
 
+ONE_BYTE = HexBytes("00")
+
 class HexBytes32(HexBytes):
     def __new__(cls, v):
         if not isinstance(v, str):
@@ -93,13 +95,18 @@ class HexBytes32(HexBytes):
             elif l < 66:
                 raise ValueError('too smol', len(v), v)
             
-        b = HexBytes(v)
-        missing_length = 32 - len(b)
-        return super().__new__(cls, (HexBytes("0") * missing_length) + b)
+        input_bytes = HexBytes(v)
+        return super().__new__(cls, cls.get_missing_bytes(input_bytes) + input_bytes)
 
     # TODO: keep the instance small and just task on the length for operations as needed
     #def __len__(self) -> Literal[32]:
     #    return 32
+
+    @staticmethod
+    def get_missing_bytes(input_bytes: HexBytes) -> HexBytes:
+        missing_length = 32 - len(input_bytes)
+        return missing_length * ONE_BYTE
+
     def __hash__(self) -> int:
         return hash(self.hex())
     
