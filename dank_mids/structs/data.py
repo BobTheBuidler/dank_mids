@@ -140,3 +140,25 @@ class Decimal(decimal.Decimal):
             return scientific_notation
         else:
             string
+
+    def __add__(self, other):
+        return type(self)(super().__add__(other))
+    def __radd__(self, other):
+        return type(self)(super().__radd__(other))
+    def __sub__(self, other):
+        return type(self)(super().__sub__(other))
+    def __rsub__(self, other):
+        return type(self)(super().__rsub__(other))
+    def __mul__(self, other):
+        return type(self)(super().__mul__(other))
+    def __rmul__(self, other):
+        return type(self)(super().__rmul__(other))
+    def __truediv__(self, other):
+        return type(self)(super().__truediv__(other))
+    def __rtruediv__(self, other):
+        return type(self)(super().__rtruediv__(other))
+    def __floordiv__(self, other):
+        return type(self)(super().__floordiv__(other))
+    def __rfloordiv__(self, other):
+        return type(self)(super().__rfloordiv__(other))
+    
