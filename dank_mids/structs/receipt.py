@@ -1,12 +1,11 @@
 
-from decimal import Decimal
 from functools import cached_property
 from typing import List, Optional
 
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, HexBytes32, Status, uint, decode_hexbytes, _decode_hook
+from dank_mids.structs.data import Address, Decimal, HexBytes32, Status, uint, decode_hexbytes, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.log import Log
 

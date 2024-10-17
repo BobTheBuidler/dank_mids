@@ -1,5 +1,4 @@
 
-from decimal import Decimal
 from enum import Enum
 from functools import cached_property
 from typing import List, Optional
@@ -7,7 +6,7 @@ from typing import List, Optional
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, HexBytes32, StringToIntEnumMeta, uint
+from dank_mids.structs.data import Address, Decimal, HexBytes32, StringToIntEnumMeta, uint
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
     

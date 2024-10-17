@@ -7,6 +7,7 @@ from dank_mids.structs.data import Address, HexBytes32, uint, checksum
 from dank_mids.structs.dict import LazyDictStruct
 
 
+_ADDRESS_TOPIC_PREFIX = HexBytes("0") * 12
 
 class Topic(HexBytes32):
     @property
@@ -14,8 +15,8 @@ class Topic(HexBytes32):
         return uint(self.hex(), 16)
     @property
     def as_address(self) -> Address:
-        if self[:12] != HexBytes("0"*24):
-            raise ValueError("address", self)
+        if self[:12] != _ADDRESS_TOPIC_PREFIX:
+            raise ValueError(f"This {type(self).__name__} does not represent an address", self)
         return checksum(self[-20:].hex())
     
 

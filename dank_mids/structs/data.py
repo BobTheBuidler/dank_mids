@@ -1,4 +1,5 @@
 
+import decimal
 import logging
 from typing import Type, Union
 
@@ -113,3 +114,18 @@ def hexbytes_storage_encode_hook(obj):
     return hex(int(obj.hex(), 16))[2:]
 
 decode_hexbytes = lambda hexbytes_type, obj: hexbytes_type(obj)
+
+
+class Decimal(decimal.Decimal):
+    def jsonify(self) -> Union[str, int]:
+        string = str(self)
+        integer = int(self)
+        scientific_notation = '%E' % self
+        string_len = len(string)
+        scientific_notation_len = len(scientific_notation)
+        if integer == self:
+            return integer if string_len <= scientific_notation_len + 2 else scientific_notation
+        elif Decimal(scientific_notation) == self and scientific_notation_len < string_len:
+            return scientific_notation
+        else:
+            string
