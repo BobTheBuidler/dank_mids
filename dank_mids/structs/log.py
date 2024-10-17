@@ -31,7 +31,7 @@ class SmallLog(TinyLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
     address: Optional[Address]
     """The address of the contract that generated the log."""
 
-    data: Optional[HexBytes32]
+    data: Optional[HexBytes]
     """Array of 32-bytes non-indexed return data of the log."""
 
 
