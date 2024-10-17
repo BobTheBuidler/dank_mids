@@ -82,11 +82,28 @@ class HexBytes32(HexBytes):
     def __new__(cls, v):
         if not isinstance(v, str):
             raise TypeError(type(v), v)
+        
+        if v[:2] == "0x":
+            # if it has 0x prefix it came from the chain and should be the right size
+            # when it doesnt have the prefix it came out of one of my dbs in a downstream lib and we can trust the size.
+            l = len(v)
+            if l > 66:
+                raise ValueError('too high')
+            elif l < 66:
+                raise ValueError('too smol')
+            
         b = HexBytes(v)
         missing_length = 32 - len(b)
+        # TODO: keep the instance small and just task on the length for operations as needed
         return super().__new__((HexBytes("00") * missing_length) + b)
+
+    #def __len__(self) -> Literal[32]:
+    #    return 32
+    
     def __eq__(self, other: object):
         if not isinstance(other, bytes):
+            return False
+        if not len(other) == 32:
             return False
         return int(self.hex(), 16) == int(other.hex(), 16)
 
