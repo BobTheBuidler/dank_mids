@@ -152,7 +152,10 @@ class Decimal(decimal.Decimal):
         scientific_notation_len = len(scientific_notation)
         if integer == self:
             return integer if string_len <= scientific_notation_len + 2 else scientific_notation
-        elif Decimal(scientific_notation) == self and scientific_notation_len < string_len:
+        while string[-1] == "0":
+            string = string[:-1]
+        if Decimal(scientific_notation) == self and scientific_notation_len < string_len:
+            raise Exception('will this ever actually run?', self, scientific_notation)
             return scientific_notation
         else:
             string
