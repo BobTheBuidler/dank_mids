@@ -123,11 +123,11 @@ class HexBytes32(HexBytes):
         return hex(int(self.hex(), 16))[2:]
 
 class TransactionHash(HexBytes32):
-    @a_sync("sync")
+    @a_sync("async")
     async def get_receipt(self) -> "TransactionReceipt":
         import dank_mids
         return await dank_mids.eth.get_transaction_receipt(self)
-    @a_sync("sync")
+    @a_sync  # TODO; compare how these type check, they both function the same
     async def get_logs(self) -> List["Log"]:
         import dank_mids
         from dank_mids.structs.log import Log
