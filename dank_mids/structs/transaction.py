@@ -1,7 +1,7 @@
 
 from decimal import Decimal
 from functools import cached_property
-from typing import Any, List, Optional, Union
+from typing import Any, ClassVar, List, Optional, Union
 
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
@@ -116,7 +116,7 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
 
     gasPrice: uint
     """The gas price provided by the sender in wei."""
-    
+
     @cached_property
     def r(self) -> HexBytes:
         """The R field of the signature."""
@@ -144,15 +144,16 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
 
 
 class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
-    ...
+    type: ClassVar[HexBytes] = HexBytes("0")
 
 
 class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
-    ...
+    type: ClassVar[HexBytes] = HexBytes("1")
 
 
 class Transaction1559(_TransactionBase, tag="0x2", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
-    
+    type: ClassVar[HexBytes] = HexBytes("2")
+
     maxFeePerGas: uint
     """The maximum fee per gas set in the transaction."""
 
