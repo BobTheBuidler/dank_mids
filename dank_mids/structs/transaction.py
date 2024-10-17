@@ -5,7 +5,7 @@ from typing import Any, ClassVar, List, Optional, Union
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, Decimal, HexBytes32, TransactionHash, uint, decode_hexbytes
+from dank_mids.structs.data import Address, BlockHash, Decimal, HexBytes32, TransactionHash, uint, decode_hexbytes
 from dank_mids.structs.dict import LazyDictStruct
 
 
@@ -97,9 +97,9 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
             raise KeyError(key) from None
 
     @cached_property
-    def blockHash(self) -> Optional[HexBytes32]:
+    def blockHash(self) -> Optional[BlockHash]:
         """The hash of the block including this transaction. `None` when it's pending."""
-        return json.decode(self._blockHash, type=Optional[HexBytes32], dec_hook=decode_hexbytes)
+        return json.decode(self._blockHash, type=Optional[BlockHash], dec_hook=decode_hexbytes)
 
     @cached_property
     def to(self) -> Optional[Address]:

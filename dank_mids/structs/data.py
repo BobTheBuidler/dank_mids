@@ -111,6 +111,9 @@ class HexBytes32(HexBytes):
 class TransactionHash(HexBytes32):
     ...
 
+class BlockHash(HexBytes32):
+    ...
+
 def hexbytes_storage_encode_hook(obj):
     return hex(int(obj.hex(), 16))[2:]
 
