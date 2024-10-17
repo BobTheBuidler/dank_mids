@@ -74,14 +74,12 @@ enum_decode_hook = lambda cls, data: cls(data)
 
 
 def _decode_hook(typ: Type, obj: object):
-    if issubclass(typ, HexBytes):
-        return typ(obj)
+    if issubclass(typ, (HexBytes, Enum, Decimal)):
+        return typ(obj)  # type: ignore [arg-type]
     elif typ is Address:
         return checksum(obj)
     elif typ is uint:
         return uint._decode(obj)
-    elif issubclass(typ, Enum):
-        return typ(obj)
     raise NotImplementedError(typ, obj, type(obj))
 
 
