@@ -86,6 +86,9 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     _s: Raw = field(name="s")
     """The S field of the signature."""
 
+    def __hash__(self) -> int:
+        return hash(self.hash.hex())
+
     def __getitem__(self, key: str) -> Any:
         try:
             return getattr(self, key)
