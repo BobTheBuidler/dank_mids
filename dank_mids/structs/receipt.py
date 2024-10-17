@@ -5,7 +5,7 @@ from typing import List, Optional
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, Decimal, HexBytes32, Status, uint, decode_hexbytes, _decode_hook
+from dank_mids.structs.data import Address, Decimal, TransactionHash, Status, uint, decode_hexbytes, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.log import Log
 
@@ -60,7 +60,7 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     @cached_property
     def transactionHash(self) -> HexBytes:
         """The position of this transaction."""
-        return json.decode(self._transactionHash, type=HexBytes32, dec_hook=decode_hexbytes)
+        return json.decode(self._transactionHash, type=TransactionHash, dec_hook=decode_hexbytes)
     
     @cached_property
     def logs(self) -> List[Log]:

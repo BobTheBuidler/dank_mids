@@ -5,7 +5,7 @@ from typing import Any, ClassVar, List, Optional, Union
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, Decimal, HexBytes32, uint, decode_hexbytes
+from dank_mids.structs.data import Address, Decimal, HexBytes32, TransactionHash, uint, decode_hexbytes
 from dank_mids.structs.dict import LazyDictStruct
 
 
@@ -40,7 +40,7 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     input: HexBytes
     """The data sent along with the transaction."""
 
-    hash: HexBytes32
+    hash: TransactionHash
     """The hash of the transaction."""
 
     _to: Raw = field(name="to")

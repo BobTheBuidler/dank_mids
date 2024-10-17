@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from hexbytes import HexBytes
 
-from dank_mids.structs.data import Address, HexBytes32, uint, checksum
+from dank_mids.structs.data import Address, HexBytes32, TransactionHash, uint, checksum
 from dank_mids.structs.dict import LazyDictStruct
 
 
@@ -45,7 +45,7 @@ class Log(SmallLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
     blockNumber: Optional[uint]
     """The block where the transaction was included where the log originated from. `None` for pending transactions."""
 
-    transactionHash: HexBytes32
+    transactionHash: TransactionHash
     """The hash of the transaction that generated the log. `None` for pending transactions."""
 
     logIndex: uint

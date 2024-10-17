@@ -108,6 +108,9 @@ class HexBytes32(HexBytes):
         # we trim all leading zeroes since we know how many we need to put back later
         return hex(int(self.hex(), 16))[2:]
 
+class TransactionHash(HexBytes32):
+    ...
+
 def hexbytes_storage_encode_hook(obj):
     return hex(int(obj.hex(), 16))[2:]
 
