@@ -88,15 +88,15 @@ class HexBytes32(HexBytes):
             # when it doesnt have the prefix it came out of one of my dbs in a downstream lib and we can trust the size.
             l = len(v)
             if l > 66:
-                raise ValueError('too high')
+                raise ValueError('too high', len(v), v)
             elif l < 66:
-                raise ValueError('too smol')
+                raise ValueError('too smol', len(v), v)
             
         b = HexBytes(v)
         missing_length = 32 - len(b)
-        # TODO: keep the instance small and just task on the length for operations as needed
         return super().__new__(cls, (HexBytes("0") * missing_length) + b)
 
+    # TODO: keep the instance small and just task on the length for operations as needed
     #def __len__(self) -> Literal[32]:
     #    return 32
     
