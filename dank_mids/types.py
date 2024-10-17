@@ -296,7 +296,7 @@ def _encode_hook(obj: Any) -> Any:
         # NOTE: The error is probably this if `obj` is a string:
         # ValueError: invalid literal for int() with base 10:"""
         if isinstance(obj, HexBytes):
-            return obj.hex()
+            return getattr(obj, 'strip', obj.hex)()
         raise NotImplementedError(obj, type(obj)) from e
 
 

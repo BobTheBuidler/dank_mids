@@ -103,12 +103,10 @@ class HexBytes32(HexBytes):
     def __hash__(self) -> int:
         return hash(self.hex())
     
-    def __eq__(self, other: object):
-        if not isinstance(other, bytes):
-            return False
-        if not len(other) == 32:
-            return False
-        return int(self.hex(), 16) == int(other.hex(), 16)
+    def strip(self) -> str:
+        """Returns self.hex() with leading zeroes removed."""
+        # we trim all leading zeroes since we know how many we need to put back later
+        return hex(int(self.hex(), 16))[2:]
 
 def hexbytes_storage_encode_hook(obj):
     return hex(int(obj.hex(), 16))[2:]
