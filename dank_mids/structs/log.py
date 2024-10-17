@@ -14,7 +14,8 @@ class Topic(HexBytes32):
         return uint(self.hex(), 16)
     @property
     def as_address(self) -> Address:
-        if self[:12] != HexBytes("0"*24)
+        if self[:12] != HexBytes("0"*24):
+            raise ValueError("address", self)
         return checksum(self[-20:].hex())
     
 
