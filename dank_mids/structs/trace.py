@@ -126,3 +126,7 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     def block(self) -> BlockNumber:
         """A shorthand getter for 'blockNumber'."""
         return self.blockNumber
+    
+    def __post_init__(self):
+        # make sure the obj is hashable
+        object.__setattr__(self, "traceAddress", tuple(self.traceAddress))
