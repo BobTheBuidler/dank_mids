@@ -171,9 +171,9 @@ class HexBytes32(HexBytes):
     #    return 32
 
     @staticmethod
-    def _get_missing_bytes(input_bytes: HexBytes) -> HexBytes:
+    def _get_missing_bytes(input_bytes: HexBytes) -> bytes:
         missing_length = 32 - len(input_bytes)
-        return missing_length * ONE_BYTE
+        return missing_length * ONE_EMPTY_BYTE
 
     def __hash__(self) -> int:
         return hash(self.hex())
