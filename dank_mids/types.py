@@ -194,7 +194,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
 
             start = time()
             try:
-                decoded = json.decode(self.result, type=typ, dec_hook=_decode_hook)
+                decoded = better_decode(self.result, type=typ, dec_hook=_decode_hook)
             except (ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
                 raise
