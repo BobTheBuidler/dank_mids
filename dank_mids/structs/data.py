@@ -70,6 +70,11 @@ class UnixTimestamp(uint):
     def datetime(self) -> datetime:
         return datetime.fromtimestamp(self, tz=timezone.utc)
 
+
+class BlockNumber(uint):
+    ...
+
+
 class IntId(uint):
     def __add__(*_):
         raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
@@ -98,9 +103,6 @@ class IntId(uint):
 
 
 class ChainId(IntId):
-    ...
-
-class BlockNumber(IntId):
     ...
 
 class Nonce(IntId):
