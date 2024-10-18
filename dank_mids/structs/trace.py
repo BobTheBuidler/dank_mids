@@ -1,13 +1,12 @@
 
 from enum import Enum
-from functools import cached_property
-from typing import Tuple, Optional
+from typing import Optional
 
 from hexbytes import HexBytes
-from msgspec import UNSET, Raw, field, json
+from msgspec import UNSET
 from msgspec.structs import force_setattr
 
-from dank_mids.structs.data import Address, BlockHash, BlockNumber, Decimal, StringToIntEnumMeta, TransactionHash, Wei, uint
+from dank_mids.structs.data import Address, BlockHash, BlockNumber, HashableList, StringToIntEnumMeta, TransactionHash, Wei, uint
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
     
@@ -86,7 +85,7 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     transactionPosition: int
     """The position of the transaction in the block."""
 
-    traceAddress: Tuple[uint, ...]
+    traceAddress: HashableList[uint]
     """The trace addresses (array) where the call executed (every contract where code was executed)."""
 
     type: Type
