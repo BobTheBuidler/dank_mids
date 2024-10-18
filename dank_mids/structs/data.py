@@ -74,6 +74,8 @@ class UnixTimestamp(uint):
 class BlockNumber(uint):
     ...
 
+class Nonce(uint):
+    ...
 
 class IntId(uint):
     def __add__(*_):
@@ -103,9 +105,6 @@ class IntId(uint):
 
 
 class ChainId(IntId):
-    ...
-
-class Nonce(IntId):
     ...
 
 class TransactionIndex(IntId):
