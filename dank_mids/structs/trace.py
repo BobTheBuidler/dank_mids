@@ -28,13 +28,13 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     callType: CallType
     """The type of the call."""
 
-    sender: Raw = field(name="from")
+    sender: Address
     """The sender address."""
 
-    to: Raw = field(name="to")
+    to: Address
     """The receiver address."""
 
-    _author: Raw = field(name="author", default=UNSET)
+    author: Address = UNSET
     """The author of this transaction, for some transaction types."""
 
     input: HexBytes
@@ -48,16 +48,6 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
 
     value: Wei = UNSET
     """The amount of ETH sent in this action (transaction)."""
-
-    @cached_property
-    def author(self) -> Address:
-        """The author of this transaction, for some transaction types."""
-        return json.decode(self._author, type=Address, dec_hook=Address._decode_hook)
-
-    @cached_property
-    def value_scaled(self) -> Decimal:
-        """The amount of ETH sent in this action (transaction)."""
-        return Decimal(self.value) / 10 ** 18 or Decimal(0)
 
 
 class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]

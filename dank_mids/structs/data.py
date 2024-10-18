@@ -244,4 +244,9 @@ class Decimal(decimal.Decimal):
         return type(self)(super().__floordiv__(other))
     def __rfloordiv__(self, other):
         return type(self)(super().__rfloordiv__(other))
-    
+
+class HashableList(List):
+    def __hash__(self):
+        return hash(tuple(self))
+    def __setitem__(self, *_):
+        raise RuntimeError("You cannot modify this hashable list")

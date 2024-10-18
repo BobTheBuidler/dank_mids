@@ -22,7 +22,7 @@ class Topic(data.HexBytes32):
 
 class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
-    topics: List[Topic]
+    topics: data.HashableList[Topic]
     """
     An array of 0 to 4 32-byte topics. 
     The first topic is the event signature and the others are indexed filters on the event return data.
