@@ -139,7 +139,7 @@ def _decode_hook(typ: Type, obj: object):
     raise NotImplementedError(typ, obj, type(obj))
 
 
-ONE_BYTE = HexBytes("00")
+ONE_EMPTY_BYTE = bytes(HexBytes("0x00"))
 
 class HexBytes32(HexBytes):
     def __new__(cls, v):
@@ -157,14 +157,17 @@ class HexBytes32(HexBytes):
             raise TypeError(type(v), v)
             
         input_bytes = HexBytes(v)
-        return super().__new__(cls, cls.get_missing_bytes(input_bytes) + input_bytes)
+        return super().__new__(cls, cls._get_missing_bytes(input_bytes) + input_bytes)
 
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}({self.hex()})"
+    
     # TODO: keep the instance small and just task on the length for operations as needed
     #def __len__(self) -> Literal[32]:
     #    return 32
 
     @staticmethod
-    def get_missing_bytes(input_bytes: HexBytes) -> HexBytes:
+    def _get_missing_bytes(input_bytes: HexBytes) -> HexBytes:
         missing_length = 32 - len(input_bytes)
         return missing_length * ONE_BYTE
 
