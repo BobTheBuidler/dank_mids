@@ -5,6 +5,7 @@ from typing import Tuple, Optional
 
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
+from msgspec.structs import force_setattr
 
 from dank_mids.structs.data import Address, BlockHash, BlockNumber, Decimal, StringToIntEnumMeta, TransactionHash, Wei, uint
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
@@ -129,4 +130,4 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     
     def __post_init__(self):
         # make sure the obj is hashable
-        object.__setattr__(self, "traceAddress", tuple(self.traceAddress))
+        force_setattr(self, "traceAddress", tuple(self.traceAddress))
