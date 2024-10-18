@@ -69,13 +69,13 @@ class uint(int):
 
 
 class Wei(uint):
-    @property
+    @cached_property
     def scaled(self) -> "Decimal":
         return Decimal(self) / 10 ** 18
 
 
 class UnixTimestamp(uint):
-    @property
+    @cached_property
     def datetime(self) -> datetime:
         return datetime.fromtimestamp(self, tz=timezone.utc)
 
