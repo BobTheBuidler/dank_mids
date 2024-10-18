@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional
 
 from hexbytes import HexBytes
-from msgspec import UNSET
+from msgspec import UNSET, field
 from msgspec.structs import force_setattr
 
 from dank_mids.structs.data import Address, BlockHash, BlockNumber, HashableList, StringToIntEnumMeta, TransactionHash, Wei, uint
@@ -27,7 +27,7 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     callType: CallType
     """The type of the call."""
 
-    sender: Address
+    sender: Address = field(name="from")
     """The sender address."""
 
     to: Address
