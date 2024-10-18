@@ -117,7 +117,7 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     action: Action
     """The action performed, parity style."""
 
-    result: Result = UNSET
+    result: Optional[Result] = UNSET
     """The result object, parity style."""
 
     error: str = UNSET
