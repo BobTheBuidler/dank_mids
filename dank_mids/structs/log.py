@@ -28,6 +28,7 @@ class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-
     The first topicis the event signature and the others are indexed filters on the event return data.
     """
 
+
 class SmallLog(TinyLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
     address: Optional[data.Address]
