@@ -145,7 +145,11 @@ def _decode_hook(typ: Type, obj: object):
     elif typ is Address:
         return checksum(obj)
     elif issubclass(typ, uint):
-        return typ._decode(obj)
+        return typ.fromhex(obj)
+    elif getattr(typ, "__origin__", None) is HashableList:
+        assert len(typ.__args__) == 1, typ.__args__
+        obj_cls = typ.__args__[0]
+        return HashableList(_decode_hook(obj_cls, o) for o in obj)
     raise NotImplementedError(typ, obj, type(obj))
 
 
