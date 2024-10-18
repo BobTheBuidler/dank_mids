@@ -124,18 +124,18 @@ _RETURN_TYPES = {
     "eth_call": HexBytes,
     "eth_chainId": ChainId,
     "eth_getCode": HexBytes,
-    "eth_getLogs": Tuple[Log, ...],
+    "eth_getLogs": List[Log],
     "eth_getBalance": Wei,
     "eth_blockNumber": BlockNumber,
-    "eth_accounts": Tuple[Address, ...],
+    "eth_accounts": List[Address],
     "eth_getBlockByNumber": Block,
     "eth_getTransactionCount": uint,
     "eth_getTransactionByHash": Transaction,
     "eth_getTransactionReceipt": TransactionReceipt, 
     #"erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
     "erigon_getHeaderByNumber": ErigonHeader,
-    "trace_filter": Tuple[FilterTrace, ...],
-    "trace_transaction": Tuple[FilterTrace, ...],
+    "trace_filter": List[FilterTrace],
+    "trace_transaction": List[FilterTrace],
 }
 """
 A dictionary mapping RPC method names to their expected return types.
