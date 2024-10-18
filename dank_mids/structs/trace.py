@@ -28,10 +28,10 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     callType: CallType
     """The type of the call."""
 
-    _sender: Raw = field(name="from")
+    sender: Raw = field(name="from")
     """The sender address."""
 
-    _to: Raw = field(name="to")
+    to: Raw = field(name="to")
     """The receiver address."""
 
     _author: Raw = field(name="author", default=UNSET)
@@ -48,16 +48,6 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
 
     value: Wei = UNSET
     """The amount of ETH sent in this action (transaction)."""
-
-    @cached_property
-    def sender(self) -> Address:
-        """The sender address."""
-        return json.decode(self._sender, type=Address, dec_hook=Address._decode_hook)
-
-    @cached_property
-    def to(self) -> Address:
-        """The receiver address."""
-        return json.decode(self._to, type=Address, dec_hook=Address._decode_hook)
 
     @cached_property
     def author(self) -> Address:
