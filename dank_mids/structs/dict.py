@@ -1,6 +1,6 @@
 
 from functools import cached_property
-from typing import Any, Iterable, Iterator, List, Tuple
+from typing import Any, Iterable, Iterator, Tuple
 
 from msgspec import UNSET, Struct
 
@@ -123,5 +123,5 @@ class DictStruct(Struct):
 
 class LazyDictStruct(DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
     @cached_property
-    def _fields(self) -> List[str]:
-        return [field[1:] if field[0] == '_' else field for field in self.__struct_fields__]
+    def _fields(self) -> Tuple[str]:
+        return tuple(field[1:] if field[0] == '_' else field for field in self.__struct_fields__)

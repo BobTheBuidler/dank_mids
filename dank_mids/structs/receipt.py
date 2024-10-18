@@ -1,6 +1,6 @@
 
 from functools import cached_property
-from typing import List, Optional
+from typing import Optional, Tuple
 
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
@@ -59,9 +59,9 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     """The logs that were generated during this transaction."""
     
     @cached_property
-    def logs(self) -> List[Log]:
+    def logs(self) -> Tuple[Log]:
         """The logs that were generated during this transaction."""
-        return json.decode(self._logs, type=List[Log], dec_hook=_decode_hook)
+        return json.decode(self._logs, type=Tuple[Log], dec_hook=_decode_hook)
 
     # These fields are only present on Mainnet.
     effectiveGasPrice: Wei = UNSET

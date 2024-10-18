@@ -2,7 +2,7 @@
 import decimal
 import logging
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, List, Type, Union
+from typing import TYPE_CHECKING, Tuple, Type, Union
 
 from a_sync import a_sync
 from enum import Enum, EnumMeta
@@ -181,11 +181,11 @@ class TransactionHash(HexBytes32):
         import dank_mids
         return await dank_mids.eth.get_transaction_receipt(self)
     @a_sync  # TODO; compare how these type check, they both function the same
-    async def get_logs(self) -> List["Log"]:
+    async def get_logs(self) -> Tuple["Log"]:
         import dank_mids
         from dank_mids.structs.log import Log
         receipt = await dank_mids.eth._get_transaction_receipt_raw(self)
-        return json.decode(receipt, type=List[Log], dec_hook=_decode_hook)
+        return json.decode(receipt, type=Tuple[Log], dec_hook=_decode_hook)
 
 class BlockHash(HexBytes32):
     ...

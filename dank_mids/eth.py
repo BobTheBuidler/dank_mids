@@ -1,5 +1,5 @@
 
-from typing import List, Sequence, TypedDict, Union
+from typing import Sequence, Tuple, TypedDict, Union
 
 from async_lru import alru_cache
 from eth_typing import BlockNumber
@@ -51,7 +51,7 @@ class DankEth(AsyncEth):
         """
         return json.decode(await self._get_block_raw(block_identifier), type=Timestamped, dec_hook=UnixTimestamp._decode_hook).timestamp
 
-    async def get_transactions(self, block_identifier: int, hashes_only: bool = False) -> List[Transaction]:
+    async def get_transactions(self, block_identifier: int, hashes_only: bool = False) -> Tuple[Transaction]:
         """
         Retrieves only the transactions from a specific block. 
         
@@ -73,10 +73,10 @@ class DankEth(AsyncEth):
         tx = await self._get_transaction_receipt_raw(transaction_hash)
         return json.decode(tx, type=_Statusable, dec_hook=enum_decode_hook).status
 
-    async def trace_filter(self, filter_params: TraceFilterParams) -> List[FilterTrace]:
+    async def trace_filter(self, filter_params: TraceFilterParams) -> Tuple[FilterTrace]:
         return await self._trace_filter(filter_params)
     
-    async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
+    async def trace_transaction(self, transaction_hash: str) -> Tuple[FilterTrace]:
         return await self._trace_transaction(transaction_hash)
     
 
