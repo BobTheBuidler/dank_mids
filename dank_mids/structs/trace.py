@@ -105,7 +105,7 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     transactionPosition: int
     """The position of the transaction in the block."""
 
-    traceAddress: Tuple[uint]
+    traceAddress: Tuple[uint, ...]
     """The trace addresses (array) where the call executed (every contract where code was executed)."""
 
     type: Type

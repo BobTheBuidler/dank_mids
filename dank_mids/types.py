@@ -124,18 +124,18 @@ _RETURN_TYPES = {
     "eth_call": HexBytes,
     "eth_chainId": ChainId,
     "eth_getCode": HexBytes,
-    "eth_getLogs": Tuple[Log],
+    "eth_getLogs": Tuple[Log, ...],
     "eth_getBalance": Wei,
     "eth_blockNumber": BlockNumber,
-    "eth_accounts": Tuple[Address],
+    "eth_accounts": Tuple[Address, ...],
     "eth_getBlockByNumber": Block,
     "eth_getTransactionCount": uint,
     "eth_getTransactionByHash": Transaction,
     "eth_getTransactionReceipt": TransactionReceipt, 
     #"erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
     "erigon_getHeaderByNumber": ErigonHeader,
-    "trace_filter": Tuple[FilterTrace],
-    "trace_transaction": Tuple[FilterTrace],
+    "trace_filter": Tuple[FilterTrace, ...],
+    "trace_transaction": Tuple[FilterTrace, ...],
 }
 """
 A dictionary mapping RPC method names to their expected return types.
@@ -194,7 +194,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
 
             start = time()
             try:
-                decoded = better_decode(self.result, type=typ, dec_hook=_decode_hook)
+                decoded = better_decode(self.result, type=typ, dec_hook=_decode_hook, method=method)
             except (ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
                 raise

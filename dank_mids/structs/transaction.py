@@ -31,9 +31,9 @@ class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True): 
     """The specific storage slot keys within the contract that will be accessed."""
     
     @cached_property
-    def storageKeys(self) -> Tuple[data.HexBytes32]:
+    def storageKeys(self) -> Tuple[data.HexBytes32, ...]:
         """The specific storage slot keys within the contract that will be accessed."""
-        return json.decode(self._storageKeys, type=Tuple[data.HexBytes32], dec_hook=data.decode_hexbytes)
+        return json.decode(self._storageKeys, type=Tuple[data.HexBytes32, ...], dec_hook=data.decode_hexbytes)
 
 class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
@@ -140,9 +140,9 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     """A list of addresses and storage keys that the transaction plans to access."""
     
     @cached_property
-    def accessList(self) -> Tuple[AccessListEntry]:
+    def accessList(self) -> Tuple[AccessListEntry, ...]:
         """A list of addresses and storage keys that the transaction plans to access."""
-        return json.decode(self._accessList, type=Tuple[AccessListEntry])
+        return json.decode(self._accessList, type=Tuple[AccessListEntry, ...])
 
 
 class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]

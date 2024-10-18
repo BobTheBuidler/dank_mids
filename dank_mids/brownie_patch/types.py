@@ -38,7 +38,7 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
 
     You can await this object directly to call the contract method with no arguments at the latest block.
     """
-    methods: Dict[Tuple[str], _NonOverloaded]
+    methods: Dict[Tuple[str, ...], _NonOverloaded]
     __slots__ = "_address", "_name", "_owner", "methods", "natspec"
     async def coroutine(  # type: ignore [empty-body]
         self, 

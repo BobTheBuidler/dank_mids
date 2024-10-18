@@ -59,9 +59,9 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     """The logs that were generated during this transaction."""
     
     @cached_property
-    def logs(self) -> Tuple[Log]:
+    def logs(self) -> Tuple[Log, ...]:
         """The logs that were generated during this transaction."""
-        return json.decode(self._logs, type=Tuple[Log], dec_hook=_decode_hook)
+        return json.decode(self._logs, type=Tuple[Log, ...], dec_hook=_decode_hook)
 
     # These fields are only present on Mainnet.
     effectiveGasPrice: Wei = UNSET

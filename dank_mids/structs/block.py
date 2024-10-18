@@ -39,16 +39,16 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
     """Array of transaction objects, or 32 Bytes transaction hashes depending on the last given parameter."""
 
     @cached_property
-    def transactions(self) -> Tuple[Union[HexBytes, Transaction]]:
+    def transactions(self) -> Tuple[Union[HexBytes, Transaction], ...]:
         """Array of transaction objects, or 32 Bytes transaction hashes depending on the last given parameter."""
         try:
-            transactions = json.decode(self._transactions, type=Tuple[Union[str, Transaction]], dec_hook=_decode_hook)
+            transactions = json.decode(self._transactions, type=Tuple[Union[str, Transaction], ...], dec_hook=_decode_hook)
         except ValidationError as e:
             from dank_mids.types import better_decode
             logger.exception(e)
             transactions = [
                 better_decode(raw_tx, type=Union[str, Transaction], dec_hook=_decode_hook)
-                for raw_tx in json.decode(self._transactions, type=Tuple[Raw])
+                for raw_tx in json.decode(self._transactions, type=Tuple[Raw, ...])
             ]
         if transactions and isinstance(transactions[0], str):
             transactions = [HexBytes(txhash) for txhash in transactions]
@@ -98,7 +98,7 @@ class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, om
 
     size: uint
 
-    uncles: Tuple[HexBytes]
+    uncles: Tuple[HexBytes, ...]
     """An Array of uncle hashes."""
     
     totalDifficulty: Optional[uint] = UNSET
@@ -111,9 +111,9 @@ class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, om
     _withdrawals: Raw = field(name="withdrawals", default=UNSET)
     """This field is only present on Ethereum."""
     @cached_property
-    def withdrawals(self) -> Tuple[StakingWithdrawal]:
+    def withdrawals(self) -> Tuple[StakingWithdrawal, ...]:
         """This field is only present on Ethereum."""
-        return json.decode(self._withdrawals, type=Tuple[StakingWithdrawal], dec_hook=_decode_hook)
+        return json.decode(self._withdrawals, type=Tuple[StakingWithdrawal, ...], dec_hook=_decode_hook)
     
 class ErigonHeader(Timestamped, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     parentHash: HexBytes
