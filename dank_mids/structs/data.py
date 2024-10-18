@@ -3,7 +3,7 @@ import decimal
 import logging
 from datetime import datetime, timezone
 from functools import cached_property
-from typing import TYPE_CHECKING, List, Tuple, Type, Union
+from typing import TYPE_CHECKING, List, Tuple, Type, TypeVar, Union
 
 from a_sync import a_sync
 from enum import Enum, EnumMeta
@@ -16,10 +16,11 @@ from eth_utils import to_checksum_address
 if TYPE_CHECKING:
     from dank_mids.structs.log import Log
     from dank_mids.structs.receipt import TransactionReceipt
-    from dank_mids.types import T
 
 
 logger = logging.getLogger(__name__)
+
+_T = TypeVar("_T")
 
 class Address(str):
     def __new__(cls, address: str):
@@ -247,7 +248,7 @@ class Decimal(decimal.Decimal):
     def __rfloordiv__(self, other):
         return type(self)(super().__rfloordiv__(other))
 
-class HashableList(List["T"]):
+class HashableList(List[_T]):
     def __hash__(self):
         return hash(tuple(self))
     def __setitem__(self, *_):
