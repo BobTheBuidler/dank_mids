@@ -45,7 +45,11 @@ class uint(int):
     string: 0x100000000  integer: 4294967296
     string: 0x1000000000  integer: 68719476736
     string: 0x10000000000  integer: 1099511627776
-"""
+    """
+    
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}({int.__repr__(self)})"
+
     @classmethod
     def _decode_hook(cls, typ: Type["uint"], obj: str):
         return typ(obj, 16)
