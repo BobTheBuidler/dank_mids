@@ -63,10 +63,10 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     """
 
     # details
-    _sender: Raw = field(name="from")
+    sender: data.Address
     """The address of the sender."""
 
-    _blockHash: Raw = field(name="blockHash")
+    blockHash: data.BlockHash
     """The hash of the block including this transaction. `None` when it's pending."""
 
     blockNumber: data.BlockNumber
@@ -97,19 +97,9 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
             raise KeyError(key) from None
 
     @cached_property
-    def blockHash(self) -> Optional[data.BlockHash]:
-        """The hash of the block including this transaction. `None` when it's pending."""
-        return json.decode(self._blockHash, type=Optional[data.BlockHash], dec_hook=data.decode_hexbytes)
-
-    @cached_property
     def to(self) -> Optional[data.Address]:
         """The address of the receiver. `None` when it's a contract creation transaction."""
         return json.decode(self._to, type=Optional[data.Address], dec_hook=data.Address._decode_hook)
-
-    @cached_property
-    def sender(self) -> data.Address:
-        """The address of the sender."""
-        return json.decode(self._sender, type=data.Address, dec_hook=data.Address._decode_hook)
 
     gasPrice: data.Wei
     """The gas price provided by the sender in wei."""
