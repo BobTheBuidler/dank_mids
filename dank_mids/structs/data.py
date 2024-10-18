@@ -49,6 +49,9 @@ class uint(int):
     
     def __repr__(self) -> str:
         return f"{type(self).__name__}({int.__repr__(self)})"
+    
+    # we dont want str to use our new repr
+    __str__ = int.__repr__
 
     @classmethod
     def _decode_hook(cls, typ: Type["uint"], obj: str):
