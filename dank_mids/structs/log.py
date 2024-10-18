@@ -27,6 +27,27 @@ class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-
     An array of 0 to 4 32-byte topics. 
     The first topic is the event signature and the others are indexed filters on the event return data.
     """
+    @property
+    def topic0(self) -> Topic:
+        return self.topics[0]
+    @property
+    def topic1(self) -> Topic:
+        try:
+            return self.topics[1]
+        except IndexError:
+            raise AttributeError(f"'this {type(self).__name__} object '{self}' has no attribute 'topic1'") from None
+    @property
+    def topic2(self) -> Topic:
+        try:
+            return self.topics[2]
+        except IndexError:
+            raise AttributeError(f"this {type(self).__name__} object '{self}' has no attribute 'topic2'") from None
+    @property
+    def topic3(self) -> Topic:
+        try:
+            return self.topics[3]
+        except IndexError:
+            raise AttributeError(f"this {type(self).__name__} object '{self}' has no attribute 'topic3'") from None
 
 
 class SmallLog(TinyLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
