@@ -9,6 +9,7 @@ from a_sync import a_sync
 from enum import Enum, EnumMeta
 from hexbytes import HexBytes
 from msgspec import json
+from typing_extensions import Self
 
 from cachetools.func import ttl_cache
 from eth_utils import to_checksum_address
