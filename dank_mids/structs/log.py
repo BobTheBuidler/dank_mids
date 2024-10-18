@@ -1,5 +1,5 @@
 
-from typing import List, Optional
+from typing import Optional, Tuple
 
 from hexbytes import HexBytes
 
@@ -22,7 +22,7 @@ class Topic(HexBytes32):
 
 class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
-    topics: List[Topic]
+    topics: Tuple[Topic]
     """
     An array of 0 to 4 32-byte topics. 
     The first topicis the event signature and the others are indexed filters on the event return data.
