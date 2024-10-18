@@ -1,7 +1,7 @@
 
 from enum import Enum
 from functools import cached_property
-from typing import List, Optional
+from typing import Tuple, Optional
 
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
@@ -105,7 +105,7 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     transactionPosition: int
     """The position of the transaction in the block."""
 
-    traceAddress: List[uint]
+    traceAddress: Tuple[uint]
     """The trace addresses (array) where the call executed (every contract where code was executed)."""
 
     type: Type
