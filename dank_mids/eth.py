@@ -12,7 +12,7 @@ from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS
 from dank_mids._method import WEB3_MAJOR_VERSION, MethodNoFormat, bypass_formatters, _block_selectors
 from dank_mids.structs import FilterTrace, Transaction
 from dank_mids.structs.block import Timestamped, TinyBlock
-from dank_mids.structs.data import Status, uint, _decode_hook, enum_decode_hook
+from dank_mids.structs.data import Status, UnixTimestamp, _decode_hook, enum_decode_hook
 
 
 class TraceFilterParams(TypedDict, total=False):  # type: ignore [call-arg]
@@ -33,7 +33,7 @@ class DankEth(AsyncEth):
     async def get_block_number(self) -> BlockNumber:  # type: ignore [override]
         return await super().get_block_number()  # type: ignore [misc]
     
-    async def get_block_timestamp(self, block_identifier: int) -> uint:
+    async def get_block_timestamp(self, block_identifier: int) -> UnixTimestamp:
         """
         Retrieves only the timestamp from a specific block.
         
@@ -49,7 +49,7 @@ class DankEth(AsyncEth):
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
-        return json.decode(await self._get_block_raw(block_identifier), type=Timestamped, dec_hook=uint._decode_hook).timestamp
+        return json.decode(await self._get_block_raw(block_identifier), type=Timestamped, dec_hook=UnixTimestamp._decode_hook).timestamp
 
     async def get_transactions(self, block_identifier: int, hashes_only: bool = False) -> List[Transaction]:
         """

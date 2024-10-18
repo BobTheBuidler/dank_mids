@@ -5,7 +5,7 @@ from typing import Any, ClassVar, List, Optional, Union
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, BlockHash, Decimal, HexBytes32, TransactionHash, uint, decode_hexbytes
+from dank_mids.structs import data
 from dank_mids.structs.dict import LazyDictStruct
 
 
@@ -24,38 +24,38 @@ class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True): 
         2
     """
 
-    address: Address
+    address: data.Address
     """The Ethereum address of the contract whose storage is being accessed."""
 
     _storageKeys: Raw = field(name="storageKeys")
     """The specific storage slot keys within the contract that will be accessed."""
     
     @cached_property
-    def storageKeys(self) -> List[HexBytes32]:
+    def storageKeys(self) -> List[data.HexBytes32]:
         """The specific storage slot keys within the contract that will be accessed."""
-        return json.decode(self._storageKeys, type=List[HexBytes32], dec_hook=decode_hexbytes)
+        return json.decode(self._storageKeys, type=List[data.HexBytes32], dec_hook=data.decode_hexbytes)
 
 class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
     input: HexBytes
     """The data sent along with the transaction."""
 
-    hash: TransactionHash
+    hash: data.TransactionHash
     """The hash of the transaction."""
 
     _to: Raw = field(name="to")
     """The address of the receiver. `None` when it's a contract creation transaction."""
 
-    gas: uint
+    gas: data.Wei
     """The gas provided by the sender."""
 
-    value: uint
+    value: data.Wei
     """The value transferred in wei encoded as hexadecimal."""
 
-    nonce: uint
+    nonce: data.Nonce
     """The number of transactions made by the sender before this one."""
 
-    chainId: Optional[uint]
+    chainId: Optional[data.ChainId]
     """
     The chain id of the transaction, if any.
     
@@ -69,14 +69,14 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     _blockHash: Raw = field(name="blockHash")
     """The hash of the block including this transaction. `None` when it's pending."""
 
-    blockNumber: uint
+    blockNumber: data.BlockNumber
     """The number of the block including this transaction. `None` when it's pending."""
 
-    transactionIndex: uint
+    transactionIndex: data.TransactionIndex
     """The index position of the transaction in the block. `None` when it's pending."""
     
     # signature
-    v: uint
+    v: data.uint
     """ECDSA recovery ID."""
 
     _r: Raw = field(name="r")
@@ -97,40 +97,40 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
             raise KeyError(key) from None
 
     @cached_property
-    def blockHash(self) -> Optional[BlockHash]:
+    def blockHash(self) -> Optional[data.BlockHash]:
         """The hash of the block including this transaction. `None` when it's pending."""
-        return json.decode(self._blockHash, type=Optional[BlockHash], dec_hook=decode_hexbytes)
+        return json.decode(self._blockHash, type=Optional[data.BlockHash], dec_hook=data.decode_hexbytes)
 
     @cached_property
-    def to(self) -> Optional[Address]:
+    def to(self) -> Optional[data.Address]:
         """The address of the receiver. `None` when it's a contract creation transaction."""
-        return json.decode(self._to, type=Optional[Address], dec_hook=Address._decode_hook)
+        return json.decode(self._to, type=Optional[data.Address], dec_hook=data.Address._decode_hook)
 
     @cached_property
-    def value_scaled(self) -> Decimal:
+    def value_scaled(self) -> data.Decimal:
         """The value transferred in wei."""
-        return Decimal(self.value) / 10 ** 18 or Decimal(0)
+        return data.Decimal(self.value) / 10 ** 18 or data.Decimal(0)
 
     @cached_property
-    def sender(self) -> Address:
+    def sender(self) -> data.Address:
         """The address of the sender."""
-        return json.decode(self._sender, type=Address, dec_hook=Address._decode_hook)
+        return json.decode(self._sender, type=data.Address, dec_hook=data.Address._decode_hook)
 
-    gasPrice: uint
+    gasPrice: data.Wei
     """The gas price provided by the sender in wei."""
 
     @cached_property
     def r(self) -> HexBytes:
         """The R field of the signature."""
-        return json.decode(self._r, type=HexBytes, dec_hook=decode_hexbytes)
+        return json.decode(self._r, type=HexBytes, dec_hook=data.decode_hexbytes)
 
     @cached_property
     def s(self) -> HexBytes:
         """The S field of the signature."""
-        return json.decode(self._s, type=HexBytes, dec_hook=decode_hexbytes)
+        return json.decode(self._s, type=HexBytes, dec_hook=data.decode_hexbytes)
     
     @property
-    def block(self) -> uint:
+    def block(self) -> data.BlockNumber:
         """
         A shorthand getter for blockNumber.
         """
@@ -156,10 +156,10 @@ class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, fo
 class Transaction1559(_TransactionBase, tag="0x2", frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     type: ClassVar[HexBytes] = HexBytes("2")
 
-    maxFeePerGas: uint
+    maxFeePerGas: data.Wei
     """The maximum fee per gas set in the transaction."""
 
-    maxPriorityFeePerGas: uint
+    maxPriorityFeePerGas: data.Wei
     """The maximum priority gas fee set in the transaction."""
 
 

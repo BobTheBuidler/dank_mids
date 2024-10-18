@@ -1,6 +1,7 @@
 
 import decimal
 import logging
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Type, Union
 
 from a_sync import a_sync
@@ -47,7 +48,7 @@ class uint(int):
 """
     @classmethod
     def _decode_hook(cls, typ: Type["uint"], obj: str):
-        return cls(obj, 16)
+        return typ(obj, 16)
     @classmethod
     def _decode(cls, obj) -> "uint":
         try:
@@ -56,6 +57,60 @@ class uint(int):
             if "int() can't convert non-string with explicit base" in str(e):
                 return cls(obj)
             raise
+
+
+class Wei(uint):
+    @property
+    def scaled(self) -> "Decimal":
+        return Decimal(self) / 10 ** 18
+
+
+class UnixTimestamp(uint):
+    @property
+    def datetime(self) -> datetime:
+        return datetime.fromtimestamp(self, tz=timezone.utc)
+
+class IntId(uint):
+    def __add__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __sub__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __mul__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __truediv__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __floordiv__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __pow__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __radd__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __rsub__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __rmul__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __rtruediv__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __rfloordiv__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+    def __rpow__(*_):
+        raise TypeError(f"You cannot perform math on a {type(_[0]).__name__}")
+
+
+class ChainId(IntId):
+    ...
+
+class BlockNumber(IntId):
+    ...
+
+class Nonce(IntId):
+    ...
+
+class TransactionIndex(IntId):
+    ...
+
+class LogIndex(IntId):
+    ...
 
 
 class StringToIntEnumMeta(EnumMeta):
@@ -78,8 +133,8 @@ def _decode_hook(typ: Type, obj: object):
         return typ(obj)  # type: ignore [arg-type]
     elif typ is Address:
         return checksum(obj)
-    elif typ is uint:
-        return uint._decode(obj)
+    elif issubclass(typ, uint):
+        return typ._decode(obj)
     raise NotImplementedError(typ, obj, type(obj))
 
 
@@ -149,7 +204,7 @@ class Decimal(decimal.Decimal):
         string_len = len(string)
         scientific_notation_len = len(scientific_notation)
         if integer == self:
-            return integer if string_len <= scientific_notation_len + 2 else scientific_notation
+            return integer if len(str(integer)) <= scientific_notation_len + 2 else scientific_notation
         while string[-1] == "0":
             string = string[:-1]
         if Decimal(scientific_notation) == self and scientific_notation_len < string_len:

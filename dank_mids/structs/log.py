@@ -3,21 +3,21 @@ from typing import Optional, Tuple
 
 from hexbytes import HexBytes
 
-from dank_mids.structs.data import Address, BlockHash, HexBytes32, TransactionHash, uint, checksum
+from dank_mids.structs import data
 from dank_mids.structs.dict import LazyDictStruct
 
 
 _ADDRESS_TOPIC_PREFIX = HexBytes("0") * 12
 
-class Topic(HexBytes32):
+class Topic(data.HexBytes32):
     @property
-    def as_uint(self) -> uint:
-        return uint(self.hex(), 16)
+    def as_uint(self) -> data.uint:
+        return data.uint(self.hex(), 16)
     @property
-    def as_address(self) -> Address:
+    def as_address(self) -> data.Address:
         if self[:12] != _ADDRESS_TOPIC_PREFIX:
             raise ValueError(f"This {type(self).__name__} does not represent an address", self)
-        return checksum(self[-20:].hex())
+        return data.checksum(self[-20:].hex())
     
 
 class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-arg]
@@ -30,7 +30,7 @@ class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-
 
 class SmallLog(TinyLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
-    address: Optional[Address]
+    address: Optional[data.Address]
     """The address of the contract that generated the log."""
 
     data: Optional[HexBytes]
@@ -42,25 +42,25 @@ class Log(SmallLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
     removed: Optional[bool]
     """`True` when the log was removed, due to a chain reorganization. `False` if it's a valid log."""
 
-    blockNumber: Optional[uint]
+    blockNumber: Optional[data.BlockNumber]
     """The block where the transaction was included where the log originated from. `None` for pending transactions."""
 
-    transactionHash: TransactionHash
+    transactionHash: data.TransactionHash
     """The hash of the transaction that generated the log. `None` for pending transactions."""
 
-    logIndex: uint
+    logIndex: data.LogIndex
     """Index position of the log in the transaction. `None` for pending transactions."""
     
-    transactionIndex: uint
+    transactionIndex: data.TransactionIndex
     """The index of the transaction in the block, where the log originated from."""
     
     @property
-    def block(self) -> Optional[uint]:
+    def block(self) -> Optional[data.BlockNumber]:
         """A shorthand getter for 'blockNumber'"""
         return self.blockNumber
 
 
 class FullLog(Log, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
 
-    blockHash: Optional[BlockHash]
+    blockHash: Optional[data.BlockHash]
     """The hash of the block where the transaction was included where the log originated from. `None` for pending transactions."""

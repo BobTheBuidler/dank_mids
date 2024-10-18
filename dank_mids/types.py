@@ -15,7 +15,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids import constants, stats
 from dank_mids._exceptions import BadResponse, ChainstackRateLimited, ExceedsMaxBatchSize, PayloadTooLarge
 from dank_mids.structs import Block, DictStruct, ErigonHeader, FilterTrace, Log, Transaction, TransactionReceipt
-from dank_mids.structs.data import Address, uint, _decode_hook
+from dank_mids.structs.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
@@ -23,8 +23,6 @@ if TYPE_CHECKING:
 
 T = TypeVar("T")
 
-ChainId = NewType("ChainId", int)
-"""A type representing the unique integer identifier for a blockchain network."""
 
 BlockId = NewType("BlockId", str)
 """A type representing the identifier for a specific block in the blockchain."""
@@ -124,11 +122,11 @@ _str_responses: Set[str] = set()
 
 _RETURN_TYPES = {
     "eth_call": HexBytes,
-    "eth_chainId": uint,
+    "eth_chainId": ChainId,
     "eth_getCode": HexBytes,
     "eth_getLogs": List[Log],
-    "eth_getBalance": uint,
-    "eth_blockNumber": uint,
+    "eth_getBalance": Wei,
+    "eth_blockNumber": BlockNumber,
     "eth_accounts": List[Address],
     "eth_getBlockByNumber": Block,
     "eth_getTransactionCount": uint,
@@ -188,7 +186,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         }
         return data
 
-    def decode_result(self, method: Optional[RPCEndpoint] = None, *, caller = None) -> Union[HexBytes, uint, AttributeDict]:
+    def decode_result(self, method: Optional[RPCEndpoint] = None, *, caller = None) -> Union[HexBytes, Wei, uint, ChainId, BlockNumber, AttributeDict]:
         # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
         if method and (typ := _RETURN_TYPES.get(method)):
             if method in ["eth_call", "eth_blockNumber", "eth_getCode", "eth_getBlockByNumber", "eth_getTransactionReceipt", "eth_getTransactionCount", "eth_getBalance", "eth_chainId", "erigon_getHeaderByNumber"]:

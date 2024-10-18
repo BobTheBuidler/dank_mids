@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field, json
 
-from dank_mids.structs.data import Address, uint, _decode_hook
+from dank_mids.structs.data import Address, BlockNumber, IntId, UnixTimestamp, Wei, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.transaction import Transaction
 
@@ -15,21 +15,21 @@ logger = logging.getLogger(__name__)
 
 class StakingWithdrawal(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
-    index: uint
+    index: IntId
 
-    amount: uint = UNSET
+    amount: Wei = UNSET
     """This field is not always present."""
 
     address: Address = UNSET
     """This field is not always present."""
 
-    validatorIndex: uint = UNSET
+    validatorIndex: IntId = UNSET
     """This field is not always present."""
 
 
 class Timestamped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     
-    timestamp: uint
+    timestamp: UnixTimestamp
     """The Unix timestamp for when the block was collated."""
 
 
@@ -75,13 +75,13 @@ class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, om
     logsBloom: HexBytes
     """The bloom filter for the logs of the block."""
 
-    number: uint
+    number: BlockNumber
     """The block number."""
 
-    gasLimit: uint
+    gasLimit: Wei
     """The maximum gas allowed in this block."""
 
-    gasUsed: uint
+    gasUsed: Wei
     """The total used gas by all transactions in this block."""
     
     extraData: HexBytes
@@ -93,7 +93,7 @@ class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, om
     mixHash: HexBytes
     """A string of a 256-bit hash encoded as a hexadecimal."""
     
-    nonce: uint
+    nonce: IntId
     """Hash of the generated proof-of-work."""
 
     size: uint

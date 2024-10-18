@@ -5,16 +5,17 @@ from typing import List, Optional
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, Decimal, TransactionHash, Status, uint, decode_hexbytes, _decode_hook
+from dank_mids.structs.data import (Address, BlockNumber, Decimal, TransactionHash, 
+                                    Status, TransactionIndex, Wei, uint, _decode_hook)
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.log import Log
 
 class FeeStats(DictStruct, frozen=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
     """Arbitrum includes this in the `feeStats` field of a tx receipt."""
-    l1Calldata: uint
-    l2Storage: uint
-    l1Transaction: uint
-    l2Computation: uint
+    l1Calldata: Wei
+    l2Storage: Wei
+    l1Transaction: Wei
+    l2Computation: Wei
 
 class ArbitrumFeeStats(DictStruct, frozen=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """Arbitrum includes these with a tx receipt."""
@@ -33,34 +34,29 @@ class ArbitrumFeeStats(DictStruct, frozen=True, forbid_unknown_fields=True, omit
 
 class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
 
-    _transactionHash: Raw = field(name="transactionHash")
-    """The position of this transaction."""
+    transactionHash: TransactionHash
+    """The unique hash of this transaction."""
 
-    blockNumber: uint
+    blockNumber: BlockNumber
     """The block number that contains the transaction."""
 
     contractAddress: Optional[Address]
     """The contract address created, if the transaction was a contract creation, otherwise `None`."""
 
-    transactionIndex: uint
-    """The position of the transaction where this log originates from. `None` when it's a pending transaction."""
+    transactionIndex: TransactionIndex
+    """The position of this transaction within the block."""
 
     status: Status
     """1 if the transaction succeeded, 0 if it failed."""
 
-    gasUsed: uint
+    gasUsed: Wei
     """The amount of gas used by this transaction, not counting internal transactions, calls or delegate calls."""
 
-    cumulativeGasUsed: uint
+    cumulativeGasUsed: Wei
     """The total amount of gas used during this transaction."""
 
     _logs: Raw = field(name="logs")
     """The logs that were generated during this transaction."""
-
-    @cached_property
-    def transactionHash(self) -> HexBytes:
-        """The position of this transaction."""
-        return json.decode(self._transactionHash, type=TransactionHash, dec_hook=decode_hexbytes)
     
     @cached_property
     def logs(self) -> List[Log]:
@@ -68,7 +64,7 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
         return json.decode(self._logs, type=List[Log], dec_hook=_decode_hook)
 
     # These fields are only present on Mainnet.
-    effectiveGasPrice: uint = UNSET
+    effectiveGasPrice: Wei = UNSET
     """
     The actual value per gas deducted from the sender's account.
     
@@ -82,21 +78,21 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     This field is only present on Mainnet.
     """
 
-    blobGasUsed: uint = UNSET
+    blobGasUsed: Wei = UNSET
     """This field is sometimes present, only on Mainnet."""
 
     # These fields are only present on Optimism.
     l1FeeScalar: Decimal = UNSET
     """This field is only present on Optimism."""
-    l1GasUsed: uint = UNSET
+    l1GasUsed: Wei = UNSET
     """This field is only present on Optimism."""
-    l1GasPrice: uint = UNSET
+    l1GasPrice: Wei = UNSET
     """This field is only present on Optimism."""
-    l1Fee: uint = UNSET
+    l1Fee: Wei = UNSET
     """This field is only present on Optimism."""
 
     # These fields are only present on Arbitrum.
-    l1BlockNumber: uint = UNSET
+    l1BlockNumber: BlockNumber = UNSET
     """This field is only present on Arbitrum."""
     l1InboxBatchInfo: Optional[HexBytes] = UNSET
     """This field is only present on Arbitrum."""
@@ -104,7 +100,7 @@ class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_default
     """This field is only present on Arbitrum."""
     @cached_property
     def feeStats(self) -> ArbitrumFeeStats:
-        return json.decode(self._feeStats, type=ArbitrumFeeStats, dec_hook=uint._decode_hook)
+        return json.decode(self._feeStats, type=ArbitrumFeeStats, dec_hook=Wei._decode_hook)
 
 class FullTransactionReceipt(TransactionReceipt, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
 

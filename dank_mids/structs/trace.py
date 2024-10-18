@@ -6,7 +6,7 @@ from typing import Tuple, Optional
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
 
-from dank_mids.structs.data import Address, BlockHash, Decimal, StringToIntEnumMeta, TransactionHash, uint
+from dank_mids.structs.data import Address, BlockHash, BlockNumber, Decimal, StringToIntEnumMeta, TransactionHash, Wei, uint
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
     
@@ -39,13 +39,13 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     input: HexBytes
     """The input data of the action (transaction)."""
 
-    gas: uint
+    gas: Wei
     """The gas provided."""
 
     rewardType: Optional[RewardType] = None
     """The type of the reward, for reward transactions."""
 
-    value: uint = UNSET
+    value: Wei = UNSET
     """The amount of ETH sent in this action (transaction)."""
 
     @cached_property
@@ -77,7 +77,7 @@ class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, 
     output: HexBytes
     """The output of this transaction."""
 
-    gasUsed: uint
+    gasUsed: Wei
     """The amount of gas used by this transaction."""
 
 
@@ -93,7 +93,7 @@ class Type(Enum, metaclass=StringToIntEnumMeta):
 
 class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     
-    blockNumber: uint
+    blockNumber: BlockNumber
     """The number of the block where this action happened."""
 
     blockHash: BlockHash
@@ -123,6 +123,6 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     error: str = UNSET
 
     @property
-    def block(self) -> uint:
+    def block(self) -> BlockNumber:
         """A shorthand getter for 'blockNumber'."""
         return self.blockNumber
