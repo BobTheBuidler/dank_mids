@@ -34,6 +34,10 @@ def checksum(address: str) -> Address:
     return Address(address)
 
 class uint(int):
+    @classmethod
+    def fromhex(cls, hexstr: str) -> Self:
+        return cls(hexstr, 16)
+    
     """
     NOTE: Storing encoded data as string is cheaper than ints when integer value is sufficiently high:
     
@@ -55,7 +59,7 @@ class uint(int):
     
     # we dont want str to use our new repr
     __str__ = int.__repr__
-
+    
     @classmethod
     def _decode_hook(cls, typ: Type["uint"], obj: str):
         return typ(obj, 16)
@@ -148,7 +152,7 @@ def _decode_hook(typ: Type, obj: object):
     elif typ is Address:
         return checksum(obj)
     elif issubclass(typ, uint):
-        return typ.fromhex(obj)
+        return (typ.fromhex if isinstance(obj, str) and obj.startswith("0x") else typ)(obj)
     elif getattr(typ, "__origin__", None) is HashableList:
         assert len(typ.__args__) == 1, typ.__args__
         obj_cls = typ.__args__[0]
