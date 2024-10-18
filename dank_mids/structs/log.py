@@ -25,7 +25,7 @@ class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-
     topics: List[Topic]
     """
     An array of 0 to 4 32-byte topics. 
-    The first topicis the event signature and the others are indexed filters on the event return data.
+    The first topic is the event signature and the others are indexed filters on the event return data.
     """
 
 
