@@ -43,7 +43,7 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     hash: data.TransactionHash
     """The hash of the transaction."""
 
-    _to: Raw = field(name="to")
+    to: Optional[data.Address]
     """The address of the receiver. `None` when it's a contract creation transaction."""
 
     gas: data.Wei
@@ -79,10 +79,10 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     v: data.uint
     """ECDSA recovery ID."""
 
-    _r: Raw = field(name="r")
+    r: HexBytes
     """The R field of the signature."""
 
-    _s: Raw = field(name="s")
+    s: HexBytes
     """The S field of the signature."""
 
     def __hash__(self) -> int:
@@ -96,23 +96,8 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
                 return self.sender
             raise KeyError(key) from None
 
-    @cached_property
-    def to(self) -> Optional[data.Address]:
-        """The address of the receiver. `None` when it's a contract creation transaction."""
-        return json.decode(self._to, type=Optional[data.Address], dec_hook=data.Address._decode_hook)
-
     gasPrice: data.Wei
     """The gas price provided by the sender in wei."""
-
-    @cached_property
-    def r(self) -> HexBytes:
-        """The R field of the signature."""
-        return json.decode(self._r, type=HexBytes, dec_hook=data.decode_hexbytes)
-
-    @cached_property
-    def s(self) -> HexBytes:
-        """The S field of the signature."""
-        return json.decode(self._s, type=HexBytes, dec_hook=data.decode_hexbytes)
     
     @property
     def block(self) -> data.BlockNumber:
