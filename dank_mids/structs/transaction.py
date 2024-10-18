@@ -63,7 +63,7 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     """
 
     # details
-    sender: data.Address
+    sender: data.Address = field(name="from")
     """The address of the sender."""
 
     blockHash: data.BlockHash
