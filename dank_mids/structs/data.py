@@ -62,11 +62,14 @@ class uint(int):
     @classmethod
     def _decode(cls, obj) -> "uint":
         try:
-            return cls(obj, 16)
+            return cls.fromhex(obj)
         except TypeError as e:
             if "int() can't convert non-string with explicit base" in str(e):
                 return cls(obj)
             raise
+    @classmethod
+    def fromhex(cls, hexstr: str):
+        return cls(hexstr, 16)
 
 
 class Wei(uint):
