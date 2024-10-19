@@ -166,19 +166,10 @@ ONE_EMPTY_BYTE = bytes(HexBytes("0x00"))
 
 class HexBytes32(HexBytes):
     def __new__(cls, v):
-        if isinstance(v, str):
-            if v[:2] == "0x":
-                # if it has 0x prefix it came from the chain and should be the right size
-                # when it doesnt have the prefix it came out of one of my dbs in a downstream lib and we can trust the size.
-                l = len(v)
-                if l > 66:
-                    raise ValueError('too high', len(v), v)
-                elif l < 66:
-                    raise ValueError('too smol', len(v), v)
-                
-        elif type(v) is not bytes:  # bytes ONLY for unpickling, HexBytes dont count
-            raise TypeError(type(v), v)
-            
+        # if it has 0x prefix it came from the chain or a user and we should validate the size
+        # when it doesnt have the prefix it came out of one of my dbs in a downstream lib and we can trust the size.
+        if isinstance(v, str) and v.startswith("0x"):
+            cls._check_hexstr(v)
         input_bytes = HexBytes(v)
         return super().__new__(cls, cls._get_missing_bytes(input_bytes) + input_bytes)
 
@@ -201,6 +192,14 @@ class HexBytes32(HexBytes):
         """Returns self.hex() with leading zeroes removed."""
         # we trim all leading zeroes since we know how many we need to put back later
         return hex(int(self.hex(), 16))[2:]
+    
+    @staticmethod
+    def _check_hexstr(hexstr: str):
+        l = len(hexstr)
+        if l > 66:
+            raise ValueError('too high', len(hexstr), hexstr)
+        elif l < 66:
+            raise ValueError('too smol', len(hexstr), hexstr)
 
 class TransactionHash(HexBytes32):
     @a_sync("async")
