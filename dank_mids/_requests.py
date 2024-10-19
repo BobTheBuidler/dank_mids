@@ -137,7 +137,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
         with self.controller.pools_closed_lock:
             if isinstance(self, eth_call) and self.multicall_compatible:
                 self.controller.pending_eth_calls[self.block].append(self)
-            elif self.method.startswith("trace", "debug"):
+            elif self.method.startswith(("trace", "debug")):
                 raise NotImplementedError("we should not get here", self)
             else:
                 self.controller.pending_rpc_calls.append(self)
