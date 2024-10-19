@@ -295,7 +295,7 @@ def _encode_hook(obj: Encodable) -> JsonThing:
     """
     try:
         # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
-        return str(obj) if isinstance(obj, uint) else int(obj)
+        return hex(int(obj))
     except TypeError as e:
         if isinstance(obj, AttributeDict):
             return dict(obj)
