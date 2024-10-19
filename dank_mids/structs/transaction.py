@@ -35,7 +35,7 @@ class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True): 
         """The specific storage slot keys within the contract that will be accessed."""
         return json.decode(self._storageKeys, type=data.HashableList[data.HexBytes32], dec_hook=data.decode_hexbytes)
 
-class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True):  # type: ignore [call-arg]
+class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
     input: HexBytes
     """The data sent along with the transaction."""
