@@ -55,11 +55,13 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     nonce: data.Nonce
     """The number of transactions made by the sender before this one."""
 
-    chainId: Optional[data.ChainId]
+    chainId: Optional[data.ChainId] = UNSET  # type: ignore [assignment]
     """
     The chain id of the transaction, if any.
     
     `None` for v in {27, 28}, otherwise derived from eip-155
+
+    This field is not included in the transactions field of a eth_getBlock response.
     """
 
     # details
