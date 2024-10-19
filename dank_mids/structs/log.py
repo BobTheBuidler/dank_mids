@@ -1,8 +1,9 @@
 
-from typing import List, Optional
+from typing import Optional
 
 from hexbytes import HexBytes
 
+from dank_mids import uints
 from dank_mids.structs import data
 from dank_mids.structs.dict import LazyDictStruct
 
@@ -18,8 +19,42 @@ class Topic(data.HexBytes32):
         if self[:12] != _ADDRESS_TOPIC_PREFIX:
             raise ValueError(f"This {type(self).__name__} does not represent an address", self)
         return data.checksum(self[-20:].hex())
+    @property
+    def as_uint8(self) -> uints.uint8:
+        return uints.uint8(self)
+    @property
+    def as_uint64(self) -> uints.uint64:
+        return uints.uint64(self)
+    @property
+    def as_uint128(self) -> uints.uint128:
+        return uints.uint128(self)
+    @property
+    def as_uint256(self) -> uints.uint256:
+        return uints.uint256(self)
     
 
+"""
+Dynamically define properties for all uint types.
+
+Example:
+```
+Topic(bytes_data).as_uint40
+Topic(bytes_data).as_uint48
+Topic(bytes_data).as_uint56
+```
+"""
+for i in range(2, 31):
+    # these commonly used ones are already defined above for better use with ides
+    if i in [1, 8, 16, 32]:
+        continue
+    bits = i * 8
+    uint_cls_name = f"uint{bits}"
+    uint_cls = getattr(uints, uint_cls_name)
+    setattr(Topic, f"as_{uint_cls_name}", property(uint_cls))
+
+
+
+    
 class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
     topics: data.HashableList[Topic]
@@ -27,6 +62,9 @@ class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-
     An array of 0 to 4 32-byte topics. 
     The first topic is the event signature and the others are indexed filters on the event return data.
     """
+    def __hash__(self) -> int:
+        force_setattr(self, "topics", tuple(self.topics))
+        return super().__hash__()
     @property
     def topic0(self) -> Topic:
         return self.topics[0]
