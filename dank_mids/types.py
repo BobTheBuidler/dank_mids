@@ -295,17 +295,24 @@ def _encode_hook(obj: Encodable) -> JsonThing:
     """
     try:
         # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
-        return hex(int(obj))
+        return int(obj)
     except TypeError as e:
-        #if isinstance(obj, AttributeDict):
-        #    return dict(obj)
-        raise NotImplementedError(obj, type(obj)) from e
+        # I put this here for AttributeDicts which come from eth_getLogs params
+        # but I check for mapping so it can work with user custom classes
+        if not isinstance(obj, Mapping):
+            raise NotImplementedError(obj, type(obj)) from e
+        return dict({k: _rudimentary_encode_dict_value(v) for k, v in obj.items()})
     except ValueError as e:
         # NOTE: The error is probably this if `obj` is a string:
         # ValueError: invalid literal for int() with base 10:"""
-        if isinstance(obj, HexBytes):
-            return obj.hex()
-        raise NotImplementedError(obj, type(obj)) from e
+        if not isinstance(obj, HexBytes):
+            raise NotImplementedError(obj, type(obj)) from e
+        return obj.hex()
+
+
+def _rudimentary_encode_dict_value(value):
+    # I dont think this needs to be robust, time will tell
+    return hex(value) if isinstance(value, int) else value
 
 
 def better_decode(
