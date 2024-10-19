@@ -528,11 +528,8 @@ def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Excep
         )[2]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
-        try:
-            # We do this goofy thing since we can't `return Exc() from e`
-            raise e.__class__(*e.args, data.decode_result() if isinstance(data, PartialResponse) else data) from e
-        except Exception as new_e:
-            return new_e
+        e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
+        return e
     
 
 class Multicall(_Batch[RPCResponse, eth_call]):
