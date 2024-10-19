@@ -1,5 +1,5 @@
 
-from typing import List, Sequence, TypedDict, Union
+from typing import List, Sequence, Tuple, Type, TypedDict, TypeVar, Union
 
 from async_lru import alru_cache
 from eth_typing import BlockNumber
@@ -10,9 +10,10 @@ from web3.eth import AsyncEth
 from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS
 
 from dank_mids._method import WEB3_MAJOR_VERSION, MethodNoFormat, bypass_formatters, _block_selectors
-from dank_mids.structs import FilterTrace, Transaction
+from dank_mids.structs import FilterTrace, Log, Transaction, TransactionReceipt
 from dank_mids.structs.block import Timestamped, TinyBlock
 from dank_mids.structs.data import Status, UnixTimestamp, _decode_hook, enum_decode_hook
+from dank_mids.types import DecodeHook, T
 
 
 class TraceFilterParams(TypedDict, total=False):  # type: ignore [call-arg]
@@ -69,9 +70,18 @@ class DankEth(AsyncEth):
         """
         return json.decode(await self._get_block_raw(block_identifier, not hashes_only), type=TinyBlock, dec_hook=_decode_hook).transactions
 
+    async def get_transaction_receipt(
+        self, 
+        *args, 
+        decode_to: Type[T] = TransactionReceipt, 
+        decode_hook: DecodeHook = _decode_hook,
+        **kwargs,
+    ) -> T:
+        receipt_bytes = await self._get_transaction_receipt_raw(*args, **kwargs)
+        return json.decode(receipt_bytes, type=decode_to, dec_hook=decode_hook)
+    
     async def get_transaction_status(self, transaction_hash: str) -> Status:
-        tx = await self._get_transaction_receipt_raw(transaction_hash)
-        return json.decode(tx, type=_Statusable, dec_hook=enum_decode_hook).status
+        return (await self.get_transaction_receipt(transaction_hash, decode_to=_Statusable, decode_hook=enum_decode_hook)).status
 
     async def trace_filter(self, filter_params: TraceFilterParams) -> List[FilterTrace]:
         return await self._trace_filter(filter_params)
@@ -79,6 +89,15 @@ class DankEth(AsyncEth):
     async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
         return await self._trace_transaction(transaction_hash)
     
+    async def get_logs(
+        self, 
+        *args, 
+        decode_to: Type[T] = Tuple[Log, ...], 
+        decode_hook: DecodeHook = _decode_hook, 
+        **kwargs,
+    ) -> T:
+        logs_bytes = await self._get_logs_raw(*args, **kwargs)
+        return json.decode(logs_bytes, type=decode_to, dec_hook=decode_hook)
 
     meth = MethodNoFormat.default(RPC.eth_getTransactionReceipt)
     if WEB3_MAJOR_VERSION >= 6:

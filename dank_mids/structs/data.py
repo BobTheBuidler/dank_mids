@@ -6,13 +6,14 @@ from functools import cached_property
 from typing import TYPE_CHECKING, List, Tuple, Type, TypeVar, Union
 
 from a_sync import a_sync
+from cachetools.func import ttl_cache
 from enum import Enum, EnumMeta
+from eth_utils import to_checksum_address
 from hexbytes import HexBytes
 from msgspec import json
 from typing_extensions import Self
 
-from cachetools.func import ttl_cache
-from eth_utils import to_checksum_address
+from dank_mids.types import T, DecodeHook
 
 if TYPE_CHECKING:
     from dank_mids.structs.log import Log
@@ -203,9 +204,9 @@ class HexBytes32(HexBytes):
 
 class TransactionHash(HexBytes32):
     @a_sync("async")
-    async def get_receipt(self) -> "TransactionReceipt":
+    async def get_receipt(self, decode_to: Type[T], decode_hook: DecodeHook = _decode_hook) -> "TransactionReceipt":
         import dank_mids
-        return await dank_mids.eth.get_transaction_receipt(self)
+        return await dank_mids.eth.get_transaction_receipt(self, decode_to=decode_to, decode_hook=decode_hook)
     @a_sync  # TODO; compare how these type check, they both function the same
     async def get_logs(self) -> Tuple["Log", ...]:
         import dank_mids

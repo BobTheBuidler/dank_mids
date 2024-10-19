@@ -62,6 +62,7 @@ def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
 
 def bypass_log_formatter(eth: Type[BaseEth]) -> None:
     eth._get_logs = MethodNoFormat.default(RPC.eth_getLogs)
+    eth._get_logs_raw = MethodNoFormat.default(f"{RPC.eth_getLogs}_raw")
     eth.get_filter_logs = MethodNoFormat.default(RPC.eth_getFilterLogs)
     eth.get_filter_changes = MethodNoFormat.default(RPC.eth_getFilterChanges)
 
