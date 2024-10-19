@@ -75,7 +75,7 @@ class DankEth(AsyncEth):
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
-        return json.decode(await self._get_block_raw(block_identifier), type=Timestamped, dec_hook=UnixTimestamp._decode_hook).timestamp
+        return json.decode(await self._get_block_raw(hex(block_identifier)), type=Timestamped, dec_hook=UnixTimestamp._decode_hook).timestamp
 
     async def get_transactions(self, block_identifier: int, hashes_only: bool = False) -> List[Transaction]:
         """
@@ -93,7 +93,7 @@ class DankEth(AsyncEth):
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
-        return json.decode(await self._get_block_raw(block_identifier, not hashes_only), type=TinyBlock, dec_hook=_decode_hook).transactions
+        return json.decode(await self._get_block_raw(hex(block_identifier), not hashes_only), type=TinyBlock, dec_hook=_decode_hook).transactions
 
     async def get_transaction_receipt(
         self, 
