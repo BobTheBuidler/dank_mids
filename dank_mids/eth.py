@@ -1,5 +1,5 @@
 
-from typing import Awaitable, Callable, List, Sequence, Tuple, Type, TypedDict, Union
+from typing import Awaitable, Callable, List, Sequence, Tuple, Type, TypedDict, TypeVar, Union
 
 from async_lru import alru_cache
 from async_property import async_cached_property
@@ -8,7 +8,7 @@ from msgspec import Struct, json
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
-from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS
+from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS, HexStr
 
 from dank_mids._method import WEB3_MAJOR_VERSION, MethodNoFormat, bypass_formatters, _block_selectors
 from dank_mids.structs import FilterTrace, Log, Transaction, TransactionReceipt
@@ -77,7 +77,7 @@ class DankEth(AsyncEth):
         """
         return json.decode(await self._get_block_raw(hex(block_identifier)), type=Timestamped, dec_hook=UnixTimestamp._decode_hook).timestamp
 
-    async def get_transactions(self, block_identifier: int, hashes_only: bool = False) -> List[Transaction]:
+    async def get_transactions(self, block_identifier: Union[int, HexStr], hashes_only: bool = False) -> List[Transaction]:
         """
         Retrieves only the transactions from a specific block. 
         
