@@ -31,6 +31,7 @@ class _Statusable(Struct):
     
 
 class DankEth(AsyncEth):
+    _block_cache_ttl = 0.1
 
     # eth_chainId
 
@@ -46,7 +47,7 @@ class DankEth(AsyncEth):
     # eth_blockNumber
 
     @property
-    @alru_cache(ttl=0)
+    @alru_cache(maxsize=None, ttl=_block_cache_ttl)
     async def block_number(self) -> BlockNumber:  # type: ignore [override]
         return await self.get_block_number()
     
