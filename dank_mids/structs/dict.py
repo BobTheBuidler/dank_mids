@@ -28,7 +28,7 @@ class DictStruct(Struct, dict=True):
         return True
     
     def __contains__(self, key: str) -> bool:
-        return key in self.__resolved_fields__ and getattr(self, key, UNSET) is not UNSET
+        return key in self.__struct_fields__ and getattr(self, key, UNSET) is not UNSET
     
     def get(self, key: str, default: Any = None) -> Any:
         return getattr(self, key, default)
@@ -76,7 +76,7 @@ class DictStruct(Struct, dict=True):
         Yields:
             Struct key.
         """
-        for field in self.__resolved_fields__:
+        for field in self.__struct_fields__:
             value = getattr(self, field, UNSET)
             if value is not UNSET:
                 yield field
@@ -100,7 +100,7 @@ class DictStruct(Struct, dict=True):
         yield from self
 
     def items(self) -> Iterator[Tuple[str, Any]]:
-        for key in self.__resolved_fields__:
+        for key in self.__struct_fields__:
             value = getattr(self, key, UNSET)
             if value is not UNSET:
                 yield key, value
@@ -112,7 +112,7 @@ class DictStruct(Struct, dict=True):
         Returns:
             An iterator over the field values.
         """
-        for key in self.__resolved_fields__:
+        for key in self.__struct_fields__:
             value = getattr(self, key, UNSET)
             if value is not UNSET:
                 yield value
