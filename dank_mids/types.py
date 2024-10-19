@@ -6,7 +6,7 @@ from typing import (TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Dict,
                     Iterable, Iterator, List, Literal, Mapping, NewType, NoReturn,
                     Optional, Set, Tuple, Type, TypedDict, TypeVar, Union, overload)
 
-from eth_typing import ChecksumAddress
+from eth_typing import ChecksumAddress, HexStr
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, json
 from web3.datastructures import AttributeDict
@@ -270,7 +270,15 @@ JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
 # We need this for proper decoding.
 JSONRPCBatchResponseRaw = Union[List[Raw], PartialResponse]
 
-def _encode_hook(obj: Any) -> Any:
+
+StrEncodable = Union[ChecksumAddress, HexStr]
+Encodable = Union[int, StrEncodable, HexBytes, bytes]
+
+JsonObject = Dict[str, Union[str, int]]
+JsonArray = List[Union[str, int]]
+JsonThing = Union[str, int, JsonObject, JsonArray]
+
+def _encode_hook(obj: Encodable) -> JsonThing:
     """
     A hook function for encoding objects during JSON serialization.
 
