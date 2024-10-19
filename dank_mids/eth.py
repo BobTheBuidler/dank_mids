@@ -112,8 +112,14 @@ class DankEth(AsyncEth):
     async def get_transaction_status(self, transaction_hash: str) -> Status:
         return (await self.get_transaction_receipt(transaction_hash, decode_to=_Statusable, decode_hook=enum_decode_hook)).status
 
-    async def trace_filter(self, filter_params: TraceFilterParams) -> List[FilterTrace]:
-        return await self._trace_filter(filter_params)
+    async def trace_filter(
+        self, 
+        filter_params: TraceFilterParams,
+        decode_to: Type[T] = List[FilterTrace], 
+        decode_hook: DecodeHook = _decode_hook,
+    ) -> T:
+        traces_bytes = await self._trace_filter(filter_params)
+        return json.decode(traces_bytes, type=decode_to, dec_hook=decode_hook)
     
     async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
         return await self._trace_transaction(transaction_hash)
