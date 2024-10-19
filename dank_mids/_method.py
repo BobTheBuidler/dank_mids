@@ -38,8 +38,8 @@ class MethodNoFormat(Method[TFunc]):
         request = (method, _apply_request_formatters(params, self.request_formatters(method)))
         response_formatters = (
             return_as_is, 
-            ERROR_FORMATTERS.get(self.json_rpc_method, return_as_is), 
-            NULL_RESULT_FORMATTERS.get(self.json_rpc_method, return_as_is),
+            ERROR_FORMATTERS.get(self.json_rpc_method, return_as_is),  # type: ignore [arg-type]
+            NULL_RESULT_FORMATTERS.get(self.json_rpc_method, return_as_is),  # type: ignore [arg-type]
         )
         return request, response_formatters
 

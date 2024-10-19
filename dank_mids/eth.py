@@ -75,7 +75,11 @@ class DankEth(AsyncEth):
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
-        return json.decode(await self._get_block_raw(hex(block_identifier)), type=Timestamped, dec_hook=UnixTimestamp._decode_hook).timestamp
+        try:  # TypeError: 'str' object cannot be interpreted as an integer
+            block_identifier = hex(block_identifier)
+        finally:
+            block_bytes = await self._get_block_raw(block_identifier, False)
+            return json.decode(block_bytes, type=Timestamped, dec_hook=UnixTimestamp._decode_hook).timestamp
 
     async def get_transactions(self, block_identifier: Union[int, HexStr], hashes_only: bool = False) -> List[Transaction]:
         """
