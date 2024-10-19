@@ -134,5 +134,5 @@ class DictStruct(Struct, dict=True):
 class LazyDictStruct(DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
     def __init_subclass__(cls, *args, **kwargs):
         super().__init_subclass__(*args, **kwargs)
-        resolved_fields = tuple(field[1:] if field[0] == '_' else field for field in super().__struct_fields__)
+        resolved_fields = tuple(field[1:] if field[0] == '_' else field for field in cls.__struct_fields__)
         cls.__struct_fields__ = resolved_fields
