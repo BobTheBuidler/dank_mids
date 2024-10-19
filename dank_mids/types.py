@@ -278,6 +278,8 @@ JsonObject = Dict[str, Union[str, int]]
 JsonArray = List[Union[str, int]]
 JsonThing = Union[str, int, JsonObject, JsonArray]
 
+DecodeHook = Callable[[Type, JsonThing], Encodable]
+
 def _encode_hook(obj: Encodable) -> JsonThing:
     """
     A hook function for encoding objects during JSON serialization.
