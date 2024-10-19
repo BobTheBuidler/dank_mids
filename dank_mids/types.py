@@ -297,8 +297,8 @@ def _encode_hook(obj: Encodable) -> JsonThing:
         # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
         return hex(int(obj))
     except TypeError as e:
-        if isinstance(obj, AttributeDict):
-            return dict(obj)
+        #if isinstance(obj, AttributeDict):
+        #    return dict(obj)
         raise NotImplementedError(obj, type(obj)) from e
     except ValueError as e:
         # NOTE: The error is probably this if `obj` is a string:
