@@ -63,8 +63,6 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
         if transactions and isinstance(transactions[0], str):
             transactions = (TransactionHash(txhash) for txhash in transactions)
         return tuple(transactions)
-    def __hash__(self):
-        return hash(tuple(getattr(self, field_name, None) for field_name in self.__struct_fields__))
 
 
 class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]

@@ -1,11 +1,11 @@
 
-from functools import cached_property
-from typing import Any, Iterable, Iterator, Tuple
+from functools import lru_cache
+from typing import Any, Iterator, Tuple
 
 from msgspec import UNSET, Struct
 
 
-class DictStruct(Struct):
+class DictStruct(Struct, dict=True):
     """
     A base class that extends the :class:`~msgspec.Struct` class to provide dictionary-like access to struct fields.
 
@@ -27,7 +27,7 @@ class DictStruct(Struct):
         return True
     
     def __contains__(self, key: str) -> bool:
-        return key in self._fields and getattr(self, key, UNSET) is not UNSET
+        return key in self.__resolved_fields__ and getattr(self, key, UNSET) is not UNSET
     
     def get(self, key: str, default: Any = None) -> Any:
         return getattr(self, key, default)
@@ -75,7 +75,7 @@ class DictStruct(Struct):
         Yields:
             Struct key.
         """
-        for field in self._fields:
+        for field in self.__resolved_fields__:
             value = getattr(self, field, UNSET)
             if value is not UNSET:
                 yield field
@@ -99,7 +99,7 @@ class DictStruct(Struct):
         yield from self
 
     def items(self) -> Iterator[Tuple[str, Any]]:
-        for key in self._fields:
+        for key in self.__resolved_fields__:
             value = getattr(self, key, UNSET)
             if value is not UNSET:
                 yield key, value
@@ -111,17 +111,28 @@ class DictStruct(Struct):
         Returns:
             An iterator over the field values.
         """
-        for key in self._fields:
+        for key in self.__resolved_fields__:
             value = getattr(self, key, UNSET)
             if value is not UNSET:
                 yield value
+    
+    @lru_cache(maxsize=None)
+    def __hash__(self) -> int:
+        """
+        A frozen Struct is hashable but only if the fields are all hashable as well.
 
-    @property
-    def _fields(self) -> Iterable[str]:
-        return self.__struct_fields__
+        This modified hash function converts any list fields to tuples and sets the new
+        """
+        fields = tuple(getattr(self, field_name, None) for field_name in self.__struct_fields__)
+        # Skip if-checks, just try it
+        try:
+            return hash(fields)
+        except TypeError:  # unhashable type: 'list'
+            return hash(tuple(f) if isinstance(f, list) else f for f in self.__struct_fields__)    
 
 
 class LazyDictStruct(DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
-    @cached_property
-    def _fields(self) -> Tuple[str, ...]:
-        return tuple(field[1:] if field[0] == '_' else field for field in self.__struct_fields__)
+    def __init_subclass__(cls, *args, **kwargs):
+        super().__init_subclass__(*args, **kwargs)
+        resolved_fields = tuple(field[1:] if field[0] == '_' else field for field in super().__struct_fields__)
+        cls.__struct_fields__ = resolved_fields

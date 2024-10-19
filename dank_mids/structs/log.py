@@ -1,5 +1,5 @@
 
-from typing import Optional
+from typing import Optional, Tuple
 
 from hexbytes import HexBytes
 
@@ -57,14 +57,11 @@ for i in range(2, 31):
     
 class TinyLog(LazyDictStruct, frozen=True, kw_only=True):  # type: ignore [call-arg]
 
-    topics: data.HashableList[Topic]
+    topics: Tuple[Topic, ...]
     """
     An array of 0 to 4 32-byte topics. 
     The first topic is the event signature and the others are indexed filters on the event return data.
     """
-    def __hash__(self) -> int:
-        force_setattr(self, "topics", tuple(self.topics))
-        return super().__hash__()
     @property
     def topic0(self) -> Topic:
         return self.topics[0]

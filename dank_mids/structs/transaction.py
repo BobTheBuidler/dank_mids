@@ -1,6 +1,6 @@
 
 from functools import cached_property
-from typing import Any, ClassVar, Optional, Union
+from typing import Any, ClassVar, List, Optional, Union
 
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, field, json
@@ -31,9 +31,9 @@ class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True): 
     """The specific storage slot keys within the contract that will be accessed."""
     
     @cached_property
-    def storageKeys(self) -> data.HashableList[data.HexBytes32]:
+    def storageKeys(self) -> List[data.HexBytes32]:
         """The specific storage slot keys within the contract that will be accessed."""
-        return json.decode(self._storageKeys, type=data.HashableList[data.HexBytes32], dec_hook=data.decode_hexbytes)
+        return json.decode(self._storageKeys, type=List[data.HexBytes32], dec_hook=data.decode_hexbytes)
 
 class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     # `type` field is omitted since it's used in the tagged union
@@ -112,9 +112,9 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     """A list of addresses and storage keys that the transaction plans to access."""
     
     @cached_property
-    def accessList(self) -> data.HashableList[AccessListEntry]:
+    def accessList(self) -> List[AccessListEntry]:
         """A list of addresses and storage keys that the transaction plans to access."""
-        return json.decode(self._accessList, type=data.HashableList[AccessListEntry])
+        return json.decode(self._accessList, type=List[AccessListEntry])
 
 
 class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]

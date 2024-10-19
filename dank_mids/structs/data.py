@@ -154,10 +154,6 @@ def _decode_hook(typ: Type, obj: object):
         return checksum(obj)
     elif issubclass(typ, uint):
         return (typ.fromhex if isinstance(obj, str) and obj.startswith("0x") else typ)(obj)
-    elif getattr(typ, "__origin__", None) is HashableList:
-        assert len(typ.__args__) == 1, typ.__args__
-        obj_cls = typ.__args__[0]
-        return HashableList(_decode_hook(obj_cls, o) for o in obj)
     raise NotImplementedError(typ, obj, type(obj))
 
 
@@ -258,9 +254,3 @@ class Decimal(decimal.Decimal):
         return type(self)(super().__floordiv__(other))
     def __rfloordiv__(self, other):
         return type(self)(super().__rfloordiv__(other))
-
-class HashableList(List[_T]):
-    def __hash__(self):
-        return hash(tuple(self))
-    def __setitem__(self, *_):
-        raise RuntimeError("You cannot modify this hashable list")
