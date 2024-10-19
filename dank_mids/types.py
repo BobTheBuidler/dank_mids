@@ -278,9 +278,11 @@ JsonObject = Dict[str, Union[str, int]]
 JsonArray = List[Union[str, int]]
 JsonThing = Union[str, int, JsonObject, JsonArray]
 
+RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
+
 DecodeHook = Callable[[Type, JsonThing], Encodable]
 
-def _encode_hook(obj: Encodable) -> JsonThing:
+def _encode_hook(obj: Encodable) -> RpcThing:
     """
     A hook function for encoding objects during JSON serialization.
 
@@ -295,7 +297,7 @@ def _encode_hook(obj: Encodable) -> JsonThing:
     """
     try:
         # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
-        return hex(int(obj))
+        return hex(int(obj))  # type: ignore [return-value]
     except TypeError as e:
         # I put this here for AttributeDicts which come from eth_getLogs params
         # but I check for mapping so it can work with user custom classes
@@ -307,7 +309,7 @@ def _encode_hook(obj: Encodable) -> JsonThing:
         # ValueError: invalid literal for int() with base 10:"""
         if not isinstance(obj, HexBytes):
             raise NotImplementedError(obj, type(obj)) from e
-        return obj.hex()
+        return obj.hex()  # type: ignore [return-value]
 
 
 def _rudimentary_encode_dict_value(value):
