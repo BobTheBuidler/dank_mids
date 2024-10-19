@@ -302,13 +302,14 @@ def _encode_hook(obj: Encodable) -> RpcThing:
         # I put this here for AttributeDicts which come from eth_getLogs params
         # but I check for mapping so it can work with user custom classes
         if not isinstance(obj, Mapping):
-            raise NotImplementedError(obj, type(obj)) from e
+            raise TypeError(obj, type(obj)) from e
         return dict({k: _rudimentary_encode_dict_value(v) for k, v in obj.items()})
     except ValueError as e:
         # NOTE: The error is probably this if `obj` is a string:
         # ValueError: invalid literal for int() with base 10:"""
         if not isinstance(obj, HexBytes):
-            raise NotImplementedError(obj, type(obj)) from e
+            e.args = *e.args, obj, type(obj)
+            raise ValueError(obj, type(obj)) from e
         return obj.hex()  # type: ignore [return-value]
 
 
