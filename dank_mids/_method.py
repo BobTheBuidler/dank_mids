@@ -7,7 +7,7 @@ from web3.eth import BaseEth
 from web3._utils.method_formatters import ERROR_FORMATTERS, NULL_RESULT_FORMATTERS
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
-from web3.method import Method, _apply_request_formatters, default_root_munger
+from web3.method import Method, TFunc, _apply_request_formatters, default_root_munger
 from web3.types import BlockIdentifier
 
 
@@ -15,7 +15,7 @@ WEB3_MAJOR_VERSION = int(version('web3').split('.')[0])
 
 return_as_is = lambda x: x
 
-class MethodNoFormat(Method):
+class MethodNoFormat(Method[TFunc]):
     """Bypasses web3py default result formatters."""
     def process_params(self, module, *args, **kwargs):
         params = self.input_munger(module, args, kwargs)

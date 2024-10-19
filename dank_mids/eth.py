@@ -1,7 +1,8 @@
 
-from typing import List, Sequence, Tuple, Type, TypedDict, TypeVar, Union
+from typing import Awaitable, Callable, List, Sequence, Tuple, Type, TypedDict, Union
 
 from async_lru import alru_cache
+from async_property import async_cached_property
 from eth_typing import BlockNumber
 from msgspec import Struct, json
 from web3._utils.blocks import select_method_for_block_identifier
@@ -30,9 +31,32 @@ class _Statusable(Struct):
     
 
 class DankEth(AsyncEth):
+
+    # eth_chainId
+
+    @async_cached_property
+    async def chain_id(self) -> int:
+        return await self._chain_id()
+
+    _chain_id: MethodNoFormat[Callable[[], Awaitable[int]]] = MethodNoFormat(
+        RPC.eth_chainId,
+        is_property=True,
+    )
+
+    # eth_blockNumber
+
+    @property
     @alru_cache(ttl=0)
+    async def block_number(self) -> BlockNumber:  # type: ignore [override]
+        return await self.get_block_number()
+    
     async def get_block_number(self) -> BlockNumber:  # type: ignore [override]
-        return await super().get_block_number()  # type: ignore [misc]
+        return await self._get_block_number()  # type: ignore [misc]
+
+    _get_block_number: MethodNoFormat[Callable[[], Awaitable[BlockNumber]]] = MethodNoFormat(
+        RPC.eth_blockNumber,
+        is_property=True,
+    )
     
     async def get_block_timestamp(self, block_identifier: int) -> UnixTimestamp:
         """
@@ -92,14 +116,14 @@ class DankEth(AsyncEth):
     async def get_logs(
         self, 
         *args, 
-        decode_to: Type[T] = Tuple[Log, ...], 
+        decode_to: Type[T] = Tuple[Log, ...],  # type: ignore [assignment]
         decode_hook: DecodeHook = _decode_hook, 
         **kwargs,
     ) -> T:
-        logs_bytes = await self._get_logs_raw(*args, **kwargs)
+        logs_bytes = await self._get_logs_raw(*args, **kwargs)  # type: ignore [attr-defined]
         return json.decode(logs_bytes, type=decode_to, dec_hook=decode_hook)
 
-    meth = MethodNoFormat.default(RPC.eth_getTransactionReceipt)
+    meth = MethodNoFormat.default(RPC.eth_getTransactionReceipt)  # type: ignore [arg-type, var-annotated]
     if WEB3_MAJOR_VERSION >= 6:
         _transaction_receipt = meth
     else:
