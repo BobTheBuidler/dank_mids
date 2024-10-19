@@ -32,7 +32,7 @@ class ArbitrumFeeStats(DictStruct, frozen=True, forbid_unknown_fields=True, omit
     """The breakdown of gas prices for the transaction."""
 
 
-class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class TransactionReceipt(LazyDictStruct, frozen=True, kw_only=True, omit_defaults=True, repr_omit_defaults=True, dict=True):  # type: ignore [call-arg]
 
     transactionHash: TransactionHash
     """The unique hash of this transaction."""

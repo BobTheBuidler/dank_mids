@@ -131,7 +131,7 @@ class DictStruct(Struct, dict=True):
             return hash(tuple(f) if isinstance(f, list) else f for f in self.__struct_fields__)    
 
 
-class LazyDictStruct(DictStruct, frozen=True, dict=True):  # type: ignore [call-arg]
+class LazyDictStruct(DictStruct, frozen=True):  # type: ignore [call-arg]
     def __init_subclass__(cls, *args, **kwargs):
         super().__init_subclass__(*args, **kwargs)
         if cls.__name__ == "StructMeta":  # AttributeError: 'msgspec._core.StructMeta' object has no attribute '__struct_fields__'.

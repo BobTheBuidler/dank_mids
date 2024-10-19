@@ -38,7 +38,7 @@ class Timestamped(LazyDictStruct, frozen=True):  # type: ignore [call-arg]
     """The Unix timestamp for when the block was collated."""
 
 
-class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-arg]
+class TinyBlock(Timestamped, frozen=True, kw_only=True, dict=True):  # type: ignore [call-arg]
 
     _transactions: Raw = field(name="transactions")
     """Array of transaction objects, or 32 Bytes transaction hashes depending on the last given parameter."""
