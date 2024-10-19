@@ -8,7 +8,7 @@ from msgspec import UNSET, Raw, ValidationError, field, json
 
 from dank_mids.structs.data import Address, BlockNumber, IntId, TransactionHash, UnixTimestamp, Wei, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
-from dank_mids.structs.transaction import Transaction
+from dank_mids.structs.transaction import _TransactionBase, Transaction
 
 
 logger = logging.getLogger(__name__)
@@ -49,12 +49,16 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
         try:
             transactions = json.decode(self._transactions, type=Tuple[Union[str, Transaction], ...], dec_hook=_decode_hook)
         except ValidationError as e:
-            from dank_mids.types import better_decode
-            logger.exception(e)
-            transactions = [
-                better_decode(raw_tx, type=Union[str, Transaction], dec_hook=_decode_hook)
-                for raw_tx in json.decode(self._transactions, type=Tuple[Raw, ...])
-            ]
+            # TODO: debug why this happens and how to build around it
+            if e.args[0] == "Object missing required field `type`":
+                transactions = json.decode(self._transactions, type=Tuple[Union[str, _TransactionBase], ...], dec_hook=_decode_hook)
+            else:
+                from dank_mids.types import better_decode
+                logger.exception(e)
+                transactions = [
+                    better_decode(raw_tx, type=Union[str, Transaction], dec_hook=_decode_hook)
+                    for raw_tx in json.decode(self._transactions, type=Tuple[Raw, ...])
+                ]
         if transactions and isinstance(transactions[0], str):
             transactions = (TransactionHash(txhash) for txhash in transactions)
         return tuple(transactions)
