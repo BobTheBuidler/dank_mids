@@ -49,8 +49,9 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
         try:
             transactions = json.decode(self._transactions, type=Tuple[Union[str, Transaction], ...], dec_hook=_decode_hook)
         except ValidationError as e:
-            # TODO: debug why this happens and how to build around it
-            if e.args[0] == "Object missing required field `type`":
+            arg0: str = e.args[0]
+            if (pos := arg0.find("$")) >= 0 and arg0[:pos] == "Object missing required field `type` - at `":
+                # TODO: debug why this happens and how to build around it
                 transactions = json.decode(self._transactions, type=Tuple[Union[str, _TransactionBase], ...], dec_hook=_decode_hook)
             else:
                 from dank_mids.types import better_decode
