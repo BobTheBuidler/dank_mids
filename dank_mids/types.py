@@ -295,7 +295,7 @@ def _encode_hook(obj: Encodable) -> JsonThing:
     """
     try:
         # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
-        return int(obj)
+        return hex(int(obj))
     except TypeError as e:
         # I put this here for AttributeDicts which come from eth_getLogs params
         # but I check for mapping so it can work with user custom classes
