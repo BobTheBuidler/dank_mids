@@ -147,7 +147,7 @@ class DankEth(AsyncEth):
         method_choice_depends_on_args=select_method_for_block_identifier(**{k:f"{v}_raw" for k, v in _block_selectors.items()}),
         mungers=[AsyncEth.get_block_munger],
     )
-    _trace_filter = MethodNoFormat.default(RPC.trace_filter)
+    _trace_filter = MethodNoFormat.default(f"{RPC.trace_filter}_raw")
     _trace_transaction = MethodNoFormat.default(RPC.trace_transaction)
 
     
