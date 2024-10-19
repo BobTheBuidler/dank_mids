@@ -1,5 +1,5 @@
 
-from typing import Awaitable, Callable, List, Sequence, Tuple, Type, TypedDict, TypeVar, Union
+from typing import Awaitable, Callable, List, Literal, Sequence, Tuple, Type, TypedDict, TypeVar, Union, overload
 
 from async_lru import alru_cache
 from async_property import async_cached_property
@@ -13,7 +13,7 @@ from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS, HexStr
 from dank_mids._method import WEB3_MAJOR_VERSION, MethodNoFormat, bypass_formatters, _block_selectors
 from dank_mids.structs import FilterTrace, Log, Transaction, TransactionReceipt
 from dank_mids.structs.block import Timestamped, TinyBlock
-from dank_mids.structs.data import Status, UnixTimestamp, _decode_hook, enum_decode_hook
+from dank_mids.structs.data import Status, TransactionHash, UnixTimestamp, _decode_hook, enum_decode_hook
 from dank_mids.types import DecodeHook, T
 
 
@@ -81,7 +81,16 @@ class DankEth(AsyncEth):
             block_bytes = await self._get_block_raw(block_identifier, False)
             return json.decode(block_bytes, type=Timestamped, dec_hook=UnixTimestamp._decode_hook).timestamp
 
-    async def get_transactions(self, block_identifier: Union[int, HexStr], hashes_only: bool = False) -> List[Transaction]:
+    @overload
+    async def get_transactions(self, block_identifier: Union[int, HexStr]) -> List[Transaction]:
+        ...
+    @overload
+    async def get_transactions(self, block_identifier: Union[int, HexStr], hashes_only: Literal[True]) -> List[TransactionHash]:
+        ...
+    @overload
+    async def get_transactions(self, block_identifier: Union[int, HexStr], hashes_only: Literal[False]) -> List[Transaction]:
+        ...
+    async def get_transactions(self, block_identifier: Union[int, HexStr], hashes_only: bool = False) -> Union[List[Transaction], List[TransactionHash]]:
         """
         Retrieves only the transactions from a specific block. 
         
@@ -98,7 +107,7 @@ class DankEth(AsyncEth):
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
         """
         try:  # TypeError: 'str' object cannot be interpreted as an integer
-            block_identifier = hex(block_identifier)
+            block_identifier = hex(block_identifier)  # type: ignore [arg-type, assignment]
         finally:
             block_bytes = await self._get_block_raw(block_identifier, not hashes_only)
             return json.decode(block_bytes, type=TinyBlock, dec_hook=_decode_hook).transactions

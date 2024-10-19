@@ -6,12 +6,17 @@ from typing import Optional, Tuple, Union
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field, json
 
-from dank_mids.structs.data import Address, BlockNumber, IntId, UnixTimestamp, Wei, uint, _decode_hook
+from dank_mids.structs.data import Address, BlockNumber, IntId, TransactionHash, UnixTimestamp, Wei, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 from dank_mids.structs.transaction import Transaction
 
 
 logger = logging.getLogger(__name__)
+
+Transactions = Union[
+    Tuple[TransactionHash, ...], 
+    Tuple[Transaction, ...],
+]
 
 class StakingWithdrawal(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """A Struct representing an Ethereum staking withdrawal."""
@@ -39,7 +44,7 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
     """Array of transaction objects, or 32 Bytes transaction hashes depending on the last given parameter."""
 
     @cached_property
-    def transactions(self) -> Tuple[Union[HexBytes, Transaction], ...]:
+    def transactions(self) -> Transactions:
         """Array of transaction objects, or 32 Bytes transaction hashes depending on the last given parameter."""
         try:
             transactions = json.decode(self._transactions, type=Tuple[Union[str, Transaction], ...], dec_hook=_decode_hook)
@@ -51,8 +56,10 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True):  # type: ignore [call-a
                 for raw_tx in json.decode(self._transactions, type=Tuple[Raw, ...])
             ]
         if transactions and isinstance(transactions[0], str):
-            transactions = [HexBytes(txhash) for txhash in transactions]
-        return transactions
+            transactions = (TransactionHash(txhash) for txhash in transactions)
+        return tuple(transactions)
+    def __hash__(self):
+        return hash(tuple(getattr(self, field_name, None) for field_name in self.__struct_fields__))
 
 
 class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
