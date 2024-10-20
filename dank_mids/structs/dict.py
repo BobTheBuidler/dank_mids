@@ -11,7 +11,7 @@ from dank_mids.structs.data import _decode_hook
 
 logger = logging.getLogger(__name__)
 
-class DictStruct(Struct, dict=True):
+class DictStruct(Struct, frozen=True, dict=True):
     """
     A base class that extends the :class:`~msgspec.Struct` class to provide dictionary-like access to struct fields.
 
@@ -129,8 +129,6 @@ class DictStruct(Struct, dict=True):
 
         This modified hash function converts any list fields to tuples and sets the new
         """
-        if not self.__struct_config__.frozen:
-            return super().__hash__()
         logger.error("hashing %s", self)
         try:
             fields = (getattr(self, field_name, None) for field_name in self.__struct_fields__)
