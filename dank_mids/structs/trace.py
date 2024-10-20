@@ -1,6 +1,6 @@
 
 from enum import Enum
-from typing import List, Optional
+from typing import ClassVar, List, Literal, Optional, Union
 
 from hexbytes import HexBytes
 from msgspec import UNSET, field
@@ -19,39 +19,46 @@ class RewardType(Enum, metaclass=StringToIntEnumMeta):
     block = 0
     uncle = 1
 
-class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class _ActionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     The action performed, parity style.
     """
 
-    callType: CallType
-    """The type of the call."""
-
     sender: Address = field(name="from")
     """The sender address."""
-
-    to: Address = UNSET
-    """The receiver address. If the action is a create type, this field will not be set."""
-
-    author: Address = UNSET
-    """The author of this transaction, for some transaction types."""
 
     input: HexBytes
     """The input data of the action (transaction)."""
 
-    init: HexBytes = UNSET
-    """The init code for the deployed contract, if the trace is a 'create' type."""
-    # TODO: make separate struct defs for the diff trace types
-
     gas: Wei
     """The gas provided."""
 
-    rewardType: Optional[RewardType] = None
-    """The type of the reward, for reward transactions."""
+class Call(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+    
+    callType: CallType
+    """The type of the call."""
 
-    value: Wei = UNSET
+    to: Address
+    """The receiver address."""
+
+    value: Wei
     """The amount of ETH sent in this action (transaction)."""
 
+class Create(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+
+    init: HexBytes
+    """The init code for the deployed contract."""
+
+class Reward(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+
+    author: Address
+    """The author of this transaction."""
+
+    rewardType: RewardType
+    """The type of the reward, for reward transactions."""
+
+class Suicide(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+    ...
 
 class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
@@ -75,7 +82,7 @@ class Type(Enum, metaclass=StringToIntEnumMeta):
     reward = 2
     suicide = 3
 
-class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     
     blockNumber: BlockNumber
     """The number of the block where this action happened."""
@@ -98,7 +105,7 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     subtraces: uint
     """The number of traces of internal transactions that happened during this transaction."""
 
-    action: Action
+    action: _ActionBase
     """The action performed, parity style."""
 
     result: Optional[Result] = UNSET
@@ -114,3 +121,21 @@ class FilterTrace(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     def __post_init__(self):
         # make sure the obj is hashable
         force_setattr(self, "traceAddress", tuple(self.traceAddress))
+
+class CallTrace(_FilterTraceBase, tag="create", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+    type: ClassVar[Literal["call"]] = "call"
+    action: Call
+
+class CreateTrace(_FilterTraceBase, tag="create", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+    type: ClassVar[Literal["create"]] = "create"
+    action: Create
+
+class RewardTrace(_FilterTraceBase, tag="reward", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+    type: ClassVar[Literal["reward"]] = "reward"
+    action: Reward
+
+class SuicideTrace(_FilterTraceBase, tag="suicide", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+    type: ClassVar[Literal["suicide"]] = "suicide"
+    action: Suicide
+
+FilterTrace = Union[CallTrace, CreateTrace, RewardTrace, SuicideTrace]
