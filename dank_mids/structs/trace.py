@@ -71,16 +71,26 @@ class Suicide(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True
     Action type for contract suicides.
     """
 
-class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+
+class _ResultBase(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     The result object, parity style.
     """
 
+    gasUsed: Wei
+    """The amount of gas used by this transaction."""
+
+class CallResult(_ResultBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+
     output: HexBytes
     """The output of this transaction."""
 
-    gasUsed: Wei
-    """The amount of gas used by this transaction."""
+class CreateResult(_ResultBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+
+    address: Address
+    """The output of this transaction."""
+
+    code: HexBytes
 
 
 class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
@@ -106,9 +116,6 @@ class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     action: _ActionBase
     """The action performed, parity style."""
 
-    result: Optional[Result] = UNSET
-    """The result object, parity style."""
-
     error: str = UNSET
 
     @property
@@ -123,10 +130,14 @@ class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
 class CallTrace(_FilterTraceBase, tag="call", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     type: ClassVar[Literal["call"]] = "call"
     action: Call
+    result: CallResult
+    """The result object, parity style."""
 
 class CreateTrace(_FilterTraceBase, tag="create", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     type: ClassVar[Literal["create"]] = "create"
     action: Create
+    result: CreateResult
+    """The result object, parity style."""
 
 class RewardTrace(_FilterTraceBase, tag="reward", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     type: ClassVar[Literal["reward"]] = "reward"
@@ -135,5 +146,8 @@ class RewardTrace(_FilterTraceBase, tag="reward", frozen=True, kw_only=True, for
 class SuicideTrace(_FilterTraceBase, tag="suicide", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     type: ClassVar[Literal["suicide"]] = "suicide"
     action: Suicide
+    result: Literal[None]
+
+Result = Union[CallResult, CreateResult, Literal[None]]
 
 FilterTrace = Union[CallTrace, CreateTrace, RewardTrace, SuicideTrace]
