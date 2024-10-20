@@ -88,9 +88,10 @@ class CallResult(_ResultBase, frozen=True, kw_only=True, forbid_unknown_fields=T
 class CreateResult(_ResultBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
 
     address: Address
-    """The output of this transaction."""
+    """The address of the deployed contract."""
 
     code: HexBytes
+    """The bytecode of the deployed contract."""
 
 
 class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
