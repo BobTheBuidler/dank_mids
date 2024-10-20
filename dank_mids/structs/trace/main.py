@@ -1,98 +1,14 @@
 
-from enum import Enum
 from functools import cached_property
 from typing import ClassVar, List, Literal, Optional, Union
 
-from hexbytes import HexBytes
 from msgspec import UNSET, Raw, json, field
 from msgspec.structs import force_setattr
 
-from dank_mids.structs.data import Address, BlockHash, BlockNumber, StringToIntEnumMeta, TransactionHash, Wei, uint, _decode_hook
-from dank_mids.structs.dict import DictStruct, LazyDictStruct
-
-    
-class CallType(Enum, metaclass=StringToIntEnumMeta):
-    call = 0
-    delegatecall = 1
-    staticcall = 2
-
-class RewardType(Enum, metaclass=StringToIntEnumMeta):
-    block = 0
-    uncle = 1
-
-class _ActionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
-    """
-    The action performed, parity style.
-    """
-
-    sender: Address = field(name="from")
-    """The sender address."""
-
-    input: HexBytes
-    """The input data of the action (transaction)."""
-
-    value: Wei
-    """The amount of ETH sent in this action (transaction)."""
-
-    gas: Wei
-    """The gas provided."""
-
-class Call(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
-    """
-    Action type for contract calls.
-    """
-
-    callType: CallType
-    """The type of the call."""
-
-    to: Address
-    """The receiver address."""
-
-class Create(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
-    """
-    Action type for contract creations.
-    """
-
-    init: HexBytes
-    """The init code for the deployed contract."""
-
-class Reward(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
-    """
-    Action type for rewards.
-    """
-
-    author: Address
-    """The author of this transaction."""
-
-    rewardType: RewardType
-    """The type of the reward, for reward transactions."""
-
-class Suicide(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
-    """
-    Action type for contract suicides.
-    """
-
-
-class _ResultBase(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
-    """
-    The result object, parity style.
-    """
-
-    gasUsed: Wei
-    """The amount of gas used by this transaction."""
-
-class CallResult(_ResultBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
-
-    output: HexBytes
-    """The output of this transaction."""
-
-class CreateResult(_ResultBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
-
-    address: Address
-    """The address of the deployed contract."""
-
-    code: HexBytes
-    """The bytecode of the deployed contract."""
+from dank_mids.structs.data import BlockHash, BlockNumber, TransactionHash, uint, _decode_hook
+from dank_mids.structs.dict import LazyDictStruct
+from dank_mids.structs.trace.action import *
+from dank_mids.structs.trace.result import *
 
 
 class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
@@ -182,6 +98,6 @@ class SuicideTrace(_FilterTraceBase, tag="suicide", frozen=True, kw_only=True, f
     
     result: Literal[None]
 
-Result = Union[CallResult, CreateResult, Literal[None]]
-
 FilterTrace = Union[CallTrace, CreateTrace, RewardTrace, SuicideTrace]
+
+__all__ = ["CallTrace", "CreateTrace", "RewardTrace", "SuicideTrace", "FilterTrace"]
