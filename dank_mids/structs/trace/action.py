@@ -24,9 +24,6 @@ class _ActionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     sender: Address = field(name="from")
     """The sender address."""
 
-    input: HexBytes
-    """The input data of the action (transaction)."""
-
     value: Wei
     """The amount of ETH sent in this action (transaction)."""
 
@@ -43,6 +40,9 @@ class Call(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, o
 
     to: Address
     """The receiver address."""
+
+    input: HexBytes
+    """The input data of the action (transaction)."""
 
 class Create(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     """
