@@ -122,7 +122,6 @@ class DictStruct(Struct, dict=True):
             if value is not UNSET:
                 yield value
     
-    @lru_cache(maxsize=None)
     def __hash__(self) -> int:
         """
         A frozen Struct is hashable but only if the fields are all hashable as well.
@@ -131,25 +130,15 @@ class DictStruct(Struct, dict=True):
         """
         if not self.__struct_config__.frozen:
             raise TypeError(f"unhashable type: '{type(self).__name__}'")
-        logger.error("hashing %s", self)
+        if cached_hash := self.__dict__.get("__hash__"):
+            return cached_hash
+        fields = (getattr(self, field_name, None) for field_name in self.__struct_fields__)
         try:
-            fields = (getattr(self, field_name, None) for field_name in self.__struct_fields__)
-            fields = tuple(
-                json.decode(
-                    value, 
-                    type=self.__annotations__[field_name], 
-                    dec_hook=_decode_hook,
-                )
-                if isinstance(value, Raw)
-                else value 
-                for field_name, value in zip(self.__struct_fields__, fields)
-            )
-
             # Skip if-checks, just try it
             try:
                 return hash(fields)
             except TypeError:  # unhashable type: 'list'
-                return hash(tuple(f) if isinstance(f, list) else f for f in self.__struct_fields__)
+                return hash(tuple(f) if isinstance(f, list) else f for f in fields)
         except Exception as e:
             e.args = *e.args, "recursed in hash fn"
     @property
