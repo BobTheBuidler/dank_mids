@@ -4,7 +4,7 @@ from typing import Awaitable, Callable, List, Literal, Sequence, Tuple, Type, Ty
 from async_lru import alru_cache
 from async_property import async_cached_property
 from eth_typing import BlockNumber
-from msgspec import Struct, json
+from msgspec import Raw, Struct, ValidationError, json
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
@@ -132,7 +132,21 @@ class DankEth(AsyncEth):
         decode_hook: DecodeHook = _decode_hook,
     ) -> T:
         traces_bytes = await self._trace_filter(filter_params)
-        return json.decode(traces_bytes, type=decode_to, dec_hook=decode_hook)
+        try:
+            return json.decode(traces_bytes, type=decode_to, dec_hook=decode_hook)
+        except ValidationError:
+            if decode_to.__origin__ is not list:
+                raise
+            
+            traces_raw = json.decode(traces_bytes, type=List[Raw])
+            traces = []
+            trace_cls = decode_to.__args__[0]
+            for raw in traces_raw:
+                try:
+                    traces.append(json.decode(raw, type=trace_cls, dec_hook=decode_hook))
+                except ValidationError as e:
+                    e.args = *e.args, json.decode(raw)
+                    raise
     
     async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
         return await self._trace_transaction(transaction_hash)
