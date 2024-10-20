@@ -81,7 +81,9 @@ class Wei(uint):
     @cached_property
     def scaled(self) -> "Decimal":
         return Decimal(self) / 10 ** 18
-
+    @property
+    def as_gwei(self) -> "Gwei":
+        return Gwei(self) / 10 ** 9
 
 class UnixTimestamp(uint):
     @cached_property
@@ -254,3 +256,8 @@ class Decimal(decimal.Decimal):
         return type(self)(super().__floordiv__(other))
     def __rfloordiv__(self, other):
         return type(self)(super().__rfloordiv__(other))
+
+class Gwei(Decimal):
+    @property
+    def as_wei(self) -> Wei:
+        return Wei(self * 10 ** 9)
