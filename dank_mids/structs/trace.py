@@ -30,14 +30,18 @@ class Action(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=Tr
     sender: Address = field(name="from")
     """The sender address."""
 
-    to: Address
-    """The receiver address."""
+    to: Address = UNSET
+    """The receiver address. If the action is a create type, this field will not be set."""
 
     author: Address = UNSET
     """The author of this transaction, for some transaction types."""
 
     input: HexBytes
     """The input data of the action (transaction)."""
+
+    init: HexBytes = UNSET
+    """The init code for the deployed contract, if the trace is a 'create' type."""
+    # TODO: make separate struct defs for the diff trace types
 
     gas: Wei
     """The gas provided."""
