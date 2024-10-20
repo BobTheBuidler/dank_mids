@@ -136,11 +136,12 @@ class DictStruct(Struct, dict=True):
         try:
             # Skip if-checks, just try it
             try:
-                return hash(fields)
+                self.__dict__["__hash__"] = hash(fields)
             except TypeError:  # unhashable type: 'list'
-                return hash(tuple(f) if isinstance(f, list) else f for f in fields)
+                self.__dict__["__hash__"] = hash(tuple(f) if isinstance(f, list) else f for f in fields)
         except Exception as e:
             e.args = *e.args, "recursed in hash fn"
+        return self.__dict__["__hash__"]
 
 
 class LazyDictStruct(DictStruct, frozen=True):  # type: ignore [call-arg]
