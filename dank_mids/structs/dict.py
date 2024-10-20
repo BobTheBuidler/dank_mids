@@ -152,6 +152,9 @@ class DictStruct(Struct, dict=True):
                 return hash(tuple(f) if isinstance(f, list) else f for f in self.__struct_fields__)
         except Exception as e:
             e.args = *e.args, "recursed in hash fn"
+    @property
+    def __resolved_fields__(self) -> Tuple[str, ...]:
+        return self.__struct_fields__
 
 
 class LazyDictStruct(DictStruct, frozen=True):  # type: ignore [call-arg]
@@ -159,5 +162,4 @@ class LazyDictStruct(DictStruct, frozen=True):  # type: ignore [call-arg]
         super().__init_subclass__(*args, **kwargs)
         with suppress(AttributeError):
             # AttributeError: 'msgspec._core.StructMeta' object has no attribute '__struct_fields__'.
-            resolved_fields = tuple(field[1:] if field[0] == '_' else field for field in cls.__struct_fields__)
-            cls.__struct_fields__ = resolved_fields
+            cls.__resolved_fields__ = tuple(field[1:] if field[0] == '_' else field for field in cls.__struct_fields__)
