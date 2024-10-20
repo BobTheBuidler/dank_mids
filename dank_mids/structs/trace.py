@@ -1,12 +1,13 @@
 
 from enum import Enum
+from functools import cached_property
 from typing import ClassVar, List, Literal, Optional, Union
 
 from hexbytes import HexBytes
-from msgspec import UNSET, field
+from msgspec import UNSET, Raw, json, field
 from msgspec.structs import force_setattr
 
-from dank_mids.structs.data import Address, BlockHash, BlockNumber, StringToIntEnumMeta, TransactionHash, Wei, uint
+from dank_mids.structs.data import Address, BlockHash, BlockNumber, StringToIntEnumMeta, TransactionHash, Wei, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
 
     
@@ -30,6 +31,9 @@ class _ActionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     input: HexBytes
     """The input data of the action (transaction)."""
 
+    value: Wei
+    """The amount of ETH sent in this action (transaction)."""
+
     gas: Wei
     """The gas provided."""
 
@@ -43,9 +47,6 @@ class Call(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, o
 
     to: Address
     """The receiver address."""
-
-    value: Wei
-    """The amount of ETH sent in this action (transaction)."""
 
 class Create(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     """
@@ -114,9 +115,6 @@ class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
     subtraces: uint
     """The number of traces of internal transactions that happened during this transaction."""
 
-    action: _ActionBase
-    """The action performed, parity style."""
-
     error: str = UNSET
 
     @property
@@ -130,23 +128,58 @@ class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
 
 class CallTrace(_FilterTraceBase, tag="call", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     type: ClassVar[Literal["call"]] = "call"
-    action: Call
-    result: CallResult
-    """The result object, parity style."""
+
+    _action: Raw = field(name="action")
+    """The call action, parity style."""
+
+    @cached_property
+    def action(self) -> Call:
+        """The call action, parity style."""
+        return json.decode(self._action, type=Call, dec_hook=_decode_hook)
+    
+    result: Optional[CallResult]
+    """
+    The result object, parity style.
+    
+    None if the call errored. Error details will be included in the error field.
+    """
+
+    error: str = UNSET
+    """The error message, if an error occurred."""
 
 class CreateTrace(_FilterTraceBase, tag="create", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     type: ClassVar[Literal["create"]] = "create"
-    action: Create
+
+    _action: Raw = field(name="action")
+    """The create action, parity style."""
+
+    @cached_property
+    def action(self) -> Create:
+        """The create action, parity style."""
+        return json.decode(self._action, type=Create, dec_hook=_decode_hook)
+    
     result: CreateResult
     """The result object, parity style."""
 
 class RewardTrace(_FilterTraceBase, tag="reward", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+
     type: ClassVar[Literal["reward"]] = "reward"
-    action: Reward
+
+    _action: Raw = field(name="action")
+    """The reward action, parity style."""
+
+    @cached_property
+    def action(self) -> Reward:
+        """The reward action, parity style."""
+        return json.decode(self._action, type=Reward, dec_hook=_decode_hook)
 
 class SuicideTrace(_FilterTraceBase, tag="suicide", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+
     type: ClassVar[Literal["suicide"]] = "suicide"
+
     action: Suicide
+    """The suicide action, parity style."""
+    
     result: Literal[None]
 
 Result = Union[CallResult, CreateResult, Literal[None]]
