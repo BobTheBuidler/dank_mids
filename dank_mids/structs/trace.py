@@ -122,7 +122,7 @@ class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
         # make sure the obj is hashable
         force_setattr(self, "traceAddress", tuple(self.traceAddress))
 
-class CallTrace(_FilterTraceBase, tag="create", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+class CallTrace(_FilterTraceBase, tag="call", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
     type: ClassVar[Literal["call"]] = "call"
     action: Call
 
