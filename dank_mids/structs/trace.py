@@ -38,7 +38,7 @@ class Call(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, o
     Action type for contract calls.
     """
 
-    AcallType: CallType
+    callType: CallType
     """The type of the call."""
 
     to: Address
