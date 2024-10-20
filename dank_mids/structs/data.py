@@ -3,7 +3,7 @@ import decimal
 import logging
 from datetime import datetime, timezone
 from functools import cached_property
-from typing import TYPE_CHECKING, List, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Tuple, Type, TypeVar, Union
 
 from a_sync import a_sync
 from cachetools.func import ttl_cache
