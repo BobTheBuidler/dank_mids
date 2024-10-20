@@ -34,8 +34,11 @@ class _ActionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fiel
     """The gas provided."""
 
 class Call(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
-    
-    callType: CallType
+    """
+    Action type for contract calls.
+    """
+
+    AcallType: CallType
     """The type of the call."""
 
     to: Address
@@ -45,11 +48,17 @@ class Call(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, o
     """The amount of ETH sent in this action (transaction)."""
 
 class Create(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+    """
+    Action type for contract creations.
+    """
 
     init: HexBytes
     """The init code for the deployed contract."""
 
 class Reward(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
+    """
+    Action type for rewards.
+    """
 
     author: Address
     """The author of this transaction."""
@@ -58,7 +67,9 @@ class Reward(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True,
     """The type of the reward, for reward transactions."""
 
 class Suicide(_ActionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):
-    ...
+    """
+    Action type for contract suicides.
+    """
 
 class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
@@ -71,16 +82,6 @@ class Result(DictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, 
     gasUsed: Wei
     """The amount of gas used by this transaction."""
 
-
-class Type(Enum, metaclass=StringToIntEnumMeta):
-    """
-    The type of internal operation (e.g., "call" for contract calls, "create" for contract creation,
-    "suicide" for contract self-destruct).
-    """
-    call = 0
-    create = 1
-    reward = 2
-    suicide = 3
 
 class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     
@@ -98,9 +99,6 @@ class _FilterTraceBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
 
     traceAddress: List[uint]
     """The trace addresses (array) where the call executed (every contract where code was executed)."""
-
-    type: Type
-    """The type of the transaction."""
 
     subtraces: uint
     """The number of traces of internal transactions that happened during this transaction."""
