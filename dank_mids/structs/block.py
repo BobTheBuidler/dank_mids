@@ -120,6 +120,7 @@ class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, om
 
     _withdrawals: Raw = field(name="withdrawals", default=UNSET)
     """This field is only present on Ethereum."""
+    
     @cached_property
     def withdrawals(self) -> Tuple[StakingWithdrawal, ...]:
         """This field is only present on Ethereum."""
