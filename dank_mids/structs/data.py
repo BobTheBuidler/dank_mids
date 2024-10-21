@@ -172,6 +172,8 @@ class HexBytes32(HexBytes):
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}({self.hex()})"
+
+    __getitem__ = lambda self, key: HexBytes(self)[key]
     
     # TODO: keep the instance small and just task on the length for operations as needed
     #def __len__(self) -> Literal[32]:
