@@ -14,9 +14,9 @@ class _UintData(uint):
     def __new__(cls, v: HexBytes):
         new = super().__new__(cls, v.hex() if v else '0x0', 16)
         if new < cls.min_value:
-            raise ValueError(f"{v} is smaller than {cls.__name__} max value {cls.max_value}")
+            raise ValueError(f"{v!r} ({new}) is smaller than {cls.__name__} max value {cls.max_value}")
         if new > cls.max_value:
-            raise ValueError(f"{v} is larger than {cls.__name__} max value {cls.max_value}")
+            raise ValueError(f"{v!r} ({new}) is larger than {cls.__name__} max value {cls.max_value}")
         return new
 
 class uint8(_UintData):
