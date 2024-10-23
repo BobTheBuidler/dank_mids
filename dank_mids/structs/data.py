@@ -72,9 +72,6 @@ class uint(int):
             if "int() can't convert non-string with explicit base" in str(e):
                 return cls(obj)
             raise
-    @classmethod
-    def fromhex(cls, hexstr: str):
-        return cls(hexstr, 16)
 
 
 class Wei(uint):

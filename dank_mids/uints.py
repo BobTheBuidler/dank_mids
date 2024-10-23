@@ -1,6 +1,8 @@
 
 import sys
 
+from hexbytes import HexBytes
+
 from dank_mids.structs.data import uint
 
 
@@ -9,8 +11,8 @@ class _UintData(uint):
     bits: int
     min_value = 0
     max_value: int
-    def __new__(cls, v):
-        new = super().__new__(cls, v)
+    def __new__(cls, v: HexBytes):
+        new = super().__new__(cls, v.hex(), 16)
         if new < cls.min_value:
             raise ValueError(f"{v} is smaller than {cls.__name__} max value {cls.max_value}")
         if new > cls.max_value:
