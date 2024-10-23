@@ -10,7 +10,7 @@ from dank_mids.structs.dict import LazyDictStruct
 
 _ADDRESS_TOPIC_PREFIX = HexBytes("0") * 12
 
-class Topic(data.HexBytes32):
+class Data(HexBytes):
     @property
     def as_uint(self) -> data.uint:
         return data.uint(self.hex(), 16)
@@ -32,6 +32,8 @@ class Topic(data.HexBytes32):
     def as_uint256(self) -> uints.uint256:
         return uints.uint256(self)
     
+class Topic(data.HexBytes32, Data):
+    ...
 
 """
 Dynamically define properties for all uint types.
@@ -90,7 +92,7 @@ class SmallLog(TinyLog, frozen=True, kw_only=True):  # type: ignore [call-arg]
     address: Optional[data.Address]
     """The address of the contract that generated the log."""
 
-    data: Optional[HexBytes]
+    data: Optional[Data]
     """Array of 32-bytes non-indexed return data of the log."""
 
 
