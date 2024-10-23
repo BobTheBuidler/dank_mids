@@ -12,7 +12,7 @@ class _UintData(uint):
     min_value = 0
     max_value: int
     def __new__(cls, v: HexBytes):
-        new = super().__new__(cls, v.hex(), 16)
+        new = super().__new__(cls, v.hex() if v else '0x0', 16)
         if new < cls.min_value:
             raise ValueError(f"{v} is smaller than {cls.__name__} max value {cls.max_value}")
         if new > cls.max_value:
