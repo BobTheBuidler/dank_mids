@@ -232,8 +232,7 @@ class Decimal(decimal.Decimal):
         if Decimal(scientific_notation) == self and scientific_notation_len < string_len:
             raise Exception('will this ever actually run?', self, scientific_notation)
             return scientific_notation
-        else:
-            string
+        return string
 
     def __add__(self, other):
         return type(self)(super().__add__(other))
