@@ -8,7 +8,7 @@ from msgspec import UNSET, Raw, ValidationError, field, json
 
 from dank_mids.structs.data import Address, BlockNumber, IntId, TransactionHash, UnixTimestamp, Wei, uint, _decode_hook
 from dank_mids.structs.dict import DictStruct, LazyDictStruct
-from dank_mids.structs.transaction import _TransactionBase, Transaction
+from dank_mids.structs.transaction import Transaction, TransactionRLP
 
 
 logger = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ class TinyBlock(Timestamped, frozen=True, kw_only=True, dict=True):  # type: ign
             arg0: str = e.args[0]
             if (pos := arg0.find("$")) >= 0 and arg0[:pos] == "Object missing required field `type` - at `":
                 # TODO: debug why this happens and how to build around it
-                transactions = json.decode(self._transactions, type=Tuple[Union[str, _TransactionBase], ...], dec_hook=_decode_hook)
+                transactions = json.decode(self._transactions, type=Tuple[Union[str, TransactionRLP], ...], dec_hook=_decode_hook)
             else:
                 from dank_mids.types import better_decode
                 logger.exception(e)
@@ -120,7 +120,7 @@ class Block(TinyBlock, frozen=True, kw_only=True, forbid_unknown_fields=True, om
 
     _withdrawals: Raw = field(name="withdrawals", default=UNSET)
     """This field is only present on Ethereum."""
-    
+
     @cached_property
     def withdrawals(self) -> Tuple[StakingWithdrawal, ...]:
         """This field is only present on Ethereum."""
