@@ -123,6 +123,8 @@ class TransactionRLP(_TransactionBase, frozen=True, kw_only=True, forbid_unknown
 
     # These fields are only present on Arbitrum
     indexInParent: data.uint = UNSET
+    arbType: data.uint = UNSET
+    arbSubType: data.uint = UNSET
 
 class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     type: ClassVar[HexBytes] = HexBytes("0")
