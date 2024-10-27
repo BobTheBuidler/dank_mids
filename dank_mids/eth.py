@@ -160,7 +160,11 @@ class DankEth(AsyncEth):
         try:
             return json.decode(transaction_bytes, type=Transaction, dec_hook=_decode_hook)
         except ValidationError:
-            return json.decode(transaction_bytes, type=TransactionRLP, dec_hook=_decode_hook)
+            try:
+                return json.decode(transaction_bytes, type=TransactionRLP, dec_hook=_decode_hook)
+            except ValidationError as e:
+                e.args = *e.args, json.decode(transaction_bytes)
+                raise
         
     async def get_logs(
         self, 
