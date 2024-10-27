@@ -1,5 +1,5 @@
 
-from typing import Awaitable, Callable, List, Literal, Sequence, Tuple, Type, TypedDict, TypeVar, Union, overload
+from typing import Awaitable, Callable, List, Literal, Sequence, Tuple, Type, TypedDict, Union, overload
 
 from async_lru import alru_cache
 from async_property import async_cached_property
@@ -8,10 +8,11 @@ from msgspec import Raw, Struct, ValidationError, json
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
+from web3.method import default_root_munger
 from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS, HexStr
 
 from dank_mids._method import WEB3_MAJOR_VERSION, MethodNoFormat, bypass_formatters, _block_selectors
-from dank_mids.structs import FilterTrace, Log, Transaction, TransactionReceipt
+from dank_mids.structs import FilterTrace, Log, TransactionRLP, TransactionReceipt, Transaction
 from dank_mids.structs.block import Timestamped, TinyBlock
 from dank_mids.structs.data import Status, TransactionHash, UnixTimestamp, _decode_hook, enum_decode_hook
 from dank_mids.types import DecodeHook, T
@@ -151,6 +152,15 @@ class DankEth(AsyncEth):
     async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
         return await self._trace_transaction(transaction_hash)
     
+    _get_transaction_raw = MethodNoFormat(f"{RPC.eth_getTransactionByHash}_raw", mungers=[default_root_munger])  # type: ignore [arg-type,var-annotated]
+
+    async def get_transaction(self, transaction_hash: str) -> Union[TransactionRLP, Transaction]:  # type: ignore [override]
+        transaction_bytes = await self._get_transaction_raw(transaction_hash)
+        try:
+            return json.decode(transaction_bytes, type=Transaction, dec_hook=_decode_hook)
+        except ValidationError:
+            return json.decode(transaction_bytes, type=TransactionRLP, dec_hook=_decode_hook)
+        
     async def get_logs(
         self, 
         *args, 
