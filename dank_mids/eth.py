@@ -15,6 +15,7 @@ from dank_mids._method import WEB3_MAJOR_VERSION, MethodNoFormat, bypass_formatt
 from dank_mids.structs import FilterTrace, Log, TransactionRLP, TransactionReceipt, Transaction
 from dank_mids.structs.block import Timestamped, TinyBlock
 from dank_mids.structs.data import Status, TransactionHash, UnixTimestamp, _decode_hook, enum_decode_hook
+from dank_mids.structs.transaction import AnyTransaction
 from dank_mids.types import DecodeHook, T
 
 
@@ -154,7 +155,7 @@ class DankEth(AsyncEth):
     
     _get_transaction_raw = MethodNoFormat(f"{RPC.eth_getTransactionByHash}_raw", mungers=[default_root_munger])  # type: ignore [arg-type,var-annotated]
 
-    async def get_transaction(self, transaction_hash: str) -> Union[TransactionRLP, Transaction]:  # type: ignore [override]
+    async def get_transaction(self, transaction_hash: str) -> AnyTransaction:  # type: ignore [override]
         transaction_bytes = await self._get_transaction_raw(transaction_hash)
         try:
             return json.decode(transaction_bytes, type=Transaction, dec_hook=_decode_hook)

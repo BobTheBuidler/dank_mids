@@ -35,7 +35,7 @@ class AccessListEntry(LazyDictStruct, frozen=True, forbid_unknown_fields=True): 
         """The specific storage slot keys within the contract that will be accessed."""
         return json.decode(self._storageKeys, type=List[data.HexBytes32], dec_hook=data.decode_hexbytes)
 
-class TransactionRLP(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     input: HexBytes
     """The data sent along with the transaction."""
 
@@ -115,16 +115,19 @@ class TransactionRLP(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown_f
         """A list of addresses and storage keys that the transaction plans to access."""
         return json.decode(self._accessList, type=List[AccessListEntry])
 
+class TransactionRLP(_TransactionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+    # These fields are only present on Optimism.
+    l1BlockNumber: data.BlockNumber = UNSET
 
-class TransactionLegacy(TransactionRLP, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     type: ClassVar[HexBytes] = HexBytes("0")
 
 
-class Transaction2930(TransactionRLP, tag="0x1", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class Transaction2930(_TransactionBase, tag="0x1", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     type: ClassVar[HexBytes] = HexBytes("1")
 
 
-class Transaction1559(TransactionRLP, tag="0x2", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
+class Transaction1559(_TransactionBase, tag="0x2", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     type: ClassVar[HexBytes] = HexBytes("2")
 
     maxFeePerGas: data.Wei
@@ -135,3 +138,4 @@ class Transaction1559(TransactionRLP, tag="0x2", frozen=True, kw_only=True, forb
 
 
 Transaction = Union[TransactionLegacy, Transaction2930, Transaction1559]
+AnyTransaction = Union[Transaction, TransactionRLP]
