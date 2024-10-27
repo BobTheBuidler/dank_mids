@@ -116,8 +116,10 @@ class _TransactionBase(LazyDictStruct, frozen=True, kw_only=True, forbid_unknown
         return json.decode(self._accessList, type=List[AccessListEntry])
 
 class TransactionRLP(_TransactionBase, frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
-    # These fields are only present on Optimism.
+
+    # These fields are only present on Optimism, pre-Bedrock.
     l1BlockNumber: data.BlockNumber = UNSET
+    l1TxOrigin: data.Address = UNSET
 
 class TransactionLegacy(_TransactionBase, tag="0x0", frozen=True, kw_only=True, forbid_unknown_fields=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     type: ClassVar[HexBytes] = HexBytes("0")
