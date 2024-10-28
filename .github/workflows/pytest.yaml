@@ -39,6 +39,8 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4.1.4
+        with:
+          persist-credentials: false
 
       - name: Setup Python (faster than using Python container)
         uses: actions/setup-python@v5
