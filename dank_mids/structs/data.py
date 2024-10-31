@@ -222,17 +222,24 @@ class Decimal(decimal.Decimal):
     def jsonify(self) -> Union[str, int]:
         string = str(self)
         integer = int(self)
-        scientific_notation = '%E' % self
-        string_len = len(string)
-        scientific_notation_len = len(scientific_notation)
+        
         if integer == self:
-            return integer if len(str(integer)) <= scientific_notation_len + 2 else scientific_notation
-        if "E" not in string:
-            while string[-1] == "0":
-                string = string[:-1]
-        if Decimal(scientific_notation) == self and scientific_notation_len < string_len:
+            scientific_notation = '%E' % self
+            return integer if len(str(integer)) <= len(scientific_notation) + 2 else scientific_notation
+        
+        if "E" in string:
+            return string
+        
+        scientific_notation = '%E' % self
+        while string[-1] == "0":
+            string = string[:-1]
+            
+        if Decimal(scientific_notation) == self and len(scientific_notation) < len(string):
             raise Exception('will this ever actually run?', self, scientific_notation)
             return scientific_notation
+    
+        if not string:
+            raise Exception('no string', self)
         return string
 
     def __add__(self, other):
