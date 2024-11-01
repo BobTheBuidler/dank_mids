@@ -60,10 +60,14 @@ class DankEth(AsyncEth):
     async def get_block_number(self) -> BlockNumber:  # type: ignore [override]
         return await self._get_block_number()  # type: ignore [misc]
 
-    _get_block_number: MethodNoFormat[Callable[[], Awaitable[BlockNumber]]] = MethodNoFormat(
-        RPC.eth_blockNumber,
-        is_property=True,
-    )
+    _get_block_number: MethodNoFormat[Callable[[], Awaitable[BlockNumber]]]
+    
+    try:
+        _get_block_number = MethodNoFormat(RPC.eth_blockNumber, is_property=True)
+    except TypeError as e:  # NOTE: older web3.py versions cant use `is_property` kwarg
+        if str(e) != "__init__() got an unexpected keyword argument 'is_property'":
+            raise
+        _get_block_number = MethodNoFormat(RPC.eth_blockNumber, mungers=None)
     
     async def get_block_timestamp(self, block_identifier: int) -> UnixTimestamp:
         """
