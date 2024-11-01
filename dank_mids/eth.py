@@ -157,7 +157,7 @@ class DankEth(AsyncEth):
     async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
         return await self._trace_transaction(transaction_hash)
     
-    _get_transaction_raw = MethodNoFormat(f"{RPC.eth_getTransactionByHash}_raw", mungers=[default_root_munger])  # type: ignore [arg-type,var-annotated]
+    _get_transaction_raw: MethodNoFormat[Callable[[HexStr], Awaitable[Raw]]] = MethodNoFormat(f"{RPC.eth_getTransactionByHash}_raw", mungers=[default_root_munger])  # type: ignore [arg-type,var-annotated]
 
     async def get_transaction(self, transaction_hash: str) -> AnyTransaction:  # type: ignore [override]
         transaction_bytes = await self._get_transaction_raw(transaction_hash)
@@ -189,7 +189,7 @@ class DankEth(AsyncEth):
     _get_transaction_receipt_raw = MethodNoFormat.default(f"{RPC.eth_getTransactionReceipt}_raw")
     
 
-    _get_block_raw = MethodNoFormat(
+    _get_block_raw: MethodNoFormat[Callable[..., Awaitable[Raw]]] = MethodNoFormat(
         method_choice_depends_on_args=select_method_for_block_identifier(**{k:f"{v}_raw" for k, v in _block_selectors.items()}),
         mungers=[AsyncEth.get_block_munger],
     )
