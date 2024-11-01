@@ -156,7 +156,7 @@ def _decode_hook(typ: Type, obj: object):
             if obj.startswith("0x"):
                 return typ.fromhex(obj)
             elif obj == "":
-                return UNSET
+                return None if typ is ChainId else UNSET  # TODO: refactor
         else:
             return typ(obj)
     raise NotImplementedError(typ, obj, type(obj))
