@@ -10,7 +10,7 @@ from cachetools.func import ttl_cache
 from enum import Enum, EnumMeta
 from eth_utils import to_checksum_address
 from hexbytes import HexBytes
-from msgspec import json
+from msgspec import UNSET, json
 from typing_extensions import Self
 
 if TYPE_CHECKING:
@@ -152,7 +152,13 @@ def _decode_hook(typ: Type, obj: object):
     elif typ is Address:
         return checksum(obj)
     elif issubclass(typ, uint):
-        return (typ.fromhex if isinstance(obj, str) and obj.startswith("0x") else typ)(obj)
+        if isinstance(obj, str):
+            if obj.startswith("0x"):
+                return typ.fromhex(obj)
+            elif obj == "":
+                return UNSET
+        else:
+            return typ(obj)
     raise NotImplementedError(typ, obj, type(obj))
 
 
