@@ -41,10 +41,14 @@ class DankEth(AsyncEth):
     async def chain_id(self) -> int:
         return await self._chain_id()
 
-    _chain_id: MethodNoFormat[Callable[[], Awaitable[int]]] = MethodNoFormat(
-        RPC.eth_chainId,
-        is_property=True,
-    )
+    _chain_id: MethodNoFormat[Callable[[], Awaitable[int]]]
+
+    try:
+        _chain_id = MethodNoFormat(RPC.eth_chainId, is_property=True)
+    except TypeError as e:  # NOTE: older web3.py versions cant use `is_property` kwarg
+        if str(e) != "__init__() got an unexpected keyword argument 'is_property'":
+            raise
+        _chain_id = MethodNoFormat(RPC.eth_chainId, mungers=None)
 
     # eth_blockNumber
 
