@@ -5,8 +5,6 @@ from importlib.metadata import version
 from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
                     Iterable, List, Literal, Optional, TypeVar)
 
-from async_lru import alru_cache
-from eth_typing import BlockNumber
 from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
                                apply_key_map, is_null)
 from eth_utils.toolz import assoc, complement, compose, merge
@@ -14,13 +12,15 @@ from hexbytes import HexBytes
 from multicall.utils import get_async_w3
 from typing_extensions import Concatenate, ParamSpec
 from web3 import Web3
-from web3.datastructures import AttributeDict
 from web3._utils.rpc_abi import RPC
-from web3.eth import AsyncEth
+from web3.providers import HTTPProvider
+from web3.datastructures import AttributeDict
+from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 
+from dank_mids.eth import DankEth
 from dank_mids.types import AsyncMiddleware
 
 if TYPE_CHECKING:
@@ -52,14 +52,19 @@ This is extracted from the full version string and stored as an integer for easy
 Example: for `web3==6.0.1`, the major version is 6.
 """
 
-class DankEth(AsyncEth):
-    @alru_cache(ttl=0)
-    async def get_block_number(self) -> BlockNumber:  # type: ignore [override]
-        return await super().get_block_number()  # type: ignore [misc]
-    
+
 class DankWeb3:
     """This is just a helper for type checkers. Your object will just be a modified :class:`~web3.Web3` object."""
     eth: DankEth
+
+
+skip_poa_middleware = {
+    1, # eth mainnet
+}
+"""
+By default, we include the poa middleware on all chains to prevent issues. 
+But when we don't need it, we can remove it by adding the chainid to this set.
+"""
 
 def setup_dank_w3(async_w3: Web3) -> DankWeb3:
     """
@@ -77,7 +82,8 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
         # NOTE: We import here to prevent a circular import
         from dank_mids.middleware import dank_middleware
         async_w3.middleware_onion.inject(dank_middleware, layer=0)
-        async_w3.middleware_onion.add(geth_poa_middleware)
+        if _sync_w3_from_async(async_w3).eth.chain_id not in skip_poa_middleware:
+            async_w3.middleware_onion.add(geth_poa_middleware)
         dank_w3s.append(async_w3)
     async_w3.eth = DankEth(async_w3)
     return async_w3
@@ -97,7 +103,8 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
         if w3_version_major >= 6:
             # this was default in prior versions but now optional. We want it.
             __add_sync_attrdict_middleware(sync_w3)
-        __add_sync_poa_middleware(sync_w3)
+        if sync_w3.eth.chain_id not in skip_poa_middleware:
+            __add_sync_poa_middleware(sync_w3)
         sync_w3s.append(sync_w3)
     return setup_dank_w3(get_async_w3(sync_w3))
 
@@ -254,6 +261,32 @@ def _apply_response_formatters(
     else:
         return response
 
+    
+def _sync_w3_from_async(w3: Web3) -> Web3:
+    """
+    Creates a synchronous Web3 instance from an asynchronous one.
+    
+    This function is used internally to create a sync Web3 instance
+    for operations that require synchronous execution.
+
+    Args:
+        w3: An asynchronous Web3 instance.
+
+    Returns:
+        A synchronous Web3 instance with the same endpoint URI.
+
+    Raises:
+        ValueError: If the input Web3 instance is not asynchronous.
+    """
+    if not w3.eth.is_async or not isinstance(w3.provider, AsyncBaseProvider):
+        raise ValueError("Dank Middleware can only be applied to an asycnhronous Web3 instance.")
+    sync_provider = HTTPProvider(w3.provider.endpoint_uri)
+    sync_w3: Web3 = Web3(provider = sync_provider)
+    # We can't pickle middlewares to send to process executor.
+    # The call has already passed thru all middlewares on the user's Web3 instance.
+    sync_w3.middleware_onion.clear()
+    sync_w3.provider.middlewares = ()
+    return sync_w3
     
 def _make_hashable(obj: Any) -> Any:
     """
