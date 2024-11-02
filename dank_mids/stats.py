@@ -23,7 +23,7 @@ from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor
 from time import time
 from typing import (TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Set,
-                    Type, Union)
+                    Type, TypeVar)
 
 import msgspec
 from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
@@ -36,6 +36,8 @@ if TYPE_CHECKING:
     from dank_mids.types import Request
 
 _LogLevel = int
+
+T = TypeVar("T")
 
 # New logging levels:
 # DEBUG=10, INFO=20, 
@@ -128,7 +130,7 @@ class _StatsLogger(logging.Logger):
         except IndexError:
             raise ValueError("Both a level and a message are required.") from None
 
-    def _log_fn_result(self, level: _LogLevel, callable: Callable[[], str], *callable_args, **logging_kwargs) -> None:
+    def _log_fn_result(self, level: _LogLevel, callable: Callable[[T], str], *callable_args: T, **logging_kwargs) -> None:
         """If `self.isEnabledFor(level)` is True, will call `callable` with your args and log the output."""
         if self.isEnabledFor(level):
             return self._log_nocheck(level, callable(*callable_args), (), **logging_kwargs)
