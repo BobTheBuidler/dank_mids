@@ -47,7 +47,7 @@ class DankMidsClientResponseError(ClientResponseError):
         """
 
         super().__init__(exc.request_info, exc.history, status=exc.status, message=exc.message, headers=exc.headers)
-        self.args = (*self.args, request)
+        self.args = (*self.args, request)  # type: ignore [has-type]
         
         self._exception = exc
         """
