@@ -97,9 +97,11 @@ async def test_other_methods():
     """
     Test various other RPC methods.
     """
-    work = [dank_web3.eth.block_number for i in range(50)]
-    work.append(dank_web3.eth.get_block('0xe25822'))
-    work.append(dank_web3.manager.coro_request(RPC.web3_clientVersion, []))
+    work = [
+        *(dank_web3.eth.block_number for _ in range(50)),
+        dank_web3.eth.get_block('0xe25822'),
+        dank_web3.manager.coro_request(RPC.web3_clientVersion, []),
+    ]
     results = await asyncio.gather(*work)
     assert results
     assert results[-2].timestamp
