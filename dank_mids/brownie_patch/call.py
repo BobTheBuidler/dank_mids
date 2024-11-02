@@ -65,7 +65,7 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int):
     
     async def coroutine(
         self: ContractCall,
-        *args: Tuple[Any,...],
+        *args: Any,
         block_identifier: Optional[BlockIdentifier] = None,
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None
@@ -147,7 +147,7 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
 __eth_abi_encode = eth_abi.encode if hasattr(eth_abi, 'encode') else eth_abi.encode_abi
 __eth_abi_decode = eth_abi.decode if hasattr(eth_abi, 'decode') else eth_abi.decode_abi
 
-def __encode_input(abi: Dict[str, Any], signature: str, *args: Tuple[Any,...]) -> Union[HexStr, Exception]:
+def __encode_input(abi: Dict[str, Any], signature: str, *args: Any) -> Union[HexStr, Exception]:
     try:
         data = format_input(abi, args)
         types_list = get_type_strings(abi["inputs"])

@@ -8,7 +8,7 @@ from dank_mids.brownie_patch.types import DankContractCall, DankContractMethod, 
 
 __all__ = ["DankContractCall", "DankContractMethod", "DankContractTx", "DankOverloadedMethod"]
 
-from dank_mids.helpers._helpers import DankWeb3
+from dank_mids.helpers._helpers import DankEth, DankWeb3
 
 dank_web3: DankWeb3
 """
@@ -17,7 +17,7 @@ If you have brownie installed and connected, an instance of :py:class:`~DankWeb3
 If you do not have brownie or it is not connected to an rpc when this module is loaded, this object will not exist.
 """
 
-dank_eth: AsyncEth
+dank_eth: DankEth
 """
 If you have brownie installed and connected, an instance of :py:class:`~AsyncEth`, providing asynchronous access to Ethereum blockchain methods via :py:const:`dank_web3`.
 
