@@ -42,6 +42,7 @@ Returns:
 """
 decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 
+
 def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
     """
     Patch a Brownie ContractCall to enable asynchronous use via dank_mids for batching.
@@ -53,8 +54,9 @@ def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
         A patched version of the ContractCall with enhanced functionality.
     """
     call._skip_decoder_proc_pool = call._address in _skip_proc_pool
-    call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi['inputs'])), call)
+    call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi["inputs"])), call)
     call.__await__ = MethodType(_call_no_args, call)
+
 
 @functools.lru_cache
 def _get_coroutine_fn(w3: DankWeb3, len_inputs: int):
@@ -62,13 +64,13 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int):
         get_request_data = encode
     else:
         get_request_data = _request_data_no_args  # type: ignore [assignment]
-    
+
     async def coroutine(
         self: ContractCall,
         *args: Any,
         block_identifier: Optional[BlockIdentifier] = None,
         decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None
+        override: Optional[Dict[str, str]] = None,
     ) -> Any:
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
@@ -80,21 +82,25 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int):
             decoded = await decode_output(self, output)
         except InsufficientDataBytes as e:
             raise InsufficientDataBytes(str(e), self, self._address, output) from e
-        
+
         return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
 
     return coroutine
+
 
 def _call_no_args(self: ContractMethod):
     """Asynchronously call `self` with no arguments at the latest block."""
     return self.coroutine().__await__()
 
+
 async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> HexStr:
-    if any(isinstance(arg, Contract) for arg in args) or any(hasattr(arg, "__contains__") for arg in args): # We will just assume containers contain a Contract object until we have a better way to handle this
+    if any(isinstance(arg, Contract) for arg in args) or any(
+        hasattr(arg, "__contains__") for arg in args
+    ):  # We will just assume containers contain a Contract object until we have a better way to handle this
         # We can't unpickle these because of the added `coroutine` method.
         data = __encode_input(call.abi, call.signature, *args)
     else:
-        try: # We're better off sending these to the subprocess so they don't clog up the event loop.
+        try:  # We're better off sending these to the subprocess so they don't clog up the event loop.
             data = await get_request_data(call, *args)
         except (AttributeError, TypeError):
             # These occur when we have issues pickling an object, but that's fine, we can do it sync.
@@ -132,7 +138,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         if isinstance(decoded, Exception):
             raise decoded
         return decoded
-    except AttributeError as e: 
+    except AttributeError as e:
         # NOTE: Not sure why this happens as we set the attr while patching the call but w/e, this works for now
         if not str(e).endswith(" object has no attribute '_skip_decoder_proc_pool'"):
             raise
@@ -140,12 +146,15 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         call._skip_decoder_proc_pool = call._address in _skip_proc_pool
         return await decode_output(call, data)
 
+
 async def _request_data_no_args(call: ContractCall) -> HexStr:
     return call.signature
 
+
 # These methods were renamed in eth-abi 4.0.0
-__eth_abi_encode = eth_abi.encode if hasattr(eth_abi, 'encode') else eth_abi.encode_abi
-__eth_abi_decode = eth_abi.decode if hasattr(eth_abi, 'decode') else eth_abi.decode_abi
+__eth_abi_encode = eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
+__eth_abi_decode = eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Any) -> Union[HexStr, Exception]:
     try:
@@ -154,6 +163,7 @@ def __encode_input(abi: Dict[str, Any], signature: str, *args: Any) -> Union[Hex
         return signature + __eth_abi_encode(types_list, data).hex()
     except Exception as e:
         return e
+
 
 _skip_proc_pool = {"0xcA11bde05977b3631167028862bE2a173976CA11"}  # multicall3
 # NOTE: retry 429 errors if running multiple services on same rpc
@@ -166,7 +176,8 @@ while True:
             raise
 if multicall2 := MULTICALL2_ADDRESSES.get(chainid, None):
     _skip_proc_pool.add(to_checksum_address(multicall2))
-    
+
+
 def __decode_output(hexstr: BytesLike, abi: Dict[str, Any]) -> Any:
     try:
         types_list = get_type_strings(abi["outputs"])
@@ -177,6 +188,7 @@ def __decode_output(hexstr: BytesLike, abi: Dict[str, Any]) -> Any:
         return result
     except Exception as e:
         return e
+
 
 def __validate_output(abi: Dict[str, Any], hexstr: BytesLike):
     try:
@@ -200,4 +212,3 @@ def __validate_output(abi: Dict[str, Any], hexstr: BytesLike):
             raise VirtualMachineError(e) from None
         except:
             raise e from e.__cause__
-
