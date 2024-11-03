@@ -1,19 +1,26 @@
-
 import asyncio
 from functools import wraps
 from importlib.metadata import version
-from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Coroutine,
-                    Iterable, List, Literal, Optional, TypeVar)
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Awaitable,
+    Callable,
+    Coroutine,
+    Iterable,
+    List,
+    Literal,
+    Optional,
+    TypeVar,
+)
 
-from eth_utils.curried import (apply_formatter_if, apply_formatters_to_dict,
-                               apply_key_map, is_null)
+from eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map, is_null
 from eth_utils.toolz import assoc, complement, compose, merge
 from hexbytes import HexBytes
 from multicall.utils import get_async_w3
 from typing_extensions import Concatenate, ParamSpec
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
-from web3.providers import HTTPProvider
 from web3.datastructures import AttributeDict
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
@@ -55,24 +62,26 @@ Example: for `web3==6.0.1`, the major version is 6.
 
 class DankWeb3:
     """This is just a helper for type checkers. Your object will just be a modified :class:`~web3.Web3` object."""
+
     eth: DankEth
 
 
 skip_poa_middleware = {
-    1, # eth mainnet
+    1,  # eth mainnet
 }
 """
 By default, we include the poa middleware on all chains to prevent issues. 
 But when we don't need it, we can remove it by adding the chainid to this set.
 """
 
+
 def setup_dank_w3(async_w3: Web3) -> DankWeb3:
     """
     Sets up a DankWeb3 instance from a given Web3 instance.
-    
+
     Args:
         async_w3: The Web3 instance to be wrapped.
-    
+
     Returns:
         A new DankWeb3 instance with Dank Middleware injected.
     """
@@ -81,6 +90,7 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
     if async_w3 not in dank_w3s:
         # NOTE: We import here to prevent a circular import
         from dank_mids.middleware import dank_middleware
+
         async_w3.middleware_onion.inject(dank_middleware, layer=0)
         if _sync_w3_from_async(async_w3).eth.chain_id not in skip_poa_middleware:
             async_w3.middleware_onion.add(geth_poa_middleware)
@@ -88,13 +98,14 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
     async_w3.eth = DankEth(async_w3)
     return async_w3
 
+
 def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
     """
     Sets up a DankWeb3 instance from a given synchronous Web3 instance.
-    
+
     Args:
         sync_w3: The synchronous Web3 instance to be wrapped.
-    
+
     Returns:
         A new DankWeb3 instance with Dank Middleware injected, supporting batched asynchronous operations.
     """
@@ -108,10 +119,11 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
         sync_w3s.append(sync_w3)
     return setup_dank_w3(get_async_w3(sync_w3))
 
+
 async def await_all(futs: Iterable[Awaitable]) -> None:
     """
     Awaits all given awaitables in the order they complete.
-    
+
     Args:
         futs: An iterable of awaitables to be executed.
     """
@@ -119,22 +131,28 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
         await fut
         del fut
 
-def set_done(fn: Callable[Concatenate["_Request", P], Awaitable[T]]) -> Callable[Concatenate["_Request", P], Awaitable[T]]:
+
+def set_done(
+    fn: Callable[Concatenate["_Request", P], Awaitable[T]]
+) -> Callable[Concatenate["_Request", P], Awaitable[T]]:
     """
     A decorator that sets the '_done' flag of a _Request object after the decorated function completes.
-    
+
     Args:
         fn: The function to be decorated.
-    
+
     Returns:
         A wrapped version of the input function that sets the '_done' flag.
     """
+
     @wraps(fn)
     async def set_done_wrap(self: "_Request", *args: P.args, **kwargs: P.kwargs) -> T:
         retval = await fn(self, *args, **kwargs)
         self._done.set()
         return retval
+
     return set_done_wrap
+
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 
@@ -180,7 +198,10 @@ A composed function that applies both remapping and formatting to Geth PoA field
 It first remaps the fields and then applies the pythonic formatters.
 """
 
-async def geth_poa_middleware(make_request: Callable[[RPCEndpoint, Any], Any], w3: Web3) -> AsyncMiddleware:
+
+async def geth_poa_middleware(
+    make_request: Callable[[RPCEndpoint, Any], Any], w3: Web3
+) -> AsyncMiddleware:
     middleware = await async_construct_formatting_middleware(
         result_formatters={
             RPC.eth_getBlockByHash: apply_formatter_if(is_not_null, geth_poa_cleanup),
@@ -188,6 +209,7 @@ async def geth_poa_middleware(make_request: Callable[[RPCEndpoint, Any], Any], w
         },
     )
     return await middleware(make_request, w3)  # type: ignore [arg-type, return-value]
+
 
 async def async_construct_formatting_middleware(
     request_formatters: Optional[Formatters] = None,
@@ -208,13 +230,12 @@ async def async_construct_formatting_middleware(
         ignore_web3_in_standard_formatters
     )
 
+
 async def async_construct_web3_formatting_middleware(
     async_web3_formatters_builder: Callable[
         ["Web3", RPCEndpoint], Coroutine[Any, Any, FormattersDict]
     ]
-) -> Callable[
-    [Callable[[RPCEndpoint, Any], Any], "Web3"], Coroutine[Any, Any, AsyncMiddleware]
-]:
+) -> Callable[[Callable[[RPCEndpoint, Any], Any], "Web3"], Coroutine[Any, Any, AsyncMiddleware]]:
     async def formatter_middleware(
         make_request: Callable[[RPCEndpoint, Any], Any],
         async_w3: "Web3",
@@ -231,13 +252,12 @@ async def async_construct_web3_formatting_middleware(
                 params = formatter(params)
             response = await make_request(method, params)
 
-            return _apply_response_formatters(
-                method=method, response=response, **formatters
-            )
+            return _apply_response_formatters(method=method, response=response, **formatters)
 
         return middleware
 
     return formatter_middleware
+
 
 def _apply_response_formatters(
     method: RPCEndpoint,
@@ -250,9 +270,7 @@ def _apply_response_formatters(
         method_response_formatter: Callable[..., Any],
     ) -> RPCResponse:
         appropriate_response = response[response_type]
-        return assoc(
-            response, response_type, method_response_formatter(appropriate_response)
-        )
+        return assoc(response, response_type, method_response_formatter(appropriate_response))
 
     if "result" in response and method in result_formatters:
         return _format_response("result", result_formatters[method])
@@ -261,11 +279,11 @@ def _apply_response_formatters(
     else:
         return response
 
-    
+
 def _sync_w3_from_async(w3: Web3) -> Web3:
     """
     Creates a synchronous Web3 instance from an asynchronous one.
-    
+
     This function is used internally to create a sync Web3 instance
     for operations that require synchronous execution.
 
@@ -281,18 +299,19 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     if not w3.eth.is_async or not isinstance(w3.provider, AsyncBaseProvider):
         raise ValueError("Dank Middleware can only be applied to an asycnhronous Web3 instance.")
     sync_provider = HTTPProvider(w3.provider.endpoint_uri)
-    sync_w3: Web3 = Web3(provider = sync_provider)
+    sync_w3: Web3 = Web3(provider=sync_provider)
     # We can't pickle middlewares to send to process executor.
     # The call has already passed thru all middlewares on the user's Web3 instance.
     sync_w3.middleware_onion.clear()
     sync_w3.provider.middlewares = ()
     return sync_w3
-    
+
+
 def _make_hashable(obj: Any) -> Any:
     """
     Converts an object into a hashable type if possible.
-    
-    This function is used internally to ensure that objects can be used as 
+
+    This function is used internally to ensure that objects can be used as
     dictionary keys or in sets.
 
     Args:
@@ -307,18 +326,20 @@ def _make_hashable(obj: Any) -> Any:
         return AttributeDict({k: _make_hashable(v) for k, v in obj.items()})
     return obj
 
+
 def __add_sync_attrdict_middleware(sync_w3: Web3) -> None:
     """
     Add the attrdict middleware to a synchronous Web3 instance.
-    
+
     Args:
         sync_w3: The synchronous Web3 instance to add the middleware to.
-    
+
     Raises:
         ValueError: If the provided Web3 instance is asynchronous.
     """
     # we do the import here because it is only present in web3 >= 6
     from web3.middleware import attrdict_middleware
+
     if sync_w3.eth.is_async:
         raise ValueError("You must pass in a sync Web3 instance.")
     try:
@@ -328,18 +349,21 @@ def __add_sync_attrdict_middleware(sync_w3: Web3) -> None:
             raise
         # The middleware is already added
 
+
 def __add_sync_poa_middleware(sync_w3: Web3) -> None:
     """
     Add the Proof of Authority (PoA) middleware to a synchronous Web3 instance.
-    
+
     This ensures compatibility with PoA chains.
-    
+
     Args:
         sync_w3: The synchronous Web3 instance to add the middleware to.
     """
     if w3_version_major >= 7:
         from web3.middleware.proof_of_authority import ExtraDataToPOAMiddleware
+
         sync_w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
     elif w3_version_major >= 6:
         from web3.middleware import geth_poa_middleware
+
         sync_w3.middleware_onion.inject(geth_poa_middleware, layer=0)
