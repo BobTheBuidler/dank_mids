@@ -1,7 +1,5 @@
-
-import pytest
-
 import eth_retry
+import pytest
 
 import examples.dank_brownie_example
 
