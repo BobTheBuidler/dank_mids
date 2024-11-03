@@ -40,3 +40,24 @@ exclude = ["build/","cache/","env/","tests/"]
 ignore_missing_imports = true
 check_untyped_defs = true
 disable_error_code = ["return"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | cache
+  | docs
+  | dist
+  | env
+)/
+'''
