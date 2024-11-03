@@ -13,4 +13,4 @@ Note: The API in this module is subject to change. Use with caution in productio
 
 from dank_mids._debugging import failures
 
-__all__ = ['failures']
+__all__ = ["failures"]

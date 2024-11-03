@@ -9,6 +9,7 @@ from dank_mids._debugging._base import _CSVWriter
 if TYPE_CHECKING:
     from dank_mids.types import PartialRequest, Request
 
+
 @lru_cache(maxsize=None)
 class FailedRequestWriter(_CSVWriter):
     """
@@ -43,7 +44,9 @@ class FailedRequestWriter(_CSVWriter):
         self.failure_type = failure_type
         """The type of exception to record."""
 
-        self.record_failure = ProcessingQueue(self._record_failure, num_workers=1, return_data=False)
+        self.record_failure = ProcessingQueue(
+            self._record_failure, num_workers=1, return_data=False
+        )
         """
         A ProcessingQueue instance used to record failed requests asynchronously.
         It processes failures using the :meth:`FailedRequestWriter._record_failure` method with a single worker.
@@ -55,11 +58,11 @@ class FailedRequestWriter(_CSVWriter):
         return f"{int(datetime.now().timestamp())}_{self.failure_type.__name__}s.csv"
 
     async def _record_failure(
-        self, 
-        e: Exception, 
-        request_type: str, 
-        request_uid: Union[str, int], 
-        request_length: Union[int, Literal["unknown"]], 
+        self,
+        e: Exception,
+        request_type: str,
+        request_uid: Union[str, int],
+        request_length: Union[int, Literal["unknown"]],
         request_data: Union[List["Request"], List["PartialRequest"], bytes],
     ):
         """
@@ -79,5 +82,15 @@ class FailedRequestWriter(_CSVWriter):
             raise TypeError(e, self.failure_type)
         await self.write_row(request_type, request_uid, request_length, e, request_data)
 
-def record(chainid: int, e: Exception, request_type: str, request_uid: Union[int, str], request_length: Union[int, Literal["unknown"]], request_data: Union[List["Request"], List["PartialRequest"], bytes]) -> None:
-    FailedRequestWriter(chainid, type(e)).record_failure(e, request_type, request_uid, request_length, request_data)
+
+def record(
+    chainid: int,
+    e: Exception,
+    request_type: str,
+    request_uid: Union[int, str],
+    request_length: Union[int, Literal["unknown"]],
+    request_data: Union[List["Request"], List["PartialRequest"], bytes],
+) -> None:
+    FailedRequestWriter(chainid, type(e)).record_failure(
+        e, request_type, request_uid, request_length, request_data
+    )

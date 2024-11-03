@@ -1,9 +1,16 @@
-
 from msgspec import Raw, json
 
-from dank_mids.types import (Any, Callable, JSONRPCBatchResponseRaw, List, PartialResponse,
-                             RawResponse, Union, _nested_dict_of_stuff, _encode_hook)
-
+from dank_mids.types import (
+    Any,
+    Callable,
+    JSONRPCBatchResponseRaw,
+    List,
+    PartialResponse,
+    RawResponse,
+    Union,
+    _encode_hook,
+    _nested_dict_of_stuff,
+)
 
 decode_raw = lambda data: RawResponse(json.decode(data, type=Raw))
 """
@@ -27,6 +34,7 @@ Returns:
     The decoded nested dictionary.
 """
 
+
 def decode_jsonrpc_batch(data: bytes) -> Union[PartialResponse, List[RawResponse]]:
     """
     Decode json-encoded bytes into a list of response structs, or a single error response struct if applicable.
@@ -40,6 +48,7 @@ def decode_jsonrpc_batch(data: bytes) -> Union[PartialResponse, List[RawResponse
     decoded = json.decode(data, type=JSONRPCBatchResponseRaw)
     return decoded if isinstance(decoded, PartialResponse) else _map_raw(decoded)
 
+
 _map_raw: Callable[[List[Raw]], List[RawResponse]] = lambda decoded: list(map(RawResponse, decoded))
 """
 Converts a list of `msgspec.Raw` objects into a list of `RawResponse` objects.
@@ -50,6 +59,7 @@ Args:
 Returns:
     A list of RawResponse objects.
 """
+
 
 def encode(obj: Any) -> bytes:
     """
