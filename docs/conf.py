@@ -8,6 +8,7 @@
 
 import os
 import sys
+
 from brownie import network
 from sphinx.util import logging
 
