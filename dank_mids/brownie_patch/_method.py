@@ -3,8 +3,8 @@ import functools
 from decimal import Decimal
 from typing import Any, Awaitable, Callable, Dict, Generic, Iterable, List, Optional, TypeVar
 
-from brownie.typing import AccountsType
 from brownie.convert.datatypes import EthAddress
+from brownie.typing import AccountsType
 from eth_abi.exceptions import InsufficientDataBytes
 from hexbytes.main import BytesLike
 
@@ -13,6 +13,7 @@ from dank_mids.brownie_patch._abi import FunctionABI
 from dank_mids.helpers._helpers import DankWeb3, _make_hashable
 
 _EVMType = TypeVar("_EVMType")
+
 
 class _DankMethodMixin(Generic[_EVMType]):
     """
@@ -31,15 +32,15 @@ class _DankMethodMixin(Generic[_EVMType]):
     def __await__(self):
         """
         Allow the contract method to be awaited.
-        
+
         This method enables using 'await' on the contract method, which will call
         the method without arguments at the latest block and return the result.
         """
         return self.coroutine().__await__()
 
     async def map(
-        self, 
-        args: Iterable[Any], 
+        self,
+        args: Iterable[Any],
         block_identifier: Optional[int] = None,
         decimals: Optional[int] = None,
     ) -> List[_EVMType]:
@@ -62,7 +63,7 @@ class _DankMethodMixin(Generic[_EVMType]):
     def abi(self) -> dict:
         """
         The ABI of the contract function.
-        
+
         This property provides access to the complete ABI dictionary of the function.
         """
         return self._abi.abi
@@ -71,16 +72,16 @@ class _DankMethodMixin(Generic[_EVMType]):
     def signature(self) -> str:
         """
         The function signature.
-        
+
         This property returns the unique signature of the contract function,
         which is used to identify the function in transactions.
         """
         return self._abi.signature
 
     async def coroutine(  # type: ignore [empty-body]
-        self, 
-        *args: Any, 
-        block_identifier: Optional[int] = None, 
+        self,
+        *args: Any,
+        block_identifier: Optional[int] = None,
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None,
     ) -> _EVMType:
@@ -99,30 +100,40 @@ class _DankMethodMixin(Generic[_EVMType]):
             The result of the contract method call.
         """
         raise NotImplementedError
+
     @property
     def _input_sig(self) -> str:
         return self._abi.input_sig
+
     @functools.cached_property
     def _len_inputs(self) -> int:
-        return len(self.abi['inputs'])
+        return len(self.abi["inputs"])
+
     @functools.cached_property
     def _skip_decoder_proc_pool(self) -> bool:
         from dank_mids.brownie_patch.call import _skip_proc_pool
+
         return self._address in _skip_proc_pool
+
     @functools.cached_property
     def _web3(cls) -> DankWeb3:
         from dank_mids import web3
+
         return web3
+
     @functools.cached_property
     def _prep_request_data(self) -> Callable[..., Awaitable[BytesLike]]:
         from dank_mids.brownie_patch import call
+
         if ENVS.OPERATION_MODE.application or self._len_inputs:  # type: ignore [attr-defined]
             return call.encode
         else:
             return call._request_data_no_args
 
+
 class _DankMethod(_DankMethodMixin):
     __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_output"
+
     def __init__(
         self,
         address: str,
@@ -142,26 +153,28 @@ class _DankMethod(_DankMethodMixin):
 
         self.natspec = natspec or {}
         """The NatSpec documentation for the function."""
-        
+
         # TODO: refactor this
         from dank_mids.brownie_patch import call
+
         self._encode_input = call.encode_input
         self._decode_output = call.decode_output
+
     async def coroutine(  # type: ignore [empty-body]
-        self, 
-        *args: Any, 
-        block_identifier: Optional[int] = None, 
+        self,
+        *args: Any,
+        block_identifier: Optional[int] = None,
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method via dank mids and await the result.
-        
+
         Arguments:
             - *args: The arguments for the contract method.
             - block_identifier (optional): The block at which the chain will be read. If not provided, will read the chain at latest block.
             - decimals (optional): if provided, the output will be `result / 10 ** decimals`
-        
+
         Returns:
             - Whatever the node sends back as the output for this contract method.
         """
@@ -170,7 +183,9 @@ class _DankMethod(_DankMethodMixin):
         async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
             data = await self._encode_input(self, self._len_inputs, self._prep_request_data, *args)
             async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
-                output = await self._web3.eth.call({"to": self._address, "data": data}, block_identifier)
+                output = await self._web3.eth.call(
+                    {"to": self._address, "data": data}, block_identifier
+                )
         try:
             decoded = await self._decode_output(self, output)
         except InsufficientDataBytes as e:

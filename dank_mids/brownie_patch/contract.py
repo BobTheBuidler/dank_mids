@@ -1,18 +1,25 @@
-
 import functools
 from typing import Dict, List, Literal, NewType, Optional, Union, overload
 
 import brownie
-from brownie.network.contract import (ContractCall, ContractTx, OverloadedMethod, 
-                                      build_function_signature)
+from brownie.network.contract import (
+    ContractCall,
+    ContractTx,
+    OverloadedMethod,
+    build_function_signature,
+)
 from brownie.typing import AccountsType
 from eth_retry import auto_retry
 
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
-from dank_mids.brownie_patch.types import ContractMethod, DankContractMethod, DankOverloadedMethod, _get_method_object
+from dank_mids.brownie_patch.types import (
+    ContractMethod,
+    DankContractMethod,
+    DankOverloadedMethod,
+    _get_method_object,
+)
 from dank_mids.helpers._helpers import DankWeb3
-    
 
 EventName = NewType("EventName", str)
 """A type representing the name of an event in a smart contract.
@@ -38,6 +45,7 @@ See Also:
 Signature = NewType("Signature", str)
 """A type representing the signature of a method in a smart contract."""
 
+
 class Contract(brownie.Contract):
     """
     An extended version of brownie.Contract with additional functionality for Dank Mids.
@@ -49,11 +57,11 @@ class Contract(brownie.Contract):
     @classmethod
     @auto_retry
     def from_abi(
-        cls, 
-        name: str, 
-        address: str, 
-        abi: List[dict], 
-        owner: Optional[AccountsType] = None, 
+        cls,
+        name: str,
+        address: str,
+        abi: List[dict],
+        owner: Optional[AccountsType] = None,
         persist: bool = True,
     ) -> "Contract":
         """
@@ -79,11 +87,11 @@ class Contract(brownie.Contract):
     @classmethod
     @auto_retry
     def from_ethpm(
-        cls, 
-        name: str, 
-        manifest_uri: str, 
-        address: Optional[str] = None, 
-        owner: Optional[AccountsType] = None, 
+        cls,
+        name: str,
+        manifest_uri: str,
+        address: Optional[str] = None,
+        owner: Optional[AccountsType] = None,
         persist: bool = True,
     ) -> "Contract":
         """
@@ -102,17 +110,19 @@ class Contract(brownie.Contract):
         Returns:
             A new Contract instance.
         """
-        persisted = brownie.Contract.from_ethpm(name, manifest_uri, address, owner, _check_persist(persist))
+        persisted = brownie.Contract.from_ethpm(
+            name, manifest_uri, address, owner, _check_persist(persist)
+        )
         return Contract(persisted.address)
 
     @classmethod
     @auto_retry
     def from_explorer(
-        cls, 
-        address: str, 
-        as_proxy_for: Optional[str] = None, 
-        owner: Optional[AccountsType] = None, 
-        silent: bool = False, 
+        cls,
+        address: str,
+        as_proxy_for: Optional[str] = None,
+        owner: Optional[AccountsType] = None,
+        silent: bool = False,
         persist: bool = True,
     ) -> "Contract":
         """
@@ -131,7 +141,9 @@ class Contract(brownie.Contract):
         Returns:
             A new Contract instance.
         """
-        persisted = brownie.Contract.from_explorer(address, as_proxy_for, owner, silent, _check_persist(persist))
+        persisted = brownie.Contract.from_explorer(
+            address, as_proxy_for, owner, silent, _check_persist(persist)
+        )
         return Contract(persisted.address)
 
     topics: Dict[str, str]
@@ -158,7 +170,7 @@ class Contract(brownie.Contract):
         """
         Get a contract method attribute.
 
-        This method implements lazy initialization of contract methods. 
+        This method implements lazy initialization of contract methods.
         If a method object does not yet exist, it is created and cached.
 
         Args:
@@ -192,6 +204,7 @@ class Contract(brownie.Contract):
             The initialized contract method object.
         """
         from dank_mids import web3
+
         overloaded = self.__method_names__.count(name) > 1
         for abi in [i for i in self.abi if i["type"] == "function"]:
             if abi["name"] != name:
@@ -211,12 +224,16 @@ class Contract(brownie.Contract):
             overloaded._add_fn(abi, natspec)
         return overloaded  # type: ignore [return-value]
 
-    
+
 @overload
-def patch_contract(contract: Contract, w3: Optional[DankWeb3] = None) -> Contract:...
+def patch_contract(contract: Contract, w3: Optional[DankWeb3] = None) -> Contract: ...
 @overload
-def patch_contract(contract: Union[brownie.Contract, str], w3: Optional[DankWeb3] = None) -> brownie.Contract:...
-def patch_contract(contract: Union[Contract, brownie.Contract, str], w3: Optional[DankWeb3] = None) -> Union[Contract, brownie.Contract]:
+def patch_contract(
+    contract: Union[brownie.Contract, str], w3: Optional[DankWeb3] = None
+) -> brownie.Contract: ...
+def patch_contract(
+    contract: Union[Contract, brownie.Contract, str], w3: Optional[DankWeb3] = None
+) -> Union[Contract, brownie.Contract]:
     """
     Patch a contract with async and call batching functionalities.
 
@@ -232,10 +249,13 @@ def patch_contract(contract: Union[Contract, brownie.Contract, str], w3: Optiona
     if w3 is None and brownie.network.is_connected():
         from dank_mids import dank_web3 as w3
     if w3 is None:
-        raise RuntimeError("You must make sure either brownie is connected or you pass in a Web3 instance.")
+        raise RuntimeError(
+            "You must make sure either brownie is connected or you pass in a Web3 instance."
+        )
     for k, v in contract.__dict__.items():
         _patch_if_method(v, w3)
     return contract
+
 
 def _patch_if_method(method: ContractMethod, w3: DankWeb3) -> None:
     """
@@ -250,6 +270,7 @@ def _patch_if_method(method: ContractMethod, w3: DankWeb3) -> None:
     elif isinstance(method, OverloadedMethod):
         _patch_overloaded_method(method, w3)
 
+
 class _ContractMethodPlaceholder:
     """
     A sentinel object that indicates a Contract has a member by a specific name.
@@ -257,6 +278,7 @@ class _ContractMethodPlaceholder:
     This class is used internally to represent methods that exist on a contract
     but haven't been fully initialized yet, allowing for lazy loading of method objects.
     """
+
 
 def _check_persist(persist: bool) -> Literal[True]:
     """
