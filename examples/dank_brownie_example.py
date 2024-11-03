@@ -21,7 +21,7 @@ from typing import List
 import dank_mids
 from web3.types import Timestamp
 
-# For the purpose of this example, we will define the Uniswap pools we want to get data from 
+# For the purpose of this example, we will define the Uniswap pools we want to get data from
 # and the blocks at which we wish to fetch data.
 blocks = [15_000_000, 15_100_000, 15_200_000, 15_300_000, 15_400_000, 15_500_000]
 uniswap_pools = [
@@ -30,7 +30,7 @@ uniswap_pools = [
     "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc",
     "0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11",
 ]
-    
+
 
 # Define the main function and the async coroutine it will run
 def main() -> None:
@@ -40,6 +40,7 @@ def main() -> None:
     This function sets up the asyncio event loop and runs the asynchronous :func:`_main` function that we define next.
     """
     asyncio.run(_main())
+
 
 async def _main() -> None:
     """
@@ -55,7 +56,7 @@ async def _main() -> None:
     tokens, timestamps, balances = await asyncio.gather(
         asyncio.gather(*[get_tokens_for_pool(pool) for pool in dank_pool_contracts]),
         asyncio.gather(*[get_timestamp_at_block(block) for block in blocks]),
-        asyncio.gather(*[get_balances_for_blocks(pool, blocks) for pool in dank_pool_contracts])
+        asyncio.gather(*[get_balances_for_blocks(pool, blocks) for pool in dank_pool_contracts]),
     )
     # Now we can do stuff with the outputs
     for pool, (token0, token1) in zip(dank_pool_contracts, tokens):
@@ -85,14 +86,17 @@ async def get_balances_for_blocks(pool: dank_mids.Contract, blocks: List[int]):
     See Also:
         :meth:`dank_mids.brownie_patch.call.DankContractCall.coroutine`: The function used to asynchronously make the call via dank_mids.
     """
-    return await asyncio.gather(*[pool.getReserves.coroutine(block_identifier=block) for block in blocks])
+    return await asyncio.gather(
+        *[pool.getReserves.coroutine(block_identifier=block) for block in blocks]
+    )
+
 
 async def get_tokens_for_pool(pool: dank_mids.Contract):
     """
     Fetch token addresses for a pool using dank_mids.
 
-    This function shows how to directly await DankContractMethods for no-arg contract calls 
-    at 'latest' block. 
+    This function shows how to directly await DankContractMethods for no-arg contract calls
+    at 'latest' block.
 
     Args:
         pool: The pool contract wrapped by dank_mids
@@ -106,13 +110,14 @@ async def get_tokens_for_pool(pool: dank_mids.Contract):
 # To batch other rpc calls, use the `dank_mids.eth` object like you would brownie's `web3.eth` object.
 # This object wraps the connected brownie Web3 instance and injects the dank middleware for batching
 
+
 async def get_timestamp_at_block(block: int) -> Timestamp:
     """
     Fetch the timestamp for a specific block using dank_mids.eth.
 
     This function demonstrates how to use dank_mids.eth for standard RPC calls,
     which will be automatically batched with other calls.
-    
+
     It also demonstrates how to access members of multi-field responses.
 
     Args:
@@ -126,5 +131,5 @@ async def get_timestamp_at_block(block: int) -> Timestamp:
     # the syntax below will work but won't type check correctly
     not_typed = data.timestamp  # type: ignore [attr-defined]
     # the syntax below is more annoying to type out everywhere but will work with type checkers
-    typed =  data['timestamp']
+    typed = data["timestamp"]
     return typed
