@@ -21,5 +21,6 @@ class DummyLogger:
             **kwargs: Keyword arguments (ignored).
         """
 
+
 # Choose between a real logger and a dummy logger based on the demo mode setting
 demo_logger: logging.Logger = logging.getLogger("dank_mids.demo") if ENVIRONMENT_VARIABLES.DEMO_MODE else DummyLogger()  # type: ignore [attr-defined, assignment]

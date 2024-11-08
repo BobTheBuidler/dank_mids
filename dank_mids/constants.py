@@ -5,14 +5,25 @@ import multicall
 from eth_typing import BlockNumber
 from multicall.constants import Network
 
-TOO_MUCH_DATA_ERRS = ["payload too large", "content length too large", "request entity too large", "batch limit exceeded"]
+TOO_MUCH_DATA_ERRS = [
+    "payload too large",
+    "content length too large",
+    "request entity too large",
+    "batch limit exceeded",
+]
 """
 A list of error messages indicating that the request sent to the RPC was too large and must be split up.
 
 These error messages are used to identify when a request needs to be broken into smaller chunks.
 """
 
-RETRY_ERRS = ["connection reset by peer", "server disconnected", "execution aborted (timeout =", "batch limit exceeded", "request timed out"]
+RETRY_ERRS = [
+    "connection reset by peer",
+    "server disconnected",
+    "execution aborted (timeout =",
+    "batch limit exceeded",
+    "request timed out",
+]
 """
 A list of error messages that are expected during normal use and are not indicative of any problem(s).
 
@@ -61,7 +72,7 @@ MULTICALL3_DEPLOY_BLOCKS: Dict[Network, BlockNumber] = {
 """A dictionary mapping networks to the block numbers where Multicall3 was deployed."""
 
 # When you get these call responses back from the multicall, we know there was some problem with execution.
-# If you make the exact same calls without multicall, you will get an Exception not a response. 
+# If you make the exact same calls without multicall, you will get an Exception not a response.
 # TODO: Delete these
 BAD_HEXES = [
     # Chainlink feeds no access
@@ -89,7 +100,7 @@ BAD_HEXES = [
 # Not sure why yet but sometimes a multicall will succeed but one of the results will be a failure for one call that doesn't interrupt the rest of the mcall.
 # NOTE: we leave off the '0x' so we can compare raw bytes
 # NOTE: The 2nd one here needs to be converted to the first format but I need to encounter one in the wild before I can do that
-REVERT_SELECTORS = [b'\x08\xc3y\xa0', b"4e487b71"]
+REVERT_SELECTORS = [b"\x08\xc3y\xa0", b"4e487b71"]
 """
 A list of byte strings representing revert selectors.
 

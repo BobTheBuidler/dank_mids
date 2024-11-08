@@ -1,4 +1,3 @@
-
 from typed_envs import EnvVarFactory
 
 _factory = EnvVarFactory("DANKMIDS")
