@@ -1,4 +1,3 @@
-
 import logging
 from collections import defaultdict
 from functools import lru_cache
@@ -22,8 +21,7 @@ from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers import _codec, _helpers, _session
 from dank_mids.semaphores import _MethodQueues, _MethodSemaphores, BlockSemaphore
-from dank_mids.types import (BlockId, ChainId, PartialRequest, RawResponse,
-                             Request)
+from dank_mids.types import BlockId, ChainId, PartialRequest, RawResponse, Request
 
 try:
     from multicall.constants import MULTICALL3_ADDRESSES
@@ -33,6 +31,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
+
 
 class DankMiddlewareController:
     """
@@ -52,8 +51,8 @@ class DankMiddlewareController:
         Args:
             w3: The Web3 instance used to make RPC requests.
         """
-        logger.info('Dank Middleware initializing... Strap on your rocket boots...')
-        
+        logger.info("Dank Middleware initializing... Strap on your rocket boots...")
+
         self.w3: Web3 = w3
         """The Web3 instance used to make rpc requests."""
 
@@ -67,7 +66,9 @@ class DankMiddlewareController:
         """The client version for the currently connected rpc."""
 
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
-        self.request_type = Request if ENVS.USE_FULL_REQUEST or "reth" in self.client_version else PartialRequest
+        self.request_type = (
+            Request if ENVS.USE_FULL_REQUEST or "reth" in self.client_version else PartialRequest
+        )
         """The Struct class the controller will use to encode requests."""
 
         self._time_of_request_type_change: Union[int, float] = 0
@@ -89,7 +90,7 @@ class DankMiddlewareController:
         if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
             logger.info("max jsonrpc batch size for tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
-            
+
         self._instance: int = sum(len(_instances) for _instances in instances.values())
         instances[self.chain_id].append(self)  # type: ignore
 
@@ -97,22 +98,32 @@ class DankMiddlewareController:
         multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
         multicall3 = MULTICALL3_ADDRESSES.get(self.chain_id)
         if multicall2 is None and multicall3 is None:
-            raise NotImplementedError("Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py")
-        
-        self.mc2 = _MulticallContract(
-            address = to_checksum_address(multicall2), 
-            # TODO: copypasta deploy block dict
-            deploy_block = constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
-            bytecode = constants.MULTICALL2_OVERRIDE_CODE,
-        ) if multicall2 else None
-        
-        self.mc3 = _MulticallContract(
-            address = to_checksum_address(multicall3), 
-            # TODO: copypasta deploy block dict
-            deploy_block = constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
-            bytecode = constants.MULTICALL3_OVERRIDE_CODE,
-        ) if multicall3 else None
-                    
+            raise NotImplementedError(
+                "Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py"
+            )
+
+        self.mc2 = (
+            _MulticallContract(
+                address=to_checksum_address(multicall2),
+                # TODO: copypasta deploy block dict
+                deploy_block=constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
+                bytecode=constants.MULTICALL2_OVERRIDE_CODE,
+            )
+            if multicall2
+            else None
+        )
+
+        self.mc3 = (
+            _MulticallContract(
+                address=to_checksum_address(multicall3),
+                # TODO: copypasta deploy block dict
+                deploy_block=constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
+                bytecode=constants.MULTICALL3_OVERRIDE_CODE,
+            )
+            if multicall3
+            else None
+        )
+
         self.no_multicall: Set[ChecksumAddress] = set()
         """A set of addresses that have issues when called from the multicall contract. Calls to these contracts will not be batched in multicalls."""
 
@@ -122,7 +133,7 @@ class DankMiddlewareController:
             self.no_multicall.add(self.mc2.address)
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
-        
+
         self.method_semaphores = _MethodSemaphores(self)  # TODO: refactor this out
         self.eth_call_semaphores: BlockSemaphore = self.method_semaphores["eth_call"]  # type: ignore [assignment]
         """Used for managing concurrency of eth_calls."""
@@ -146,14 +157,16 @@ class DankMiddlewareController:
         """Unique identifier generator for RPC requests."""
 
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.pools_closed_lock = _AlertingRLock(name='pools closed')
+        self.pools_closed_lock = _AlertingRLock(name="pools closed")
 
-        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(lambda: Multicall(self))
+        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(
+            lambda: Multicall(self)
+        )
         """A dictionary of pending Multicalls by block. The Multicalls hold all pending eth_calls."""
 
         self.pending_rpc_calls = JSONRPCBatch(self)
         """A JSONRPCBatch containing all pending rpc requests."""
-    
+
     def __repr__(self) -> str:
         """
         Returns a string representation of the DankMiddlewareController instance.
@@ -177,35 +190,37 @@ class DankMiddlewareController:
         Returns:
             The response from the RPC call.
         """
-        
+
         # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
         if method == "eth_call":
             async with self.eth_call_semaphores[params[1]]:
                 # create a strong ref to the call that will be held until the caller completes or is cancelled
-                logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
+                logger.debug(f"making {self.request_type.__name__} {method} with params {params}")
                 if params[0]["to"] in self.no_multicall:
                     return await RPCRequest(self, method, params)
                 return await eth_call(self, params)
 
         # some methods go thru a SmartProcessingQueue, we check those next
         queue = self.method_queues[method]
-        logger.debug(f'making {self.request_type.__name__} {method} with params {params}')
+        logger.debug(f"making {self.request_type.__name__} {method} with params {params}")
 
         # no queue, we can make the request normally
         if queue is None:
             return await RPCRequest(self, method, params)
-        
+
         # queue found, queue up the call and await the future
         try:
-            # NOTE: is this a strong enough ref? 
+            # NOTE: is this a strong enough ref?
             return await queue(self, method, params)
         except TypeError as e:
             if "unhashable type" not in str(e):
                 raise
         return await queue(self, method, _helpers._make_hashable(params))
-    
+
     @eth_retry.auto_retry
-    async def make_request(self, method: str, params: List[Any], request_id: Optional[int] = None) -> RawResponse:
+    async def make_request(
+        self, method: str, params: List[Any], request_id: Optional[int] = None
+    ) -> RawResponse:
         """
         Makes an RPC request to the Ethereum node.
 
@@ -223,12 +238,21 @@ class DankMiddlewareController:
         Raises:
             Exception: If DEBUG environment variable is set, any exception that occurs during the request is logged and re-raised.
         """
-        request = self.request_type(method=method, params=params, id=request_id or self.call_uid.next)
+        request = self.request_type(
+            method=method, params=params, id=request_id or self.call_uid.next
+        )
         try:
             return await _session.post(self.endpoint, data=request, loads=_codec.decode_raw)
         except Exception as e:
             if ENVS.DEBUG:
-                _debugging.failures.record(self.chain_id, e, "eth_call" if method == "eth_call" else "RPCRequest", "unknown", "unknown", request.data)
+                _debugging.failures.record(
+                    self.chain_id,
+                    e,
+                    "eth_call" if method == "eth_call" else "RPCRequest",
+                    "unknown",
+                    "unknown",
+                    request.data,
+                )
             raise
 
     async def execute_batch(self) -> None:
@@ -244,10 +268,10 @@ class DankMiddlewareController:
             self.num_pending_eth_calls = 0
             rpc_calls = self.pending_rpc_calls[:]
             self.pending_rpc_calls = JSONRPCBatch(self)
-        demo_logger.info(f'executing dank batch (current cid: {self.call_uid.latest})')  # type: ignore
+        demo_logger.info(f"executing dank batch (current cid: {self.call_uid.latest})")  # type: ignore
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
-        demo_logger.info(f'{batch} done')
+        demo_logger.info(f"{batch} done")
 
     @property
     def queue_is_full(self) -> bool:
@@ -263,7 +287,7 @@ class DankMiddlewareController:
             eth_calls = sum(len(calls) for calls in self.pending_eth_calls.values())
             other_calls = sum(len(call) for call in self.pending_rpc_calls)
             return eth_calls + other_calls >= self.batcher.step
-    
+
     def early_start(self):
         """
         Initiate processing of queued calls when a full batch is available.
@@ -277,7 +301,7 @@ class DankMiddlewareController:
             self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
             self.pending_eth_calls.clear()
             self.pending_rpc_calls.start()
-    
+
     def reduce_multicall_size(self, num_calls: int) -> None:
         """
         Decrease the size of multicall batches in response to failures.
@@ -289,7 +313,7 @@ class DankMiddlewareController:
             num_calls: The number of calls in the failed multicall operation.
         """
         self._reduce_chunk_size(num_calls, "multicall")
-    
+
     def reduce_batch_size(self, num_calls: int) -> None:
         """
         Decrease the size of JSON-RPC batches in response to failures.
@@ -301,7 +325,7 @@ class DankMiddlewareController:
             num_calls: The number of calls in the failed batch operation.
         """
         self._reduce_chunk_size(num_calls, "batch")
-    
+
     def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "batch"]) -> None:
         """
         Internal method to reduce the size of processing chunks.
@@ -318,7 +342,9 @@ class DankMiddlewareController:
         """
         new_chunk_size = round(num_calls * 0.99) if num_calls >= 100 else num_calls - 1
         if new_chunk_size < 30:
-            logger.warning(f"your {chunk_name} batch size is really low, did you have some connection issue earlier? You might want to restart your script. {chunk_name} chunk size will not be further lowered.")
+            logger.warning(
+                f"your {chunk_name} batch size is really low, did you have some connection issue earlier? You might want to restart your script. {chunk_name} chunk size will not be further lowered."
+            )
             return
         # NOTE: We need the 2nd check because one of the other calls in a batch might have already reduced the chunk size
         if chunk_name == "batch":
@@ -330,7 +356,7 @@ class DankMiddlewareController:
             logger.info("The failed multicall had %s calls", num_calls)
             return
         raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
-    
+
     def set_multicall_size_limit(self, new_limit: int) -> None:
         """
         Set a new limit for the multicall size.
@@ -343,8 +369,12 @@ class DankMiddlewareController:
             self.batcher.step = new_limit
             logger.warning("multicall size limit reduced from %s to %s", existing_limit, new_limit)
         else:
-            logger.info("new multicall size limit %s is not lower than existing limit %s", new_limit, existing_limit)
-            
+            logger.info(
+                "new multicall size limit %s is not lower than existing limit %s",
+                new_limit,
+                existing_limit,
+            )
+
     def set_batch_size_limit(self, new_limit: int) -> None:
         """
         Set a new limit for the JSON-RPC batch size.
@@ -355,10 +385,12 @@ class DankMiddlewareController:
         existing_limit = ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
         if new_limit < existing_limit:  # type: ignore [operator]
             ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit  # type: ignore [attr-defined,assignment]
-            logger.warning("jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit)
+            logger.warning(
+                "jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit
+            )
         else:
             logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))  # type: ignore [call-overload]
-    
+
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(self, block) -> "_MulticallContract":
         """
@@ -370,7 +402,7 @@ class DankMiddlewareController:
         Returns:
             The selected multicall contract.
         """
-        if block == 'latest':
+        if block == "latest":
             return self.mc3 or self.mc2  # type: ignore [return-value]
         if self.mc3 and not self.mc3.needs_override_code_for_block(block):
             return self.mc3
@@ -387,7 +419,7 @@ class _MulticallContract(Struct):
     """
     The Ethereum address of the multicall contract.
     """
-        
+
     deploy_block: Optional[BlockNumber]
     """
     The block number at which the multicall contract was deployed.
@@ -399,7 +431,7 @@ class _MulticallContract(Struct):
     The bytecode of the multicall contract.
     This is used for state override if necessary.
     """
-    
+
     @lru_cache(maxsize=1024)
     def needs_override_code_for_block(self, block: BlockNumber) -> bool:
         """
@@ -411,18 +443,18 @@ class _MulticallContract(Struct):
         Returns:
             True if override code is needed, False otherwise.
         """
-        if block == 'latest':
+        if block == "latest":
             return False
         if self.deploy_block is None:
             return True
         if isinstance(block, str):
             block = int(block, 16)
         return block < self.deploy_block
-    
+
     def __hash__(self) -> int:
         """
         Generates a hash for the _MulticallContract instance.
-        
+
         Returns:
             A hash value based on the contract's address.
         """

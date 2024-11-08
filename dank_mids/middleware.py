@@ -12,9 +12,9 @@ _controllers: Dict[Tuple[Web3, Thread], DankMiddlewareController] = {}
 
 logger = logging.getLogger(__name__)
 
+
 async def dank_middleware(
-    make_request: Callable[[RPCEndpoint, Any], Any],
-    web3: Web3
+    make_request: Callable[[RPCEndpoint, Any], Any], web3: Web3
 ) -> AsyncMiddleware:
     """
     Create and return a :class:`DankMiddlewareController` instance for an asynchronous :class:`~Web3`.

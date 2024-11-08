@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING, Literal, Optional, Union
 import a_sync
 from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
 from a_sync.primitives.locks.prio_semaphore import (
-    _AbstractPrioritySemaphore, _PrioritySemaphoreContextManager)
+    _AbstractPrioritySemaphore,
+    _PrioritySemaphoreContextManager,
+)
 from web3.types import RPCEndpoint
 
 if TYPE_CHECKING:
@@ -15,7 +17,7 @@ if TYPE_CHECKING:
 class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
     """
     A context manager for block-specific semaphores.
-    
+
     This class is used internally to manage concurrency for operations
     related to specific blockchain blocks.
     """
@@ -23,11 +25,17 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
     _priority_name = "block"
     """The noun that describes the priority, set to "block"."""
 
-    def __init__(self, parent: "BlockSemaphore", priority: Union[int, float, Decimal], name: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        parent: "BlockSemaphore",
+        priority: Union[int, float, Decimal],
+        name: Optional[str] = None,
+    ) -> None:
         if not isinstance(priority, (int, float, Decimal)):
             raise TypeError(priority)
         super().__init__(parent, priority, name)
-    
+
+
 class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
     """A semaphore for managing concurrency based on block numbers.
 
@@ -46,14 +54,28 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
 
     _top_priority: int = -1  # type: ignore [assignment]
     """The highest priority value, set to -1."""
-    
+
     def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
         return super().__getitem__(  # type: ignore [return-value]
-            block if isinstance(block, int)  # type: ignore [index]
-            else int(block.hex(), 16) if isinstance(block, bytes)  # type: ignore [union-attr]
-            else int(block, 16) if isinstance(block, str) and "0x" in block
-            else block if block not in [None, 'latest']  # NOTE: We do this to generate an err if an unsuitable value was provided
-            else self._top_priority
+            block
+            if isinstance(block, int)  # type: ignore [index]
+            else (
+                int(block.hex(), 16)
+                if isinstance(block, bytes)  # type: ignore [union-attr]
+                else (
+                    int(block, 16)
+                    if isinstance(block, str) and "0x" in block
+                    else (
+                        block
+                        if block
+                        not in [
+                            None,
+                            "latest",
+                        ]  # NOTE: We do this to generate an err if an unsuitable value was provided
+                        else self._top_priority
+                    )
+                )
+            )
         )  # type: ignore [index]
 
 
@@ -68,9 +90,13 @@ class _MethodSemaphores:
     def __init__(self, controller: "DankMiddlewareController") -> None:
         # TODO: refactor this out, just use BlockSemaphore for eth_call and SmartProcessingQueue to limit other methods
         from dank_mids import ENVIRONMENT_VARIABLES
+
         self.controller = controller
+        semaphore_types = {"eth_call": BlockSemaphore}
         self.method_semaphores = {
-            method: (BlockSemaphore if method == "eth_call" else ThreadsafeSemaphore)(sem._value, name=f"{method} {controller}") 
+            method: semaphore_types.get(method, ThreadsafeSemaphore)(
+                sem._value, name=f"{method} {controller}"
+            )
             for method, sem in ENVIRONMENT_VARIABLES.method_semaphores.items()
         }
         self.keys = self.method_semaphores.keys()
@@ -89,6 +115,7 @@ class _MethodSemaphores:
         """
         return next((self.method_semaphores[key] for key in self.keys if key in method), self.dummy)
 
+
 class _MethodQueues:
     """
     A class that manages queues for different RPC methods.
@@ -100,14 +127,16 @@ class _MethodQueues:
     def __init__(self, controller: "DankMiddlewareController") -> None:
         from dank_mids import ENVIRONMENT_VARIABLES
         from dank_mids._requests import RPCRequest
-        
+
         self.controller = controller
         """
         A reference to the DankMiddlewareController instance that this _MethodQueues is associated with.
         """
 
         self.method_queues = {
-            method: a_sync.SmartProcessingQueue(RPCRequest, num_workers=sem._value, name=f"{method} {controller}")
+            method: a_sync.SmartProcessingQueue(
+                RPCRequest, num_workers=sem._value, name=f"{method} {controller}"
+            )
             for method, sem in ENVIRONMENT_VARIABLES.method_semaphores.items()
             if method != "eth_call"
         }

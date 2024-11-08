@@ -17,6 +17,7 @@ CHECK = MIN_SIZE - 1
 
 logger = logging.getLogger(__name__)
 
+
 class DankBatch:
     """
     A batch of JSON-RPC batches.
@@ -32,9 +33,14 @@ class DankBatch:
         :class:`dank_mids._requests.RPCRequest`: The RPCRequest class used in this batch.
     """
 
-    __slots__ = 'controller', 'multicalls', 'rpc_calls', '_started'
+    __slots__ = "controller", "multicalls", "rpc_calls", "_started"
 
-    def __init__(self, controller: "DankMiddlewareController", multicalls: Multicalls, rpc_calls: List[Union[Multicall, RPCRequest]]):
+    def __init__(
+        self,
+        controller: "DankMiddlewareController",
+        multicalls: Multicalls,
+        rpc_calls: List[Union[Multicall, RPCRequest]],
+    ):
         self.controller = controller
         """The controller managing this batch."""
 
@@ -46,7 +52,7 @@ class DankBatch:
 
         self._started = False
         """A flag indicating whether the batch has been started."""
-    
+
     def __await__(self) -> Generator[Any, None, Any]:
         """
         Makes the DankBatch awaitable.
@@ -59,11 +65,11 @@ class DankBatch:
         """
         self.start()
         return self._await().__await__()
-    
+
     async def _await(self) -> None:
         """
         Internal method to await the completion of all coroutines in the batch.
-        
+
         This method gathers all coroutines in the batch and awaits their completion,
         logging any exceptions that may occur during execution. It's designed to
         handle both successful completions and potential errors gracefully.
@@ -76,7 +82,10 @@ class DankBatch:
         for batch, result in zip(batches, await asyncio.gather(*batches, return_exceptions=True)):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
-                    logger.error(f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n", exc_info=True)
+                    logger.error(
+                        f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n",
+                        exc_info=True,
+                    )
                 raise result
 
     def start(self) -> None:
@@ -96,7 +105,7 @@ class DankBatch:
         for call in self.rpc_calls:
             call.start(self)
         self._started = True
-    
+
     @property
     def coroutines(self) -> Generator[Union["_Batch", Awaitable[RawResponse]], None, None]:
         # Combine multicalls into one or more jsonrpc batches
@@ -116,7 +125,7 @@ class DankBatch:
             if working_batch.is_full:
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
-        
+
         rpc_calls_to_batch = self.rpc_calls[:]
         while rpc_calls_to_batch:
             if working_batch.is_full:

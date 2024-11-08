@@ -1,4 +1,3 @@
-
 """
 stats.py
 
@@ -22,8 +21,7 @@ import logging
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor
 from time import time
-from typing import (TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Set,
-                    Type, TypeVar)
+from typing import TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Set, Type, TypeVar
 
 import msgspec
 from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
@@ -40,7 +38,7 @@ _LogLevel = int
 T = TypeVar("T")
 
 # New logging levels:
-# DEBUG=10, INFO=20, 
+# DEBUG=10, INFO=20,
 STATS = 13
 """Custom logging level for statistics, between DEBUG and INFO."""
 
@@ -52,6 +50,7 @@ COLLECT_STATS: bool = False  # TODO: enable this
 
 # if you're both collecting data and logging something, put the function here:
 
+
 def log_errd_batch(batch: "JSONRPCBatch") -> None:
     """
     Log information about a failed JSON-RPC batch.
@@ -60,8 +59,11 @@ def log_errd_batch(batch: "JSONRPCBatch") -> None:
         batch: The failed batch to log.
     """
     collector.errd_batches.append(batch)
-    logger.devhint(f"jsonrpc batch failed\njson batch id: {batch.jid} | len: {len(batch)} | total calls: {batch.total_calls}\n"
-        + f"methods called: {batch.method_counts}")
+    logger.devhint(
+        f"jsonrpc batch failed\njson batch id: {batch.jid} | len: {len(batch)} | total calls: {batch.total_calls}\n"
+        + f"methods called: {batch.method_counts}"
+    )
+
 
 def log_duration(work_descriptor: str, start: float, *, level: _LogLevel = STATS) -> None:
     """
@@ -85,7 +87,7 @@ def log_duration(work_descriptor: str, start: float, *, level: _LogLevel = STATS
 class _StatsLogger(logging.Logger):
     """
     A custom logger class for collecting and logging statistics about RPC method calls and responses.
-    
+
     This logger extends the standard Python logging.Logger with methods for tracking validation errors,
     response types, and other statistics related to RPC interactions.
     """
@@ -95,7 +97,7 @@ class _StatsLogger(logging.Logger):
         """Returns `True` if level is set to `STATS` (`11`) or below."""
         self._ensure_daemon()
         return self.isEnabledFor(STATS)
-    
+
     # New logging levels
 
     def stats(self, msg, *args, **kwargs) -> None:
@@ -106,7 +108,7 @@ class _StatsLogger(logging.Logger):
         self._log(DEVHINT, msg, args, **kwargs)
 
     # Functions to print stats to your logs.
-    
+
     def log_brownie_stats(self, *, level: _LogLevel = STATS) -> None:
         self._log_fn_result(level, _Writer.brownie)
 
@@ -116,25 +118,27 @@ class _StatsLogger(logging.Logger):
     def log_subprocess_stats(self, *, level: _LogLevel = STATS) -> None:
         for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:  # type: ignore [attr-defined]
             self._log_fn_result(level, _Writer.queue, pool)
-    
+
     # Internal helpers
 
     def _log(self, level: _LogLevel, *args, **kwargs) -> None:
         # Saves us having to do this ourselves for each custom message
         if self.isEnabledFor(level):
             return self._log_nocheck(level, *args, **kwargs)
-    
+
     def _log_nocheck(self, level: _LogLevel, *args, **kwargs) -> None:
         try:
             return super()._log(level, args[0], args[1:], **kwargs)
         except IndexError:
             raise ValueError("Both a level and a message are required.") from None
 
-    def _log_fn_result(self, level: _LogLevel, callable: Callable[[T], str], *callable_args: T, **logging_kwargs) -> None:
+    def _log_fn_result(
+        self, level: _LogLevel, callable: Callable[[T], str], *callable_args: T, **logging_kwargs
+    ) -> None:
         """If `self.isEnabledFor(level)` is True, will call `callable` with your args and log the output."""
         if self.isEnabledFor(level):
             return self._log_nocheck(level, callable(*callable_args), (), **logging_kwargs)
-    
+
     # Daemon
 
     def _ensure_daemon(self) -> None:
@@ -147,7 +151,7 @@ class _StatsLogger(logging.Logger):
             self._daemon = asyncio.create_task(self._stats_daemon())
         elif self._daemon.done():
             raise self._daemon.exception()  # type: ignore [misc]
-        
+
     async def _stats_daemon(self) -> None:
         """
         The main loop of the stats daemon. It continuously collects event loop times
@@ -173,7 +177,7 @@ class _StatsLogger(logging.Logger):
     def log_validation_error(self, method: RPCEndpoint, e: msgspec.ValidationError) -> None:
         """
         Log a validation error for a specific RPC method.
-        
+
         Args:
             method: The RPC method that encountered the error.
             e: The validation error that occurred.
@@ -182,12 +186,17 @@ class _StatsLogger(logging.Logger):
         if COLLECT_STATS or enabled:
             collector.validation_errors[method].append(e)
         if enabled:
-            self._log(DEVHINT, f"ValidationError when decoding response for {method}", ("This *should* not impact your script. If it does, you'll know."), e)
+            self._log(
+                DEVHINT,
+                f"ValidationError when decoding response for {method}",
+                ("This *should* not impact your script. If it does, you'll know."),
+                e,
+            )
 
     def log_types(self, method: RPCEndpoint, decoded: Any) -> None:
         """
         Log the types of decoded values for a specific RPC method.
-        
+
         This method analyzes the decoded response data from an RPC call and logs
         information about the data types encountered. It's useful for understanding
         the structure of responses from different RPC methods.
@@ -198,7 +207,7 @@ class _StatsLogger(logging.Logger):
         """
         # TODO fix this, use enabled check
         types = {type(v) for v in decoded.values()}
-        self.devhint(f'my method and types: {method} {types}')
+        self.devhint(f"my method and types: {method} {types}")
         if list in types:
             self._log_list_types(decoded.values())
         collector.types.update(types)
@@ -206,7 +215,7 @@ class _StatsLogger(logging.Logger):
     def _log_list_types(self, values, level: _LogLevel = DEVHINT) -> None:
         """
         Log the types of items in a list.
-        
+
         This internal method is used to analyze and log the types of elements
         found in list structures within RPC responses. It's particularly useful
         for understanding complex, nested data structures.
@@ -223,8 +232,10 @@ class _StatsLogger(logging.Logger):
 
 _Times = Deque[float]
 
+
 class _Collector:
     """Handles the collection and computation of stats-related data."""
+
     def __init__(self):
         self.errd_batches: Deque["JSONRPCBatch"] = deque(maxlen=500)
         """
@@ -252,7 +263,9 @@ class _Collector:
         """
 
         # not implemented
-        self.validation_errors: DefaultDict[RPCEndpoint, Deque[msgspec.ValidationError]] = defaultdict(lambda: deque(maxlen=100))
+        self.validation_errors: DefaultDict[RPCEndpoint, Deque[msgspec.ValidationError]] = (
+            defaultdict(lambda: deque(maxlen=100))
+        )
         """
         A default dictionary that stores validation errors encountered for each RPC endpoint.
         The keys are RPC endpoints, and the values are deques of ValidationError objects.
@@ -268,6 +281,7 @@ class _Collector:
             The average time taken for event loop iterations.
         """
         return sum(collector.event_loop_times) / len(collector.event_loop_times)
+
     @property
     def count_active_brownie_calls(self) -> int:
         """
@@ -277,6 +291,7 @@ class _Collector:
             The count of active Brownie calls.
         """
         return ENVS.BROWNIE_CALL_SEMAPHORE.default_value - ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._value  # type: ignore [attr-defined]
+
     @property
     def count_queued_brownie_calls(self) -> int:
         """
@@ -286,6 +301,7 @@ class _Collector:
             The count of queued Brownie calls.
         """
         return len(ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._waiters)  # type: ignore [attr-defined]
+
     @property
     def encoder_queue_len(self) -> int:
         """
@@ -295,6 +311,7 @@ class _Collector:
             The number of items in the encoder queue.
         """
         return ENVS.BROWNIE_ENCODER_PROCESSES._queue_count  # type: ignore [attr-defined]
+
     @property
     def decoder_queue_len(self) -> int:
         """
@@ -304,6 +321,7 @@ class _Collector:
             The number of items in the decoder queue.
         """
         return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
+
     @property
     def mcall_decoder_queue_len(self) -> int:
         """
@@ -313,42 +331,45 @@ class _Collector:
             The number of items in the multicall decoder queue.
         """
         return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
-        
+
 
 class _Writer:
     """
     `Writer` is used to turn `Collector` stats into human readable on a as-needed, JIT basis
     without wasting compute or cluttering `Collector` or `StatsLogger` class definitions.
     """
+
     def event_loop(self) -> str:
         """
         Generates a human-readable string describing the average event loop time.
-        
+
         Returns:
             A string containing the average event loop time.
         """
         return f"Average event loop time: {collector.avg_loop_time}"
+
     def brownie(self) -> str:
         """
         Generates a human-readable string describing the current state of Brownie calls.
-        
+
         Returns:
             A string containing the number of active and queued Brownie calls.
         """
         return f"{collector.count_active_brownie_calls} brownie calls are processing, {collector.count_queued_brownie_calls} are queued in {ENVS.BROWNIE_CALL_SEMAPHORE}."
+
     def queue(self, pool: ProcessPoolExecutor) -> str:
         """
         Generates a human-readable string describing the state of a process pool's queue.
-        
+
         Args:
             pool: The ProcessPoolExecutor to describe.
-        
+
         Returns:
             A string containing the number of items in the pool's queue.
         """
         return f"{pool} has {pool._queue_count} items in its queue"
 
-            
+
 class _SentryExporter:
     """
     A class for exporting statistics and metrics from the :obj:`metrics` dict to Sentry.
@@ -366,9 +387,9 @@ class _SentryExporter:
     metrics = {
         "active_eth_calls": "count_active_brownie_calls",
         "queued_eth_calls": "count_queued_brownie_calls",
-        "encoder_queue":    "encoder_queue_len",
-        "decoder_queue":    "decoder_queue_len",
-        "loop_time":        "avg_loop_time",
+        "encoder_queue": "encoder_queue_len",
+        "decoder_queue": "decoder_queue_len",
+        "loop_time": "avg_loop_time",
     }
     units = {"loop_time": "seconds"}
 
@@ -389,10 +410,14 @@ class _SentryExporter:
             try:
                 self.set_tag(env, value)
             except Exception as e:
-                logger.warning(f"Unable to set sentry tag {env} to {value}. See {e.__class__.__name__} below:")
+                logger.warning(
+                    f"Unable to set sentry tag {env} to {value}. See {e.__class__.__name__} below:"
+                )
                 logger.info(e, exc_info=True)
+
     try:
         import sentry_sdk
+
         set_tag = sentry_sdk.set_tag
         """
         Set a tag for the current scope in Sentry.
