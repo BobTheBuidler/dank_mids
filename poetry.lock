@@ -767,6 +767,17 @@ jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
 uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
+name = "cachetools"
+version = "5.5.0"
+description = "Extensible memoizing collections and decorators"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "cachetools-5.5.0-py3-none-any.whl", hash = "sha256:02134e8439cdc2ffb62023ce1debca2944c3f289d66bb17ead3ab3dede74b292"},
+    {file = "cachetools-5.5.0.tar.gz", hash = "sha256:2cc24fb4cbe39633fb7badd9db9ca6295d766d9c2995f245725a46715d050f2a"},
+]
+
+[[package]]
 name = "cbor2"
 version = "5.6.2"
 description = "CBOR (de)serializer with extensive tag support"
@@ -1960,17 +1971,19 @@ test = ["hypothesis (>=4.43.0)", "mypy (==0.971)", "pytest (>=7.0.0)", "pytest-x
 
 [[package]]
 name = "evmspec"
-version = "0.0.1"
+version = "0.0.2"
 description = "A collection of msgspec.Struct definitions for use with the Ethereum Virtual Machine"
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "evmspec-0.0.1-py3-none-any.whl", hash = "sha256:6b973d4bf5e7f9cfd99c5725a0ac2c6e5c180b240a7baf6a1f9c3c8b4e867010"},
-    {file = "evmspec-0.0.1.tar.gz", hash = "sha256:c66483d14db0314e5ce24583e6cc56ffc50c52b1b3972d30e26c457f6629c520"},
+    {file = "evmspec-0.0.2-py3-none-any.whl", hash = "sha256:281632baeae5379071e2cba4e46ea36049bee48ffda898e440b1c5c38b026c1f"},
+    {file = "evmspec-0.0.2.tar.gz", hash = "sha256:c71f8e8cbc6648b0d03638a8515a49b8bde660be381ead18e28d2a4ecc23e4ae"},
 ]
 
 [package.dependencies]
+cachetools = ">=4.1.1,<6"
 dictstruct = ">=0.0.1"
+eth-utils = ">=1.10.0"
 hexbytes = "*"
 typing_extensions = ">=4.0.0"
 
@@ -5008,4 +5021,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "ac5b33e9bfb86d90ea13df856dd077095e65b07e9bae73200176fbbf8d8f74ff"
+content-hash = "e210edb261a0c00e50bda2b084a3fe6057988e0fc4be2f7608d7540087454ac2"
