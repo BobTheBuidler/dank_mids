@@ -6,6 +6,7 @@ from typing import Any, DefaultDict, List, Literal, Optional, Set, Union
 import eth_retry
 from eth_typing import BlockNumber, ChecksumAddress
 from eth_utils import to_checksum_address
+from evmspec._ids import ChainId
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
@@ -21,7 +22,7 @@ from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers import _codec, _helpers, _session
 from dank_mids.semaphores import _MethodQueues, _MethodSemaphores, BlockSemaphore
-from dank_mids.types import BlockId, ChainId, PartialRequest, RawResponse, Request
+from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
 
 try:
     from multicall.constants import MULTICALL3_ADDRESSES
