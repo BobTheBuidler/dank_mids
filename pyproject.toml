@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dank-mids"
-version = "4.20.97"
+version = "4.20.98"
 description = "Multicall batching middleware for asynchronous scripts using web3.py"
 authors = ["BobTheBuidler <bobthebuidlerdefi@gmail.com>"]
 homepage = "https://github.com/BobTheBuidler/dank_mids"
@@ -13,7 +13,7 @@ readme = "README.md"
 python = ">=3.8,<3.13"
 aiofiles = "*"
 eth-retry = "^0.1.15"
-evmspec = "^0.0.1"
+evmspec = ">=0.0.1,<0.1"
 ez-a-sync = ">=0.20.7,<0.24"
 multicall = ">=0.6.2,<1"
 typed-envs = "^0.0.2"
