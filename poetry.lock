@@ -1308,6 +1308,20 @@ files = [
 ]
 
 [[package]]
+name = "dictstruct"
+version = "0.0.1"
+description = "A msgspec.Struct implementation compatible with the standard dictionary API"
+optional = false
+python-versions = "<3.13,>=3.8"
+files = [
+    {file = "dictstruct-0.0.1-py3-none-any.whl", hash = "sha256:efa89f4cf077f0b8e7eec325dd833aaa577d92d95d8a9fca18f08cea40bc3cfa"},
+    {file = "dictstruct-0.0.1.tar.gz", hash = "sha256:423fae56834bb02b6eb071b474de93c386e310331a8baa7e6adee983a4d5e37b"},
+]
+
+[package.dependencies]
+msgspec = ">=0.18.5"
+
+[[package]]
 name = "eip712"
 version = "0.1.0"
 description = "eip712: Message classes for typed structured data hashing and signing in Ethereum"
@@ -1943,6 +1957,22 @@ dev = ["black (>=23)", "build (>=0.9.0)", "bumpversion (>=0.5.3)", "eth-hash[pyc
 docs = ["sphinx (>=5.0.0)", "sphinx-rtd-theme (>=1.0.0)", "towncrier (>=21,<22)"]
 lint = ["black (>=23)", "flake8 (==3.8.3)", "isort (>=5.11.0)", "mypy (==0.971)", "pydocstyle (>=5.0.0)", "types-setuptools"]
 test = ["hypothesis (>=4.43.0)", "mypy (==0.971)", "pytest (>=7.0.0)", "pytest-xdist (>=2.4.0)", "types-setuptools"]
+
+[[package]]
+name = "evmspec"
+version = "0.0.1"
+description = "A collection of msgspec.Struct definitions for use with the Ethereum Virtual Machine"
+optional = false
+python-versions = "<3.13,>=3.8"
+files = [
+    {file = "evmspec-0.0.1-py3-none-any.whl", hash = "sha256:6b973d4bf5e7f9cfd99c5725a0ac2c6e5c180b240a7baf6a1f9c3c8b4e867010"},
+    {file = "evmspec-0.0.1.tar.gz", hash = "sha256:c66483d14db0314e5ce24583e6cc56ffc50c52b1b3972d30e26c457f6629c520"},
+]
+
+[package.dependencies]
+dictstruct = ">=0.0.1"
+hexbytes = "*"
+typing_extensions = ">=4.0.0"
 
 [[package]]
 name = "execnet"
@@ -4210,13 +4240,13 @@ telegram = ["requests"]
 
 [[package]]
 name = "typed-envs"
-version = "0.0.4"
+version = "0.0.2"
 description = "typed_envs is used to create specialized EnvironmentVariable objects that behave exactly the same as any other instance of the `typ` used to create them."
 optional = false
 python-versions = "*"
 files = [
-    {file = "typed-envs-0.0.4.tar.gz", hash = "sha256:5a71ec50cc1b274c39455885d276a97ae0000eecf0a1d1023bdc5f698fccb6fe"},
-    {file = "typed_envs-0.0.4-py3-none-any.whl", hash = "sha256:f995ecbccff283ed6579f33187ea253d9d37fdd652866ec312b8ccc508d4c07b"},
+    {file = "typed-envs-0.0.2.tar.gz", hash = "sha256:7113e60f489936344f03c2e65fdbbbb1115cc8e215b823627d446396efcf4327"},
+    {file = "typed_envs-0.0.2-py3-none-any.whl", hash = "sha256:8bd4c31e52011cfc7616c09d5b2db239c30190cdff938653c8cd5a05581ca6b8"},
 ]
 
 [[package]]
@@ -4978,4 +5008,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "e4a181d7d21dea0548e8a59e67732d8616946c96217376ab038d462a7c146ca1"
+content-hash = "ac5b33e9bfb86d90ea13df856dd077095e65b07e9bae73200176fbbf8d8f74ff"

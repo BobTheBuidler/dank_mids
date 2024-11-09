@@ -8,22 +8,32 @@ from typing import (
     Coroutine,
     DefaultDict,
     Dict,
+    Iterable,
     Iterator,
     List,
     Literal,
     Mapping,
     NewType,
+    NoReturn,
     Optional,
     Set,
     Tuple,
+    Type,
     TypedDict,
     TypeVar,
     Union,
     overload,
 )
 
-import msgspec
-from eth_typing import ChecksumAddress
+import evmspec
+from dictstruct import DictStruct
+from eth_typing import ChecksumAddress, HexStr
+from evmspec._ids import ChainId
+from evmspec.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
+from evmspec.data import Address, BlockNumber, Wei, uint, _decode_hook
+from evmspec.log import Log
+from hexbytes import HexBytes
+from msgspec import UNSET, Raw, ValidationError, json
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -38,8 +48,9 @@ from dank_mids._exceptions import (
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
 
-ChainId = NewType("ChainId", int)
-"""A type representing the unique integer identifier for a blockchain network."""
+
+T = TypeVar("T")
+
 
 BlockId = NewType("BlockId", str)
 """A type representing the identifier for a specific block in the blockchain."""
@@ -84,85 +95,7 @@ _nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuf
 """A type alias for a nested dictionary structure."""
 
 
-class _DictStruct(msgspec.Struct):
-    """A base class enhancing :class:`~msgspec.Struct` with additional dictionary-like functionality."""
-
-    def __bool__(self) -> bool:
-        """A Struct will always exist."""
-        return True
-
-    def __getitem__(self, attr: str) -> Any:
-        """
-        Allow dictionary-style access to attributes.
-
-        Args:
-            attr: The name of the attribute to access.
-
-        Returns:
-            The value of the attribute.
-        """
-        try:
-            return getattr(self, attr)
-        except AttributeError:
-            raise KeyError(attr) from None
-
-    def __getattr__(self, attr: str) -> Any:
-        """
-        Get the value of an attribute, raising AttributeError if the value is :obj:`msgspec.UNSET`.
-
-        Parameters:
-            attr: The name of the attribute to fetch.
-
-        Raises:
-            AttributeError: If the value is :obj:`~msgspec.UNSET`.
-
-        Returns:
-            The value of the attribute.
-        """
-        attr = super().__getattr__(attr)
-        if attr is msgspec.UNSET:
-            raise AttributeError(f"'{type(self).__name__}' object has no attribute '{attr}'")
-        return attr
-
-    def __iter__(self) -> Iterator[str]:
-        """
-        Iterate thru the keys of the Struct.
-
-        Yields:
-            Struct key.
-        """
-        for field in self.__struct_fields__:
-            if getattr(self, field, msgspec.UNSET) is not msgspec.UNSET:
-                yield field
-
-    def __len__(self) -> int:
-        """
-        The number of keys in the Struct.
-
-        Returns:
-            The number of keys.
-        """
-        return len(list(self))
-
-    def keys(self) -> Iterator[str]:
-        yield from self
-
-    def items(self) -> Iterator[Tuple[str, Any]]:
-        for key in self.__struct_fields__:
-            try:
-                yield key, getattr(self, key)
-            except AttributeError:
-                continue
-
-    def values(self) -> Iterator[Any]:
-        for key in self.__struct_fields__:
-            try:
-                yield getattr(self, key)
-            except AttributeError:
-                continue
-
-
-class PartialRequest(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class PartialRequest(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents a partial JSON-RPC request.
 
@@ -184,7 +117,7 @@ class PartialRequest(_DictStruct, frozen=True):  # type: ignore [call-arg]
 
     @property
     def data(self) -> bytes:
-        return msgspec.json.encode(self)
+        return json.encode(self)
 
 
 class Request(PartialRequest):
@@ -198,7 +131,7 @@ class Request(PartialRequest):
     """The JSON-RPC version, always set to "2.0"."""
 
 
-class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
+class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents an error in a JSON-RPC response.
     """
@@ -209,7 +142,7 @@ class Error(_DictStruct, frozen=True):  # type: ignore [call-arg]
     message: str
     """The error message."""
 
-    data: Optional[Any] = msgspec.UNSET
+    data: Optional[Any] = UNSET
     """Additional error data, if any."""
 
 
@@ -218,110 +151,21 @@ _dict_responses: Set[str] = set()
 _str_responses: Set[str] = set()
 
 
-class Log(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    removed: Optional[bool]
-    logIndex: Optional[str]
-    transactionIndex: Optional[str]
-    transactionHash: str
-    blockHash: Optional[str]
-    blockNumber: Optional[str]
-    address: Optional[str]
-    data: Optional[str]
-    topics: Optional[List[str]]
-
-
-class AccessListEntry(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    address: str
-    storageKeys: List[str]
-
-
-AccessList = List[AccessListEntry]
-
-# TODO: use the types from snek
-Transaction = Dict[str, Union[str, None, AccessList]]
-
-
-class FeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    """Arbitrum includes this in the `feeStats` field of a tx receipt."""
-
-    l1Calldata: str
-    l2Storage: str
-    l1Transaction: str
-    l2Computation: str
-
-
-class ArbitrumFeeStats(_DictStruct, frozen=True):  # type: ignore [call-arg]
-    """Arbitrum includes these with a tx receipt."""
-
-    paid: FeeStats
-    """
-    The breakdown of gas paid for the transaction.
-    
-    (price * unitsUsed)
-    """
-    # These 2 attributes do not always exist
-    unitsUsed: FeeStats = msgspec.UNSET
-    """The breakdown of units of gas used for the transaction."""
-    prices: FeeStats = msgspec.UNSET
-    """The breakdown of gas prices for the transaction."""
-
-
-class TransactionReceipt(_DictStruct, frozen=True, omit_defaults=True):  # type: ignore [call-arg]
-    transactionHash: str
-    blockHash: str
-    blockNumber: str
-    logsBloom: str
-    contractAddress: Optional[str]
-    transactionIndex: Optional[str]
-    returnCode: str
-    effectiveGasPrice: str
-    gasUsed: str
-    cumulativeGasUsed: str
-    returnData: str
-    logs: List[Log]
-
-    # These fields are only present on Arbitrum.
-    l1BlockNumber: str = msgspec.UNSET
-    """This field is only present on Arbitrum."""
-    l1InboxBatchInfo: Optional[str] = msgspec.UNSET
-    """This field is only present on Arbitrum."""
-    feeStats: ArbitrumFeeStats = msgspec.UNSET
-    """This field is only present on Arbitrum."""
-
-
-class Block(_DictStruct, frozen=True):
-    parentHash: str
-    sha3Uncles: str
-    miner: str
-    stateRoot: str
-    transactionsRoot: str
-    receiptsRoot: str
-    logsBloom: str
-    number: str
-    gasLimit: str
-    gasUsed: str
-    timestamp: str
-    extraData: str
-    mixHash: str
-    nonce: str
-    size: str
-    uncles: List[str]
-    transactions: List[Union[str, Transaction]]
-
-
 _RETURN_TYPES = {
-    "eth_call": str,
-    "eth_chainId": str,
-    "eth_getCode": str,
+    "eth_call": HexBytes,
+    "eth_chainId": ChainId,
+    "eth_getCode": HexBytes,
     "eth_getLogs": List[Log],
-    "eth_getBalance": str,
-    "eth_blockNumber": str,  # TODO: see if we can decode this straight to an int
-    "eth_accounts": List[str],
+    "eth_getBalance": Wei,
+    "eth_blockNumber": BlockNumber,
+    "eth_accounts": List[Address],
     "eth_getBlockByNumber": Block,
-    "eth_getTransactionCount": str,
-    "eth_getTransactionByHash": Transaction,
-    "eth_getTransactionReceipt": TransactionReceipt,
-    "erigon_getHeaderByNumber": Dict[str, Union[str, int, bool, None]],
+    "eth_getTransactionCount": uint,
+    "eth_getTransactionByHash": evmspec.Transaction,
+    "eth_getTransactionReceipt": evmspec.FullTransactionReceipt,
+    "erigon_getHeaderByNumber": evmspec.ErigonBlockHeader,
+    "trace_filter": List[evmspec.FilterTrace],
+    "trace_transaction": List[evmspec.FilterTrace],
 }
 """
 A dictionary mapping RPC method names to their expected return types.
@@ -333,14 +177,14 @@ decoder_logger = logging.getLogger("dank_mids.decoder")
 _chainstack_429_msg = "You've exceeded the RPS limit available on the current plan."
 
 
-class PartialResponse(_DictStruct, frozen=True):
+class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):
     """
     Represents a partial JSON-RPC response.
 
     We use these to more efficiently decode responses from the node.
     """
 
-    result: msgspec.Raw = None  # type: ignore
+    result: Raw = None  # type: ignore
     """The result of the RPC call, if successful."""
 
     error: Optional[Error] = None
@@ -379,18 +223,16 @@ class PartialResponse(_DictStruct, frozen=True):
 
     def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
-        data: RPCResponse = {}
-        for field, attr in self.items():
-            if attr is None:
-                continue
-            if field == "result":
-                attr = self.decode_result(method=method, _caller=self)
-            data[field] = AttributeDict(attr) if isinstance(attr, Mapping) else attr  # type: ignore [literal-required]
+        data: RPCResponse = {
+            key: self.decode_result(method=method, caller=self) if key == "result" else value
+            for key, value in self.items()
+            if value is not None
+        }
         return data
 
     def decode_result(
-        self, method: Optional[RPCEndpoint] = None, _caller=None
-    ) -> Union[str, AttributeDict]:
+        self, method: Optional[RPCEndpoint] = None, *, caller=None
+    ) -> Union[HexBytes, Wei, uint, ChainId, BlockNumber, AttributeDict]:
         # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
         if method and (typ := _RETURN_TYPES.get(method)):
             if method in [
@@ -405,39 +247,70 @@ class PartialResponse(_DictStruct, frozen=True):
                 "erigon_getHeaderByNumber",
             ]:
                 try:
-                    return msgspec.json.decode(self.result, type=typ)
-                except (msgspec.ValidationError, TypeError) as e:
-                    raise ValueError(
-                        e,
-                        f"method: {method}  result: {msgspec.json.decode(self.result)}",
-                    ).with_traceback(e.__traceback__) from e
+                    return better_decode(
+                        self.result, type=typ, dec_hook=_decode_hook, method=method
+                    )
+                except Exception as e:
+                    if typ is not Block:
+                        raise
+
+                    if e.args[0] == "Object contains unknown field `totalDifficulty`":
+                        try:
+                            # NOTE should we do this??
+                            # _RETURN_TYPES[method] = MinedBlock
+                            return better_decode(
+                                self.result, type=MinedBlock, dec_hook=_decode_hook, method=method
+                            )
+                        except ValidationError as e2:
+                            if e2.args[0] != "Object contains unknown field `baseFeePerGas`":
+                                raise
+                            result = better_decode(
+                                self.result, type=BaseBlock, dec_hook=_decode_hook, method=method
+                            )
+                            _RETURN_TYPES[method] = BaseBlock  # all blocks on base are BaseBlocks
+                            return result
+
+                    elif e.args[0] == "Object contains unknown field `withdrawals`":
+                        return better_decode(
+                            self.result,
+                            type=ShanghaiCapellaBlock,
+                            dec_hook=_decode_hook,
+                            method=method,
+                        )
+                    else:
+                        raise
+
+                    return better_decode(
+                        self.result, type=typ, dec_hook=_decode_hook, method=method
+                    )
+
+            start = time()
             try:
-                start = time()
-                decoded = msgspec.json.decode(self.result, type=typ)
-                if _caller:
-                    stats.log_duration(f"decoding {type(_caller)} {method}", start)
-                return AttributeDict(decoded) if isinstance(decoded, dict) else decoded
-            except (msgspec.ValidationError, TypeError) as e:
+                decoded = better_decode(self.result, type=typ, dec_hook=_decode_hook, method=method)
+            except (ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(self, e)
+                raise
+
+            if caller:
+                stats.log_duration(f"decoding {type(caller)} {method}", start)
+            return decoded
 
         # We have some semi-smart logic for providing decoder hints even if method not in `_RETURN_TYPES`
         if method:
             try:
                 if method in _dict_responses:
-                    decoded = AttributeDict(
-                        msgspec.json.decode(self.result, type=_nested_dict_of_stuff)
-                    )
+                    decoded = AttributeDict(json.decode(self.result, type=_nested_dict_of_stuff))
                     stats.logger.log_types(method, decoded)
                     return decoded
                 elif method in _str_responses:
                     # TODO: finish adding methods and get rid of this
-                    stats.logger.devhint(f"Must add `{method}: str` to `_RETURN_TYPES`")
-                    return msgspec.json.decode(self.result, type=str)
-            except (msgspec.ValidationError, TypeError) as e:
+                    stats.logger.devhint("Must add `%s: str` to `_RETURN_TYPES`", method)
+                    return json.decode(self.result, type=str)
+            except (ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(method, e)
 
         # In this case we can provide no hints, let's let the decoder figure it out
-        decoded = msgspec.json.decode(self.result)
+        decoded = json.decode(self.result)
         if isinstance(decoded, str):
             if method:
                 _str_responses.add(method)
@@ -445,7 +318,7 @@ class PartialResponse(_DictStruct, frozen=True):
         elif isinstance(decoded, dict):
             if method:
                 _dict_responses.add(method)
-            return AttributeDict.recursive(decoded)
+            return AttributeDict(decoded)
         elif isinstance(decoded, list):
             if method is None:
                 return decoded
@@ -454,7 +327,7 @@ class PartialResponse(_DictStruct, frozen=True):
         )
 
 
-class Response(PartialResponse):
+class Response(PartialResponse, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents a complete JSON-RPC response.
 
@@ -475,31 +348,33 @@ class RawResponse:
     They represent either a successful or a failed response, stored as pre-decoded bytes.
     """
 
-    def __init__(self, raw: msgspec.Raw) -> None:
+    def __init__(self, raw: Raw) -> None:
         self._raw = raw
-        """The `msgspec.Raw` object wrapped by this wrapper."""
+        """The :class:`Raw` object wrapped by this wrapper."""
 
     @overload
     def decode(self, partial: Literal[True]) -> PartialResponse: ...
     @overload
     def decode(self, partial: Literal[False] = False) -> Response: ...
     def decode(self, partial: bool = False) -> Union[Response, PartialResponse]:
-        """Decode the wrapped `msgspec.Raw` object into a `Response` or a `PartialResponse`."""
-        try:
-            return msgspec.json.decode(self._raw, type=PartialResponse if partial else Response)
-        except (msgspec.ValidationError, TypeError) as e:
-            e.args = (*e.args, f"decoded: {msgspec.json.decode(self._raw)}")
-            raise
+        """Decode the wrapped :class:`Raw` object into a :class:`Response` or a :class:`PartialResponse`."""
+        return better_decode(self._raw, type=PartialResponse if partial else Response)
 
 
 JSONRPCBatchRequest = List[Request]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
 JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
 # We need this for proper decoding.
-JSONRPCBatchResponseRaw = Union[List[msgspec.Raw], PartialResponse]
+JSONRPCBatchResponseRaw = Union[List[Raw], PartialResponse]
 
 
-def _encode_hook(obj: Any) -> Any:
+StrEncodable = Union[ChecksumAddress, HexStr]
+Encodable = Union[int, StrEncodable, HexBytes, bytes]
+
+RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
+
+
+def _encode_hook(obj: Encodable) -> RpcThing:
     """
     A hook function for encoding objects during JSON serialization.
 
@@ -512,6 +387,44 @@ def _encode_hook(obj: Any) -> Any:
     Raises:
         NotImplementedError: If the object type is not supported for encoding.
     """
-    if isinstance(obj, AttributeDict):
-        return dict(obj)
-    raise NotImplementedError(type(obj))
+    try:
+        # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
+        return hex(int(obj))  # type: ignore [return-value]
+    except TypeError as e:
+        # I put this here for AttributeDicts which come from eth_getLogs params
+        # but I check for mapping so it can work with user custom classes
+        if not isinstance(obj, Mapping):
+            raise TypeError(obj, type(obj)) from e
+        return dict({k: _rudimentary_encode_dict_value(v) for k, v in obj.items()})
+    except ValueError as e:
+        # NOTE: The error is probably this if `obj` is a string:
+        # ValueError: invalid literal for int() with base 10:"""
+        if not isinstance(obj, HexBytes):
+            e.args = *e.args, obj, type(obj)
+            raise ValueError(obj, type(obj)) from e
+        return obj.hex()  # type: ignore [return-value]
+
+
+def _rudimentary_encode_dict_value(value):
+    # I dont think this needs to be robust, time will tell
+    return hex(value) if isinstance(value, int) else value
+
+
+def better_decode(
+    data: Raw,
+    *,
+    type: Optional[Type[T]] = None,
+    dec_hook: Optional[Callable[[Type, object], T]] = None,
+    method: Optional[str] = None,
+) -> T:
+    try:
+        return json.decode(data, type=type, dec_hook=dec_hook)
+    except (ValidationError, TypeError) as e:
+        extra_args = [
+            f"type: {type.__module__}.{type.__qualname__}",
+            f"result: {json.decode(data)}",
+        ]
+        if method:
+            extra_args.insert(0, f"method: {method}")
+        e.args = (*e.args, *extra_args)
+        raise

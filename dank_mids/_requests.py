@@ -154,7 +154,7 @@ def _should_batch_method(method: str) -> bool:
 
 
 class RPCRequest(_RequestMeta[RawResponse]):
-    __slots__ = "method", "params", "should_batch", "_started", "_retry", "_daemon"
+    __slots__ = "method", "params", "should_batch", "raw", "_started", "_retry", "_daemon"
 
     def __init__(
         self,
@@ -165,7 +165,12 @@ class RPCRequest(_RequestMeta[RawResponse]):
     ):
         self.controller = controller
         """The DankMiddlewareController that created this request."""
-        self.method = method
+        if method[-4:] == "_raw":
+            self.method = method[:-4]
+            self.raw = True
+        else:
+            self.method = method
+            self.raw = False
         """The rpc method for this request."""
         self.params = params
         """The parameters to send with this request, if any."""
@@ -245,33 +250,48 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
         # JIT json decoding
         if isinstance(self.response, RawResponse):
-            response = self.response.decode(partial=True).to_dict(self.method)
-            error: Optional[RPCError]
-            if error := response.get("error"):  # type: ignore [assignment]
-                if error["message"].lower() in ["invalid request", "parse error"]:
-                    if self.controller._time_of_request_type_change == 0:
-                        self.controller.request_type = Request
-                        self.controller._time_of_request_type_change = time.time()
-                    if time.time() - self.controller._time_of_request_type_change <= 600:
-                        logger.debug(
-                            "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
-                        )
-                        return await self.controller(self.method, self.params)
-                response["error"] = dict(error)
-                response["error"]["dankmids_added_context"] = self.request
-                # I'm 99.99999% sure that any errd call has no result and we only get this field from mscspec object defs
-                # But I'll check it anyway to be safe
-                if result := response.pop("result", None):
-                    response["result"] = result
-                logger.debug("error response for %s: %s", self, response)
+            response = self.response.decode(partial=True)
+            if response.error is None:
+                if self.raw:
+                    return {"result": response.result}
+                response_dict = response.to_dict(self.method)
+                assert "result" in response_dict or "error" in response_dict, (
+                    response_dict,
+                    type(response_dict),
+                )
+                return response_dict
+
+            if response.error.message.lower() in ["invalid request", "parse error"]:
+                if self.controller._time_of_request_type_change == 0:
+                    self.controller.request_type = Request
+                    self.controller._time_of_request_type_change = time.time()
+                if time.time() - self.controller._time_of_request_type_change <= 600:
+                    logger.debug(
+                        "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
+                    )
+                    method = self.method
+                    if self.raw:
+                        method += "_raw"
+                    return await self.controller(method, self.params)
+
+            error = dict(response.error.items())
+            error["dankmids_added_context"] = self.request
+
+            response = response.to_dict(self.method)
+            response["error"] = error
+            logger.debug("error response for %s: %s", self, response)
             return response
 
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
         # We raise it here so it traces back up to the caller
         if isinstance(self.response, Exception):
-            __raise_more_detailed_exc(self.request, self.response)
+            _raise_more_detailed_exc(self.request, self.response)
         # Less optimal decoding
         # TODO: refactor this out
+        assert "result" in self.response or "error" in self.response, (
+            self.response,
+            type(self.response),
+        )
         return self.response
 
     @set_done
@@ -289,7 +309,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 t.cancel()
             for task in done:
                 return await task
-        return self.response.decode(partial=True).to_dict(self.method)
+        response = self.response.decode(partial=True)
+        retval = {"result": response.result} if self.raw else response.to_dict(self.method)
+        assert "result" in retval or "error" in retval, (retval, type(retval))
+        return retval
 
     @set_done
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
@@ -352,8 +375,12 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
         # and then the task will try to acquire at the very next event loop _run_once cycle
         logger.warning("%s got stuck, we're creating a new one", self)
-        retval = await self.controller(self.method, self.params)
+        method = self.method
+        if self.raw:
+            method += "_raw"
+        retval = await self.controller(method, self.params)
         await self.semaphore.acquire()
+        assert "result" in retval or "error" in retval, (retval, type(retval))
         return retval
 
 
@@ -581,18 +608,11 @@ def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
 
 def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:
     try:
-        decoded = data.decode_result("eth_call")[2:]  # type: ignore [arg-type]
-        decoded = bytes.fromhex(decoded)
-        return mcall_decoder(decoding.ContextFramesBytesIO(decoded))[2]
+        return mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
-        try:
-            # We do this goofy thing since we can't `return Exc() from e`
-            raise e.__class__(
-                *e.args, data.decode_result() if isinstance(data, PartialResponse) else data
-            ) from e
-        except Exception as new_e:
-            return new_e
+        e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
+        return e
 
 
 class Multicall(_Batch[RPCResponse, eth_call]):
@@ -1208,7 +1228,7 @@ def __format_error(request: PartialRequest, response: PartialResponse) -> Attrib
     return AttributeDict.recursive(error)
 
 
-def __raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoReturn:
+def _raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoReturn:
     if isinstance(exc, ClientResponseError):
         raise DankMidsClientResponseError(exc, request) from exc
     try:
