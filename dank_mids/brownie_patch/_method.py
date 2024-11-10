@@ -9,7 +9,7 @@ from eth_abi.exceptions import InsufficientDataBytes
 from hexbytes.main import BytesLike
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids.brownie_patch._abi import FunctionABI
+from dank_mids.brownie_patch._abi import FunctionABI, build_abi
 from dank_mids.helpers._helpers import DankWeb3, _make_hashable
 
 _EVMType = TypeVar("_EVMType")
@@ -157,7 +157,7 @@ class _DankMethod(_DankMethodMixin):
         natspec: Optional[Dict] = None,
     ) -> None:
         self._address = address
-        self._abi = FunctionABI(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
+        self._abi = build_abi(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
 
         self._name = name
         """The name of the contract method."""
