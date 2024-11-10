@@ -40,7 +40,7 @@ class FunctionABI:
         This is used in Ethereum transactions to identify which function to call.
         """
 
+
 @functools.lru_cache(maxsize=None)
 def build_abi(**abi: Any) -> FunctionABI:
     return FunctionABI(**abi)
-
