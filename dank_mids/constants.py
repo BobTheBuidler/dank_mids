@@ -11,8 +11,7 @@ TOO_MUCH_DATA_ERRS = [
     "request entity too large",
     "batch limit exceeded",
 ]
-"""
-A list of error messages indicating that the request sent to the RPC was too large and must be split up.
+"""A list of error messages indicating that the request sent to the RPC was too large and must be split up.
 
 These error messages are used to identify when a request needs to be broken into smaller chunks.
 """
@@ -24,32 +23,28 @@ RETRY_ERRS = [
     "batch limit exceeded",
     "request timed out",
 ]
-"""
-A list of error messages that are expected during normal use and are not indicative of any problem(s).
+"""A list of error messages that are expected during normal use and are not indicative of any problem(s).
 
 These errors will be automatically retried until success is achieved.
 """
 
 GAS_LIMIT = multicall.constants.GAS_LIMIT
-"""
-The gas limit constant imported from the :mod:`multicall` library.
+"""The gas limit constant imported from the :mod:`multicall` library.
 
 This value is used as the default gas limit for multicall operations.
 """
 
 MULTICALL2_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
-"""
-The bytecode for the Multicall2 contract.
+"""The bytecode for the Multicall2 contract.
 
 This is used for state override on blocks before the Multicall2 contract was deployed.
 """
 
 try:
     MULTICALL3_OVERRIDE_CODE = multicall.constants.MULTICALL3_BYTECODE
-    """
-    The bytecode for the Multicall3 contract, if supported on the currently connected network.
+    """The bytecode for the Multicall3 contract, if it is available in the multicall library.
 
-    If Multicall3 is not supported, this will fall back to the Multicall2 bytecode.
+    If the constant is not available, this will fall back to the Multicall2 bytecode.
     """
 except AttributeError:
     MULTICALL3_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
@@ -101,8 +96,7 @@ BAD_HEXES = [
 # NOTE: we leave off the '0x' so we can compare raw bytes
 # NOTE: The 2nd one here needs to be converted to the first format but I need to encounter one in the wild before I can do that
 REVERT_SELECTORS = [b"\x08\xc3y\xa0", b"4e487b71"]
-"""
-A list of byte strings representing revert selectors.
+"""A list of byte strings representing revert selectors.
 
 These selectors are used to identify specific types of revert errors in Ethereum transactions.
 """

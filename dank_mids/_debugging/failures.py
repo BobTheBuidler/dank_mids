@@ -91,6 +91,17 @@ def record(
     request_length: Union[int, Literal["unknown"]],
     request_data: Union[List["Request"], List["PartialRequest"], bytes],
 ) -> None:
+    """
+    Record a failed request using a new FailedRequestWriter instance.
+
+    Args:
+        chainid: The ID of the blockchain network.
+        e: The exception that occurred.
+        request_type: The type of the request.
+        request_uid: The unique identifier of the request.
+        request_length: The length of the request.
+        request_data: The request data.
+    """
     FailedRequestWriter(chainid, type(e)).record_failure(
         e, request_type, request_uid, request_length, request_data
     )

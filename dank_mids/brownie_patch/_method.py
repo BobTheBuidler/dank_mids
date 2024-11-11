@@ -57,9 +57,6 @@ class _DankMethodMixin(Generic[_EVMType]):
             block_identifier: The block number or identifier for the calls.
             iter_args: True if you are passing an Iterable of Iterables, False otherwise.
             decimals: The number of decimal places by which to scale numeric results.
-
-        Returns:
-            A list of results from calling the method with each set of arguments.
         """
         if iter_args:
             coros = [
@@ -92,7 +89,7 @@ class _DankMethodMixin(Generic[_EVMType]):
         """
         return self._abi.signature
 
-    async def coroutine(  # type: ignore [empty-body]
+    async def coroutine(
         self,
         *args: Any,
         block_identifier: Optional[int] = None,
@@ -110,8 +107,8 @@ class _DankMethodMixin(Generic[_EVMType]):
             decimals: The number of decimals by which to scale numeric results.
             override: Optional parameters to override chain state in the call.
 
-        Returns:
-            The result of the contract method call.
+        Note:
+            This is a generic method and should be implemented in subclasses.
         """
         raise NotImplementedError
 
@@ -157,7 +154,9 @@ class _DankMethod(_DankMethodMixin):
         natspec: Optional[Dict] = None,
     ) -> None:
         self._address = address
-        self._abi = FunctionABI(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
+        self._abi = FunctionABI(
+            **{key: _make_hashable(abi[key]) for key in sorted(abi)}
+        )
 
         self._name = name
         """The name of the contract method."""
@@ -174,7 +173,7 @@ class _DankMethod(_DankMethodMixin):
         self._encode_input = call.encode_input
         self._decode_output = call.decode_output
 
-    async def coroutine(  # type: ignore [empty-body]
+    async def coroutine(
         self,
         *args: Any,
         block_identifier: Optional[int] = None,
@@ -184,13 +183,16 @@ class _DankMethod(_DankMethodMixin):
         """
         Asynchronously call the contract method via dank mids and await the result.
 
-        Arguments:
-            - *args: The arguments for the contract method.
-            - block_identifier (optional): The block at which the chain will be read. If not provided, will read the chain at latest block.
-            - decimals (optional): if provided, the output will be `result / 10 ** decimals`
+        Args:
+            *args: The arguments for the contract method.
+            block_identifier: The block at which the chain will be read. If not provided, will read the chain at latest block.
+            decimals: If provided, the output will be `result / 10 ** decimals`.
+
+        Raises:
+            ValueError: If the `override` parameter is used, as state overrides are not supported.
 
         Returns:
-            - Whatever the node sends back as the output for this contract method.
+            The result of the contract method call.
         """
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")

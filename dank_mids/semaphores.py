@@ -111,7 +111,8 @@ class _MethodSemaphores:
             method: The RPC method to get the semaphore for.
 
         Returns:
-            The semaphore for the method, or a DummySemaphore if no specific semaphore is found.
+            The semaphore for the method, or a DummySemaphore if no semaphore matching any substring in
+            the method string is found.
         """
         return next((self.method_semaphores[key] for key in self.keys if key in method), self.dummy)
 

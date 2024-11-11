@@ -88,14 +88,10 @@ class DankEth(AsyncEth):
         This method skips decoding the rest of the Block response data.
 
         Args:
-            block_identifier: The block number from which to retrieve the transactions.
-            hashes_only: If True, only transaction hashes will be returned.
-
-        Returns:
-            A list of :class:`~Transaction` data objects from the block, or a list of transaction hashes.
-
+            block_identifier: The block number from which to retrieve the timestamp.
+        
         Example:
-            >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
+            >>> print(await dank_mids.eth.get_block_timestamp(12345678))
         """
         try:  # TypeError: 'str' object cannot be interpreted as an integer
             block_identifier = hex(block_identifier)
@@ -124,11 +120,8 @@ class DankEth(AsyncEth):
         This method skips decoding the rest of the Block response data.
 
         Args:
-            block_identifier: The block number from which to retrieve the transactions.
+            block_identifier: The block number or hash from which to retrieve the transactions.
             hashes_only: If True, only transaction hashes will be returned.
-
-        Returns:
-            A list of :class:`~Transaction` data objects from the block, or a list of transaction hashes.
 
         Example:
             >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
@@ -137,7 +130,9 @@ class DankEth(AsyncEth):
             block_identifier = hex(block_identifier)  # type: ignore [arg-type, assignment]
         finally:
             block_bytes = await self._get_block_raw(block_identifier, not hashes_only)
-            return json.decode(block_bytes, type=TinyBlock, dec_hook=_decode_hook).transactions
+            return json.decode(
+                block_bytes, type=TinyBlock, dec_hook=_decode_hook
+            ).transactions
 
     async def get_transaction_receipt(
         self,
@@ -146,10 +141,28 @@ class DankEth(AsyncEth):
         decode_hook: _DecodeHook[T] = _decode_hook,
         **kwargs,
     ) -> T:
+        """
+        Fetches the transaction receipt and decodes it into the specified format.
+
+        Args:
+            *args: Additional positional arguments.
+            decode_to: The class to which the receipt should be decoded.
+            decode_hook: Hook function to assist in decoding.
+            **kwargs: Additional keyword arguments.
+        """
         receipt_bytes = await self._get_transaction_receipt_raw(*args, **kwargs)
         return json.decode(receipt_bytes, type=decode_to, dec_hook=decode_hook)
 
     async def get_transaction_status(self, transaction_hash: str) -> Status:
+        """
+        Retrieves the status of a transaction.
+
+        Args:
+            transaction_hash: The hash of the transaction to query.
+
+        Returns:
+            The status of the transaction.
+        """
         tiny_receipt = await self.get_transaction_receipt(
             transaction_hash,
             decode_to=_Statusable,
@@ -163,6 +176,19 @@ class DankEth(AsyncEth):
         decode_to: Type[T] = List[FilterTrace],
         decode_hook: _DecodeHook[T] = _decode_hook,
     ) -> T:
+        """
+        Returns all traces matching a filter. If the decoding to the specified 
+        type fails, the method logs problematic traces and re-raises the 
+        exception as a diagnostic aid.
+
+        Args:
+            filter_params: The parameters defining the traces to filter.
+            decode_to: The class to which traces should be decoded.
+            decode_hook: Hook function to assist in decoding.
+
+        Raises:
+            ValidationError: If a trace cannot be decoded.
+        """
         traces_bytes = await self._trace_filter(filter_params)
         try:
             return json.decode(traces_bytes, type=decode_to, dec_hook=decode_hook)
@@ -181,11 +207,30 @@ class DankEth(AsyncEth):
                     raise
 
     async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
+        """
+        Returns all traces produced by a transaction.
+
+        Args:
+            transaction_hash: The hash of the transaction to trace.
+
+        Example:
+            >>> traces = await dank_mids.eth.trace_transaction('0x...')
+        """
         return await self._trace_transaction(transaction_hash)
 
     _get_transaction_raw: MethodNoFormat[Callable[[HexStr], Awaitable[Raw]]] = MethodNoFormat(f"{RPC.eth_getTransactionByHash}_raw", mungers=[default_root_munger])  # type: ignore [arg-type,var-annotated]
 
     async def get_transaction(self, transaction_hash: str) -> AnyTransaction:  # type: ignore [override]
+        """
+        Retrieves a transaction by its hash and attempts to decode it.
+
+        Args:
+            transaction_hash: The hash of the transaction to retrieve.
+
+        Raises:
+            ValidationError: If the transaction cannot be decoded into either
+                             `Transaction` or `TransactionRLP` format.
+        """
         transaction_bytes = await self._get_transaction_raw(transaction_hash)
         try:
             return json.decode(transaction_bytes, type=Transaction, dec_hook=_decode_hook)
@@ -203,6 +248,15 @@ class DankEth(AsyncEth):
         decode_hook: _DecodeHook[T] = _decode_hook,
         **kwargs,
     ) -> T:
+        """
+        Fetches logs and decodes them into the specified format.
+
+        Args:
+            *args: Additional positional arguments.
+            decode_to: The class to which logs should be decoded.
+            decode_hook: Hook function to assist in decoding.
+            **kwargs: Additional keyword arguments.
+        """
         logs_bytes = await self._get_logs_raw(*args, **kwargs)  # type: ignore [attr-defined]
         return json.decode(logs_bytes, type=decode_to, dec_hook=decode_hook)
 

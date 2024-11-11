@@ -14,7 +14,8 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
     Patch an overloaded contract method with async functionality.
 
     Args:
-        call: The overloaded method to patch.
+        call: The overloaded method to patch. Currently, only methods of type 
+              OverloadedMethod are fully supported.
         w3: The DankWeb3 instance.
     """
 
@@ -27,6 +28,19 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None,
     ) -> Any:
+        """
+        Coroutine to call the overloaded contract method.
+
+        Args:
+            self: The contract instance.
+            *args: Positional arguments to pass to the contract function.
+            block_identifier: Optional block identifier to query state at a specific block.
+            decimals: Optional number of decimals for the return value.
+            override: Optional dictionary of overrides.
+
+        Raises:
+            ValueError: If the function cannot be determined from the arguments.
+        """
         try:
             fn = self._get_fn_from_args(args)
         except ValueError as e:

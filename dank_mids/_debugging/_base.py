@@ -13,7 +13,7 @@ logger = logging.getLogger("dank_mids.debugging")
 
 
 class _FileHelper(metaclass=abc.ABCMeta):
-    path = f"{os.path.expanduser( '~' )}/.dank_mids/debug"
+    path = f"{os.path.expanduser('~')}/.dank_mids/debug"
 
     def __init__(self, chainid: int):
         if not isinstance(chainid, int):
@@ -43,9 +43,24 @@ class _FileHelper(metaclass=abc.ABCMeta):
         return aiofiles.open(self.uri, self.mode)
 
     @abc.abstractproperty
-    def uri(self) -> str: ...
+    def uri(self) -> str:
+        """
+        Abstract property for the file URI.
+
+        Returns:
+            The URI of the file as a string.
+        """
+        ...
+
     @abc.abstractproperty
-    def mode(self) -> str: ...
+    def mode(self) -> str:
+        """
+        Abstract property for the file open mode.
+
+        Returns:
+            The mode to open the file with as a string.
+        """
+        ...
 
 
 class _CSVWriter(_FileHelper):
@@ -53,9 +68,21 @@ class _CSVWriter(_FileHelper):
 
     @cached_property
     def uri(self) -> str:
+        """
+        Construct the URI for the CSV file.
+
+        Returns:
+            The URI of the CSV file as a string.
+        """
         return f"{self.path}/{self.filename}"
 
     async def write_row(self, *values: Any) -> None:
+        """
+        Write a row to the CSV file after ensuring headers exist.
+
+        Args:
+            *values: The values to write as a row in the CSV file.
+        """
         await self._ensure_headers()
         await self._write_row(*values)
 
@@ -63,6 +90,8 @@ class _CSVWriter(_FileHelper):
     async def _ensure_headers(self) -> None:
         """
         Ensure that the CSV file has headers, writing them if necessary.
+
+        Writes headers to the CSV file if they do not already exist.
         """
         await self._write_row(*self.column_names, new_line=False)
 
@@ -82,6 +111,21 @@ class _CSVWriter(_FileHelper):
             await file.write(row)
 
     @abc.abstractproperty
-    def filename(self) -> str: ...
+    def filename(self) -> str:
+        """
+        Abstract property for the CSV file name.
+
+        Returns:
+            The filename of the CSV file as a string.
+        """
+        ...
+
     @abc.abstractproperty
-    def column_names(self) -> Iterable[str]: ...
+    def column_names(self) -> Iterable[str]:
+        """
+        Abstract property for the column names in the CSV file.
+
+        Returns:
+            An iterable of column names for the CSV file.
+        """
+        ...

@@ -6,15 +6,17 @@ from dank_mids import ENVIRONMENT_VARIABLES
 
 class DummyLogger:
     """
-    A dummy logger class that mimics the interface of logging.Logger but does nothing.
+    A dummy logger class that provides a no-op implementation of the info 
+    method of logging.Logger.
 
-    This class is used to replace the actual logger when demo mode is not active,
-    saving processing time by avoiding unnecessary logging operations.
+    This class is used to replace the actual logger when demo mode is not 
+    enabled, saving processing time by avoiding unnecessary logging operations.
     """
 
     def info(self, *args: Any, **kwargs: Any) -> None:
         """
-        A no-op method that mimics the API of :meth:`logging.Logger.info`.
+        Does nothing. Mimics the API of logging.Logger.info by accepting 
+        any arguments.
 
         Args:
             *args: Positional arguments (ignored).

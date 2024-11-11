@@ -60,8 +60,7 @@ class DankBatch:
         This method allows the batch to be used with the `await` keyword,
         starting the batch execution if it hasn't been started yet.
 
-        Returns:
-            A generator that can be awaited to execute the batch.
+        Returns a generator that can be awaited to execute the batch.
         """
         self.start()
         return self._await().__await__()
@@ -97,8 +96,8 @@ class DankBatch:
         duplicate executions.
 
         Note:
-            This method does not wait for the operations to complete. Use :meth:`~DankBatch._await()`
-            to wait for completion and handle results.
+            This method does not wait for the operations to complete. Use the `await` statement 
+            on the DankBatch instance to wait for completion and handle results.
         """
         for mcall in self.multicalls.values():
             mcall.start(self, cleanup=False)
@@ -108,6 +107,16 @@ class DankBatch:
 
     @property
     def coroutines(self) -> Generator[Union["_Batch", Awaitable[RawResponse]], None, None]:
+        """
+        Generator that prepares RPC calls and multicalls for batch processing.
+
+        This method combines multicalls and individual RPC calls into one or more JSON-RPC batches, 
+        considering the batch size limits. The process involves appending calls to a working batch
+        and yielding batches when they reach the defined size or when all calls are included.
+
+        Yields:
+            A combination of JSON-RPC batches ready for execution.
+        """
         # Combine multicalls into one or more jsonrpc batches
 
         # Create empty batch
