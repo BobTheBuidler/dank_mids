@@ -15,7 +15,6 @@ from dank_mids.semaphores import BlockSemaphore
 __all__ = ["dank_middleware", "BlockSemaphore", "setup_dank_w3", "setup_dank_w3_from_sync"]
 
 
-# Configure concurrent.futures.process queue size
 def _configure_concurrent_future_work_queue_size():
     """
     Configures the concurrent futures process pool to allow for a larger number of queued calls.
@@ -43,13 +42,21 @@ with suppress(ImportError):
     eth = dank_eth
 
 
-# Define custom getattr
 def __getattr__(name: str):
     """
-    Custom attribute access handler for the 'dank_mids' module.
+    Handles custom attribute access for the 'dank_mids' module.
 
-    This method is called when an attribute that is not found in the module's namespace
-    is accessed. It allows for custom error handling for brownie-specific objects.
+    This function is called when an attribute that is not found in the module's namespace
+    is accessed. If the attribute is one of the brownie-specific objects listed in
+    `__brownie_objects`, it raises a `BrownieNotConnectedError`. For all other attributes,
+    it raises a standard AttributeError.
+
+    Args:
+        name: The name of the attribute being accessed.
+
+    Raises:
+        BrownieNotConnectedError: If the attribute is one of `__brownie_objects`.
+        AttributeError: If the attribute is not found and is not one of `__brownie_objects`.
     """
     if name in __brownie_objects:
         raise BrownieNotConnectedError(name)

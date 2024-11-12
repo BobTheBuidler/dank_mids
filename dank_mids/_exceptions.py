@@ -38,6 +38,7 @@ class ExceedsMaxBatchSize(BadResponse):
 
     @property
     def limit(self) -> int:
+        """Get the maximum allowed batch size from the error message."""
         return int(re.search(r"batch limit (\d+) exceeded", self.response.error.message)[1])  # type: ignore [index, union-attr]
 
 
@@ -77,6 +78,8 @@ internal_err_types = Union[
 
 
 class DankMidsInternalError(Exception):
+    """Exception raised for unhandled internal errors within Dank Mids."""
+
     def __init__(self, e: Union[ValueError, internal_err_types]) -> None:
         logger.warning(f"unhandled exception inside dank mids internals: {e}", exc_info=True)
 
@@ -91,7 +94,8 @@ class DankMidsInternalError(Exception):
 
 class BatchResponseSortError(Exception):
     """
-    A `BatchResponseSortError` indicates your RPC needs some special handling to properly handle batch calls / responses.
+    Exception raised when there is an issue with sorting batch responses.
+    Indicates special handling is needed for batch calls/responses in your RPC.
     """
 
     def __init__(
@@ -119,7 +123,9 @@ class BatchResponseSortError(Exception):
 
 class ChainstackRateLimited(BadResponse):
     """
-    Chainstack doesn't use 429 for rate limiting, it sends a successful 200 response back to the rpc with an error message so our usual rate-limiting handlers don't work and we need to handle that case with bespoke logic.
+    Exception raised when Chainstack hits a rate limit without using a 429 status code.
+    Chainstack sends a 200 status code with an error message for rate limiting.
+    Requires bespoke logic for handling this case.
     """
 
     @property

@@ -101,32 +101,84 @@ class _StatsLogger(logging.Logger):
     # New logging levels
 
     def stats(self, msg, *args, **kwargs) -> None:
+        """
+        Log a message with the STATS logging level.
+
+        Args:
+            msg: The message to log.
+            *args: Additional positional arguments for the logger.
+            **kwargs: Additional keyword arguments for the logger.
+        """
         if self.enabled:
             self._log_nocheck(STATS, msg, args, **kwargs)
 
     def devhint(self, msg, *args, **kwargs) -> None:
+        """
+        Log a message with the DEVHINT logging level.
+
+        Args:
+            msg: The message to log.
+            *args: Additional positional arguments for the logger.
+            **kwargs: Additional keyword arguments for the logger.
+        """
         self._log(DEVHINT, msg, args, **kwargs)
 
     # Functions to print stats to your logs.
 
     def log_brownie_stats(self, *, level: _LogLevel = STATS) -> None:
+        """
+        Log statistics related to Brownie operations.
+
+        Args:
+            level: The logging level to use. Defaults to STATS.
+        """
         self._log_fn_result(level, _Writer.brownie)
 
     def log_event_loop_stats(self, *, level: _LogLevel = STATS) -> None:
+        """
+        Log statistics about the event loop performance.
+
+        Args:
+            level: The logging level to use. Defaults to STATS.
+        """
         self._log_fn_result(level, _Writer.event_loop)
 
     def log_subprocess_stats(self, *, level: _LogLevel = STATS) -> None:
+        """
+        Log statistics about subprocess pools and queues.
+
+        Args:
+            level: The logging level to use. Defaults to STATS.
+        """
         for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:  # type: ignore [attr-defined]
             self._log_fn_result(level, _Writer.queue, pool)
 
     # Internal helpers
 
     def _log(self, level: _LogLevel, *args, **kwargs) -> None:
-        # Saves us having to do this ourselves for each custom message
+        """
+        Wrapper around the standard logging method to simplify custom log level checks.
+
+        Args:
+            level: The logging level.
+            *args: Additional positional arguments for the logger.
+            **kwargs: Additional keyword arguments for the logger.
+        """
         if self.isEnabledFor(level):
             return self._log_nocheck(level, *args, **kwargs)
 
     def _log_nocheck(self, level: _LogLevel, *args, **kwargs) -> None:
+        """
+        Perform logging without checking whether the logger is enabled for the level.
+
+        Args:
+            level: The logging level.
+            *args: Additional positional arguments for the logger.
+            **kwargs: Additional keyword arguments for the logger.
+
+        Raises:
+            ValueError: If no message is provided.
+        """
         try:
             return super()._log(level, args[0], args[1:], **kwargs)
         except IndexError:
@@ -135,7 +187,15 @@ class _StatsLogger(logging.Logger):
     def _log_fn_result(
         self, level: _LogLevel, callable: Callable[[T], str], *callable_args: T, **logging_kwargs
     ) -> None:
-        """If `self.isEnabledFor(level)` is True, will call `callable` with your args and log the output."""
+        """
+        Call a function and log its result if the logger is enabled for the level.
+
+        Args:
+            level: The logging level.
+            callable: A function that returns a string to log.
+            *callable_args: Arguments to pass to the callable.
+            **logging_kwargs: Additional keyword arguments for logging.
+        """
         if self.isEnabledFor(level):
             return self._log_nocheck(level, callable(*callable_args), (), **logging_kwargs)
 
@@ -395,7 +455,7 @@ class _SentryExporter:
 
     def push_measurements(self) -> None:
         """
-        Pushes all metrics in `self._metrics` to sentry
+        Pushes all metrics in `self.metrics` to Sentry.
         """
         if self._exc:
             raise self._exc
@@ -406,6 +466,11 @@ class _SentryExporter:
             self.set_measurement(tag, attr, self.units.get(attr_name))
 
     def push_envs(self) -> None:
+        """
+        Pushes environment variables set by the user to Sentry.
+
+        Any exceptions during tagging are logged as warnings.
+        """
         for env, value in _ENVIRONMENT_VARIABLES_SET_BY_USER.items():
             try:
                 self.set_tag(env, value)

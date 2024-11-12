@@ -297,7 +297,7 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
         ValueError: If the input Web3 instance is not asynchronous.
     """
     if not w3.eth.is_async or not isinstance(w3.provider, AsyncBaseProvider):
-        raise ValueError("Dank Middleware can only be applied to an asycnhronous Web3 instance.")
+        raise ValueError("Dank Middleware can only be applied to an asynchronous Web3 instance.")
     sync_provider = HTTPProvider(w3.provider.endpoint_uri)
     sync_w3: Web3 = Web3(provider=sync_provider)
     # We can't pickle middlewares to send to process executor.
@@ -315,10 +315,7 @@ def _make_hashable(obj: Any) -> Any:
     dictionary keys or in sets.
 
     Args:
-        obj (Any): The object to make hashable.
-
-    Returns:
-        Any: A hashable version of the input object.
+        obj: The object to make hashable.
     """
     if isinstance(obj, (list, tuple)):
         return tuple((_make_hashable(o) for o in obj))

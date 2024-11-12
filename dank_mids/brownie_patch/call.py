@@ -36,10 +36,8 @@ It uses the BROWNIE_ENCODER_PROCESSES to run the __encode_input function asynchr
 Args:
     self: The contract method instance.
     *args: The arguments to be encoded.
-
-Returns:
-    The encoded input data for the contract call.
 """
+
 decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 
 
@@ -48,10 +46,10 @@ def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
     Patch a Brownie ContractCall to enable asynchronous use via dank_mids for batching.
 
     Args:
-        contract_call: The original Brownie ContractCall to be patched.
+        call: The original Brownie ContractCall to be patched.
+        w3: An instance of DankWeb3 used to create the coroutine.
 
-    Returns:
-        A patched version of the ContractCall with enhanced functionality.
+    The function modifies the ContractCall in place to add asynchronous capabilities.
     """
     call._skip_decoder_proc_pool = call._address in _skip_proc_pool
     call.coroutine = MethodType(_get_coroutine_fn(w3, len(call.abi["inputs"])), call)

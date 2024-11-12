@@ -87,7 +87,27 @@ sys.path.insert(0, os.path.abspath("./dank_mids"))
 
 def skip_specific_members(app, what, name, obj, skip, options):
     """
-    Function to exclude specific members for a particular module.
+    Determine whether specific members should be excluded for a particular module.
+
+    This function is used to customize the selection of members to exclude
+    when generating documentation for Sphinx. It uses predefined exclusions
+    based on module and member name, as well as conditions for skipping 
+    certain members of NewType objects and Exception subclasses.
+
+    Parameters:
+    - app: Sphinx application object.
+    - what: The type of the object which the docstring belongs to 
+      (e.g., 'module', 'class').
+    - name: The name of the object.
+    - obj: The object itself.
+    - skip: A boolean indicating if the member should be skipped.
+    - options: The options given to the directive: an object with attributes 
+      'inherited_members', 'undoc_members', 'show_inheritance', and 'noindex'
+      that are true if the flag option of same name was given to the 
+      auto directive.
+
+    Returns:
+    - A boolean value indicating whether to skip the member.
     """
     exclusions = {
         "dank_mids.types": {
@@ -133,4 +153,15 @@ def skip_specific_members(app, what, name, obj, skip, options):
 
 
 def setup(app):
+    """
+    Set up the Sphinx application.
+
+    This function is used to connect the 'autodoc-skip-member' event to the
+    custom `skip_specific_members` function, allowing specific members to be
+    conditionally excluded from Sphinx documentation based on the logic 
+    defined in `skip_specific_members`.
+
+    Parameters:
+    - app: Sphinx application object.
+    """
     app.connect("autodoc-skip-member", skip_specific_members)
