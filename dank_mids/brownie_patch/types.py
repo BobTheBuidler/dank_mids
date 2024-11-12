@@ -12,8 +12,8 @@ ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
 class DankContractCall(_DankMethod, ContractCall):
     """
     A subclass of `brownie.network.contract.ContractCall` with async support via the `coroutine` method.
-    
-    This class uses less memory than a typical `ContractTx` by employing the `__slots__` functionality alongside 
+
+    This class uses less memory than a typical `ContractTx` by employing the `__slots__` functionality alongside
     the `FunctionABI` singleton to manage the function ABI and related logic.
 
     You can await an instance of this class directly to call the contract method without arguments at the latest block.
@@ -23,8 +23,8 @@ class DankContractCall(_DankMethod, ContractCall):
 class DankContractTx(_DankMethod, ContractTx):
     """
     A subclass of `brownie.network.contract.ContractTx` with async support via the `coroutine` method.
-    
-    This class is optimized for memory use compared to a standard `ContractTx`, by using `__slots__` in combination 
+
+    This class is optimized for memory use compared to a standard `ContractTx`, by using `__slots__` in combination
     with the `FunctionABI` singleton to handle the function ABI and associated logic.
 
     Awaiting an instance of this class directly executes the contract method without arguments at the latest block.
@@ -38,8 +38,8 @@ _NonOverloaded = Union[DankContractCall, DankContractTx]
 class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
     """
     A subclass of `brownie.network.contract.OverloadedMethod` with async support via the `coroutine` method.
-    
-    This class is designed to be memory efficient compared to a typical `OverloadedMethod`, employing `__slots__` 
+
+    This class is designed to be memory efficient compared to a typical `OverloadedMethod`, employing `__slots__`
     and the `FunctionABI` singleton to manage the function ABI and related logic.
 
     You can await instances of this class directly to call the contract method without arguments at the latest block.
@@ -75,7 +75,7 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
         """
         Add a function to the overloaded method.
 
-        This method creates a new function object using the provided ABI and NatSpec, 
+        This method creates a new function object using the provided ABI and NatSpec,
         then adds it to the collection of functions in the overloaded method.
 
         Args:
@@ -104,7 +104,7 @@ def _get_method_object(
     """
     Retrieve an appropriate method object based on the ABI.
 
-    Determines whether the ABI specifies a constant function and returns a corresponding DankContractCall 
+    Determines whether the ABI specifies a constant function and returns a corresponding DankContractCall
     or DankContractTx object.
 
     Args:

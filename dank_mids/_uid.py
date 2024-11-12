@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 class UIDGenerator:
     def __init__(self) -> None:
         """
-        Initializes the UIDGenerator with the starting UID value set to -1 
+        Initializes the UIDGenerator with the starting UID value set to -1
         and a custom reentrant lock to ensure thread-safety.
         """
         self._value: int = -1
@@ -30,7 +30,7 @@ class UIDGenerator:
 class _AlertingRLock(threading._RLock):  # type: ignore [misc]
     def __init__(self, name: str) -> None:
         """
-        Initializes the reentrant lock with a given name, which can be used 
+        Initializes the reentrant lock with a given name, which can be used
         for debugging and logging to track lock usage.
         """
         super().__init__()
@@ -38,9 +38,9 @@ class _AlertingRLock(threading._RLock):  # type: ignore [misc]
 
     def acquire(self, blocking: bool = True, timeout: int = -1) -> bool:  # type: ignore [override]
         """
-        Attempts to acquire the lock. The initial attempt will block for 
+        Attempts to acquire the lock. The initial attempt will block for
         up to 5 seconds. If the lock cannot be acquired immediately within
-        that timeframe, logs a warning message and retries the acquisition 
+        that timeframe, logs a warning message and retries the acquisition
         with the specified blocking and timeout parameters.
 
         Args:

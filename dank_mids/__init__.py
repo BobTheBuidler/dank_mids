@@ -53,7 +53,7 @@ def __getattr__(name: str):
 
     Args:
         name: The name of the attribute being accessed.
-        
+
     Raises:
         BrownieNotConnectedError: If the attribute is one of `__brownie_objects`.
         AttributeError: If the attribute is not found and is not one of `__brownie_objects`.

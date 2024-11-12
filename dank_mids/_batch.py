@@ -96,7 +96,7 @@ class DankBatch:
         duplicate executions.
 
         Note:
-            This method does not wait for the operations to complete. Use the `await` statement 
+            This method does not wait for the operations to complete. Use the `await` statement
             on the DankBatch instance to wait for completion and handle results.
         """
         for mcall in self.multicalls.values():
@@ -110,7 +110,7 @@ class DankBatch:
         """
         Generator that prepares RPC calls and multicalls for batch processing.
 
-        This method combines multicalls and individual RPC calls into one or more JSON-RPC batches, 
+        This method combines multicalls and individual RPC calls into one or more JSON-RPC batches,
         considering the batch size limits. The process involves appending calls to a working batch
         and yielding batches when they reach the defined size or when all calls are included.
 

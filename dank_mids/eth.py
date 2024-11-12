@@ -89,7 +89,7 @@ class DankEth(AsyncEth):
 
         Args:
             block_identifier: The block number from which to retrieve the timestamp.
-        
+
         Example:
             >>> print(await dank_mids.eth.get_block_timestamp(12345678))
         """
@@ -130,9 +130,7 @@ class DankEth(AsyncEth):
             block_identifier = hex(block_identifier)  # type: ignore [arg-type, assignment]
         finally:
             block_bytes = await self._get_block_raw(block_identifier, not hashes_only)
-            return json.decode(
-                block_bytes, type=TinyBlock, dec_hook=_decode_hook
-            ).transactions
+            return json.decode(block_bytes, type=TinyBlock, dec_hook=_decode_hook).transactions
 
     async def get_transaction_receipt(
         self,
@@ -177,8 +175,8 @@ class DankEth(AsyncEth):
         decode_hook: _DecodeHook[T] = _decode_hook,
     ) -> T:
         """
-        Returns all traces matching a filter. If the decoding to the specified 
-        type fails, the method logs problematic traces and re-raises the 
+        Returns all traces matching a filter. If the decoding to the specified
+        type fails, the method logs problematic traces and re-raises the
         exception as a diagnostic aid.
 
         Args:

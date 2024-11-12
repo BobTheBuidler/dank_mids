@@ -16,7 +16,7 @@ class OperationMode(str):
         """
         Checks if the current mode is 'application'.
 
-        The 'application' mode keeps the event loop as unblocked as possible 
+        The 'application' mode keeps the event loop as unblocked as possible
         so an asyncio application can run as designed.
         """
         return self.mode == "application"

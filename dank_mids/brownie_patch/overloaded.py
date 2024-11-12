@@ -14,7 +14,7 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
     Patch an overloaded contract method with async functionality.
 
     Args:
-        call: The overloaded method to patch. Currently, only methods of type 
+        call: The overloaded method to patch. Currently, only methods of type
               OverloadedMethod are fully supported.
         w3: The DankWeb3 instance.
     """

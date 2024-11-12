@@ -13,6 +13,7 @@ WEB3_MAJOR_VERSION = int(version("web3").split(".")[0])
 
 return_as_is = lambda x: x
 
+
 class MethodNoFormat(Method[TFunc]):
     """Custom method class to bypass web3py's default result formatters.
 
@@ -64,6 +65,7 @@ class MethodNoFormat(Method[TFunc]):
         """
         return cls(method, [default_root_munger])
 
+
 def bypass_chainid_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_chainId method.
 
@@ -71,6 +73,7 @@ def bypass_chainid_formatter(eth: Type[BaseEth]) -> None:
         eth: The Ethereum base class instance whose method is to be modified.
     """
     eth._chain_id = MethodNoFormat(RPC.eth_chainId)
+
 
 def bypass_getbalance_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getBalance method.
@@ -80,6 +83,7 @@ def bypass_getbalance_formatter(eth: Type[BaseEth]) -> None:
     """
     eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[eth.block_id_munger])
 
+
 def bypass_blocknumber_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_blockNumber method.
 
@@ -87,6 +91,7 @@ def bypass_blocknumber_formatter(eth: Type[BaseEth]) -> None:
         eth: The Ethereum base class instance whose method is to be modified.
     """
     eth.get_block_number = MethodNoFormat(RPC.eth_blockNumber)
+
 
 def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getTransactionCount method.
@@ -97,6 +102,7 @@ def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
     eth._get_transaction_count = MethodNoFormat(
         RPC.eth_getTransactionCount, mungers=[eth.block_id_munger]
     )
+
 
 def bypass_log_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses formatters for log-related methods such as eth_getLogs.
@@ -109,6 +115,7 @@ def bypass_log_formatter(eth: Type[BaseEth]) -> None:
     eth.get_filter_logs = MethodNoFormat.default(RPC.eth_getFilterLogs)
     eth.get_filter_changes = MethodNoFormat.default(RPC.eth_getFilterChanges)
 
+
 def bypass_transaction_receipt_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getTransactionReceipt method.
 
@@ -118,6 +125,7 @@ def bypass_transaction_receipt_formatter(eth: Type[BaseEth]) -> None:
     attr_name = "_transaction_receipt" if WEB3_MAJOR_VERSION >= 6 else "_get_transaction_receipt"
     setattr(eth, attr_name, MethodNoFormat.default(RPC.eth_getTransactionReceipt))
 
+
 def bypass_transaction_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getTransactionByHash method.
 
@@ -126,11 +134,13 @@ def bypass_transaction_formatter(eth: Type[BaseEth]) -> None:
     """
     eth._get_transaction = MethodNoFormat.default(RPC.eth_getTransactionByHash)
 
+
 _block_selectors = dict(
     if_predefined=RPC.eth_getBlockByNumber,
     if_hash=RPC.eth_getBlockByHash,
     if_number=RPC.eth_getBlockByNumber,
 )
+
 
 def bypass_block_formatters(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for block-related methods such as eth_getBlockByNumber.
@@ -143,6 +153,7 @@ def bypass_block_formatters(eth: Type[BaseEth]) -> None:
     if WEB3_MAJOR_VERSION >= 6:
         get_block_munger = eth.get_block_munger
     else:
+
         def get_block_munger(
             self, block_identifier: BlockIdentifier, full_transactions: bool = False
         ) -> Tuple[BlockIdentifier, bool]:
@@ -153,6 +164,7 @@ def bypass_block_formatters(eth: Type[BaseEth]) -> None:
         mungers=[get_block_munger],
     )
 
+
 def bypass_eth_call_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_call method.
 
@@ -161,6 +173,7 @@ def bypass_eth_call_formatter(eth: Type[BaseEth]) -> None:
     """
     eth._call = MethodNoFormat(RPC.eth_call, mungers=[eth.call_munger])
 
+
 def bypass_get_code_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getCode method.
 
@@ -168,6 +181,7 @@ def bypass_get_code_formatter(eth: Type[BaseEth]) -> None:
         eth: The Ethereum base class instance whose method is to be modified.
     """
     eth._get_code = MethodNoFormat(RPC.eth_getCode, mungers=[eth.block_id_munger])
+
 
 skip_formatters = (
     bypass_chainid_formatter,
@@ -181,6 +195,7 @@ skip_formatters = (
     bypass_transaction_formatter,
     bypass_block_formatters,
 )
+
 
 def bypass_formatters(eth):
     """Executes a sequence of bypass methods to remove default formatters for ETH methods.

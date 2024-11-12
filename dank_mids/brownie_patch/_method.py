@@ -154,9 +154,7 @@ class _DankMethod(_DankMethodMixin):
         natspec: Optional[Dict] = None,
     ) -> None:
         self._address = address
-        self._abi = FunctionABI(
-            **{key: _make_hashable(abi[key]) for key in sorted(abi)}
-        )
+        self._abi = FunctionABI(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
 
         self._name = name
         """The name of the contract method."""
