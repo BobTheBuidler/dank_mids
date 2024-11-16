@@ -186,9 +186,9 @@ class Contract(brownie.Contract):
         return attr
 
     @functools.cached_property
-    def __method_names__(self) -> List[str]:
+    def __method_names__(self) -> Tuple[str, ...]:
         """List of method names defined in the contract ABI."""
-        return [i["name"] for i in self.abi if i["type"] == "function"]
+        return tuple(i["name"] for i in self.abi if i["type"] == "function")
 
     def __get_method_object__(self, name: str) -> DankContractMethod:
         """
@@ -206,12 +206,15 @@ class Contract(brownie.Contract):
         from dank_mids import web3
 
         overloaded = self.__method_names__.count(name) > 1
-        for abi in [i for i in self.abi if i["type"] == "function"]:
-            if abi["name"] != name:
+        
+        for abi in self.abi:
+            if abi["function"] != "function" or abi["name"] != name:
                 continue
+                
             full_name = f"{self._name}.{name}"
             sig = build_function_signature(abi)
-            natspec: Dict = {}
+            
+            natspec: Dict[str, Any] = {}
             if self._build.get("natspec"):
                 natspec = self._build["natspec"]["methods"].get(sig, {})
 
@@ -221,7 +224,9 @@ class Contract(brownie.Contract):
             # special logic to handle function overloading
             elif overloaded is True:
                 overloaded = DankOverloadedMethod(self.address, full_name, self._owner)
+                
             overloaded._add_fn(abi, natspec)
+            
         return overloaded  # type: ignore [return-value]
 
 
