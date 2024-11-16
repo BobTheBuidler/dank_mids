@@ -151,9 +151,9 @@ These methods are typically handled separately or have special requirements.
 @lru_cache(maxsize=None)
 def _get_len_for_method(method: str) -> int:
     # NOTE: These are totally arbitrary, used to reduce frequency of giant batches/responses
-    if self.method == "eth_getTransactionReceipt":
+    if method == "eth_getTransactionReceipt":
         return 10
-    elif any(m in self.method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]):
+    elif any(m in method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]):
         return 6
     return 1
 
