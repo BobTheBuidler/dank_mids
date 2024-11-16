@@ -149,6 +149,16 @@ These methods are typically handled separately or have special requirements.
 
 
 @lru_cache(maxsize=None)
+def _get_len_for_method(method: str) -> int:
+    # NOTE: These are totally arbitrary, used to reduce frequency of giant batches/responses
+    if self.method == "eth_getTransactionReceipt":
+        return 10
+    elif any(m in self.method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]):
+        return 6
+    return 1
+
+
+@lru_cache(maxsize=None)
 def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
@@ -195,16 +205,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
         return self.uid == __o.uid if isinstance(__o, self.__class__) else False
 
     def __len__(self) -> int:
-        # we dont need to consider this for v small batch sizes
-        if ENVS.MAX_JSONRPC_BATCH_SIZE > 50:  # type: ignore [operator]
-            # NOTE: These are totally arbitrary
-            if self.method == "eth_getTransactionReceipt":
-                return 10
-            elif any(
-                m in self.method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]
-            ):
-                return 6
-        return 1
+        # NOTE: We dont need to consider this for very small batch sizes since the requests/responses will never get too large
+        return _get_len_for_method(self.method) if ENVS.MAX_JSONRPC_BATCH_SIZE > 50 else 1  # type: ignore [operator]
 
     def __repr__(self) -> str:
         return (
