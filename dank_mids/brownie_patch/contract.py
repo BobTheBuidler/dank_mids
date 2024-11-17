@@ -208,7 +208,7 @@ class Contract(brownie.Contract):
         overloaded = self.__method_names__.count(name) > 1
         
         for abi in self.abi:
-            if abi["function"] != "function" or abi["name"] != name:
+            if abi["type"] != "function" or abi["name"] != name:
                 continue
                 
             full_name = f"{self._name}.{name}"
