@@ -1,5 +1,5 @@
 import functools
-from typing import Dict, List, Literal, NewType, Optional, Union, overload
+from typing import Dict, List, Literal, NewType, Optional, Tuple, Union, overload
 
 import brownie
 from brownie.network.contract import (
