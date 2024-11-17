@@ -206,14 +206,14 @@ class Contract(brownie.Contract):
         from dank_mids import web3
 
         overloaded = self.__method_names__.count(name) > 1
-        
+
         for abi in self.abi:
-            if abi["function"] != "function" or abi["name"] != name:
+            if abi["type"] != "function" or abi["name"] != name:
                 continue
-                
+
             full_name = f"{self._name}.{name}"
             sig = build_function_signature(abi)
-            
+
             natspec: Dict[str, Any] = {}
             if self._build.get("natspec"):
                 natspec = self._build["natspec"]["methods"].get(sig, {})
@@ -224,9 +224,9 @@ class Contract(brownie.Contract):
             # special logic to handle function overloading
             elif overloaded is True:
                 overloaded = DankOverloadedMethod(self.address, full_name, self._owner)
-                
+
             overloaded._add_fn(abi, natspec)
-            
+
         return overloaded  # type: ignore [return-value]
 
 
