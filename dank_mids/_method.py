@@ -84,15 +84,6 @@ def bypass_getbalance_formatter(eth: Type[BaseEth]) -> None:
     eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[eth.block_id_munger])
 
 
-#def bypass_blocknumber_formatter(eth: Type[BaseEth]) -> None:
-#    """Bypasses the formatter for the eth_blockNumber method.
-#
-#    Args:
-#        eth: The Ethereum base class instance whose method is to be modified.
-#    """
-#    eth.get_block_number = MethodNoFormat(RPC.eth_blockNumber)
-
-
 def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getTransactionCount method.
 
@@ -186,7 +177,6 @@ def bypass_get_code_formatter(eth: Type[BaseEth]) -> None:
 skip_formatters = (
     bypass_chainid_formatter,
     bypass_getbalance_formatter,
-    #bypass_blocknumber_formatter,
     bypass_transaction_count_formatter,
     bypass_eth_call_formatter,
     bypass_get_code_formatter,
