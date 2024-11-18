@@ -1074,7 +1074,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         return self.is_single_multicall
 
     @set_done
-    async def spoof_response(self, response: List[RawResponse], calls: Tuple[RPCRequest, ...]) -> None:
+    async def spoof_response(
+        self, response: List[RawResponse], calls: Tuple[RPCRequest, ...]
+    ) -> None:
         """
         Process the responses from the Ethereum node and set the results for each call.
 
