@@ -590,6 +590,16 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
     def _post_future_cleanup(self) -> None:
         raise NotImplementedError
 
+    def _record_failure(self, e: Exception, data: str) -> None:
+        _debugging.failures.record(
+            self.controller.chain_id,
+            e,
+            type(self).__name__,
+            self.uid,
+            len(self),
+            data,
+        )
+
 
 mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
@@ -690,34 +700,13 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             if e.message == "Payload Too Large":
                 logger.info("Payload too large. response headers: %s", e.headers)
                 self.controller.reduce_multicall_size(len(self))
-                _debugging.failures.record(
-                    self.controller.chain_id,
-                    e,
-                    type(self).__name__,
-                    self.uid,
-                    len(self),
-                    self.request.data,
-                )
+                self._record_failure(e, self.request.data.decode())
             elif _log_exception(e):
-                _debugging.failures.record(
-                    self.controller.chain_id,
-                    e,
-                    type(self).__name__,
-                    self.uid,
-                    len(self),
-                    self.request.data,
-                )
+                self._record_failure(e, self.request.data.decode())
             await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         except Exception as e:
             if _log_exception(e):
-                _debugging.failures.record(
-                    self.controller.chain_id,
-                    e,
-                    type(self).__name__,
-                    self.uid,
-                    len(self),
-                    self.request.data,
-                )
+                self._record_failure(e, self.request.data.decode())
             await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         demo_logger.info(f"request {rid} for multicall {self.bid} complete")  # type: ignore
 
@@ -957,9 +946,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             await self.bisect_and_retry(e)
         except Exception as e:
             if _log_exception(e):
-                _debugging.failures.record(
-                    self.controller.chain_id, e, type(self).__name__, self.uid, len(self), self.data
-                )
+                self._record_failure(e, self.data)
             stats.log_errd_batch(self)
             if self.should_retry(e):
                 await self.bisect_and_retry(e)
@@ -1013,17 +1000,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
             logger.debug("caught %s for %s, reraising", e, self)
             if ENVS.DEBUG:  # type: ignore [attr-defined]
-                _debugging.failures.record(
-                    self.controller.chain_id, e, type(self).__name__, self.uid, len(self), self.data
-                )
+                self._record_failure(e, self.data.decode())
             raise
         except Exception as e:
             if "broken pipe" in str(e).lower():
                 logger.warning("This is what broke the pipe: %s", self.method_counts)
             if ENVS.DEBUG:  # type: ignore [attr-defined]
-                _debugging.failures.record(
-                    self.controller.chain_id, e, type(self).__name__, self.uid, len(self), self.data
-                )
+                self._record_failure(e, self.data.decode())
             raise
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
@@ -1043,14 +1026,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             self.adjust_batch_size()
 
         if ENVS.DEBUG:
-            _debugging.failures.record(
-                self.controller.chain_id,
-                response.exception,
-                type(self).__name__,
-                self.uid,
-                len(self),
-                self.data,
-            )
+            self._record_failure(response.exception)
+
         raise response.exception
 
     def should_retry(self, e: Exception) -> bool:
