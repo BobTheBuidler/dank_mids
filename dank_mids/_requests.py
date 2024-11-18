@@ -1074,7 +1074,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         return self.is_single_multicall
 
     @set_done
-    async def spoof_response(self, response: List[RawResponse], calls: List[RPCRequest]) -> None:
+    async def spoof_response(self, response: List[RawResponse], calls: Tuple[RPCRequest, ...]) -> None:
         """
         Process the responses from the Ethereum node and set the results for each call.
 
@@ -1091,7 +1091,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         if self.controller._sort_calls:
             # NOTE: these providers don't always return batch results in the correct ordering
             # NOTE: is it maybe because they
-            calls.sort(key=lambda call: call.uid)
+            calls = sorted(calls, key=lambda call: call.uid)  # type: ignore [assignment]
 
         if self.controller._sort_response:
             response.sort(key=lambda raw: raw.decode().id)

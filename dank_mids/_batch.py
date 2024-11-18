@@ -135,7 +135,7 @@ class DankBatch:
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
 
-        rpc_calls_to_batch = self.rpc_calls[:]
+        rpc_calls_to_batch = list(self.rpc_calls)
         while rpc_calls_to_batch:
             if working_batch.is_full:
                 yield working_batch
