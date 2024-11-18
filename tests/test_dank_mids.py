@@ -29,20 +29,13 @@ MULTIBLOCK_WORK = [
 ]
 
 
-def _get_controller():
-    brownie_version = tuple(int(x) for x in importlib.metadata.version("eth-brownie").split("."))
-    if brownie_version >= (1, 20):
-        # Not sure why but 1.20 creates 2 instances
-        return instances[chain.id][1]
-    return instances[chain.id][0]
-
-
 @pytest.mark.asyncio_cooperative
 async def test_dank_middleware():
     await asyncio.gather(*BIG_WORK)
-    cid = _get_controller().call_uid.latest
-    mid = _get_controller().multicall_uid.latest
-    rid = _get_controller().request_uid.latest
+    controller = instances[chain.id][0]
+    cid = controller.call_uid.latest
+    mid = controller.multicall_uid.latest
+    rid = controller.request_uid.latest
     assert cid, "The DankMiddlewareController did not process any calls."
     if sys.version_info < (3, 10):
         # Not sure why this assert fails above 3.10
@@ -92,7 +85,8 @@ def test_next_cid():
     This test ensures that the call ID generator correctly increments
     and provides unique IDs for each call.
     """
-    assert _get_controller().call_uid.next + 1 == _get_controller().call_uid.next
+    controller = instances[chain.id][0]
+    assert controller.call_uid.next + 1 == controller.call_uid.next
 
 
 def test_next_mid():
@@ -102,7 +96,8 @@ def test_next_mid():
     This test verifies that the request ID generator correctly increments
     and provides unique IDs for each request.
     """
-    assert _get_controller().request_uid.next + 1 == _get_controller().request_uid.next
+    controller = instances[chain.id][0]
+    assert controller.request_uid.next + 1 == controller.request_uid.next
 
 
 def test_next_bid():
@@ -112,7 +107,8 @@ def test_next_bid():
     This test checks that the multicall ID generator correctly increments
     and provides unique IDs for each multicall.
     """
-    assert _get_controller().multicall_uid.next + 1 == _get_controller().multicall_uid.next
+    controller = instances[chain.id][0]
+    assert controller.multicall_uid.next + 1 == controller.multicall_uid.next
 
 
 @pytest.mark.asyncio_cooperative
