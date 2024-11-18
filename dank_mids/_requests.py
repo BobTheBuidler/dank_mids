@@ -536,8 +536,8 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
         # set `self.calls` output to var so its only computed once
         calls = tuple(self.calls)
         half = len(calls) // 2
-        yield calls[: half]
-        yield calls[half :]
+        yield calls[:half]
+        yield calls[half:]
 
     @property
     def is_full(self) -> bool:
