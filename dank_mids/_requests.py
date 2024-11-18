@@ -589,7 +589,7 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
 
     def _post_future_cleanup(self) -> None:
         raise NotImplementedError
-    
+
     def _record_failure(self, e: Exception, data: str) -> None:
         _debugging.failures.record(
             self.controller.chain_id,
