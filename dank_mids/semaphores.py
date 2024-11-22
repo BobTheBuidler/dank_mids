@@ -1,6 +1,6 @@
 import functools
 from decimal import Decimal
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal, Optional, Type, Union
 
 import a_sync
 from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
@@ -51,11 +51,16 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
         :class:`_BlockSemaphoreContextManager`: The context manager used by this semaphore.
     """
 
-    _context_manager_class = _BlockSemaphoreContextManager  # type: ignore [assignment]
-    """The context manager class used by this semaphore."""
+    # NOTE: we need these hacky properties as a workaround until cython conversion is complete
+    @property
+    def _context_manager_class(self) -> Type[_BlockSemaphoreContextManager]:
+        """The context manager class used by this semaphore."""
+        return _BlockSemaphoreContextManager
 
-    _top_priority: int = -1  # type: ignore [assignment]
-    """The highest priority value, set to -1."""
+    @property
+    def _top_priority(self) -> Literal[-1]:
+        """The highest priority value, set to -1."""
+        return -1  # type: ignore [assignment]
 
     def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
         return super().__getitem__(  # type: ignore [return-value]
