@@ -4328,13 +4328,13 @@ telegram = ["requests"]
 
 [[package]]
 name = "typed-envs"
-version = "0.0.4"
+version = "0.0.5"
 description = "typed_envs is used to create specialized EnvironmentVariable objects that behave exactly the same as any other instance of the `typ` used to create them."
 optional = false
 python-versions = "*"
 files = [
-    {file = "typed-envs-0.0.4.tar.gz", hash = "sha256:5a71ec50cc1b274c39455885d276a97ae0000eecf0a1d1023bdc5f698fccb6fe"},
-    {file = "typed_envs-0.0.4-py3-none-any.whl", hash = "sha256:f995ecbccff283ed6579f33187ea253d9d37fdd652866ec312b8ccc508d4c07b"},
+    {file = "typed_envs-0.0.5-py3-none-any.whl", hash = "sha256:856ad258fd3584f3418c84b2cd3dc14c0c13e504fce1b7b48ff07fb05dc509d4"},
+    {file = "typed_envs-0.0.5.tar.gz", hash = "sha256:5432b9800bfef965b37204ca946d864a29fa072b9560faf1cc7de728c3a00105"},
 ]
 
 [[package]]
@@ -5096,4 +5096,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "d3d2a45087ba92f800bf0b4f87f5d8f4317e779663a1f9c026dd87ecd9fcb3b5"
+content-hash = "5f0f264bb1e3376f7a98b2239fb40a0da87b4fd5728be3bd3a3dfbe3a23709d9"
