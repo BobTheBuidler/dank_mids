@@ -37,6 +37,8 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
         super().__init__(parent, priority, name)
 
 
+_TOP_PRIORITY = -1
+
 # NOTE: keep this so we can include in type stubs
 # class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
 class BlockSemaphore(_AbstractPrioritySemaphore):
@@ -72,7 +74,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
             # NOTE: We do this to generate an err if an unsuitable value was provided
             priority = block
         else:
-            priority = self._top_priority
+            priority = _TOP_PRIORITY
         return super().__getitem__(priority)
 
 
