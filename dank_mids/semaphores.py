@@ -8,6 +8,7 @@ from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,
     _PrioritySemaphoreContextManager,
 )
+from eth_typing import HexStr
 from web3.types import RPCEndpoint
 
 if TYPE_CHECKING:
@@ -56,13 +57,11 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
 
     _top_priority: Literal[-1]
     """The highest priority value, set to -1."""
+    
+    def __init__(self, value = 1, *, name = None):
+        super().__init__(_BlockSemaphoreContextManager, -1, value, name=name)
 
-    def __init__(self, value=1, *, name=None):
-        super().__init__(value, name=name)
-        self._context_manager_class = _BlockSemaphoreContextManager
-        self._top_priority = -1
-
-    def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
+    def __getitem__(self, block: Union[int, HexStr, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
         if isinstance(block, int):
             priority = block
         elif isinstance(block, bytes):
