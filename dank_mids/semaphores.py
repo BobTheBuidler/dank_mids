@@ -57,6 +57,8 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
     _top_priority: int = -1  # type: ignore [assignment]
     """The highest priority value, set to -1."""
 
+    __slots__ = ("__dict__", )
+
     def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
         return super().__getitem__(  # type: ignore [return-value]
             block
