@@ -39,6 +39,7 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
 
 _TOP_PRIORITY = -1
 
+
 # NOTE: keep this so we can include in type stubs
 # class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
 class BlockSemaphore(_AbstractPrioritySemaphore):
