@@ -2092,12 +2092,12 @@ testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
 name = "ez-a-sync"
-version = "0.23.5"
+version = "0.24.7"
 description = "A library that makes it easy to define objects that can be used for both sync and async use cases."
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "ez_a_sync-0.23.5.tar.gz", hash = "sha256:ce5e55df4037456649236926e5388e0c3895afa8b7afcd432cacd1a7b468c64e"},
+    {file = "ez_a_sync-0.24.7.tar.gz", hash = "sha256:b4acc2c238358b372d42d994e4e5a280a88089f3a000ebf15e1c59ea5afef0e3"},
 ]
 
 [package.dependencies]
@@ -4328,13 +4328,13 @@ telegram = ["requests"]
 
 [[package]]
 name = "typed-envs"
-version = "0.0.4"
+version = "0.0.5"
 description = "typed_envs is used to create specialized EnvironmentVariable objects that behave exactly the same as any other instance of the `typ` used to create them."
 optional = false
 python-versions = "*"
 files = [
-    {file = "typed-envs-0.0.4.tar.gz", hash = "sha256:5a71ec50cc1b274c39455885d276a97ae0000eecf0a1d1023bdc5f698fccb6fe"},
-    {file = "typed_envs-0.0.4-py3-none-any.whl", hash = "sha256:f995ecbccff283ed6579f33187ea253d9d37fdd652866ec312b8ccc508d4c07b"},
+    {file = "typed_envs-0.0.5-py3-none-any.whl", hash = "sha256:856ad258fd3584f3418c84b2cd3dc14c0c13e504fce1b7b48ff07fb05dc509d4"},
+    {file = "typed_envs-0.0.5.tar.gz", hash = "sha256:5432b9800bfef965b37204ca946d864a29fa072b9560faf1cc7de728c3a00105"},
 ]
 
 [[package]]
@@ -5096,4 +5096,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "bc317e7e17b80daabe702245d69851ff30dc08a9193d857a28e4c8b6d11453b4"
+content-hash = "4e2375fd9c68bb7e48d30504630c33bf4498fa55e1bada5ea11a360528bd4253"

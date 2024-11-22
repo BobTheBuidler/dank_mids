@@ -1,6 +1,6 @@
 import functools
 from decimal import Decimal
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal, Optional, Type, Union
 
 import a_sync
 from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
@@ -8,6 +8,7 @@ from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,
     _PrioritySemaphoreContextManager,
 )
+from eth_typing import HexStr
 from web3.types import RPCEndpoint
 
 if TYPE_CHECKING:
@@ -36,7 +37,12 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
         super().__init__(parent, priority, name)
 
 
-class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+_TOP_PRIORITY = -1
+
+
+# NOTE: keep this so we can include in type stubs
+# class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+class BlockSemaphore(_AbstractPrioritySemaphore):
     """A semaphore for managing concurrency based on block numbers.
 
     This class extends :class:`_AbstractPrioritySemaphore` to provide block-specific concurrency control.
@@ -49,34 +55,28 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
         :class:`_BlockSemaphoreContextManager`: The context manager used by this semaphore.
     """
 
-    _context_manager_class = _BlockSemaphoreContextManager  # type: ignore [assignment]
+    _context_manager_class: Type[_BlockSemaphoreContextManager]
     """The context manager class used by this semaphore."""
 
-    _top_priority: int = -1  # type: ignore [assignment]
+    _top_priority: Literal[-1]
     """The highest priority value, set to -1."""
 
-    def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
-        return super().__getitem__(  # type: ignore [return-value]
-            block
-            if isinstance(block, int)  # type: ignore [index]
-            else (
-                int(block.hex(), 16)
-                if isinstance(block, bytes)  # type: ignore [union-attr]
-                else (
-                    int(block, 16)
-                    if isinstance(block, str) and "0x" in block
-                    else (
-                        block
-                        if block
-                        not in [
-                            None,
-                            "latest",
-                        ]  # NOTE: We do this to generate an err if an unsuitable value was provided
-                        else self._top_priority
-                    )
-                )
-            )
-        )  # type: ignore [index]
+    def __init__(self, value=1, *, name=None):
+        super().__init__(_BlockSemaphoreContextManager, -1, value, name=name)
+
+    def __getitem__(self, block: Union[int, HexStr, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
+        if isinstance(block, int):
+            priority = block
+        elif isinstance(block, bytes):
+            priority = int(block.hex(), 16)
+        elif isinstance(block, str) and "0x" in block:
+            priority = int(block, 16)
+        elif block not in [None, "latest"]:
+            # NOTE: We do this to generate an err if an unsuitable value was provided
+            priority = block
+        else:
+            priority = _TOP_PRIORITY
+        return super().__getitem__(priority)
 
 
 class _MethodSemaphores:
