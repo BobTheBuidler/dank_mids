@@ -238,7 +238,7 @@ def format_input_but_cache_checksums(abi: Dict, inputs: Union[List, Tuple]) -> L
     try:
         return _format_tuple_but_cache_checksums(abi_types, inputs)
     except Exception as e:
-        raise type(e)(f"{abi['name']} {e}") from None
+        raise type(e)(f"{abi['name']} {e}") from e
 
 
 def format_output_but_cache_checksums(abi: dict, outputs: Union[List, Tuple]) -> ReturnValue:
@@ -266,7 +266,7 @@ def _format_tuple_but_cache_checksums(
             else:
                 result.append(_format_single_but_cache_checksums(type_.to_type_str(), value))
         except Exception as e:
-            raise type(e)(f"'{value}' - {e}") from None
+            raise type(e)(f"'{value}' - {e}") from e
     return result
 
 
@@ -291,7 +291,8 @@ def _format_single_but_cache_checksums(type_str: str, value: Any) -> Any:
     elif type_str == "bool":
         return to_bool(value)
     elif type_str == "address":
-        return Address.checksum(value)
+        # NOTE: since we skip brownie's formatter we must ensure we pass in a usable type
+        return Address.checksum(value if isinstance(value, (str, bytes, bytearray, int, bool)) else str(value))
     elif "byte" in type_str:
         return HexString(value, type_str)
     elif "string" in type_str:
