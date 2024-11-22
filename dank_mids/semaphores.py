@@ -36,7 +36,9 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
         super().__init__(parent, priority, name)
 
 
-class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+# NOTE: keep this so we can include in type stubs
+#class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+class BlockSemaphore(_AbstractPrioritySemaphore):
     """A semaphore for managing concurrency based on block numbers.
 
     This class extends :class:`_AbstractPrioritySemaphore` to provide block-specific concurrency control.
