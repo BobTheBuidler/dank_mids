@@ -4,12 +4,26 @@ from concurrent.futures.process import BrokenProcessPool
 from decimal import Decimal
 from pickle import PicklingError
 from types import MethodType
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
+import brownie.convert.normalize
+import brownie.network.contract
 import eth_abi
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
-from brownie.convert.normalize import format_input, format_output
+from brownie.convert.datatypes import ReturnValue
+from brownie.convert.normalize import (
+    ABIType,
+    HexString,
+    TupleType,
+    _check_array,
+    _get_abi_types,
+    to_bool,
+    to_decimal,
+    to_int,
+    to_string,
+    to_uint,
+)
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import Contract, ContractCall
@@ -17,6 +31,7 @@ from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from eth_abi.exceptions import InsufficientDataBytes
 from eth_typing import HexStr
 from eth_utils import to_checksum_address
+from evmspec.data import Address
 from hexbytes import HexBytes
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
@@ -156,7 +171,7 @@ __eth_abi_decode = eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.dec
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Any) -> Union[HexStr, Exception]:
     try:
-        data = format_input(abi, args)
+        data = format_input_but_cache_checksums(abi, args)
         types_list = get_type_strings(abi["inputs"])
         return signature + __eth_abi_encode(types_list, data).hex()
     except Exception as e:
@@ -180,7 +195,7 @@ def __decode_output(hexstr: BytesLike, abi: Dict[str, Any]) -> Any:
     try:
         types_list = get_type_strings(abi["outputs"])
         result = __eth_abi_decode(types_list, HexBytes(hexstr))
-        result = format_output(abi, result)
+        result = format_output_but_cache_checksums(abi, result)
         if len(result) == 1:
             result = result[0]
         return result
@@ -210,3 +225,83 @@ def __validate_output(abi: Dict[str, Any], hexstr: BytesLike):
             raise VirtualMachineError(e) from None
         except:
             raise e from e.__cause__
+
+
+# NOTE: We do a little monkey patching to save cpu cycles on checksums
+
+
+def format_input_but_cache_checksums(abi: Dict, inputs: Union[List, Tuple]) -> List:
+    # Format contract inputs based on ABI types
+    if len(inputs) and not len(abi["inputs"]):
+        raise TypeError(f"{abi['name']} requires no arguments")
+    abi_types = _get_abi_types(abi["inputs"])
+    try:
+        return _format_tuple_but_cache_checksums(abi_types, inputs)
+    except Exception as e:
+        raise type(e)(f"{abi['name']} {e}") from None
+
+
+def format_output_but_cache_checksums(abi: dict, outputs: Union[List, Tuple]) -> ReturnValue:
+    # Format contract outputs based on ABI types
+    abi_types = _get_abi_types(abi["outputs"])
+    result = _format_tuple_but_cache_checksums(abi_types, outputs)
+    return ReturnValue(result, abi["outputs"])
+
+
+brownie.network.contract.format_input = format_input_but_cache_checksums
+brownie.network.contract.format_output = format_output_but_cache_checksums
+
+
+def _format_tuple_but_cache_checksums(
+    abi_types: Sequence[ABIType], values: Union[List, Tuple]
+) -> List:
+    result = []
+    _check_array(values, len(abi_types))
+    for type_, value in zip(abi_types, values):
+        try:
+            if type_.is_array:
+                result.append(_format_array_but_cache_checksums(type_, value))
+            elif isinstance(type_, TupleType):
+                result.append(_format_tuple_but_cache_checksums(type_.components, value))
+            else:
+                result.append(_format_single_but_cache_checksums(type_.to_type_str(), value))
+        except Exception as e:
+            raise type(e)(f"'{value}' - {e}") from None
+    return result
+
+
+def _format_array_but_cache_checksums(abi_type: ABIType, values: Union[List, Tuple]) -> List:
+    _check_array(values, abi_type.arrlist[-1][0] if len(abi_type.arrlist[-1]) else None)
+    item_type = abi_type.item_type
+    if item_type.is_array:
+        return [_format_array_but_cache_checksums(item_type, i) for i in values]
+    elif isinstance(item_type, TupleType):
+        return [_format_tuple_but_cache_checksums(item_type.components, i) for i in values]
+    return [_format_single_but_cache_checksums(item_type.to_type_str(), i) for i in values]
+
+
+def _format_single_but_cache_checksums(type_str: str, value: Any) -> Any:
+    # Apply standard formatting to a single value
+    if "uint" in type_str:
+        return to_uint(value, type_str)
+    elif "int" in type_str:
+        return to_int(value, type_str)
+    elif type_str == "fixed168x10":
+        return to_decimal(value)
+    elif type_str == "bool":
+        return to_bool(value)
+    elif type_str == "address":
+        return Address.checksum(value)
+    elif "byte" in type_str:
+        return HexString(value, type_str)
+    elif "string" in type_str:
+        return to_string(value)
+    raise TypeError(f"Unknown type: {type_str}")
+
+
+# NOTE: The monkey patches above work for call input and output but the ones below help with event decoding.
+
+
+brownie.convert.normalize._format_array = _format_array_but_cache_checksums
+brownie.convert.normalize._format_single = _format_single_but_cache_checksums
+brownie.convert.normalize._format_tuple = _format_tuple_but_cache_checksums
