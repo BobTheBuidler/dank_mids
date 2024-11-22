@@ -292,7 +292,9 @@ def _format_single_but_cache_checksums(type_str: str, value: Any) -> Any:
         return to_bool(value)
     elif type_str == "address":
         # NOTE: since we skip brownie's formatter we must ensure we pass in a usable type
-        return Address.checksum(value if isinstance(value, (str, bytes, bytearray, int, bool)) else str(value))
+        return Address.checksum(
+            value if isinstance(value, (str, bytes, bytearray, int, bool)) else str(value)
+        )
     elif "byte" in type_str:
         return HexString(value, type_str)
     elif "string" in type_str:
