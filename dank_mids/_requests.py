@@ -366,9 +366,8 @@ class RPCRequest(_RequestMeta[RawResponse]):
             return self.controller.eth_call_semaphores[self.params[1]]
         return self.controller.method_semaphores[self.method]  # type: ignore [return-value]
 
-    async def create_duplicate(
-        self,
-    ) -> RPCResponse:  # Not actually self, but for typing purposes it is.
+    async def create_duplicate(self) -> RPCResponse:
+        # Not actually self, but for typing purposes it is.
         # We need to make room since the stalled call is still holding the semaphore
         self.semaphore.release()
         # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
@@ -376,10 +375,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
         # and then the task will try to acquire at the very next event loop _run_once cycle
         logger.warning("%s got stuck, we're creating a new one", self)
         method = f"{self.method}_raw" if self.raw else self.method
-        retval = await self.controller(method, self.params)  # type: ignore [arg-type]
-        await self.semaphore.acquire()
-        assert "result" in retval or "error" in retval, (retval, type(retval))
-        return retval
+        try:
+            return await self.controller(method, self.params)  # type: ignore [arg-type]
+        finally:
+            await self.semaphore.acquire()
 
 
 INDIVIDUAL_CALL_REVERT_STRINGS = {
