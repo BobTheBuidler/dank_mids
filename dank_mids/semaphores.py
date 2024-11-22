@@ -37,7 +37,7 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
 
 
 # NOTE: keep this so we can include in type stubs
-#class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+# class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
 class BlockSemaphore(_AbstractPrioritySemaphore):
     """A semaphore for managing concurrency based on block numbers.
 
