@@ -54,7 +54,7 @@ jobs:
         run: |
           poetry run pip install cython wheel
           poetry run pip install ez-a-sync
-          poetry run pip install -e .
+          poetry install --no-interaction
       
       - name: Setup brownie networks
         run: |
