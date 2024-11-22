@@ -51,39 +51,30 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
         :class:`_BlockSemaphoreContextManager`: The context manager used by this semaphore.
     """
 
-    # NOTE: we need these hacky properties as a workaround until cython conversion is complete
-    @property
-    def _context_manager_class(self) -> Type[_BlockSemaphoreContextManager]:
-        """The context manager class used by this semaphore."""
-        return _BlockSemaphoreContextManager
+    _context_manager_class: Type[_BlockSemaphoreContextManager]
+    """The context manager class used by this semaphore."""
 
-    @property
-    def _top_priority(self) -> Literal[-1]:
-        """The highest priority value, set to -1."""
-        return -1  # type: ignore [assignment]
+    _top_priority: Literal[-1]
+    """The highest priority value, set to -1."""
+    
+    def __init__(self, value = 1, *, name = None):
+        super().__init__(value, name=name)
+        self._context_manager_class = _BlockSemaphoreContextManager
+        self._top_priority = -1
 
     def __getitem__(self, block: Union[int, str, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
-        return super().__getitem__(  # type: ignore [return-value]
-            block
-            if isinstance(block, int)  # type: ignore [index]
-            else (
-                int(block.hex(), 16)
-                if isinstance(block, bytes)  # type: ignore [union-attr]
-                else (
-                    int(block, 16)
-                    if isinstance(block, str) and "0x" in block
-                    else (
-                        block
-                        if block
-                        not in [
-                            None,
-                            "latest",
-                        ]  # NOTE: We do this to generate an err if an unsuitable value was provided
-                        else self._top_priority
-                    )
-                )
-            )
-        )  # type: ignore [index]
+        if isinstance(block, int):
+            priority = block
+        elif isinstance(block, bytes):
+            priority = int(block.hex(), 16)
+        elif isinstance(block, str) and "0x" in block:
+            priority = int(block, 16)
+        elif block not in [None, "latest"]:
+            # NOTE: We do this to generate an err if an unsuitable value was provided
+            priority = block
+        else:
+            priority = self._top_priority
+        return super().__getitem__(priority)
 
 
 class _MethodSemaphores:
