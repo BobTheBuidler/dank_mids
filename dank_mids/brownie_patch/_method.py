@@ -194,20 +194,22 @@ class _DankMethod(_DankMethodMixin):
         """
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
-            
-        encode_input_coro = self._encode_input(self, self._len_inputs, self._prep_request_data, *args)
+
+        encode_input_coro = self._encode_input(
+            self, self._len_inputs, self._prep_request_data, *args
+        )
 
         # The coroutine is holding a reference for as long as it needs, we can release it here
         del args
 
         async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
             output_coro = self._call(
-                {"to": self._address, "data": await encode_input_coro}, 
+                {"to": self._address, "data": await encode_input_coro},
                 block_identifier,
             )
             async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
                 decode_output_coro = self._decode_output(self, await output_coro)
-        
+
         try:
             return (
                 await decode_output_coro
