@@ -208,16 +208,10 @@ class _DankMethod(_DankMethodMixin):
                 block_identifier,
             )
             async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
-                output = await output_coro
+                decode_output_coro = self._decode_output(self, await output_coro)
 
-        decode_output_coro = self._decode_output(self, await output_coro)
-
-        try:
-            return (
-                await decode_output_coro
-                if decimals is None
-                else await decode_output_coro / 10 ** Decimal(decimals)
-            )
-        except InsufficientDataBytes as e:
-            e.args = *e.args, self, self._address, output
-            raise
+        return (
+            await decode_output_coro
+            if decimals is None
+            else await decode_output_coro / 10 ** Decimal(decimals)
+        )
