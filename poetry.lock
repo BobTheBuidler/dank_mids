@@ -1395,13 +1395,13 @@ files = [
 
 [[package]]
 name = "dictstruct"
-version = "0.0.3"
+version = "0.0.4"
 description = "A msgspec.Struct implementation compatible with the standard dictionary API"
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "dictstruct-0.0.3-py3-none-any.whl", hash = "sha256:dd0a06d54b95154d1dcc99ae07790a75db4824f6dad8e3de8ceb194f04d20537"},
-    {file = "dictstruct-0.0.3.tar.gz", hash = "sha256:0415e3e669b37f30c58bfdecc29c11bf01a681b2d5f3eaf5ccf14a169985184a"},
+    {file = "dictstruct-0.0.4-py3-none-any.whl", hash = "sha256:67bfe7683b9ce50e41150cdfcfe62b36773b594d93e4dbb0d76aceca5bb06c81"},
+    {file = "dictstruct-0.0.4.tar.gz", hash = "sha256:bdca131461e1686878db14e1690c70b58a17d8611a93aa4179ef0f451a9918b4"},
 ]
 
 [package.dependencies]
@@ -2092,12 +2092,12 @@ testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
 name = "ez-a-sync"
-version = "0.24.13"
+version = "0.24.17"
 description = "A library that makes it easy to define objects that can be used for both sync and async use cases."
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "ez_a_sync-0.24.13.tar.gz", hash = "sha256:686d5db24db5eab86f015882f775d8ac6f16fce76f05a399ff101b4ac1c0a392"},
+    {file = "ez_a_sync-0.24.17.tar.gz", hash = "sha256:6c1db7a6a0814c9dea47f9e37922a9814c14d420892efe836f82deeda3e31c7a"},
 ]
 
 [package.dependencies]
