@@ -203,7 +203,7 @@ class _DankMethod(_DankMethodMixin):
         del args
 
         async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
-            output_coro = self._call(
+            output_coro = self.__call(
                 {"to": self._address, "data": await encode_input_coro},
                 block_identifier,
             )
