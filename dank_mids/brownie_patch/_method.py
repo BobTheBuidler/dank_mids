@@ -127,10 +127,10 @@ class _DankMethodMixin(Generic[_EVMType]):
         return self._address in _skip_proc_pool
 
     @functools.cached_property
-    def _web3(cls) -> DankWeb3:
+    def __call(cls) -> DankWeb3:
         from dank_mids import web3
 
-        return web3
+        return web3.eth.call
 
     @functools.cached_property
     def _prep_request_data(self) -> Callable[..., Awaitable[BytesLike]]:
@@ -194,14 +194,26 @@ class _DankMethod(_DankMethodMixin):
         """
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
+            
+        encode_input_coro = self._encode_input(self, self._len_inputs, self._prep_request_data, *args)
+
+        # The coroutine is holding a reference for as long as it needs, we can release it here
+        del args
+
         async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
-            data = await self._encode_input(self, self._len_inputs, self._prep_request_data, *args)
+            output_coro = self._call(
+                {"to": self._address, "data": await encode_input_coro}, 
+                block_identifier,
+            )
             async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
-                output = await self._web3.eth.call(
-                    {"to": self._address, "data": data}, block_identifier
-                )
+                decode_output_coro = self._decode_output(self, await output_coro)
+        
         try:
-            decoded = await self._decode_output(self, output)
+            return (
+                await decode_output_coro
+                if decimals is None
+                else await decode_output_coro / 10 ** Decimal(decimals)
+            )
         except InsufficientDataBytes as e:
-            raise InsufficientDataBytes(str(e), self, self._address, output) from e
-        return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
+            e.args = *e.args, self, self._address, output
+            raise
