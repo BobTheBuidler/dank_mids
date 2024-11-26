@@ -127,7 +127,7 @@ class _DankMethodMixin(Generic[_EVMType]):
         return self._address in _skip_proc_pool
 
     @functools.cached_property
-    def __call(cls) -> DankWeb3:
+    def _call(cls) -> DankWeb3:
         from dank_mids import web3
 
         return web3.eth.call
@@ -203,12 +203,14 @@ class _DankMethod(_DankMethodMixin):
         del args
 
         async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
-            output_coro = self.__call(
+            output_coro = self._call(
                 {"to": self._address, "data": await encode_input_coro},
                 block_identifier,
             )
             async with ENVS.BROWNIE_CALL_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
-                decode_output_coro = self._decode_output(self, await output_coro)
+                output = await output_coro
+
+        decode_output_coro = self._decode_output(self, await output_coro)
 
         try:
             return (
