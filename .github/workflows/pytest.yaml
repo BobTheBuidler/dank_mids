@@ -51,10 +51,7 @@ jobs:
         uses: snok/install-poetry@v1
 
       - name: Install Dependencies
-        run: |
-          poetry run pip install cython wheel
-          poetry run pip install ez-a-sync
-          poetry install --no-interaction
+        run: poetry install --no-interaction
       
       - name: Setup brownie networks
         run: |
