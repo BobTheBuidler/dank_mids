@@ -602,8 +602,12 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
         )
 
 
-__mcall_item_encoder = eth_abi.registry.registry.get_encoder("(bool,(address,bytes)[])").encoders[1].item_encoder
-__decoder0, __decoder1, __decoder2 = eth_abi.registry.registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decoders
+__mcall_item_encoder = (
+    eth_abi.registry.registry.get_encoder("(bool,(address,bytes)[])").encoders[1].item_encoder
+)
+__decoder0, __decoder1, __decoder2 = eth_abi.registry.registry.get_decoder(
+    "(uint256,uint256,(bool,bytes)[])"
+).decoders
 
 __32BYTE_TAIL_CHUNK = b"\00" * 32
 
