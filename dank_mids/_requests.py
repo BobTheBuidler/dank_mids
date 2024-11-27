@@ -506,7 +506,11 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
         super().__init__()
 
     def __bool__(self) -> bool:
-        return any(self.calls)
+        try:
+            next(self.calls)
+            return True
+        except StopIteration:
+            return False
 
     @overload
     def __getitem__(self, ix: int) -> _Request: ...
