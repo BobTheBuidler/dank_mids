@@ -7,7 +7,7 @@ from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import suppress
 from functools import cached_property, lru_cache
-from itertools import chain
+from itertools import accumulate, chain
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -27,10 +27,12 @@ from typing import (
 )
 
 import a_sync
+import eth_abi.registry
 import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
 from aiohttp.client_exceptions import ClientResponseError
-from eth_abi import abi, decoding
+from eth_abi import decoding
+from eth_abi.encoding import encode_uint_256
 from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
@@ -600,20 +602,40 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
         )
 
 
-mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
-mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
+__mcall_item_encoder = eth_abi.registry.registry.get_encoder("(bool,(address,bytes)[])").encoders[1].item_encoder
+__decoder0, __decoder1, __decoder2 = eth_abi.registry.registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decoders
+
+__32BYTE_TAIL_CHUNK = b"\00" * 32
 
 
 def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
-    return mcall_encoder([False, data])
+    assert data
+    # encode packed array
+    head_length = 32 * len(data)
+    tail_chunks = tuple(__mcall_item_encoder(i) for i in data)
+    tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
+    head_chunks = tuple(encode_uint_256(head_length + offset) for offset in tail_offsets)
+    encoded_array = b"".join(head_chunks + tail_chunks)
+    # encode tuple
+    head_length = 32 + len(encoded_array)
+    return b"".join((encode_uint_256(head_length), encoded_array, __32BYTE_TAIL_CHUNK))
 
 
 def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:
     try:
-        return mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
+        stream = decoding.ContextFramesBytesIO(data.decode_result("eth_call"))
+        # NOTE eth_abi does this check that we intentionally skip because the data should just be right. Fingers crossed.
+        # mcall_decoder.validate_pointers(stream)
+
+        # discard the first field
+        __decoder0(stream)
+        # discard the second field
+        __decoder1(stream)
+        # return the third field
+        return __decoder2(stream)
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
-        e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
+        e.args = *e.args, data.decode_result() if isinstance(data, PartialResponse) else data
         return e
 
 
