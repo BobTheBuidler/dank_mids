@@ -30,8 +30,6 @@ from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from eth_abi.exceptions import InsufficientDataBytes
 from eth_typing import HexStr
-from eth_utils import to_checksum_address
-from evmspec.data import Address
 from hexbytes import HexBytes
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
@@ -42,7 +40,9 @@ from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.exceptions import Revert
 from dank_mids.helpers._helpers import DankWeb3
 
+    
 logger = logging.getLogger(__name__)
+
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
 """
 A lambda function that encodes input data for contract calls.
@@ -54,7 +54,18 @@ Args:
 """
 
 decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
+"""
+A lambda function that decodes output data for contract calls.
+It uses the BROWNIE_DECODER_PROCESSES to run the __decode_input function asynchronously.
 
+Args:
+    self: The contract method instance.
+    *args: The arguments to be encoded.
+"""
+
+# We do this so ypricemagic's checksum cache monkey patch will work, 
+# This is only relevant to you if your project uses ypricemagic as well.
+to_checksum_address = Address.checksum
 
 def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
     """
@@ -296,7 +307,7 @@ def _format_single_but_cache_checksums(type_str: str, value: Any) -> Any:
         return to_bool(value)
     elif type_str == "address":
         # NOTE: since we skip brownie's formatter we must ensure we pass in a usable type
-        return Address.checksum(
+        return to_checksum_address(
             value if isinstance(value, (str, bytes, bytearray, int, bool)) else str(value)
         )
     elif "byte" in type_str:
