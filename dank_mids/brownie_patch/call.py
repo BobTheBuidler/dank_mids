@@ -30,6 +30,7 @@ from brownie.network.contract import Contract, ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from eth_abi.exceptions import InsufficientDataBytes
 from eth_typing import HexStr
+from evmspec.data import Address
 from hexbytes import HexBytes
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
