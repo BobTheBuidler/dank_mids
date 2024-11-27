@@ -41,7 +41,7 @@ from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.exceptions import Revert
 from dank_mids.helpers._helpers import DankWeb3
 
-    
+
 logger = logging.getLogger(__name__)
 
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
@@ -64,9 +64,10 @@ Args:
     *args: The arguments to be encoded.
 """
 
-# We do this so ypricemagic's checksum cache monkey patch will work, 
+# We do this so ypricemagic's checksum cache monkey patch will work,
 # This is only relevant to you if your project uses ypricemagic as well.
 to_checksum_address = Address.checksum
+
 
 def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
     """
