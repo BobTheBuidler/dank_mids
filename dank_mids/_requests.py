@@ -1139,8 +1139,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         logger.debug("%s had exception %s, retrying", self, e)
         batches = [
             (
-                Multicall(self.controller, tuple(chunk[0].calls), f"json{self.jid}_{i}")  # type: ignore [misc]
-                if len(chunk) == 1 and isinstance(chunk[0], Multicall)
+                Multicall(self.controller, first_call, f"json{self.jid}_{i}")  # type: ignore [misc]
+                if len(chunk) == 1 and isinstance(first_call := next(iter(chunk)), Multicall)
                 else JSONRPCBatch(self.controller, chunk, f"{self.jid}_{i}")
             )
             for i, chunk in enumerate(self.bisected)
