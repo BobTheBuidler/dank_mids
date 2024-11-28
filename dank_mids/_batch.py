@@ -125,11 +125,11 @@ class DankBatch:
         check_len = min(CHECK, self.controller.batcher.step)
         # Go thru the multicalls and add calls to the batch
         for mcall in self.multicalls.values():
-            # NOTE: If a multicall has less than `CHECK` calls, we should just throw the calls into a jsonrpc batch individually.
-            try:  # NOTE: This should be faster than using len().
-                mcall[check_len]
+            if len(mcall) >= check_len:
                 working_batch.append(mcall, skip_check=True)
-            except IndexError:
+            else:
+                # NOTE: If a multicall has less than `check_len` calls, we should
+                #       just throw the calls into a jsonrpc batch individually.
                 working_batch.extend(mcall, skip_check=True)
             if working_batch.is_full:
                 yield working_batch
@@ -143,8 +143,8 @@ class DankBatch:
             working_batch.append(rpc_calls_to_batch.pop(), skip_check=True)
         if working_batch:
             if working_batch.is_single_multicall:
-                yield working_batch[0]  # type: ignore [misc]
+                yield next(iter(working_batch))  # type: ignore [misc]
             elif len(working_batch) == 1:
-                yield working_batch[0].make_request()  # type: ignore [union-attr]
+                yield next(iter(working_batch)).make_request()  # type: ignore [union-attr]
             else:
                 yield working_batch

@@ -264,10 +264,9 @@ class DankMiddlewareController:
         and executes them as a single batch.
         """
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
-            multicalls = dict(self.pending_eth_calls)
+            multicalls = self.pending_eth_calls.copy()
             self.pending_eth_calls.clear()
-            self.num_pending_eth_calls = 0
-            rpc_calls = self.pending_rpc_calls[:]
+            rpc_calls = self.pending_rpc_calls
             self.pending_rpc_calls = JSONRPCBatch(self)
         demo_logger.info(f"executing dank batch (current cid: {self.call_uid.latest})")  # type: ignore
         batch = DankBatch(self, multicalls, rpc_calls)
