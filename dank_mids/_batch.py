@@ -128,7 +128,7 @@ class DankBatch:
             if len(mcall) >= check_len:
                 working_batch.append(mcall, skip_check=True)
             else:
-                # NOTE: If a multicall has less than `check_len` calls, we should 
+                # NOTE: If a multicall has less than `check_len` calls, we should
                 #       just throw the calls into a jsonrpc batch individually.
                 working_batch.extend(mcall, skip_check=True)
             if working_batch.is_full:

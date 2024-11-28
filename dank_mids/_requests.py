@@ -510,7 +510,7 @@ class WeakRequestList(Generic[_Request]):
         # Keep a weak reference with a callback for when the item is collected
         ref = weakref.ref(item, self._gc_callback)
         self._refs[id(item)] = ref
-    
+
     def extend(self, items: Iterable[_Request]) -> None:
         for item in items:
             self.append(item)
@@ -542,7 +542,7 @@ class WeakRequestList(Generic[_Request]):
     def __repr__(self):
         # Use list comprehension syntax within the repr function for clarity
         return f"WeakList([{', '.join(repr(item) for item in self)}])"
-    
+
 
 class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
     __slots__ = "calls", "_lock", "_daemon"
