@@ -160,7 +160,14 @@ class Contract(brownie.Contract):
         This method sets up lazy initialization for contract methods.
         """
         super().__init__(*args, **kwargs)
-        # get rid of the contract call objects, we can materialize them on a jit basis
+        self.__post_init__()
+
+    def __post_init__(self) -> None:
+        """
+        Get rid of the contract call objects so we can materialize them on a JIT basis.
+
+        This method sets up lazy initialization for contract methods.
+        """
         for name in self.__method_names__:
             if name in {"_name", "_owner"}:
                 # this is a property defined on _ContractBase and cannot be written to
