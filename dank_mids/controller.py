@@ -6,7 +6,7 @@ from typing import Any, DefaultDict, List, Literal, Optional, Set, Union
 import eth_retry
 from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress
-from evmspec._ids import ChainId
+from evmspec.data import ChainId
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
