@@ -16,10 +16,11 @@ from async_lru import alru_cache
 from async_property import async_cached_property
 from eth_typing import BlockNumber
 from evmspec import AnyTransaction, FilterTrace, Transaction, TransactionRLP, TransactionReceipt
-from evmspec.block import TinyBlock
-from evmspec.data import TransactionHash, UnixTimestamp, _DecodeHook, _decode_hook
-from evmspec.log import Log
-from evmspec.receipt import Status
+from evmspec.data import TransactionHash, UnixTimestamp, _decode_hook
+from evmspec.data._main import DecodeHook
+from evmspec.structs.block import TinyBlock
+from evmspec.structs.log import Log
+from evmspec.structs.receipt import Status
 from msgspec import Raw, Struct, ValidationError, json
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
@@ -137,7 +138,7 @@ class DankEth(AsyncEth):
         self,
         *args,
         decode_to: Type[T] = TransactionReceipt,
-        decode_hook: _DecodeHook[T] = _decode_hook,
+        decode_hook: DecodeHook[T] = _decode_hook,
         **kwargs,
     ) -> T:
         """
@@ -173,7 +174,7 @@ class DankEth(AsyncEth):
         self,
         filter_params: TraceFilterParams,
         decode_to: Type[T] = List[FilterTrace],
-        decode_hook: _DecodeHook[T] = _decode_hook,
+        decode_hook: DecodeHook[T] = _decode_hook,
     ) -> T:
         """
         Returns all traces matching a filter. If the decoding to the specified
@@ -249,7 +250,7 @@ class DankEth(AsyncEth):
         self,
         *args,
         decode_to: Type[T] = Tuple[Log, ...],  # type: ignore [assignment]
-        decode_hook: _DecodeHook[T] = _decode_hook,
+        decode_hook: DecodeHook[T] = _decode_hook,
         **kwargs,
     ) -> T:
         """

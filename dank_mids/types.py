@@ -28,10 +28,9 @@ from typing import (
 import evmspec
 from dictstruct import DictStruct
 from eth_typing import ChecksumAddress, HexStr
-from evmspec._ids import ChainId
-from evmspec.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
-from evmspec.data import Address, BlockNumber, Wei, uint, _decode_hook
-from evmspec.log import Log
+from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
+from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
+from evmspec.structs.log import Log
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, json
 from web3.datastructures import AttributeDict
