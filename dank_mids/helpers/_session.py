@@ -124,13 +124,15 @@ async def get_session() -> "DankClientSession":
     return await _get_session_for_thread(get_ident())
 
 
+_RETRY_AFTER = 1.0
+
 class DankClientSession(ClientSession):
     _limited = False
     _last_rate_limited_at = 0
     _continue_requests_at = 0
 
-    async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, _retry_after: float = 1, **kwargs) -> bytes:  # type: ignore [override]
-        while (now := time()) < self._continue_requests_at:
+    async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> bytes:  # type: ignore [override]
+        if (now := time()) < self._continue_requests_at:
             await asyncio.sleep(self._continue_requests_at - now)
 
         # Process input arguments.
@@ -150,7 +152,7 @@ class DankClientSession(ClientSession):
                         return response_data
             except ClientResponseError as ce:
                 if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
-                    await self.handle_too_many_requests(endpoint, _retry_after, args, loads, kwargs, ce)
+                    await self.handle_too_many_requests(endpoint, args, loads, kwargs, ce)
                 else:
                     try:
                         if ce.status not in RETRY_FOR_CODES or tried >= 5:
@@ -172,20 +174,21 @@ class DankClientSession(ClientSession):
                     )
                     tried += 1
 
-    async def handle_too_many_requests(self, endpoint, _retry_after, args, loads, kwargs, ce) -> None:
-        self._last_rate_limited_at = time()
-        if "Retry-After" in ce.headers:
-            _retry_after = float(ce.headers["Retry-After"])
-
-        self._continue_requests_at = max(
-            self._continue_requests_at + _retry_after, 
-            self._last_rate_limited_at + _retry_after,
+    async def handle_too_many_requests(self, endpoint, args, loads, kwargs, ce) -> None:
+        now = time()
+        self._last_rate_limited_at = now
+        retry_after = float(ce.headers.get("Retry-After", _RETRY_AFTER))
+        resume_at = max(
+            self._continue_requests_at + retry_after, 
+            self._last_rate_limited_at + retry_after,
         )
+        retry_after = resume_at - now
+        self._continue_requests_at = resume_at
 
-        self._log_rate_limited(_retry_after)
-        await asyncio.sleep(_retry_after)
+        self._log_rate_limited(retry_after)
+        await asyncio.sleep(retry_after)
 
-        if _retry_after > 30:
+        if retry_after > 30:
             logger.warning("severe rate limiting from your provider")
 
     def _log_rate_limited(self, try_after: float) -> None:
