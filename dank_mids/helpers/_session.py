@@ -130,8 +130,7 @@ class DankClientSession(ClientSession):
     _continue_requests_at = 0
 
     async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, _retry_after: float = 1, **kwargs) -> bytes:  # type: ignore [override]
-        now = time()
-        if now < self._continue_requests_at:
+        while (now := time()) < self._continue_requests_at:
             await asyncio.sleep(self._continue_requests_at - now)
 
         # Process input arguments.
