@@ -152,7 +152,7 @@ class DankClientSession(ClientSession):
                         return response_data
             except ClientResponseError as ce:
                 if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
-                    await self.handle_too_many_requests(endpoint, args, loads, kwargs, ce)
+                    await self.handle_too_many_requests(ce)
                 else:
                     try:
                         if ce.status not in RETRY_FOR_CODES or tried >= 5:
@@ -174,10 +174,10 @@ class DankClientSession(ClientSession):
                     )
                     tried += 1
 
-    async def handle_too_many_requests(self, endpoint, args, loads, kwargs, ce) -> None:
+    async def handle_too_many_requests(self, error: ClientResponseError) -> None:
         now = time()
         self._last_rate_limited_at = now
-        retry_after = float(ce.headers.get("Retry-After", _RETRY_AFTER))
+        retry_after = float(error.headers.get("Retry-After", _RETRY_AFTER))
         resume_at = max(
             self._continue_requests_at + retry_after, 
             self._last_rate_limited_at + retry_after,
