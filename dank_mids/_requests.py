@@ -721,11 +721,16 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             return await self._exec_single_call()
         # elif l < 50: # TODO play with later
         #    return await JSONRPCBatch(self.controller, self.calls)
+        
+        # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
+        calls = tuple(self.calls)
+        if not calls:
+            # TODO: figure out how we get into this function without any calls
+            return
+        
         rid = self.controller.request_uid.next
         demo_logger.info(f"request {rid} for multicall {self.bid} starting")  # type: ignore
         try:
-            # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
-            calls = tuple(self.calls)
             await self.spoof_response(
                 await self.controller.make_request(self.method, self.params, request_id=self.uid),
                 calls,
