@@ -63,7 +63,7 @@ class DankMiddlewareController:
         self.chain_id = self.sync_w3.eth.chain_id
         """The chainid for the currently connected rpc."""
 
-        self.client_version: str = self.sync_w3.client_version if _helpers.w3_version_major >= 6 else self.sync_w3.clientVersion  # type: ignore [attr-defined]
+        self.client_version: str = _get_client_version(self.sync_w3)
         """The client version for the currently connected rpc."""
 
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
@@ -408,6 +408,11 @@ class DankMiddlewareController:
             return self.mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
         return self.mc2 or self.mc3  # type: ignore [return-value]
+
+
+@eth_retry.auto_retry
+def _get_client_version(sync_w3: Web3) -> str:
+    return sync_w3.client_version if _helpers.w3_version_major >= 6 else sync_w3.clientVersion  # type: ignore [attr-defined]
 
 
 class _MulticallContract(Struct):
