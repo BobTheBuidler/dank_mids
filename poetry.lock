@@ -1845,17 +1845,17 @@ test = ["asn1tools (>=0.146.2)", "eth-hash[pysha3]", "factory-boy (>=3.0.1)", "h
 
 [[package]]
 name = "eth-retry"
-version = "0.1.20"
+version = "0.2.0"
 description = "Provides a decorator that automatically catches known transient exceptions that are common in the Ethereum/EVM ecosystem and reattempts to evaluate your decorated function"
 optional = false
 python-versions = "*"
 files = [
-    {file = "eth_retry-0.1.20-py3-none-any.whl", hash = "sha256:7012bef06b1ec58012167f7242b5f3b9e08c4d4b566cb117f4e7f972fc4d5f1c"},
-    {file = "eth_retry-0.1.20.tar.gz", hash = "sha256:492e9a143081e998f828512feb3ba741c300e0b1acbcbd923c85d38c92e16693"},
+    {file = "eth_retry-0.2.0-py3-none-any.whl", hash = "sha256:c1af280e55870bb04ec1d2e580ebfe8fee184000f57f98dc3b08c5ecfbedac61"},
+    {file = "eth_retry-0.2.0.tar.gz", hash = "sha256:39c5483d1de306fdb8d693c27e3fca2ebe251ad562f872a7cff63f93e6a24a6c"},
 ]
 
 [package.dependencies]
-typing-extensions = ">=4.0.1"
+typing_extensions = ">=4.0.1"
 
 [[package]]
 name = "eth-rlp"
@@ -5097,4 +5097,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "af5564192b9030c4a896eed70563dc95f3fc109a018c96b0e7c25d71595c81fa"
+content-hash = "3a35cb8dbecf735f44c81bf2184506d2929d122d36a2dd41aca466edbef5bcc7"
