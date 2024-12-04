@@ -22,7 +22,7 @@ from typing_extensions import Concatenate, ParamSpec
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
 from web3.datastructures import AttributeDict
-from web3.providers import HTTPProvider
+from web3.providers import HTTPProvider, WebsocketProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
@@ -32,6 +32,12 @@ from dank_mids.types import AsyncMiddleware
 
 if TYPE_CHECKING:
     from dank_mids._requests import _Request
+
+try:
+    from web3 import AsyncWeb3
+except ImportError:
+    AsyncWeb3 = None
+
 
 dank_w3s: List[Web3] = []
 """
@@ -60,10 +66,15 @@ Example: for `web3==6.0.1`, the major version is 6.
 """
 
 
-class DankWeb3:
-    """This is just a helper for type checkers. Your object will just be a modified :class:`~web3.Web3` object."""
+if AsyncWeb3:
+    class DankWeb3(AsyncWeb3):
+        ...
 
-    eth: DankEth
+else:
+    class DankWeb3:
+        """This is just a helper for type checkers. Your object will just be a modified :class:`~web3.Web3` object."""
+
+        eth: DankEth
 
 
 skip_poa_middleware = {
@@ -298,7 +309,10 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     """
     if not w3.eth.is_async or not isinstance(w3.provider, AsyncBaseProvider):
         raise ValueError("Dank Middleware can only be applied to an asynchronous Web3 instance.")
-    sync_provider = HTTPProvider(w3.provider.endpoint_uri)
+    if w3.provider.endpoint_uri.startswith(("ws:", "wss:")):
+        sync_provider = WebsocketProvider(w3.provider.endpoint_uri)
+    else:
+        sync_provider = HTTPProvider(w3.provider.endpoint_uri)
     sync_w3: Web3 = Web3(provider=sync_provider)
     # We can't pickle middlewares to send to process executor.
     # The call has already passed thru all middlewares on the user's Web3 instance.
