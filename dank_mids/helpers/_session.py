@@ -198,7 +198,7 @@ class DankClientSession(ClientSession):
             logger.info(
                 "Its all good, dank_mids has this handled, but you might get results slower than you'd like"
             )
-        logger.info("rate limited: retrying after %ss", try_after)
+        logger.info("rate limited: retrying after %.3fs", try_after)
 
 
 @alru_cache(maxsize=None)
