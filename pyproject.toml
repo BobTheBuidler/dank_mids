@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.8,<3.13"
 aiofiles = "*"
+cchecksum = ">=0.0.3,<1"
 eth-retry = ">=0.1.15,<0.2"
 evmspec = ">=0.0.1,<0.1"
 ez-a-sync = ">=0.24.13,<1"

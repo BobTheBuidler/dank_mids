@@ -4,8 +4,8 @@ from functools import lru_cache
 from typing import Any, DefaultDict, List, Literal, Optional, Set, Union
 
 import eth_retry
+from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress
-from eth_utils import to_checksum_address
 from evmspec._ids import ChainId
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
