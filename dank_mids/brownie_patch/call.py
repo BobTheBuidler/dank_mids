@@ -64,7 +64,7 @@ Args:
     *args: The arguments to be encoded.
 """
 
-# We do this so ypricemagic's checksum cache monkey patch will work,
+# We assign this variable so ypricemagic's checksum cache monkey patch will work,
 # This is only relevant to you if your project uses ypricemagic as well.
 to_checksum_address = Address.checksum
 
