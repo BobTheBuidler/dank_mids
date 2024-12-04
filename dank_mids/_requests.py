@@ -256,10 +256,13 @@ class RPCRequest(_RequestMeta[RawResponse]):
 
         # JIT json decoding
         if isinstance(self.response, RawResponse):
-            response = self.response.decode(partial=True)
+            response = self.response.decode(partial=not self.controller._using_websockets)
             if response.error is None:
                 if self.raw:
-                    return {"result": response.result}
+                    dct = {"result": response.result}
+                    if self.controller._using_websockets:
+                        dct["id"] = response.id
+                    return dct
                 response_dict = response.to_dict(self.method)
                 assert "result" in response_dict or "error" in response_dict, (
                     response_dict,
@@ -313,8 +316,12 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 t.cancel()
             for task in done:
                 return await task
-        response = self.response.decode(partial=True)
-        retval = {"result": response.result} if self.raw else response.to_dict(self.method)
+        if self.controller._using_websockets:
+            response = self.response.decode(partial=False)
+            retval = {"id": response.id, "result": response.result} if self.raw else response.to_dict(self.method)
+        else:
+            response = self.response.decode(partial=True)
+            retval = {"result": response.result} if self.raw else response.to_dict(self.method)
         assert "result" in retval or "error" in retval, (retval, type(retval))
         return retval
 
@@ -777,7 +784,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
         # It was either received as a response to a single rpc call or as a part of a batch response.
         elif isinstance(data, RawResponse):
-            response = data.decode(partial=True)
+            response = data.decode(partial=not self.controller._using_websockets)
             if response.error:
                 logger.debug(
                     "%s received an 'error' response from the rpc: %s", self, response.exception

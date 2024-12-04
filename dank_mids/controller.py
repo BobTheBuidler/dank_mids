@@ -81,6 +81,8 @@ class DankMiddlewareController:
 
         self.endpoint = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
         """The uri for the connected rpc."""
+    
+        self._using_websockets = self.endpoint.startswith(("wss:", "ws:"))
 
         self._sort_calls = "tenderly" in self.endpoint or "chainstack" in self.endpoint
         """A boolean that indicates whether calls must be sorted by id in order for dank to work with the connected rpc."""
