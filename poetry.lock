@@ -1986,13 +1986,13 @@ test = ["hypothesis (>=4.43.0)", "mypy (==0.971)", "pytest (>=7.0.0)", "pytest-x
 
 [[package]]
 name = "evmspec"
-version = "0.1.0"
+version = "0.2.0"
 description = "A collection of msgspec.Struct definitions for use with the Ethereum Virtual Machine"
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "evmspec-0.1.0-py3-none-any.whl", hash = "sha256:b9f55620d7292d7e42d126826f17bede49f7256914491186e4da5fb13b21a64d"},
-    {file = "evmspec-0.1.0.tar.gz", hash = "sha256:f923543084675305d7a8d78cf4250872af4cc493c02d45f3b031d6dfd6ef9b96"},
+    {file = "evmspec-0.2.0-py3-none-any.whl", hash = "sha256:3a4e7008a3b57126649ebe4356f13e2904ba7956706c0e5e1e4d730348b7e028"},
+    {file = "evmspec-0.2.0.tar.gz", hash = "sha256:4c9bd874bfcd36756bfef644e3acf4275204eae0e14af7838d8c177bbd029e0d"},
 ]
 
 [package.dependencies]
@@ -2751,13 +2751,13 @@ varint = "*"
 
 [[package]]
 name = "multicall"
-version = "0.9.3"
+version = "0.10.0"
 description = "aggregate results from multiple ethereum contract calls"
 optional = false
 python-versions = "<4,>=3.8"
 files = [
-    {file = "multicall-0.9.3-py3-none-any.whl", hash = "sha256:bbe9e32f0338e61833ce38f94beeeb8e460b156decd3f75bd2cb9831fdd169c7"},
-    {file = "multicall-0.9.3.tar.gz", hash = "sha256:fa4454be14b0eb3c37ec00511d506f5f7206e947d1b29faeaaa7c72683967e81"},
+    {file = "multicall-0.10.0-py3-none-any.whl", hash = "sha256:e29fa7b072d503d5958cf49b5f16495ba3b6e1087242584e5a4a100520de7afc"},
+    {file = "multicall-0.10.0.tar.gz", hash = "sha256:fe395c0810b9db220bdd79792b951781ad566b67c8744c2255670b9ecda14857"},
 ]
 
 [package.dependencies]
@@ -5097,4 +5097,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "3a35cb8dbecf735f44c81bf2184506d2929d122d36a2dd41aca466edbef5bcc7"
+content-hash = "335b0028b9385847a0133d3630805fe47d9a8902e0aff0d44bce9d5675648105"
