@@ -50,7 +50,6 @@ class _FileHelper(metaclass=abc.ABCMeta):
         Returns:
             The URI of the file as a string.
         """
-        ...
 
     @abc.abstractproperty
     def mode(self) -> str:
@@ -60,7 +59,6 @@ class _FileHelper(metaclass=abc.ABCMeta):
         Returns:
             The mode to open the file with as a string.
         """
-        ...
 
 
 class _CSVWriter(_FileHelper):
@@ -118,7 +116,6 @@ class _CSVWriter(_FileHelper):
         Returns:
             The filename of the CSV file as a string.
         """
-        ...
 
     @abc.abstractproperty
     def column_names(self) -> Iterable[str]:
@@ -128,4 +125,3 @@ class _CSVWriter(_FileHelper):
         Returns:
             An iterable of column names for the CSV file.
         """
-        ...
