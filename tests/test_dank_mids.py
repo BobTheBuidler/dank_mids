@@ -23,7 +23,9 @@ BIG_WORK = [
 
 height = chain.height
 MULTIBLOCK_WORK = [
-    Call(CHAI, "totalSupply()(uint)", [[f"totalSupply{i}", None]], _w3=dank_web3, block_id=height - i)
+    Call(
+        CHAI, "totalSupply()(uint)", [[f"totalSupply{i}", None]], _w3=dank_web3, block_id=height - i
+    )
     for i in range(1_000)
 ]
 
