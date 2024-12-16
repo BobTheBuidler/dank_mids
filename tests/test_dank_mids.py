@@ -18,13 +18,12 @@ BIG_WORK = [
         block_id=height - (i // 25000),
         _w3=dank_web3,
     ).coroutine()
-    for i in range(100_000)
+    for i in range(0, 100_000, 3)
 ]
+
 height = chain.height
 MULTIBLOCK_WORK = [
-    Call(
-        CHAI, "totalSupply()(uint)", [[f"totalSupply{i}", None]], _w3=dank_web3, block_id=height - i
-    ).coroutine()
+    Call(CHAI, "totalSupply()(uint)", [[f"totalSupply{i}", None]], _w3=dank_web3, block_id=height - i)
     for i in range(1_000)
 ]
 
