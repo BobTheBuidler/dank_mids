@@ -436,7 +436,7 @@ def _needs_full_request_spec(e: BadResponse):
 
 
 class eth_call(RPCRequest):
-    __slots__ = "block", "target"
+    __slots__ = "target", "calldata", "block"
 
     def __init__(
         self, controller: "DankMiddlewareController", params: Any, retry: bool = False
@@ -445,14 +445,14 @@ class eth_call(RPCRequest):
 
         call_dict, block = params
 
-        self.block: BlockId = block
-        """The block height at which the contract will be called."""
-
         self.target: ChecksumAddress = call_dict["to"]
         """The contract address for the call."""
 
         self.calldata: HexBytes = HexBytes(call_dict["data"])
         """The calldata for the call."""
+
+        self.block: BlockId = block
+        """The block height at which the contract will be called."""
 
         RPCRequest.__init__(self, controller, "eth_call", params)
 
