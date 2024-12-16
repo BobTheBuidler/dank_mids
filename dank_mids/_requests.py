@@ -1,5 +1,15 @@
 from abc import ABCMeta, abstractmethod
-from asyncio import FIRST_COMPLETED, TimeoutError, create_task, gather, get_running_loop, shield, sleep, wait, wait_for
+from asyncio import (
+    FIRST_COMPLETED,
+    TimeoutError,
+    create_task,
+    gather,
+    get_running_loop,
+    shield,
+    sleep,
+    wait,
+    wait_for,
+)
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from functools import cached_property, lru_cache
@@ -82,7 +92,6 @@ _Response = TypeVar(
 
 class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
-
 
 
 _event_init = a_sync.Event.__init__
@@ -313,9 +322,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
             await wait_for(shielded, timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
-            done, pending = await wait(
-                [task, self.create_duplicate()], return_when=FIRST_COMPLETED
-            )
+            done, pending = await wait([task, self.create_duplicate()], return_when=FIRST_COMPLETED)
             for t in pending:
                 t.cancel()
             for task in done:
@@ -438,18 +445,18 @@ class eth_call(RPCRequest):
         self, controller: "DankMiddlewareController", params: Any, retry: bool = False
     ) -> None:
         """Adds a call to the DankMiddlewareContoller's `pending_eth_calls`."""
-        
+
         call_dict, block = params
-        
+
         self.block: BlockId = block
         """The block height at which the contract will be called."""
-        
+
         self.target: ChecksumAddress = call_dict["to"]
         """The contract address for the call."""
 
         self.calldata: HexBytes = HexBytes(call_dict["data"])
         """The calldata for the call."""
-        
+
         RPCRequest.__init__(self, controller, "eth_call", params)
 
     def __repr__(self) -> str:
@@ -487,7 +494,7 @@ class eth_call(RPCRequest):
             except Exception as e:
                 # NOTE: The call still returns a revert when it's not packed in a multicall
                 data = e
-                
+
         # The above revert catching logic fails to account for pre-decoding RawResponse objects.
         await RPCRequest.spoof_response(self, data)
 
@@ -846,8 +853,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         _log_debug("%s had exception %s, bisecting and retrying", self, e)
         controller = self.controller
         batches = [
-            Multicall(controller, chunk, f"{self.bid}_{i}")
-            for i, chunk in enumerate(self.bisected)
+            Multicall(controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)
         ]
         for batch in batches:
             batch.start(cleanup=False)
@@ -1133,7 +1139,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         # Reaching this point means we made a batch call and we got results. That doesn't mean they're good, but we got 'em.
 
         controller = self.controller
-        
+
         if controller._sort_calls:
             # NOTE: these providers don't always return batch results in the correct ordering
             # NOTE: is it maybe because they
