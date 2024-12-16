@@ -94,13 +94,13 @@ class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
 
-_event_init = a_sync.Event.__init__
-_event_set = a_sync.Event.set
+_super_init = a_sync.Event.__init__
+_super_set = a_sync.Event.set
 
 
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
-        _init_a_sync_event(self, debug_daemon_interval=300)
+        _super_init(self, debug_daemon_interval=300)
         self._owner = weak_proxy(owner)
 
     def __repr__(self) -> str:
@@ -110,9 +110,9 @@ class _RequestEvent(a_sync.Event):
         # Make sure we wake up the _RequestEvent's event loop if its in another thread
         self_loop = self._loop
         if self_loop == get_running_loop():
-            _event_set(self)
+            _super_set(self)
         else:
-            self_loop.call_soon_threadsafe(_event_set, self)
+            self_loop.call_soon_threadsafe(_super_set, self)
 
 
 class _RequestMeta(Generic[_Response], metaclass=ABCMeta):
