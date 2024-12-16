@@ -133,12 +133,8 @@ class _RequestMeta(Generic[_Response], metaclass=ABCMeta):
         pass
 
     @property
-    def done(self) -> bool:
-        return self._done.is_set()
-
-    @property
     def response(self) -> _Response:
-        if not self.done:
+        if not self._done.is_set():
             raise ResponseNotReady(self)
         return self._response
 
@@ -151,10 +147,11 @@ class _RequestMeta(Generic[_Response], metaclass=ABCMeta):
         pass
 
     async def _debug_daemon(self) -> None:
+        done = self._done.is_set()
         # NOTE: _resonse works for RPCRequst and eth_call, _done works for _Batch classes
-        while self and self._response is None and not self.done:
+        while self and self._response is None and not done():
             await sleep(60)
-            if not self.done:
+            if not done():
                 _log_debug("%s has not received data after %ss", self, time() - self._start)
 
 
