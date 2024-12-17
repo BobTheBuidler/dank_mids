@@ -168,9 +168,9 @@ These methods are typically handled separately or have special requirements.
 def _get_len_for_method(method: str) -> int:
     # NOTE: These are totally arbitrary, used to reduce frequency of giant batches/responses
     if method == "eth_getTransactionReceipt":
-        return 10
+        return 5
     elif any(m in method for m in ["eth_getCode" "eth_getBlockBy", "eth_getTransaction"]):
-        return 6
+        return 3
     return 1
 
 
