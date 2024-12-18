@@ -3,7 +3,7 @@ from asyncio import sleep
 from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
-from logging import getLogger
+from logging import DEBUG, getLogger
 from random import random
 from threading import get_ident
 from time import time
@@ -159,10 +159,14 @@ class DankClientSession(ClientSession):
             await sleep(self._continue_requests_at - now)
 
         # Process input arguments.
-        if isinstance(kwargs.get("data"), PartialRequest):
-            logger.debug("making request for %s", kwargs["data"])
-            kwargs["data"] = _codec.encode(kwargs["data"])
-        logger.debug("making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs)
+        if debug_logs_enabled = logger.isEnabledFor(DEBUG):
+            if isinstance(kwargs.get("data"), PartialRequest):
+                logger._log(DEBUG, "making request for %s", kwargs["data"])
+                kwargs["data"] = _codec.encode(kwargs["data"])
+            logger._log(DEBUG, "making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs)
+        else:
+            if isinstance(kwargs.get("data"), PartialRequest):
+                kwargs["data"] = _codec.encode(kwargs["data"])
 
         # Try the request until success or 5 failures.
         tried = 0
@@ -180,22 +184,29 @@ class DankClientSession(ClientSession):
                     try:
                         if ce.status not in RETRY_FOR_CODES or tried >= 5:
                             logger.debug(
-                                "response failed with status %s", HTTPStatusExtended(ce.status)
+                                "response failed with status %s", 
+                                HTTPStatusExtended(ce.status),
                             )
                             raise ce
                     except ValueError as ve:
-                        raise (
-                            ce if str(ve).endswith("is not a valid HTTPStatusExtended") else ve
-                        ) from ve
+                        if str(ve).endswith("is not a valid HTTPStatusExtended"):
+                            raise ce from ve
+                        raise
+                    else:
+                        tried += 1
+                        if debug_logs_enabled:
+                            sleep_for = random()
+                            logger._log(
+                                DEBUG,
+                                "response failed with status %s, retrying in %ss",
+                                HTTPStatusExtended(ce.status),
+                                round(sleep_for, 2),
+                            )
+                            await sleep(sleep_for)
+                        else:
+                            await sleep(random())
 
-                    sleep = random()
-                    await sleep(sleep)
-                    logger.debug(
-                        "response failed with status %s, retrying in %ss",
-                        HTTPStatusExtended(ce.status),
-                        round(sleep, 2),
-                    )
-                    tried += 1
+                    
 
     async def rate_limit_inactive(self) -> None:
         return await rate_limit_inactive(self.endpoint)
