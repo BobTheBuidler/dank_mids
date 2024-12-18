@@ -205,11 +205,6 @@ class DankClientSession(ClientSession):
                         else:
                             await sleep(random())
 
-                    
-
-    async def rate_limit_inactive(self) -> None:
-        return await rate_limit_inactive(self.endpoint)
-
     async def handle_too_many_requests(self, error: ClientResponseError) -> None:
         now = time()
         self._last_rate_limited_at = now
