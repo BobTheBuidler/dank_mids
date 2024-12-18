@@ -160,10 +160,10 @@ class DankClientSession(ClientSession):
         # Process input arguments.
         if debug_logs_enabled := _logger_is_enabled_for(DEBUG):
             if isinstance(kwargs.get("data"), PartialRequest):
-                _logger_log(DEBUG, "making request for %s", kwargs["data"])
+                _logger_log(DEBUG, "making request for %s", (kwargs["data"],))
                 kwargs["data"] = encode(kwargs["data"])
             _logger_log(
-                DEBUG, "making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs
+                DEBUG, "making request to %s with (args, kwargs): (%s %s)", (endpoint, args, kwargs)
             )
         else:
             if isinstance(kwargs.get("data"), PartialRequest):
@@ -200,8 +200,7 @@ class DankClientSession(ClientSession):
                             _logger_log(
                                 DEBUG,
                                 "response failed with status %s, retrying in %ss",
-                                HTTPStatusExtended(ce.status),
-                                round(sleep_for, 2),
+                                (HTTPStatusExtended(ce.status), round(sleep_for, 2)),
                             )
                             await sleep(sleep_for)
                         else:
