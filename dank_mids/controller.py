@@ -191,9 +191,9 @@ class DankMiddlewareController:
         Returns:
             The response from the RPC call.
         """
-        
+
         await self.rate_limit_inactive()
-        
+
         # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
         if method == "eth_call":
             async with self.eth_call_semaphores[params[1]]:
