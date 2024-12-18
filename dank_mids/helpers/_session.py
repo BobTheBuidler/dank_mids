@@ -1,8 +1,9 @@
-import asyncio
 import http
-import logging
+from asyncio import sleep
+from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
+from logging import getLogger
 from random import random
 from threading import get_ident
 from time import time
@@ -18,7 +19,7 @@ from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.helpers import _codec
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
-logger = logging.getLogger("dank_mids.session")
+logger = getLogger("dank_mids.session")
 
 
 # NOTE: You cannot subclass an IntEnum object so we have to do some hacky shit here.
@@ -154,7 +155,7 @@ class DankClientSession(ClientSession):
 
     async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> bytes:  # type: ignore [override]
         if (now := time()) < self._continue_requests_at:
-            await asyncio.sleep(self._continue_requests_at - now)
+            await sleep(self._continue_requests_at - now)
 
         # Process input arguments.
         if isinstance(kwargs.get("data"), PartialRequest):
@@ -187,7 +188,7 @@ class DankClientSession(ClientSession):
                         ) from ve
 
                     sleep = random()
-                    await asyncio.sleep(sleep)
+                    await sleep(sleep)
                     logger.debug(
                         "response failed with status %s, retrying in %ss",
                         HTTPStatusExtended(ce.status),
@@ -212,7 +213,7 @@ class DankClientSession(ClientSession):
         self._log_rate_limited(retry_after)
         if retry_after > 30:
             logger.warning("severe rate limiting from your provider")
-        await asyncio.sleep(retry_after)
+        await sleep(retry_after)
 
     def _log_rate_limited(self, try_after: float) -> None:
         if not self._limited:
