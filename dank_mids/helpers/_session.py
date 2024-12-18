@@ -108,14 +108,14 @@ __requests_per_second = int(ENVS.REQUESTS_PER_SECOND)
 
 for __periods_per_second in (10, 5, 2, 1):
     if __requests_per_second % __periods_per_second == 0:
-        break    
+        break
 
 # default is 50 requests/second
 limiter = AsyncLimiter(
     # do some math here to get requests
-    ENVS.REQUESTS_PER_SECOND // __periods_per_second, 
+    ENVS.REQUESTS_PER_SECOND // __periods_per_second,
     1 / __periods_per_second,
-)  
+)
 
 
 @overload
