@@ -162,7 +162,9 @@ class DankClientSession(ClientSession):
             if isinstance(kwargs.get("data"), PartialRequest):
                 logger._log(DEBUG, "making request for %s", kwargs["data"])
                 kwargs["data"] = encode(kwargs["data"])
-            logger._log(DEBUG, "making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs)
+            logger._log(
+                DEBUG, "making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs
+            )
         else:
             if isinstance(kwargs.get("data"), PartialRequest):
                 kwargs["data"] = encode(kwargs["data"])
@@ -183,7 +185,7 @@ class DankClientSession(ClientSession):
                     try:
                         if ce.status not in RETRY_FOR_CODES or tried >= 5:
                             logger.debug(
-                                "response failed with status %s", 
+                                "response failed with status %s",
                                 HTTPStatusExtended(ce.status),
                             )
                             raise ce
