@@ -108,14 +108,17 @@ __requests_per_second = int(ENVS.REQUESTS_PER_SECOND)
 
 for __periods_per_second in (10, 5, 2, 1):
     if __requests_per_second % __periods_per_second == 0:
-        break
-
-# default is 50 requests/second
-limiter = AsyncLimiter(
-    # do some math here to get requests
-    ENVS.REQUESTS_PER_SECOND // __periods_per_second,
-    1 / __periods_per_second,
+        break# default is 50 requests/second
+        
+limiters = defaultdict(
+    lambda: AsyncLimiter(
+        # do some math here to get requests
+        ENVS.REQUESTS_PER_SECOND // __periods_per_second,
+        1 / __periods_per_second,
+    )
 )
+
+    
 
 
 @overload
@@ -158,7 +161,7 @@ class DankClientSession(ClientSession):
         tried = 0
         while True:
             try:
-                async with limiter:
+                async with limiters[self]:
                     async with super().post(endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
                         logger.debug("received response %s", response_data)
@@ -186,6 +189,12 @@ class DankClientSession(ClientSession):
                         round(sleep, 2),
                     )
                     tried += 1
+                    
+    async def rate_limit_inactive(self) -> None:
+        if waiters := limiters[self]._waiters:
+            # wait until the last future has been cleared from the rate limiter
+            await tuple(waiters.values())[-1]
+            await rate_limit_inactive()
 
     async def handle_too_many_requests(self, error: ClientResponseError) -> None:
         now = time()
@@ -199,10 +208,9 @@ class DankClientSession(ClientSession):
         self._continue_requests_at = resume_at
 
         self._log_rate_limited(retry_after)
-        await asyncio.sleep(retry_after)
-
         if retry_after > 30:
             logger.warning("severe rate limiting from your provider")
+        await asyncio.sleep(retry_after)
 
     def _log_rate_limited(self, try_after: float) -> None:
         if not self._limited:
