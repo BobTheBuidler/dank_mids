@@ -158,11 +158,11 @@ class DankClientSession(ClientSession):
             await sleep(self._continue_requests_at - now)
 
         # Process input arguments.
-        if debug_logs_enabled := logger.isEnabledFor(DEBUG):
+        if debug_logs_enabled := _logger_is_enabled_for(DEBUG):
             if isinstance(kwargs.get("data"), PartialRequest):
-                logger._log(DEBUG, "making request for %s", kwargs["data"])
+                _logger_log(DEBUG, "making request for %s", kwargs["data"])
                 kwargs["data"] = encode(kwargs["data"])
-            logger._log(
+            _logger_log(
                 DEBUG, "making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs
             )
         else:
@@ -176,7 +176,7 @@ class DankClientSession(ClientSession):
                 async with limiters[endpoint]:
                     async with super().post(endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
-                        logger.debug("received response %s", response_data)
+                        _logger_debug("received response %s", response_data)
                         return response_data
             except ClientResponseError as ce:
                 if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
@@ -184,7 +184,7 @@ class DankClientSession(ClientSession):
                 else:
                     try:
                         if ce.status not in RETRY_FOR_CODES or tried >= 5:
-                            logger.debug(
+                            _logger_debug(
                                 "response failed with status %s",
                                 HTTPStatusExtended(ce.status),
                             )
@@ -197,7 +197,7 @@ class DankClientSession(ClientSession):
                         tried += 1
                         if debug_logs_enabled:
                             sleep_for = random()
-                            logger._log(
+                            _logger_log(
                                 DEBUG,
                                 "response failed with status %s, retrying in %ss",
                                 HTTPStatusExtended(ce.status),
@@ -220,20 +220,20 @@ class DankClientSession(ClientSession):
 
         self._log_rate_limited(retry_after)
         if retry_after > 30:
-            logger.warning("severe rate limiting from your provider")
+            _logger_warning("severe rate limiting from your provider")
         await sleep(retry_after)
 
     def _log_rate_limited(self, try_after: float) -> None:
         if not self._limited:
             self._limited = True
-            logger.info("You're being rate limited by your node provider")
-            logger.info(
+            _logger_info("You're being rate limited by your node provider")
+            _logger_info(
                 "Its all good, dank_mids has this handled, but you might get results slower than you'd like"
             )
         if try_after < 5:
-            logger.debug("rate limited: retrying after %.3fs", try_after)
+            _logger_debug("rate limited: retrying after %.3fs", try_after)
         else:
-            logger.info("rate limited: retrying after %.3fs", try_after)
+            _logger_info("rate limited: retrying after %.3fs", try_after)
 
 
 @alru_cache(maxsize=None)
@@ -249,3 +249,9 @@ async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
         raise_for_status=True,
         read_bufsize=2**20,  # 1mb
     )
+
+_logger_is_enabled_for = logger.isEnabledFor
+_logger_warning = logger.warning
+_logger_info = logger.info
+_logger_debug = logger.debug
+_logger_log = logger._log
