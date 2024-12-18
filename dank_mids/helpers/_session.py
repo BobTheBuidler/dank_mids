@@ -250,6 +250,7 @@ async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
         read_bufsize=2**20,  # 1mb
     )
 
+
 _logger_is_enabled_for = logger.isEnabledFor
 _logger_warning = logger.warning
 _logger_info = logger.info
