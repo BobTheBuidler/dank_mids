@@ -9,14 +9,13 @@ from threading import get_ident
 from time import time
 from typing import Any, Callable, List, Optional, overload
 
-import msgspec
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids.helpers import _codec
+from dank_mids.helpers._codec import encode
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
 logger = getLogger("dank_mids.session")
@@ -162,11 +161,11 @@ class DankClientSession(ClientSession):
         if debug_logs_enabled = logger.isEnabledFor(DEBUG):
             if isinstance(kwargs.get("data"), PartialRequest):
                 logger._log(DEBUG, "making request for %s", kwargs["data"])
-                kwargs["data"] = _codec.encode(kwargs["data"])
+                kwargs["data"] = encode(kwargs["data"])
             logger._log(DEBUG, "making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs)
         else:
             if isinstance(kwargs.get("data"), PartialRequest):
-                kwargs["data"] = _codec.encode(kwargs["data"])
+                kwargs["data"] = encode(kwargs["data"])
 
         # Try the request until success or 5 failures.
         tried = 0
