@@ -224,7 +224,7 @@ async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
     )
 
 
-def _logger_debug(msg: str, *args: Any) -> None:
-    ...
+def _logger_debug(msg: str, *args: Any) -> None: ...
+
 
 _logger_debug = logger.debug

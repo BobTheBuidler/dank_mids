@@ -466,7 +466,7 @@ class _MulticallContract(Struct):
         return hash(self.address)
 
 
-def _logger_debug(msg: str, *args: Any) -> None:
-    ...
+def _logger_debug(msg: str, *args: Any) -> None: ...
+
 
 _logger_debug = logger.debug
