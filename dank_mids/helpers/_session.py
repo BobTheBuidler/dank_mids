@@ -212,13 +212,13 @@ async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
     """
     # I'm testing the value to use for limit, eventually will make an env var for this with an appropriate default
     connector = TCPConnector(limit=0, enable_cleanup_closed=True)
-    client_timeout = ClientTimeout(
-        int(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT))
-    )
+    client_timeout = ClientTimeout(  # type: ignore [arg-type, attr-defined]
+        int(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT)
+    ) 
     return DankClientSession(
         connector=connector,
         headers={"content-type": "application/json"},
-        timeout=client_timeout,  # type: ignore [arg-type, attr-defined]
+        timeout=client_timeout,  
         raise_for_status=True,
         read_bufsize=2**20,  # 1mb
     )
