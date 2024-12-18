@@ -191,7 +191,9 @@ class DankMiddlewareController:
         Returns:
             The response from the RPC call.
         """
-
+        
+        await self.rate_limit_inactive()
+        
         # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
         if method == "eth_call":
             async with self.eth_call_semaphores[params[1]]:
@@ -272,6 +274,9 @@ class DankMiddlewareController:
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
         demo_logger.info(f"{batch} done")
+
+    async def rate_limit_inactive(self) -> None:
+        return await _session.rate_limit_inactive(self.endpoint)
 
     @property
     def queue_is_full(self) -> bool:
