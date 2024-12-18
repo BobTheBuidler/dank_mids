@@ -109,8 +109,9 @@ __requests_per_second = int(ENVS.REQUESTS_PER_SECOND)
 
 for __periods_per_second in (10, 5, 2, 1):
     if __requests_per_second % __periods_per_second == 0:
-        break  # default is 50 requests/second
+        break
 
+# default is 50 requests/second
 limiters = defaultdict(
     lambda: AsyncLimiter(
         # do some math here to get requests
