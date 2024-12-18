@@ -1,21 +1,20 @@
-import asyncio
 import http
 import logging
+from asyncio import sleep
 from enum import IntEnum
 from itertools import chain
 from random import random
 from threading import get_ident
 from time import time
-from typing import Any, Callable, List, Optional, overload
+from typing import Any, Callable, overload
 
-import msgspec
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids.helpers import _codec
+from dank_mids.helpers._codec import encode
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
 logger = logging.getLogger("dank_mids.session")
@@ -134,22 +133,22 @@ class DankClientSession(ClientSession):
 
     async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> bytes:  # type: ignore [override]
         if (now := time()) < self._continue_requests_at:
-            await asyncio.sleep(self._continue_requests_at - now)
+            await sleep(self._continue_requests_at - now)
 
         # Process input arguments.
         if isinstance(kwargs.get("data"), PartialRequest):
-            logger.debug("making request for %s", kwargs["data"])
-            kwargs["data"] = _codec.encode(kwargs["data"])
-        logger.debug("making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs)
+            _logger_debug("making request for %s", kwargs["data"])
+            kwargs["data"] = encode(kwargs["data"])
+        _logger_debug("making request to %s with (args, kwargs): (%s %s)", endpoint, args, kwargs)
 
         # Try the request until success or 5 failures.
         tried = 0
         while True:
             try:
                 async with limiter:
-                    async with super().post(endpoint, *args, **kwargs) as response:
+                    async with ClientSession.post(self, endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
-                        logger.debug("received response %s", response_data)
+                        _logger_debug("received response %s", response_data)
                         return response_data
             except ClientResponseError as ce:
                 if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
@@ -157,7 +156,7 @@ class DankClientSession(ClientSession):
                 else:
                     try:
                         if ce.status not in RETRY_FOR_CODES or tried >= 5:
-                            logger.debug(
+                            _logger_debug(
                                 "response failed with status %s", HTTPStatusExtended(ce.status)
                             )
                             raise ce
@@ -166,12 +165,12 @@ class DankClientSession(ClientSession):
                             ce if str(ve).endswith("is not a valid HTTPStatusExtended") else ve
                         ) from ve
 
-                    sleep = random()
-                    await asyncio.sleep(sleep)
-                    logger.debug(
+                    sleep_time = random()
+                    await sleep(sleep_time)
+                    _logger_debug(
                         "response failed with status %s, retrying in %ss",
                         HTTPStatusExtended(ce.status),
-                        round(sleep, 2),
+                        round(sleep_time, 2),
                     )
                     tried += 1
 
@@ -187,7 +186,7 @@ class DankClientSession(ClientSession):
         self._continue_requests_at = resume_at
 
         self._log_rate_limited(retry_after)
-        await asyncio.sleep(retry_after)
+        await sleep(retry_after)
 
         if retry_after > 30:
             logger.warning("severe rate limiting from your provider")
@@ -200,7 +199,7 @@ class DankClientSession(ClientSession):
                 "Its all good, dank_mids has this handled, but you might get results slower than you'd like"
             )
         if try_after < 5:
-            logger.debug("rate limited: retrying after %.3fs", try_after)
+            _logger_debug("rate limited: retrying after %.3fs", try_after)
         else:
             logger.info("rate limited: retrying after %.3fs", try_after)
 
@@ -211,10 +210,21 @@ async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
     This makes our ClientSession threadsafe just in case.
     Most everything should be run in main thread though.
     """
+    # I'm testing the value to use for limit, eventually will make an env var for this with an appropriate default
+    connector = TCPConnector(limit=0, enable_cleanup_closed=True)
+    client_timeout = ClientTimeout(  # type: ignore [arg-type, attr-defined]
+        int(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT)
+    )
     return DankClientSession(
-        connector=TCPConnector(limit=32),
+        connector=connector,
         headers={"content-type": "application/json"},
-        timeout=ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT),  # type: ignore [arg-type, attr-defined]
+        timeout=client_timeout,
         raise_for_status=True,
         read_bufsize=2**20,  # 1mb
     )
+
+
+def _logger_debug(msg: str, *args: Any) -> None:
+    ...
+
+_logger_debug = logger.debug

@@ -16,8 +16,8 @@ This module is crucial for debugging, performance monitoring, and optimization o
 
 # TODO: Robust and Refactor
 
-import asyncio
 import logging
+from asyncio import create_task, sleep
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor
 from time import time
@@ -208,7 +208,7 @@ class _StatsLogger(logging.Logger):
         that occurred during its execution.
         """
         if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:  # type: ignore [attr-defined,has-type]
-            self._daemon = asyncio.create_task(self._stats_daemon())
+            self._daemon = create_task(self._stats_daemon())
         elif self._daemon.done():
             raise self._daemon.exception()  # type: ignore [misc]
 
@@ -220,7 +220,7 @@ class _StatsLogger(logging.Logger):
         start = time()
         time_since_notified = 0
         while True:
-            await asyncio.sleep(0)
+            await sleep(0)
             now = time()
             duration = now - start
             collector.event_loop_times.append(duration)

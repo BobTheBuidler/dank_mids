@@ -1,6 +1,5 @@
-import asyncio
-import importlib
 import sys
+from asyncio import gather
 
 import pytest
 from brownie import chain
@@ -32,7 +31,7 @@ MULTIBLOCK_WORK = [
 
 @pytest.mark.asyncio_cooperative
 async def test_dank_middleware():
-    await asyncio.gather(*BIG_WORK)
+    await gather(*BIG_WORK)
     controller = instances[chain.id][0]
     cid = controller.call_uid.latest
     mid = controller.multicall_uid.latest
@@ -76,7 +75,7 @@ async def test_json_batch():
     This test verifies that the system can correctly handle and process
     a batch of JSON-RPC requests across multiple blocks.
     """
-    await asyncio.gather(*MULTIBLOCK_WORK)
+    await gather(*MULTIBLOCK_WORK)
 
 
 def test_next_cid():
@@ -122,7 +121,7 @@ async def test_other_methods():
         dank_web3.eth.get_block("0xe25822"),
         dank_web3.manager.coro_request(RPC.web3_clientVersion, []),
     ]
-    results = await asyncio.gather(*work)
+    results = await gather(*work)
     assert results
     assert results[-2].timestamp
 
