@@ -119,6 +119,13 @@ limiters = defaultdict(
 )
 
 
+async def rate_limit_inactive(endpoint: str) -> None:
+    if waiters := limiters[endpoint]._waiters:
+        # wait until the last future has been cleared from the rate limiter
+        await tuple(waiters.values())[-1]
+        await rate_limit_inactive(endpoint)
+
+
 @overload
 async def post(
     endpoint: str, *args, loads: Callable[[Any], RawResponse], **kwargs
@@ -159,7 +166,7 @@ class DankClientSession(ClientSession):
         tried = 0
         while True:
             try:
-                async with limiters[self]:
+                async with limiters[self.endpoint]:
                     async with super().post(endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
                         logger.debug("received response %s", response_data)
@@ -189,10 +196,7 @@ class DankClientSession(ClientSession):
                     tried += 1
 
     async def rate_limit_inactive(self) -> None:
-        if waiters := limiters[self]._waiters:
-            # wait until the last future has been cleared from the rate limiter
-            await tuple(waiters.values())[-1]
-            await rate_limit_inactive()
+        return await rate_limit_inactive(self.endpoint)
 
     async def handle_too_many_requests(self, error: ClientResponseError) -> None:
         now = time()
