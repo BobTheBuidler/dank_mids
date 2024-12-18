@@ -14,7 +14,7 @@ from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
-from dank_mids import ENVIRONMENT_VARIABLES
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.helpers import _codec
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
@@ -103,7 +103,19 @@ RETRY_FOR_CODES = {
     HTTPStatusExtended.CLOUDFLARE_TIMEOUT,  # type: ignore [attr-defined]
 }
 
-limiter = AsyncLimiter(5, 0.1)  # 50 requests/second
+
+__requests_per_second = int(ENVS.REQUESTS_PER_SECOND)
+
+for __periods_per_second in (10, 5, 2, 1):
+    if __requests_per_second % __periods_per_second == 0:
+        break    
+
+# default is 50 requests/second
+limiter = AsyncLimiter(
+    # do some math here to get requests
+    ENVS.REQUESTS_PER_SECOND // __periods_per_second, 
+    1 / __periods_per_second,
+)  
 
 
 @overload
@@ -214,7 +226,7 @@ async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
     return DankClientSession(
         connector=TCPConnector(limit=32),
         headers={"content-type": "application/json"},
-        timeout=ClientTimeout(ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT),  # type: ignore [arg-type, attr-defined]
+        timeout=ClientTimeout(ENVS.AIOHTTP_TIMEOUT),  # type: ignore [arg-type, attr-defined]
         raise_for_status=True,
         read_bufsize=2**20,  # 1mb
     )
