@@ -167,7 +167,7 @@ class DankClientSession(ClientSession):
         tried = 0
         while True:
             try:
-                async with limiters[self.endpoint]:
+                async with limiters[endpoint]:
                     async with super().post(endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
                         logger.debug("received response %s", response_data)
