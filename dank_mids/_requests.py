@@ -147,12 +147,13 @@ class _RequestMeta(Generic[_Response], metaclass=ABCMeta):
         pass
 
     async def _debug_daemon(self) -> None:
-        done = self._done.is_set()
+        start = self._start
+        done = self._done.is_set
         # NOTE: _resonse works for RPCRequst and eth_call, _done works for _Batch classes
         while self and self._response is None and not done():
             await sleep(60)
             if not done():
-                _log_debug("%s has not received data after %ss", self, time() - self._start)
+                _log_debug("%s has not received data after %ss", self, time() - start)
 
 
 ### Single requests:
