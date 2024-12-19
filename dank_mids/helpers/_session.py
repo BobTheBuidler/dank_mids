@@ -209,7 +209,7 @@ class DankClientSession(ClientSession):
                 current_rate,
                 new_rate,
             )
-                        
+
         now = time()
         self._last_rate_limited_at = now
         retry_after = float(error.headers.get("Retry-After", 1 / limiter._rate_per_sec))
