@@ -110,6 +110,7 @@ limiters = defaultdict(lambda: AsyncLimiter(ENVS.REQUESTS_PER_SECOND, 1))
 
 _rate_limit_waiters = {}
 
+
 async def rate_limit_inactive(endpoint: str) -> None:
     # wait until the last future has been cleared from the rate limiter
     if not (waiters := limiters[endpoint]._rate_limit_waiters):
@@ -134,7 +135,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         waiters[last_key] = last_waiter
         # await it
         await last_waiter
-        
+
     _rate_limit_waiters.pop(endpoint).set()
 
 
