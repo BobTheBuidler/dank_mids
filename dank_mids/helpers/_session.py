@@ -121,13 +121,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         return
 
     _rate_limit_waiters[endpoint] = Event()
-
-    # pop last item
-    last_key, last_waiter = waiters.popitem()
-    # replace it
-    waiters[last_key] = last_waiter
-    # await it
-    await last_waiter
+    
     while waiters:
         # pop last item
         last_key, last_waiter = waiters.popitem()
