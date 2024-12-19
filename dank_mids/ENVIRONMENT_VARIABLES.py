@@ -35,6 +35,8 @@ OPERATION_MODE = _envs.create_env("OPERATION_MODE", OperationMode, default="infu
 MAX_MULTICALL_SIZE = _envs.create_env("MAX_MULTICALL_SIZE", int, default=10_000)
 # Max number of rpc calls to include in one batch call
 MAX_JSONRPC_BATCH_SIZE = _envs.create_env("MAX_JSONRPC_BATCH_SIZE", int, default=500)
+# Maximum amount of requests per second
+REQUESTS_PER_SECOND = _envs.create_env("REQUESTS_PER_SECOND", int, default=50)
 
 # Enable Demo Mode?
 demo_mode = _envs._deprecated_format.create_env("DEMO_MODE", bool, default=False, verbose=False)
