@@ -1,4 +1,4 @@
-import asyncio
+from asyncio import sleep
 from typing import (
     Awaitable,
     Callable,
@@ -194,7 +194,7 @@ class DankEth(AsyncEth):
         # TODO: figure out a better way to handle intermittent errors
         while (traces_bytes := await self._trace_filter(filter_params)) is None and attempts < 5:
             attempts += 1
-            await asyncio.sleep(1)
+            await sleep(1)
         try:
             return json.decode(traces_bytes, type=decode_to, dec_hook=decode_hook)
         except ValidationError:
@@ -267,7 +267,7 @@ class DankEth(AsyncEth):
         # TODO: figure out a better way to handle intermittent errors
         while (logs_bytes := await self._get_logs_raw(*args, **kwargs)) is None and attempts < 5:  # type: ignore [attr-defined]
             attempts += 1
-            await asyncio.sleep(1)
+            await sleep(1)
         return json.decode(logs_bytes, type=decode_to, dec_hook=decode_hook)
 
     meth = MethodNoFormat.default(RPC.eth_getTransactionReceipt)  # type: ignore [arg-type, var-annotated]

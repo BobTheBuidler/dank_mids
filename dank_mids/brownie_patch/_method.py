@@ -1,6 +1,6 @@
-import asyncio
-import functools
+from asyncio import gather
 from decimal import Decimal
+from functools import cached_property
 from typing import Any, Awaitable, Callable, Dict, Generic, Iterable, List, Optional, TypeVar
 
 from brownie.convert.datatypes import EthAddress
@@ -68,7 +68,7 @@ class _DankMethodMixin(Generic[_EVMType]):
                 self.coroutine(call_arg, block_identifier=block_identifier, decimals=decimals)
                 for call_arg in args
             ]
-        return await asyncio.gather(*coros)
+        return await gather(*coros)
 
     @property
     def abi(self) -> dict:
@@ -116,23 +116,23 @@ class _DankMethodMixin(Generic[_EVMType]):
     def _input_sig(self) -> str:
         return self._abi.input_sig
 
-    @functools.cached_property
+    @cached_property
     def _len_inputs(self) -> int:
         return len(self.abi["inputs"])
 
-    @functools.cached_property
+    @cached_property
     def _skip_decoder_proc_pool(self) -> bool:
         from dank_mids.brownie_patch.call import _skip_proc_pool
 
         return self._address in _skip_proc_pool
 
-    @functools.cached_property
+    @cached_property
     def _call(cls) -> DankWeb3:
         from dank_mids import web3
 
         return web3.eth.call
 
-    @functools.cached_property
+    @cached_property
     def _prep_request_data(self) -> Callable[..., Awaitable[BytesLike]]:
         from dank_mids.brownie_patch import call
 
