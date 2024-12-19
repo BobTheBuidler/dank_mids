@@ -1,5 +1,5 @@
 import http
-from asyncio import sleep
+from asyncio import CancelledError, sleep
 from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
@@ -133,8 +133,13 @@ async def rate_limit_inactive(endpoint: str) -> None:
         last_key, last_waiter = waiters.popitem()
         # replace it
         waiters[last_key] = last_waiter
+        if last_waiter.done():
+            break
         # await it
-        await last_waiter
+        try:
+            await last_waiter
+        except CancelledError:
+            pass
 
     _rate_limit_waiters.pop(endpoint).set()
 
