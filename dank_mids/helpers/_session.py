@@ -159,15 +159,16 @@ class DankClientSession(ClientSession):
 
         # Process input arguments.
         if debug_logs_enabled := _logger_is_enabled_for(DEBUG):
-            if isinstance(kwargs.get("data"), PartialRequest):
-                _logger_log(DEBUG, "making request for %s", (kwargs["data"],))
-                kwargs["data"] = encode(kwargs["data"])
+            if isinstance(data, PartialRequest):
+                kwargs["data"] = encode(data)
+                _logger_log(DEBUG, "making request for %s", (data,))
             _logger_log(
-                DEBUG, "making request to %s with (args, kwargs): (%s %s)", (endpoint, args, kwargs)
-            )
-        else:
-            if isinstance(kwargs.get("data"), PartialRequest):
-                kwargs["data"] = encode(kwargs["data"])
+                DEBUG, 
+                "making request to %s with (args, kwargs): (%s %s)", 
+                (endpoint, args, kwargs),
+            )     
+        elif isinstance(data, PartialRequest):
+            kwargs["data"] = encode(data)
 
         # Try the request until success or 5 failures.
         tried = 0
