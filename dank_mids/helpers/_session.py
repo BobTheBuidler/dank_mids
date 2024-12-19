@@ -176,7 +176,12 @@ class DankClientSession(ClientSession):
                         new_rate = current_rate * 0.99
                         limiter._rate_per_sec = new_rate
                         limiter._last_updated_at = now
-                        _logger_info("reduced requests per second for %s from %s to %s", endpoint, current_rate, new_rate)
+                        _logger_info(
+                            "reduced requests per second for %s from %s to %s",
+                            endpoint,
+                            current_rate,
+                            new_rate,
+                        )
                     await self.handle_too_many_requests(ce)
                 else:
                     try:
