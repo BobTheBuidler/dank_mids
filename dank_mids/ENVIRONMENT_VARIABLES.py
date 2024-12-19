@@ -10,9 +10,14 @@ from dank_mids import _envs
 from dank_mids._mode import OperationMode
 from dank_mids.semaphores import BlockSemaphore
 
+
 logger = logging.getLogger("dank_mids.envs")
 
 if not typed_envs.logger.disabled:
+    if not logger.hasHandlers():
+        logger.addHandler(logging.StreamHandler())
+    if not logger.isEnabledFor(logging.INFO):
+        logger.setLevel(logging.INFO)
     logger.info(
         "For your information, you can tweak your configuration for optimal performance using any of the envs below:"
     )
