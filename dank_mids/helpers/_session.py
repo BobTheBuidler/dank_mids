@@ -164,9 +164,6 @@ async def get_session() -> "DankClientSession":
     return await _get_session_for_thread(get_ident())
 
 
-_RETRY_AFTER = 1.0
-
-
 class DankClientSession(ClientSession):
     _limited = False
     _last_rate_limited_at = 0
@@ -243,7 +240,8 @@ class DankClientSession(ClientSession):
 
         now = time()
         self._last_rate_limited_at = now
-        retry_after = float(error.headers.get("Retry-After", 1 / limiter._rate_per_sec))
+        secs_between_requests = 1 / limiter._rate_per_sec
+        retry_after = float(error.headers.get("Retry-After", secs_between_requests * 10))
         resume_at = max(
             self._continue_requests_at + retry_after,
             self._last_rate_limited_at + retry_after,
