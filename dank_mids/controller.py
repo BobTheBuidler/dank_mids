@@ -20,7 +20,9 @@ from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
-from dank_mids.helpers import _codec, _helpers, _session
+from dank_mids.helpers._codec import decode_raw
+from dank_mids.helpers._helpers import w3_version_major, _make_hashable, _sync_w3_from_async
+from dank_mids.helpers._session import post, rate_limit_inactive
 from dank_mids.semaphores import _MethodQueues, _MethodSemaphores, BlockSemaphore
 from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
 
@@ -57,7 +59,7 @@ class DankMiddlewareController:
         self.w3: Web3 = w3
         """The Web3 instance used to make rpc requests."""
 
-        self.sync_w3 = _helpers._sync_w3_from_async(w3)
+        self.sync_w3 = _sync_w3_from_async(w3)
         """A sync Web3 instance connected to the same rpc, used to make calls during init."""
 
         self.chain_id = self.sync_w3.eth.chain_id
@@ -192,6 +194,8 @@ class DankMiddlewareController:
             The response from the RPC call.
         """
 
+        await rate_limit_inactive(self.endpoint)
+
         # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
         if method == "eth_call":
             async with self.eth_call_semaphores[params[1]]:
@@ -216,7 +220,7 @@ class DankMiddlewareController:
         except TypeError as e:
             if "unhashable type" not in str(e):
                 raise
-        return await queue(self, method, _helpers._make_hashable(params))
+        return await queue(self, method, _make_hashable(params))
 
     @eth_retry.auto_retry
     async def make_request(
@@ -243,7 +247,7 @@ class DankMiddlewareController:
             method=method, params=params, id=request_id or self.call_uid.next
         )
         try:
-            return await _session.post(self.endpoint, data=request, loads=_codec.decode_raw)
+            return await post(self.endpoint, data=request, loads=decode_raw)
         except Exception as e:
             if ENVS.DEBUG:
                 _debugging.failures.record(
@@ -412,7 +416,7 @@ class DankMiddlewareController:
 
 @eth_retry.auto_retry
 def _get_client_version(sync_w3: Web3) -> str:
-    return sync_w3.client_version if _helpers.w3_version_major >= 6 else sync_w3.clientVersion  # type: ignore [attr-defined]
+    return sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion  # type: ignore [attr-defined]
 
 
 class _MulticallContract(Struct):
