@@ -113,7 +113,7 @@ _rate_limit_waiters = {}
 
 async def rate_limit_inactive(endpoint: str) -> None:
     # wait until the last future has been cleared from the rate limiter
-    if not (waiters := limiters[endpoint]._rate_limit_waiters):
+    if not (waiters := limiters[endpoint]._waiters):
         return
 
     if waiter := _rate_limit_waiters.get(endpoint):
