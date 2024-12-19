@@ -1,4 +1,4 @@
-import asyncio
+from asyncio import as_completed
 from functools import wraps
 from importlib.metadata import version
 from typing import (
@@ -127,7 +127,7 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
     Args:
         futs: An iterable of awaitables to be executed.
     """
-    for fut in asyncio.as_completed([*futs]):
+    for fut in as_completed([*futs]):
         await fut
         del fut
 

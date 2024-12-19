@@ -196,14 +196,14 @@ class DankMiddlewareController:
         if method == "eth_call":
             async with self.eth_call_semaphores[params[1]]:
                 # create a strong ref to the call that will be held until the caller completes or is cancelled
-                logger.debug(f"making {self.request_type.__name__} {method} with params {params}")
+                _logger_debug(f"making {self.request_type.__name__} {method} with params {params}")
                 if params[0]["to"] in self.no_multicall:
                     return await RPCRequest(self, method, params)
                 return await eth_call(self, params)
 
         # some methods go thru a SmartProcessingQueue, we check those next
         queue = self.method_queues[method]
-        logger.debug(f"making {self.request_type.__name__} {method} with params {params}")
+        _logger_debug(f"making {self.request_type.__name__} {method} with params {params}")
 
         # no queue, we can make the request normally
         if queue is None:
@@ -464,3 +464,9 @@ class _MulticallContract(Struct):
             A hash value based on the contract's address.
         """
         return hash(self.address)
+
+
+def _logger_debug(msg: str, *args: Any) -> None:
+    ...
+
+_logger_debug = logger.debug
