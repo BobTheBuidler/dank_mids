@@ -158,6 +158,7 @@ class DankClientSession(ClientSession):
             await sleep(self._continue_requests_at - now)
 
         # Process input arguments.
+        data = kwargs.get(data)
         if debug_logs_enabled := _logger_is_enabled_for(DEBUG):
             if isinstance(data, PartialRequest):
                 kwargs["data"] = encode(data)
