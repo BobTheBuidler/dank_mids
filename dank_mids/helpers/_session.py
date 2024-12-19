@@ -163,10 +163,10 @@ class DankClientSession(ClientSession):
                 kwargs["data"] = encode(data)
                 _logger_log(DEBUG, "making request for %s", (data,))
             _logger_log(
-                DEBUG, 
-                "making request to %s with (args, kwargs): (%s %s)", 
+                DEBUG,
+                "making request to %s with (args, kwargs): (%s %s)",
                 (endpoint, args, kwargs),
-            )     
+            )
         elif isinstance(data, PartialRequest):
             kwargs["data"] = encode(data)
 
