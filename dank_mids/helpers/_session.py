@@ -121,7 +121,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         return
 
     _rate_limit_waiters[endpoint] = Event()
-    
+
     while waiters:
         # pop last item
         last_key, last_waiter = waiters.popitem()
@@ -141,7 +141,6 @@ async def rate_limit_inactive(endpoint: str) -> None:
                 break
             else:
                 await sleep(0)
-                
 
     _rate_limit_waiters.pop(endpoint).set()
 
@@ -212,7 +211,7 @@ class DankClientSession(ClientSession):
                                 # we still want the original exc to raise
                                 raise ce from ve
                             raise
-                    
+
                     tried += 1
                     if debug_logs_enabled:
                         sleep_for = random()
