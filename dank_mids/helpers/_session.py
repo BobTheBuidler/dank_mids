@@ -117,7 +117,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         return
 
     if waiter := _rate_limit_waiters.get(endpoint):
-        await waiter
+        await waiter.wait()
         return
 
     _rate_limit_waiters[endpoint] = Event()
