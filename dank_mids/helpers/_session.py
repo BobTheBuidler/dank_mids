@@ -9,6 +9,7 @@ from threading import get_ident
 from time import time
 from typing import Any, Callable, List, Optional, overload
 
+from a_sync import Event
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
@@ -107,12 +108,12 @@ RETRY_FOR_CODES = {
 # default is 50 requests/second
 limiters = defaultdict(lambda: AsyncLimiter(ENVS.REQUESTS_PER_SECOND, 1))
 
-
 async def rate_limit_inactive(endpoint: str) -> None:
-    if waiters := limiters[endpoint]._waiters:
-        # wait until the last future has been cleared from the rate limiter
-        await tuple(waiters.values())[-1]
-        await rate_limit_inactive(endpoint)
+    # wait until the last future has been cleared from the rate limiter
+    limiter = limiters[endpoint]
+    while waiters := limiter._waiters:
+        last_waiter = tuple(waiters.values())[-1]
+        await last_waiter
 
 
 @overload
