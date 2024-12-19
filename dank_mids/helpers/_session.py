@@ -170,6 +170,13 @@ class DankClientSession(ClientSession):
                         return response_data
             except ClientResponseError as ce:
                 if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
+                    limiter = limiters[endpoint]
+                    if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 60:
+                        current_rate = limiter._rate_per_sec
+                        new_rate = current_rate * 0.99
+                        limiter._rate_per_sec = new_rate
+                        limiter._last_updated_at = now
+                        _logger_info("reduced requests per second for %s from %s to %s", endpoint, current_rate, new_rate)
                     await self.handle_too_many_requests(ce)
                 else:
                     try:
