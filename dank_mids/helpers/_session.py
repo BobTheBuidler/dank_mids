@@ -170,19 +170,7 @@ class DankClientSession(ClientSession):
                         return response_data
             except ClientResponseError as ce:
                 if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
-                    limiter = limiters[endpoint]
-                    if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 60:
-                        current_rate = limiter._rate_per_sec
-                        new_rate = current_rate * 0.99
-                        limiter._rate_per_sec = new_rate
-                        limiter._last_updated_at = now
-                        _logger_info(
-                            "reduced requests per second for %s from %s to %s",
-                            endpoint,
-                            current_rate,
-                            new_rate,
-                        )
-                    await self.handle_too_many_requests(ce)
+                    await self.handle_too_many_requests(endpoint, ce)
                 else:
                     try:
                         if ce.status not in RETRY_FOR_CODES or tried >= 5:
@@ -208,10 +196,23 @@ class DankClientSession(ClientSession):
                         else:
                             await sleep(random())
 
-    async def handle_too_many_requests(self, error: ClientResponseError) -> None:
+    async def handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
+        limiter = limiters[endpoint]
+        if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 60:
+            current_rate = limiter._rate_per_sec
+            new_rate = current_rate * 0.99
+            limiter._rate_per_sec = new_rate
+            limiter._last_updated_at = now
+            _logger_info(
+                "reduced requests per second for %s from %s to %s",
+                endpoint,
+                current_rate,
+                new_rate,
+            )
+                        
         now = time()
         self._last_rate_limited_at = now
-        retry_after = float(error.headers.get("Retry-After", _RETRY_AFTER))
+        retry_after = float(error.headers.get("Retry-After", 1 / limiter._rate_per_sec))
         resume_at = max(
             self._continue_requests_at + retry_after,
             self._last_rate_limited_at + retry_after,
