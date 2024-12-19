@@ -134,6 +134,14 @@ async def rate_limit_inactive(endpoint: str) -> None:
             await last_waiter
         except CancelledError:
             pass
+        # let recently popped waiters check the limiter for capacity, they might create new waiters
+        # then, let recently popped waiters make some calls to see if we're still being limited
+        for _ in range(10):
+            if waiters:
+                break
+            else:
+                await sleep(0)
+                
 
     _rate_limit_waiters.pop(endpoint).set()
 
