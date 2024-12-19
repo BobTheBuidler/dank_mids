@@ -104,19 +104,9 @@ RETRY_FOR_CODES = {
 }
 
 
-__requests_per_second = int(ENVS.REQUESTS_PER_SECOND)
-
-for __periods_per_second in (10, 5, 2, 1):
-    if __requests_per_second % __periods_per_second == 0:
-        break
-
 # default is 50 requests/second
 limiters = defaultdict(
-    lambda: AsyncLimiter(
-        # do some math here to get requests
-        ENVS.REQUESTS_PER_SECOND // __periods_per_second,
-        1 / __periods_per_second,
-    )
+    lambda: AsyncLimiter(ENVS.REQUESTS_PER_SECOND, 1)
 )
 
 
@@ -158,7 +148,7 @@ class DankClientSession(ClientSession):
             await sleep(self._continue_requests_at - now)
 
         # Process input arguments.
-        data = kwargs.get(data)
+        data = kwargs.get("data")
         if debug_logs_enabled := _logger_is_enabled_for(DEBUG):
             if isinstance(data, PartialRequest):
                 kwargs["data"] = encode(data)
