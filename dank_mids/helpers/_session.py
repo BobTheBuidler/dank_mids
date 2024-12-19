@@ -109,30 +109,31 @@ RETRY_FOR_CODES = {
 limiters = defaultdict(lambda: AsyncLimiter(ENVS.REQUESTS_PER_SECOND, 1))
 
 _rate_limit_inactive = defaultdict(bool)
+_futs = {}
 
 
 async def rate_limit_inactive(endpoint: str) -> None:
     # wait until the last future has been cleared from the rate limiter
     if _rate_limit_inactive[endpoint]:
         return
-
-    if waiters := limiters[endpoint]._waiters:
-        _rate_limit_inactive[endpoint] = False
-        limiter = limiters[endpoint]
+    if not limiters[endpoint]._waiters:
+        _rate_limit_inactive[endpoint] = True
+        return
+    _rate_limit_inactive[endpoint] = False
+    limiter = limiters[endpoint]
+    # pop last item
+    last_key, last_waiter = limiter._waiters.popitem()
+    # replace it
+    waiters[last_key] = last_waiter
+    # await it
+    await last_waiter
+    while waiters := limiter._waiters:
         # pop last item
         last_key, last_waiter = waiters.popitem()
         # replace it
         waiters[last_key] = last_waiter
         # await it
         await last_waiter
-        while waiters := limiter._waiters:
-            # pop last item
-            last_key, last_waiter = waiters.popitem()
-            # replace it
-            waiters[last_key] = last_waiter
-            # await it
-            await last_waiter
-    _rate_limit_inactive[endpoint] = True
 
 
 @overload
