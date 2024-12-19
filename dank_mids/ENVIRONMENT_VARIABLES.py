@@ -174,9 +174,6 @@ method_semaphores: Dict[str, a_sync.Semaphore] = {
         string_converter=int,
         verbose=False,
     ),
-    "eth_getLogs": _envs.create_env(
-        "ETH_GETLOGS_SEMAPHORE", a_sync.Semaphore, default=64, string_converter=int, verbose=False
-    ),
     "eth_getTransaction": _envs.create_env(
         "ETH_GETTRANSACTION_SEMAPHORE",
         a_sync.Semaphore,
