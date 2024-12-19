@@ -830,12 +830,12 @@ test = ["coverage (>=7)", "hypothesis", "pytest"]
 
 [[package]]
 name = "cchecksum"
-version = "0.0.3"
+version = "0.0.4"
 description = "A ~2x faster drop-in replacement for eth_utils.to_checksum_address. Raises the exact same Exceptions. Implemented in C."
 optional = false
 python-versions = "<4,>=3.8"
 files = [
-    {file = "cchecksum-0.0.3.tar.gz", hash = "sha256:f7c4b43f5d17a2d92c49a47e4c86d93a9593452eab42c3450359655d95e11906"},
+    {file = "cchecksum-0.0.4.tar.gz", hash = "sha256:612b7db7dc317c3303aa2db54e7ee71fb7ca2ccae46e420ae5afbefe6c8b01ed"},
 ]
 
 [package.dependencies]
@@ -1986,13 +1986,13 @@ test = ["hypothesis (>=4.43.0)", "mypy (==0.971)", "pytest (>=7.0.0)", "pytest-x
 
 [[package]]
 name = "evmspec"
-version = "0.2.0"
+version = "0.2.3"
 description = "A collection of msgspec.Struct definitions for use with the Ethereum Virtual Machine"
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "evmspec-0.2.0-py3-none-any.whl", hash = "sha256:3a4e7008a3b57126649ebe4356f13e2904ba7956706c0e5e1e4d730348b7e028"},
-    {file = "evmspec-0.2.0.tar.gz", hash = "sha256:4c9bd874bfcd36756bfef644e3acf4275204eae0e14af7838d8c177bbd029e0d"},
+    {file = "evmspec-0.2.3-py3-none-any.whl", hash = "sha256:d4d74b147d51a9ac9fb6ae10f9a0633f962771f71b01aa1295d162005fe2e656"},
+    {file = "evmspec-0.2.3.tar.gz", hash = "sha256:0429b833ee107ade7ff301faf131db8ca85e23f6ca4e22e0b815e213fad3e9de"},
 ]
 
 [package.dependencies]
@@ -2033,12 +2033,12 @@ testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
 name = "ez-a-sync"
-version = "0.24.25"
+version = "0.24.43"
 description = "A library that makes it easy to define objects that can be used for both sync and async use cases."
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "ez_a_sync-0.24.25.tar.gz", hash = "sha256:dfaa81c912299c328390b1adea1f47e8a1c3c2176fa766fba408abaaf77f82aa"},
+    {file = "ez_a_sync-0.24.43.tar.gz", hash = "sha256:54e6092b8dae8bb367e22a124fd0b3ff2bea3ef8a29633043219ea9be79eca83"},
 ]
 
 [package.dependencies]
@@ -4329,13 +4329,13 @@ telegram = ["requests"]
 
 [[package]]
 name = "typed-envs"
-version = "0.0.7"
+version = "0.0.8"
 description = "typed_envs is used to create specialized `EnvironmentVariable` objects that behave exactly the same as any other instance of the `typ` used to create them."
 optional = false
 python-versions = "*"
 files = [
-    {file = "typed_envs-0.0.7-py3-none-any.whl", hash = "sha256:76ca85c6abcf15135b63a64611cbf3778bb6d043caf5b069c8276370b63154df"},
-    {file = "typed_envs-0.0.7.tar.gz", hash = "sha256:95a75f6dcb5e290716746a67ddfd6502f7021c24a6d7d3e5054e6651261c8b74"},
+    {file = "typed_envs-0.0.8-py3-none-any.whl", hash = "sha256:e3338e173e71b9a10b772b1cd737d2c40159fe547ab1864a407e2c20f58458b8"},
+    {file = "typed_envs-0.0.8.tar.gz", hash = "sha256:cb64a0c9196621005c7eb67936e0758149a1ad01b73fab8ee527281a80b4fd2d"},
 ]
 
 [[package]]
@@ -5097,4 +5097,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "335b0028b9385847a0133d3630805fe47d9a8902e0aff0d44bce9d5675648105"
+content-hash = "c7be193fa7cf71d094ed329854222f56414b0de94fcc6614acf40408b2d23bf3"
