@@ -108,6 +108,7 @@ RETRY_FOR_CODES = {
 # default is 50 requests/second
 limiters = defaultdict(lambda: AsyncLimiter(ENVS.REQUESTS_PER_SECOND, 1))
 
+
 async def rate_limit_inactive(endpoint: str) -> None:
     # wait until the last future has been cleared from the rate limiter
     limiter = limiters[endpoint]
