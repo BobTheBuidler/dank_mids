@@ -252,7 +252,7 @@ class DankClientSession(ClientSession):
         if retry_after > 30:
             _logger_warning("severe rate limiting from your provider")
         # the limiter handles the timing
-        await limiter.acquire(5)
+        limiter._level += 5
 
     def _log_rate_limited(self, try_after: float) -> None:
         if not self._limited:
