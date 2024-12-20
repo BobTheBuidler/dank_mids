@@ -420,7 +420,7 @@ def _is_call_revert(e: BadResponse) -> bool:
     Returns:
         True if the error was caused by an individual call revert, False otherwise.
     """
-    stre = f"{e}"
+    stre = f"{e}".lower()
     return any(s in stre for s in INDIVIDUAL_CALL_REVERT_STRINGS)
 
 
@@ -626,16 +626,17 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
 
     def should_retry(self, e: Exception) -> bool:
         """Should the _Batch be retried based on `e`?"""
-        if "out of gas" in f"{e}":
+        str_e = f"{e}".lower()
+        if "out of gas" in str_e:
             # TODO Remember which contracts/calls are gas guzzlers
             _log_debug("out of gas. cut in half, trying again")
-        elif any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
+        elif any(err in str_e for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             _log_debug("Dank too loud. Bisecting batch and retrying.")
         elif isinstance(e, BadResponse) and (_needs_full_request_spec(e) or _is_call_revert(e)):
             pass
-        elif "429" not in f"{e}" and all(
-            err not in f"{e}".lower() for err in constants.TOO_MUCH_DATA_ERRS
+        elif "429" not in str_e and all(
+            err not in str_e for err in constants.TOO_MUCH_DATA_ERRS
         ):
             _log_warning("unexpected %s: %s", e.__class__.__name__, e)
         return len(self) > 1
