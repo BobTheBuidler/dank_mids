@@ -105,7 +105,7 @@ RETRY_FOR_CODES = {
 }
 
 # default is 50 requests/second
-limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))
+limiters = defaultdict(lambda: AsyncLimiter(5, 5 / ENVS.REQUESTS_PER_SECOND))
 
 _rate_limit_waiters = {}
 
