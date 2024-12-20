@@ -226,7 +226,7 @@ class DankClientSession(ClientSession):
 
     async def handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
         limiter = limiters[endpoint]
-        if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 30:
+        if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 10:
             current_rate = limiter._rate_per_sec
             new_rate = current_rate * 0.97
             limiter._rate_per_sec = new_rate
@@ -252,7 +252,8 @@ class DankClientSession(ClientSession):
         self._log_rate_limited(retry_after)
         if retry_after > 30:
             _logger_warning("severe rate limiting from your provider")
-        await sleep(retry_after)
+        acquire_capacity_for_x_requests = retry_after / secs_between_requests
+        await limiter.acquire(acquire_capacity_for_x_requests)
 
     def _log_rate_limited(self, try_after: float) -> None:
         if not self._limited:
