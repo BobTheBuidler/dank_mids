@@ -228,7 +228,7 @@ class DankClientSession(ClientSession):
         limiter = limiters[endpoint]
         if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 60:
             current_rate = limiter._rate_per_sec
-            new_rate = current_rate * 0.99
+            new_rate = current_rate * 0.97
             limiter._rate_per_sec = new_rate
             limiter._last_updated_at = now
             _logger_info(
