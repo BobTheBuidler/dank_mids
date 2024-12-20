@@ -635,9 +635,7 @@ class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
             _log_debug("Dank too loud. Bisecting batch and retrying.")
         elif isinstance(e, BadResponse) and (_needs_full_request_spec(e) or _is_call_revert(e)):
             pass
-        elif "429" not in str_e and all(
-            err not in str_e for err in constants.TOO_MUCH_DATA_ERRS
-        ):
+        elif "429" not in str_e and all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
             _log_warning("unexpected %s: %s", e.__class__.__name__, e)
         return len(self) > 1
 
