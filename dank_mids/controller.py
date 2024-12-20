@@ -32,6 +32,8 @@ except ImportError:
     MULTICALL3_ADDRESSES = {}
 
 logger = logging.getLogger(__name__)
+# our new logger logs the same stuff plus more
+logging.getLogger("web3.RequestManager").setLevel(logging.NOTSET)
 
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
 
