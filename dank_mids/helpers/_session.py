@@ -226,7 +226,7 @@ class DankClientSession(ClientSession):
 
     async def handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
         limiter = limiters[endpoint]
-        if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 60:
+        if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 30:
             current_rate = limiter._rate_per_sec
             new_rate = current_rate * 0.97
             limiter._rate_per_sec = new_rate
@@ -241,7 +241,7 @@ class DankClientSession(ClientSession):
         now = time()
         self._last_rate_limited_at = now
         secs_between_requests = 1 / limiter._rate_per_sec
-        retry_after = float(error.headers.get("Retry-After", secs_between_requests * 10))
+        retry_after = float(error.headers.get("Retry-After", secs_between_requests * 5))
         resume_at = max(
             self._continue_requests_at + retry_after,
             self._last_rate_limited_at + retry_after,
