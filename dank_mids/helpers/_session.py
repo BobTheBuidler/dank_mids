@@ -104,9 +104,8 @@ RETRY_FOR_CODES = {
     HTTPStatusExtended.CLOUDFLARE_TIMEOUT,  # type: ignore [attr-defined]
 }
 
-
 # default is 50 requests/second
-limiters = defaultdict(lambda: AsyncLimiter(ENVS.REQUESTS_PER_SECOND, 1))
+limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))
 
 _rate_limit_waiters = {}
 
@@ -228,6 +227,7 @@ class DankClientSession(ClientSession):
         if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 10:
             current_rate = limiter._rate_per_sec
             new_rate = current_rate * 0.97
+            limiter.max_rate *= 0.97
             limiter._rate_per_sec = new_rate
             limiter._last_updated_at = now
             _logger_info(
@@ -251,12 +251,8 @@ class DankClientSession(ClientSession):
         self._log_rate_limited(retry_after)
         if retry_after > 30:
             _logger_warning("severe rate limiting from your provider")
-        acquire_capacity_for_x_requests = retry_after / secs_between_requests
-        while acquire_capacity_for_x_requests:
-            # the limiter does this check that we need to work around
-            get_now = min(acquire_capacity_for_x_requests, limiter.max_rate)
-            await limiter.acquire(get_now)
-            acquire_capacity_for_x_requests -= get_now
+        # the limiter handles the timing
+        await limiter.acquire(5)
 
     def _log_rate_limited(self, try_after: float) -> None:
         if not self._limited:
