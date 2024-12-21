@@ -37,6 +37,8 @@ MAX_MULTICALL_SIZE = _envs.create_env("MAX_MULTICALL_SIZE", int, default=10_000)
 MAX_JSONRPC_BATCH_SIZE = _envs.create_env("MAX_JSONRPC_BATCH_SIZE", int, default=500)
 # Maximum amount of requests per second
 REQUESTS_PER_SECOND = _envs.create_env("REQUESTS_PER_SECOND", int, default=50)
+# Minimum amount of requests per second after rate limit reduction
+MIN_REQUESTS_PER_SECOND = _envs.create_env("MIN_REQUESTS_PER_SECOND", int, default=10)
 
 # Enable Demo Mode?
 demo_mode = _envs._deprecated_format.create_env("DEMO_MODE", bool, default=False, verbose=False)
