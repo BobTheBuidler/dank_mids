@@ -874,7 +874,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         try:
             with controller.pools_closed_lock:
                 # This will have already taken place in a full json batch of multicalls
-                controller.pending_eth_calls.pop(self.block)
+                controller._pending_eth_calls_pop(self.block)
         except KeyError:
             pass
 
