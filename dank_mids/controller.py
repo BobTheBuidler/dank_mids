@@ -168,7 +168,7 @@ class DankMiddlewareController:
             lambda: Multicall(self)
         )
         """A dictionary of pending Multicalls by block. The Multicalls hold all pending eth_calls."""
-        
+
         self._pending_eth_calls_pop = self.pending_eth_calls.pop
         self._pending_eth_calls_copy = self.pending_eth_calls.copy
         self._pending_eth_calls_clear = self.pending_eth_calls.clear
