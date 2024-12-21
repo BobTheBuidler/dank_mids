@@ -210,7 +210,7 @@ class DankClientSession(ClientSession):
                                 # we still want the original exc to raise
                                 raise ce from ve
                             raise
-                    
+
                     tried += 1
                     if debug_logs_enabled:
                         sleep_for = random()
