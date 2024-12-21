@@ -213,7 +213,7 @@ class RPCRequest(_RequestMeta[RawResponse]):
                 elif self.method.startswith(("trace", "debug")):
                     raise NotImplementedError("we should not get here", self)
                 else:
-                    controller.pending_rpc_calls.append(self)
+                    controller._pending_rpc_calls_append(self)
         _demo_logger_info("added to queue (cid: %s)", self.uid)
         if _logger_is_enabled_for(DEBUG):
             self._daemon = create_task(self._debug_daemon())

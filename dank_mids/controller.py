@@ -177,6 +177,8 @@ class DankMiddlewareController:
         self.pending_rpc_calls = JSONRPCBatch(self)
         """A JSONRPCBatch containing all pending rpc requests."""
 
+        self._pending_rpc_calls_append = self.pending_rpc_calls.append
+
     def __repr__(self) -> str:
         """
         Returns a string representation of the DankMiddlewareController instance.
@@ -279,6 +281,7 @@ class DankMiddlewareController:
             self._pending_eth_calls_clear()
             rpc_calls = self.pending_rpc_calls
             self.pending_rpc_calls = JSONRPCBatch(self)
+            self._pending_rpc_calls_append = self.pending_rpc_calls.append
         demo_logger.info(f"executing dank batch (current cid: {self.call_uid.latest})")  # type: ignore
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
