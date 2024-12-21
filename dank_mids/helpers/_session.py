@@ -198,29 +198,30 @@ class DankClientSession(ClientSession):
                 if ce.status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
                     await self.handle_too_many_requests(endpoint, ce)
                 else:
-                    try:
-                        if ce.status not in RETRY_FOR_CODES or tried >= 5:
+                    if ce.status not in RETRY_FOR_CODES or tried >= 5:
+                        try:
                             _logger_debug(
                                 "response failed with status %s",
                                 HTTPStatusExtended(ce.status),
                             )
-                            raise ce
-                    except ValueError as ve:
-                        if str(ve).endswith("is not a valid HTTPStatusExtended"):
-                            raise ce from ve
-                        raise
+                            raise
+                        except ValueError as ve:
+                            if str(ve).endswith("is not a valid HTTPStatusExtended"):
+                                # we still want the original exc to raise
+                                raise ce from ve
+                            raise
+                    
+                    tried += 1
+                    if debug_logs_enabled:
+                        sleep_for = random()
+                        _logger_log(
+                            DEBUG,
+                            "response failed with status %s, retrying in %ss",
+                            (HTTPStatusExtended(ce.status), round(sleep_for, 2)),
+                        )
+                        await sleep(sleep_for)
                     else:
-                        tried += 1
-                        if debug_logs_enabled:
-                            sleep_for = random()
-                            _logger_log(
-                                DEBUG,
-                                "response failed with status %s, retrying in %ss",
-                                (HTTPStatusExtended(ce.status), round(sleep_for, 2)),
-                            )
-                            await sleep(sleep_for)
-                        else:
-                            await sleep(random())
+                        await sleep(random())
 
     async def handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
         limiter = limiters[endpoint]
