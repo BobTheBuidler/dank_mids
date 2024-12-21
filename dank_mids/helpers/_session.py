@@ -209,7 +209,7 @@ class DankClientSession(ClientSession):
                 status = ce.status
                 if status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
                     await self._handle_too_many_requests(endpoint, ce)
-                    
+
                 elif status in RETRY_FOR_CODES and tried < 5:
                     tried += 1
                     if debug_logs_enabled:
@@ -226,11 +226,10 @@ class DankClientSession(ClientSession):
                 else:
                     if debug_logs_enabled:
                         _logger_log(
-                            DEBUG, "response failed with status %s", (_get_status_enum(ce), )
+                            DEBUG, "response failed with status %s", (_get_status_enum(ce),)
                         )
                     raise
-                        
-                        
+
     async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
         limiter = limiters[endpoint]
         if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 10:
