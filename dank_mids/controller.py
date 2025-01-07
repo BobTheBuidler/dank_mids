@@ -139,8 +139,9 @@ class DankMiddlewareController:
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
 
-        self.method_semaphores = _MethodSemaphores(self)  # TODO: refactor this out
-        self.eth_call_semaphores: BlockSemaphore = self.method_semaphores["eth_call"]  # type: ignore [assignment]
+        # NOTE: method semaphores are deprecated for all methods except eth_call. method queues are used instead.
+        # TODO: refactor this out
+        self.eth_call_semaphores: BlockSemaphore = _MethodSemaphores(self)["eth_call"]  # type: ignore [assignment]
         """Used for managing concurrency of eth_calls."""
 
         # semaphores soon to be deprecated for smart queue
