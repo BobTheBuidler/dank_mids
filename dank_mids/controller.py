@@ -139,7 +139,7 @@ class DankMiddlewareController:
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
 
-        self.eth_call_semaphores: BlockSemaphore = ENVS.method_semaphores["eth_call"]
+        self.eth_call_semaphores: BlockSemaphore = ENVS.method_semaphores["eth_call"]  # type: ignore [assignment]
         """Used for managing concurrency of eth_calls."""
 
         # semaphores soon to be deprecated for smart queue
