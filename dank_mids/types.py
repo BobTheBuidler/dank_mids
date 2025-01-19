@@ -129,6 +129,13 @@ class Request(PartialRequest):
     jsonrpc: Literal["2.0"] = "2.0"
     """The JSON-RPC version, always set to "2.0"."""
 
+    @property
+    def data(self) -> bytes:
+        # we have to do some hacky stuff because omit_defaults kwarg on PartialRequest
+        # is preventing jsonrpc field from being included in the encoded bytes
+        encoded_omit_defaults = json.encode(self)
+        return encoded_omit_defaults[:-1] + b',"jsonrpc":"2.0"}'
+    
 
 class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
