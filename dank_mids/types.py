@@ -116,7 +116,7 @@ class PartialRequest(DictStruct, frozen=True, omit_defaults=True, repr_omit_defa
 
     @property
     def data(self) -> bytes:
-        return json.encode(self)
+        return json.encode(self, enc_hook=_encode_hook)
 
 
 class Request(PartialRequest):
@@ -133,7 +133,7 @@ class Request(PartialRequest):
     def data(self) -> bytes:
         # we have to do some hacky stuff because omit_defaults kwarg on PartialRequest
         # is preventing jsonrpc field from being included in the encoded bytes
-        encoded_omit_defaults = json.encode(self)
+        encoded_omit_defaults = json.encode(self, enc_hook=_encode_hook)
         return encoded_omit_defaults[:-1] + b',"jsonrpc":"2.0"}'
     
 
