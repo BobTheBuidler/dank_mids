@@ -16,7 +16,6 @@ from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids.helpers._codec import encode
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
 logger = getLogger("dank_mids.session")
@@ -186,7 +185,7 @@ class DankClientSession(ClientSession):
         data = kwargs.get("data")
         if debug_logs_enabled := _logger_is_enabled_for(DEBUG):
             if isinstance(data, PartialRequest):
-                kwargs["data"] = encode(data)
+                kwargs["data"] = data.data
                 _logger_log(DEBUG, "making request for %s", (data,))
             _logger_log(
                 DEBUG,
@@ -194,7 +193,7 @@ class DankClientSession(ClientSession):
                 (endpoint, args, kwargs),
             )
         elif isinstance(data, PartialRequest):
-            kwargs["data"] = encode(data)
+            kwargs["data"] = data.data
 
         # Try the request until success or 5 failures.
         tried = 0
