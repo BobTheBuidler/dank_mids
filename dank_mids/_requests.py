@@ -327,10 +327,10 @@ class RPCRequest(_RequestMeta[RawResponse]):
             done, pending = await wait([task, self.create_duplicate()], return_when=FIRST_COMPLETED)
             for t in pending:
                 t.cancel()
-            for task in done:
-                return await task
+            for t in done:
+                return await t
         response = self.response.decode(partial=True)
-        retval = {"result": response.result} if self.raw else response.to_dict(self.method)
+        retval = {"result": response.result} if self.raw and response.result else response.to_dict(self.method)
         assert "result" in retval or "error" in retval, (retval, type(retval))
         return retval
 
