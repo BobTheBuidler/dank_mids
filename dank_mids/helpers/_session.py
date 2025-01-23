@@ -3,7 +3,7 @@ from asyncio import CancelledError, sleep
 from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
-from logging import DEBUG, getLogger
+from logging import DEBUG, WARNING, getLogger
 from random import random
 from threading import get_ident
 from time import time
@@ -214,7 +214,7 @@ class DankClientSession(ClientSession):
                     if debug_logs_enabled:
                         sleep_for = random()
                         _logger_log(
-                            DEBUG,
+                            WARNING,
                             "response failed with status %s, retrying in %.f2s",
                             (HTTPStatusExtended(status), sleep_for),
                         )
