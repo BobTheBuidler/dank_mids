@@ -920,12 +920,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         if not self:
             raise EmptyBatch(f"batch {self.uid} is empty and should not be processed.")
         try:
-            return _codec.encode([call.request for call in self])
+            return b"[" + b",".join(call.request.data for call in self) + b"]"
         except TypeError:
             # If we can't encode one of the calls, lets figure out which one and pass some useful info downstream
             for call in self:
                 try:
-                    _codec.encode(call.request)
+                    call.request.data
                 except TypeError as e:
                     raise TypeError(e, call.request) from None
             raise
