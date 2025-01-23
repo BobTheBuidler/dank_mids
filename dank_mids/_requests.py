@@ -770,7 +770,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 self._record_failure(e, self.request.data.decode())
             elif _log_exception(e):
                 self._record_failure(e, self.request.data.decode())
-                
+
             if self.should_retry(e):
                 await self.bisect_and_retry(e)
             elif len(self) == 1:
