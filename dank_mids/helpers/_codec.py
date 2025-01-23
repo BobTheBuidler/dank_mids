@@ -24,7 +24,7 @@ def decode_raw(data: bytes) -> RawResponse:
         The decoded data wrapped in a RawResponse object.
     """
     try:
-        RawResponse(json.decode(data, type=Raw))
+        return RawResponse(json.decode(data, type=Raw))
     except DecodeError as e:
         e.args = *e.args, data
         raise
