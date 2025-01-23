@@ -82,7 +82,13 @@ class DankBatch:
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     logger.error(
-                        f"That's not good, there was an exception in a {batch.__class__.__name__}. These are supposed to be handled.\n{result}\n",
+                        "That's not good, there was an exception in a %s. These are supposed to be handled.\n"
+                        "Exc: %s\n"
+                        "%s contents: %s\n\n",
+                        batch.__class__.__name__,
+                        result,
+                        batch.__class__.__name__,
+                        list(batch),
                         exc_info=True,
                     )
                 raise result
