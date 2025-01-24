@@ -330,7 +330,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
             for t in done:
                 return await t
         response = self.response.decode(partial=True)
-        retval = {"result": response.result} if self.raw and response.result else response.to_dict(self.method)
+        retval = (
+            {"result": response.result}
+            if self.raw and response.result
+            else response.to_dict(self.method)
+        )
         assert "result" in retval or "error" in retval, (retval, type(retval))
         return retval
 
@@ -759,18 +763,21 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             )
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
             raise e if "invalid argument" in str(e) else DankMidsInternalError(e) from e
-        except ClientResponseError as e:
-            if e.message == "Payload Too Large":
+        except Exception as e:
+            if isinstance(e, ClientResponseError) and e.message == "Payload Too Large":
                 _log_info("Payload too large. response headers: %s", e.headers)
                 controller.reduce_multicall_size(len(self))
                 self._record_failure(e, self.request.data.decode())
             elif _log_exception(e):
                 self._record_failure(e, self.request.data.decode())
-            await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
-        except Exception as e:
-            if _log_exception(e):
-                self._record_failure(e, self.request.data.decode())
-            await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
+
+            if self.should_retry(e):
+                await self.bisect_and_retry(e)
+            elif len(self) == 1:
+                await next(iter(self.calls)).get_response_unbatched()
+            else:
+                await self.spoof_response(e)
+
         _demo_logger_info("request %s for multicall %s complete", rid, self.bid)
 
     def should_retry(self, e: Exception) -> bool:
@@ -862,9 +869,13 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     _log_error(
-                        "That's not good, there was an exception in a %s. These are supposed to be handled.\n%s\n",
+                        "That's not good, there was an exception in a %s. These are supposed to be handled.\n"
+                        "Exc: %s\n"
+                        "%s contents: %s\n\n",
                         batch.__class__.__name__,
                         result,
+                        batch.__class__.__name__,
+                        list(batch),
                         exc_info=True,
                     )
                 raise result
@@ -1197,9 +1208,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     _log_error(
-                        "That's not good, there was an exception in a %s. These are supposed to be handled.\n%s\n",
+                        "That's not good, there was an exception in a %s. These are supposed to be handled.\n"
+                        "Exc: %s\n"
+                        "%s contents: %s\n\n",
                         batch.__class__.__name__,
                         result,
+                        batch.__class__.__name__,
+                        list(batch),
                         exc_info=True,
                     )
                 raise result

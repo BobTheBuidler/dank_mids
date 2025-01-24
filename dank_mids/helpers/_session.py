@@ -3,7 +3,7 @@ from asyncio import CancelledError, sleep
 from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
-from logging import DEBUG, getLogger
+from logging import DEBUG, WARNING, getLogger
 from random import random
 from threading import get_ident
 from time import time
@@ -223,10 +223,11 @@ class DankClientSession(ClientSession):
                         await sleep(random())
 
                 else:
-                    if debug_logs_enabled:
-                        _logger_log(
-                            DEBUG, "response failed with status %s", (_get_status_enum(ce),)
-                        )
+                    _logger_warning(
+                        "response failed with status %s  request data: %s",
+                        _get_status_enum(ce),
+                        data,
+                    )
                     raise
 
     async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
