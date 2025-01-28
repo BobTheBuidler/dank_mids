@@ -203,7 +203,14 @@ class DankClientSession(ClientSession):
                 async with limiters[endpoint]:
                     async with ClientSession.post(self, endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
-                        _logger_debug("received response %s", response_data)
+                        if _logger_is_enabled_for(DEBUG):
+                            response_len = len(response._body)
+                            if response_len < 1024:
+                                _logger_log(DEBUG, "received response %s size %.2f bytes", (response_data, response_len))
+                            elif response_len < 1048576:
+                                _logger_log(DEBUG, "received response %s size %.2f kb", (response_data, response_len/1024))
+                            else:
+                                _logger_log(DEBUG, "received response %s size %.2f mb", (response_data, response_len/1048576))
                         return response_data
             except ClientResponseError as ce:
                 status = ce.status
