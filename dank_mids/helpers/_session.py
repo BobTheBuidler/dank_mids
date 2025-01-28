@@ -282,16 +282,16 @@ class DankClientSession(ClientSession):
             if body_size < 1024:
                 logger._log(DEBUG, "Request Body Size: %s bytes", (body_size,))
             elif body_size < 1048576:
-                logger._log(DEBUG, "Request Body Size: %s kb", (body_size/1024,))
+                logger._log(DEBUG, "Request Body Size: %s kb", (round(body_size/1024,2),))
             else:
-                logger._log(DEBUG, "Request Body Size: %s mb", (body_size/1048576,))
+                logger._log(DEBUG, "Request Body Size: %s mb", (round(body_size/1048576,2),))
 
             if total_size < 1024:
                 logger._log(DEBUG, "Full Request Size (approx): %s bytes", (total_size,))
             elif total_size < 1048576:
-                logger._log(DEBUG, "Full Request Size (approx): %s kb", (total_size/1024,))
+                logger._log(DEBUG, "Full Request Size (approx): %s kb", (round(total_size/1024,2),))
             else:
-                logger._log(DEBUG, "Full Request Size (approx): %s mb", (total_size/1048576,))
+                logger._log(DEBUG, "Full Request Size (approx): %s mb", (round(total_size/1048576,2),))
 
         # Proceed with the actual request
         return await super()._request(method, url, **kwargs)
