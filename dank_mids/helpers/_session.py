@@ -290,17 +290,17 @@ class DankClientSession(ClientSession):
         #    body = kwargs['params']
 
         # Calculate body size
-        if body is not None:
-            if isinstance(body, bytes):
-                body_size = len(body)
-            elif isinstance(body, str):
-                body_size = len(body.encode('utf-8'))
-            elif hasattr(body, '__len__'):
-                body_size = len(body)
-            else:
-                body_size = 'unknown (complex type)'
+        #if body is not None:
+        if isinstance(body, bytes):
+            body_size = len(body)
+        elif isinstance(body, str):
+            body_size = len(body.encode('utf-8'))
+        elif hasattr(body, '__len__'):
+            body_size = len(body)
         else:
-            body_size = 0  # No body
+            body_size = 'unknown (complex type)'
+        #else:
+        #    body_size = 0  # No body
 
         # Total request size = headers + CRLF + body
         # CRLF after headers before body
@@ -312,7 +312,7 @@ class DankClientSession(ClientSession):
             total_size = 'unknown (complex body type)'
 
         # Log the sizes
-        logger.info(f"Making POST request to {url}")
+        #logger.info(f"Making POST request to {url}")
         logger.info(f"Request Body Size: {body_size} bytes")
         logger.info(f"Full Request Size (approx): {total_size} bytes")
 
