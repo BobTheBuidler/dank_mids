@@ -231,7 +231,7 @@ class DankClientSession(ClientSession):
                     )
                     raise
 
-    async def request(self, method, url, **kwargs):
+    async def _request(self, method, url, **kwargs):
         # Parse the URL to extract components
         parsed_url = urlparse(url)
         path = parsed_url.path or '/'
