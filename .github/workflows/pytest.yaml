@@ -51,7 +51,9 @@ jobs:
         uses: snok/install-poetry@v1
 
       - name: Install Dependencies
-        run: poetry install --no-interaction
+        run: |
+          poetry lock
+          poetry install --no-interaction
       
       - name: Setup brownie networks
         run: |
