@@ -317,7 +317,7 @@ class DankClientSession(ClientSession):
         logger.info(f"Full Request Size (approx): {total_size} bytes")
 
         # Proceed with the actual request
-        return await super().request(method, url, **kwargs)
+        return await super()._request(method, url, **kwargs)
     
     async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
         limiter = limiters[endpoint]
