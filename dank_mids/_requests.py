@@ -330,7 +330,11 @@ class RPCRequest(_RequestMeta[RawResponse]):
             for t in done:
                 return await t
         response = self.response.decode(partial=True)
-        retval = {"result": response.result} if self.raw and response.result else response.to_dict(self.method)
+        retval = (
+            {"result": response.result}
+            if self.raw and response.result
+            else response.to_dict(self.method)
+        )
         assert "result" in retval or "error" in retval, (retval, type(retval))
         return retval
 

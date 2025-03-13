@@ -27,7 +27,24 @@ class _DankMethodMixin(Generic[_EVMType]):
     _abi: FunctionABI
     """The ABI (Application Binary Interface) of the contract function."""
 
-    __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_input"
+    _prep_request_data: Callable[..., Awaitable[BytesLike]]
+
+    def __init__(self):
+        self._len_inputs = len(self.abi["inputs"])
+
+        # cache `call` on this object to prevent repeated imports due to circ import
+        import dank_mids
+
+        self._call = dank_mids.eth.call
+
+        from dank_mids.brownie_patch import call
+
+        if ENVS.OPERATION_MODE.application or self._len_inputs:  # type: ignore [attr-defined]
+            self._prep_request_data = call.encode
+        else:
+            self._prep_request_data = call._request_data_no_args
+
+        self._skip_decoder_proc_pool = self._address in call._skip_proc_pool
 
     def __await__(self):
         """
@@ -116,30 +133,18 @@ class _DankMethodMixin(Generic[_EVMType]):
     def _input_sig(self) -> str:
         return self._abi.input_sig
 
-    @cached_property
-    def _len_inputs(self) -> int:
-        return len(self.abi["inputs"])
-
-    @cached_property
-    def _skip_decoder_proc_pool(self) -> bool:
-        from dank_mids.brownie_patch.call import _skip_proc_pool
-
-        return self._address in _skip_proc_pool
-
-    @cached_property
-    def _call(cls) -> DankWeb3:
-        from dank_mids import web3
-
-        return web3.eth.call
-
-    @cached_property
-    def _prep_request_data(self) -> Callable[..., Awaitable[BytesLike]]:
-        from dank_mids.brownie_patch import call
-
-        if ENVS.OPERATION_MODE.application or self._len_inputs:  # type: ignore [attr-defined]
-            return call.encode
-        else:
-            return call._request_data_no_args
+    __slots__ = (
+        "_address",
+        "_abi",
+        "_name",
+        "_owner",
+        "natspec",
+        "_call",
+        "_len_inputs",
+        "_encode_input",
+        "_prep_request_data",
+        "_skip_decoder_proc_pool",
+    )
 
 
 class _DankMethod(_DankMethodMixin):
@@ -164,6 +169,8 @@ class _DankMethod(_DankMethodMixin):
 
         self.natspec = natspec or {}
         """The NatSpec documentation for the function."""
+
+        super().__init__()
 
         # TODO: refactor this
         from dank_mids.brownie_patch import call

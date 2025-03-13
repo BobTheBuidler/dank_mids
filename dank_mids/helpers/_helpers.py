@@ -133,7 +133,7 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
 
 
 def set_done(
-    fn: Callable[Concatenate["_Request", P], Awaitable[T]]
+    fn: Callable[Concatenate["_Request", P], Awaitable[T]],
 ) -> Callable[Concatenate["_Request", P], Awaitable[T]]:
     """
     A decorator that sets the '_done' flag of a _Request object after the decorated function completes.
@@ -234,7 +234,7 @@ async def async_construct_formatting_middleware(
 async def async_construct_web3_formatting_middleware(
     async_web3_formatters_builder: Callable[
         ["Web3", RPCEndpoint], Coroutine[Any, Any, FormattersDict]
-    ]
+    ],
 ) -> Callable[[Callable[[RPCEndpoint, Any], Any], "Web3"], Coroutine[Any, Any, AsyncMiddleware]]:
     async def formatter_middleware(
         make_request: Callable[[RPCEndpoint, Any], Any],
