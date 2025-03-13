@@ -177,6 +177,8 @@ class DankClientSession(ClientSession):
     _limited = False
     _last_rate_limited_at = 0
     _continue_requests_at = 0
+    __max_request_size = 0
+    __max_response_size = 0
 
     async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> bytes:  # type: ignore [override]
         if (now := time()) < self._continue_requests_at:
@@ -212,6 +214,18 @@ class DankClientSession(ClientSession):
                                 _logger_log(DEBUG, "Response size %.2f kb", (response_len/1024,))
                             else:
                                 _logger_log(DEBUG, "Response size %.2f mb", (response_len/1048576,))
+                            
+                            max_successful_response_size = self.__max_response_size
+                            if response_len > max_successful_response_size:
+                                max_successful_response_size = self.__max_response_size = response_len
+
+                            if max_successful_response_size < 1024:
+                                _logger_log(DEBUG, "Max successful response size %.2f bytes", (max_successful_response_size,))
+                            elif max_successful_response_size < 1048576:
+                                _logger_log(DEBUG, "Max successful response size %.2f kb", (max_successful_response_size/1024,))
+                            else:
+                                _logger_log(DEBUG, "Max successful response size %.2f mb", (max_successful_response_size/1048576,))
+
                         return response_data
             except ClientResponseError as ce:
                 status = ce.status
@@ -298,6 +312,17 @@ class DankClientSession(ClientSession):
                 logger._log(DEBUG, "Full Request Size (approx): %s kb", (round(total_size/1024,2),))
             else:
                 logger._log(DEBUG, "Full Request Size (approx): %s mb", (round(total_size/1048576,2),))
+                            
+            max_successful_request_size = self.__max_request_size
+            if total_size > max_successful_request_size:
+                max_successful_request_size = self.__max_request_size = total_size
+
+            if max_successful_request_size < 1024:
+                _logger_log(DEBUG, "Max successful request size %.2f bytes", (max_successful_request_size,))
+            elif max_successful_request_size < 1048576:
+                _logger_log(DEBUG, "Max successful request size %.2f kb", (max_successful_request_size/1024,))
+            else:
+                _logger_log(DEBUG, "Max successful request size %.2f mb", (max_successful_request_size/1048576,))
 
         # Proceed with the actual request
         return await super()._request(method, url, **kwargs)
