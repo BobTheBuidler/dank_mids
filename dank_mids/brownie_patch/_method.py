@@ -76,15 +76,19 @@ class _DankMethodMixin(Generic[_EVMType]):
             decimals: The number of decimal places by which to scale numeric results.
         """
         if iter_args:
-            return await gather(*(
-                self.coroutine(*call_args, block_identifier=block_identifier, decimals=decimals)
-                for call_args in args
-            ))
+            return await gather(
+                *(
+                    self.coroutine(*call_args, block_identifier=block_identifier, decimals=decimals)
+                    for call_args in args
+                )
+            )
         else:
-            return await gather(*(
-                self.coroutine(call_arg, block_identifier=block_identifier, decimals=decimals)
-                for call_arg in args
-            ))
+            return await gather(
+                *(
+                    self.coroutine(call_arg, block_identifier=block_identifier, decimals=decimals)
+                    for call_arg in args
+                )
+            )
 
     @property
     def abi(self) -> dict:
