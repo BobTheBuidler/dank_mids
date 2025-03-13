@@ -1,4 +1,4 @@
-from msgspec import Raw, json
+from msgspec import DecodeError, Raw, json
 
 from dank_mids.types import (
     Any,
@@ -12,16 +12,23 @@ from dank_mids.types import (
     _nested_dict_of_stuff,
 )
 
-decode_raw = lambda data: RawResponse(json.decode(data, type=Raw))
-"""
-Decode json-encoded bytes into a `msgspec.Raw` object.
 
-Args:
-    data: The json-encoded bytes to decode.
+def decode_raw(data: bytes) -> RawResponse:
+    """
+    Decode json-encoded bytes into a `msgspec.Raw` object.
 
-Returns:
-    The decoded data wrapped in a RawResponse object.
-"""
+    Args:
+        data: The json-encoded bytes to decode.
+
+    Returns:
+        The decoded data wrapped in a RawResponse object.
+    """
+    try:
+        RawResponse(json.decode(data, type=Raw))
+    except DecodeError as e:
+        e.args = *e.args, data
+        raise
+
 
 decode_nested_dict = lambda data: json.decode(data, type=_nested_dict_of_stuff)
 """
