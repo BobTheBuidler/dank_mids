@@ -804,7 +804,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if isinstance(data, Exception):
             _log_debug("%s had Exception %s", self, data)
             _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
-            await gather(*[call.spoof_response(data) for call in calls])
+            await gather(*(call.spoof_response(data) for call in calls))
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
         # It was either received as a response to a single rpc call or as a part of a batch response.
         elif isinstance(data, RawResponse):
@@ -1038,7 +1038,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 _log_info(
                     "does this ever actually run? pretty sure a single-multicall json batch is not possible. can I delete this?"
                 )
-                await gather(*[call.spoof_response(e) for call in calls])
+                await gather(*(call.spoof_response(e) for call in calls))
             else:
                 raise NotImplementedError("and you may ask yourself, well, how did I get here?")
         _demo_logger_info("request %s for jsonrpc batch %s complete", rid, self.jid)  # type: ignore
@@ -1161,7 +1161,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     raise BatchResponseSortError(controller, calls, response)
 
         for r in await gather(
-            *[call.spoof_response(raw) for call, raw in zip(calls, response)],
+            *(call.spoof_response(raw) for call, raw in zip(calls, response)),
             return_exceptions=True,
         ):
             # NOTE: By doing this with the exceptions we allow any successful calls to get their results sooner

@@ -9,7 +9,7 @@ from web3._utils.rpc_abi import RPC
 
 CHAI = "0x06AF07097C9Eeb7fD685c692751D5C66dB49c215"
 height = chain.height
-BIG_WORK = [
+BIG_WORK = (
     Call(
         CHAI,
         "totalSupply()(uint)",
@@ -18,15 +18,15 @@ BIG_WORK = [
         _w3=dank_web3,
     ).coroutine()
     for i in range(0, 100_000, 3)
-]
+)
 
 height = chain.height
-MULTIBLOCK_WORK = [
+MULTIBLOCK_WORK = (
     Call(
         CHAI, "totalSupply()(uint)", [[f"totalSupply{i}", None]], _w3=dank_web3, block_id=height - i
     )
     for i in range(1_000)
-]
+)
 
 
 @pytest.mark.asyncio_cooperative
