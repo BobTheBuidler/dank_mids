@@ -29,6 +29,7 @@ def decode_raw(data: bytes) -> RawResponse:
         e.args = *e.args, data
         raise
 
+
 decode_nested_dict = lambda data: json.decode(data, type=_nested_dict_of_stuff)
 """
 Decode json-encoded bytes into a nested dictionary.
