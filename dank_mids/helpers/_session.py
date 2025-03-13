@@ -225,7 +225,7 @@ class DankClientSession(ClientSession):
                 else:
                     _logger_warning(
                         "response failed with status %s  request data: %s",
-                        _get_status_enum(ce), 
+                        _get_status_enum(ce),
                         data,
                     )
                     raise
