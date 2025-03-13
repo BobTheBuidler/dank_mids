@@ -214,7 +214,7 @@ class DankClientSession(ClientSession):
                     if debug_logs_enabled:
                         sleep_for = random()
                         _logger_log(
-                            WARNING,
+                            DEBUG,
                             "response failed with status %s, retrying in %.f2s",
                             (HTTPStatusExtended(status), sleep_for),
                         )
@@ -225,7 +225,7 @@ class DankClientSession(ClientSession):
                 else:
                     if debug_logs_enabled:
                         _logger_log(
-                            DEBUG,
+                            WARNING,
                             "response failed with status %s  request data: %s",
                             (_get_status_enum(ce), data),
                         )
