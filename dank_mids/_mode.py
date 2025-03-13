@@ -1,6 +1,6 @@
 from functools import cached_property
 
-MODES = ["default", "application", "infura"]
+MODES = "default", "application", "infura"
 
 
 class OperationMode(str):

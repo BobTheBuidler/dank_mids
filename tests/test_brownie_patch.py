@@ -32,7 +32,7 @@ async def test_gather():
     _patch_call(weth.totalSupply, dank_mids.web3)
     assert hasattr(weth.totalSupply, "coroutine")
     for result in await gather(
-        *[weth.totalSupply.coroutine(block_identifier=13_000_000) for _ in range(10_000)]
+        *(weth.totalSupply.coroutine(block_identifier=13_000_000) for _ in range(10_000))
     ):
         assert result == 6620041514474872981393155
 

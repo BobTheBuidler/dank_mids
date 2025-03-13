@@ -54,9 +54,9 @@ async def _main() -> None:
 
     # Use `asyncio.gather` to collect the data from the various pools and blocks and store them in variables.
     tokens, timestamps, balances = await asyncio.gather(
-        asyncio.gather(*[get_tokens_for_pool(pool) for pool in dank_pool_contracts]),
-        asyncio.gather(*[get_timestamp_at_block(block) for block in blocks]),
-        asyncio.gather(*[get_balances_for_blocks(pool, blocks) for pool in dank_pool_contracts]),
+        asyncio.gather(*(get_tokens_for_pool(pool) for pool in dank_pool_contracts)),
+        asyncio.gather(*(get_timestamp_at_block(block) for block in blocks)),
+        asyncio.gather(*(get_balances_for_blocks(pool, blocks) for pool in dank_pool_contracts)),
     )
     # Now we can do stuff with the outputs
     for pool, (token0, token1) in zip(dank_pool_contracts, tokens):
@@ -87,7 +87,7 @@ async def get_balances_for_blocks(pool: dank_mids.Contract, blocks: List[int]):
         :meth:`dank_mids.brownie_patch.call.DankContractCall.coroutine`: The function used to asynchronously make the call via dank_mids.
     """
     return await asyncio.gather(
-        *[pool.getReserves.coroutine(block_identifier=block) for block in blocks]
+        *(pool.getReserves.coroutine(block_identifier=block) for block in blocks)
     )
 
 
