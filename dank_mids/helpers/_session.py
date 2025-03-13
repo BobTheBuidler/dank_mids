@@ -8,6 +8,7 @@ from random import random
 from threading import get_ident
 from time import time
 from typing import Any, Callable, Tuple, overload
+from urllib.parse import urlparse
 
 from a_sync import Event
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
@@ -229,6 +230,94 @@ class DankClientSession(ClientSession):
                         )
                     raise
 
+    async def request(self, method, url, **kwargs):
+        # Parse the URL to extract components
+        parsed_url = urlparse(url)
+        path = parsed_url.path or '/'
+        if parsed_url.query:
+            path += f"?{parsed_url.query}"
+        host = parsed_url.netloc
+
+        # Prepare headers
+        # Start with session headers
+        headers = self.headers.copy() if self.headers else {}
+        # Update with request-specific headers
+        headers.update(kwargs.get('headers', {}))
+        
+        # Ensure Host header is present
+        if 'Host' not in headers:
+            headers['Host'] = host
+
+        # Build request line
+        request_line = f"{method.upper()} {path} HTTP/1.1\r\n"
+
+        # Build headers string
+        headers_str = ''.join(f"{key}: {value}\r\n" for key, value in headers.items())
+        
+        # Calculate headers size
+        headers_size = len(request_line.encode('utf-8')) + len(headers_str.encode('utf-8')) + len(b'\r\n')
+
+        # Determine the body
+        #body = None
+        #if 'data' in kwargs:
+        body = kwargs['data']
+        #elif 'json' in kwargs:
+        #    body = json.dumps(kwargs['json']).encode('utf-8')
+        #elif 'files' in kwargs:
+        #    from aiohttp import FormData
+        #    if isinstance(kwargs['files'], FormData):
+        #        # Note: FormData encoding can be complex; this is an approximation
+        #        # aiohttp's FormData does not provide a direct way to get byte size
+        #        # So we serialize it manually
+        #        form = kwargs['files']
+        #        # Serialize FormData to string and encode
+        #        # WARNING: This may not be accurate for binary files
+        #        from io import BytesIO
+        #        buffer = BytesIO()
+        #        await form.encode_multipart(buffer, self.encoder)  # Requires async handling
+        #        body = buffer.getvalue()
+        #    else:
+        #        form = aiohttp.FormData()
+        #        for key, value in kwargs['files'].items():
+        #            form.add_field(key, value)
+        #        from io import BytesIO
+        #        buffer = BytesIO()
+        #        await form.encode_multipart(buffer, self.encoder)
+        #        body = buffer.getvalue()
+        #elif 'params' in kwargs:
+        #    # Typically, params are part of the URL, not the body
+        #    body = kwargs['params']
+
+        # Calculate body size
+        if body is not None:
+            if isinstance(body, bytes):
+                body_size = len(body)
+            elif isinstance(body, str):
+                body_size = len(body.encode('utf-8'))
+            elif hasattr(body, '__len__'):
+                body_size = len(body)
+            else:
+                body_size = 'unknown (complex type)'
+        else:
+            body_size = 0  # No body
+
+        # Total request size = headers + CRLF + body
+        # CRLF after headers before body
+        total_size = headers_size + len(b'\r\n')
+        if isinstance(body_size, int):
+            total_size += body_size
+        else:
+            # If body size is unknown, we cannot accurately compute total size
+            total_size = 'unknown (complex body type)'
+
+        # Log the sizes
+        logger.info(f"Making POST request to {url}")
+        logger.info(f"Request Body Size: {body_size} bytes")
+        logger.info(f"Full Request Size (approx): {total_size} bytes")
+
+        # Proceed with the actual request
+        return await super().request(method, url, **kwargs)
+    
     async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
         limiter = limiters[endpoint]
         if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 10:
