@@ -233,6 +233,26 @@ class DankClientSession(ClientSession):
 
     async def _request(self, method, url, **kwargs):
         if _logger_is_enabled_for(DEBUG):
+
+            # Calculate body size=
+            body = kwargs['data']
+            if isinstance(body, bytes):
+                body_size = len(body)
+            else:
+                raise Exception('is this real')
+            #elif isinstance(body, str):
+            #    body_size = len(body.encode('utf-8'))
+
+            # Log the body size
+            if body_size < 1024:
+                logger._log(DEBUG, "Request Body Size: %s bytes", (body_size,))
+            elif body_size < 1048576:
+                logger._log(DEBUG, "Request Body Size: %s kb", (round(body_size/1024,2),))
+            else:
+                logger._log(DEBUG, "Request Body Size: %s mb", (round(body_size/1048576,2),))
+
+            # Calculate Total Size
+            # First calculate header size
             # Parse the URL to extract components
             parsed_url = urlparse(url)
             path = parsed_url.path or '/'
@@ -259,33 +279,11 @@ class DankClientSession(ClientSession):
             # Calculate headers size
             headers_size = len(request_line.encode('utf-8')) + len(headers_str.encode('utf-8')) + len(b'\r\n')
 
-            # Determine the body
-            body = kwargs['data']
-
-            # Calculate body size
-            #if body is not None:
-            if isinstance(body, bytes):
-                body_size = len(body)
-            elif isinstance(body, str):
-                body_size = len(body.encode('utf-8'))
-
             # Total request size = headers + CRLF + body
             # CRLF after headers before body
-            total_size = headers_size + len(b'\r\n')
-            if isinstance(body_size, int):
-                total_size += body_size
-            else:
-                # If body size is unknown, we cannot accurately compute total size
-                total_size = 'unknown (complex body type)'
+            total_size = headers_size + len(b'\r\n') + body_size
 
-            # Log the sizes
-            if body_size < 1024:
-                logger._log(DEBUG, "Request Body Size: %s bytes", (body_size,))
-            elif body_size < 1048576:
-                logger._log(DEBUG, "Request Body Size: %s kb", (round(body_size/1024,2),))
-            else:
-                logger._log(DEBUG, "Request Body Size: %s mb", (round(body_size/1048576,2),))
-
+            # Log the total size
             if total_size < 1024:
                 logger._log(DEBUG, "Full Request Size (approx): %s bytes", (total_size,))
             elif total_size < 1048576:
