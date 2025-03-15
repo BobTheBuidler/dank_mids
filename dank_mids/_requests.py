@@ -101,7 +101,8 @@ _super_set = a_sync.Event.set
 class _RequestEvent(a_sync.Event):
     def __init__(self, owner: "_RequestMeta") -> None:
         _super_init(self, debug_daemon_interval=300)
-        self._owner = weak_proxy(owner)
+        if self.debug_logs_enabled:
+            self._owner = weak_proxy(owner)
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
@@ -109,10 +110,13 @@ class _RequestEvent(a_sync.Event):
     def set(self) -> None:
         # Make sure we wake up the _RequestEvent's event loop if its in another thread
         self_loop = self._loop
-        if self_loop == get_running_loop():
+        if self_loop is get_running_loop():
             _super_set(self)
         else:
             self_loop.call_soon_threadsafe(_super_set, self)
+
+    # default if no debug logs enabled
+    _owner = "[not displayed...]"
 
 
 class _RequestMeta(Generic[_Response], metaclass=ABCMeta):
