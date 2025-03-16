@@ -81,10 +81,16 @@ class DankBatch:
         for batch, result in zip(batches, await gather(*batches, return_exceptions=True)):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
+                    try:
+                        batch_len = len(batch)
+                    except TypeError:
+                        # object of type 'coroutine' has no len()
+                        batch_len = 1
+
                     logger.error(
                         "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n%s\n",
                         batch.__class__.__name__,
-                        len(batch),
+                        batch_len,
                         result,
                         exc_info=True,
                     )
