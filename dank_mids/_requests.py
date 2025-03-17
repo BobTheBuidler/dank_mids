@@ -1,4 +1,3 @@
-from abc import ABCMeta, abstractmethod
 from asyncio import (
     FIRST_COMPLETED,
     TimeoutError,
@@ -31,8 +30,8 @@ from typing import (
     Tuple,
     TypeVar,
     Union,
-    overload,
 )
+from weakref import ProxyType
 from weakref import proxy as weak_proxy
 from weakref import ref as weak_ref
 
@@ -99,10 +98,10 @@ _super_set = a_sync.Event.set
 
 
 class _RequestEvent(a_sync.Event):
-    def __init__(self, owner: "_RequestMeta") -> None:
+    def __init__(self, owner: "_RequestBase[_Response]") -> None:
         _super_init(self, debug_daemon_interval=300)
         if self.debug_logs_enabled:
-            self._owner = weak_proxy(owner)
+            self._owner: ProxyType[_RequestBase[_Response]] = weak_proxy(owner)
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
@@ -119,12 +118,16 @@ class _RequestEvent(a_sync.Event):
     _owner = "[not displayed...]"
 
 
-class _RequestMeta(Generic[_Response], metaclass=ABCMeta):
+class _RequestBase(Generic[_Response]):
     __slots__ = "controller", "uid", "_response", "_done", "_start", "_batch", "__weakref__"
-    controller: "DankMiddlewareController"
 
-    def __init__(self) -> None:
-        self.uid = self.controller.call_uid.next
+    def __init__(self, controller: "DankMiddlewareController") -> None:
+        self.controller = controller
+        """The DankMiddlewareController that created this request."""
+
+        self.uid = controller.call_uid.next
+        """The unique id for this request."""
+
         self._response: Union[_Response, RPCResponse, Exception, None] = None
         self._done = _RequestEvent(self)
         self._start = time()
@@ -132,23 +135,22 @@ class _RequestMeta(Generic[_Response], metaclass=ABCMeta):
     def __await__(self) -> Generator[Any, None, _Response]:
         return self.get_response().__await__()
 
-    @abstractmethod
+    # Abstract methods to be implemented by subclasses
+
     def __len__(self) -> int:
-        pass
+        raise NotImplementedError
+
+    def start(self, batch: Union["_Batch", "DankBatch", None] = None) -> None:
+        raise NotImplementedError
+
+    async def get_response(self) -> _Response:
+        raise NotImplementedError
 
     @property
     def response(self) -> _Response:
         if not self._done.is_set():
             raise ResponseNotReady(self)
         return self._response
-
-    @abstractmethod
-    async def get_response(self) -> _Response:
-        pass
-
-    @abstractmethod
-    def start(self, batch: Union["_Batch", "DankBatch", None] = None) -> None:
-        pass
 
     async def _debug_daemon(self) -> None:
         start = self._start
@@ -184,7 +186,7 @@ def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
 
-class RPCRequest(_RequestMeta[RawResponse]):
+class RPCRequest(_RequestBase[RawResponse]):
     __slots__ = "method", "params", "should_batch", "raw", "_started", "_retry", "_daemon"
 
     def __init__(
@@ -193,23 +195,22 @@ class RPCRequest(_RequestMeta[RawResponse]):
         method: RPCEndpoint,
         params: Any,
         retry: bool = False,
-    ):
-        self.controller = controller
-        """The DankMiddlewareController that created this request."""
+    ):  # sourcery skip: hoist-statement-from-if
+        _RequestBase.__init__(self, controller)
         if method[-4:] == "_raw":
             self.method = method[:-4]
+            """The rpc method for this request."""
             self.raw = True
         else:
             self.method = method
+            """The rpc method for this request."""
             self.raw = False
-        """The rpc method for this request."""
         self.params = params
         """The parameters to send with this request, if any."""
         self.should_batch = _should_batch_method(method)
         """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
         self._started = False
         self._retry = retry
-        _RequestMeta.__init__(self)
         if self.should_batch:
             with controller.pools_closed_lock:
                 if isinstance(self, eth_call) and self.multicall_compatible:
@@ -520,7 +521,7 @@ class eth_call(RPCRequest):
 
 ### Batch requests:
 
-_Request = TypeVar("_Request", bound=_RequestMeta)
+_Request = TypeVar("_Request", bound=_RequestBase)
 
 
 class WeakRequestList(Generic[_Request]):
@@ -558,9 +559,7 @@ class WeakRequestList(Generic[_Request]):
 
     def __contains__(self, item: _Request) -> bool:
         ref = self._refs.get(id(item))
-        if ref is None:
-            return False
-        return ref() is item
+        return False if ref is None else ref() is item
 
     def __iter__(self) -> Iterator[_Request]:
         for ref in self._refs.values():
@@ -573,15 +572,14 @@ class WeakRequestList(Generic[_Request]):
         return f"WeakList([{', '.join(repr(item) for item in self)}])"
 
 
-class _Batch(_RequestMeta[List[_Response]], Iterable[_Request]):
+class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     __slots__ = "calls", "_lock", "_daemon"
     calls: WeakRequestList[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
-        self.controller = controller
+        _RequestBase.__init__(self, controller)
         self.calls = WeakRequestList(calls)
         self._lock = _AlertingRLock(name=self.__class__.__name__)
-        _RequestMeta.__init__(self)
 
     def __bool__(self) -> bool:
         return bool(self.calls)
