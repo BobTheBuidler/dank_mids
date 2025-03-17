@@ -5,19 +5,19 @@ from typing import Any, DefaultDict, List, Literal, Optional, Set, Union
 
 import eth_retry
 from cchecksum import to_checksum_address
-from eth_typing import BlockNumber, ChecksumAddress
+from eth_typing import ChecksumAddress
 from evmspec.data import ChainId
-from msgspec import Struct
-from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
+from multicall.constants import MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
 from web3 import Web3
 from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids import _debugging, constants
+from dank_mids import _debugging
 from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
+from dank_mids._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers._codec import decode_raw
@@ -25,11 +25,6 @@ from dank_mids.helpers._helpers import w3_version_major, _make_hashable, _sync_w
 from dank_mids.helpers._session import post, rate_limit_inactive
 from dank_mids.semaphores import _MethodQueues, _MethodSemaphores, BlockSemaphore
 from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
-
-try:
-    from multicall.constants import MULTICALL3_ADDRESSES
-except ImportError:
-    MULTICALL3_ADDRESSES = {}
 
 logger = logging.getLogger(__name__)
 # our new logger logs the same stuff plus more
@@ -64,7 +59,8 @@ class DankMiddlewareController:
         self.sync_w3 = _sync_w3_from_async(w3)
         """A sync Web3 instance connected to the same rpc, used to make calls during init."""
 
-        self.chain_id = self.sync_w3.eth.chain_id
+        chainid = self.sync_w3.eth.chain_id
+        self.chain_id = chainid
         """The chainid for the currently connected rpc."""
 
         self.client_version: str = _get_client_version(self.sync_w3)
@@ -80,7 +76,7 @@ class DankMiddlewareController:
         """The time at which the request type was automatically updated by dank's internals. Zero if never updated after init."""
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
-        self.state_override_not_supported: bool = ENVS.GANACHE_FORK or self.chain_id == 100  # type: ignore [assignment]
+        self.state_override_not_supported: bool = ENVS.GANACHE_FORK or chainid == 100  # type: ignore [assignment]
         """A boolean that indicates whether the connected rpc supports state override functionality."""
 
         self.endpoint = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
@@ -97,42 +93,19 @@ class DankMiddlewareController:
             self.set_batch_size_limit(10)
 
         self._instance: int = sum(len(_instances) for _instances in instances.values())
-        instances[self.chain_id].append(self)  # type: ignore
+        instances[chainid].append(self)  # type: ignore
 
-        multicall = MULTICALL_ADDRESSES.get(self.chain_id)
-        multicall2 = MULTICALL2_ADDRESSES.get(self.chain_id)
-        multicall3 = MULTICALL3_ADDRESSES.get(self.chain_id)
-        if multicall2 is None and multicall3 is None:
+        self.mc2 = _get_multicall2(chainid)
+        self.mc3 = _get_multicall3(chainid)
+        if self.mc2 is None and self.mc3 is None:
             raise NotImplementedError(
                 "Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py"
             )
 
-        self.mc2 = (
-            _MulticallContract(
-                address=to_checksum_address(multicall2),
-                # TODO: copypasta deploy block dict
-                deploy_block=constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
-                bytecode=constants.MULTICALL2_OVERRIDE_CODE,
-            )
-            if multicall2
-            else None
-        )
-
-        self.mc3 = (
-            _MulticallContract(
-                address=to_checksum_address(multicall3),
-                # TODO: copypasta deploy block dict
-                deploy_block=constants.MULTICALL3_DEPLOY_BLOCKS.get(self.chain_id),
-                bytecode=constants.MULTICALL3_OVERRIDE_CODE,
-            )
-            if multicall3
-            else None
-        )
-
         self.no_multicall: Set[ChecksumAddress] = set()
         """A set of addresses that have issues when called from the multicall contract. Calls to these contracts will not be batched in multicalls."""
 
-        if multicall:
+        if multicall := MULTICALL_ADDRESSES.get(chainid):
             self.no_multicall.add(to_checksum_address(multicall))
         if self.mc2:
             self.no_multicall.add(self.mc2.address)
@@ -406,7 +379,7 @@ class DankMiddlewareController:
             logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))  # type: ignore [call-overload]
 
     @lru_cache(maxsize=1024)
-    def _select_mcall_target_for_block(self, block) -> "_MulticallContract":
+    def _select_mcall_target_for_block(self, block) -> MulticallContract:
         """
         Select the appropriate multicall contract for a given block.
 
@@ -427,57 +400,6 @@ class DankMiddlewareController:
 @eth_retry.auto_retry
 def _get_client_version(sync_w3: Web3) -> str:
     return sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion  # type: ignore [attr-defined]
-
-
-class _MulticallContract(Struct):
-    """
-    Represents a multicall contract with its address, deployment block, and bytecode.
-    """
-
-    address: ChecksumAddress
-    """
-    The Ethereum address of the multicall contract.
-    """
-
-    deploy_block: Optional[BlockNumber]
-    """
-    The block number at which the multicall contract was deployed.
-    If None, it means the deployment block is unknown.
-    """
-
-    bytecode: str
-    """
-    The bytecode of the multicall contract.
-    This is used for state override if necessary.
-    """
-
-    @lru_cache(maxsize=1024)
-    def needs_override_code_for_block(self, block: BlockNumber) -> bool:
-        """
-        Determine if the contract needs override code for a specific block.
-
-        Args:
-            block: The block number to check.
-
-        Returns:
-            True if override code is needed, False otherwise.
-        """
-        if block == "latest":
-            return False
-        if self.deploy_block is None:
-            return True
-        if isinstance(block, str):
-            block = int(block, 16)
-        return block < self.deploy_block
-
-    def __hash__(self) -> int:
-        """
-        Generates a hash for the _MulticallContract instance.
-
-        Returns:
-            A hash value based on the contract's address.
-        """
-        return hash(self.address)
 
 
 def _logger_debug(msg: str, *args: Any) -> None: ...
