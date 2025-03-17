@@ -127,7 +127,7 @@ class _RequestBase(Generic[_Response]):
 
         self.uid = controller.call_uid.next
         """The unique id for this request."""
-        
+
         self._response: Union[_Response, RPCResponse, Exception, None] = None
         self._done = _RequestEvent(self)
         self._start = time()
