@@ -6,7 +6,12 @@ from eth_utils import to_checksum_address
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
 
-from dank_mids.constants import MULTICALL2_DEPLOY_BLOCKS, MULTICALL2_OVERRIDE_CODE, MULTICALL3_DEPLOY_BLOCKS, MULTICALL3_OVERRIDE_CODE
+from dank_mids.constants import (
+    MULTICALL2_DEPLOY_BLOCKS,
+    MULTICALL2_OVERRIDE_CODE,
+    MULTICALL3_DEPLOY_BLOCKS,
+    MULTICALL3_OVERRIDE_CODE,
+)
 
 try:
     from multicall.constants import MULTICALL3_ADDRESSES
@@ -73,6 +78,7 @@ def _get_multicall2(chainid: int) -> Optional[MulticallContract]:
             deploy_block=MULTICALL2_DEPLOY_BLOCKS.get(chainid),
             bytecode=MULTICALL2_OVERRIDE_CODE,
         )
+
 
 def _get_multicall3(chainid: int) -> Optional[MulticallContract]:
     if multicall3 := MULTICALL3_ADDRESSES.get(chainid):
