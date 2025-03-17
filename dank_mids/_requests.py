@@ -62,6 +62,7 @@ from dank_mids._exceptions import (
     ResponseNotReady,
     internal_err_types,
 )
+from dank_mids._multicall import MulticallContract
 from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import _codec, _session
 from dank_mids.helpers._helpers import set_done
@@ -79,7 +80,7 @@ from dank_mids.types import (
 
 if TYPE_CHECKING:
     from dank_mids._batch import DankBatch
-    from dank_mids.controller import DankMiddlewareController, _MulticallContract
+    from dank_mids.controller import DankMiddlewareController
 
 
 logger = getLogger(__name__)
@@ -708,7 +709,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return (self.fourbyte + mcall_encode([[call.target, call.calldata] for call in self.calls])).hex()  # type: ignore [misc]
 
     @cached_property
-    def mcall(self) -> "_MulticallContract":
+    def mcall(self) -> MulticallContract:
         return self.controller._select_mcall_target_for_block(self.block)
 
     @property
