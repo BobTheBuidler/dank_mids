@@ -12,12 +12,13 @@ from asyncio import (
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from functools import cached_property, lru_cache
-from itertools import chain
+from itertools import accumulate, chain
 from logging import DEBUG, getLogger
 from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
     DefaultDict,
     Dict,
     Generator,
@@ -39,7 +40,8 @@ import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
-from eth_typing import ChecksumAddress
+from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
+from eth_typing import ChecksumAddress, HexStr
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from web3.datastructures import AttributeDict
@@ -88,6 +90,8 @@ logger = getLogger(__name__)
 _Response = TypeVar(
     "_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse
 )
+
+MulticallChunk = Tuple[ChecksumAddress, HexStr]
 
 
 class RPCError(_RPCError, total=False):
@@ -519,6 +523,9 @@ class eth_call(RPCRequest):
         """
         return self.controller.eth_call_semaphores[self.block]
 
+    def _get_mc_data(self) -> MulticallChunk:
+        return self.target, self.calldata
+
 
 ### Batch requests:
 
@@ -612,17 +619,45 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         )
 
 
-mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
-mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
+_mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+_mcall_encoder.validate_value = lambda *_: ...
 
 
-def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
-    return mcall_encoder([False, data])
+_array_encoder: DynamicArrayEncoder = _mcall_encoder.encoders[-1]
+_array_encoder.validate_value = lambda *_: ...
+
+
+_item_encoder: TupleEncoder = _array_encoder.item_encoder
+_item_encoder.validate_value = lambda *_: ...
+
+
+def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
+    encoded_elements, num_elements = __encode_elements_new(values)
+    return encode_uint_256(num_elements) + encoded_elements
+
+
+def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]:
+    tail_chunks = tuple(map(_item_encoder, values))
+    count = len(tail_chunks)
+    head_length = 32 * count
+    tail_offsets = chain((0,), accumulate(map(len, tail_chunks[:-1])))
+    head_chunks = map(encode_uint_256, map(head_length.__add__, tail_offsets))
+    return b"".join(chain(head_chunks, tail_chunks)), count
+
+
+_array_encoder.encode = __encode_new
+_array_encoder.encode_elements = __encode_elements_new
+
+_mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
+
+
+def mcall_encode(data: Iterable[Tuple[bool, bytes]]) -> bytes:
+    return _mcall_encoder((False, data))
 
 
 def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:
     try:
-        return mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
+        return _mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
@@ -658,7 +693,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @property
     def calldata(self) -> str:
-        return (self.fourbyte + mcall_encode([[call.target, call.calldata] for call in self.calls])).hex()  # type: ignore [misc]
+        return (self.fourbyte + mcall_encode(map(eth_call._get_mc_data, self.calls))).hex()  # type: ignore [misc]
 
     @cached_property
     def mcall(self) -> MulticallContract:
