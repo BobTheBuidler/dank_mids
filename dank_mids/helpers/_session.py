@@ -225,7 +225,9 @@ class DankClientSession(ClientSession):
                 else:
                     if debug_logs_enabled:
                         _logger_log(
-                            DEBUG, "response failed with status %s  request data: %s",  (_get_status_enum(ce), data)
+                            DEBUG,
+                            "response failed with status %s  request data: %s",
+                            (_get_status_enum(ce), data),
                         )
                     raise
 
