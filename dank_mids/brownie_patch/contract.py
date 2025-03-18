@@ -187,7 +187,7 @@ class Contract(brownie.Contract):
         Returns:
             The contract method object.
         """
-        attr = super().__getattribute__(name)
+        attr = object.__getattribute__(self, name)
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
             object.__setattr__(self, name, attr)
