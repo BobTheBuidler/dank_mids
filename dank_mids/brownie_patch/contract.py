@@ -187,7 +187,10 @@ class Contract(brownie.Contract):
         Returns:
             The contract method object.
         """
-        attr = object.__getattribute__(self, name)
+        try:
+            attr = object.__getattribute__(self, name)
+        except AttributeError:
+            raise AttributeError(f"Contract '{self._name}' object has no attribute '{name}'")
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
             object.__setattr__(self, name, attr)
