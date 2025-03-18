@@ -223,10 +223,11 @@ class DankClientSession(ClientSession):
                         await sleep(random())
 
                 else:
-                    if debug_logs_enabled:
-                        _logger_log(
-                            DEBUG, "response failed with status %s  request data: %s",  (_get_status_enum(ce), data)
-                        )
+                    _logger_warning(
+                        "response failed with status %s  request data: %s",
+                        _get_status_enum(ce),
+                        data,
+                    )
                     raise
 
     async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
