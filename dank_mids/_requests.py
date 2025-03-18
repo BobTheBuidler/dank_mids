@@ -12,12 +12,13 @@ from asyncio import (
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from functools import cached_property, lru_cache
-from itertools import chain
+from itertools import accumulate, chain
 from logging import DEBUG, getLogger
 from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
     DefaultDict,
     Dict,
     Generator,
@@ -40,7 +41,8 @@ import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
-from eth_typing import ChecksumAddress
+from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
+from eth_typing import ChecksumAddress, HexStr
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from web3.datastructures import AttributeDict
@@ -88,6 +90,9 @@ logger = getLogger(__name__)
 _Response = TypeVar(
     "_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse
 )
+
+MulticallChunk = Tuple[ChecksumAddress, HexStr]
+CallEncoder = Callable[[MulticallChunk], bytes]
 
 
 class RPCError(_RPCError, total=False):
@@ -518,6 +523,9 @@ class eth_call(RPCRequest):
             This property is not cached to ensure the semaphore control pattern in the `duplicate` function works as intended.
         """
         return self.controller.eth_call_semaphores[self.block]
+    
+    def _get_mc_data(self) -> MulticallChunk:
+        return self.target, self.calldata
 
 
 ### Batch requests:
@@ -660,12 +668,32 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         )
 
 
-mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+
+
+mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+mcall_encoder.validate_value = lambda *_: ...
+
+
+array_encoder: DynamicArrayEncoder = mcall_encoder.encoders[-1]
+array_encoder.validate_value = lambda *_: ...
+
+
+item_encoder: CallEncoder = array_encoder.item_encoder
+
+def encode_elements(values: Iterable[MulticallChunk]) -> bytes:
+    tail_chunks = tuple(map(item_encoder, values))
+    head_length = 32 * len(tail_chunks)
+    tail_offsets = chain((0,), accumulate(map(len, tail_chunks[:-1])))
+    head_chunks = map(encode_uint_256, map(head_length.__add__, tail_offsets))
+    return b"".join(chain(head_chunks, tail_chunks))
+
+array_encoder.encode_elements = encode_elements
+
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
 
 
-def mcall_encode(data: List[Tuple[bool, bytes]]) -> bytes:
-    return mcall_encoder([False, data])
+def mcall_encode(data: Iterable[Tuple[bool, bytes]]) -> bytes:
+    return mcall_encoder((False, data))
 
 
 def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:
@@ -706,7 +734,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @property
     def calldata(self) -> str:
-        return (self.fourbyte + mcall_encode([[call.target, call.calldata] for call in self.calls])).hex()  # type: ignore [misc]
+        return (self.fourbyte + mcall_encode(map(eth_call._get_multicall_data, self.calls))).hex()  # type: ignore [misc]
 
     @cached_property
     def mcall(self) -> MulticallContract:
