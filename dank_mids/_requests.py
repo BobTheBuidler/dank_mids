@@ -680,7 +680,7 @@ _item_encoder: CallEncoder = array_encoder.item_encoder
 
 
 def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
-    encoded_elements, num_elements = encode_elements(values)
+    encoded_elements, num_elements = __encode_elements_new(values)
     return encode_uint_256(num_elements) + encoded_elements
 
 
