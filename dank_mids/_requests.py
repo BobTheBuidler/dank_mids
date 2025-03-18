@@ -33,7 +33,6 @@ from typing import (
 )
 from weakref import ProxyType
 from weakref import proxy as weak_proxy
-from weakref import ref as weak_ref
 
 import a_sync
 import eth_retry
@@ -66,6 +65,7 @@ from dank_mids._multicall import MulticallContract
 from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import _codec, _session
 from dank_mids.helpers._helpers import set_done
+from dank_mids.helpers._weaklist import WeakList
 from dank_mids.types import (
     BatchId,
     BlockId,
@@ -525,61 +525,13 @@ class eth_call(RPCRequest):
 _Request = TypeVar("_Request", bound=_RequestBase)
 
 
-class WeakRequestList(Generic[_Request]):
-    def __init__(self, data=None):
-        self._refs = {}  # Mapping from object ID to weak reference
-        if data is not None:
-            self.extend(data)
-
-    def _gc_callback(self, item: _Request) -> None:
-        # Callback when a weakly-referenced object is garbage collected
-        self._refs.pop(id(item), None)  # Safely remove the item if it exists
-
-    def append(self, item: _Request) -> None:
-        # Keep a weak reference with a callback for when the item is collected
-        self._refs[id(item)] = weak_ref(item, self._gc_callback)
-
-    def extend(self, items: Iterable[_Request]) -> None:
-        append_to_self = self.append
-        for item in items:
-            append_to_self(item)
-
-    def __len__(self) -> int:
-        return len(self._refs)
-
-    def __bool__(self) -> bool:
-        return bool(self._refs)
-
-    def remove(self, item: _Request) -> None:
-        obj_id = id(item)
-        ref = self._refs.get(obj_id)
-        if ref is not None and ref() is item:
-            del self._refs[obj_id]
-        else:
-            raise ValueError("list.remove(x): x not in list")
-
-    def __contains__(self, item: _Request) -> bool:
-        ref = self._refs.get(id(item))
-        return False if ref is None else ref() is item
-
-    def __iter__(self) -> Iterator[_Request]:
-        for ref in self._refs.values():
-            item = ref()
-            if item is not None:
-                yield item
-
-    def __repr__(self):
-        # Use list comprehension syntax within the repr function for clarity
-        return f"WeakList([{', '.join(repr(item) for item in self)}])"
-
-
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     __slots__ = "calls", "_lock", "_daemon"
-    calls: WeakRequestList[_Request]
+    calls: WeakList[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         _RequestBase.__init__(self, controller)
-        self.calls = WeakRequestList(calls)
+        self.calls = WeakList(calls)
         self._lock = _AlertingRLock(name=self.__class__.__name__)
 
     def __bool__(self) -> bool:
