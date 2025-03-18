@@ -92,7 +92,6 @@ _Response = TypeVar(
 )
 
 MulticallChunk = Tuple[ChecksumAddress, HexStr]
-CallEncoder = Callable[[MulticallChunk], bytes]
 
 
 class RPCError(_RPCError, total=False):
@@ -668,15 +667,16 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         )
 
 
-mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
-mcall_encoder.validate_value = lambda *_: ...
+_mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+_mcall_encoder.validate_value = lambda *_: ...
 
 
-array_encoder: DynamicArrayEncoder = mcall_encoder.encoders[-1]
-array_encoder.validate_value = lambda *_: ...
+_array_encoder: DynamicArrayEncoder = _mcall_encoder.encoders[-1]
+_array_encoder.validate_value = lambda *_: ...
 
 
-_item_encoder: CallEncoder = array_encoder.item_encoder
+_item_encoder: TupleEncoder = _array_encoder.item_encoder
+_item_encoder.validate_value = lambda *_: ...
 
 
 def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
