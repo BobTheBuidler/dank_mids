@@ -678,15 +678,21 @@ array_encoder.validate_value = lambda *_: ...
 
 item_encoder: CallEncoder = array_encoder.item_encoder
 
+    
+def encode(value):
+    encoded_elements, num_elements = encode_elements(value)
+    encoded_size = encode_uint_256(num_elements)
+    return encoded_size + encoded_elements
 
-def encode_elements(values: Iterable[MulticallChunk]) -> bytes:
+def encode_elements(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]:
     tail_chunks = tuple(map(item_encoder, values))
     head_length = 32 * len(tail_chunks)
     tail_offsets = chain((0,), accumulate(map(len, tail_chunks[:-1])))
     head_chunks = map(encode_uint_256, map(head_length.__add__, tail_offsets))
-    return b"".join(chain(head_chunks, tail_chunks))
+    return b"".join(chain(head_chunks, tail_chunks)), len(tail_chunks)
 
 
+array_encoder.encode = encode
 array_encoder.encode_elements = encode_elements
 
 mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])")
