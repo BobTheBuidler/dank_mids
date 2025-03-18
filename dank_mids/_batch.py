@@ -88,10 +88,14 @@ class DankBatch:
                         batch_len = 1
 
                     logger.error(
-                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n%s\n",
+                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
+                        "Exc: %s\n"
+                        "%s contents: %s\n\n",
                         batch.__class__.__name__,
                         batch_len,
                         result,
+                        batch.__class__.__name__,
+                        list(batch),
                         exc_info=True,
                     )
                 raise result

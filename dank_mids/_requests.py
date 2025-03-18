@@ -865,10 +865,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     _log_error(
-                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n%s\n",
+                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
+                        "Exc: %s\n"
+                        "%s contents: %s\n\n",
                         batch.__class__.__name__,
                         len(batch),
                         result,
+                        batch.__class__.__name__,
+                        list(batch),
                         exc_info=True,
                     )
                 raise result
@@ -1202,10 +1206,14 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     _log_error(
-                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n%s\n",
+                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
+                        "Exc: %s\n"
+                        "%s contents: %s\n\n",
                         batch.__class__.__name__,
                         len(batch),
                         result,
+                        batch.__class__.__name__,
+                        list(batch),
                         exc_info=True,
                     )
                 raise result
