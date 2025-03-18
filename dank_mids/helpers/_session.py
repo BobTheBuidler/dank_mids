@@ -8,6 +8,7 @@ from random import random
 from threading import get_ident
 from time import time
 from typing import Any, Callable, Tuple, overload
+from urllib.parse import urlparse
 
 from a_sync import Event
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
@@ -176,6 +177,8 @@ class DankClientSession(ClientSession):
     _limited = False
     _last_rate_limited_at = 0
     _continue_requests_at = 0
+    __max_request_size = 0
+    __max_response_size = 0
 
     async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> bytes:  # type: ignore [override]
         if (now := time()) < self._continue_requests_at:
@@ -184,14 +187,7 @@ class DankClientSession(ClientSession):
         # Process input arguments.
         data = kwargs.get("data")
         if debug_logs_enabled := _logger_is_enabled_for(DEBUG):
-            if isinstance(data, PartialRequest):
-                kwargs["data"] = data.data
-                _logger_log(DEBUG, "making request for %s", (data,))
-            _logger_log(
-                DEBUG,
-                "making request to %s with (args, kwargs): (%s %s)",
-                (endpoint, args, kwargs),
-            )
+            self._log_request(endpoint, args, kwargs, data)
         elif isinstance(data, PartialRequest):
             kwargs["data"] = data.data
 
@@ -202,7 +198,8 @@ class DankClientSession(ClientSession):
                 async with limiters[endpoint]:
                     async with ClientSession.post(self, endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
-                        _logger_debug("received response %s", response_data)
+                        if _logger_is_enabled_for(DEBUG):
+                            self._log_response_size(response, response_data)
                         return response_data
             except ClientResponseError as ce:
                 status = ce.status
@@ -223,12 +220,121 @@ class DankClientSession(ClientSession):
                         await sleep(random())
 
                 else:
-                    if debug_logs_enabled:
-                        _logger_log(
-                            DEBUG, "response failed with status %s  request data: %s",  (_get_status_enum(ce), data)
-                        )
+                    _logger_warning(
+                        "response failed with status %s\n"
+                        "exc: %s\n"
+                        "request data: %s",
+                        _get_status_enum(ce),
+                        ce,
+                        data,
+                    )
                     raise
 
+    async def _request(self, method, url, **kwargs):
+        if _logger_is_enabled_for(DEBUG):
+            self._log_request_size(method, url, kwargs)
+        return await super()._request(method, url, **kwargs)
+
+    def _log_request(self, endpoint, args, kwargs, data):
+        if isinstance(data, PartialRequest):
+            kwargs["data"] = data.data
+            _logger_log(DEBUG, "making request for %s", (data,))
+        _logger_log(
+                DEBUG,
+                "making request to %s with (args, kwargs): (%s %s)",
+                (endpoint, args, kwargs),
+            )
+    
+    def _log_request_size(self, method: str, url: str, kwargs: dict):
+        # Calculate body size=
+        body = kwargs['data']
+        if isinstance(body, bytes):
+            body_size = len(body)
+        else:
+            raise Exception('is this real')
+        #elif isinstance(body, str):
+        #    body_size = len(body.encode('utf-8'))
+
+        # Log the body size
+        if body_size < 1024:
+            logger._log(DEBUG, "Request Body Size: %s bytes", (body_size,))
+        elif body_size < 1048576:
+            logger._log(DEBUG, "Request Body Size: %s kb", (round(body_size/1024,2),))
+        else:
+            logger._log(DEBUG, "Request Body Size: %s mb", (round(body_size/1048576,2),))
+
+        # Calculate Total Size
+        # First calculate header size
+        # Parse the URL to extract components
+        parsed_url = urlparse(url)
+        path = parsed_url.path or '/'
+        if parsed_url.query:
+            path += f"?{parsed_url.query}"
+        host = parsed_url.netloc
+
+        # Prepare headers
+        # Start with session headers
+        headers = self.headers.copy() if self.headers else {}
+        # Update with request-specific headers
+        headers.update(kwargs.get('headers', {}))
+        
+        # Ensure Host header is present
+        if 'Host' not in headers:
+            headers['Host'] = host
+
+        # Build request line
+        request_line = f"{method.upper()} {path} HTTP/1.1\r\n"
+
+        # Build headers string
+        headers_str = ''.join(f"{key}: {value}\r\n" for key, value in headers.items())
+        
+        # Calculate headers size
+        headers_size = len(request_line.encode('utf-8')) + len(headers_str.encode('utf-8')) + len(b'\r\n')
+
+        # Total request size = headers + CRLF + body
+        # CRLF after headers before body
+        total_size = headers_size + len(b'\r\n') + body_size
+
+        # Log the total size
+        if total_size < 1024:
+            logger._log(DEBUG, "Full Request Size (approx): %s bytes", (total_size,))
+        elif total_size < 1048576:
+            logger._log(DEBUG, "Full Request Size (approx): %s kb", (round(total_size/1024,2),))
+        else:
+            logger._log(DEBUG, "Full Request Size (approx): %s mb", (round(total_size/1048576,2),))
+                        
+        max_successful_request_size = self.__max_request_size
+        if total_size > max_successful_request_size:
+            max_successful_request_size = self.__max_request_size = total_size
+
+        if max_successful_request_size < 1024:
+            _logger_log(DEBUG, "Max successful request size %.2f bytes", (max_successful_request_size,))
+        elif max_successful_request_size < 1048576:
+            _logger_log(DEBUG, "Max successful request size %.2f kb", (max_successful_request_size/1024,))
+        else:
+            _logger_log(DEBUG, "Max successful request size %.2f mb", (max_successful_request_size/1048576,))
+
+    def _log_response_size(self, response, response_data):
+        response_len = len(response._body)
+        _logger_log(DEBUG, "Received response %s", (response_data,))
+        if response_len < 1024:
+            _logger_log(DEBUG, "Response size %.2f bytes", (response_len,))
+        elif response_len < 1048576:
+            _logger_log(DEBUG, "Response size %.2f kb", (response_len/1024,))
+        else:
+            _logger_log(DEBUG, "Response size %.2f mb", (response_len/1048576,))
+                            
+        max_successful_response_size = self.__max_response_size
+        if response_len > max_successful_response_size:
+            max_successful_response_size = self.__max_response_size = response_len
+
+        if max_successful_response_size < 1024:
+            _logger_log(DEBUG, "Max successful response size %.2f bytes", (max_successful_response_size,))
+        elif max_successful_response_size < 1048576:
+            _logger_log(DEBUG, "Max successful response size %.2f kb", (max_successful_response_size/1024,))
+        else:
+            _logger_log(DEBUG, "Max successful response size %.2f mb", (max_successful_response_size/1048576,))
+    
     async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
         limiter = limiters[endpoint]
         if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 10:
