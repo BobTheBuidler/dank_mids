@@ -190,7 +190,9 @@ class Contract(brownie.Contract):
         try:
             attr = object.__getattribute__(self, name)
         except AttributeError as e:
-            raise AttributeError(f"Contract '{self._name}' object has no attribute '{name}'") from e.__cause__
+            raise AttributeError(
+                f"Contract '{self._name}' object has no attribute '{name}'"
+            ) from e.__cause__
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
             object.__setattr__(self, name, attr)
