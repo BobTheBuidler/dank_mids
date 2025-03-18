@@ -734,7 +734,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @property
     def calldata(self) -> str:
-        return (self.fourbyte + mcall_encode(map(eth_call._get_multicall_data, self.calls))).hex()  # type: ignore [misc]
+        return (self.fourbyte + mcall_encode(map(eth_call._get_mc_data, self.calls))).hex()  # type: ignore [misc]
 
     @cached_property
     def mcall(self) -> MulticallContract:
