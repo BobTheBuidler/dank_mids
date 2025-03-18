@@ -693,19 +693,19 @@ def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]
     return b"".join(chain(head_chunks, tail_chunks)), count
 
 
-array_encoder.encode = __encode_new
-array_encoder.encode_elements = __encode_elements_new
+_array_encoder.encode = __encode_new
+_array_encoder.encode_elements = __encode_elements_new
 
-mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
+_mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
 
 
 def mcall_encode(data: Iterable[Tuple[bool, bytes]]) -> bytes:
-    return mcall_encoder((False, data))
+    return _mcall_encoder((False, data))
 
 
 def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:
     try:
-        return mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
+        return _mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
