@@ -523,7 +523,7 @@ class eth_call(RPCRequest):
             This property is not cached to ensure the semaphore control pattern in the `duplicate` function works as intended.
         """
         return self.controller.eth_call_semaphores[self.block]
-    
+
     def _get_mc_data(self) -> MulticallChunk:
         return self.target, self.calldata
 
@@ -668,8 +668,6 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         )
 
 
-
-
 mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 mcall_encoder.validate_value = lambda *_: ...
 
@@ -680,12 +678,14 @@ array_encoder.validate_value = lambda *_: ...
 
 item_encoder: CallEncoder = array_encoder.item_encoder
 
+
 def encode_elements(values: Iterable[MulticallChunk]) -> bytes:
     tail_chunks = tuple(map(item_encoder, values))
     head_length = 32 * len(tail_chunks)
     tail_offsets = chain((0,), accumulate(map(len, tail_chunks[:-1])))
     head_chunks = map(encode_uint_256, map(head_length.__add__, tail_offsets))
     return b"".join(chain(head_chunks, tail_chunks))
+
 
 array_encoder.encode_elements = encode_elements
 
