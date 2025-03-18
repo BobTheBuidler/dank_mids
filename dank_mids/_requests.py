@@ -762,16 +762,12 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             )
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
             raise e if "invalid argument" in str(e) else DankMidsInternalError(e) from e
-        except ClientResponseError as e:
-            if e.message == "Payload Too Large":
+        except Exception as e:
+            if isinstance(e, ClientResponseError) and e.message == "Payload Too Large":
                 _log_info("Payload too large. response headers: %s", e.headers)
                 controller.reduce_multicall_size(len(self))
                 self._record_failure(e, self.request.data.decode())
             elif _log_exception(e):
-                self._record_failure(e, self.request.data.decode())
-            await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
-        except Exception as e:
-            if _log_exception(e):
                 self._record_failure(e, self.request.data.decode())
             await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
         _demo_logger_info("request %s for multicall %s complete", rid, self.bid)
