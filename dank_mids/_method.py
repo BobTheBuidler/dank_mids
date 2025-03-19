@@ -1,5 +1,5 @@
 from importlib.metadata import version
-from typing import Tuple, Type
+from typing import Callable, Dict, Tuple, Type
 
 from typing_extensions import Self
 from web3.eth import BaseEth
@@ -7,11 +7,14 @@ from web3._utils.method_formatters import ERROR_FORMATTERS, NULL_RESULT_FORMATTE
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.method import Method, TFunc, _apply_request_formatters, default_root_munger
-from web3.types import BlockIdentifier
+from web3.types import BlockIdentifier, RPCEndpoint
 
 WEB3_MAJOR_VERSION = int(version("web3").split(".")[0])
 
 return_as_is = lambda x: x
+
+
+ResponseFormatters = Tuple[Callable, Callable, Callable]
 
 
 class MethodNoFormat(Method[TFunc]):
@@ -40,21 +43,20 @@ class MethodNoFormat(Method[TFunc]):
         if self.method_choice_depends_on_args:
             self.json_rpc_method = self.method_choice_depends_on_args(value=params[0])
 
-            pending_or_latest_filter_methods = [
+            pending_or_latest_filter_methods = (
                 RPC.eth_newPendingTransactionFilter,
                 RPC.eth_newBlockFilter,
-            ]
+            )
             if self.json_rpc_method in pending_or_latest_filter_methods:
                 params = []
 
-        method = self.method_selector_fn()
-        request = (method, _apply_request_formatters(params, self.request_formatters(method)))
-        response_formatters = (
-            return_as_is,
-            ERROR_FORMATTERS.get(self.json_rpc_method, return_as_is),
-            NULL_RESULT_FORMATTERS.get(self.json_rpc_method, return_as_is),
+        request = (
+            method := self.method_selector_fn(),
+            _apply_request_formatters(params, self.request_formatters(method)),
         )
-        return request, response_formatters
+        return request, _formatters.get(self.json_rpc_method) or _get_response_formatters(
+            self.json_rpc_method
+        )
 
     @classmethod
     def default(cls, method: RPC) -> Self:
@@ -64,6 +66,18 @@ class MethodNoFormat(Method[TFunc]):
             method: The RPC method for which a MethodNoFormat instance should be created.
         """
         return cls(method, [default_root_munger])
+
+
+_formatters: Dict[RPCEndpoint, ResponseFormatters] = {}
+
+
+def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:
+    formatters = _formatters[method] = (
+        return_as_is,
+        ERROR_FORMATTERS.get(method, return_as_is),
+        NULL_RESULT_FORMATTERS.get(method, return_as_is),
+    )
+    return formatters
 
 
 def bypass_chainid_formatter(eth: Type[BaseEth]) -> None:
