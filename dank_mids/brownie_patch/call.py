@@ -120,9 +120,8 @@ def _call_no_args(self: ContractMethod):
 
 
 async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> HexStr:
-    if any(isinstance(arg, Contract) for arg in args) or any(
-        hasattr(arg, "__contains__") for arg in args
-    ):  # We will just assume containers contain a Contract object until we have a better way to handle this
+    # We will just assume containers contain a Contract object until we have a better way to handle this
+    if any(isinstance(arg, Contract) or hasattr(arg, "__contains__") for arg in args):
         # We can't unpickle these because of the added `coroutine` method.
         data = __encode_input(call.abi, call.signature, *args)
     else:
@@ -291,10 +290,13 @@ def _format_array_but_cache_checksums(abi_type: ABIType, values: Union[List, Tup
     _check_array(values, abi_type.arrlist[-1][0] if len(abi_type.arrlist[-1]) else None)
     item_type = abi_type.item_type
     if item_type.is_array:
-        return [_format_array_but_cache_checksums(item_type, i) for i in values]
+        return list(map(lambda v: _format_array(item_type, v), values))
     elif isinstance(item_type, TupleType):
-        return [_format_tuple_but_cache_checksums(item_type.components, i) for i in values]
-    return [_format_single_but_cache_checksums(item_type.to_type_str(), i) for i in values]
+        components = item_type.components
+        return list(map(lambda v: _format_tuple(components, v), values))
+    else:
+        type_str = item_type.to_type_str()
+        return list(map(lambda v: _format_single(type_str, v), values))
 
 
 def _format_single_but_cache_checksums(type_str: str, value: Any) -> Any:
@@ -325,3 +327,7 @@ def _format_single_but_cache_checksums(type_str: str, value: Any) -> Any:
 brownie.convert.normalize._format_array = _format_array_but_cache_checksums
 brownie.convert.normalize._format_single = _format_single_but_cache_checksums
 brownie.convert.normalize._format_tuple = _format_tuple_but_cache_checksums
+
+_format_array = _format_array_but_cache_checksums
+_format_tuple = _format_tuple_but_cache_checksums
+_format_single = _format_single_but_cache_checksums

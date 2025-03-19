@@ -50,7 +50,7 @@ async def _main() -> None:
     using asynchronous calls.
     """
     # Initialize the pools as `dank_mids.Contract` objects.
-    dank_pool_contracts = [dank_mids.Contract(pool) for pool in uniswap_pools]
+    dank_pool_contracts = tuple(map(dank_mids.Contract, uniswap_pools))
 
     # Use `asyncio.gather` to collect the data from the various pools and blocks and store them in variables.
     tokens, timestamps, balances = await asyncio.gather(

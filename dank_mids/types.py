@@ -225,7 +225,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
 
     @property
     def payload_too_large(self) -> bool:
-        return any(err in self.error.message for err in constants.TOO_MUCH_DATA_ERRS)  # type: ignore [union-attr]
+        return any(map(self.error.message.__contains__, constants.TOO_MUCH_DATA_ERRS))
 
     def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""

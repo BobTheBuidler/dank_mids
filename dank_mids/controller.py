@@ -92,7 +92,7 @@ class DankMiddlewareController:
             logger.info("max jsonrpc batch size for tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
 
-        self._instance: int = sum(len(_instances) for _instances in instances.values())
+        self._instance = sum(map(len, instances.values()))
         instances[chainid].append(self)  # type: ignore
 
         self.mc2 = _get_multicall2(chainid)
@@ -111,6 +111,7 @@ class DankMiddlewareController:
             self.no_multicall.add(self.mc2.address)
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
+        self._latest_mc = self.mc3 or self.mc2
 
         self.method_semaphores = _MethodSemaphores(self)  # TODO: refactor this out
         self.eth_call_semaphores: BlockSemaphore = self.method_semaphores["eth_call"]  # type: ignore [assignment]
@@ -270,9 +271,9 @@ class DankMiddlewareController:
         """
         with self.pools_closed_lock:
             if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
-                return sum(len(call) for call in self.pending_rpc_calls) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
-            eth_calls = sum(len(calls) for calls in self._pending_eth_calls_values())
-            other_calls = sum(len(call) for call in self.pending_rpc_calls)
+                return sum(map(len, self.pending_rpc_calls)) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
+            eth_calls = sum(map(len, self._pending_eth_calls_values()))
+            other_calls = sum(map(len, self.pending_rpc_calls))
             return eth_calls + other_calls >= self.batcher.step
 
     def early_start(self):
@@ -390,11 +391,12 @@ class DankMiddlewareController:
             The selected multicall contract.
         """
         if block == "latest":
-            return self.mc3 or self.mc2  # type: ignore [return-value]
-        if self.mc3 and not self.mc3.needs_override_code_for_block(block):
-            return self.mc3
+            return self._latest_mc  # type: ignore [return-value]
+        mc3 = self.mc3
+        if mc3 and not mc3.needs_override_code_for_block(block):
+            return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
-        return self.mc2 or self.mc3  # type: ignore [return-value]
+        return self.mc2 or mc3  # type: ignore [return-value]
 
 
 @eth_retry.auto_retry
