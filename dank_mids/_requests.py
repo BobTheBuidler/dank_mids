@@ -38,6 +38,7 @@ from weakref import proxy as weak_proxy
 import a_sync
 import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
+from a_sync.primitives import DummySemaphore
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
@@ -96,6 +97,9 @@ MulticallChunk = Tuple[ChecksumAddress, HexStr]
 
 class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
+
+
+_dummy_semaphore = DummySemaphore()
 
 
 _super_init = a_sync.Event.__init__
@@ -395,7 +399,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
         if self.method == "eth_call":
             return self.controller.eth_call_semaphores[self.params[1]]
-        return self.controller.method_semaphores[self.method]  # type: ignore [return-value]
+        return _dummy_semaphore
 
     async def create_duplicate(self) -> RPCResponse:
         # Not actually self, but for typing purposes it is.
