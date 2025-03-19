@@ -271,7 +271,7 @@ class DankMiddlewareController:
         """
         with self.pools_closed_lock:
             if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
-                return sum(map(len(self.pending_rpc_calls))) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
+                return sum(map(len, self.pending_rpc_calls)) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
             eth_calls = sum(map(len, self._pending_eth_calls_values()))
             other_calls = sum(map(len, self.pending_rpc_calls))
             return eth_calls + other_calls >= self.batcher.step
