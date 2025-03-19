@@ -4,7 +4,7 @@ from threading import _RLock, _allocate_lock
 
 class UIDGenerator:
     __slots__ = "_value", "_lock"
-    
+
     def __init__(self) -> None:
         """
         Initializes the UIDGenerator with the starting UID value set to -1
