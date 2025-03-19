@@ -49,7 +49,7 @@ class MethodNoFormat(Method[TFunc]):
                 params = []
 
         request = (
-            method := self.method_selector_fn(), 
+            method := self.method_selector_fn(),
             _apply_request_formatters(params, self.request_formatters(method)),
         )
         return request, _get_response_formatters(self.json_rpc_method)
