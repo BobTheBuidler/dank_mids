@@ -1,4 +1,3 @@
-from functools import lru_cache
 from importlib.metadata import version
 from typing import Callable, Tuple, Type
 
@@ -14,6 +13,8 @@ WEB3_MAJOR_VERSION = int(version("web3").split(".")[0])
 
 return_as_is = lambda x: x
 
+
+ResponseFormatters = Tuple[Callable, Callable, Callable]
 
 class MethodNoFormat(Method[TFunc]):
     """Custom method class to bypass web3py's default result formatters.
@@ -52,7 +53,7 @@ class MethodNoFormat(Method[TFunc]):
             method := self.method_selector_fn(),
             _apply_request_formatters(params, self.request_formatters(method)),
         )
-        return request, _get_response_formatters(self.json_rpc_method)
+        return request, _formatters.get(self.json_rpc_method) or _get_response_formatters(self.json_rpc_method)
 
     @classmethod
     def default(cls, method: RPC) -> Self:
@@ -64,13 +65,16 @@ class MethodNoFormat(Method[TFunc]):
         return cls(method, [default_root_munger])
 
 
-@lru_cache(maxsize=None)
-def _get_response_formatters(method: RPCEndpoint) -> Tuple[Callable, Callable, Callable]:
-    return (
+_formatters: Dict[RPCEndpoint, ResponseFormatters] = {}
+
+def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:
+    formatters = (
         return_as_is,
         ERROR_FORMATTERS.get(method, return_as_is),
         NULL_RESULT_FORMATTERS.get(method, return_as_is),
     )
+    _formatters[method] = formatters
+    return formatters
 
 
 def bypass_chainid_formatter(eth: Type[BaseEth]) -> None:
