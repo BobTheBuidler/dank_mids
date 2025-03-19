@@ -72,12 +72,11 @@ _formatters: Dict[RPCEndpoint, ResponseFormatters] = {}
 
 
 def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:
-    formatters = (
+    formatters = _formatters[method] = (
         return_as_is,
         ERROR_FORMATTERS.get(method, return_as_is),
         NULL_RESULT_FORMATTERS.get(method, return_as_is),
     )
-    _formatters[method] = formatters
     return formatters
 
 
