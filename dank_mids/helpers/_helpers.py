@@ -320,7 +320,7 @@ def _make_hashable(obj: Any) -> Any:
     if isinstance(obj, (list, tuple)):
         return tuple(map(_make_hashable, obj))
     elif isinstance(obj, dict):
-        return AttributeDict({k: _make_hashable(v) for k, v in obj.items()})
+        return AttributeDict(zip(obj.keys(), map(_make_hashable, obj.values())))
     return obj
 
 
