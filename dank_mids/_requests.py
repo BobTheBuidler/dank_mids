@@ -283,21 +283,17 @@ class RPCRequest(_RequestBase[RawResponse]):
             if response.error is None:
                 if self.raw:
                     return {"result": response.result}
-                response_dict = response.to_dict(self.method)
-                assert "result" in response_dict or "error" in response_dict, (
-                    response_dict,
-                    type(response_dict),
-                )
-                return response_dict
+                return response.to_dict(self.method)
 
-            if response.error.message.lower() in ["invalid request", "parse error"]:
+            if response.error.message.lower() in ("invalid request", "parse error"):
                 controller = self.controller
                 if controller._time_of_request_type_change == 0:
                     controller.request_type = Request
                     controller._time_of_request_type_change = time()
                 if time() - controller._time_of_request_type_change <= 600:
                     _log_debug(
-                        "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
+                        "your node says the partial request was invalid but its okay, \n"
+                        "we can use the full jsonrpc spec instead"
                     )
                     method = f"{self.method}_raw" if self.raw else self.method
                     return await controller(method, self.params)
@@ -330,19 +326,17 @@ class RPCRequest(_RequestBase[RawResponse]):
             await wait_for(shielded, timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
-            done, pending = await wait([task, self.create_duplicate()], return_when=FIRST_COMPLETED)
+            done, pending = await wait((task, self.create_duplicate()), return_when=FIRST_COMPLETED)
             for t in pending:
                 t.cancel()
             for t in done:
                 return await t
         response = self.response.decode(partial=True)
-        retval = (
+        return (
             {"result": response.result}
             if self.raw and response.result
             else response.to_dict(self.method)
         )
-        assert "result" in retval or "error" in retval, (retval, type(retval))
-        return retval
 
     @set_done
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
