@@ -763,9 +763,9 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             _log_debug("dank too loud, trying again")
             return True
         elif "No state available for block" in f"{e}":
-            e.args[0]["dankmids_note"] = (
-                "You're not using an archive node, and you need one for the application you are attempting to run."
-            )
+            e.args[0][
+                "dankmids_note"
+            ] = "You're not using an archive node, and you need one for the application you are attempting to run."
             return False
         elif _Batch.should_retry(self, e):
             return True
@@ -1024,7 +1024,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 )
                 await gather(*(call.spoof_response(e) for call in calls))
             else:
-                raise NotImplementedError("and you may ask yourself, well, how did I get here?") from e
+                raise NotImplementedError(
+                    "and you may ask yourself, well, how did I get here?"
+                ) from e
         _demo_logger_info("request %s for jsonrpc batch %s complete", rid, self.jid)  # type: ignore
 
     @eth_retry.auto_retry
