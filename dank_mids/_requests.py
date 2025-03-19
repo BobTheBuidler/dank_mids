@@ -478,6 +478,7 @@ class eth_call(RPCRequest):
         """True if this contract is multicall compatible, False if not."""
         return self.target not in self.controller.no_multicall
 
+    @set_done
     async def spoof_response(self, data: Union[bytes, Exception, RawResponse]) -> None:  # type: ignore
         """Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker."""
 
