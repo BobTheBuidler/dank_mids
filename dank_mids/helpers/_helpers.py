@@ -318,7 +318,7 @@ def _make_hashable(obj: Any) -> Any:
         obj: The object to make hashable.
     """
     if isinstance(obj, (list, tuple)):
-        return tuple((_make_hashable(o) for o in obj))
+        return tuple(map(_make_hashable, obj))
     elif isinstance(obj, dict):
         return AttributeDict({k: _make_hashable(v) for k, v in obj.items()})
     return obj

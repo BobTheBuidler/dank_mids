@@ -434,8 +434,7 @@ def _is_call_revert(e: BadResponse) -> bool:
     Returns:
         True if the error was caused by an individual call revert, False otherwise.
     """
-    stre = f"{e}".lower()
-    return any(s in stre for s in INDIVIDUAL_CALL_REVERT_STRINGS)
+    return any(map(f"{e}".lower().__contains__, INDIVIDUAL_CALL_REVERT_STRINGS))
 
 
 def _needs_full_request_spec(e: BadResponse):
@@ -484,9 +483,7 @@ class eth_call(RPCRequest):
 
         # NOTE: If `type(data)` is `bytes`, it is a result from a multicall. If not, `data` comes from a jsonrpc batch.
         # If this if clause is True, it means the call reverted inside of a multicall but returned a result, without causing the multicall to revert.
-        if isinstance(data, bytes) and any(
-            data.startswith(selector) for selector in constants.REVERT_SELECTORS
-        ):
+        if isinstance(data, bytes) and any(map(data.startswith, constants.REVERT_SELECTORS)):
             # TODO figure out how to include method selector in no_multicall key
             try:
                 # NOTE: If call response from multicall indicates failure, make sync call to get either:
@@ -761,15 +758,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     def should_retry(self, e: Exception) -> bool:
         """Should the Multicall be retried based on `e`?"""
-        if any(err in f"{e}".lower() for err in constants.RETRY_ERRS):
+        # NOTE: While it might look weird, f-string is faster than `str(e)`.
+        if any(map(f"{e}".lower().__contains__, constants.RETRY_ERRS)):
             _log_debug("dank too loud, trying again")
             return True
-        elif (
-            "No state available for block" in f"{e}"
-        ):  # NOTE: While it might look weird, f-string is faster than `str(e)`.
-            e.args[0][
-                "dankmids_note"
-            ] = "You're not using an archive node, and you need one for the application you are attempting to run."
+        elif "No state available for block" in f"{e}":
+            e.args[0]["dankmids_note"] = (
+                "You're not using an archive node, and you need one for the application you are attempting to run."
+            )
             return False
         elif _Batch.should_retry(self, e):
             return True
@@ -960,7 +956,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             The total number of individual calls in the batch.
         """
         with self._lock:
-            return sum(len(call) for call in self)
+            return sum(map(len, self))
 
     @property
     def is_full(self) -> bool:
@@ -979,7 +975,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 "request %s for jsonrpc batch %s (%s calls) starting",
                 rid,
                 self.jid,
-                sum(len(batch) for batch in self),
+                sum(map(len, self)),
             )
         try:
             while True:
@@ -1028,7 +1024,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 )
                 await gather(*(call.spoof_response(e) for call in calls))
             else:
-                raise NotImplementedError("and you may ask yourself, well, how did I get here?")
+                raise NotImplementedError("and you may ask yourself, well, how did I get here?") from e
         _demo_logger_info("request %s for jsonrpc batch %s complete", rid, self.jid)  # type: ignore
 
     @eth_retry.auto_retry
@@ -1076,7 +1072,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         if isinstance(response, list):
             return response, calls
         # Oops, we failed.
-        if response.error.message.lower() in ["invalid request", "parse error"]:  # type: ignore [union-attr]
+        if response.error.message.lower() in ("invalid request", "parse error"):  # type: ignore [union-attr]
             # NOT SURE IF THIS ACTUALLY RUNS, CAN WE RECEIVE THIS TYPE RESPONSE FOR A JSON BATCH?
             controller = self.controller
             if controller._time_of_request_type_change == 0:
@@ -1143,8 +1139,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         else:
             for call, raw in zip(calls, response):
                 # TODO: make sure this doesn't ever raise and then delete it
-                decoded = raw.decode()
-                if call.uid != decoded.id:
+                if call.uid != raw.decode().id:
                     # Not sure why it works this way
                     raise BatchResponseSortError(controller, calls, response)
 
