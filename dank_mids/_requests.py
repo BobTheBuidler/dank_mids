@@ -588,7 +588,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
             _log_debug("out of gas. cut in half, trying again")
         elif any(err in str_e for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
-            _log_debug("Dank too loud. Bisecting batch and retrying.")
+            _log_info("Dank too loud. Bisecting batch and retrying.")
         elif isinstance(e, BadResponse) and (_needs_full_request_spec(e) or _is_call_revert(e)):
             pass
         elif "429" not in str_e and all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
@@ -755,10 +755,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if any(map(f"{e}".lower().__contains__, constants.RETRY_ERRS)):
             _log_debug("dank too loud, trying again")
             return True
-        elif "No state available for block" in f"{e}":
-            e.args[0][
-                "dankmids_note"
-            ] = "You're not using an archive node, and you need one for the application you are attempting to run."
+        elif "No state available for block" in f"{e}":  
+            e.args[0]["dankmids_note"] = (
+                "You're not using an archive node, and you need one for the application you are attempting to run."
+            )
             return False
         elif _Batch.should_retry(self, e):
             return True
