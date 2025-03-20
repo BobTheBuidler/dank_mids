@@ -4,7 +4,7 @@ from typing import Optional
 from eth_typing import BlockNumber, ChecksumAddress
 from eth_utils import to_checksum_address
 from msgspec import Struct
-from multicall.constants import MULTICALL2_ADDRESSES, MULTICALL_ADDRESSES
+from multicall.constants import MULTICALL2_ADDRESSES
 
 from dank_mids.constants import (
     MULTICALL2_DEPLOY_BLOCKS,
