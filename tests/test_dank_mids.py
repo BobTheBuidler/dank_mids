@@ -9,6 +9,7 @@ from web3._utils.rpc_abi import RPC
 
 CHAI = "0x06AF07097C9Eeb7fD685c692751D5C66dB49c215"
 
+
 def call_chai(i: int, block: int) -> Call:
     return Call(
         CHAI, "totalSupply()(uint)", [[f"totalSupply{i}", None]], _w3=dank_web3, block_id=block
