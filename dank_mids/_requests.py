@@ -62,10 +62,10 @@ from dank_mids._exceptions import (
     ResponseNotReady,
     internal_err_types,
 )
-from dank_mids._multicall import MulticallContract
 from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import _codec, _session
 from dank_mids.helpers._helpers import set_done
+from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._weaklist import WeakList
 from dank_mids.types import (
     BatchId,
