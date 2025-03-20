@@ -148,8 +148,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         for _ in range(10):
             if waiters:
                 break
-            else:
-                await sleep(0)
+            await sleep(0)
 
     _rate_limit_waiters.pop(endpoint).set()
 

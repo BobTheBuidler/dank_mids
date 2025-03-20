@@ -1,6 +1,7 @@
 import logging
-from asyncio import gather
 from typing import TYPE_CHECKING, Any, Awaitable, Generator, List, Union
+
+from a_sync import igather
 
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import _Batch, JSONRPCBatch, Multicall, RPCRequest
@@ -78,7 +79,7 @@ class DankBatch:
                        it will be re-raised after all coroutines have been processed.
         """
         batches = tuple(self.coroutines)
-        for batch, result in zip(batches, await gather(*batches, return_exceptions=True)):
+        for batch, result in zip(batches, await igather(batches, return_exceptions=True)):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     try:

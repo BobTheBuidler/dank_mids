@@ -18,7 +18,6 @@ from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     DefaultDict,
     Dict,
     Generator,
@@ -37,7 +36,7 @@ from weakref import proxy as weak_proxy
 
 import a_sync
 import eth_retry
-from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor
+from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
@@ -776,7 +775,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if isinstance(data, Exception):
             _log_debug("%s had Exception %s", self, data)
             _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
-            await gather(*(call.spoof_response(data) for call in calls))
+            await gather(call.spoof_response(data) for call in calls)
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
         # It was either received as a response to a single rpc call or as a part of a batch response.
         elif isinstance(data, RawResponse):
@@ -834,7 +833,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         ]
         for batch in batches:
             batch.start(cleanup=False)
-        for batch, result in zip(batches, await gather(*batches, return_exceptions=True)):
+        for batch, result in zip(batches, await igather(batches, return_exceptions=True)):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     _log_error(
@@ -1016,7 +1015,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 _log_info(
                     "does this ever actually run? pretty sure a single-multicall json batch is not possible. can I delete this?"
                 )
-                await gather(*(call.spoof_response(e) for call in calls))
+                await igather(call.spoof_response(e) for call in calls)
             else:
                 raise NotImplementedError(
                     "and you may ask yourself, well, how did I get here?"
@@ -1176,7 +1175,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         ]
         for batch in batches:
             batch.start(cleanup=False)
-        for batch, result in zip(batches, await gather(*batches, return_exceptions=True)):
+        for batch, result in zip(batches, await igather(batches, return_exceptions=True)):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     _log_error(
