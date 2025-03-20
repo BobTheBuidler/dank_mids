@@ -64,6 +64,7 @@ from dank_mids._exceptions import (
 )
 from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import _codec, _session
+from dank_mids.helpers._errors import log_internal_error
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._weaklist import WeakList
@@ -715,7 +716,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._started:
-            _log_error("%s early exit", self)
+            logger.error("%s early exit", self)
             return
         self._started = True
         if (l := len(self)) == 1:
@@ -834,17 +835,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         for batch, result in zip(batches, await igather(batches, return_exceptions=True)):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
-                    _log_error(
-                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
-                        "Exc: %s\n"
-                        "%s contents: %s\n\n",
-                        batch.__class__.__name__,
-                        len(batch),
-                        result,
-                        batch.__class__.__name__,
-                        list(batch),
-                        exc_info=True,
-                    )
+                    log_internal_error(logger, batch, len(batch), result)
                 raise result
 
     @set_done
@@ -1136,10 +1127,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     # Not sure why it works this way
                     raise BatchResponseSortError(controller, calls, response)
 
-        for r in await igather(
-            (call.spoof_response(raw) for call, raw in zip(calls, response)),
-            return_exceptions=True,
-        ):
+        coros = (call.spoof_response(raw) for call, raw in zip(calls, response))
+        for r in await igather(coros, return_exceptions=True):
             # NOTE: By doing this with the exceptions we allow any successful calls to get their results sooner
             #       without being interrupted by the first exc in the gather and having to wait for the bisect and retry process
             # TODO: stop retrying ones that succeed, that's wasteful
@@ -1176,17 +1165,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         for batch, result in zip(batches, await igather(batches, return_exceptions=True)):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
-                    _log_error(
-                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
-                        "Exc: %s\n"
-                        "%s contents: %s\n\n",
-                        batch.__class__.__name__,
-                        len(batch),
-                        result,
-                        batch.__class__.__name__,
-                        list(batch),
-                        exc_info=True,
-                    )
+                    log_internal_error(logger, len(batch), result)
                 raise result
 
     def adjust_batch_size(self) -> None:
@@ -1277,7 +1256,6 @@ def _raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoRetur
 _log_debug = logger.debug
 _log_info = logger.info
 _log_warning = logger.warning
-_log_error = logger.error
 _logger_is_enabled_for = logger.isEnabledFor
 _log_devhint = stats.logger.devhint
 _demo_logger_info = demo_logger.info
