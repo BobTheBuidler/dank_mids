@@ -1,37 +1,33 @@
 import sys
-from asyncio import gather
 
 import pytest
+from a_sync import igather
 from brownie import chain
 from dank_mids import dank_web3, instances
 from multicall import Call
 from web3._utils.rpc_abi import RPC
 
 CHAI = "0x06AF07097C9Eeb7fD685c692751D5C66dB49c215"
-height = chain.height
-BIG_WORK = (
-    Call(
-        CHAI,
-        "totalSupply()(uint)",
-        [[f"totalSupply{i}", None]],
-        block_id=height - (i // 25000),
-        _w3=dank_web3,
-    ).coroutine()
-    for i in range(0, 100_000, 3)
-)
+
+
+def call_chai(i: int, block: int) -> Call:
+    return Call(
+        CHAI, "totalSupply()(uint)", [[f"totalSupply{i}", None]], _w3=dank_web3, block_id=block
+    )
+
 
 height = chain.height
-MULTIBLOCK_WORK = (
-    Call(
-        CHAI, "totalSupply()(uint)", [[f"totalSupply{i}", None]], _w3=dank_web3, block_id=height - i
-    )
-    for i in range(1_000)
-)
+
+BIG_WORK = (call_chai(i, height - (i // 25000)) for i in range(0, 100_000, 4))
+
+height = chain.height
+
+MULTIBLOCK_WORK = (call_chai(i, height - i) for i in range(1000))
 
 
 @pytest.mark.asyncio_cooperative
 async def test_dank_middleware():
-    await gather(*BIG_WORK)
+    await igather(BIG_WORK)
     controller = instances[chain.id][0]
     cid = controller.call_uid.latest
     mid = controller.multicall_uid.latest
@@ -75,7 +71,7 @@ async def test_json_batch():
     This test verifies that the system can correctly handle and process
     a batch of JSON-RPC requests across multiple blocks.
     """
-    await gather(*MULTIBLOCK_WORK)
+    await igather(MULTIBLOCK_WORK)
 
 
 def test_next_cid():
@@ -121,7 +117,7 @@ async def test_other_methods():
         dank_web3.eth.get_block("0xe25822"),
         dank_web3.manager.coro_request(RPC.web3_clientVersion, []),
     ]
-    results = await gather(*work)
+    results = await igather(work)
     assert results
     assert results[-2].timestamp
 
