@@ -5,6 +5,7 @@ from a_sync import igather
 
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import _Batch, JSONRPCBatch, Multicall, RPCRequest
+from dank_mids.helpers._errors import log_internal_error
 from dank_mids.types import Multicalls, RawResponse
 
 if TYPE_CHECKING:
@@ -83,22 +84,10 @@ class DankBatch:
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
                     try:
-                        batch_len = len(batch)
+                        log_internal_error(logger, batch, len(batch), result)
                     except TypeError:
                         # object of type 'coroutine' has no len()
-                        batch_len = 1
-
-                    logger.error(
-                        "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
-                        "Exc: %s\n"
-                        "%s contents: %s\n\n",
-                        batch.__class__.__name__,
-                        batch_len,
-                        result,
-                        batch.__class__.__name__,
-                        list(batch),
-                        exc_info=True,
-                    )
+                        log_internal_error(logger, batch, 1, result)
                 raise result
 
     def start(self) -> None:
@@ -120,7 +109,7 @@ class DankBatch:
         self._started = True
 
     @property
-    def coroutines(self) -> Generator[Union["_Batch", Awaitable[RawResponse]], None, None]:
+    def coroutines(self) -> Generator[Union[_Batch, Awaitable[RawResponse]], None, None]:
         """
         Generator that prepares RPC calls and multicalls for batch processing.
 
