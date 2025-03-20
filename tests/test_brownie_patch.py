@@ -1,11 +1,11 @@
 # sourcery skip: no-loop-in-tests
-from asyncio import gather
 from decimal import Decimal
 
 import brownie
 import dank_mids
 import eth_retry
 import pytest
+from a_sync import igather
 from dank_mids.brownie_patch.call import _patch_call
 
 # NOTE: we don't want tests to fail due to api limits
@@ -31,8 +31,8 @@ async def test_gather():
     weth = get_contract("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2")
     _patch_call(weth.totalSupply, dank_mids.web3)
     assert hasattr(weth.totalSupply, "coroutine")
-    for result in await gather(
-        *(weth.totalSupply.coroutine(block_identifier=13_000_000) for _ in range(10_000))
+    for result in await igather(
+        weth.totalSupply.coroutine(block_identifier=13_000_000) for _ in range(10_000)
     ):
         assert result == 6620041514474872981393155
 

@@ -1,16 +1,14 @@
-from asyncio import gather
 from decimal import Decimal
-from functools import cached_property
 from typing import Any, Awaitable, Callable, Dict, Generic, Iterable, List, Optional, TypeVar
 
+from a_sync import igather
 from brownie.convert.datatypes import EthAddress
 from brownie.typing import AccountsType
-from eth_abi.exceptions import InsufficientDataBytes
 from hexbytes.main import BytesLike
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.brownie_patch._abi import FunctionABI
-from dank_mids.helpers._helpers import DankWeb3, _make_hashable
+from dank_mids.helpers._helpers import _make_hashable
 
 _EVMType = TypeVar("_EVMType")
 
@@ -76,18 +74,14 @@ class _DankMethodMixin(Generic[_EVMType]):
             decimals: The number of decimal places by which to scale numeric results.
         """
         if iter_args:
-            return await gather(
-                *(
-                    self.coroutine(*call_args, block_identifier=block_identifier, decimals=decimals)
-                    for call_args in args
-                )
+            return await igather(
+                self.coroutine(*call_args, block_identifier=block_identifier, decimals=decimals)
+                for call_args in args
             )
         else:
-            return await gather(
-                *(
-                    self.coroutine(call_arg, block_identifier=block_identifier, decimals=decimals)
-                    for call_arg in args
-                )
+            return await igather(
+                self.coroutine(call_arg, block_identifier=block_identifier, decimals=decimals)
+                for call_arg in args
             )
 
     @property
