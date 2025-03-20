@@ -2033,12 +2033,12 @@ testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
 name = "ez-a-sync"
-version = "0.26.0"
+version = "0.27.0"
 description = "A library that makes it easy to define objects that can be used for both sync and async use cases."
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "ez_a_sync-0.26.0.tar.gz", hash = "sha256:95d90c89848a5fc53eaadfcbd1b7f606d9198d5a6281e3cd26ca235ec8035e9c"},
+    {file = "ez_a_sync-0.27.0.tar.gz", hash = "sha256:a3ac096fbd78e490af8183fbeac1534ca8b4c972a2f02239d1ac9860e18c2c60"},
 ]
 
 [package.dependencies]
@@ -5095,4 +5095,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "2ace0c0f1e6abfee5ffc81e3d0b0f8bfdf3b2a832bdb1df4094d8d1a1c62f46a"
+content-hash = "0b7ebdf4f05f756026fb082e23319d614c098e22f742c5de4e5445fb6c4fa110"
