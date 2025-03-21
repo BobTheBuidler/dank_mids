@@ -131,7 +131,9 @@ class _RequestEvent(a_sync.Event):
 
 
 class _RequestBase(Generic[_Response]):
-    __slots__ = "controller", "uid", "_response", "_done", "_start", "_batch", "__weakref__"
+    _response: Union[_Response, RPCResponse, Exception, None] = None
+
+    __slots__ = "controller", "uid", "_done", "_start", "_batch", "__weakref__"
 
     def __init__(self, controller: "DankMiddlewareController") -> None:
         self.controller = controller
@@ -140,7 +142,6 @@ class _RequestBase(Generic[_Response]):
         self.uid = controller.call_uid.next
         """The unique id for this request."""
 
-        self._response: Union[_Response, RPCResponse, Exception, None] = None
         self._done = _RequestEvent(self)
         self._start = time()
 
@@ -190,7 +191,14 @@ def _should_batch_method(method: str) -> bool:
 
 
 class RPCRequest(_RequestBase[RawResponse]):
-    __slots__ = "method", "params", "should_batch", "raw", "_started", "_retry", "_daemon"
+    should_batch: bool = True
+    """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
+
+    _started: bool = False
+    _retry: bool = False
+    _debug_logs_enabled: bool = False
+
+    __slots__ = "method", "params", "raw", "_daemon", "__dict__"
 
     def __init__(
         self,
@@ -211,10 +219,16 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         self.params = params
         """The parameters to send with this request, if any."""
-        self.should_batch = _should_batch_method(method)
-        """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
-        self._started = False
-        self._retry = retry
+
+        if not _should_batch_method(method):
+            self.should_batch = False
+
+        if retry:
+            self._retry = True
+
+        if logger.isEnabledFor(DEBUG):
+            self._debug_logs_enabled = True
+
         if self.should_batch:
             with controller.pools_closed_lock:
                 if isinstance(self, eth_call) and self.multicall_compatible:
@@ -310,12 +324,6 @@ class RPCRequest(_RequestBase[RawResponse]):
         # We raise it here so it traces back up to the caller
         if isinstance(self.response, Exception):
             _raise_more_detailed_exc(self.request, self.response)
-        # Less optimal decoding
-        # TODO: refactor this out
-        assert "result" in self.response or "error" in self.response, (
-            self.response,
-            type(self.response),
-        )
         return self.response
 
     @set_done
@@ -661,11 +669,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
 
     # We need to specify __dict__ for the cached properties to work
-    __slots__ = (
-        "bid",
-        "_started",
-        "__dict__",
-    )
+    __slots__ = "bid", "_started", "__dict__",
 
     def __init__(
         self,
