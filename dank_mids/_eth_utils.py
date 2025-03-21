@@ -78,30 +78,37 @@ def patch_eth_utils():
         )
 
     import eth_utils.crypto
+
     eth_utils.crypto.to_bytes = to_bytes
-    
+
     import web3.main
+
     web3.main.to_hex = to_hex
     web3.main.to_bytes = to_bytes
-    
+
     import web3.middleware.filter
+
     web3.middleware.filter.to_hex = to_hex
-    
+
     import web3.providers.base
+
     web3.providers.base.to_bytes = to_bytes
-    
+
     import web3._utils.encoding
+
     web3._utils.encoding.to_hex = to_hex
     web3._utils.encoding.to_bytes = to_bytes
-    
+
     import web3._utils.events
+
     web3._utils.events.to_hex = to_hex
     web3._utils.events.to_bytes = to_bytes
-    
+
     import web3._utils.normalizers
+
     web3._utils.normalizers.to_hex = to_hex
     web3._utils.normalizers.to_bytes = to_bytes
-    
+
     try:
         # only present on some versions
         import web3._utils.type_conversion
