@@ -1,7 +1,8 @@
-import logging
+from itertools import tee
+from logging import getLogger
 from typing import TYPE_CHECKING, Any, Awaitable, Generator, List, Union
 
-from a_sync import igather
+from a_sync import create_task
 
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import _Batch, JSONRPCBatch, Multicall, RPCRequest
@@ -17,7 +18,7 @@ MIN_SIZE = 1  # TODO: Play with this
 CHECK = MIN_SIZE - 1
 """A constant used for checking batch sizes."""
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 class DankBatch:
@@ -79,16 +80,21 @@ class DankBatch:
             Exception: If any of the coroutines in the batch raise an exception,
                        it will be re-raised after all coroutines have been processed.
         """
-        batches = tuple(self.coroutines)
-        for batch, result in zip(batches, await igather(batches, return_exceptions=True)):
-            if isinstance(result, Exception):
-                if not isinstance(result, DankMidsInternalError):
-                    try:
-                        log_internal_error(logger, batch, len(batch), result)
-                    except TypeError:
-                        # object of type 'coroutine' has no len()
-                        log_internal_error(logger, batch, 1, result)
-                raise result
+        # tee turns 1 iterator into 2
+        batches0, batches1 = tee(self.coroutines, 2)
+        tasks = map(create_task, batches0)
+        for batch, task in zip(batches1, list(tasks)):
+            try:
+                await task
+            except DankMidsInternalError:
+                raise
+            except Exception as e:
+                try:
+                    log_internal_error(logger, batch, len(batch), e)
+                except TypeError:
+                    # object of type 'coroutine' has no len()
+                    log_internal_error(logger, batch, 1, e)
+                raise
 
     def start(self) -> None:
         """
