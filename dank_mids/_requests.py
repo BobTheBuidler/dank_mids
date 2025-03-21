@@ -1,5 +1,6 @@
 from asyncio import (
     FIRST_COMPLETED,
+    Task,
     TimeoutError,
     create_task,
     get_running_loop,
@@ -17,6 +18,7 @@ from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
+    Coroutine,
     DefaultDict,
     Dict,
     Generator,
@@ -264,7 +266,8 @@ class RPCRequest(_RequestBase[RawResponse]):
     @set_done
     async def get_response(self) -> RPCResponse:  # type: ignore [override]
         if not self.should_batch:
-            _log_debug("bypassed dank batching, method is %s", self.method)
+            if self._debug_logs_enabled:
+                _log_debug("bypassed dank batching, method is %s", self.method)
             return await self.get_response_unbatched()
 
         if self._started and not self._batch._started:
@@ -305,10 +308,11 @@ class RPCRequest(_RequestBase[RawResponse]):
                     controller.request_type = Request
                     controller._time_of_request_type_change = time()
                 if time() - controller._time_of_request_type_change <= 600:
-                    _log_debug(
-                        "your node says the partial request was invalid but its okay, \n"
-                        "we can use the full jsonrpc spec instead"
-                    )
+                    if self._debug_logs_enabled:
+                        _log_debug(
+                            "your node says the partial request was invalid but its okay, \n"
+                            "we can use the full jsonrpc spec instead"
+                        )
                     method = f"{self.method}_raw" if self.raw else self.method
                     return await controller(method, self.params)
 
@@ -317,7 +321,8 @@ class RPCRequest(_RequestBase[RawResponse]):
 
             response = response.to_dict(self.method)
             response["error"] = error
-            _log_debug("error response for %s: %s", self, response)
+            if self._debug_logs_enabled:
+                _log_debug("error response for %s: %s", self, response)
             return response
 
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
@@ -365,15 +370,18 @@ class RPCRequest(_RequestBase[RawResponse]):
                     controller.request_type = Request
                     controller._time_of_request_type_change = int(time())
                 if time() - controller._time_of_request_type_change <= 600:
-                    _log_debug(
-                        "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
-                    )
+                    if self._debug_logs_enabled:
+                        _log_debug(
+                            "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
+                        )
                     self._response = await self.create_duplicate()
                     return
             self._response = {"error": __format_error(self.request, data.response)}
-            _log_debug("%s _response set to rpc error response %s", self, self._response)
+            if self._debug_logs_enabled:
+                _log_debug("%s _response set to rpc error response %s", self, self._response)
         elif isinstance(data, Exception):
-            _log_debug("%s _response set to Exception %s", self, data)
+            if self._debug_logs_enabled:
+                _log_debug("%s _response set to Exception %s", self, data)
             self._response = data
         # From multicalls
         elif isinstance(data, bytes):
@@ -655,13 +663,21 @@ def mcall_encode(data: Iterable[Tuple[bool, bytes]]) -> bytes:
     return _mcall_encoder((False, data))
 
 
-def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Exception]:
+# maybe use this success flag to do something later
+Success = bool
+__get_bytes = lambda tup: tup[1]
+
+
+def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
+    decoded: List[Tuple[Success, bytes]]
     try:
-        return _mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
+        decoded = _mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
         return e
+    else:
+        return list(map(__get_bytes, decoded))
 
 
 class Multicall(_Batch[RPCResponse, eth_call]):
@@ -669,7 +685,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
 
     # We need to specify __dict__ for the cached properties to work
-    __slots__ = "bid", "_started", "__dict__",
+    __slots__ = (
+        "bid",
+        "_started",
+        "__dict__",
+    )
 
     def __init__(
         self,
@@ -787,9 +807,13 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             calls = tuple(self.calls)
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
-            _log_debug("%s had Exception %s", self, data)
-            _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
-            await igather(call.spoof_response(data) for call in calls)
+            if _logger_is_enabled_for(DEBUG):
+                _log_debug("%s had Exception %s", self, data)
+                _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
+            await gatherish(
+                (call.spoof_response(data) for call in calls),
+                name="Multicall.spoof_response[Exception]",
+            )
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
         # It was either received as a response to a single rpc call or as a part of a batch response.
         elif isinstance(data, RawResponse):
@@ -801,14 +825,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
                 raise response.exception
             _log_debug("%s received valid bytes from the rpc", self)
-            await igather(
-                call.spoof_response(data)
-                for call, (_, data) in zip(calls, await self.decode(response))
+            await gatherish(
+                map(eth_call.spoof_response, calls, await self.decode(response)),
+                name="Multicall.spoof_response",
             )
         else:
             raise NotImplementedError(f"type {type(data)} not supported.", data)
 
-    async def decode(self, data: PartialResponse) -> List[Tuple[bool, bytes]]:
+    async def decode(self, data: PartialResponse) -> List[bytes]:
         start = time()
         if ENVS.OPERATION_MODE.infura or len(self) < 100:
             # decode synchronously
@@ -1140,13 +1164,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     # Not sure why it works this way
                     raise BatchResponseSortError(controller, calls, response)
 
-        coros = (call.spoof_response(raw) for call, raw in zip(calls, response))
-        for r in await igather(coros, return_exceptions=True):
-            # NOTE: By doing this with the exceptions we allow any successful calls to get their results sooner
-            #       without being interrupted by the first exc in the gather and having to wait for the bisect and retry process
-            # TODO: stop retrying ones that succeed, that's wasteful
-            if isinstance(r, Exception):
-                raise r
+        await gatherish(
+            coros=(call.spoof_response(raw) for call, raw in zip(calls, response)),
+            name="JSONRPCBatch.spoof_response",
+        )
 
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
@@ -1272,3 +1293,32 @@ _log_warning = logger.warning
 _logger_is_enabled_for = logger.isEnabledFor
 _log_devhint = stats.logger.devhint
 _demo_logger_info = demo_logger.info
+
+
+async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -> None:
+    """
+    An implementation of asyncio.gather optimized for use cases that:
+        1. Have coroutines that are predomininately sync
+        2. Expect occasional Exceptions but do not want to propagate them to the other tasks
+        3. Do not need the results of the tasks returned"
+    """
+    loop = get_running_loop()
+
+    create_task = lambda coro: Task(coro, loop=loop, name=name)
+
+    # materialize the map into a list to make sure all the tasks start
+    tasks = iter(list(map(create_task, coros)))
+    # sleep twice to let 99% of the tasks complete
+    # NOTE: By doing this we allow any successful calls to get their results sooner without being interrupted
+    #       by the first exc in the gather and having to wait for the bisect and retry process
+    # TODO: stop retrying ones that succeed, that's wasteful
+    await sleep(0)
+    await sleep(0)
+    for task in tasks:
+        try:
+            await task
+        except Exception:
+            # we will only retrieve the first exc from our tasks, if any
+            # this hack prevents asyncio from logging a message that the other excs were not retrieved
+            for task in tasks:
+                task._Future__log_traceback = False
