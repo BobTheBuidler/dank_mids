@@ -281,7 +281,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True)
             if response.error is None:
-                if self.raw:
+                if self.raw and response.result:
                     return {"result": response.result}
                 return response.to_dict(self.method)
 
