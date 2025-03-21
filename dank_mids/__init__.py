@@ -1,5 +1,6 @@
 from contextlib import suppress
 
+from dank_mids._eth_utils import patch_eth_utils
 from dank_mids.brownie_patch import (
     DankContractCall,
     DankContractMethod,
@@ -14,6 +15,7 @@ from dank_mids.semaphores import BlockSemaphore
 
 __all__ = ["dank_middleware", "BlockSemaphore", "setup_dank_w3", "setup_dank_w3_from_sync"]
 
+patch_eth_utils()
 
 def _configure_concurrent_future_work_queue_size():
     """
