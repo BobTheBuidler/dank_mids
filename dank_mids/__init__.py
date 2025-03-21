@@ -17,6 +17,7 @@ __all__ = ["dank_middleware", "BlockSemaphore", "setup_dank_w3", "setup_dank_w3_
 
 patch_eth_utils()
 
+
 def _configure_concurrent_future_work_queue_size():
     """
     Configures the concurrent futures process pool to allow for a larger number of queued calls.

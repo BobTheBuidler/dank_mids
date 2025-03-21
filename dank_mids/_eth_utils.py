@@ -1,8 +1,8 @@
-"""eth_utils uses a decorator to ensure certain functions are called with proper args. 
+"""eth_utils uses a decorator to ensure certain functions are called with proper args.
 
 This is helpful for development but adds unnecessary overhead for production use.
 
-This module lets us redefine those functions without the decorator so our scripts can go fast. Vroom. 
+This module lets us redefine those functions without the decorator so our scripts can go fast. Vroom.
 """
 
 from eth_typing import HexStr
@@ -12,18 +12,17 @@ from eth_utils.types import is_boolean, is_integer, is_string
 
 
 def patch_eth_utils():
-    """eth_utils uses a decorator to ensure certain functions are called with proper args. 
-    
+    """eth_utils uses a decorator to ensure certain functions are called with proper args.
+
     This is helpful for development but adds unnecessary overhead for production use.
-    
-    This function redefines those functions without the decorator so our scripts can go fast. Vroom. 
+
+    This function redefines those functions without the decorator so our scripts can go fast. Vroom.
     """
-    
 
     def to_hex(
-        primitive = None,
-        hexstr = None,
-        text = None,
+        primitive=None,
+        hexstr=None,
+        text=None,
     ) -> HexStr:
         """
         Auto converts any supported value into its hex representation.
@@ -41,7 +40,7 @@ def patch_eth_utils():
 
         if isinstance(primitive, (bytes, bytearray)):
             return encode_hex(primitive)
-        
+
         if isinstance(primitive, memoryview):
             return encode_hex(bytes(primitive))
 
@@ -58,8 +57,8 @@ def patch_eth_utils():
             f"Unsupported type: '{repr(type(primitive))}'. Must be one of: bool, str, "
             "bytes, bytearray or int."
         )
-        
-    def to_bytes(primitive = None, hexstr = None, text = None) -> bytes:
+
+    def to_bytes(primitive=None, hexstr=None, text=None) -> bytes:
         if is_boolean(primitive):
             return b"\x01" if primitive else b"\x00"
         elif isinstance(primitive, (bytearray, memoryview)):
@@ -75,11 +74,11 @@ def patch_eth_utils():
         elif text is not None:
             return text.encode("utf-8")
         raise TypeError(
-            "expected a bool, int, byte or bytearray in first arg, "
-            "or keyword of hexstr or text"
+            "expected a bool, int, byte or bytearray in first arg, " "or keyword of hexstr or text"
         )
-  
+
     import eth_utils.crypto
+
     eth_utils.crypto.to_bytes = to_bytes
     import web3.main
     import web3.middleware.filter
@@ -88,6 +87,7 @@ def patch_eth_utils():
     import web3._utils.events
     import web3._utils.normalizers
     import web3._utils.type_conversion
+
     web3.main.to_hex = to_hex
     web3.main.to_bytes = to_bytes
     web3.middleware.filter.to_hex = to_hex
