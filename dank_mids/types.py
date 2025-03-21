@@ -180,7 +180,7 @@ Used to enable more efficient decoding and validation of RPC responses.
 
 decoder_logger = logging.getLogger("dank_mids.decoder")
 
-_chainstack_429_msg = "You've exceeded the RPS limit available on the current plan."
+_CHAINSTACK_429_ERR_MSG = "You've exceeded the RPS limit available on the current plan."
 
 
 class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):
@@ -201,27 +201,20 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         """If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."""
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
-        return (
-            PayloadTooLarge(self)
-            if self.payload_too_large
-            else (
-                ExceedsMaxBatchSize(self)
-                if re.search(r"batch limit (\d+) exceeded", self.error.message)
-                else (
-                    TypeError(
-                        self.error.message,
-                        "DANKMIDS NOTE: You're probably passing what should be an integer type as a string type. The usual culprit is a block number.",
-                    )
-                    if self.error.message == "invalid argument 1: hex string without 0x prefix"
-                    # chainstack doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
-                    else (
-                        ChainstackRateLimited(self)
-                        if _chainstack_429_msg in self.error.message
-                        else BadResponse(self)
-                    )
-                )
+        if self.payload_too_large:
+            return PayloadTooLarge(self)
+        if re.search(r"batch limit (\d+) exceeded", self.error.message):
+            return ExceedsMaxBatchSize(self)
+        if self.error.message == "invalid argument 1: hex string without 0x prefix":
+            return TypeError(
+                self.error.message,
+                "DANKMIDS NOTE: You're probably passing what should be an integer type as a string type. "
+                "The usual culprit is a block number.",
             )
-        )
+        # chainstack doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
+        if _CHAINSTACK_429_ERR_MSG in self.error.message:
+            return ChainstackRateLimited(self)
+        return BadResponse(self)
 
     @property
     def payload_too_large(self) -> bool:
