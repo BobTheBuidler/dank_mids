@@ -747,7 +747,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 self._record_failure(e, self.request.data.decode())
             elif _log_exception(e):
                 self._record_failure(e, self.request.data.decode())
-            await (self.bisect_and_retry(e) if self.should_retry(e) else self.spoof_response(e))  # type: ignore [misc]
+
+            if self.should_retry(e):
+                await self.bisect_and_retry(e)
+            elif len(self) == 1:
+                await next(iter(self.calls)).get_response_unbatched()
+            else:
+                await self.spoof_response(e)
+
         _demo_logger_info("request %s for multicall %s complete", rid, self.bid)
 
     def should_retry(self, e: Exception) -> bool:
