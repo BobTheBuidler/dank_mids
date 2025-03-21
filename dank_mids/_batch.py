@@ -55,7 +55,7 @@ class DankBatch:
         self._started = False
         """A flag indicating whether the batch has been started."""
 
-    def __await__(self) -> Generator[Any, None, Any]:
+    def __await__(self) -> Generator[Any, None, None]:
         """
         Makes the DankBatch awaitable.
 
