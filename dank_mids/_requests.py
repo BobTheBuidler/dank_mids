@@ -2,7 +2,6 @@ from asyncio import (
     FIRST_COMPLETED,
     TimeoutError,
     create_task,
-    gather,
     get_running_loop,
     shield,
     sleep,
@@ -113,11 +112,10 @@ class _RequestEvent(a_sync.Event):
 
     def set(self) -> None:
         # Make sure we wake up the _RequestEvent's event loop if its in another thread
-        self_loop = self._loop
-        if self_loop is get_running_loop():
+        if self._loop is get_running_loop():
             _super_set(self)
         else:
-            self_loop.call_soon_threadsafe(_super_set, self)
+            self._loop.call_soon_threadsafe(_super_set, self)
 
     async def _debug_daemon(self) -> None:
         start = self._start
@@ -210,6 +208,7 @@ class RPCRequest(_RequestBase[RawResponse]):
             self.method = method
             """The rpc method for this request."""
             self.raw = False
+
         self.params = params
         """The parameters to send with this request, if any."""
         self.should_batch = _should_batch_method(method)
@@ -280,6 +279,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         # JIT json decoding
         if isinstance(self.response, RawResponse):
             response = self.response.decode(partial=True)
+
             if response.error is None:
                 if self.raw and response.result:
                     return {"result": response.result}
@@ -524,12 +524,13 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 
 
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
-    __slots__ = "calls", "_lock", "_daemon"
+    __slots__ = "calls", "_batcher", "_lock", "_daemon"
     calls: WeakList[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         _RequestBase.__init__(self, controller)
         self.calls = WeakList(calls)
+        self._batcher = controller.batcher
         self._lock = _AlertingRLock(name=self.__class__.__name__)
 
     def __bool__(self) -> bool:
@@ -656,13 +657,11 @@ def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Excep
 
 
 class Multicall(_Batch[RPCResponse, eth_call]):
-    __slots__ = (
-        "bid",
-        "_started",
-        "__dict__",
-    )  # We need to specify __dict__ for the cached properties to work
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
+
+    # We need to specify __dict__ for the cached properties to work
+    __slots__ = "bid", "_started", "__dict__",
 
     def __init__(
         self,
@@ -708,7 +707,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @property
     def is_full(self) -> bool:
-        return len(self) >= self.controller.batcher.step
+        return len(self) >= self._batcher.step
 
     @property
     def needs_override_code(self) -> bool:
@@ -764,9 +763,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             _log_debug("dank too loud, trying again")
             return True
         elif "No state available for block" in f"{e}":
-            e.args[0][
-                "dankmids_note"
-            ] = "You're not using an archive node, and you need one for the application you are attempting to run."
+            note = "You're not using an archive node, and you need one for the application you are attempting to run."
+            e.args[0]["dankmids_note"] = note
             return False
         elif _Batch.should_retry(self, e):
             return True
@@ -950,7 +948,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     @property
     def is_full(self) -> bool:
         with self._lock:
-            return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
+            return self.total_calls >= self._batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._started:
