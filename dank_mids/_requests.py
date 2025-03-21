@@ -2,7 +2,6 @@ from asyncio import (
     FIRST_COMPLETED,
     TimeoutError,
     create_task,
-    gather,
     get_running_loop,
     shield,
     sleep,
@@ -113,11 +112,10 @@ class _RequestEvent(a_sync.Event):
 
     def set(self) -> None:
         # Make sure we wake up the _RequestEvent's event loop if its in another thread
-        self_loop = self._loop
-        if self_loop is get_running_loop():
+        if self._loop is get_running_loop():
             _super_set(self)
         else:
-            self_loop.call_soon_threadsafe(_super_set, self)
+            self._loop.call_soon_threadsafe(_super_set, self)
 
     async def _debug_daemon(self) -> None:
         start = self._start
@@ -192,7 +190,12 @@ def _should_batch_method(method: str) -> bool:
 
 
 class RPCRequest(_RequestBase[RawResponse]):
-    __slots__ = "method", "params", "should_batch", "raw", "_started", "_retry", "_daemon"
+    should_batch: bool = True
+    _started: bool = False
+    _retry: bool = False
+    _debug_logs_enabled: bool = False
+
+    __slots__ = "method", "params", "should_batch", "raw", "_daemon"
 
     def __init__(
         self,
@@ -210,12 +213,20 @@ class RPCRequest(_RequestBase[RawResponse]):
             self.method = method
             """The rpc method for this request."""
             self.raw = False
+
         self.params = params
         """The parameters to send with this request, if any."""
-        self.should_batch = _should_batch_method(method)
+
+        if not _should_batch_method(method):
+            self.should_batch = False
         """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
-        self._started = False
-        self._retry = retry
+
+        if retry:
+            self._retry = True
+
+        if logger.isEnabledFor(DEBUG):
+            self._debug_logs_enabled = True
+
         if self.should_batch:
             with controller.pools_closed_lock:
                 if isinstance(self, eth_call) and self.multicall_compatible:
@@ -250,8 +261,10 @@ class RPCRequest(_RequestBase[RawResponse]):
 
     @set_done
     async def get_response(self) -> RPCResponse:  # type: ignore [override]
+        debug_logs_enabled = self._debug_logs_enabled
         if not self.should_batch:
-            _log_debug("bypassed dank batching, method is %s", self.method)
+            if debug_logs_enabled:
+                _log_debug("bypassed dank batching, method is %s", self.method)
             return await self.get_response_unbatched()
 
         if self._started and not self._batch._started:
@@ -291,10 +304,11 @@ class RPCRequest(_RequestBase[RawResponse]):
                     controller.request_type = Request
                     controller._time_of_request_type_change = time()
                 if time() - controller._time_of_request_type_change <= 600:
-                    _log_debug(
-                        "your node says the partial request was invalid but its okay, \n"
-                        "we can use the full jsonrpc spec instead"
-                    )
+                    if debug_logs_enabled:
+                        _log_debug(
+                            "your node says the partial request was invalid but its okay, \n"
+                            "we can use the full jsonrpc spec instead"
+                        )
                     method = f"{self.method}_raw" if self.raw else self.method
                     return await controller(method, self.params)
 
@@ -303,7 +317,8 @@ class RPCRequest(_RequestBase[RawResponse]):
 
             response = response.to_dict(self.method)
             response["error"] = error
-            _log_debug("error response for %s: %s", self, response)
+            if debug_logs_enabled:
+                _log_debug("error response for %s: %s", self, response)
             return response
 
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
@@ -357,15 +372,18 @@ class RPCRequest(_RequestBase[RawResponse]):
                     controller.request_type = Request
                     controller._time_of_request_type_change = int(time())
                 if time() - controller._time_of_request_type_change <= 600:
-                    _log_debug(
-                        "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
-                    )
+                    if self._debug_logs_enabled:
+                        _log_debug(
+                            "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
+                        )
                     self._response = await self.create_duplicate()
                     return
             self._response = {"error": __format_error(self.request, data.response)}
-            _log_debug("%s _response set to rpc error response %s", self, self._response)
+            if self._debug_logs_enabled:
+                _log_debug("%s _response set to rpc error response %s", self, self._response)
         elif isinstance(data, Exception):
-            _log_debug("%s _response set to Exception %s", self, data)
+            if self._debug_logs_enabled:
+                _log_debug("%s _response set to Exception %s", self, data)
             self._response = data
         # From multicalls
         elif isinstance(data, bytes):
@@ -524,12 +542,13 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 
 
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
-    __slots__ = "calls", "_lock", "_daemon"
+    __slots__ = "calls", "_batcher", "_lock", "_daemon"
     calls: WeakList[_Request]
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         _RequestBase.__init__(self, controller)
         self.calls = WeakList(calls)
+        self._batcher = controller.batcher
         self._lock = _AlertingRLock(name=self.__class__.__name__)
 
     def __bool__(self) -> bool:
@@ -656,13 +675,11 @@ def mcall_decode(data: PartialResponse) -> Union[List[Tuple[bool, bytes]], Excep
 
 
 class Multicall(_Batch[RPCResponse, eth_call]):
-    __slots__ = (
-        "bid",
-        "_started",
-        "__dict__",
-    )  # We need to specify __dict__ for the cached properties to work
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
+
+    # We need to specify __dict__ for the cached properties to work
+    __slots__ = "bid", "_started", "__dict__",
 
     def __init__(
         self,
@@ -708,7 +725,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @property
     def is_full(self) -> bool:
-        return len(self) >= self.controller.batcher.step
+        return len(self) >= self._batcher.step
 
     @property
     def needs_override_code(self) -> bool:
@@ -764,9 +781,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             _log_debug("dank too loud, trying again")
             return True
         elif "No state available for block" in f"{e}":
-            e.args[0][
-                "dankmids_note"
-            ] = "You're not using an archive node, and you need one for the application you are attempting to run."
+            note = "You're not using an archive node, and you need one for the application you are attempting to run."
+            e.args[0]["dankmids_note"] = note
             return False
         elif _Batch.should_retry(self, e):
             return True
@@ -781,8 +797,9 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             calls = tuple(self.calls)
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
-            _log_debug("%s had Exception %s", self, data)
-            _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
+            if _logger_is_enabled_for(DEBUG):
+                _log_debug("%s had Exception %s", self, data)
+                _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
             await igather(call.spoof_response(data) for call in calls)
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
         # It was either received as a response to a single rpc call or as a part of a batch response.
@@ -950,7 +967,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     @property
     def is_full(self) -> bool:
         with self._lock:
-            return self.total_calls >= self.controller.batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
+            return self.total_calls >= self._batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._started:
