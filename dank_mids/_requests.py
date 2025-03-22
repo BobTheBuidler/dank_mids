@@ -669,7 +669,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
 
     # We need to specify __dict__ for the cached properties to work
-    __slots__ = "bid", "_started", "__dict__",
+    __slots__ = (
+        "bid",
+        "_started",
+        "__dict__",
+    )
 
     def __init__(
         self,
