@@ -264,7 +264,8 @@ class RPCRequest(_RequestBase[RawResponse]):
     @set_done
     async def get_response(self) -> RPCResponse:  # type: ignore [override]
         if not self.should_batch:
-            _log_debug("bypassed dank batching, method is %s", self.method)
+            if self._debug_logs_enabled:
+                _log_debug("bypassed dank batching, method is %s", self.method)
             return await self.get_response_unbatched()
 
         if self._started and not self._batch._started:
@@ -317,7 +318,8 @@ class RPCRequest(_RequestBase[RawResponse]):
 
             response = response.to_dict(self.method)
             response["error"] = error
-            _log_debug("error response for %s: %s", self, response)
+            if self._debug_logs_enabled:
+                _log_debug("error response for %s: %s", self, response)
             return response
 
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
@@ -372,9 +374,11 @@ class RPCRequest(_RequestBase[RawResponse]):
                     self._response = await self.create_duplicate()
                     return
             self._response = {"error": __format_error(self.request, data.response)}
-            _log_debug("%s _response set to rpc error response %s", self, self._response)
+            if self._debug_logs_enabled:
+                _log_debug("%s _response set to rpc error response %s", self, self._response)
         elif isinstance(data, Exception):
-            _log_debug("%s _response set to Exception %s", self, data)
+            if self._debug_logs_enabled:
+                _log_debug("%s _response set to Exception %s", self, data)
             self._response = data
         # From multicalls
         elif isinstance(data, bytes):
@@ -792,8 +796,9 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             calls = tuple(self.calls)
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
-            _log_debug("%s had Exception %s", self, data)
-            _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
+            if _logger_is_enabled_for(DEBUG):
+                _log_debug("%s had Exception %s", self, data)
+                _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
             await igather(call.spoof_response(data) for call in calls)
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
         # It was either received as a response to a single rpc call or as a part of a batch response.
