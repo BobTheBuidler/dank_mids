@@ -43,7 +43,6 @@ from eth_typing import ChecksumAddress, HexStr
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from web3.datastructures import AttributeDict
-from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
 
@@ -325,8 +324,6 @@ class RPCRequest(_RequestBase[RawResponse]):
         # We raise it here so it traces back up to the caller
         response = self.response
         if isinstance(response, Exception):
-            if isinstance(response, ContractLogicError):
-                raise response
             _raise_more_detailed_exc(self.request, response)
         return response
 
