@@ -6,6 +6,11 @@ if TYPE_CHECKING:
 
 
 def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exception):
+    try:
+        batch_objs = list(batch)
+    except TypeError:
+        # 'coroutine' object is not iterable
+        batch_objs = [batch]
     logger.error(
         "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
         "Exc: %s\n"
@@ -14,6 +19,6 @@ def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exc
         batch_len,
         exc,
         type(batch).__name__,
-        list(batch),
+        batch_objs,
         exc_info=True,
     )
