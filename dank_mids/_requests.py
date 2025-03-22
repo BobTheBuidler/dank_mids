@@ -302,14 +302,14 @@ class RPCRequest(_RequestBase[RawResponse]):
 
             if response.error.message.lower() in ("invalid request", "parse error"):
                 controller = self.controller
-                if controller._time_of_request_type_change == 0:
-                    controller.request_type = Request
-                    controller._time_of_request_type_change = time()
-                if time() - controller._time_of_request_type_change <= 600:
-                    _log_debug(
-                        "your node says the partial request was invalid but its okay, \n"
-                        "we can use the full jsonrpc spec instead"
-                    )
+                if not controller._request_type_changed_ts:
+                    controller._use_full_request()
+                if time() - controller._request_type_changed_ts <= 600:
+                    if self._debug_logs_enabled:
+                        _log_debug(
+                            "your node says the partial request was invalid but its okay, \n"
+                            "we can use the full jsonrpc spec instead"
+                        )
                     method = f"{self.method}_raw" if self.raw else self.method
                     return await controller(method, self.params)
 
@@ -364,13 +364,13 @@ class RPCRequest(_RequestBase[RawResponse]):
         elif isinstance(data, BadResponse):
             if data.response.error.message.lower() in ["invalid request", "parse error"]:  # type: ignore [union-attr]
                 controller = self.controller
-                if controller._time_of_request_type_change == 0:
-                    controller.request_type = Request
-                    controller._time_of_request_type_change = int(time())
-                if time() - controller._time_of_request_type_change <= 600:
-                    _log_debug(
-                        "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
-                    )
+                if not controller._request_type_changed_ts:
+                    controller._use_full_request()
+                if time() - controller._request_type_changed_ts <= 600:
+                    if self._debug_logs_enabled:
+                        _log_debug(
+                            "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
+                        )
                     self._response = await self.create_duplicate()
                     return
             self._response = {"error": __format_error(self.request, data.response)}
@@ -1082,10 +1082,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         if response.error.message.lower() in ("invalid request", "parse error"):  # type: ignore [union-attr]
             # NOT SURE IF THIS ACTUALLY RUNS, CAN WE RECEIVE THIS TYPE RESPONSE FOR A JSON BATCH?
             controller = self.controller
-            if controller._time_of_request_type_change == 0:
-                controller.request_type = Request
-                controller._time_of_request_type_change = time()
-            if time() - controller._time_of_request_type_change <= 600:
+            if not controller._request_type_changed_ts:
+                controller._use_full_request()
+            if time() - controller._request_type_changed_ts <= 600:
                 _log_debug(
                     "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
                 )

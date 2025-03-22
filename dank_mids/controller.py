@@ -1,6 +1,7 @@
-import logging
 from collections import defaultdict
 from functools import lru_cache
+from logging import getLogger
+from time import time
 from typing import Any, DefaultDict, List, Literal, Optional, Set, Union
 
 import eth_retry
@@ -26,9 +27,10 @@ from dank_mids.helpers._session import post, rate_limit_inactive
 from dank_mids.semaphores import _MethodQueues, _MethodSemaphores, BlockSemaphore
 from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 # our new logger logs the same stuff plus more
-logging.getLogger("web3.RequestManager").setLevel(logging.NOTSET)
+getLogger("web3.RequestManager").disabled = True
+getLogger("web3.RequestManager").propagate = False
 
 instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
 
@@ -72,7 +74,7 @@ class DankMiddlewareController:
         )
         """The Struct class the controller will use to encode requests."""
 
-        self._time_of_request_type_change: Union[int, float] = 0
+        self._request_type_changed_ts: Union[int, float] = 0
         """The time at which the request type was automatically updated by dank's internals. Zero if never updated after init."""
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
@@ -397,6 +399,10 @@ class DankMiddlewareController:
             return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
         return self.mc2 or mc3  # type: ignore [return-value]
+
+    def _use_full_request(self) -> None:
+        self.request_type = Request
+        self._request_type_changed_ts = time()
 
 
 @eth_retry.auto_retry
