@@ -43,6 +43,7 @@ from eth_typing import ChecksumAddress, HexStr
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
 from web3.datastructures import AttributeDict
+from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
 
@@ -322,9 +323,12 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
         # We raise it here so it traces back up to the caller
-        if isinstance(self.response, Exception):
-            _raise_more_detailed_exc(self.request, self.response)
-        return self.response
+        response = self.response
+        if isinstance(response, Exception):
+            if isinstance(response, ContractLogicError):
+                raise response
+            _raise_more_detailed_exc(self.request, response)
+        return response
 
     @set_done
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
