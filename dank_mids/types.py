@@ -234,7 +234,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
     ) -> Union[HexBytes, Wei, uint, ChainId, BlockNumber, AttributeDict]:
         # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
         if method and (typ := _RETURN_TYPES.get(method)):
-            if method in [
+            if method in (
                 "eth_call",
                 "eth_blockNumber",
                 "eth_getCode",
@@ -244,7 +244,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
                 "eth_getBalance",
                 "eth_chainId",
                 "erigon_getHeaderByNumber",
-            ]:
+            ):
                 try:
                     return better_decode(
                         self.result, type=typ, dec_hook=_decode_hook, method=method
@@ -253,7 +253,10 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
                     if typ is not Block:
                         raise
 
-                    if e.args[0] == "Object contains unknown field `totalDifficulty`":
+                    if any(
+                        e.args[0] == f"Object contains unknown field `{field}`"
+                        for field in ("difficulty", "totalDifficulty")
+                    ):
                         try:
                             # NOTE should we do this??
                             # _RETURN_TYPES[method] = MinedBlock
