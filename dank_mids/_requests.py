@@ -324,7 +324,9 @@ class RPCRequest(_RequestBase[RawResponse]):
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
         # We raise it here so it traces back up to the caller
         response = self.response
-        if isinstance(response, Exception) and not isinstance(response, ContractLogicError):
+        if isinstance(response, Exception):
+            if isinstance(response, ContractLogicError):
+                raise response
             _raise_more_detailed_exc(self.request, response)
         return response
 
