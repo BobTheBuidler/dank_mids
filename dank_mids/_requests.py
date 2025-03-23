@@ -340,9 +340,8 @@ class RPCRequest(_RequestBase[RawResponse]):
     @set_done
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
         task = create_task(self.make_request())  # type: ignore [arg-type]
-        shielded = shield(task)
         try:
-            await wait_for(shielded, timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
+            await wait_for(shield(task), timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
             done, pending = await wait((task, self.create_duplicate()), return_when=FIRST_COMPLETED)
