@@ -1187,7 +1187,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         for batch, result in zip(batches, await igather(batches, return_exceptions=True)):
             if isinstance(result, Exception):
                 if not isinstance(result, DankMidsInternalError):
-                    log_internal_error(logger, len(batch), result)
+                    log_internal_error(logger, batch, len(batch), result)
                 raise result
 
     def adjust_batch_size(self) -> None:
