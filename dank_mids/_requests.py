@@ -680,7 +680,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         self._started = False
 
     def __repr__(self) -> str:
-        return f"<Multicall mid={self.bid} block={self.block} len={len(self)}>"
+        return f"<Multicall mid={self.bid} block={int(self.block, 16)} len={len(self)}>"
 
     @cached_property
     def block(self) -> BlockId:
