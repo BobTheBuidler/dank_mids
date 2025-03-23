@@ -1,6 +1,5 @@
 from asyncio import (
     FIRST_COMPLETED,
-    Task,
     TimeoutError,
     create_task,
     get_running_loop,
@@ -17,7 +16,6 @@ from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
-    Coroutine,
     DefaultDict,
     Dict,
     Generator,
@@ -65,7 +63,7 @@ from dank_mids._exceptions import (
     internal_err_types,
 )
 from dank_mids._uid import _AlertingRLock
-from dank_mids.helpers import _codec, _session
+from dank_mids.helpers import _codec, _session, gatherish, lru_cache_lite_nonull
 from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
     error_logger_debug,
@@ -76,7 +74,6 @@ from dank_mids.helpers._errors import (
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._weaklist import WeakList
-from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.types import (
     BatchId,
     BlockId,
@@ -1282,38 +1279,3 @@ _log_warning = logger.warning
 _logger_is_enabled_for = logger.isEnabledFor
 _log_devhint = stats.logger.devhint
 _demo_logger_info = demo_logger.info
-
-
-async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -> None:
-    # sourcery skip: use-contextlib-suppress
-    """
-    An implementation of asyncio.gather optimized for use cases that:
-        1. Have coroutines that are predomininately sync
-        2. Expect occasional Exceptions but do not want to propagate them to the other tasks
-        3. Do not need the results of the tasks returned"
-    """
-    loop = get_running_loop()
-
-    create_task = lambda coro: Task(coro, loop=loop, name=name)
-
-    # materialize the map into a list to make sure all the tasks start
-    tasks = iter(list(map(create_task, coros)))
-    # sleep twice to let 99% of the tasks complete
-    # NOTE: By doing this we allow any successful calls to get their results sooner without being interrupted
-    #       by the first exc in the gather and having to wait for the bisect and retry process
-    # TODO: stop retrying ones that succeed, that's wasteful
-    await sleep(0)
-    await sleep(0)
-    for task in tasks:
-        try:
-            await task
-        except Exception:
-            # we will only retrieve the first exc from our tasks, if any
-            # this hack prevents asyncio from logging a message that the other excs were not retrieved
-            for task in tasks:
-                # Make sure all the remaining tasks complete before we raise the exc
-                try:
-                    await task
-                except Exception:
-                    pass
-            raise
