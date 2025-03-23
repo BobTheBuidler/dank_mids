@@ -64,7 +64,12 @@ from dank_mids._exceptions import (
 )
 from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import _codec, _session
-from dank_mids.helpers._errors import log_internal_error
+from dank_mids.helpers._errors import (
+    INDIVIDUAL_CALL_REVERT_STRINGS,
+    is_call_revert,
+    log_internal_error, 
+    needs_full_request_spec,
+)
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._weaklist import WeakList
@@ -302,7 +307,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                     return {"result": response.result}
                 return response.to_dict(self.method)
 
-            if _needs_full_request_spec(response):
+            if needs_full_request_spec(response):
                 controller = self.controller
                 if not controller._request_type_changed_ts:
                     controller._use_full_request()
@@ -364,7 +369,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         if isinstance(data, RawResponse):
             self._response = data
         elif isinstance(data, BadResponse):
-            if _needs_full_request_spec(data.response):
+            if needs_full_request_spec(data.response):
                 controller = self.controller
                 if not controller._request_type_changed_ts:
                     controller._use_full_request()
@@ -421,48 +426,11 @@ class RPCRequest(_RequestBase[RawResponse]):
             await self.semaphore.acquire()
 
 
-INDIVIDUAL_CALL_REVERT_STRINGS = {
-    "invalid opcode",
-    "missing trie node",
-    "resource not found",
-    "invalid ether transfer",
-    "error processing call revert",
-}
-
-revert_threads = PruningThreadPoolExecutor(4)
-_revert_threads_run = revert_threads.run
-
-
-def _is_call_revert(e: BadResponse) -> bool:
-    """
-    Determine if a BadResponse was caused by a revert in one of the individual calls within a multicall.
-
-    Args:
-        e: The error response to check.
-
-    Returns:
-        True if the error was caused by an individual call revert, False otherwise.
-    """
-    return any(map(f"{e}".lower().__contains__, INDIVIDUAL_CALL_REVERT_STRINGS))
-
-
-def _needs_full_request_spec(response: PartialResponse):
-    """
-    Determine if a response indicates that the node requires the full request specification.
-
-    By default we leave off some fields that are not always required. 
-    Some nodes do not like this, and they let us know via these errors.
-
-    Args:
-        response: The error response to check.
-
-    Returns:
-        True if the full request specification is needed, False otherwise.
-    """
-    return response.error and response.error.message.lower() in ("invalid request", "parse error")
 
 
 class eth_call(RPCRequest):
+    revert_threads = PruningThreadPoolExecutor(4)
+
     __slots__ = "target", "calldata", "block"
 
     def __init__(
@@ -506,7 +474,7 @@ class eth_call(RPCRequest):
                 # TODO: Get rid of the sync executor and just use `make_request`
                 controller = self.controller
                 target = self.target
-                data = await _revert_threads_run(
+                data = await self.revert_threads.run(
                     controller.sync_w3.eth.call,
                     {"to": target, "data": self.calldata},
                     self.block,
@@ -610,7 +578,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         elif any(err in str_e for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             _log_debug("Dank too loud. Bisecting batch and retrying.")
-        elif isinstance(e, BadResponse) and (_needs_full_request_spec(e.response) or _is_call_revert(e)):
+        elif isinstance(e, BadResponse) and (needs_full_request_spec(e.response) or is_call_revert(e)):
             pass
         elif "429" not in str_e and all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
             _log_warning("unexpected %s: %s", e.__class__.__name__, e)
