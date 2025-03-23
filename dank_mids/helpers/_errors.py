@@ -65,3 +65,8 @@ def is_call_revert(e: BadResponse) -> bool:
         True if the error was caused by an individual call revert, False otherwise.
     """
     return any(map(f"{e}".lower().__contains__, INDIVIDUAL_CALL_REVERT_STRINGS))
+
+def log_request_type_switch():
+    error_logger_debug(
+        "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
+    )
