@@ -1,8 +1,9 @@
 from datetime import datetime
-from functools import cached_property, lru_cache
+from functools import lru_cache
 from typing import TYPE_CHECKING, List, Literal, Type, Union
 
 from a_sync import ProcessingQueue
+from a_sync.functools import cached_property_unsafe as cached_property
 
 from dank_mids._debugging._base import _CSVWriter
 

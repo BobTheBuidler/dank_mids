@@ -10,7 +10,7 @@ from asyncio import (
 )
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
-from functools import cached_property, lru_cache
+from functools import lru_cache
 from itertools import accumulate, chain
 from logging import DEBUG, getLogger
 from time import time
@@ -37,6 +37,7 @@ from weakref import proxy as weak_proxy
 import a_sync
 import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
+from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256

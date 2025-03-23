@@ -1,4 +1,4 @@
-from functools import cached_property
+from a_sync.functools import cached_property_unsafe as cached_property
 
 MODES = "default", "application", "infura"
 

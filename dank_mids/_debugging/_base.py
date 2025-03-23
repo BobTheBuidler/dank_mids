@@ -1,10 +1,11 @@
 import abc
 import logging
 import os
-from functools import cached_property, lru_cache
+from functools import lru_cache
 from typing import Any, Iterable
 
 import aiofiles
+from a_sync.functools import cached_property_unsafe as cached_property
 from aiofiles.base import AiofilesContextManager
 from aiofiles.threadpool.text import AsyncTextIOWrapper
 from async_lru import alru_cache

@@ -1,5 +1,4 @@
-import functools
-from typing import Any, Dict, List, Literal, NewType, Optional, Tuple, Union, overload
+from typing import Any, Dict, Iterator, List, Literal, NewType, Optional, Tuple, Union, overload
 
 import brownie
 from brownie.network.contract import (
@@ -169,10 +168,9 @@ class Contract(brownie.Contract):
         This method sets up lazy initialization for contract methods.
         """
         for name in self.__method_names__:
-            if name in {"_name", "_owner"}:
-                # this is a property defined on _ContractBase and cannot be written to
-                continue
-            object.__setattr__(self, name, _ContractMethodPlaceholder)
+            # these are properties defined on _ContractBase and cannot be written to
+            if name not in {"_name", "_owner"}:
+                object.__setattr__(self, name, _ContractMethodPlaceholder)
 
     def __getattribute__(self, name: str) -> DankContractMethod:
         """
@@ -198,10 +196,10 @@ class Contract(brownie.Contract):
             object.__setattr__(self, name, attr)
         return attr
 
-    @functools.cached_property
-    def __method_names__(self) -> Tuple[str, ...]:
+    @property
+    def __method_names__(self) -> Iterator[str]:
         """List of method names defined in the contract ABI."""
-        return tuple(i["name"] for i in self.abi if i["type"] == "function")
+        yield from (i["name"] for i in filter(_is_function_abi, self.abi))
 
     def __get_method_object__(self, name: str) -> DankContractMethod:
         """
@@ -218,10 +216,10 @@ class Contract(brownie.Contract):
         """
         from dank_mids import web3
 
-        overloaded = self.__method_names__.count(name) > 1
+        overloaded = list(self.__method_names__).count(name) > 1
 
-        for abi in self.abi:
-            if abi["type"] != "function" or abi["name"] != name:
+        for abi in filter(_is_function_abi, self.abi):
+            if abi["name"] != name:
                 continue
 
             full_name = f"{self._name}.{name}"
@@ -241,6 +239,10 @@ class Contract(brownie.Contract):
             overloaded._add_fn(abi, natspec)
 
         return overloaded  # type: ignore [return-value]
+
+
+def _is_function_abi(abi: dict):
+    return abi["type"] == "function"
 
 
 @overload

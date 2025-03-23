@@ -1,4 +1,4 @@
-import functools
+from functools import wraps
 from types import MethodType
 from typing import Any, Dict, Optional, Union
 
@@ -20,7 +20,7 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
     """
 
     # sourcery skip: avoid-builtin-shadow
-    @functools.wraps(call)
+    @wraps(call)
     async def coroutine(
         self: Contract,
         *args: Any,
