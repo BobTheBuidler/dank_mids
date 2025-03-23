@@ -1286,14 +1286,10 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
     """
     loop = get_running_loop()
 
-    def create_task(coro: Coroutine) -> Task:
-        task = Task(coro, loop=loop, name=name)
-        # we will only retrieve the first exc from our tasks, if any
-        task._log_destroy_pending = False
-        return task
+    create_task = lambda coro: Task(coro, loop=loop, name=name)
 
     # materialize the map into a list to make sure all the tasks start
-    tasks = list(map(create_task, coros))
+    tasks = iter(list(map(create_task, coros)))
     # sleep twice to let 99% of the tasks complete
     # NOTE: By doing this we allow any successful calls to get their results sooner without being interrupted
     #       by the first exc in the gather and having to wait for the bisect and retry process
@@ -1301,4 +1297,10 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
     await sleep(0)
     await sleep(0)
     for task in tasks:
-        await task
+        try:
+            await task
+        except Exception:
+            # we will only retrieve the first exc from our tasks, if any
+            # this hack prevents asyncio from logging a message that the other excs were not retrieved
+            for task in tasks:
+                task._Future__log_traceback = False
