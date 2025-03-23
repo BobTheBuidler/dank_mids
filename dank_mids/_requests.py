@@ -67,7 +67,7 @@ from dank_mids.helpers import _codec, _session
 from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
     is_call_revert,
-    log_internal_error, 
+    log_internal_error,
     needs_full_request_spec,
 )
 from dank_mids.helpers._helpers import set_done
@@ -426,8 +426,6 @@ class RPCRequest(_RequestBase[RawResponse]):
             await self.semaphore.acquire()
 
 
-
-
 class eth_call(RPCRequest):
     revert_threads = PruningThreadPoolExecutor(4)
 
@@ -578,7 +576,9 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         elif any(err in str_e for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             _log_debug("Dank too loud. Bisecting batch and retrying.")
-        elif isinstance(e, BadResponse) and (needs_full_request_spec(e.response) or is_call_revert(e)):
+        elif isinstance(e, BadResponse) and (
+            needs_full_request_spec(e.response) or is_call_revert(e)
+        ):
             pass
         elif "429" not in str_e and all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
             _log_warning("unexpected %s: %s", e.__class__.__name__, e)
@@ -851,11 +851,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
 
 def _log_checking_batch_size(
-    batch_type: Literal["multicall", "json"], 
+    batch_type: Literal["multicall", "json"],
     member_type: Literal["calls", "requests"],
     num_calls: int,
 ) -> None:
-    batch_size_logger.info("checking if we should reduce %s batch size... (%s %s)", batch_type, num_calls, member_type)
+    batch_size_logger.info(
+        "checking if we should reduce %s batch size... (%s %s)", batch_type, num_calls, member_type
+    )
+
 
 class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     """

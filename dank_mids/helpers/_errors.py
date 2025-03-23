@@ -39,7 +39,7 @@ def needs_full_request_spec(response: PartialResponse):
     """
     Determine if a response indicates that the node requires the full request specification.
 
-    By default we leave off some fields that are not always required. 
+    By default we leave off some fields that are not always required.
     Some nodes do not like this, and they let us know via these errors.
 
     Args:
