@@ -386,7 +386,9 @@ class RPCRequest(_RequestBase[RawResponse]):
                     return
             self._response = {"error": __format_error(self.request, data.response)}
             if self._debug_logs_enabled:
-                error_logger_debug("%s _response set to rpc error response %s", self, self._response)
+                error_logger_debug(
+                    "%s _response set to rpc error response %s", self, self._response
+                )
         elif isinstance(data, Exception):
             if self._debug_logs_enabled:
                 error_logger_debug("%s _response set to Exception %s", self, data)
@@ -763,7 +765,9 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         """Should the Multicall be retried based on `e`?"""
         # NOTE: While it might look weird, f-string is faster than `str(e)`.
         if any(map(f"{e}".lower().__contains__, constants.RETRY_ERRS)):
-            error_logger_debug("dank too loud, multicall %s got exc%s\ntrying again...", self.bid, e)
+            error_logger_debug(
+                "dank too loud, multicall %s got exc%s\ntrying again...", self.bid, e
+            )
             return True
         elif "No state available for block" in f"{e}":
             note = "You're not using an archive node, and you need one for the application you are attempting to run."
@@ -784,7 +788,9 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if isinstance(data, Exception):
             if _logger_is_enabled_for(DEBUG):
                 error_logger_debug("%s had Exception %s", self, data)
-                error_logger_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
+                error_logger_debug(
+                    "propagating the %s to all %s's calls", data.__class__.__name__, self
+                )
             await gatherish(
                 (call.spoof_response(data) for call in calls),
                 name="Multicall.spoof_response[Exception]",
