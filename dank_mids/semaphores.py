@@ -165,6 +165,6 @@ class _MethodQueues:
             The queue for the method, or None if no specific queue is found.
         """
         return next(
-            (self.method_queues[key] for key in self.keys if key in method), 
+            (self.method_queues[key] for key in self.keys if key in method),
             None,
         )
