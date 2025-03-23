@@ -1304,3 +1304,4 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
             # this hack prevents asyncio from logging a message that the other excs were not retrieved
             for task in tasks:
                 task._Future__log_traceback = False
+            raise
