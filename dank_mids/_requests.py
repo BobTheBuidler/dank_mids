@@ -69,6 +69,7 @@ from dank_mids.helpers._errors import (
     error_logger_debug,
     is_call_revert,
     log_internal_error,
+    log_request_type_switch,
     needs_full_request_spec,
 )
 from dank_mids.helpers._helpers import set_done
@@ -314,10 +315,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                     controller._use_full_request()
                 if time() - controller._request_type_changed_ts <= 600:
                     if self._debug_logs_enabled:
-                        error_logger_debug(
-                            "your node says the partial request was invalid but its okay, \n"
-                            "we can use the full jsonrpc spec instead"
-                        )
+                        log_request_type_switch()
                     method = f"{self.method}_raw" if self.raw else self.method
                     return await controller(method, self.params)
 
@@ -376,9 +374,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                     controller._use_full_request()
                 if time() - controller._request_type_changed_ts <= 600:
                     if self._debug_logs_enabled:
-                        error_logger_debug(
-                            "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
-                        )
+                        log_request_type_switch()
                     self._response = await self.create_duplicate()
                     return
             self._response = {"error": __format_error(self.request, data.response)}
@@ -1087,9 +1083,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             if not controller._request_type_changed_ts:
                 controller._use_full_request()
             if time() - controller._request_type_changed_ts <= 600:
-                error_logger_debug(
-                    "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
-                )
+                log_request_type_switch()
         elif response.error.message == "batch limit exceeded":  # type: ignore [union-attr]
             self.adjust_batch_size()
 
