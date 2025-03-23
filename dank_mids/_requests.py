@@ -68,6 +68,7 @@ from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import _codec, _session
 from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
+    error_logger_debug,
     is_call_revert,
     log_internal_error,
     needs_full_request_spec,
@@ -316,7 +317,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                     controller._use_full_request()
                 if time() - controller._request_type_changed_ts <= 600:
                     if self._debug_logs_enabled:
-                        _log_debug(
+                        error_logger_debug(
                             "your node says the partial request was invalid but its okay, \n"
                             "we can use the full jsonrpc spec instead"
                         )
@@ -329,7 +330,7 @@ class RPCRequest(_RequestBase[RawResponse]):
             response = response.to_dict(self.method)
             response["error"] = error
             if self._debug_logs_enabled:
-                _log_debug("error response for %s: %s", self, response)
+                error_logger_debug("error response for %s: %s", self, response)
             return response
 
         # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
@@ -378,17 +379,19 @@ class RPCRequest(_RequestBase[RawResponse]):
                     controller._use_full_request()
                 if time() - controller._request_type_changed_ts <= 600:
                     if self._debug_logs_enabled:
-                        _log_debug(
+                        error_logger_debug(
                             "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
                         )
                     self._response = await self.create_duplicate()
                     return
             self._response = {"error": __format_error(self.request, data.response)}
             if self._debug_logs_enabled:
-                _log_debug("%s _response set to rpc error response %s", self, self._response)
+                error_logger_debug(
+                    "%s _response set to rpc error response %s", self, self._response
+                )
         elif isinstance(data, Exception):
             if self._debug_logs_enabled:
-                _log_debug("%s _response set to Exception %s", self, data)
+                error_logger_debug("%s _response set to Exception %s", self, data)
             self._response = data
         # From multicalls
         elif isinstance(data, bytes):
@@ -575,10 +578,10 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         str_e = f"{e}".lower()
         if "out of gas" in str_e:
             # TODO Remember which contracts/calls are gas guzzlers
-            _log_debug("out of gas. cut in half, trying again")
+            error_logger_debug("out of gas. cut in half, trying again")
         elif any(err in str_e for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
-            _log_debug("Dank too loud. Bisecting batch and retrying.")
+            error_logger_debug("Dank too loud. Bisecting batch and retrying.")
         elif isinstance(e, BadResponse) and (
             needs_full_request_spec(e.response) or is_call_revert(e)
         ):
@@ -762,7 +765,9 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         """Should the Multicall be retried based on `e`?"""
         # NOTE: While it might look weird, f-string is faster than `str(e)`.
         if any(map(f"{e}".lower().__contains__, constants.RETRY_ERRS)):
-            _log_debug("dank too loud, trying again")
+            error_logger_debug(
+                "dank too loud, multicall %s got exc%s\ntrying again...", self.bid, e
+            )
             return True
         elif "No state available for block" in f"{e}":
             note = "You're not using an archive node, and you need one for the application you are attempting to run."
@@ -782,8 +787,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
             if _logger_is_enabled_for(DEBUG):
-                _log_debug("%s had Exception %s", self, data)
-                _log_debug("propagating the %s to all %s's calls", data.__class__.__name__, self)
+                error_logger_debug("%s had Exception %s", self, data)
+                error_logger_debug(
+                    "propagating the %s to all %s's calls", data.__class__.__name__, self
+                )
             await gatherish(
                 (call.spoof_response(data) for call in calls),
                 name="Multicall.spoof_response[Exception]",
@@ -793,7 +800,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         elif isinstance(data, RawResponse):
             response = data.decode(partial=True)
             if response.error:
-                _log_debug(
+                error_logger_debug(
                     "%s received an 'error' response from the rpc: %s", self, response.exception
                 )
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
@@ -836,7 +843,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
         Calls `self._done.set()` when finished.
         """
-        _log_debug("%s had exception %s, bisecting and retrying", self, e)
+        error_logger_debug("%s had exception %s, bisecting and retrying", self, e)
         controller = self.controller
         batches = [
             Multicall(controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)
@@ -1017,7 +1024,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             elif not self.is_single_multicall:
                 # Just to force my IDE to resolve types correctly
                 calls: Tuple[RPCRequest, ...] = tuple(self.calls)  # type: ignore [arg-type]
-                _log_debug(
+                error_logger_debug(
                     "%s had exception %s, aborting and setting Exception as call._response", self, e
                 )
                 # NOTE: This means an exception occurred during the post request
@@ -1062,7 +1069,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 self.adjust_batch_size()
             elif "broken pipe" in str(e).lower():
                 _log_warning("This is what broke the pipe: %s", self.method_counts)
-            _log_debug("caught %s for %s, reraising", e, self)
+            error_logger_debug("caught %s for %s, reraising", e, self)
             if ENVS.DEBUG:  # type: ignore [attr-defined]
                 self._record_failure(e, self.data.decode())
             raise
@@ -1083,7 +1090,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             if not controller._request_type_changed_ts:
                 controller._use_full_request()
             if time() - controller._request_type_changed_ts <= 600:
-                _log_debug(
+                error_logger_debug(
                     "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
                 )
         elif response.error.message == "batch limit exceeded":  # type: ignore [union-attr]
@@ -1106,7 +1113,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         """
         # While it might look weird, f-string is faster than `str(e)`.
         if "No state available for block" in f"{e}":
-            _log_debug(
+            error_logger_debug(
                 "No state available for one of the blocks queried. Bisecting batch and retrying."
             )
             return True
@@ -1166,7 +1173,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         Args:
             e: The exception that occurred during the batch request.
         """
-        _log_debug("%s had exception %s, retrying", self, e)
+        error_logger_debug("%s had exception %s, retrying", self, e)
         controller = self.controller
         batches = [
             (
