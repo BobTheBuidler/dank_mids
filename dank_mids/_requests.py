@@ -1278,6 +1278,7 @@ _demo_logger_info = demo_logger.info
 
 
 async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -> None:
+    # sourcery skip: use-contextlib-suppress
     """
     An implementation of asyncio.gather optimized for use cases that:
         1. Have coroutines that are predomininately sync
@@ -1303,5 +1304,9 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
             # we will only retrieve the first exc from our tasks, if any
             # this hack prevents asyncio from logging a message that the other excs were not retrieved
             for task in tasks:
-                task._Future__log_traceback = False
+                # Make sure all the remaining tasks complete before we raise the exc
+                try:
+                    await task
+                except Exception:
+                    pass
             raise
