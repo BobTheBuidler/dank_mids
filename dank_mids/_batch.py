@@ -154,6 +154,6 @@ class DankBatch:
             if working_batch.is_single_multicall:
                 yield next(iter(working_batch))  # type: ignore [misc]
             elif len(working_batch) == 1:
-                yield next(iter(working_batch)).make_request()  # type: ignore [union-attr]
+                yield next(iter(working_batch)).get_response_unbatched()  # type: ignore [union-attr]
             else:
                 yield working_batch
