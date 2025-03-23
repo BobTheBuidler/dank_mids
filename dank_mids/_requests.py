@@ -24,6 +24,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Literal,
     NoReturn,
     Optional,
     Tuple,
@@ -85,6 +86,7 @@ if TYPE_CHECKING:
 
 
 logger = getLogger(__name__)
+batch_size_logger = getLogger("dank_mids.batch_size")
 
 _Response = TypeVar(
     "_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse
@@ -876,6 +878,13 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             pass
 
 
+def _log_checking_batch_size(
+    batch_type: Literal["multicall", "json"], 
+    member_type: Literal["calls", "requests"],
+    num_calls: int,
+) -> None:
+    batch_size_logger.info("checking if we should reduce %s batch size... (%s %s)", batch_type, num_calls, member_type)
+
 class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     """
     Represents a batch of JSON-RPC requests.
@@ -1199,12 +1208,11 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         updates the batch size accordingly.
         """
         if self.is_multicalls_only:
-            _log_info(
-                "checking if we should reduce multicall batch size... (%s calls)", self.total_calls
-            )
-            self.controller.reduce_multicall_size(self.total_calls)
+            num_calls = self.total_calls
+            _log_checking_batch_size("multicall", "calls", num_calls)
+            self.controller.reduce_multicall_size(num_calls)
         else:
-            _log_info("checking if we should reduce json batch size... (%s requests)", len(self))
+            _log_checking_batch_size("json", "requests", len(self))
             self.controller.reduce_batch_size(len(self))
             _log_devhint(
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"
