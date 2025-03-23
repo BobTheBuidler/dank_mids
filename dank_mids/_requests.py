@@ -1210,7 +1210,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         if self.is_multicalls_only:
             num_calls = self.total_calls
             _log_checking_batch_size("multicall", "calls", num_calls)
-            self.controller.reduce_multicall_size(self.total_calls)
+            self.controller.reduce_multicall_size(num_calls)
         else:
             _log_checking_batch_size("json", "requests", len(self))
             self.controller.reduce_batch_size(len(self))
