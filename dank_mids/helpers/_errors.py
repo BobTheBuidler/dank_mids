@@ -1,4 +1,4 @@
-from logging import Logger
+from logging import Logger, getLogger
 from typing import TYPE_CHECKING
 
 from dank_mids.types import BadResponse, PartialResponse
@@ -6,6 +6,9 @@ from dank_mids.types import BadResponse, PartialResponse
 if TYPE_CHECKING:
     from dank_mids._requests import _Batch
 
+
+error_logger = getLogger("dank_mids.errors")
+error_logger_debug = error_logger.debug
 
 INDIVIDUAL_CALL_REVERT_STRINGS = {
     "invalid opcode",
