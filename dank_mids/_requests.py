@@ -663,7 +663,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     def __init__(
         self,
         controller: "DankMiddlewareController",
-        calls: List[eth_call] = [],
+        calls: Iterable[eth_call] = [],
         bid: Optional[BatchId] = None,
     ):
         # sourcery skip: default-mutable-arg
