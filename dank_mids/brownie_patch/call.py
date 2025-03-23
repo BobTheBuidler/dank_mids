@@ -1,10 +1,9 @@
-import functools
-import logging
 from concurrent.futures.process import BrokenProcessPool
 from decimal import Decimal
+from logging import getLogger
 from pickle import PicklingError
 from types import MethodType
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 
 import brownie.convert.normalize
 import brownie.network.contract
@@ -39,10 +38,11 @@ from web3.types import BlockIdentifier
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.exceptions import Revert
+from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
 
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
 """
@@ -84,8 +84,8 @@ def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
     call.__await__ = MethodType(_call_no_args, call)
 
 
-@functools.lru_cache
-def _get_coroutine_fn(w3: DankWeb3, len_inputs: int):
+@lru_cache_lite_nonull
+def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable:
     if ENVS.OPERATION_MODE.application or len_inputs:  # type: ignore [attr-defined]
         get_request_data = encode
     else:

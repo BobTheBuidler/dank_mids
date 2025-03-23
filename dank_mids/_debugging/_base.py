@@ -1,7 +1,6 @@
 import abc
 import logging
 import os
-from functools import lru_cache
 from typing import Any, Iterable
 
 import aiofiles
@@ -9,6 +8,8 @@ from a_sync.functools import cached_property_unsafe as cached_property
 from aiofiles.base import AiofilesContextManager
 from aiofiles.threadpool.text import AsyncTextIOWrapper
 from async_lru import alru_cache
+
+from dank_mids.helpers.lru_cache import lru_cache_lite
 
 logger = logging.getLogger("dank_mids.debugging")
 
@@ -26,7 +27,7 @@ class _FileHelper(metaclass=abc.ABCMeta):
         self.path += f"/{self.chainid}"
         self.ensure_dir()
 
-    @lru_cache(maxsize=1)
+    @lru_cache_lite
     def ensure_dir(self) -> None:
         """
         Ensure that the directory for the file exists, creating it if necessary.

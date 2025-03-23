@@ -1,17 +1,17 @@
 from datetime import datetime
-from functools import lru_cache
 from typing import TYPE_CHECKING, List, Literal, Type, Union
 
 from a_sync import ProcessingQueue
 from a_sync.functools import cached_property_unsafe as cached_property
 
 from dank_mids._debugging._base import _CSVWriter
+from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 
 if TYPE_CHECKING:
     from dank_mids.types import PartialRequest, Request
 
 
-@lru_cache(maxsize=None)
+@lru_cache_lite_nonull
 class FailedRequestWriter(_CSVWriter):
     """
     A class for logging failed requests to a CSV file.

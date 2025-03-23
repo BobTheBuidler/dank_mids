@@ -10,7 +10,6 @@ from asyncio import (
 )
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
-from functools import lru_cache
 from itertools import accumulate, chain
 from logging import DEBUG, getLogger
 from time import time
@@ -74,6 +73,7 @@ from dank_mids.helpers._errors import (
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._weaklist import WeakList
+from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.types import (
     BatchId,
     BlockId,
@@ -183,7 +183,7 @@ These methods are typically handled separately or have special requirements.
 """
 
 
-@lru_cache(maxsize=None)
+@lru_cache_lite_nonull
 def _get_len_for_method(method: str) -> int:
     # NOTE: These are totally arbitrary, used to reduce frequency of giant batches/responses
     if method == "eth_getTransactionReceipt":
@@ -193,7 +193,7 @@ def _get_len_for_method(method: str) -> int:
     return 1
 
 
-@lru_cache(maxsize=None)
+@lru_cache_lite_nonull
 def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
