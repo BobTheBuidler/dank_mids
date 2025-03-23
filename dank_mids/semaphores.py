@@ -1,4 +1,3 @@
-import functools
 from decimal import Decimal
 from typing import TYPE_CHECKING, Literal, Optional, Type, Union
 
@@ -10,6 +9,8 @@ from a_sync.primitives.locks.prio_semaphore import (
 )
 from eth_typing import HexStr
 from web3.types import RPCEndpoint
+
+from dank_mids.helpers.lru_cache import lru_cache_lite, lru_cache_lite_nonull
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -102,7 +103,7 @@ class _MethodSemaphores:
         self.keys = self.method_semaphores.keys()
         self.dummy = DummySemaphore()
 
-    @functools.lru_cache(maxsize=None)
+    @lru_cache_lite_nonull
     def __getitem__(self, method: RPCEndpoint) -> Union[ThreadsafeSemaphore, DummySemaphore]:
         """
         Retrieves the semaphore for a given RPC method.
@@ -152,7 +153,7 @@ class _MethodQueues:
         This allows for efficient iteration over the available method names.
         """
 
-    @functools.lru_cache(maxsize=None)
+    @lru_cache_lite
     def __getitem__(self, method: RPCEndpoint) -> Optional[a_sync.SmartProcessingQueue]:
         """
         Retrieves the queue for a given RPC method.
@@ -163,7 +164,7 @@ class _MethodQueues:
         Returns:
             The queue for the method, or None if no specific queue is found.
         """
-        try:
-            return next(self.method_queues[key] for key in self.keys if key in method)
-        except StopIteration:
-            return None
+        return next(
+            (self.method_queues[key] for key in self.keys if key in method),
+            None,
+        )
