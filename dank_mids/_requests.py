@@ -105,6 +105,7 @@ MulticallChunk = Tuple[ChecksumAddress, HexStr]
 class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
+
 _TIMEOUT = float(ENVS.STUCK_CALL_TIMEOUT)
 
 _super_init = a_sync.Event.__init__

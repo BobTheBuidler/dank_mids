@@ -258,8 +258,8 @@ class DankEth(AsyncEth):
             **kwargs: Additional keyword arguments.
         """
         return json.decode(
-            await self._get_logs_raw(*args, **kwargs), 
-            type=decode_to, 
+            await self._get_logs_raw(*args, **kwargs),
+            type=decode_to,
             dec_hook=decode_hook,
         )
 
