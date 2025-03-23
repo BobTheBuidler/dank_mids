@@ -105,6 +105,7 @@ MulticallChunk = Tuple[ChecksumAddress, HexStr]
 class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
+_TIMEOUT = float(ENVS.STUCK_CALL_TIMEOUT)
 
 _super_init = a_sync.Event.__init__
 _super_set = a_sync.Event.set
@@ -285,18 +286,15 @@ class RPCRequest(_RequestBase[RawResponse]):
             await sleep(0)
         if not self._started:
             try:
-                await wait_for(
-                    # If this timeout fails, we go nuclear and destroy the batch.
-                    # Any calls that already succeeded will have already completed on the client side.
-                    # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
-                    self.controller.execute_batch(),
-                    timeout=ENVS.STUCK_CALL_TIMEOUT,  # type: ignore [arg-type]
-                )
+                # If this timeout fails, we go nuclear and destroy the batch.
+                # Any calls that already succeeded will have already completed on the client side.
+                # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
+                await wait_for(self.controller.execute_batch(), timeout=_TIMEOUT)
             except TimeoutError:
                 return await self.create_duplicate()
 
         try:
-            await wait_for(self._done.wait(), timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
+            await wait_for(self._done.wait(), timeout=_TIMEOUT)
         except TimeoutError:
             return await self.create_duplicate()
 
@@ -338,10 +336,9 @@ class RPCRequest(_RequestBase[RawResponse]):
 
     @set_done
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
-        task = create_task(self.make_request())  # type: ignore [arg-type]
-        shielded = shield(task)
+        task = create_task(self.make_request())
         try:
-            await wait_for(shielded, timeout=ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
+            await wait_for(shield(task), timeout=_TIMEOUT)
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
             done, pending = await wait((task, self.create_duplicate()), return_when=FIRST_COMPLETED)
