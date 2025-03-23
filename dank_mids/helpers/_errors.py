@@ -1,8 +1,19 @@
 from logging import Logger
 from typing import TYPE_CHECKING
 
+from dank_mids.types import BadResponse, PartialResponse
+
 if TYPE_CHECKING:
     from dank_mids._requests import _Batch
+
+
+INDIVIDUAL_CALL_REVERT_STRINGS = {
+    "invalid opcode",
+    "missing trie node",
+    "resource not found",
+    "invalid ether transfer",
+    "error processing call revert",
+}
 
 
 def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exception):
@@ -22,3 +33,32 @@ def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exc
         batch_objs,
         exc_info=True,
     )
+
+
+def needs_full_request_spec(response: PartialResponse):
+    """
+    Determine if a response indicates that the node requires the full request specification.
+
+    By default we leave off some fields that are not always required.
+    Some nodes do not like this, and they let us know via these errors.
+
+    Args:
+        response: The error response to check.
+
+    Returns:
+        True if the full request specification is needed, False otherwise.
+    """
+    return response.error and response.error.message.lower() in ("invalid request", "parse error")
+
+
+def is_call_revert(e: BadResponse) -> bool:
+    """
+    Determine if a BadResponse was caused by a revert in one of the individual calls within a multicall.
+
+    Args:
+        e: The error response to check.
+
+    Returns:
+        True if the error was caused by an individual call revert, False otherwise.
+    """
+    return any(map(f"{e}".lower().__contains__, INDIVIDUAL_CALL_REVERT_STRINGS))
