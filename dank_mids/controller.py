@@ -74,7 +74,7 @@ class DankMiddlewareController:
         )
         """The Struct class the controller will use to encode requests."""
 
-        self._request_type_changed_ts: Union[int, float] = 0
+        self._request_type_changed_ts: float = 0.0
         """The time at which the request type was automatically updated by dank's internals. Zero if never updated after init."""
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
