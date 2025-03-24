@@ -30,13 +30,13 @@ class DebuggableFuture(Future[RPCResponse]):
     _debug_logs_enabled: bool = False
     __debug_daemon_task: Optional[Task[None]] = None
 
-    def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop):
+    def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:
         Future.__init__(self, loop=loop)
         if _logger_is_enabled_for(DEBUG):
             self._debug_logs_enabled = True
             self._owner: ProxyType["_RequestBase[_Response]"] = proxy(owner)
 
-    def __await__(self):
+    def __await__(self) -> Generator[Any, None, RPCResponse]:
         if self._debug_logs_enabled and self.__debug_daemon_task is None:
             self.__debug_daemon_task = create_task(self.__debug_daemon())
         return Future.__await__(self)
@@ -128,6 +128,7 @@ class DebuggableFuture(Future[RPCResponse]):
 
 
 def _check_match(first: Exception, second: Exception):
+    """Check if two exceptions are similar enough to be considered matching"""
     return (
         type(first) is type(second)
         # Sometimes we add extra info to the back of `exc.args` in various places in this lib.
