@@ -17,6 +17,7 @@ _logger_is_enabled_for = logger.isEnabledFor
 _super_set_result = Future.set_result
 _super_set_exc = Future.set_exception
 
+
 class DebuggableFuture(Future[RPCResponse]):
     _debug_logs_enabled: bool = False
     __debug_daemon_task: Optional[Task[None]] = None
@@ -26,7 +27,7 @@ class DebuggableFuture(Future[RPCResponse]):
         if _logger_is_enabled_for(DEBUG):
             self._debug_logs_enabled = True
             self._owner: ProxyType["_RequestBase[_Response]"] = proxy(owner)
-    
+
     def __await__(self):
         if self._debug_logs_enabled and self.__debug_daemon_task is None:
             self.__debug_daemon_task = create_task(self.__debug_daemon())
