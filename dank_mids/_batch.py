@@ -76,7 +76,7 @@ class DankBatch:
         for mcall in self.multicalls.values():
             mcall.start(self, cleanup=False)
         for call in self.rpc_calls:
-            call.start(self)
+            call._batch = self
         return self._await().__await__()
 
     async def _await(self) -> None:
