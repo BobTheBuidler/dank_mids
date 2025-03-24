@@ -97,14 +97,14 @@ class DebuggableFuture(Future[RPCResponse]):
                             f"existing result: {self._result}",
                             f"new excepction: {exc}",
                         ) from e
-                elif self._exception is not None:
-                    if self._exception != exc:
-                        raise InvalidStateError(
-                            f"{self} already has an exception set:",
-                            f"existing excepction: {self._exception}",
-                            f"new excepction: {exc}",
-                        ) from e
-
+                elif (current_exc := self._exception) is not None:
+                    if type(exc) is type(current_exc) and exc.args == current_exc.args:
+                        return
+                    raise InvalidStateError(
+                        f"{self} already has an exception set:",
+                        f"existing excepction: {current_exc}",
+                        f"new excepction: {exc}",
+                    ) from e
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
                 else:
@@ -120,13 +120,14 @@ class DebuggableFuture(Future[RPCResponse]):
                 f"existing value: {self._result}",
                 f"new exception: {exc}",
             )
-        elif self._exception is not None:
-            if self._exception != exc:
-                raise InvalidStateError(
-                    f"{self} already has an exception set:",
-                    f"existing exception: {exc}",
-                    f"new exception: {exc}",
-                )
+        elif (current_exc := self._exception) is not None:
+            if type(exc) is type(current_exc) and exc.args == current_exc.args:
+                return
+            raise InvalidStateError(
+                f"{self} already has an exception set:",
+                f"existing exception: {exc}",
+                f"new exception: {exc}",
+            )
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
