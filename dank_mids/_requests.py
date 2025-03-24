@@ -59,11 +59,10 @@ from dank_mids._exceptions import (
     EmptyBatch,
     ExceedsMaxBatchSize,
     PayloadTooLarge,
-    ResponseNotReady,
     internal_err_types,
 )
 from dank_mids._uid import _AlertingRLock
-from dank_mids.helpers import _codec, _session, gatherish, lru_cache_lite_nonull
+from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
 from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
     error_logger_debug,
@@ -142,10 +141,10 @@ class _RequestEvent(a_sync.Event):
 
 
 class _RequestBase(Generic[_Response]):
-    _response: Union[_Response, RPCResponse, Exception, None] = None
+    _fut: DebuggableFuture[Union[_Response, RPCResponse]]
     _batch: Optional["_Batch"] = None
 
-    __slots__ = "controller", "uid", "_done", "_start", "__weakref__"
+    __slots__ = "controller", "uid", "_fut", "__weakref__"
 
     def __init__(self, controller: "DankMiddlewareController") -> None:
         self.controller = controller
@@ -154,8 +153,7 @@ class _RequestBase(Generic[_Response]):
         self.uid = controller.call_uid.next
         """The unique id for this request."""
 
-        self._done = _RequestEvent(self)
-        self._start = time()
+        self._fut = DebuggableFuture(self, controller._loop)
 
     def __await__(self) -> Generator[Any, None, _Response]:
         return self.get_response().__await__()
@@ -170,12 +168,6 @@ class _RequestBase(Generic[_Response]):
 
     async def get_response(self) -> _Response:
         raise NotImplementedError
-
-    @property
-    def response(self) -> _Response:
-        if not self._done.is_set():
-            raise ResponseNotReady(self)
-        return self._response
 
 
 ### Single requests:
@@ -203,6 +195,7 @@ def _should_batch_method(method: str) -> bool:
 
 
 class RPCRequest(_RequestBase[RawResponse]):
+    _fut: DebuggableFuture[RawResponse]
     should_batch: bool = True
     """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
 
@@ -271,7 +264,6 @@ class RPCRequest(_RequestBase[RawResponse]):
     def start(self, batch: Union["_Batch", "DankBatch"]) -> None:  # type: ignore [override]
         self._batch = batch
 
-    @set_done
     async def get_response(self) -> RPCResponse:  # type: ignore [override]
         if not self.should_batch:
             if self._debug_logs_enabled:
@@ -297,48 +289,58 @@ class RPCRequest(_RequestBase[RawResponse]):
             except TimeoutError:
                 return await self.create_duplicate()
 
+        fut = self._fut
+        if fut.done():
+            try:
+                return fut.result()
+            except Exception as e:
+                _raise_more_detailed_exc(self.request, e)
+
         try:
-            await wait_for(self._done.wait(), timeout=_TIMEOUT)
+            response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
         except TimeoutError:
-            return await self.create_duplicate()
+            done, pending = await wait((fut, self.create_duplicate()), return_when=FIRST_COMPLETED)
+            for d in done:
+                if d is not fut:
+                    return await d
+                response = d.result()
+            for p in pending:
+                if p is not fut:
+                    p.cancel()
+        except Exception as e:
+            _raise_more_detailed_exc(self.request, e)
 
-        response = self.response
-
-        # JIT json decoding
-        if isinstance(response, RawResponse):
-            response = response.decode(partial=True)
-
-            if response.error is None:
-                if self.raw and response.result:
-                    return {"result": response.result}
-                return response.to_dict(self.method)
-
-            if needs_full_request_spec(response):
-                controller = self.controller
-                if not controller._request_type_changed_ts:
-                    controller._use_full_request()
-                if time() - controller._request_type_changed_ts <= 600:
-                    if self._debug_logs_enabled:
-                        log_request_type_switch()
-                    method = f"{self.method}_raw" if self.raw else self.method
-                    return await controller(method, self.params)
-
-            error = dict(response.error.items())
-            error["dankmids_added_context"] = self.request
-
-            response = response.to_dict(self.method)
-            response["error"] = error
-            if self._debug_logs_enabled:
-                error_logger_debug("error response for %s: %s", self, response)
+        if not isinstance(response, RawResponse):
             return response
+    
+        # JIT json decoding
+        response = response.decode(partial=True)
 
-        # If we have an Exception here it came from the goofy sync_call thing I need to get rid of.
-        # We raise it here so it traces back up to the caller
-        if isinstance(response, Exception):
-            _raise_more_detailed_exc(self.request, response)
+        if response.error is None:
+            if self.raw and response.result:
+                return {"result": response.result}
+            return response.to_dict(self.method)
+
+        if needs_full_request_spec(response):
+            controller = self.controller
+            if not controller._request_type_changed_ts:
+                controller._use_full_request()
+            if time() - controller._request_type_changed_ts <= 600:
+                if self._debug_logs_enabled:
+                    log_request_type_switch()
+                method = f"{self.method}_raw" if self.raw else self.method
+                return await controller(method, self.params)
+
+        error = dict(response.error.items())
+        error["dankmids_added_context"] = self.request
+
+        response = response.to_dict(self.method)
+        response["error"] = error
+        if self._debug_logs_enabled:
+            error_logger_debug("error response for %s: %s", self, response)
         return response
 
-    @set_done
+
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
         task = create_task(self.make_request())
         try:
@@ -350,14 +352,13 @@ class RPCRequest(_RequestBase[RawResponse]):
                 t.cancel()
             for t in done:
                 return await t
-        response = self.response.decode(partial=True)
+        response = self._fut.result().decode(partial=True)
         return (
             {"result": response.result}
             if self.raw and response.result
             else response.to_dict(self.method)
         )
 
-    @set_done
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
         # sourcery skip: merge-duplicate-blocks
         """
@@ -368,7 +369,7 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         # New handler
         if isinstance(data, RawResponse):
-            self._response = data
+            self._fut.set_result(data)
         elif isinstance(data, BadResponse):
             if needs_full_request_spec(data.response):
                 controller = self.controller
@@ -377,32 +378,34 @@ class RPCRequest(_RequestBase[RawResponse]):
                 if time() - controller._request_type_changed_ts <= 600:
                     if self._debug_logs_enabled:
                         log_request_type_switch()
-                    self._response = await self.create_duplicate()
+                    self._fut.set_result(await self.create_duplicate())
                     return
-            self._response = {"error": __format_error(self.request, data.response)}
+            self._fut.set_result({"error": __format_error(self.request, data.response)})
             if self._debug_logs_enabled:
                 error_logger_debug(
-                    "%s _response set to rpc error response %s", self, self._response
+                    "%s _response set to rpc error response %s", self, self._fut.result()
                 )
         elif isinstance(data, Exception):
             if self._debug_logs_enabled:
                 error_logger_debug("%s _response set to Exception %s", self, data)
-            self._response = data
+            self._fut.set_exception(data)
         # From multicalls
         elif isinstance(data, bytes):
-            self._response = {"result": data}
+            self._fut.set_result({"result": data})
         else:
-            raise NotImplementedError(
-                f"type {type(data)} not supported for spoofing.", type(data), data
+            self._fut.set_exception(
+                TypeError(
+                    f"type {type(data).__name__} not supported for spoofing.", type(data), data
+                )
             )
 
-    @set_done
     async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
-        self._response = await self.controller.make_request(
+        response = await self.controller.make_request(
             self.method, self.params, request_id=self.uid
         )
-        return self._response
+        self._fut.set_result(response)
+        return response
 
     @property
     def semaphore(self) -> a_sync.Semaphore:
@@ -514,13 +517,14 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     _started: bool = False
     """A flag indicating whether the batch has been started."""
 
-    __slots__ = "calls", "_batcher", "_lock", "_daemon", "__dict__"
+    __slots__ = "calls", "_batcher", "_lock", "_start", "_done", "_daemon", "__dict__"
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         _RequestBase.__init__(self, controller)
         self.calls = WeakList(calls)
         self._batcher = controller.batcher
         self._lock = _AlertingRLock(name=self.__class__.__name__)
+        self._done = _RequestEvent(self)
 
     def __bool__(self) -> bool:
         return bool(self.calls)
