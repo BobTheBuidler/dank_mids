@@ -25,10 +25,6 @@ class EmptyBatch(ValueError):
     """Exception raised when attempting to process an empty batch."""
 
 
-class ResponseNotReady(ValueError):
-    """Exception raised when trying to access a response that isn't ready yet."""
-
-
 class PayloadTooLarge(BadResponse):
     """Exception raised when the payload for a request is too large."""
 

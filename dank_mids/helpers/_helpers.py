@@ -31,7 +31,7 @@ from dank_mids.eth import DankEth
 from dank_mids.types import AsyncMiddleware
 
 if TYPE_CHECKING:
-    from dank_mids._requests import _Request
+    from dank_mids._requests import _Batch
 
 dank_w3s: List[Web3] = []
 """
@@ -133,8 +133,8 @@ async def await_all(futs: Iterable[Awaitable]) -> None:
 
 
 def set_done(
-    fn: Callable[Concatenate["_Request", P], Awaitable[T]],
-) -> Callable[Concatenate["_Request", P], Awaitable[T]]:
+    fn: Callable[Concatenate["_Batch", P], Awaitable[T]],
+) -> Callable[Concatenate["_Batch", P], Awaitable[T]]:
     """
     A decorator that sets the '_done' flag of a _Request object after the decorated function completes.
 
@@ -146,7 +146,7 @@ def set_done(
     """
 
     @wraps(fn)
-    async def set_done_wrap(self: "_Request", *args: P.args, **kwargs: P.kwargs) -> T:
+    async def set_done_wrap(self: "_Batch", *args: P.args, **kwargs: P.kwargs) -> T:
         retval = await fn(self, *args, **kwargs)
         self._done.set()
         return retval

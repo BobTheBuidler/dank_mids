@@ -1,3 +1,4 @@
+from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
 from logging import getLogger
@@ -54,6 +55,8 @@ class DankMiddlewareController:
             w3: The Web3 instance used to make RPC requests.
         """
         logger.info("Dank Middleware initializing... Strap on your rocket boots...")
+
+        self._loop = get_running_loop()
 
         self.w3: Web3 = w3
         """The Web3 instance used to make rpc requests."""
