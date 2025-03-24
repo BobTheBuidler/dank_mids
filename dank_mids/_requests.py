@@ -843,23 +843,19 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return retval
 
     @set_done
-    async def bisect_and_retry(self, e: Exception) -> List[RPCResponse]:
+    async def bisect_and_retry(self, e: Exception) -> None:
         """
         Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
         Calls `self._done.set()` when finished.
         """
         error_logger_debug("%s had exception %s, bisecting and retrying", self, e)
         controller = self.controller
-        batches = [
+        bisected = (
             Multicall(controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)
-        ]
-        for batch in batches:
-            batch.start(cleanup=False)
-        for batch, result in zip(batches, await igather(batches, return_exceptions=True)):
-            if isinstance(result, Exception):
-                if not isinstance(result, DankMidsInternalError):
-                    log_internal_error(logger, batch, len(batch), result)
-                raise result
+        )
+        batch = JSONRPCBatch(controller, bisected)
+        batch.start(cleanup=False)
+        await batch
 
     @set_done
     async def _exec_single_call(self) -> None:
