@@ -100,11 +100,11 @@ class DebuggableFuture(Future[RPCResponse]):
                 elif self._exception is not None:
                     if self._exception != exc:
                         raise InvalidStateError(
-                            f"{self} already has an exception set:", 
+                            f"{self} already has an exception set:",
                             f"existing excepction: {self._exception}",
                             f"new excepction: {exc}",
                         ) from e
-                    
+
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
                 else:
@@ -122,7 +122,11 @@ class DebuggableFuture(Future[RPCResponse]):
             )
         elif self._exception is not None:
             if self._exception != exc:
-                raise InvalidStateError(f"{self} already has an exception set:", f"existing exception: {exc}", f"new exception: {exc}",)
+                raise InvalidStateError(
+                    f"{self} already has an exception set:",
+                    f"existing exception: {exc}",
+                    f"new exception: {exc}",
+                )
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
