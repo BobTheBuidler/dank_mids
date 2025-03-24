@@ -1,4 +1,12 @@
-from asyncio import AbstractEventLoop, Future, InvalidStateError, Task, create_task, get_running_loop, sleep
+from asyncio import (
+    AbstractEventLoop,
+    Future,
+    InvalidStateError,
+    Task,
+    create_task,
+    get_running_loop,
+    sleep,
+)
 from logging import DEBUG, getLogger
 from time import time
 from typing import TYPE_CHECKING, Any, Optional
@@ -42,14 +50,20 @@ class DebuggableFuture(Future[RPCResponse]):
                     if self._result == value:
                         return
                     else:
-                        raise InvalidStateError(f"{self} already has a result set:", f"existing_value: {self._result}", f"new_value: {value}") from e
+                        raise InvalidStateError(
+                            f"{self} already has a result set:",
+                            f"existing_value: {self._result}",
+                            f"new_value: {value}",
+                        ) from e
                 elif self._exception is not None:
-                    raise InvalidStateError(f"{self} already has an exception set:", self._exception) from e
+                    raise InvalidStateError(
+                        f"{self} already has an exception set:", self._exception
+                    ) from e
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
                 else:
                     raise NotImplementedError(f"{self._state} is not a valid state") from e
-    
+
         # The rest of this code just makes it threadsafe(ish) based on an old idea that never was fully implemented
         # One day I'll fully commit to either finishing it up or ripping it out. For now it stays.
         elif self._state == "PENDING":
@@ -57,15 +71,17 @@ class DebuggableFuture(Future[RPCResponse]):
         elif self._result is not None:
             if self._result == value:
                 return
-            raise InvalidStateError(f"{self} already has a result set:", f"existing_value: {self._result}", f"new_value: {value}")
+            raise InvalidStateError(
+                f"{self} already has a result set:",
+                f"existing_value: {self._result}",
+                f"new_value: {value}",
+            )
         elif self._exception is not None:
             raise InvalidStateError(f"{self} already has an exception set:", self._exception)
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
             raise NotImplementedError(f"{self._state} is not a valid state")
-
-
 
     def set_exception(self, exc: Exception) -> None:
         # Make sure we wake up the event loop if its in another thread
