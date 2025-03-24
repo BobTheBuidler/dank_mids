@@ -663,7 +663,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     _started: bool
     """A flag indicating whether the Multicall has been started."""
 
-    # We need to specify __dict__ for the cached properties to work
     __slots__ = ("bid",)
 
     def __init__(
