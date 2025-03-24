@@ -29,7 +29,9 @@ if not typed_envs.logger.disabled:
 # What mode should dank mids operate in?
 # NOTE: infura mode is required for now
 # TODO: fix the other modes, set default='default', and make this verbose again
-OPERATION_MODE = _envs.create_env("OPERATION_MODE", OperationMode, default="infura", verbose=False)
+OPERATION_MODE: OperationMode = _envs.create_env(
+    "OPERATION_MODE", OperationMode, default="infura", verbose=False
+)
 
 # Max number of eth calls to include in one multicall
 MAX_MULTICALL_SIZE = _envs.create_env("MAX_MULTICALL_SIZE", int, default=10_000)
