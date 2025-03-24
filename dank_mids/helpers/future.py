@@ -47,14 +47,7 @@ class DebuggableFuture(Future[RPCResponse]):
                 _super_set_result(self, value)
             except InvalidStateError as e:
                 if self._result is not None:
-                    if self._result == value:
-                        return
-                    else:
-                        raise InvalidStateError(
-                            f"{self} already has a result set:",
-                            f"existing value: {self._result}",
-                            f"new value: {value}",
-                        ) from e
+                    return
                 elif self._exception is not None:
                     raise InvalidStateError(
                         f"{self} already has an exception set:", self._exception
@@ -69,13 +62,7 @@ class DebuggableFuture(Future[RPCResponse]):
         elif self._state == "PENDING":
             self._loop.call_soon_threadsafe(_super_set_result, self, value)
         elif self._result is not None:
-            if self._result == value:
-                return
-            raise InvalidStateError(
-                f"{self} already has a result set:",
-                f"existing value: {self._result}",
-                f"new value: {value}",
-            )
+            return
         elif self._exception is not None:
             raise InvalidStateError(f"{self} already has an exception set:", self._exception)
         elif self._state == "CANCELLED":
@@ -89,14 +76,11 @@ class DebuggableFuture(Future[RPCResponse]):
                 _super_set_exc(self, exc)
             except InvalidStateError as e:
                 if self._result is not None:
-                    if self._result == exc:
-                        return
-                    else:
-                        raise InvalidStateError(
-                            f"{self} already has a result set:",
-                            f"existing result: {self._result}",
-                            f"new excepction: {exc}",
-                        ) from e
+                    raise InvalidStateError(
+                        f"{self} already has a result set:",
+                        f"existing result: {self._result}",
+                        f"new excepction: {exc}",
+                    ) from e
                 elif (current_exc := self._exception) is not None:
                     if type(exc) is type(current_exc) and exc.args == current_exc.args:
                         return
