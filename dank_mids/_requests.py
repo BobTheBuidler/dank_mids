@@ -297,7 +297,9 @@ class RPCRequest(_RequestBase[RawResponse]):
                 try:
                     response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
                 except TimeoutError:
-                    done, pending = await wait((fut, self.create_duplicate()), return_when=FIRST_COMPLETED)
+                    done, pending = await wait(
+                        (fut, self.create_duplicate()), return_when=FIRST_COMPLETED
+                    )
                     for d in done:
                         if d is not fut:
                             return await d
@@ -316,7 +318,7 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         if not isinstance(response, RawResponse):
             return response
-    
+
         # JIT json decoding
         response = response.decode(partial=True)
 
@@ -343,7 +345,6 @@ class RPCRequest(_RequestBase[RawResponse]):
         if self._debug_logs_enabled:
             error_logger_debug("error response for %s: %s", self, response)
         return response
-
 
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
         task = create_task(self.make_request())
@@ -405,9 +406,7 @@ class RPCRequest(_RequestBase[RawResponse]):
 
     async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
-        response = await self.controller.make_request(
-            self.method, self.params, request_id=self.uid
-        )
+        response = await self.controller.make_request(self.method, self.params, request_id=self.uid)
         self._fut.set_result(response)
         return response
 
