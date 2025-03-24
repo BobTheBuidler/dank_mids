@@ -290,25 +290,29 @@ class RPCRequest(_RequestBase[RawResponse]):
                 return await self.create_duplicate()
 
         fut = self._fut
-        if fut.done():
-            try:
-                return fut.result()
-            except Exception as e:
-                _raise_more_detailed_exc(self.request, e)
-
         try:
-            response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
-        except TimeoutError:
-            done, pending = await wait((fut, self.create_duplicate()), return_when=FIRST_COMPLETED)
-            for d in done:
-                if d is not fut:
-                    return await d
-                response = d.result()
-            for p in pending:
-                if p is not fut:
-                    p.cancel()
+            if fut.done():
+                response = fut.result()
+            else:
+                try:
+                    response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
+                except TimeoutError:
+                    done, pending = await wait((fut, self.create_duplicate()), return_when=FIRST_COMPLETED)
+                    for d in done:
+                        if d is not fut:
+                            return await d
+                        response = d.result()
+                    for p in pending:
+                        if p is not fut:
+                            p.cancel()
+        except ClientResponseError as e:
+            # TODO think about getting rid of this
+            raise DankMidsClientResponseError(e, self.request) from e
         except Exception as e:
-            _raise_more_detailed_exc(self.request, e)
+            e.request = request  # type: ignore [attr-defined]
+            if not e.args or e.args[-1] != self.request:
+                e.args = *e.args, self.request
+            raise
 
         if not isinstance(response, RawResponse):
             return response
@@ -1262,18 +1266,6 @@ def __format_error(request: PartialRequest, response: PartialResponse) -> Attrib
     error = dict(response.error)  # type: ignore [arg-type]
     error["dankmids_added_context"] = request
     return AttributeDict.recursive(error)
-
-
-def _raise_more_detailed_exc(request: PartialRequest, exc: Exception) -> NoReturn:
-    if isinstance(exc, ClientResponseError):
-        raise DankMidsClientResponseError(exc, request) from exc
-    try:
-        more_detailed_exc = exc.__class__(exc, request)
-    except Exception as e:
-        exc.request = request  # type: ignore [attr-defined]
-        exc._dank_mids_exception = e  # type: ignore [attr-defined]
-        raise e from exc
-    raise more_detailed_exc from exc
 
 
 _log_debug = logger.debug
