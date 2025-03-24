@@ -143,8 +143,9 @@ class _RequestEvent(a_sync.Event):
 
 class _RequestBase(Generic[_Response]):
     _response: Union[_Response, RPCResponse, Exception, None] = None
+    _batch: Optional["_Batch"] = None
 
-    __slots__ = "controller", "uid", "_done", "_start", "_batch", "__weakref__"
+    __slots__ = "controller", "uid", "_done", "_start", "__weakref__"
 
     def __init__(self, controller: "DankMiddlewareController") -> None:
         self.controller = controller
