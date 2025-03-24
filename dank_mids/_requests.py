@@ -143,8 +143,9 @@ class _RequestEvent(a_sync.Event):
 
 class _RequestBase(Generic[_Response]):
     _response: Union[_Response, RPCResponse, Exception, None] = None
+    _batch: Optional["_Batch"] = None
 
-    __slots__ = "controller", "uid", "_done", "_start", "_batch", "__weakref__"
+    __slots__ = "controller", "uid", "_done", "_start", "__weakref__"
 
     def __init__(self, controller: "DankMiddlewareController") -> None:
         self.controller = controller
@@ -205,7 +206,6 @@ class RPCRequest(_RequestBase[RawResponse]):
     should_batch: bool = True
     """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
 
-    _started: bool = False
     _retry: bool = False
     _debug_logs_enabled: bool = False
 
@@ -269,7 +269,6 @@ class RPCRequest(_RequestBase[RawResponse]):
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
 
     def start(self, batch: Union["_Batch", "DankBatch"]) -> None:  # type: ignore [override]
-        self._started = True
         self._batch = batch
 
     @set_done
@@ -279,13 +278,17 @@ class RPCRequest(_RequestBase[RawResponse]):
                 _log_debug("bypassed dank batching, method is %s", self.method)
             return await self.get_response_unbatched()
 
-        if self._started and not self._batch._started:
+        current_batch = self._batch
+        if current_batch and not current_batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
-            await self._batch
-        if not self._started:
+            await current_batch
+        # get rid of the strong reference
+        del current_batch
+
+        if not self._batch:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
             await sleep(0)
-        if not self._started:
+        if not self._batch:
             try:
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
@@ -396,7 +399,6 @@ class RPCRequest(_RequestBase[RawResponse]):
     @set_done
     async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
-        self._started = True
         self._response = await self.controller.make_request(
             self.method, self.params, request_id=self.uid
         )
@@ -507,8 +509,12 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 
 
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
-    __slots__ = "calls", "_batcher", "_lock", "_daemon"
     calls: WeakList[_Request]
+
+    _started: bool = False
+    """A flag indicating whether the batch has been started."""
+
+    __slots__ = "calls", "_batcher", "_lock", "_daemon", "__dict__"
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         _RequestBase.__init__(self, controller)
@@ -560,8 +566,9 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         if _logger_is_enabled_for(DEBUG):
             self._daemon = create_task(self._debug_daemon())
         with self._lock:
+            batch = batch or self
             for call in self.calls:
-                call.start(batch or self)
+                call.start(batch)
             if cleanup:
                 self._post_future_cleanup()
 
@@ -653,12 +660,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
 
+    _started: bool
+    """A flag indicating whether the Multicall has been started."""
+
     # We need to specify __dict__ for the cached properties to work
-    __slots__ = (
-        "bid",
-        "_started",
-        "__dict__",
-    )
+    __slots__ = ("bid",)
 
     def __init__(
         self,
@@ -669,7 +675,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         # sourcery skip: default-mutable-arg
         _Batch.__init__(self, controller, calls)
         self.bid = bid or self.controller.multicall_uid.next
-        self._started = False
 
     def __repr__(self) -> str:
         block = self.block
@@ -885,7 +890,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     the number of separate network calls.
     """
 
-    __slots__ = "jid", "_started"
+    __slots__ = ("jid",)
 
     def __init__(
         self,
@@ -903,7 +908,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         """
         _Batch.__init__(self, controller, calls)
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
-        self._started = False
 
     def __repr__(self) -> str:
         return f"<JSONRPCBatch jid={self.jid} len={len(self)}>"
