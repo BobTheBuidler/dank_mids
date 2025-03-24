@@ -36,7 +36,10 @@ class DankBatch:
         :class:`dank_mids._requests.RPCRequest`: The RPCRequest class used in this batch.
     """
 
-    __slots__ = "controller", "multicalls", "rpc_calls", "_started"
+    _started: bool = False
+    """A flag indicating whether the batch has been started."""
+
+    __slots__ = "controller", "multicalls", "rpc_calls"
 
     def __init__(
         self,
@@ -52,9 +55,6 @@ class DankBatch:
 
         self.rpc_calls = rpc_calls
         """A list of individual RPC calls or multicalls."""
-
-        self._started = False
-        """A flag indicating whether the batch has been started."""
 
     def __await__(self) -> Generator[Any, None, None]:
         """
