@@ -148,7 +148,7 @@ class DankBatch:
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
                 batch_append = working_batch.append
-            batch_append(pop_next, skip_check=True)
+            batch_append(pop_next(), skip_check=True)
         if working_batch:
             if working_batch.is_single_multicall:
                 yield next(iter(working_batch))  # type: ignore [misc]
