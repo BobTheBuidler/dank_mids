@@ -82,7 +82,7 @@ class DebuggableFuture(Future[RPCResponse]):
                         f"new excepction: {exc}",
                     ) from e
                 elif (current_exc := self._exception) is not None:
-                    if type(exc) is type(current_exc) and exc.args == current_exc.args:
+                    if _check_match(exc, current_exc):
                         return
                     raise InvalidStateError(
                         f"{self} already has an exception set:",
@@ -105,7 +105,7 @@ class DebuggableFuture(Future[RPCResponse]):
                 f"new exception: {exc}",
             )
         elif (current_exc := self._exception) is not None:
-            if type(exc) is type(current_exc) and exc.args == current_exc.args:
+            if _check_match(exc, current_exc):
                 return
             raise InvalidStateError(
                 f"{self} already has an exception set:",
@@ -125,3 +125,14 @@ class DebuggableFuture(Future[RPCResponse]):
             await sleep(60)
             if not done():
                 logger.debug("%s has not received data after %ss", self._owner, int(time() - start))
+
+def _check_match(first: Exception, second: Exception):
+    return (
+        type(first) is type(second)
+        # Sometimes we add extra info to the back of `exc.args` in various places in this lib.
+        # We might get the same exc for the same reason but it might not match exactly since
+        # we might have already added the context to the first Exception set to the Future.
+        and len(first.args) <= len(second.args)
+        # so we check for a match with this goofy map instead...
+        and all(map(lambda a, b: a == b, first.args, second.args))
+    )
