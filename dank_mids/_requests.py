@@ -10,7 +10,7 @@ from asyncio import (
 )
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
-from itertools import accumulate, chain
+from itertools import accumulate, chain, groupby
 from logging import DEBUG, getLogger
 from time import time
 from typing import (
@@ -24,11 +24,11 @@ from typing import (
     Iterator,
     List,
     Literal,
-    NoReturn,
     Optional,
     Tuple,
     TypeVar,
     Union,
+    final,
 )
 from weakref import ProxyType
 from weakref import proxy as weak_proxy
@@ -154,9 +154,6 @@ class _RequestBase(Generic[_Response]):
     def __len__(self) -> int:
         raise NotImplementedError
 
-    def start(self, batch: Union["_Batch", "DankBatch", None] = None) -> None:
-        raise NotImplementedError
-
     async def get_response(self) -> _Response:
         raise NotImplementedError
 
@@ -251,9 +248,6 @@ class RPCRequest(_RequestBase[RawResponse]):
     @property
     def request(self) -> Union[Request, PartialRequest]:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
-
-    def start(self, batch: Union["_Batch", "DankBatch"]) -> None:  # type: ignore [override]
-        self._batch = batch
 
     async def get_response(self) -> RPCResponse:  # type: ignore [override]
         if not self.should_batch:
@@ -423,6 +417,7 @@ class RPCRequest(_RequestBase[RawResponse]):
             await self.semaphore.acquire()
 
 
+@final
 class eth_call(RPCRequest):
     revert_threads = PruningThreadPoolExecutor(4)
 
@@ -561,16 +556,6 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
                 elif self.controller.queue_is_full:
                     self.controller.early_start()
 
-    def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
-        if _logger_is_enabled_for(DEBUG):
-            self._daemon = create_task(self._debug_daemon())
-        with self._lock:
-            batch = batch or self
-            for call in self.calls:
-                call.start(batch)
-            if cleanup:
-                self._post_future_cleanup()
-
     def should_retry(self, e: Exception) -> bool:
         """Should the _Batch be retried based on `e`?"""
         str_e = f"{e}".lower()
@@ -587,9 +572,6 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         elif "429" not in str_e and all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
             _log_warning("unexpected %s: %s", e.__class__.__name__, e)
         return len(self) > 1
-
-    def _post_future_cleanup(self) -> None:
-        raise NotImplementedError
 
     def _record_failure(self, e: Exception, data: str) -> None:
         _debugging.failures.record(
@@ -667,6 +649,7 @@ def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
         return list(map(__get_bytes, decoded))
 
 
+@final
 class Multicall(_Batch[RPCResponse, eth_call]):
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
@@ -727,6 +710,18 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     @property
     def needs_override_code(self) -> bool:
         return self.mcall.needs_override_code_for_block(self.block)
+
+    def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
+        batch = batch or self
+        if _logger_is_enabled_for(DEBUG):
+            self._daemon = create_task(self._debug_daemon())
+        with self._lock:
+            for call in self.calls:
+                call._batch = self
+            if cleanup:
+                controller = self.controller
+                with controller.pools_closed_lock:
+                    controller._pending_eth_calls_pop(self.block, None)
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._started:
@@ -870,16 +865,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     async def _exec_single_call(self) -> None:
         await next(iter(self.calls)).make_request()
 
-    def _post_future_cleanup(self) -> None:
-        # sourcery skip: use-contextlib-suppress
-        controller = self.controller
-        try:
-            with controller.pools_closed_lock:
-                # This will have already taken place in a full json batch of multicalls
-                controller._pending_eth_calls_pop(self.block)
-        except KeyError:
-            pass
-
 
 def _log_checking_batch_size(
     batch_type: Literal["multicall", "json"],
@@ -891,6 +876,7 @@ def _log_checking_batch_size(
     )
 
 
+@final
 class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     """
     Represents a batch of JSON-RPC requests.
@@ -981,6 +967,24 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     def is_full(self) -> bool:
         with self._lock:
             return self.total_calls >= self._batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
+
+    def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
+        # sourcery skip: hoist-loop-from-if
+        batch = batch or self
+        if _logger_is_enabled_for(DEBUG):
+            self._daemon = create_task(self._debug_daemon())
+        with self._lock:
+            for typ, calls in groupby(self.calls, type):
+                if typ is Multicall:
+                    for call in calls:
+                        call.start(batch, cleanup=cleanup)
+                else:
+                    for call in calls:
+                        call._batch = self
+            if cleanup:
+                controller = self.controller
+                with controller.pools_closed_lock:
+                    controller.pending_rpc_calls = JSONRPCBatch(controller)
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._started:
@@ -1217,11 +1221,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             _log_devhint(
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"
             )
-
-    def _post_future_cleanup(self) -> None:
-        controller = self.controller
-        with controller.pools_closed_lock:
-            controller.pending_rpc_calls = JSONRPCBatch(controller)
 
 
 def _log_exception(e: Exception) -> bool:
