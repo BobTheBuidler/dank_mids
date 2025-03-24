@@ -309,7 +309,7 @@ class RPCRequest(_RequestBase[RawResponse]):
             # TODO think about getting rid of this
             raise DankMidsClientResponseError(e, self.request) from e
         except Exception as e:
-            e.request = request  # type: ignore [attr-defined]
+            e.request = self.request
             if not e.args or e.args[-1] != self.request:
                 e.args = *e.args, self.request
             raise
