@@ -510,7 +510,7 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     calls: WeakList[_Request]
-    
+
     _started: bool
     """A flag indicating whether the batch has been started."""
 
@@ -889,9 +889,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     as a single batch to an Ethereum node, improving efficiency by reducing
     the number of separate network calls.
     """
+
     _started: bool = False
 
-    __slots__ = "jid", 
+    __slots__ = ("jid",)
 
     def __init__(
         self,
