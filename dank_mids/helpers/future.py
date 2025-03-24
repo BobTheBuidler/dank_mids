@@ -30,13 +30,13 @@ class DebuggableFuture(Future[RPCResponse]):
     _debug_logs_enabled: bool = False
     __debug_daemon_task: Optional[Task[None]] = None
 
-    def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop):
+    def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:
         Future.__init__(self, loop=loop)
         if _logger_is_enabled_for(DEBUG):
             self._debug_logs_enabled = True
             self._owner: ProxyType["_RequestBase[_Response]"] = proxy(owner)
 
-    def __await__(self):
+    def __await__(self) -> Generator[Any, None, RPCResponse]:
         if self._debug_logs_enabled and self.__debug_daemon_task is None:
             self.__debug_daemon_task = create_task(self.__debug_daemon())
         return Future.__await__(self)
@@ -82,7 +82,7 @@ class DebuggableFuture(Future[RPCResponse]):
                         f"new excepction: {exc}",
                     ) from e
                 elif (current_exc := self._exception) is not None:
-                    if type(exc) is type(current_exc) and exc.args == current_exc.args:
+                    if _check_match(exc, current_exc):
                         return
                     raise InvalidStateError(
                         f"{self} already has an exception set:",
@@ -105,7 +105,7 @@ class DebuggableFuture(Future[RPCResponse]):
                 f"new exception: {exc}",
             )
         elif (current_exc := self._exception) is not None:
-            if type(exc) is type(current_exc) and exc.args == current_exc.args:
+            if _check_match(exc, current_exc):
                 return
             raise InvalidStateError(
                 f"{self} already has an exception set:",
@@ -125,3 +125,16 @@ class DebuggableFuture(Future[RPCResponse]):
             await sleep(60)
             if not done():
                 logger.debug("%s has not received data after %ss", self._owner, int(time() - start))
+
+
+def _check_match(first: Exception, second: Exception):
+    """Check if two exceptions are similar enough to be considered matching"""
+    return (
+        type(first) is type(second)
+        # Sometimes we add extra info to the back of `exc.args` in various places in this lib.
+        # We might get the same exc for the same reason but it might not match exactly since
+        # we might have already added the context to the first Exception set to the Future.
+        and len(first.args) <= len(second.args)
+        # so we check for a match with this goofy map instead...
+        and all(map(lambda a, b: a == b, first.args, second.args))
+    )
