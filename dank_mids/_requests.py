@@ -608,7 +608,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         while self and not done():
             await sleep(60)
             if self and not done():
-                _log_debug("%s has not received data after %sm", self, i)
+                _log_debug("%s has not received data after %s minute%s", self, i, "" if i == 1 else "s")
                 i += 1
 
 
