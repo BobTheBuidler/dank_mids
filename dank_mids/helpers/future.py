@@ -67,7 +67,7 @@ class DebuggableFuture(Future[RPCResponse]):
         # The rest of this code just makes it threadsafe(ish) based on an old idea that never was fully implemented
         # One day I'll fully commit to either finishing it up or ripping it out. For now it stays.
         elif self._state == "PENDING":
-            cbc = self._loop.call_soon_threadsafe(_super_set_result, self, value)
+            self._loop.call_soon_threadsafe(_super_set_result, self, value)
         elif self._result is not None:
             if self._result == value:
                 return
