@@ -843,7 +843,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return retval
 
     @set_done
-    async def bisect_and_retry(self, e: Exception) -> List[RPCResponse]:
+    async def bisect_and_retry(self, e: Exception) -> None:
         """
         Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
         Calls `self._done.set()` when finished.
