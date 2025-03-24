@@ -97,7 +97,7 @@ class DebuggableFuture(Future[RPCResponse]):
                             f"existing result: {self._result}",
                             f"new excepction: {exc}",
                         ) from e
-                elif (current_exc:=self._exception) is not None:
+                elif (current_exc := self._exception) is not None:
                     if type(exc) is type(current_exc) and exc.args == current_exc.args:
                         return
                     raise InvalidStateError(
@@ -120,7 +120,7 @@ class DebuggableFuture(Future[RPCResponse]):
                 f"existing value: {self._result}",
                 f"new exception: {exc}",
             )
-        elif (current_exc:=self._exception) is not None:
+        elif (current_exc := self._exception) is not None:
             if type(exc) is type(current_exc) and exc.args == current_exc.args:
                 return
             raise InvalidStateError(
