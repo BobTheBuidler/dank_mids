@@ -127,15 +127,6 @@ class _RequestEvent(a_sync.Event):
         else:
             self._loop.call_soon_threadsafe(_super_set, self)
 
-    async def _debug_daemon(self) -> None:
-        start = self._start
-        done = self._done.is_set
-        # NOTE: _resonse works for RPCRequst and eth_call, _done works for _Batch classes
-        while self and self._response is None and not done():
-            await sleep(60)
-            if not done():
-                _log_debug("%s has not received data after %ss", self, time() - start)
-
     # default if no debug logs enabled
     _owner = "[not displayed...]"
 
@@ -516,11 +507,12 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     calls: WeakList[_Request]
+    _done: _RequestEvent
 
     _started: bool = False
     """A flag indicating whether the batch has been started."""
 
-    __slots__ = "calls", "_batcher", "_lock", "_start", "_done", "_daemon", "__dict__"
+    __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         _RequestBase.__init__(self, controller)
@@ -608,6 +600,16 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
             len(self),
             data,
         )
+        
+    async def _debug_daemon(self) -> None:
+        done = self._done.is_set
+        # NOTE: _resonse works for RPCRequst and eth_call, _done works for _Batch classes
+        i = 1
+        while self and not done():
+            await sleep(60)
+            if self and not done():
+                _log_debug("%s has not received data after %sm", self, i)
+                i += 1
 
 
 _mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
