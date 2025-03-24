@@ -58,14 +58,25 @@ class DankBatch:
 
     def __await__(self) -> Generator[Any, None, None]:
         """
-        Makes the DankBatch awaitable.
+        Executes all operations in the batch.
 
-        This method allows the batch to be used with the `await` keyword,
-        starting the batch execution if it hasn't been started yet.
+        This method starts the processing of all multicalls and individual RPC calls
+        that have been added to the batch. It marks the batch as started to prevent
+        duplicate executions.
+
+        Note:
+            This method does not wait for the operations to complete. Use the `await` statement
+            on the DankBatch instance to wait for completion and handle results.
 
         Returns a generator that can be awaited to execute the batch.
         """
-        self.start()
+        if self._started:
+            raise RuntimeError("The batch has already been awaited")
+        self._started = True
+        for mcall in self.multicalls.values():
+            mcall.start(self, cleanup=False)
+        for call in self.rpc_calls:
+            call.start(self)
         return self._await().__await__()
 
     async def _await(self) -> None:
@@ -95,24 +106,6 @@ class DankBatch:
                     # object of type 'coroutine' has no len()
                     log_internal_error(logger, batch, 1, e)
                 raise
-
-    def start(self) -> None:
-        """
-        Initiates the execution of all operations in the batch.
-
-        This method starts the processing of all multicalls and individual RPC calls
-        that have been added to the batch. It marks the batch as started to prevent
-        duplicate executions.
-
-        Note:
-            This method does not wait for the operations to complete. Use the `await` statement
-            on the DankBatch instance to wait for completion and handle results.
-        """
-        for mcall in self.multicalls.values():
-            mcall.start(self, cleanup=False)
-        for call in self.rpc_calls:
-            call.start(self)
-        self._started = True
 
     @property
     def coroutines(self) -> Generator[Union[_Batch, Awaitable[RawResponse]], None, None]:
