@@ -39,7 +39,7 @@ class DankBatch:
     _started: bool = False
     """A flag indicating whether the batch has been started."""
 
-    __slots__ = "controller", "multicalls", "rpc_calls"
+    __slots__ = "controller", "multicalls", "rpc_calls", "__dict__"
 
     def __init__(
         self,
