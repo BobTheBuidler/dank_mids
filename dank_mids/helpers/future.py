@@ -52,8 +52,8 @@ class DebuggableFuture(Future[RPCResponse]):
                     else:
                         raise InvalidStateError(
                             f"{self} already has a result set:",
-                            f"existing_value: {self._result}",
-                            f"new_value: {value}",
+                            f"existing value: {self._result}",
+                            f"new value: {value}",
                         ) from e
                 elif self._exception is not None:
                     raise InvalidStateError(
@@ -73,8 +73,8 @@ class DebuggableFuture(Future[RPCResponse]):
                 return
             raise InvalidStateError(
                 f"{self} already has a result set:",
-                f"existing_value: {self._result}",
-                f"new_value: {value}",
+                f"existing value: {self._result}",
+                f"new value: {value}",
             )
         elif self._exception is not None:
             raise InvalidStateError(f"{self} already has an exception set:", self._exception)
@@ -84,11 +84,49 @@ class DebuggableFuture(Future[RPCResponse]):
             raise NotImplementedError(f"{self._state} is not a valid state")
 
     def set_exception(self, exc: Exception) -> None:
-        # Make sure we wake up the event loop if its in another thread
         if self._loop is get_running_loop():
-            _super_set_exc(self, exc)
-        else:
+            try:
+                _super_set_exc(self, exc)
+            except InvalidStateError as e:
+                if self._result is not None:
+                    if self._result == exc:
+                        return
+                    else:
+                        raise InvalidStateError(
+                            f"{self} already has a result set:",
+                            f"existing result: {self._result}",
+                            f"new excepction: {exc}",
+                        ) from e
+                elif self._exception is not None:
+                    if self._exception != exc:
+                        raise InvalidStateError(
+                            f"{self} already has an exception set:", 
+                            f"existing excepction: {self._exception}",
+                            f"new excepction: {exc}",
+                        ) from e
+                    
+                elif self._state == "CANCELLED":
+                    raise InvalidStateError(f"{self} is cancelled") from e
+                else:
+                    raise NotImplementedError(f"{self._state} is not a valid state") from e
+
+        # The rest of this code just makes it threadsafe(ish) based on an old idea that never was fully implemented
+        # One day I'll fully commit to either finishing it up or ripping it out. For now it stays.
+        elif self._state == "PENDING":
             self._loop.call_soon_threadsafe(_super_set_exc, self, exc)
+        elif self._result is not None:
+            raise InvalidStateError(
+                f"{self} already has a result set:",
+                f"existing value: {self._result}",
+                f"new exception: {exc}",
+            )
+        elif self._exception is not None:
+            if self._exception != exc:
+                raise InvalidStateError(f"{self} already has an exception set:", f"existing exception: {exc}", f"new exception: {exc}",)
+        elif self._state == "CANCELLED":
+            raise InvalidStateError(f"{self} is cancelled") from e
+        else:
+            raise NotImplementedError(f"{self._state} is not a valid state")
 
     async def __debug_daemon(self) -> None:
         start = time()
