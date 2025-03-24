@@ -124,11 +124,14 @@ class DankBatch:
         # Create empty batch
         working_batch = JSONRPCBatch(self.controller)
 
+        # alias since this code runs in tight loops
+        batch_append = working_batch.append
+
         check_len = min(CHECK, self.controller.batcher.step)
         # Go thru the multicalls and add calls to the batch
         for mcall in self.multicalls.values():
             if len(mcall) >= check_len:
-                working_batch.append(mcall, skip_check=True)
+                batch_append(mcall, skip_check=True)
             else:
                 # NOTE: If a multicall has less than `check_len` calls, we should
                 #       just throw the calls into a jsonrpc batch individually.
@@ -136,13 +139,16 @@ class DankBatch:
             if working_batch.is_full:
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
+                batch_append = working_batch.append
 
         rpc_calls_to_batch = list(self.rpc_calls)
+        pop_next = rpc_calls_to_batch.pop
         while rpc_calls_to_batch:
             if working_batch.is_full:
                 yield working_batch
                 working_batch = JSONRPCBatch(self.controller)
-            working_batch.append(rpc_calls_to_batch.pop(), skip_check=True)
+                batch_append = working_batch.append
+            batch_append(pop_next, skip_check=True)
         if working_batch:
             if working_batch.is_single_multicall:
                 yield next(iter(working_batch))  # type: ignore [misc]
