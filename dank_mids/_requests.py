@@ -511,10 +511,10 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     calls: WeakList[_Request]
 
-    _started: bool
+    _started: bool = False
     """A flag indicating whether the batch has been started."""
 
-    __slots__ = "calls", "_batcher", "_lock", "_daemon"
+    __slots__ = "calls", "_batcher", "_lock", "_daemon", "__dict__"
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
         _RequestBase.__init__(self, controller)
@@ -660,11 +660,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
 
-    _started: bool = False
+    _started: bool
     """A flag indicating whether the Multicall has been started."""
 
     # We need to specify __dict__ for the cached properties to work
-    __slots__ = "bid", "__dict__"
+    __slots__ = "bid", 
 
     def __init__(
         self,
@@ -889,8 +889,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     as a single batch to an Ethereum node, improving efficiency by reducing
     the number of separate network calls.
     """
-
-    _started: bool = False
 
     __slots__ = ("jid",)
 
