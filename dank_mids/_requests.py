@@ -600,7 +600,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
             len(self),
             data,
         )
-        
+
     async def _debug_daemon(self) -> None:
         done = self._done.is_set
         # NOTE: _resonse works for RPCRequst and eth_call, _done works for _Batch classes
