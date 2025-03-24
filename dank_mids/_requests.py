@@ -565,8 +565,9 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         if _logger_is_enabled_for(DEBUG):
             self._daemon = create_task(self._debug_daemon())
         with self._lock:
+            batch = batch or self
             for call in self.calls:
-                call.start(batch or self)
+                call.start(batch)
             if cleanup:
                 self._post_future_cleanup()
 
