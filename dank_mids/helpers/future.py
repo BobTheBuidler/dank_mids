@@ -126,6 +126,7 @@ class DebuggableFuture(Future[RPCResponse]):
             if not done():
                 logger.debug("%s has not received data after %ss", self._owner, int(time() - start))
 
+
 def _check_match(first: Exception, second: Exception):
     return (
         type(first) is type(second)
