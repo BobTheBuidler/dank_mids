@@ -56,5 +56,6 @@ class _AlertingRLock(_RLock):  # type: ignore [misc]
         """
         acquired = acquire_lock(self, blocking=False, timeout=5)
         if not acquired:
+            # NOTE: I havent seen this log in a very long time, maybe we should remove the lock soon
             logger.warning("wtf?! %s with name %s is locked!", self, self._name)
             acquire_lock(self, blocking=blocking, timeout=timeout)

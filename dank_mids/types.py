@@ -178,7 +178,6 @@ A dictionary mapping RPC method names to their expected return types.
 Used to enable more efficient decoding and validation of RPC responses.
 """
 
-decoder_logger = logging.getLogger("dank_mids.decoder")
 
 _CHAINSTACK_429_ERR_MSG = "You've exceeded the RPS limit available on the current plan."
 
