@@ -89,11 +89,8 @@ class DebuggableFuture(Future[RPCResponse]):
                 _super_set_exc(self, exc)
             except InvalidStateError as e:
                 if self._result is not None:
-                    raise InvalidStateError(
-                        f"{self} already has a result set:",
-                        f"existing result: {self._result}",
-                        f"new excepction: {exc}",
-                    ) from e
+                    # its kinda odd that we get here at all but who cares, the fut has a result!
+                    return
                 elif (current_exc := self._exception) is not None:
                     if _check_match(exc, current_exc):
                         return
