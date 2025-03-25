@@ -271,10 +271,11 @@ class RPCRequest(_RequestBase[RawResponse]):
             await sleep(0)
         if self._batch is None:
             try:
+                batch_task = create_task(self.controller.execute_batch())
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
                 # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
-                await wait_for(self.controller.execute_batch(), timeout=_TIMEOUT)
+                await wait_for(shield(batch_task), timeout=_TIMEOUT)
             except TimeoutError:
                 return await self.create_duplicate()
 
