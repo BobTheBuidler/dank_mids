@@ -45,7 +45,6 @@ from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
 from eth_typing import ChecksumAddress, HexStr
 from eth_utils import function_signature_to_4byte_selector
 from hexbytes import HexBytes
-from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
 
@@ -69,6 +68,7 @@ from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
     error_logger,
     error_logger_debug,
+    format_error_response,
     is_call_revert,
     log_internal_error,
     log_request_type_switch,
@@ -375,7 +375,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                         log_request_type_switch()
                     self._fut.set_result(await self.create_duplicate())
                     return
-            self._fut.set_result({"error": __format_error(self.request, data.response)})
+            self._fut.set_result({"error": format_error_response(self.request, data.response)})
             if self._debug_logs_enabled:
                 error_logger_debug(
                     "%s _response set to rpc error response %s", self, self._fut.result()
@@ -1277,12 +1277,6 @@ def _log_exception(e: Exception) -> bool:
         )
         _log_warning(e, exc_info=True)
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
-
-
-def __format_error(request: PartialRequest, response: PartialResponse) -> AttributeDict:
-    error = dict(response.error)  # type: ignore [arg-type]
-    error["dankmids_added_context"] = request
-    return AttributeDict.recursive(error)
 
 
 _log_debug = logger.debug
