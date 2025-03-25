@@ -1,7 +1,9 @@
 from logging import Logger, getLogger
 from typing import TYPE_CHECKING
 
-from dank_mids.types import BadResponse, PartialResponse
+from web3.datastructures import AttributeDict
+
+from dank_mids.types import BadResponse, PartialRequest, PartialResponse
 
 if TYPE_CHECKING:
     from dank_mids._requests import _Batch
@@ -36,6 +38,12 @@ def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exc
         batch_objs,
         exc_info=True,
     )
+
+
+def format_error_response(request: PartialRequest, response: PartialResponse) -> AttributeDict:
+    error = dict(response.error)  # type: ignore [arg-type]
+    error["dankmids_added_context"] = request
+    return AttributeDict.recursive(error)
 
 
 def needs_full_request_spec(response: PartialResponse):
