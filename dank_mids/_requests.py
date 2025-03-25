@@ -921,6 +921,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     calls = chain(*filter(None, calls))
                 if any(filterfalse(Future.done, (call._fut for call in calls))):
                     error_logger.warning("%s was garbage collected before finishing", self)
+                    caller = stack()[-1]
+                    error_logger.warning(
+                        "    stack()[-1]: filename=%s function=%s lineno=%s",
+                        caller.filename,
+                        caller.function,
+                        caller.lineno,
+                    )
                     return
 
     @property
