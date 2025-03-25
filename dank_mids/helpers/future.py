@@ -9,7 +9,7 @@ from asyncio import (
 )
 from logging import DEBUG, getLogger
 from time import time
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Generator, Optional
 from weakref import ProxyType, proxy
 
 from web3.types import RPCResponse
@@ -24,6 +24,21 @@ _logger_is_enabled_for = logger.isEnabledFor
 
 _super_set_result = Future.set_result
 _super_set_exc = Future.set_exception
+
+
+class ExceptionAlreadySet(InvalidStateError):
+    def __init__(self, fut: "DebuggableFuture", attempted: Optional[Exception] = None):
+        self.fut = fut
+        self.attempted = attempted
+        if attempted is None:
+            super().__init__(fut)
+        else:
+            super().__init__(fut, attempted)
+
+    def __str__(self) -> str:
+        if self.attempted is None:
+            return f"Exception already set: {self}"
+        return f"Cannot set exception {self.attempted}\n" f"Exception already set:{self}"
 
 
 class DebuggableFuture(Future[RPCResponse]):
@@ -49,9 +64,7 @@ class DebuggableFuture(Future[RPCResponse]):
                 if self._result is not None:
                     return
                 elif self._exception is not None:
-                    raise InvalidStateError(
-                        f"{self} already has an exception set:", self._exception
-                    ) from e
+                    raise ExceptionAlreadySet(self, self._exception) from e
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
                 else:
@@ -64,7 +77,7 @@ class DebuggableFuture(Future[RPCResponse]):
         elif self._result is not None:
             return
         elif self._exception is not None:
-            raise InvalidStateError(f"{self} already has an exception set:", self._exception)
+            raise ExceptionAlreadySet(self)
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
@@ -84,11 +97,7 @@ class DebuggableFuture(Future[RPCResponse]):
                 elif (current_exc := self._exception) is not None:
                     if _check_match(exc, current_exc):
                         return
-                    raise InvalidStateError(
-                        f"{self} already has an exception set:",
-                        f"existing excepction: {current_exc}",
-                        f"new excepction: {exc}",
-                    ) from e
+                    raise ExceptionAlreadySet(self, exc) from e
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
                 else:
@@ -107,11 +116,7 @@ class DebuggableFuture(Future[RPCResponse]):
         elif (current_exc := self._exception) is not None:
             if _check_match(exc, current_exc):
                 return
-            raise InvalidStateError(
-                f"{self} already has an exception set:",
-                f"existing exception: {exc}",
-                f"new exception: {exc}",
-            )
+            raise ExceptionAlreadySet(self, exc)
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
