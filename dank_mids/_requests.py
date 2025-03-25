@@ -191,7 +191,6 @@ class RPCRequest(_RequestBase[RawResponse]):
     should_batch: bool = True
     """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
 
-    _retry: bool = False
     _debug_logs_enabled: bool = False
 
     __slots__ = "method", "params", "raw", "_daemon", "__dict__"
@@ -201,7 +200,6 @@ class RPCRequest(_RequestBase[RawResponse]):
         controller: "DankMiddlewareController",
         method: RPCEndpoint,
         params: Any,
-        retry: bool = False,
     ):  # sourcery skip: hoist-statement-from-if
         _RequestBase.__init__(self, controller)
         if method[-4:] == "_raw":
@@ -218,9 +216,6 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         if not _should_batch_method(method):
             self.should_batch = False
-
-        if retry:
-            self._retry = True
 
         if logger.isEnabledFor(DEBUG):
             self._debug_logs_enabled = True
@@ -428,9 +423,7 @@ class eth_call(RPCRequest):
 
     __slots__ = "target", "calldata", "block"
 
-    def __init__(
-        self, controller: "DankMiddlewareController", params: Any, retry: bool = False
-    ) -> None:
+    def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
         """Adds a call to the DankMiddlewareContoller's `pending_eth_calls`."""
 
         call_dict, block = params
