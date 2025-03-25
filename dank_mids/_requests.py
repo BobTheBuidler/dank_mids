@@ -232,7 +232,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         _demo_logger_info("added to queue (cid: %s)", self.uid)
         if _logger_is_enabled_for(DEBUG):
             self._daemon = create_task(self._debug_daemon())
-    
+
     def __hash__(self) -> int:
         return id(self)
 
@@ -1000,6 +1000,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             _log_warning("%s exiting early. This shouldn't really happen bro", self)
             return
         self._started = True
+
+        if self.is_single_multicall:
+            await next(iter(self.calls))
+            self._done.set()
+            return
+
         rid = self.controller.request_uid.next
         if ENVS.DEMO_MODE:  # type: ignore [attr-defined]
             # When demo mode is disabled, we can save some CPU time by skipping this sum
@@ -1039,26 +1045,22 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             if _log_exception(e):
                 self._record_failure(e, self.data)
             stats.log_errd_batch(self)
+
             if self.should_retry(e):
+                # should_retry will always return True if there is more than 1 call in this batch
                 await self.bisect_and_retry(e)
-            # NOTE: `self.should_retry(e)` can only return False here if the json batch is comprised of just one rpc request that is not a multicall.
-            #       I include this elif clause as a failsafe. This is rare and should not impact performance.
-            elif not self.is_single_multicall:
-                # Just to force my IDE to resolve types correctly
-                calls: Tuple[RPCRequest, ...] = tuple(self.calls)  # type: ignore [arg-type]
-                error_logger_debug(
-                    "%s had exception %s, aborting and setting Exception as call._response", self, e
-                )
-                # NOTE: This means an exception occurred during the post request
-                # AND that the json batch is made of just one rpc request that is not a multicall.
-                _log_info(
-                    "does this ever actually run? pretty sure a single-multicall json batch is not possible. can I delete this?"
-                )
-                await igather(call.spoof_response(e) for call in calls)
-            else:
-                raise NotImplementedError(
-                    "and you may ask yourself, well, how did I get here?"
-                ) from e
+
+            # Just to force my IDE to resolve types correctly
+            calls: Tuple[RPCRequest, ...] = tuple(self.calls)  # type: ignore [arg-type]
+            error_logger_debug(
+                "%s had exception %s, aborting and setting Exception as call._response", self, e
+            )
+            # NOTE: This means an exception occurred during the post request
+            # AND that the json batch is made of just one rpc request that is not a multicall.
+            _log_info(
+                "does this ever actually run? pretty sure a single-multicall json batch is not possible. can I delete this?"
+            )
+            await igather(call.spoof_response(e) for call in calls)
         _demo_logger_info("request %s for jsonrpc batch %s complete", rid, self.jid)  # type: ignore
 
     @eth_retry.auto_retry
@@ -1137,9 +1139,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 "No state available for one of the blocks queried. Bisecting batch and retrying."
             )
             return True
-        elif _Batch.should_retry(self, e):
-            return True
-        return self.is_single_multicall
+        elif self.is_single_multicall:
+            # TODO: delete this eventually if it doesn't trigger
+            raise RuntimeError(
+                "pretty sure we can't get here anymore now that I check this in the beginning of JSONRPCBatch.get_response"
+            )
+        return _Batch.should_retry(self, e)
 
     @set_done
     async def spoof_response(
