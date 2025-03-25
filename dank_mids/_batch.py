@@ -99,6 +99,8 @@ class DankBatch:
                 await task
             except DankMidsInternalError:
                 raise
+            except RecursionError as e:
+                raise RecursionError(batch, task, e) from e
             except Exception as e:
                 try:
                     log_internal_error(logger, batch, len(batch), e)
@@ -153,7 +155,7 @@ class DankBatch:
             if len(working_batch) == 1:
                 call = next(iter(working_batch))
                 # since we're not going thru the batch code we'll do this here
-                working_batch._done.set() = True
+                working_batch._done.set()
                 yield call if type(call) is Multicall else call.make_request()
             else:
                 yield working_batch
