@@ -675,7 +675,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         block = self.block
         if block.startswith("0x"):
             block = int(block, 16)
-        return f"<Multicall mid={self.bid} block={block} len={len(self)}>"
+        return f"<Multicall mid={self.bid} block={block} len={len(self)} started={self._started}>"
 
     def __del__(self) -> None:
         if self.calls and not self._done.is_set() and any(filterfalse(Future.done, (call._fut for call in self.calls))):
@@ -906,7 +906,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
 
     def __repr__(self) -> str:
-        return f"<JSONRPCBatch jid={self.jid} len={len(self)}>"
+        return f"<JSONRPCBatch jid={self.jid} len={len(self)} started={self._started}>"
 
     def __del__(self) -> None:
         if self.calls and not self._done.is_set():
