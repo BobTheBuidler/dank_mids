@@ -232,7 +232,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         _demo_logger_info("added to queue (cid: %s)", self.uid)
         if _logger_is_enabled_for(DEBUG):
             self._daemon = create_task(self._debug_daemon())
-    
+
     def __hash__(self) -> int:
         return id(self)
 
@@ -1132,7 +1132,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             return True
         elif self.is_single_multicall:
             # TODO: delete this eventually if it doesn't trigger
-            raise RuntimeError("pretty sure we can't get here anymore now that I check this in the beginning of JSONRPCBatch.get_response")
+            raise RuntimeError(
+                "pretty sure we can't get here anymore now that I check this in the beginning of JSONRPCBatch.get_response"
+            )
         return _Batch.should_retry(self, e)
 
     @set_done
