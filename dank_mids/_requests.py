@@ -805,9 +805,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         elif isinstance(data, RawResponse):
             response = data.decode(partial=True)
             if response.error:
-                error_logger_debug(
-                    "%s received an 'error' response from the rpc: %s", self, response.exception
-                )
+                error_logger_debug("RPC %s for %s", response.exception, self)
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
                 raise response.exception
             _log_debug("%s received valid bytes from the rpc", self)
