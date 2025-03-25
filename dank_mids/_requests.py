@@ -522,7 +522,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         return bool(self.calls)
 
     def __del__(self) -> None:
-        if not self._done.is_set():
+        if self.calls and not self._done.is_set():
             error_logger.warning("%s was garbage collected before finishing", self)
 
     def __iter__(self) -> Iterator[_Request]:
