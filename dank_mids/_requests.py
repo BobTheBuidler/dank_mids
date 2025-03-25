@@ -419,13 +419,13 @@ class RPCRequest(_RequestBase[RawResponse]):
             caller = stack()[-1]
             _log_warning(
                 "%s got stuck, we're creating a new one\n"
-                "    caller: filename=%s function=%s lineno=%s", 
+                "    caller: filename=%s function=%s lineno=%s",
                 self,
                 caller.filename,
                 caller.function,
                 caller.lineno,
             )
-        
+
         method = f"{self.method}_raw" if self.raw else self.method
         try:
             return await self.controller(method, self.params)  # type: ignore [arg-type]
