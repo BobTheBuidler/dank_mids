@@ -150,9 +150,10 @@ class DankBatch:
                 batch_append = working_batch.append
             batch_append(pop_next(), skip_check=True)
         if working_batch:
-            if working_batch.is_single_multicall:
-                yield next(iter(working_batch))  # type: ignore [misc]
-            elif len(working_batch) == 1:
-                yield next(iter(working_batch)).make_request()  # type: ignore [union-attr]
+            if len(working_batch) == 1:
+                call = next(iter(working_batch))
+                # since we're not going thru the batch code we'll do this here
+                working_batch._done.set() = True
+                yield call if type(call) is Multicall else call.make_request()
             else:
                 yield working_batch
