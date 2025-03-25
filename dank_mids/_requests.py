@@ -66,6 +66,7 @@ from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
 from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
+    error_logger,
     error_logger_debug,
     is_call_revert,
     log_internal_error,
@@ -516,6 +517,10 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
     def __bool__(self) -> bool:
         return bool(self.calls)
+
+    def __del__(self) -> None:
+        if not self._done.is_set():
+            error_logger.warning("%s was garbage collected before finishing", self)
 
     def __iter__(self) -> Iterator[_Request]:
         return iter(self.calls)
