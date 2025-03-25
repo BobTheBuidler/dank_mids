@@ -679,7 +679,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return f"<Multicall mid={self.bid} block={block} len={len(self)} started={self._started}>"
 
     def __del__(self) -> None:
-        if self.calls and not self._done.is_set() and any(filterfalse(Future.done, (call._fut for call in self.calls))):
+        if (
+            self.calls
+            and not self._done.is_set()
+            and any(filterfalse(Future.done, (call._fut for call in self.calls)))
+        ):
             error_logger.warning("%s was garbage collected before finishing", self)
 
     @cached_property
