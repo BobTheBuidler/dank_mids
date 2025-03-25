@@ -232,6 +232,9 @@ class RPCRequest(_RequestBase[RawResponse]):
         _demo_logger_info("added to queue (cid: %s)", self.uid)
         if _logger_is_enabled_for(DEBUG):
             self._daemon = create_task(self._debug_daemon())
+    
+    def __hash__(self) -> int:
+        return id(self)
 
     def __eq__(self, __o: object) -> bool:
         return self.uid == __o.uid if isinstance(__o, self.__class__) else False
