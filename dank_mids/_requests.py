@@ -256,16 +256,16 @@ class RPCRequest(_RequestBase[RawResponse]):
             return await self.get_response_unbatched()
 
         current_batch = self._batch
-        if current_batch and not current_batch._started:
+        if current_batch is not None and not current_batch._started:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
             await current_batch
         # get rid of the strong reference
         del current_batch
 
-        if not self._batch:
+        if self._batch is None:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
             await sleep(0)
-        if not self._batch:
+        if self._batch is None:
             try:
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
