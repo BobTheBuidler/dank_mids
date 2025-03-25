@@ -11,6 +11,7 @@ from asyncio import (
 )
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
+from inspect import stack
 from itertools import accumulate, chain, filterfalse, groupby
 from logging import DEBUG, getLogger
 from time import time
@@ -415,7 +416,16 @@ class RPCRequest(_RequestBase[RawResponse]):
         # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
         # and then the task will try to acquire at the very next event loop _run_once cycle
         if log:
-            _log_warning("%s got stuck, we're creating a new one", self)
+            caller = stack()[-1]
+            _log_warning(
+                "%s got stuck, we're creating a new one\n"
+                "    caller: filename=%s lineno=%s function=%s", 
+                self,
+                caller.filename,
+                caller.lineno,
+                caller.function,
+            )
+        
         method = f"{self.method}_raw" if self.raw else self.method
         try:
             return await self.controller(method, self.params)  # type: ignore [arg-type]
