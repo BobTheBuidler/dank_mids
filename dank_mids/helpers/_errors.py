@@ -41,7 +41,7 @@ def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exc
 
 
 def format_error_response(request: PartialRequest, response: PartialResponse) -> AttributeDict:
-    error = response.to_dict()
+    error = response.error.to_dict()
     error["dankmids_added_context"] = request
     return AttributeDict.recursive(error)
 
