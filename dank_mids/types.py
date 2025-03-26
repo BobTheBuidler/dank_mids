@@ -151,6 +151,12 @@ class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True
     data: Optional[Any] = UNSET
     """Additional error data, if any."""
 
+    def to_dict(self) -> Dict[str, Any]:
+        d = {"code": self.code, "message": self.message}
+        if self.data is not UNSET:
+            d["data"] = self.data
+        return d
+
 
 # some devving tools that will go away eventually
 _dict_responses: Set[str] = set()
