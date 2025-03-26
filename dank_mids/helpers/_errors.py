@@ -21,7 +21,7 @@ INDIVIDUAL_CALL_REVERT_STRINGS = {
 }
 
 
-def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exception):
+def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception):
     try:
         batch_objs = list(batch)
     except TypeError:
@@ -32,7 +32,7 @@ def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exc
         "Exc: %s\n"
         "%s contents: %s\n\n",
         type(batch).__name__,
-        batch_len,
+        len(batch_objs),
         exc,
         type(batch).__name__,
         batch_objs,
@@ -43,7 +43,22 @@ def log_internal_error(logger: Logger, batch: "_Batch", batch_len: int, exc: Exc
 def format_error_response(request: PartialRequest, response: PartialResponse) -> AttributeDict:
     error = response.error.to_dict()
     error["dankmids_added_context"] = request
-    return AttributeDict.recursive(error)
+
+    try:
+        return AttributeDict.recursive(error)
+    except TypeError as e:
+        if "Missing required argument 'id'" not in str(e):
+            e.args = *e.args, error
+            raise
+
+    try:
+        return AttributeDict.recursive(response.error)
+    except TypeError as e:
+        if "Missing required argument 'message'" not in str(e):
+            e.args = *e.args, error
+            raise
+    
+    return error
 
 
 def needs_full_request_spec(response: PartialResponse):

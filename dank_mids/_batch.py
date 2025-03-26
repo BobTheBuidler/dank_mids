@@ -100,11 +100,7 @@ class DankBatch:
             except DankMidsInternalError:
                 raise
             except Exception as e:
-                try:
-                    log_internal_error(logger, batch, len(batch), e)
-                except TypeError:
-                    # object of type 'coroutine' has no len()
-                    log_internal_error(logger, batch, 1, e)
+                log_internal_error(logger, batch, e)
                 raise
 
     @property
