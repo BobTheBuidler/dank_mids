@@ -99,8 +99,6 @@ class DankBatch:
                 await task
             except DankMidsInternalError:
                 raise
-            except RecursionError as e:
-                raise RecursionError(batch, task, e) from e
             except Exception as e:
                 try:
                     log_internal_error(logger, batch, len(batch), e)
