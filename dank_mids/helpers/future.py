@@ -38,7 +38,7 @@ class ExceptionAlreadySet(InvalidStateError):
     def __str__(self) -> str:
         if self.attempted is None:
             return f"Exception already set: {self.fut}"
-        return f"Cannot set exception {self.attempted}\n" f"Exception already set:{self.fut}"
+        return f"Cannot set exception to {type(self.attempted).__name__} {self.attempted}\n" f"Exception already set:{self.fut}"
 
 
 class DebuggableFuture(Future[RPCResponse]):
@@ -88,13 +88,9 @@ class DebuggableFuture(Future[RPCResponse]):
             try:
                 _super_set_exc(self, exc)
             except InvalidStateError as e:
-                if self._result is not None:
-                    # its kinda odd that we get here at all but who cares, the fut has a result!
+                if self._result is not None or self._exception:
+                    # its kinda odd that we get here at all but who cares, the fut has a result/exception!
                     return
-                elif (current_exc := self._exception) is not None:
-                    if _check_match(exc, current_exc):
-                        return
-                    raise ExceptionAlreadySet(self, exc) from e
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
                 else:
@@ -104,16 +100,9 @@ class DebuggableFuture(Future[RPCResponse]):
         # One day I'll fully commit to either finishing it up or ripping it out. For now it stays.
         elif self._state == "PENDING":
             self._loop.call_soon_threadsafe(_super_set_exc, self, exc)
-        elif self._result is not None:
-            raise InvalidStateError(
-                f"{self} already has a result set:",
-                f"existing value: {self._result}",
-                f"new exception: {exc}",
-            )
-        elif (current_exc := self._exception) is not None:
-            if _check_match(exc, current_exc):
-                return
-            raise ExceptionAlreadySet(self, exc)
+        elif self._result is not None or self._exception is not None:
+            # its kinda odd that we get here at all but who cares, the fut has a result/exception!
+            return
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
