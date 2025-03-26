@@ -86,6 +86,7 @@ REQUEST_FORMATTER_MAPS = (
 
 _request_formatters: Dict[RPCEndpoint, Callable] = {}
 
+
 def get_request_formatters(
     method_name: Union[RPCEndpoint, Callable[..., RPCEndpoint]],
 ) -> Callable[..., Any]:
