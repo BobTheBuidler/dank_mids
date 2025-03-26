@@ -92,10 +92,11 @@ def get_request_formatters(
 ) -> Callable[..., Any]:
     formatters = _request_formatters.get(method_name)
     if formatters is None:
-        combined: Tuple[Callable] = combine_formatters(REQUEST_FORMATTER_MAPS, method_name)
+        combined = (formatter_map.get(method_name) for formatter_map in REQUEST_FORMATTER_MAPS)
+        combined = list(filter(None, combined))
         if not combined:
             formatters = lambda x: x
-        elif len(formatters) == 1:
+        elif len(combined) == 1:
             formatters = combined[0]
         else:
             # NOTE the web3 implementation uses both pipe and compose which I think is unnecessary
