@@ -88,13 +88,12 @@ class DebuggableFuture(Future[RPCResponse]):
             try:
                 _super_set_exc(self, exc)
             except InvalidStateError as e:
-                if self._result is not None or self._exception:
+                if self._result is not None or self._exception is not None:
                     # its kinda odd that we get here at all but who cares, the fut has a result/exception!
                     return
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
-                else:
-                    raise NotImplementedError(f"{self._state} is not a valid state") from e
+                raise
 
         # The rest of this code just makes it threadsafe(ish) based on an old idea that never was fully implemented
         # One day I'll fully commit to either finishing it up or ripping it out. For now it stays.
@@ -106,7 +105,7 @@ class DebuggableFuture(Future[RPCResponse]):
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
-            raise NotImplementedError(f"{self._state} is not a valid state")
+            raise
 
     async def __debug_daemon(self) -> None:
         start = time()
