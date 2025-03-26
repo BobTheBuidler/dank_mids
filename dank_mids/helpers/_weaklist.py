@@ -38,7 +38,8 @@ class WeakList(Generic[_Request]):
         self._refs[id(item)] = ref(item, self._gc_callback)
 
     def extend(self, items: Iterable[_Request]) -> None:
-        self._refs.update((id(obj), ref(obj, self._gc_callback)) for obj in items)
+        callback = self._gc_callback
+        self._refs.update((id(obj), ref(obj, callback)) for obj in items)
 
     def remove(self, item: _Request) -> None:
         obj_id = id(item)
