@@ -39,7 +39,6 @@ import a_sync
 import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
 from a_sync.functools import cached_property_unsafe as cached_property
-from a_sync.primitives import DummySemaphore
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
@@ -110,8 +109,6 @@ class RPCError(_RPCError, total=False):
 
 
 _TIMEOUT = float(ENVS.STUCK_CALL_TIMEOUT)
-
-_DUMMY_SEMAPHORE = DummySemaphore()
 
 
 _super_init = a_sync.Event.__init__
@@ -1067,17 +1064,14 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 # should_retry will always return True if there is more than 1 call in this batch
                 await self.bisect_and_retry(e)
 
-            # Just to force my IDE to resolve types correctly
-            calls: Tuple[RPCRequest, ...] = tuple(self.calls)  # type: ignore [arg-type]
-            error_logger_debug(
-                "%s had exception %s, aborting and setting Exception as call._response", self, e
-            )
-            # NOTE: This means an exception occurred during the post request
-            # AND that the json batch is made of just one rpc request that is not a multicall.
-            _log_info(
-                "does this ever actually run? pretty sure a single-multicall json batch is not possible. can I delete this?"
-            )
-            await igather(call.spoof_response(e) for call in calls)
+            else:
+                # NOTE: This means an exception occurred during the post request
+                # AND that the json batch is made of just one rpc request that is not a multicall.
+                error_logger_debug(
+                    "%s had exception %s, aborting and sending Exception to waiters", self, e
+                )
+                await igather(call.spoof_response(e) for call in self.calls)
+
         _demo_logger_info("request %s for jsonrpc batch %s complete", rid, self.jid)  # type: ignore
 
     @eth_retry.auto_retry
