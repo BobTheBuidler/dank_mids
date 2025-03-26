@@ -139,6 +139,7 @@ class Request(PartialRequest):
 
 _getattribute = object.__getattribute__
 
+
 class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents an error in a JSON-RPC response.
