@@ -398,13 +398,6 @@ class RPCRequest(_RequestBase[RawResponse]):
         self._fut.set_result(response)
         return response
 
-    @property
-    def semaphore(self) -> a_sync.Semaphore:
-        # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
-        if self.method == "eth_call":
-            return self.controller.eth_call_semaphores[self.params[1]]
-        return _DUMMY_SEMAPHORE
-
     def create_duplicate(self, log: bool = True) -> Union["RPCRequest", "eth_call"]:
         if log:
             caller = stack()[-1]
@@ -480,19 +473,6 @@ class eth_call(RPCRequest):
 
         # The above revert catching logic fails to account for pre-decoding RawResponse objects.
         await RPCRequest.spoof_response(self, data)
-
-    @property
-    def semaphore(self) -> a_sync.Semaphore:
-        """
-        Get the semaphore for this eth_call operation.
-
-        Returns:
-            The semaphore for controlling concurrent access at this block height.
-
-        Note:
-            This property is not cached to ensure the semaphore control pattern in the `duplicate` function works as intended.
-        """
-        return self.controller.eth_call_semaphores[self.block]
 
     def _get_mc_data(self) -> MulticallChunk:
         return self.target, self.calldata
