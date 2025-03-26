@@ -415,7 +415,10 @@ class RPCRequest(_RequestBase[RawResponse]):
         return RPCRequest(self.controller, method, self.params)
 
 
-_is_revert_bytes = lambda data: isinstance(data, bytes) and any(filter(data.startswith, constants.REVERT_SELECTORS))
+_is_revert_bytes = lambda data: isinstance(data, bytes) and any(
+    filter(data.startswith, constants.REVERT_SELECTORS)
+)
+
 
 @final
 class eth_call(RPCRequest):
@@ -789,11 +792,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 error_logger_debug(
                     "propagating the %s to all %s's calls", data.__class__.__name__, self
                 )
-            
+
             # No need to gather this, `spoof_response` with an Exception input will complete synchronously
             for call in calls:
                 await call.spoof_response(data)
-            
+
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
         # It was either received as a response to a single rpc call or as a part of a batch response.
         elif isinstance(data, RawResponse):
@@ -815,7 +818,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 else:
                     # `spoof_response` with a successful call result will complete synchronously
                     await eth_call.spoof_response(call, result)
-                    
+
             await gatherish(to_gather, name="Multicall.spoof_response")
 
         else:
