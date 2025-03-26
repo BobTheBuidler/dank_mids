@@ -37,8 +37,8 @@ class ExceptionAlreadySet(InvalidStateError):
 
     def __str__(self) -> str:
         if self.attempted is None:
-            return f"Exception already set: {self}"
-        return f"Cannot set exception {self.attempted}\n" f"Exception already set:{self}"
+            return f"Exception already set: {self.fut}"
+        return f"Cannot set exception {self.attempted}\n" f"Exception already set:{self.fut}"
 
 
 class DebuggableFuture(Future[RPCResponse]):
