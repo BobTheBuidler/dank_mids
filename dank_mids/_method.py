@@ -1,12 +1,20 @@
 from importlib.metadata import version
-from typing import Callable, Dict, Tuple, Type
+from typing import Any, Callable, Dict, Tuple, Type, Union
 
+from eth_utils.toolz import compose
 from typing_extensions import Self
 from web3.eth import BaseEth
-from web3._utils.method_formatters import ERROR_FORMATTERS, NULL_RESULT_FORMATTERS
+from web3._utils.method_formatters import (
+    ABI_REQUEST_FORMATTERS,
+    ERROR_FORMATTERS,
+    METHOD_NORMALIZERS,
+    NULL_RESULT_FORMATTERS,
+    PYTHONIC_REQUEST_FORMATTERS,
+    combine_formatters,
+)
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
-from web3.method import Method, TFunc, _apply_request_formatters, default_root_munger
+from web3.method import Method, TFunc, TReturn, default_root_munger
 from web3.types import BlockIdentifier, RPCEndpoint
 
 WEB3_MAJOR_VERSION = int(version("web3").split(".")[0])
@@ -50,11 +58,9 @@ class MethodNoFormat(Method[TFunc]):
             if self.json_rpc_method in pending_or_latest_filter_methods:
                 params = []
 
-        request = (
-            method := self.method_selector_fn(),
-            _apply_request_formatters(params, self.request_formatters(method)),
-        )
-        return request, _formatters.get(self.json_rpc_method) or _get_response_formatters(
+        method = self.method_selector_fn()
+        request = method, get_request_formatters(method)(params)
+        return request, _response_formatters.get(self.json_rpc_method) or _get_response_formatters(
             self.json_rpc_method
         )
 
@@ -68,11 +74,43 @@ class MethodNoFormat(Method[TFunc]):
         return cls(method, [default_root_munger])
 
 
-_formatters: Dict[RPCEndpoint, ResponseFormatters] = {}
+REQUEST_FORMATTER_MAPS = (
+    ABI_REQUEST_FORMATTERS,
+    # METHOD_NORMALIZERS needs to be after ABI_REQUEST_FORMATTERS
+    # so that eth_getLogs's apply_formatter_at_index formatter
+    # is applied to the whole address
+    # rather than on the first byte of the address
+    METHOD_NORMALIZERS,
+    PYTHONIC_REQUEST_FORMATTERS,
+)
+
+_request_formatters: Dict[RPCEndpoint, Callable] = {}
+
+
+def get_request_formatters(
+    method_name: Union[RPCEndpoint, Callable[..., RPCEndpoint]],
+) -> Callable[..., Any]:
+    formatters = _request_formatters.get(method_name)
+    if formatters is None:
+        combined = (formatter_map.get(method_name) for formatter_map in REQUEST_FORMATTER_MAPS)
+        combined = list(filter(None, combined))
+        if not combined:
+            formatters = lambda x: x
+        elif len(combined) == 1:
+            formatters = combined[0]
+        else:
+            # NOTE the web3 implementation uses both pipe and compose which I think is unnecessary
+            # even compose by itself adds unnecessary overhead if used for only 1 formatter
+            formatters = compose(*combined)
+        _request_formatters[method_name] = formatters
+    return formatters
+
+
+_response_formatters: Dict[RPCEndpoint, ResponseFormatters] = {}
 
 
 def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:
-    formatters = _formatters[method] = (
+    formatters = _response_formatters[method] = (
         return_as_is,
         ERROR_FORMATTERS.get(method, return_as_is),
         NULL_RESULT_FORMATTERS.get(method, return_as_is),
