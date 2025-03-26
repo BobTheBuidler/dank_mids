@@ -137,6 +137,9 @@ class Request(PartialRequest):
         return encoded_omit_defaults[:-1] + b',"jsonrpc":"2.0"}'
 
 
+_getattribute = object.__getattribute__
+
+
 class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents an error in a JSON-RPC response.
@@ -153,8 +156,9 @@ class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True
 
     def to_dict(self) -> Dict[str, Any]:
         d = {"code": self.code, "message": self.message}
-        if self.data is not UNSET:
-            d["data"] = self.data
+        data = _getattribute(self, "data")
+        if data is not UNSET:
+            d["data"] = data
         return d
 
 
