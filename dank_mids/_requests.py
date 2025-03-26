@@ -870,9 +870,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         """
         error_logger_debug("%s had exception %s, bisecting and retrying", self, e)
         controller = self.controller
-        bisected = (
+        # we need to create strong refs to the multicalls here so they dont disappear as soon as the JSONRPCBatch inits
+        bisected = [
             Multicall(controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)
-        )
+        ]
         batch = JSONRPCBatch(controller, bisected)
         batch.start(cleanup=False)
         await batch
