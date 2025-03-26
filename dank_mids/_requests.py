@@ -415,6 +415,8 @@ class RPCRequest(_RequestBase[RawResponse]):
         return RPCRequest(self.controller, method, self.params)
 
 
+_is_revert_bytes = lambda data: isinstance(data, bytes) and any(filter(data.startswith, constants.REVERT_SELECTORS))
+
 @final
 class eth_call(RPCRequest):
     revert_threads = PruningThreadPoolExecutor(4)
@@ -450,7 +452,7 @@ class eth_call(RPCRequest):
 
         # NOTE: If `type(data)` is `bytes`, it is a result from a multicall. If not, `data` comes from a jsonrpc batch.
         # If this if clause is True, it means the call reverted inside of a multicall but returned a result, without causing the multicall to revert.
-        if isinstance(data, bytes) and any(map(data.startswith, constants.REVERT_SELECTORS)):
+        if _is_revert_bytes(data):
             # TODO figure out how to include method selector in no_multicall key
             try:
                 # NOTE: If call response from multicall indicates failure, make sync call to get either:
@@ -787,10 +789,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 error_logger_debug(
                     "propagating the %s to all %s's calls", data.__class__.__name__, self
                 )
-            await gatherish(
-                (call.spoof_response(data) for call in calls),
-                name="Multicall.spoof_response[Exception]",
-            )
+            
+            # No need to gather this, `spoof_response` with an Exception input will complete synchronously
+            for call in calls:
+                await call.spoof_response(data)
+            
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
         # It was either received as a response to a single rpc call or as a part of a batch response.
         elif isinstance(data, RawResponse):
@@ -800,10 +803,21 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
                 raise response.exception
             _log_debug("%s received valid bytes from the rpc", self)
-            await gatherish(
-                map(eth_call.spoof_response, calls, await self.decode(response)),
-                name="Multicall.spoof_response",
-            )
+
+            # We write some ugly code to separate successes from reverts
+            # For successful calls, we can set the result right away
+            # For reverts, we asynchronously attempt to handle the revert
+            to_gather = []
+            for call, result in zip(calls, await self.decode(response)):
+                if _is_revert_bytes(result):
+                    # We will asynchronously handle this revert
+                    to_gather.append(eth_call.spoof_response(call, result))
+                else:
+                    # `spoof_response` with a successful call result will complete synchronously
+                    await eth_call.spoof_response(call, result)
+                    
+            await gatherish(to_gather, name="Multicall.spoof_response")
+
         else:
             raise NotImplementedError(f"type {type(data)} not supported.", data)
 
