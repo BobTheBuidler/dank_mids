@@ -74,8 +74,6 @@ class MethodNoFormat(Method[TFunc]):
         return cls(method, [default_root_munger])
 
 
-_request_formatters: Dict[RPCEndpoint, Callable]
-
 REQUEST_FORMATTER_MAPS = (
     ABI_REQUEST_FORMATTERS,
     # METHOD_NORMALIZERS needs to be after ABI_REQUEST_FORMATTERS
@@ -86,6 +84,7 @@ REQUEST_FORMATTER_MAPS = (
     PYTHONIC_REQUEST_FORMATTERS,
 )
 
+_request_formatters: Dict[RPCEndpoint, Callable] = {}
 
 def get_request_formatters(
     method_name: Union[RPCEndpoint, Callable[..., RPCEndpoint]],
