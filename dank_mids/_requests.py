@@ -1062,7 +1062,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             if self.should_retry(e):
                 # should_retry will always return True if there is more than 1 call in this batch
                 await self.bisect_and_retry(e)
-            
+
             else:
                 # NOTE: This means an exception occurred during the post request
                 # AND that the json batch is made of just one rpc request that is not a multicall.
