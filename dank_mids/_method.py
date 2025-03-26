@@ -5,10 +5,10 @@ from eth_utils.toolz import compose
 from typing_extensions import Self
 from web3.eth import BaseEth
 from web3._utils.method_formatters import (
-    ABI_REQUEST_FORMATTERS, 
-    ERROR_FORMATTERS, 
-    METHOD_NORMALIZERS, 
-    NULL_RESULT_FORMATTERS, 
+    ABI_REQUEST_FORMATTERS,
+    ERROR_FORMATTERS,
+    METHOD_NORMALIZERS,
+    NULL_RESULT_FORMATTERS,
     PYTHONIC_REQUEST_FORMATTERS,
     combine_formatters,
 )
@@ -86,8 +86,9 @@ REQUEST_FORMATTER_MAPS = (
     PYTHONIC_REQUEST_FORMATTERS,
 )
 
+
 def get_request_formatters(
-    method_name: Union[RPCEndpoint, Callable[..., RPCEndpoint]]
+    method_name: Union[RPCEndpoint, Callable[..., RPCEndpoint]],
 ) -> Callable[..., Any]:
     formatters = _request_formatters.get(method_name)
     if formatters is None:
