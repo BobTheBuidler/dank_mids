@@ -25,7 +25,7 @@ from dank_mids.helpers._codec import decode_raw
 from dank_mids.helpers._helpers import w3_version_major, _make_hashable, _sync_w3_from_async
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._session import post, rate_limit_inactive
-from dank_mids.semaphores import _MethodQueues, _MethodSemaphores, BlockSemaphore
+from dank_mids.semaphores import _MethodQueues, BlockSemaphore
 from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
 
 logger = getLogger(__name__)
@@ -118,8 +118,9 @@ class DankMiddlewareController:
             self.no_multicall.add(self.mc3.address)
         self._latest_mc = self.mc3 or self.mc2
 
-        self.method_semaphores = _MethodSemaphores(self)  # TODO: refactor this out
-        self.eth_call_semaphores: BlockSemaphore = self.method_semaphores["eth_call"]  # type: ignore [assignment]
+        self.eth_call_semaphores = BlockSemaphore(
+            ENVS.method_semaphores["eth_call"]._value, name=f"eth_call {self}"
+        )
         """Used for managing concurrency of eth_calls."""
 
         # semaphores soon to be deprecated for smart queue

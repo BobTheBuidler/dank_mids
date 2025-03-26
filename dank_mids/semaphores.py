@@ -80,44 +80,6 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
         return super().__getitem__(priority)
 
 
-class _MethodSemaphores:
-    """
-    A class that manages semaphores for different RPC methods.
-
-    This class creates and stores semaphores for various RPC methods,
-    allowing for controlled concurrency in method execution.
-    """
-
-    def __init__(self, controller: "DankMiddlewareController") -> None:
-        # TODO: refactor this out, just use BlockSemaphore for eth_call and SmartProcessingQueue to limit other methods
-        from dank_mids import ENVIRONMENT_VARIABLES
-
-        self.controller = controller
-        semaphore_types = {"eth_call": BlockSemaphore}
-        self.method_semaphores = {
-            method: semaphore_types.get(method, ThreadsafeSemaphore)(
-                sem._value, name=f"{method} {controller}"
-            )
-            for method, sem in ENVIRONMENT_VARIABLES.method_semaphores.items()
-        }
-        self.keys = self.method_semaphores.keys()
-        self.dummy = DummySemaphore()
-
-    @lru_cache_lite_nonull
-    def __getitem__(self, method: RPCEndpoint) -> Union[ThreadsafeSemaphore, DummySemaphore]:
-        """
-        Retrieves the semaphore for a given RPC method.
-
-        Args:
-            method: The RPC method to get the semaphore for.
-
-        Returns:
-            The semaphore for the method, or a DummySemaphore if no semaphore matching any substring in
-            the method string is found.
-        """
-        return next((self.method_semaphores[key] for key in self.keys if key in method), self.dummy)
-
-
 class _MethodQueues:
     """
     A class that manages queues for different RPC methods.
