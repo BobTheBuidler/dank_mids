@@ -398,20 +398,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         self._fut.set_result(response)
         return response
 
-    @property
-    def semaphore(self) -> a_sync.Semaphore:
-        # NOTE: We cannot cache this property so the semaphore control pattern in the `duplicate` fn will work as intended
-        if self.method == "eth_call":
-            return self.controller.eth_call_semaphores[self.params[1]]
-        return _DUMMY_SEMAPHORE
-
-    async def create_duplicate(self, log: bool = True) -> RPCResponse:
-        # Not actually self, but for typing purposes it is.
-        # We need to make room since the stalled call is still holding the semaphore
-        self.semaphore.release()
-        # We need to check the semaphore again to ensure we have the right context manager, soon but not right away.
-        # Creating the task before awaiting the new call ensures the new call will grab the semaphore immediately
-        # and then the task will try to acquire at the very next event loop _run_once cycle
+    def create_duplicate(self, log: bool = True) -> Union["RPCRequest", "eth_call"]:
         if log:
             caller = stack()[-1]
             _log_warning(
@@ -422,12 +409,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                 caller.function,
                 caller.lineno,
             )
-
+        if type(self) is eth_call:
+            return eth_call(self.controller, self.params)
         method = f"{self.method}_raw" if self.raw else self.method
-        try:
-            return await self.controller(method, self.params)  # type: ignore [arg-type]
-        finally:
-            await self.semaphore.acquire()
+        return RPCRequest(self.controller, method, self.params)
 
 
 @final
@@ -488,19 +473,6 @@ class eth_call(RPCRequest):
 
         # The above revert catching logic fails to account for pre-decoding RawResponse objects.
         await RPCRequest.spoof_response(self, data)
-
-    @property
-    def semaphore(self) -> a_sync.Semaphore:
-        """
-        Get the semaphore for this eth_call operation.
-
-        Returns:
-            The semaphore for controlling concurrent access at this block height.
-
-        Note:
-            This property is not cached to ensure the semaphore control pattern in the `duplicate` function works as intended.
-        """
-        return self.controller.eth_call_semaphores[self.block]
 
     def _get_mc_data(self) -> MulticallChunk:
         return self.target, self.calldata
