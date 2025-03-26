@@ -782,9 +782,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     async def spoof_response(
         self, data: Union[RawResponse, Exception], calls: Optional[List[eth_call]] = None
     ) -> None:
-        # NOTE: we pass in the calls to create a strong reference so when we zip up the results everything gets to the right place
-        if calls is None:
-            calls = tuple(self.calls)
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
             if _logger_is_enabled_for(DEBUG):
@@ -794,7 +791,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 )
 
             # No need to gather this, `spoof_response` with an Exception input will complete synchronously
-            for call in calls:
+            for call in self.calls:
                 await call.spoof_response(data)
 
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
@@ -810,6 +807,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             # We write some ugly code to separate successes from reverts
             # For successful calls, we can set the result right away
             # For reverts, we asynchronously attempt to handle the revert
+
+            # NOTE: we pass in the calls to create a strong reference so when we zip up the results everything gets to the right place
+            if calls is None:
+                calls = tuple(self.calls)
+
             to_gather = []
             for call, result in zip(calls, await self.decode(response)):
                 if _is_revert_bytes(result):
