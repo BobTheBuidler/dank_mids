@@ -8,7 +8,11 @@ from web3._utils.rpc_abi import RPC
 from web3.method import Method, TFunc, default_root_munger
 from web3.types import BlockIdentifier
 
-from dank_mids._web3.formatters import _response_formatters, _get_response_formatters, get_request_formatters
+from dank_mids._web3.formatters import (
+    _response_formatters,
+    _get_response_formatters,
+    get_request_formatters,
+)
 
 WEB3_MAJOR_VERSION = int(version("web3").split(".")[0])
 
