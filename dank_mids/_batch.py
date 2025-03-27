@@ -99,6 +99,12 @@ class DankBatch:
                 await task
             except DankMidsInternalError:
                 raise
+            except RuntimeError as e:
+                # NOTE: this is a hacky workaround for an error I still need to debug, but this works for now
+                if e.args and isinstance(e.args[0], RecursionError) and isinstance(batch, JSONRPCBatch):
+                    await JSONRPCBatch(self.controller, batch.calls)
+                else:
+                    raise
             except Exception as e:
                 log_internal_error(logger, batch, e)
                 raise

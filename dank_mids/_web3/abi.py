@@ -1,4 +1,3 @@
-from functools import partial
 from typing import Any, Callable, Sequence, Tuple
 
 from eth_typing import TypeStr
