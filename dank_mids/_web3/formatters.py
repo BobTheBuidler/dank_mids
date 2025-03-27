@@ -21,6 +21,7 @@ from dank_mids._web3.abi import get_mapper
 
 return_as_is = lambda x: x
 
+
 @to_dict
 def abi_request_formatters(
     normalizers: Sequence[Callable[[TypeStr, Any], Tuple[TypeStr, Any]]],
@@ -34,14 +35,10 @@ def abi_request_formatters(
             single_dict_formatter = apply_abi_formatters_to_dict(normalizers, abi_types)
             yield method, apply_formatter_at_index(single_dict_formatter, 0)
         else:
-            raise TypeError(
-                f"ABI definitions must be a list or dictionary, got {abi_types!r}"
-            )
+            raise TypeError(f"ABI definitions must be a list or dictionary, got {abi_types!r}")
 
 
-ABI_REQUEST_FORMATTERS: Formatters = abi_request_formatters(
-    STANDARD_NORMALIZERS, RPC_ABIS
-)
+ABI_REQUEST_FORMATTERS: Formatters = abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
 
 REQUEST_FORMATTER_MAPS = (
     ABI_REQUEST_FORMATTERS,

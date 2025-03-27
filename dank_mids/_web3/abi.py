@@ -52,8 +52,7 @@ def get_mapper(
     if mapper is None:
         mapper = _mappers[(normalizers, types)] = compose_left(
             # web3.py implementation is `abi_data_tree(types)` but a lambda is faster than a curried func call
-            lambda data: list(map(abi_sub_tree, types, data))
-            *map(data_tree_map, normalizers),
+            lambda data: list(map(abi_sub_tree, types, data)) * map(data_tree_map, normalizers),
             _strip_abi_types,
         )
     return mapper
