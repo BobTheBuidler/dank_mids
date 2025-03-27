@@ -44,6 +44,7 @@ from eth_abi import abi, decoding
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
 from eth_typing import ChecksumAddress, HexStr
 from eth_utils import function_signature_to_4byte_selector
+from eth_utils.toolz import concat
 from hexbytes import HexBytes
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
@@ -917,7 +918,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         if self.calls and not self._done.is_set():
             for cls, calls in groupby(self.calls, type):
                 if cls is Multicall:
-                    calls = chain(*filter(None, calls))
+                    calls = concat(filter(None, calls))
                 if any(filterfalse(Future.done, (call._fut for call in calls))):
                     error_logger.warning("%s was garbage collected before finishing", self)
                     return
