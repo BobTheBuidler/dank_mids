@@ -28,7 +28,7 @@ from web3.eth import AsyncEth
 from web3.method import default_root_munger
 from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS, HexStr
 
-from dank_mids._method import (
+from dank_mids._web3.method import (
     WEB3_MAJOR_VERSION,
     MethodNoFormat,
     bypass_formatters,
