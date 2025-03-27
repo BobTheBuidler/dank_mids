@@ -40,7 +40,9 @@ def map_abi_data(
 
 _mappers = {}
 
-_strip_abi_types = partial(recursive_map, strip_abi_type)
+
+def strip_abi_types(data):
+    return recursive_map(strip_abi_type, data)
 
 
 # web3py builds the pipeline every call, we cache it here instead
@@ -57,7 +59,7 @@ def get_mapper(
             # 2. Recursively mapping each of the normalizers to the data
             *map(data_tree_map, normalizers),
             # 3. Stripping the types back out of the tree
-            _strip_abi_types,
+            strip_abi_types,
         ]
         mapper = _mappers[(normalizers, types)] = compose(*pipeline.__reversed__())
     return mapper
