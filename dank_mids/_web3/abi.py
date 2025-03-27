@@ -1,9 +1,9 @@
 from functools import partial
-from typing import Any, Callable, List, Sequence, Tuple
+from typing import Any, Callable, Sequence, Tuple
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose_left, curry
-from web3._utils.abi import abi_data_tree, abi_sub_tree, data_tree_map, strip_abi_type
+from web3._utils.abi import abi_sub_tree, data_tree_map, strip_abi_type
 from web3._utils.formatters import recursive_map
 
 
@@ -52,7 +52,7 @@ def get_mapper(
     if mapper is None:
         mapper = _mappers[(normalizers, types)] = compose_left(
             # web3.py implementation is `abi_data_tree(types)` but a lambda is faster than a curried func call
-            lambda data: list(map(abi_sub_tree, types, data))
+            lambda data: list(map(abi_sub_tree, types, data)),
             *map(data_tree_map, normalizers),
             _strip_abi_types,
         )
