@@ -2,7 +2,7 @@ from functools import partial
 from typing import Any, Callable, Sequence, Tuple
 
 from eth_typing import TypeStr
-from eth_utils.toolz import compose_left, curry
+from eth_utils.toolz import compose, curry
 from web3._utils.abi import abi_sub_tree, data_tree_map, strip_abi_type
 from web3._utils.formatters import recursive_map
 
@@ -50,10 +50,16 @@ def get_mapper(
 ) -> Tuple[Callable, ...]:
     mapper = _mappers.get((normalizers, types))
     if mapper is None:
-        mapper = _mappers[(normalizers, types)] = compose_left(
+        pipeline = [
+            # 1. Decorating the data tree with types
             # web3.py implementation is `abi_data_tree(types)` but a lambda is faster than a curried func call
             lambda data: list(map(abi_sub_tree, types, data)),
+
+            # 2. Recursively mapping each of the normalizers to the data
             *map(data_tree_map, normalizers),
+
+            # 3. Stripping the types back out of the tree
             _strip_abi_types,
-        )
+        ]
+        mapper = _mappers[(normalizers, types)] = compose(*pipeline.__reversed__())
     return mapper
