@@ -43,7 +43,22 @@ def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception):
 def format_error_response(request: PartialRequest, response: PartialResponse) -> AttributeDict:
     error = response.error.to_dict()
     error["dankmids_added_context"] = request
-    return AttributeDict.recursive(error)
+
+    try:
+        return AttributeDict.recursive(error)
+    except TypeError as e:
+        if "Missing required argument 'id'" not in str(e):
+            e.args = *e.args, error
+            raise
+
+    try:
+        return AttributeDict.recursive(response.error)
+    except TypeError as e:
+        if "Missing required argument 'message'" not in str(e):
+            e.args = *e.args, error
+            raise
+    
+    return error
 
 
 def needs_full_request_spec(response: PartialResponse):
