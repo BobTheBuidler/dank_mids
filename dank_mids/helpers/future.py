@@ -39,8 +39,8 @@ class ExceptionAlreadySet(InvalidStateError):
         if self.attempted is None:
             return f"Exception already set: {self.fut}"
         return (
-            f"Cannot set exception to {type(self.attempted).__name__} {self.attempted}\n"
-            f"Exception already set:{self.fut}"
+            f"Cannot set result to {type(self.attempted).__name__} {self.attempted}\n"
+            f"Exception already set: {self.fut}"
         )
 
 
@@ -67,7 +67,7 @@ class DebuggableFuture(Future[RPCResponse]):
                 if self._result is not None:
                     return
                 elif self._exception is not None:
-                    raise ExceptionAlreadySet(self, self._exception) from e
+                    raise ExceptionAlreadySet(self, value) from e
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
                 else:
@@ -80,7 +80,7 @@ class DebuggableFuture(Future[RPCResponse]):
         elif self._result is not None:
             return
         elif self._exception is not None:
-            raise ExceptionAlreadySet(self)
+            raise ExceptionAlreadySet(self, value)
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
