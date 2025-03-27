@@ -60,7 +60,7 @@ def get_request_formatters(
         combined = (formatter_map.get(method_name) for formatter_map in REQUEST_FORMATTER_MAPS)
         combined = list(filter(None, combined))
         if not combined:
-            formatters = lambda x: x
+            formatters = return_as_is
         elif len(combined) == 1:
             formatters = combined[0]
         else:
