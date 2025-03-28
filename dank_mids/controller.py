@@ -68,7 +68,7 @@ class DankMiddlewareController:
         self.chain_id = chainid
         """The chainid for the currently connected rpc."""
 
-        self.client_version: str = _get_client_version(self.sync_w3)
+        self.client_version = _get_client_version(self.sync_w3)
         """The client version for the currently connected rpc."""
 
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
@@ -84,13 +84,13 @@ class DankMiddlewareController:
         self.state_override_not_supported: bool = ENVS.GANACHE_FORK or chainid == 100  # type: ignore [assignment]
         """A boolean that indicates whether the connected rpc supports state override functionality."""
 
-        self.endpoint = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
+        self.endpoint: str = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
         """The uri for the connected rpc."""
 
-        self._sort_calls = "tenderly" in self.endpoint or "chainstack" in self.endpoint
+        self._sort_calls: bool = "tenderly" in self.endpoint or "chainstack" in self.endpoint
         """A boolean that indicates whether calls must be sorted by id in order for dank to work with the connected rpc."""
 
-        self._sort_response = "chainstack" in self.endpoint
+        self._sort_response: bool = "chainstack" in self.endpoint
         """A boolean that indicates whether a jsonrpc batch response must be sorted by id in order for dank to work with the connected rpc."""
 
         if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
@@ -127,7 +127,7 @@ class DankMiddlewareController:
         self.method_queues = _MethodQueues(self)
         """Queues for different method types."""
 
-        self.batcher = NotSoBrightBatcher()
+        self.batcher: NotSoBrightBatcher = NotSoBrightBatcher()
         """Batcher for RPC calls."""
 
         self.batcher.step = ENVS.MAX_MULTICALL_SIZE  # type: ignore [attr-defined]
@@ -142,7 +142,7 @@ class DankMiddlewareController:
         """Unique identifier generator for RPC requests."""
 
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.pools_closed_lock = _AlertingRLock(name="pools closed")
+        self.pools_closed_lock: _AlertingRLock = _AlertingRLock(name="pools closed")
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(
             lambda: Multicall(self)

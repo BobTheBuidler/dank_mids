@@ -1,7 +1,7 @@
 import abc
 import logging
 import os
-from typing import Any, Iterable
+from typing import Any, Iterable, Literal
 
 import aiofiles
 from a_sync.functools import cached_property_unsafe as cached_property
@@ -13,6 +13,7 @@ from dank_mids.helpers.lru_cache import lru_cache_lite
 
 logger = logging.getLogger("dank_mids.debugging")
 
+Mode = Literal["a"]
 
 class _FileHelper(metaclass=abc.ABCMeta):
     path = f"{os.path.expanduser('~')}/.dank_mids/debug"
@@ -53,8 +54,9 @@ class _FileHelper(metaclass=abc.ABCMeta):
             The URI of the file as a string.
         """
 
-    @abc.abstractproperty
-    def mode(self) -> str:
+    @property
+    @abc.abstractmethod
+    def mode(self) -> Mode:
         """
         Abstract property for the file open mode.
 
