@@ -45,8 +45,12 @@ class ExceptionAlreadySet(InvalidStateError):
 
 
 class DebuggableFuture(Future[RPCResponse]):
+    # default values
     _debug_logs_enabled: bool = False
     __debug_daemon_task: Optional[Task[None]] = None
+
+    # type hints
+    _result: Optional[RPCResponse]
 
     def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:
         Future.__init__(self, loop=loop)

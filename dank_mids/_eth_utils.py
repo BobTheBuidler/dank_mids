@@ -36,7 +36,7 @@ def patch_eth_utils():
             return encode_hex(text.encode("utf-8"))
 
         if is_boolean(primitive):
-            return "0x1" if primitive else "0x0"
+            return "0x1" if primitive else "0x0"  # type: ignore [return-value]
 
         if isinstance(primitive, (bytes, bytearray)):
             return encode_hex(primitive)
@@ -51,7 +51,7 @@ def patch_eth_utils():
             )
 
         if is_integer(primitive):
-            return hex(primitive)
+            return hex(primitive)  # type: ignore [return-value]
 
         raise TypeError(
             f"Unsupported type: '{repr(type(primitive))}'. Must be one of: bool, str, "

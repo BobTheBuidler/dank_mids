@@ -6,7 +6,7 @@ from web3.eth import BaseEth
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.method import Method, TFunc, default_root_munger
-from web3.types import BlockIdentifier
+from web3.types import BlockIdentifier, RPCEndpoint
 
 from dank_mids._web3.formatters import (
     _response_formatters,
@@ -57,7 +57,7 @@ class MethodNoFormat(Method[TFunc]):
         )
 
     @classmethod
-    def default(cls, method: RPC) -> Self:
+    def default(cls, method: RPCEndpoint) -> Self:
         """Creates a default instance of MethodNoFormat.
 
         Args:
@@ -113,8 +113,11 @@ def bypass_transaction_receipt_formatter(eth: Type[BaseEth]) -> None:
     Args:
         eth: The Ethereum base class instance whose method is to be modified.
     """
-    attr_name = "_transaction_receipt" if WEB3_MAJOR_VERSION >= 6 else "_get_transaction_receipt"
-    setattr(eth, attr_name, MethodNoFormat.default(RPC.eth_getTransactionReceipt))
+    method = MethodNoFormat.default(RPC.eth_getTransactionReceipt)
+    if WEB3_MAJOR_VERSION >= 6:
+        eth._transaction_receipt = method
+    else:
+        eth._get_transaction_receipt = method
 
 
 def bypass_transaction_formatter(eth: Type[BaseEth]) -> None:

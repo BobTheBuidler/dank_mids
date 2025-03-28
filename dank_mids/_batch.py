@@ -1,6 +1,6 @@
 from itertools import tee
 from logging import getLogger
-from typing import TYPE_CHECKING, Any, Awaitable, Generator, List, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Generator, Iterable, Union
 
 from a_sync import create_task
 
@@ -45,7 +45,7 @@ class DankBatch:
         self,
         controller: "DankMiddlewareController",
         multicalls: Multicalls,
-        rpc_calls: List[Union[Multicall, RPCRequest]],
+        rpc_calls: Iterable[Union[Multicall, RPCRequest]],
     ):
         self.controller = controller
         """The controller managing this batch."""

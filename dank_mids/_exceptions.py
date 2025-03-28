@@ -113,7 +113,11 @@ class BatchResponseSortError(Exception):
         """
 
         super().__init__(
-            f"This will not mess up your run but will make things needlessly slow. Please show this to Bob.  endpoint={controller.endpoint} client_version={controller.client_version} calls={[call.uid for call in calls]} response={self.results}"
+            f"This will not mess up your run but will make things needlessly slow. Please show this to Bob.\n"
+            f"endpoint={controller.endpoint}\n"
+            f"client_version={controller.client_version}\n"
+            f"calls={[call.uid for call in calls]}\n"
+            f"response={self.results}"
         )
 
 

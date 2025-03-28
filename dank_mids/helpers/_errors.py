@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from web3.datastructures import AttributeDict
 
-from dank_mids.types import BadResponse, PartialRequest, PartialResponse
+from dank_mids.types import BadResponse, Error, PartialRequest, PartialResponse
 
 if TYPE_CHECKING:
     from dank_mids._requests import _Batch
@@ -40,8 +40,8 @@ def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception):
     )
 
 
-def format_error_response(request: PartialRequest, response: PartialResponse) -> AttributeDict:
-    error = response.error.to_dict()
+def format_error_response(request: PartialRequest, error: Error) -> AttributeDict:
+    error = error.to_dict()
     error["dankmids_added_context"] = request
     return AttributeDict.recursive(error)
 

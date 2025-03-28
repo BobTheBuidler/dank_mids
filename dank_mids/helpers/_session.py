@@ -3,7 +3,7 @@ from asyncio import CancelledError, sleep
 from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
-from logging import DEBUG, WARNING, getLogger
+from logging import DEBUG, getLogger
 from random import random
 from threading import get_ident
 from time import time
@@ -115,7 +115,7 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 
 
 # default is 50 requests/second
-limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))
+limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
 _rate_limit_waiters = {}
 
@@ -296,7 +296,7 @@ async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
     )
 
 
-def _logger_is_enabled_for(msg: str, *args: Any) -> None: ...
+def _logger_is_enabled_for(level: int) -> bool: ...
 def _logger_warning(msg: str, *args: Any) -> None: ...
 def _logger_info(msg: str, *args: Any) -> None: ...
 def _logger_debug(msg: str, *args: Any) -> None: ...

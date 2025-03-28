@@ -9,6 +9,7 @@ from typing import (
     Type,
     TypedDict,
     Union,
+    cast,
     overload,
 )
 
@@ -26,7 +27,7 @@ from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
 from web3.method import default_root_munger
-from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS, HexStr
+from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS, HexStr, RPCEndpoint
 
 from dank_mids._web3.method import (
     WEB3_MAJOR_VERSION,
@@ -220,7 +221,7 @@ class DankEth(AsyncEth):
 
     _get_transaction_raw: MethodNoFormat[Callable[[HexStr], Awaitable[Raw]]] = MethodNoFormat(f"{RPC.eth_getTransactionByHash}_raw", mungers=[default_root_munger])  # type: ignore [arg-type,var-annotated]
 
-    async def get_transaction(self, transaction_hash: str) -> AnyTransaction:  # type: ignore [override]
+    async def get_transaction(self, transaction_hash: HexStr) -> AnyTransaction:
         """
         Retrieves a transaction by its hash and attempts to decode it.
 
@@ -269,7 +270,9 @@ class DankEth(AsyncEth):
     else:
         _get_transaction_receipt = meth
 
-    _get_transaction_receipt_raw = MethodNoFormat.default(f"{RPC.eth_getTransactionReceipt}_raw")
+    _get_transaction_receipt_raw = MethodNoFormat.default(
+        cast(RPCEndpoint, f"{RPC.eth_getTransactionReceipt}_raw")
+    )
 
     _get_block_raw: MethodNoFormat[Callable[..., Awaitable[Raw]]] = MethodNoFormat(
         method_choice_depends_on_args=select_method_for_block_identifier(
@@ -277,7 +280,7 @@ class DankEth(AsyncEth):
         ),
         mungers=[AsyncEth.get_block_munger],
     )
-    _trace_filter = MethodNoFormat.default(f"{RPC.trace_filter}_raw")
+    _trace_filter = MethodNoFormat.default(cast(RPCEndpoint, f"{RPC.trace_filter}_raw"))
     _trace_transaction = MethodNoFormat.default(RPC.trace_transaction)
 
 

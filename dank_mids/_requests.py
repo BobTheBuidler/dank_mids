@@ -27,6 +27,7 @@ from typing import (
     List,
     Literal,
     Optional,
+    Sequence,
     Tuple,
     TypeVar,
     Union,
@@ -109,7 +110,7 @@ class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
 
-_TIMEOUT = float(ENVS.STUCK_CALL_TIMEOUT)
+_TIMEOUT = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
 
 
 _super_init = a_sync.Event.__init__
@@ -137,13 +138,13 @@ class _RequestEvent(a_sync.Event):
 
 
 class _RequestBase(Generic[_Response]):
-    _fut: DebuggableFuture[Union[_Response, RPCResponse]]
+    _fut: DebuggableFuture
     _batch: Optional["_Batch"] = None
 
     __slots__ = "controller", "uid", "_fut", "__weakref__"
 
     def __init__(self, controller: "DankMiddlewareController") -> None:
-        self.controller = controller
+        self.controller: "DankMiddlewareController" = controller
         """The DankMiddlewareController that created this request."""
 
         self.uid = controller.call_uid.next
@@ -188,11 +189,13 @@ def _should_batch_method(method: str) -> bool:
 
 
 class RPCRequest(_RequestBase[RawResponse]):
-    _fut: DebuggableFuture[RawResponse]
+    _fut: DebuggableFuture
     should_batch: bool = True
     """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
 
     _debug_logs_enabled: bool = False
+
+    method: RPCEndpoint
 
     __slots__ = "method", "params", "raw", "_daemon", "__dict__"
 
@@ -300,8 +303,8 @@ class RPCRequest(_RequestBase[RawResponse]):
             # TODO think about getting rid of this
             raise DankMidsClientResponseError(e, self.request) from e
         except Exception as e:
-            e.request = request = self.request
-            if not e.args or e.args[-1] != request:
+            if not hasattr(e, "request"):
+                e.request = request = self.request  # type: ignore [attr-defined]
                 e.args = *e.args, request
             raise
 
@@ -374,7 +377,9 @@ class RPCRequest(_RequestBase[RawResponse]):
                         log_request_type_switch()
                     self._fut.set_result(await self.create_duplicate(log=False))
                     return
-            self._fut.set_result({"error": format_error_response(self.request, data.response)})
+            self._fut.set_result(
+                {"error": format_error_response(self.request, data.response.error)}
+            )
             if self._debug_logs_enabled:
                 error_logger_debug(
                     "%s _response set to rpc error response %s", self, self._fut.result()
@@ -412,7 +417,7 @@ class RPCRequest(_RequestBase[RawResponse]):
             )
         if type(self) is eth_call:
             return eth_call(self.controller, self.params)
-        method = f"{self.method}_raw" if self.raw else self.method
+        method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method
         return RPCRequest(self.controller, method, self.params)
 
 
@@ -586,15 +591,15 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
 
 _mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
-_mcall_encoder.validate_value = lambda *_: ...
+_mcall_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
 
 
-_array_encoder: DynamicArrayEncoder = _mcall_encoder.encoders[-1]
-_array_encoder.validate_value = lambda *_: ...
+_array_encoder: DynamicArrayEncoder = _mcall_encoder.encoders[-1]  # type: ignore [index]
+_array_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
 
 
 _item_encoder: TupleEncoder = _array_encoder.item_encoder
-_item_encoder.validate_value = lambda *_: ...
+_item_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
 
 
 def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
@@ -611,13 +616,13 @@ def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]
     return b"".join(chain(head_chunks, tail_chunks)), count
 
 
-_array_encoder.encode = __encode_new
-_array_encoder.encode_elements = __encode_elements_new
+_array_encoder.encode = __encode_new  # type: ignore [method-assign]
+_array_encoder.encode_elements = __encode_elements_new  # type: ignore [method-assign]
 
 _mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
 
 
-def mcall_encode(data: Iterable[Tuple[bool, bytes]]) -> bytes:
+def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
     return _mcall_encoder((False, data))
 
 
@@ -629,7 +634,7 @@ __get_bytes = lambda tup: tup[1]
 def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
     decoded: List[Tuple[Success, bytes]]
     try:
-        decoded = _mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]
+        decoded = _mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
@@ -781,7 +786,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @set_done
     async def spoof_response(
-        self, data: Union[RawResponse, Exception], calls: Optional[List[eth_call]] = None
+        self, data: Union[RawResponse, Exception], calls: Optional[Sequence[eth_call]] = None
     ) -> None:
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
@@ -792,7 +797,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 )
 
             # No need to gather this, `spoof_response` with an Exception input will complete synchronously
-            for call in self.calls:
+            for call in calls or self.calls:
                 await call.spoof_response(data)
 
         # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
@@ -897,7 +902,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     def __init__(
         self,
         controller: "DankMiddlewareController",
-        calls: List[Union[Multicall, RPCRequest]] = [],
+        calls: Iterable[Union[Multicall, RPCRequest]] = [],
         jid: Optional[BatchId] = None,
     ) -> None:  # sourcery skip: default-mutable-arg
         """
