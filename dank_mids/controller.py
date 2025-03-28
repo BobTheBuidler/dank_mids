@@ -61,6 +61,8 @@ class DankMiddlewareController:
         self.w3: Web3 = w3
         """The Web3 instance used to make rpc requests."""
 
+        self.max_jsonrpc_batch_size = int(ENVS.MAX_JSONRPC_BATCH_SIZE)
+
         self.sync_w3 = _sync_w3_from_async(w3)
         """A sync Web3 instance connected to the same rpc, used to make calls during init."""
 
@@ -277,7 +279,7 @@ class DankMiddlewareController:
         """
         with self.pools_closed_lock:
             if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
-                return sum(map(len, self.pending_rpc_calls)) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
+                return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size
             eth_calls = sum(map(len, self._pending_eth_calls_values()))
             other_calls = sum(map(len, self.pending_rpc_calls))
             return eth_calls + other_calls >= self.batcher.step
@@ -376,14 +378,14 @@ class DankMiddlewareController:
         Args:
             new_limit: The new maximum number of calls in a JSON-RPC batch.
         """
-        existing_limit = ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined]
+        existing_limit = self.max_jsonrpc_batch_size
         if new_limit < existing_limit:  # type: ignore [operator]
-            ENVS.MAX_JSONRPC_BATCH_SIZE = new_limit  # type: ignore [attr-defined,assignment]
+            self.max_jsonrpc_batch_size = new_limit  # type: ignore [attr-defined,assignment]
             logger.warning(
                 "jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit
             )
         else:
-            logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, int(existing_limit))  # type: ignore [call-overload]
+            logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, existing_limit)
 
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(self, block) -> MulticallContract:
