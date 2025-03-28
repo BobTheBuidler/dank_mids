@@ -63,7 +63,7 @@ def get_mapper(
             strip_abi_types,
             list,
         )
-        mapper = _mappers[(normalizers, types)] = compose(*pipeline.__reversed__())
+        mapper = _mappers[(normalizers, types)] = compose(*reversed(pipeline))
     return mapper
 
 
