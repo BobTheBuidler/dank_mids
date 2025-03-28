@@ -55,7 +55,7 @@ def get_mapper(
         pipeline = [
             # 1. Decorating the data tree with types
             # web3.py implementation is `abi_data_tree(types)` but a lambda is faster than a curried func call
-            lambda data: list(map(abi_sub_tree, types, data)),
+            lambda data: map(abi_sub_tree, types, data),
             # 2. Recursively mapping each of the normalizers to the data
             *map(data_tree_map, normalizers),
             # 3. Stripping the types back out of the tree
