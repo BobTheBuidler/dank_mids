@@ -1,7 +1,7 @@
 from asyncio import Task, get_running_loop
 from typing import Coroutine, Iterable, Optional
 
-from a_sync.asyncio import sleep0
+from a_sync.asyncio import sleep0 as yield_to_loop
 
 
 async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -> None:
@@ -22,8 +22,8 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
     # NOTE: By doing this we allow any successful calls to get their results sooner without being interrupted
     #       by the first exc in the gather and having to wait for the bisect and retry process
     # TODO: stop retrying ones that succeed, that's wasteful
-    await sleep0()
-    await sleep0()
+    await yield_to_loop()
+    await yield_to_loop()
     for task in tasks:
         try:
             await task

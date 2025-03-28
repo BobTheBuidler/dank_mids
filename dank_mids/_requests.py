@@ -39,7 +39,7 @@ from weakref import proxy as weak_proxy
 import a_sync
 import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
-from a_sync.asyncio import sleep0
+from a_sync.asyncio import sleep0 as yield_to_loop
 from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
 from eth_abi import abi, decoding
@@ -272,7 +272,7 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         if self._batch is None:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
-            await sleep0()
+            await yield_to_loop()
         if self._batch is None:
             try:
                 batch_task = create_task(self.controller.execute_batch())
