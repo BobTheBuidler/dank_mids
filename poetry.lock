@@ -1845,13 +1845,13 @@ test = ["asn1tools (>=0.146.2)", "eth-hash[pysha3]", "factory-boy (>=3.0.1)", "h
 
 [[package]]
 name = "eth-retry"
-version = "0.2.1"
+version = "0.2.2"
 description = "Provides a decorator that automatically catches known transient exceptions that are common in the Ethereum/EVM ecosystem and reattempts to evaluate your decorated function"
 optional = false
 python-versions = "*"
 files = [
-    {file = "eth_retry-0.2.1-py3-none-any.whl", hash = "sha256:df90cc4fe2d742bfa0f03e0ae4eaf28730ba01d88b997cacaa2aa1955988f57e"},
-    {file = "eth_retry-0.2.1.tar.gz", hash = "sha256:12ffd9ca8e8a3e87cbd76019fdcf59b019ad9769f792a51135868b66c6f5a0ed"},
+    {file = "eth_retry-0.2.2-py3-none-any.whl", hash = "sha256:32d22aac3987a7244ba1a43bbb3b14abac0f916630e54a095ec23c2b43fbdb4b"},
+    {file = "eth_retry-0.2.2.tar.gz", hash = "sha256:34326c4629b8bf5cd6221589c9e2e8c2157ff0d9fb0c0d07e5f5821665bdd42e"},
 ]
 
 [package.dependencies]
@@ -2033,12 +2033,12 @@ testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
 name = "ez-a-sync"
-version = "0.27.6"
+version = "0.28.0"
 description = "A library that makes it easy to define objects that can be used for both sync and async use cases."
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "ez_a_sync-0.27.6.tar.gz", hash = "sha256:c427539208088853dd2b85443a75fbc38c71f893e728cf1f18abb983d04675c7"},
+    {file = "ez_a_sync-0.28.0.tar.gz", hash = "sha256:6dabc28bf425673a29dc9bdce973b21f3701837ff8d48eaa1aa8dc22bd17b18a"},
 ]
 
 [package.dependencies]
@@ -5095,4 +5095,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "0b7ebdf4f05f756026fb082e23319d614c098e22f742c5de4e5445fb6c4fa110"
+content-hash = "82bcd29c5a809b548c1b902a6bc4caa120b3637adee2b7309bce95bae65dc07d"
