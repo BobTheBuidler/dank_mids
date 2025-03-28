@@ -228,7 +228,7 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         if logger.isEnabledFor(DEBUG):
             self._debug_logs_enabled = True
-        
+
         if controller.max_jsonrpc_batch_size <= 50:
             self._tiny_batches = True
 
@@ -994,7 +994,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     @property
     def is_full(self) -> bool:
         with self._lock:
-            return self.total_calls >= self._batcher.step or len(self) >= self.controller.max_jsonrpc_batch_size
+            return (
+                self.total_calls >= self._batcher.step
+                or len(self) >= self.controller.max_jsonrpc_batch_size
+            )
 
     def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
         # sourcery skip: hoist-loop-from-if
