@@ -270,7 +270,9 @@ class DankEth(AsyncEth):
     else:
         _get_transaction_receipt = meth
 
-    _get_transaction_receipt_raw = MethodNoFormat.default(cast(RPCEndpoint, f"{RPC.eth_getTransactionReceipt}_raw"))
+    _get_transaction_receipt_raw = MethodNoFormat.default(
+        cast(RPCEndpoint, f"{RPC.eth_getTransactionReceipt}_raw")
+    )
 
     _get_block_raw: MethodNoFormat[Callable[..., Awaitable[Raw]]] = MethodNoFormat(
         method_choice_depends_on_args=select_method_for_block_identifier(

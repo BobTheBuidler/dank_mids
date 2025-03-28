@@ -15,6 +15,7 @@ logger = logging.getLogger("dank_mids.debugging")
 
 Mode = Literal["a"]
 
+
 class _FileHelper(metaclass=abc.ABCMeta):
     path = f"{os.path.expanduser('~')}/.dank_mids/debug"
 
