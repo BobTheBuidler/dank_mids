@@ -17,13 +17,14 @@ This module is crucial for debugging, performance monitoring, and optimization o
 # TODO: Robust and Refactor
 
 import logging
-from asyncio import create_task, sleep
+from asyncio import create_task
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor
 from time import time
 from typing import TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Set, Type, TypeVar
 
 import msgspec
+from a_sync.asyncio import sleep0
 from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
 from web3.types import RPCEndpoint
 
@@ -220,7 +221,7 @@ class _StatsLogger(logging.Logger):
         start = time()
         time_since_notified = 0
         while True:
-            await sleep(0)
+            await sleep0()
             now = time()
             duration = now - start
             collector.event_loop_times.append(duration)

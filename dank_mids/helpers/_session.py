@@ -10,6 +10,7 @@ from time import time
 from typing import Any, Callable, Tuple, overload
 
 from a_sync import Event
+from a_sync.asyncio import sleep0
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
@@ -148,7 +149,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         for _ in range(10):
             if waiters:
                 break
-            await sleep(0)
+            await sleep0()
 
     _rate_limit_waiters.pop(endpoint).set()
 
