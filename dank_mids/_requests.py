@@ -242,7 +242,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         return id(self)
 
     def __eq__(self, __o: object) -> bool:
-        return self.uid == __o.uid if type(__o) is type(self) else False
+        return (self.uid == __o.uid) if type(__o) is type(self) else False
 
     def __len__(self) -> int:
         # NOTE: We dont need to consider this for very small batch sizes since the requests/responses will never get too large
