@@ -1,9 +1,10 @@
-from typing import Any, Callable, Sequence, Tuple
+from typing import Any, Callable, Iterable, Iterator, Sequence, Tuple
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
 from web3._utils.abi import ABITypedData, abi_sub_tree, strip_abi_type
 from web3._utils.formatters import recursive_map
+from web3.types import TValue
 
 
 @curry
@@ -51,26 +52,31 @@ def get_mapper(
 ) -> Tuple[Callable, ...]:
     mapper = _mappers.get((normalizers, types))
     if mapper is None:
-        pipeline = [
+        pipeline = (          
             # 1. Decorating the data tree with types
             # web3.py implementation is `abi_data_tree(types)` but a lambda is faster than a curried func call
-            lambda data: iterator(map(abi_sub_tree, types, data)),
+            lambda data: map(abi_sub_tree, types, data),
             # 2. Recursively mapping each of the normalizers to the data
+            IteratorProxy,
             *map(get_data_tree_map, normalizers),
             # 3. Stripping the types back out of the tree
             strip_abi_types,
-        ]
+        )
         mapper = _mappers[(normalizers, types)] = compose(*pipeline.__reversed__())
     return mapper
 
 
-class iterator:
-    def __init__(self, iterable):
-        self.iterator = iter(iterable)
+class IteratorProxy(Iterable[TValue]):
+    """Wraps an iterator to return when iterated upon"""
+    def __init__(self, iterator: Iterator[TValue]):
+        self.__wrapped = iterator
     def __iter__(self):
-        return self
-    def __next__(self):
-        return next(self.iterator)
+        try:
+            return self.__dict__.pop("_IteratorProxy__wrapped")
+        except KeyError as e:
+            raise RuntimeError(
+                f"{type(self).__name__} has already been consumed"
+            ) from e.__cause__
 
 _data_tree_maps = {}
 
