@@ -78,9 +78,13 @@ class IteratorProxy(Iterable[TValue]):
                 f"{type(self).__name__} has already been consumed"
             ) from e.__cause__
 
+
 _data_tree_maps = {}
 
-def get_data_tree_map(func: Callable[[TypeStr, Any], Tuple[TypeStr, Any]]) -> Callable[[Any], ABITypedData]:
+
+def get_data_tree_map(
+    func: Callable[[TypeStr, Any], Tuple[TypeStr, Any]],
+) -> Callable[[Any], ABITypedData]:
     f = _data_tree_maps.get(func)
     if f is None:
 
@@ -89,7 +93,7 @@ def get_data_tree_map(func: Callable[[TypeStr, Any], Tuple[TypeStr, Any]]) -> Ca
                 return ABITypedData(func(*elements))
             else:
                 return elements
-        
+
         typed_data_func = lambda data: recursive_map(map_to_typed_data, data)
 
         f = _data_tree_maps[func] = typed_data_func
