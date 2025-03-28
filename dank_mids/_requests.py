@@ -190,13 +190,14 @@ def _should_batch_method(method: str) -> bool:
 
 
 class RPCRequest(_RequestBase[RawResponse]):
-    _fut: DebuggableFuture
     should_batch: bool = True
     """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
 
     _debug_logs_enabled: bool = False
+    """`True` if debug logging is currently enabled."""
 
     method: RPCEndpoint
+    _fut: DebuggableFuture
 
     __slots__ = "method", "params", "raw", "_daemon", "__dict__"
 
@@ -241,7 +242,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         return id(self)
 
     def __eq__(self, __o: object) -> bool:
-        return self.uid == __o.uid if isinstance(__o, self.__class__) else False
+        return self.uid == __o.uid if type(__o) is type(self) else False
 
     def __len__(self) -> int:
         # NOTE: We dont need to consider this for very small batch sizes since the requests/responses will never get too large

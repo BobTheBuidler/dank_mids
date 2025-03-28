@@ -26,24 +26,6 @@ _super_set_result = Future.set_result
 _super_set_exc = Future.set_exception
 
 
-class ExceptionAlreadySet(InvalidStateError):
-    def __init__(self, fut: "DebuggableFuture", attempted: Optional[Exception] = None):
-        self.fut = fut
-        self.attempted = attempted
-        if attempted is None:
-            super().__init__(fut)
-        else:
-            super().__init__(fut, attempted)
-
-    def __str__(self) -> str:
-        if self.attempted is None:
-            return f"Exception already set: {self.fut}"
-        return (
-            f"Cannot set result to {type(self.attempted).__name__} {self.attempted}\n"
-            f"Exception already set: {self.fut}"
-        )
-
-
 class DebuggableFuture(Future[RPCResponse]):
     # default values
     _debug_logs_enabled: bool = False
@@ -64,14 +46,18 @@ class DebuggableFuture(Future[RPCResponse]):
         return Future.__await__(self)
 
     def set_result(self, value: Any) -> None:
+        # sourcery skip: merge-duplicate-blocks, remove-redundant-if
         if self._loop is get_running_loop():
             try:
                 _super_set_result(self, value)
             except InvalidStateError as e:
                 if self._result is not None:
+                    # We already have a result. We don't really care where it came from, this is fine.
                     return
                 elif self._exception is not None:
-                    raise ExceptionAlreadySet(self, value) from e
+                    # This can happen if 2 copies of a call are going at once, and one gets a revert as a RawResponse
+                    # from a JSONRPC batch and the other gets a ContractLogicError from the single call handler
+                    return
                 elif self._state == "CANCELLED":
                     raise InvalidStateError(f"{self} is cancelled") from e
                 else:
@@ -82,9 +68,12 @@ class DebuggableFuture(Future[RPCResponse]):
         elif self._state == "PENDING":
             self._loop.call_soon_threadsafe(_super_set_result, self, value)
         elif self._result is not None:
+            # We already have a result. We don't really care where it came from, this is fine.
             return
         elif self._exception is not None:
-            raise ExceptionAlreadySet(self, value)
+            # This can happen if 2 copies of a call are going at once, and one gets a revert as a RawResponse
+            # from a JSONRPC batch and the other gets a ContractLogicError from the single call handler
+            return
         elif self._state == "CANCELLED":
             raise InvalidStateError(f"{self} is cancelled") from e
         else:
