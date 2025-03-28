@@ -385,7 +385,11 @@ class DankMiddlewareController:
                 "jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit
             )
         else:
-            logger.info("new jsonrpc batch size limit %s is not lower than existing limit %s", new_limit, existing_limit)
+            logger.info(
+                "new jsonrpc batch size limit %s is not lower than existing limit %s",
+                new_limit,
+                existing_limit,
+            )
 
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(self, block) -> MulticallContract:
