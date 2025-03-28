@@ -191,7 +191,10 @@ def _should_batch_method(method: str) -> bool:
 
 class RPCRequest(_RequestBase[RawResponse]):
     should_batch: bool = True
-    """Returns `True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
+    """`True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
+
+    _tiny_batches: bool = False
+    """`True` if the max jsonrpc batch size is 50 or lower."""
 
     _debug_logs_enabled: bool = False
     """`True` if debug logging is currently enabled."""
@@ -226,6 +229,9 @@ class RPCRequest(_RequestBase[RawResponse]):
         if logger.isEnabledFor(DEBUG):
             self._debug_logs_enabled = True
 
+        if controller.max_jsonrpc_batch_size <= 50:
+            self._tiny_batches = True
+
         if self.should_batch:
             with controller.pools_closed_lock:
                 if isinstance(self, eth_call) and self.multicall_compatible:
@@ -246,7 +252,7 @@ class RPCRequest(_RequestBase[RawResponse]):
 
     def __len__(self) -> int:
         # NOTE: We dont need to consider this for very small batch sizes since the requests/responses will never get too large
-        return _get_len_for_method(self.method) if ENVS.MAX_JSONRPC_BATCH_SIZE > 50 else 1  # type: ignore [operator]
+        return _get_len_for_method(self.method) if self._tiny_batches else 1
 
     def __repr__(self) -> str:
         return (
@@ -988,9 +994,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     @property
     def is_full(self) -> bool:
         with self._lock:
-            return self.total_calls >= self._batcher.step or len(self) >= ENVS.MAX_JSONRPC_BATCH_SIZE  # type: ignore [attr-defined,operator]
+            return (
+                self.total_calls >= self._batcher.step
+                or len(self) >= self.controller.max_jsonrpc_batch_size
+            )
 
-    def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
+    def start(self, batch: Optional["DankBatch"] = None, cleanup=True) -> None:
         # sourcery skip: hoist-loop-from-if
         batch = batch or self
         if _logger_is_enabled_for(DEBUG):
