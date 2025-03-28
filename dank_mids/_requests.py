@@ -999,7 +999,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 or len(self) >= self.controller.max_jsonrpc_batch_size
             )
 
-    def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
+    def start(self, batch: Optional["DankBatch"] = None, cleanup=True) -> None:
         # sourcery skip: hoist-loop-from-if
         batch = batch or self
         if _logger_is_enabled_for(DEBUG):
