@@ -52,7 +52,7 @@ def get_mapper(
 ) -> Tuple[Callable, ...]:
     mapper = _mappers.get((normalizers, types))
     if mapper is None:
-        pipeline = (          
+        pipeline = (
             # 1. Decorating the data tree with types
             # web3.py implementation is `abi_data_tree(types)` but a lambda is faster than a curried func call
             lambda data: map(abi_sub_tree, types, data),
@@ -68,15 +68,15 @@ def get_mapper(
 
 class IteratorProxy(Iterable[TValue]):
     """Wraps an iterator to return when iterated upon"""
+
     def __init__(self, iterator: Iterator[TValue]):
         self.__wrapped = iterator
+
     def __iter__(self):
         try:
             return self.__dict__.pop("_IteratorProxy__wrapped")
         except KeyError as e:
-            raise RuntimeError(
-                f"{type(self).__name__} has already been consumed"
-            ) from e.__cause__
+            raise RuntimeError(f"{type(self).__name__} has already been consumed") from e.__cause__
 
 
 _data_tree_maps = {}
