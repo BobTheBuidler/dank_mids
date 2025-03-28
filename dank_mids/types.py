@@ -28,6 +28,7 @@ from typing import (
 import evmspec
 from dictstruct import DictStruct
 from eth_typing import ChecksumAddress, HexStr
+from eth_utils.toolz import valmap
 from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
 from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
 from evmspec.structs.log import Log
@@ -403,7 +404,7 @@ def _encode_hook(obj: Encodable) -> RpcThing:
         # but I check for mapping so it can work with user custom classes
         if not isinstance(obj, Mapping):
             raise TypeError(obj, type(obj)) from e
-        return dict({k: _rudimentary_encode_dict_value(v) for k, v in obj.items()})
+        return valmap(_rudimentary_encode_dict_value, obj)
     except ValueError as e:
         # NOTE: The error is probably this if `obj` is a string:
         # ValueError: invalid literal for int() with base 10:"""

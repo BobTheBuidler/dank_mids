@@ -61,6 +61,7 @@ def get_mapper(
             *map(get_data_tree_map, normalizers),
             # 3. Stripping the types back out of the tree
             strip_abi_types,
+            list,
         )
         mapper = _mappers[(normalizers, types)] = compose(*pipeline.__reversed__())
     return mapper
