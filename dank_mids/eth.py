@@ -86,9 +86,13 @@ class DankEth(AsyncEth):
             raise
         _get_block_number = MethodNoFormat(RPC.eth_blockNumber, mungers=None)
 
-        _call: MethodNoFormat[Callable[[TxParams, Optional[BlockIdentifier], Optional[CallOverride]], Awaitable[HexBytes]]]
+        _call: MethodNoFormat[
+            Callable[
+                [TxParams, Optional[BlockIdentifier], Optional[CallOverride]], Awaitable[HexBytes]
+            ]
+        ]
         _call = MethodNoFormat(RPC.eth_call, mungers=[BaseEth.call_munger])
-        
+
     async def get_block_timestamp(self, block_identifier: int) -> UnixTimestamp:
         """
         Retrieves only the timestamp from a specific block.
