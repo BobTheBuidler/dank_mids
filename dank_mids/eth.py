@@ -4,6 +4,7 @@ from typing import (
     Callable,
     List,
     Literal,
+    Optional,
     Sequence,
     Tuple,
     Type,
@@ -15,19 +16,20 @@ from typing import (
 
 from async_lru import alru_cache
 from async_property import async_cached_property
-from eth_typing import BlockNumber
+from eth_typing import Address, BlockNumber, ChecksumAddress, HexStr
 from evmspec import AnyTransaction, FilterTrace, Transaction, TransactionRLP, TransactionReceipt
 from evmspec.data import TransactionHash, UnixTimestamp, _decode_hook
 from evmspec.data._main import DecodeHook
 from evmspec.structs.block import TinyBlock
 from evmspec.structs.log import Log
 from evmspec.structs.receipt import Status
+from hexbytes import HexBytes
 from msgspec import Raw, Struct, ValidationError, json
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
-from web3.eth import AsyncEth
+from web3.eth import AsyncEth, BaseEth
 from web3.method import default_root_munger
-from web3.types import Address, BlockIdentifier, ChecksumAddress, ENS, HexStr, RPCEndpoint
+from web3.types import BlockIdentifier, CallOverride, ENS, RPCEndpoint, TxParams
 
 from dank_mids._web3.method import (
     WEB3_MAJOR_VERSION,
@@ -83,6 +85,13 @@ class DankEth(AsyncEth):
         if str(e) != "__init__() got an unexpected keyword argument 'is_property'":
             raise
         _get_block_number = MethodNoFormat(RPC.eth_blockNumber, mungers=None)
+
+        _call: MethodNoFormat[
+            Callable[
+                [TxParams, Optional[BlockIdentifier], Optional[CallOverride]], Awaitable[HexBytes]
+            ]
+        ]
+        _call = MethodNoFormat(RPC.eth_call, mungers=[BaseEth.call_munger])
 
     async def get_block_timestamp(self, block_identifier: int) -> UnixTimestamp:
         """
