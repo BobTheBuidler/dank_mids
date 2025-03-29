@@ -30,10 +30,10 @@ class _DankMethodMixin(Generic[_EVMType]):
     def __init__(self):
         self._len_inputs = len(self.abi["inputs"])
 
-        # cache `call` on this object to prevent repeated imports due to circ import
+        # cache `_call` on this object to prevent repeated imports due to circ import
         import dank_mids
 
-        self._call = dank_mids.eth.call
+        self._call = dank_mids.eth._call
 
         from dank_mids.brownie_patch import call
 
