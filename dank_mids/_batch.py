@@ -45,7 +45,7 @@ class DankBatch:
         self,
         controller: "DankMiddlewareController",
         multicalls: Multicalls,
-        rpc_calls: Iterable[Union[Multicall, RPCRequest]],
+        rpc_calls: JSONRPCBatch,
     ):
         self.controller = controller
         """The controller managing this batch."""
@@ -117,8 +117,8 @@ class DankBatch:
         """
         # Combine multicalls into one or more jsonrpc batches
 
-        # Create empty batch
-        working_batch = JSONRPCBatch(self.controller)
+        # Start with our existing batch
+        working_batch = self.rpc_calls
 
         # alias since this code runs in tight loops
         batch_append = working_batch.append
@@ -137,14 +137,6 @@ class DankBatch:
                 working_batch = JSONRPCBatch(self.controller)
                 batch_append = working_batch.append
 
-        rpc_calls_to_batch = list(self.rpc_calls)
-        pop_next = rpc_calls_to_batch.pop
-        while rpc_calls_to_batch:
-            if working_batch.is_full:
-                yield working_batch
-                working_batch = JSONRPCBatch(self.controller)
-                batch_append = working_batch.append
-            batch_append(pop_next(), skip_check=True)
         if working_batch:
             if len(working_batch) == 1:
                 call = next(iter(working_batch))
