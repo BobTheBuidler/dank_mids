@@ -270,15 +270,16 @@ class RPCRequest(_RequestBase[RawResponse]):
             return await self.get_response_unbatched()
 
         current_batch = self._batch
-        if current_batch is not None and not current_batch._started:
+        if current_batch is None:
+            # NOTE: We want to force the event loop to make one full _run_once call before we execute.
+            await yield_to_loop()
+
+        elif current_batch._started is False:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
             await current_batch
         # get rid of the strong reference
         del current_batch
 
-        if self._batch is None:
-            # NOTE: We want to force the event loop to make one full _run_once call before we execute.
-            await yield_to_loop()
         if self._batch is None:
             try:
                 batch_task = create_task(self.controller.execute_batch())
