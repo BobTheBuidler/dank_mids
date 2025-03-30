@@ -11,7 +11,6 @@ from asyncio import (
 )
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
-from inspect import stack
 from itertools import accumulate, chain, filterfalse, groupby
 from logging import DEBUG, getLogger
 from time import time
@@ -419,14 +418,9 @@ class RPCRequest(_RequestBase[RawResponse]):
 
     def create_duplicate(self, log: bool = True) -> Union["RPCRequest", "eth_call"]:
         if log:
-            caller = stack()[-1]
             _log_warning(
-                "%s got stuck, we're creating a new one\n"
-                "    caller: filename=%s function=%s lineno=%s",
+                "%s got stuck, we're creating a new one",
                 self,
-                caller.filename,
-                caller.function,
-                caller.lineno,
             )
         if type(self) is eth_call:
             return eth_call(self.controller, self.params)
