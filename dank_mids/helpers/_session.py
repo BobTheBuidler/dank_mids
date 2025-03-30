@@ -7,7 +7,7 @@ from logging import DEBUG, getLogger
 from random import random
 from threading import get_ident
 from time import time
-from typing import Any, Callable, Tuple, overload
+from typing import Any, Callable, Dict, Tuple, overload
 
 from a_sync import Event
 from a_sync.asyncio import sleep0 as yield_to_loop
@@ -118,18 +118,25 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 # default is 50 requests/second
 limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
-_rate_limit_waiters = {}
+_rate_limit_waiters: Dict[str, Event] = {}
 
 
 async def rate_limit_inactive(endpoint: str) -> None:
-    # wait until the last future has been cleared from the rate limiter
+    """
+    Wait until the rate limiter for `endpoint` has no remaining waiters.
+    If someone's already waiting on this endpoint, just await their Event.
+    Otherwise, set up our own Event and signal once no waiters remain.
+    """
+    # Quick exit if no queued waiters
     if not (waiters := limiters[endpoint]._waiters):
         return
 
-    if waiter := _rate_limit_waiters.get(endpoint):
-        await waiter.wait()
+    # If another task is already waiting, just join it
+    if existing := _rate_limit_waiters.get(endpoint):
+        await existing.wait()
         return
 
+    # Otherwise, create an Event for others to wait on
     _rate_limit_waiters[endpoint] = Event()
 
     while waiters:
