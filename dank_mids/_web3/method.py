@@ -51,7 +51,21 @@ class MethodNoFormat(Method[TFunc]):
                 params = []
 
         method = self.method_selector_fn()
-        request = method, get_request_formatters(method)(params)
+        request_formatters = get_request_formatters(method)
+        if method == "eth_call":
+            # we will only format the TxParams
+            if len(params) > 2:
+                raise NotImplementedError("You can not use state override with dank mids")
+            tx, block = params
+            if len(tx) > 2:
+                params = request_formatters(params)
+            else:
+                params = tx, hex(block) if isinstance(block, int) else block
+                if isinstance(tx["data"], bytes):
+                    tx["data"] = f"0x{bytes.hex(tx['data'])}"
+        else:
+            params = request_formatters(params)
+        request = method, params
         return request, _response_formatters.get(self.json_rpc_method) or _get_response_formatters(
             self.json_rpc_method
         )
