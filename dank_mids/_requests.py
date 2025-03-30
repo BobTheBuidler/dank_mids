@@ -457,6 +457,9 @@ class eth_call(RPCRequest):
 
     def __repr__(self) -> str:
         tx, block = self.params
+        block = self.block
+        if block.startswith("0x"):
+            block = int(block, 16)
         return f"<{self.__class__.__name__} uid={self.uid} block={block} to={tx['to']} data={tx['data']}>"
 
     @property
