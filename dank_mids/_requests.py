@@ -1199,10 +1199,19 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     # Not sure why it works this way
                     raise BatchResponseSortError(controller, calls, response)
 
-        await gatherish(
-            coros=(call.spoof_response(raw) for call, raw in zip(calls, response)),
-            name="JSONRPCBatch.spoof_response",
-        )
+        responses = iter(response)
+        coros = []
+        for request_type, requests in groupby(calls, type):
+            spoof_response_coros = map(request_type.spoof_response, requests, responses)
+            if request_type is Multicall:
+                coros.extend(spoof_response_coros)
+            else:
+                # These do not need to be gathered since they will
+                # always complete synchronously when called here
+                for coro in spoof_response_coros:
+                    await coro
+
+        await gatherish(coros=coros, name="JSONRPCBatch.spoof_response")
 
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
