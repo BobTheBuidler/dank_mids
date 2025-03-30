@@ -29,7 +29,7 @@ from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth, BaseEth
 from web3.method import default_root_munger
-from web3.types import BlockIdentifier, CallOverride, ENS, RPCEndpoint, TxParams, Wei
+from web3.types import BlockIdentifier, ENS, RPCEndpoint, TxParams, Wei
 
 from dank_mids._web3.method import (
     WEB3_MAJOR_VERSION,
