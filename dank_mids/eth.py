@@ -1,7 +1,7 @@
-from asyncio import sleep
 from typing import (
     Awaitable,
     Callable,
+    Dict,
     List,
     Literal,
     Optional,
@@ -29,7 +29,7 @@ from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth, BaseEth
 from web3.method import default_root_munger
-from web3.types import BlockIdentifier, CallOverride, ENS, RPCEndpoint, TxParams
+from web3.types import BlockIdentifier, CallOverride, ENS, RPCEndpoint, TxParams, Wei
 
 from dank_mids._web3.method import (
     WEB3_MAJOR_VERSION,
@@ -38,6 +38,22 @@ from dank_mids._web3.method import (
     _block_selectors,
 )
 from dank_mids.types import T
+
+
+# These 2 type defs are in recent, but not all, web3.py versions
+CallOverrideParams = TypedDict(
+    "CallOverrideParams",
+    {
+        "balance": Optional[Wei],
+        "nonce": Optional[int],
+        "code": Optional[Union[bytes, HexStr]],
+        "state": Optional[Dict[HexStr, HexStr]],
+        "stateDiff": Optional[Dict[HexStr, HexStr]],
+    },
+    total=False,
+)
+
+CallOverride = Dict[ChecksumAddress, CallOverrideParams]
 
 
 class TraceFilterParams(TypedDict, total=False):  # type: ignore [call-arg]
