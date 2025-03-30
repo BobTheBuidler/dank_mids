@@ -456,7 +456,8 @@ class eth_call(RPCRequest):
         RPCRequest.__init__(self, controller, "eth_call", params)
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} uid={self.uid} params={self.params}>"
+        tx, block = self.params
+        return f"<{self.__class__.__name__} uid={self.uid} block={block} to={tx['to']} data={tx['data']}>"
 
     @property
     def multicall_compatible(self) -> bool:
