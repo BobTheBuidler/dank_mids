@@ -259,6 +259,10 @@ class RPCRequest(_RequestBase[RawResponse]):
             f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}>"
         )
 
+    def __del__(self) -> None:
+        if not self._fut.done():
+            logger.error("%s was garbage collected before finishing")
+
     @property
     def request(self) -> Union[Request, PartialRequest]:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
@@ -684,7 +688,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             and not self._done.is_set()
             and any(filterfalse(Future.done, (call._fut for call in self.calls)))
         ):
-            error_logger.warning("%s was garbage collected before finishing", self)
+            error_logger.error("%s was garbage collected before finishing", self)
 
     @cached_property
     def block(self) -> BlockId:
@@ -934,7 +938,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                 if cls is Multicall:
                     calls = concat(filter(None, calls))
                 if any(filterfalse(Future.done, (call._fut for call in calls))):
-                    error_logger.warning("%s was garbage collected before finishing", self)
+                    error_logger.error("%s was garbage collected before finishing", self)
                     return
 
     @property
