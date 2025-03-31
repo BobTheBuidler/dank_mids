@@ -197,6 +197,7 @@ def _should_batch_method(method: str) -> bool:
 
 _REVERT_EXC_TYPES = ContractLogicError, ExecutionReverted
 
+
 class RPCRequest(_RequestBase[RawResponse]):
     should_batch: bool = True
     """`True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
@@ -435,7 +436,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         elif error_logger.isEnabledFor(DEBUG) and type(data) not in _REVERT_EXC_TYPES:
             self.__log_set_exception(error_logger_log_debug, data)
         self._fut.set_exception(data)
-    
+
     def __log_set_exception(self, log_func: Callable[..., None], exc: Exception):
         exc_type = type(exc).__name__
         log_func("%s for %s", exc_type, self)
