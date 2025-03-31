@@ -22,6 +22,7 @@ from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, _AlertingRLock
 from dank_mids.helpers._codec import decode_raw
+from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _make_hashable, _sync_w3_from_async
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._session import post, rate_limit_inactive
@@ -284,6 +285,20 @@ class DankMiddlewareController:
             other_calls = sum(map(len, self.pending_rpc_calls))
             return eth_calls + other_calls >= self.batcher.step
 
+    def _check_request_type(self) -> bool:
+        """
+        If the controller is still using the PartialRequest type, it will change over to the Request type.
+
+        Returns:
+            True if the request type was updated, either now or any time in the past 10 minutes. False otherwise.
+        """
+        if not self._request_type_changed_ts:
+            self.request_type = Request
+            self._request_type_changed_ts = time()
+            log_request_type_switch()
+            return True
+        return time() - self._request_type_changed_ts <= 600
+
     def early_start(self):
         """
         Initiate processing of queued calls when a full batch is available.
@@ -409,10 +424,6 @@ class DankMiddlewareController:
             return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
         return self.mc2 or mc3  # type: ignore [return-value]
-
-    def _use_full_request(self) -> None:
-        self.request_type = Request
-        self._request_type_changed_ts = time()
 
 
 @eth_retry.auto_retry
