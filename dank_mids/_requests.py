@@ -1336,7 +1336,6 @@ def _log_exception(e: Exception) -> bool:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
     dont_need_to_see_errs = [
-        "out of gas",
         "non_empty_data",
         "exceeding --rpc.returndata.limit",
         "'code': 429",
