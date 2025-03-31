@@ -26,10 +26,10 @@ _super_set_result = Future.set_result
 _super_set_exc = Future.set_exception
 
 
-class DebuggableFuture(Future[RPCResponse]):
+class DebuggableFuture(Future):
     # default values
     _debug_logs_enabled: bool = False
-    __debug_daemon_task: Optional[Task[None]] = None
+    __debug_daemon_task: Optional["Task[None]"] = None
 
     # type hints
     _result: Optional[RPCResponse]
@@ -45,7 +45,7 @@ class DebuggableFuture(Future[RPCResponse]):
             self.__debug_daemon_task = create_task(self.__debug_daemon())
         return Future.__await__(self)
 
-    def set_result(self, value: Any) -> None:
+    def set_result(self, value: RPCResponse) -> None:
         # sourcery skip: merge-duplicate-blocks, remove-redundant-if
         if self._loop is get_running_loop():
             try:
