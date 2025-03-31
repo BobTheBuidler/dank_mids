@@ -351,9 +351,9 @@ class RPCRequest(_RequestBase[RawResponse]):
                 method = f"{self.method}_raw" if self.raw else self.method
                 return await controller(method, self.params)
         elif revert_logger.isEnabledFor(DEBUG) and type(response.exception) is ExecutionReverted:
-            revert_logger_log_debug("%s for %s", response.error, self)
-        else:
-            error_logger_debug("%s for %s", response.error, self)
+            revert_logger_log_debug("%s for %s", response.exception, self)
+        elif error_logger.isEnabledFor(DEBUG) and type(response.exception) is not ExecutionReverted:
+            error_logger_log_debug("%s for %s", response.error, self)
 
         response = response.to_dict(self.method)
         response["error"] = dict(response["error"].items(), dankmids_added_context=self.request)
@@ -806,9 +806,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         """Should the Multicall be retried based on `e`?"""
         # NOTE: While it might look weird, f-string is faster than `str(e)`.
         if any(map(f"{e}".lower().__contains__, constants.RETRY_ERRS)):
-            error_logger_debug(
-                "dank too loud, multicall %s got exc%s\ntrying again...", self.bid, e
-            )
+            msg = "dank too loud, multicall %s got exc%s\ntrying again..."
+            error_logger_debug(msg, self.bid, e)
             return True
         elif "No state available for block" in f"{e}":
             note = "You're not using an archive node, and you need one for the application you are attempting to run."
