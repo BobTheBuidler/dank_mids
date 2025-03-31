@@ -217,7 +217,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         controller: "DankMiddlewareController",
         method: RPCEndpoint,
         params: Any,
-        uid: Optional[str]= None,
+        uid: Optional[str] = None,
     ):  # sourcery skip: hoist-statement-from-if
         _RequestBase.__init__(self, controller, uid)
         if method[-4:] == "_raw":
@@ -439,7 +439,9 @@ class eth_call(RPCRequest):
 
     __slots__ = "target", "calldata", "block"
 
-    def __init__(self, controller: "DankMiddlewareController", params: Any, uid: Optional[str]= None) -> None:
+    def __init__(
+        self, controller: "DankMiddlewareController", params: Any, uid: Optional[str] = None
+    ) -> None:
         """Adds a call to the DankMiddlewareContoller's `pending_eth_calls`."""
 
         call_dict, block = params
