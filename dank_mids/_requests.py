@@ -62,6 +62,7 @@ from dank_mids._exceptions import (
     DankMidsInternalError,
     EmptyBatch,
     ExceedsMaxBatchSize,
+    ExecutionReverted,
     OutOfGas,
     PayloadTooLarge,
     internal_err_types,
@@ -399,10 +400,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                 error_logger_log_debug("RPC Error for %s", self)
                 error_logger_log_debug("response set: %s", formatted)
         elif isinstance(data, Exception):
-            if revert_logger.isEnabledFor(DEBUG) and type(data) is ContractLogicError:
+            if revert_logger.isEnabledFor(DEBUG) and type(data) in (ContractLogicError, ExecutionReverted):
                 revert_logger_log_debug("ContractLogicError for %s", self)
                 revert_logger_log_debug("response set: ContractLogicError('%s')", data)
-            elif error_logger.isEnabledFor(DEBUG) and type(data) is not ContractLogicError:
+            elif error_logger.isEnabledFor(DEBUG) and type(data) not in (ContractLogicError, ExecutionReverted):
                 exc_type = type(data).__name__
                 error_logger_log_debug("%s for %s", exc_type, self)
                 error_logger_log_debug("response set: %s: %s", exc_type, data)
