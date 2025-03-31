@@ -2,7 +2,6 @@ from asyncio import (
     FIRST_COMPLETED,
     Future,
     TimeoutError,
-    create_task,
     get_running_loop,
     shield,
     sleep,
@@ -37,7 +36,7 @@ from weakref import proxy as weak_proxy
 
 import a_sync
 import eth_retry
-from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
+from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, create_task, igather
 from a_sync.asyncio import sleep0 as yield_to_loop
 from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
@@ -870,8 +869,12 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
         """
-        Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
+        Split the :class:`~Multicall` into 2 chunks, then await both.
+
         Calls `self._done.set()` when finished.
+
+        Args:
+            e: The Exception that occured to cause the retry.
         """
         error_logger_debug("%s had exception %s, bisecting and retrying", self, e)
         controller = self.controller
@@ -890,6 +893,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     @set_done
     async def _exec_single_call(self) -> None:
         await next(iter(self.calls)).make_request()
+
+    async def _spoof_or_retry(self, response: RawResponse) -> None:
+        try:
+            await self.spoof_response(response)
+        except Exception as e:
+            if not self.should_retry(e):
+                raise
+            await self.bisect_and_retry(e)
 
 
 def _log_checking_batch_size(
@@ -967,27 +978,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     def is_single_multicall(self) -> bool:
         with self._lock:
             return len(self) == 1 and self.is_multicalls_only
-
-    @property
-    def bisected(self) -> Generator[Tuple[_Request, ...], None, None]:
-        # sourcery skip: for-append-to-extend, hoist-loop-from-if, merge-duplicate-blocks
-        # NOTE: if one call in a batch has an rpc error, we need some spaghetti code
-        #       to make sure we don't re-make calls that completed successfully
-        calls = []
-        for request_type, requests in groupby(self.calls, type):
-            if request_type is Multicall:
-                # TODO refactor this out by setting Multicall._fut to None
-                for call in requests:
-                    if not call._done.is_set():
-                        calls.append(call)
-            else:
-                for call in requests:
-                    if not call._fut.done():
-                        calls.append(call)
-
-        half = len(calls) // 2
-        yield calls[:half]
-        yield calls[half:]
 
     @property
     def method_counts(self) -> Dict[RPCEndpoint, int]:
@@ -1227,18 +1217,18 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     raise BatchResponseSortError(controller, calls, response)
 
         responses = iter(response)
-        coros = []
+        mcall_coros = []
         for request_type, requests in groupby(calls, type):
-            spoof_response_coros = map(request_type.spoof_response, requests, responses)
             if request_type is Multicall:
-                coros.extend(spoof_response_coros)
+                mcall_coros.extend(map(Multicall._spoof_or_retry, requests, responses))
             else:
-                # These do not need to be gathered since they will
-                # always complete synchronously when called here
-                for coro in spoof_response_coros:
+                # These do not need to be delegated to asks since they
+                # will always complete synchronously when called here
+                for coro in map(request_type.spoof_response, requests, responses):
                     await coro
 
-        await gatherish(coros=coros, name="JSONRPCBatch.spoof_response")
+        if mcall_coros:
+            await gatherish(mcall_coros)
 
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
