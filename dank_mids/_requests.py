@@ -344,7 +344,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                 method = f"{self.method}_raw" if self.raw else self.method
                 return await controller(method, self.params)
 
-        error_logger_debug("RPC %s for %s", response.error, self)
+        error_logger_debug("%s for %s", response.error, self)
 
         response = response.to_dict(self.method)
         response["error"] = dict(response["error"].items(), dankmids_added_context=self.request)
@@ -827,8 +827,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 if error_logger.isEnabledFor(DEBUG):
                     exc = response.exception
                     error_logger_log_debug(
-                        "RPC %s for %s",
-                        response.error if type(exc) is BadResponse else exc,
+                        "%s for %s",
+                        response.error if type(exc) is BadResponse else repr(exc),
                         self,
                     )
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
@@ -894,7 +894,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if error_logger.isEnabledFor(DEBUG):
             if type(e) is BadResponse:
                 error_logger_log_debug(
-                    "%s had RPC %s, bisecting and retrying...", self, e.response.error
+                    "%s had %s, bisecting and retrying...", self, e.response.error
                 )
             else:
                 error_logger_log_debug("%s had %s: %s, bisecting and retrying...", self, type(e), e)
@@ -1268,7 +1268,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         """
         if error_logger.isEnabledFor(DEBUG):
             if type(e) is BadResponse:
-                error_logger_log_debug("%s had RPC %s", self, e.response.error)
+                error_logger_log_debug("%s had %s", self, e.response.error)
             else:
                 error_logger_log_debug("%s had %s: %s", self, type(e), e)
             error_logger_log_debug("retrying...")
