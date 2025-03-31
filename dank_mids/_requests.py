@@ -149,11 +149,11 @@ class _RequestBase(Generic[_Response]):
 
     __slots__ = "controller", "uid", "_fut", "__weakref__"
 
-    def __init__(self, controller: "DankMiddlewareController") -> None:
+    def __init__(self, controller: "DankMiddlewareController", uid: Optional[str] = None) -> None:
         self.controller: "DankMiddlewareController" = controller
         """The DankMiddlewareController that created this request."""
 
-        self.uid = controller.call_uid.next
+        self.uid = controller.call_uid.next if uid is None else uid
         """The unique id for this request."""
 
         self._fut = DebuggableFuture(self, controller._loop)
@@ -217,8 +217,9 @@ class RPCRequest(_RequestBase[RawResponse]):
         controller: "DankMiddlewareController",
         method: RPCEndpoint,
         params: Any,
+        uid: Optional[str] = None,
     ):  # sourcery skip: hoist-statement-from-if
-        _RequestBase.__init__(self, controller)
+        _RequestBase.__init__(self, controller, uid)
         if method[-4:] == "_raw":
             self.method = method[:-4]
             """The rpc method for this request."""
@@ -408,10 +409,11 @@ class RPCRequest(_RequestBase[RawResponse]):
                 "%s got stuck, we're creating a new one",
                 self,
             )
+        dupe_uid = f"{self.uid}_copy"
         if type(self) is eth_call:
-            return eth_call(self.controller, self.params)
+            return eth_call(self.controller, self.params, dupe_uid)
         method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method
-        return RPCRequest(self.controller, method, self.params)
+        return RPCRequest(self.controller, method, self.params, dupe_uid)
 
     def __set_exception(self, data: Exception) -> None:
         if revert_logger.isEnabledFor(DEBUG) and type(data) in _REVERT_EXC_TYPES:
@@ -437,7 +439,9 @@ class eth_call(RPCRequest):
 
     __slots__ = "target", "calldata", "block"
 
-    def __init__(self, controller: "DankMiddlewareController", params: Any) -> None:
+    def __init__(
+        self, controller: "DankMiddlewareController", params: Any, uid: Optional[str] = None
+    ) -> None:
         """Adds a call to the DankMiddlewareContoller's `pending_eth_calls`."""
 
         call_dict, block = params
@@ -451,7 +455,7 @@ class eth_call(RPCRequest):
         self.block: BlockId = block
         """The block height at which the contract will be called."""
 
-        RPCRequest.__init__(self, controller, "eth_call", params)
+        RPCRequest.__init__(self, controller, "eth_call", params, uid)
 
     def __repr__(self) -> str:
         tx, block = self.params
