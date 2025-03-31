@@ -341,15 +341,9 @@ class RPCRequest(_RequestBase[RawResponse]):
                 return {"result": response.result}
             return response.to_dict(self.method)
 
-        if needs_full_request_spec(response):
-            controller = self.controller
-            if not controller._request_type_changed_ts:
-                controller._use_full_request()
-            if time() - controller._request_type_changed_ts <= 600:
-                if self._debug_logs_enabled:
-                    log_request_type_switch()
-                method = f"{self.method}_raw" if self.raw else self.method
-                return await controller(method, self.params)
+        if needs_full_request_spec(response) and self.controller._check_request_type():
+            method = f"{self.method}_raw" if self.raw else self.method
+            return await self.controller(method, self.params)
         elif revert_logger.isEnabledFor(DEBUG) and type(response.exception) is ExecutionReverted:
             revert_logger_log_debug("%s for %s", response.exception, self)
         elif error_logger.isEnabledFor(DEBUG) and type(response.exception) is not ExecutionReverted:
@@ -389,15 +383,9 @@ class RPCRequest(_RequestBase[RawResponse]):
         if isinstance(data, RawResponse):
             self._fut.set_result(data)
         elif isinstance(data, BadResponse):
-            if needs_full_request_spec(data.response):
-                controller = self.controller
-                if not controller._request_type_changed_ts:
-                    controller._use_full_request()
-                if time() - controller._request_type_changed_ts <= 600:
-                    if self._debug_logs_enabled:
-                        log_request_type_switch()
-                    self._fut.set_result(await self.create_duplicate(log=False))
-                    return
+            if needs_full_request_spec(data.response) and self.controller._check_request_type():
+                self._fut.set_result(await self.create_duplicate(log=False))
+                return
             formatted = format_error_response(self.request, data.response.error)
             self._fut.set_result({"error": formatted})
             if error_logger.isEnabledFor(DEBUG):
@@ -1174,19 +1162,18 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             if ENVS.DEBUG:  # type: ignore [attr-defined]
                 self._record_failure(e, self.data.decode())
             raise
+
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
         if isinstance(response, list):
             return response, calls
+        
         # Oops, we failed.
-        if response.error.message.lower() in ("invalid request", "parse error"):  # type: ignore [union-attr]
+        errmsg = response.error.message
+        if errmsg.lower() in ("invalid request", "parse error"):  # type: ignore [union-attr]
             # NOT SURE IF THIS ACTUALLY RUNS, CAN WE RECEIVE THIS TYPE RESPONSE FOR A JSON BATCH?
-            controller = self.controller
-            if not controller._request_type_changed_ts:
-                controller._use_full_request()
-            if time() - controller._request_type_changed_ts <= 600:
-                log_request_type_switch()
-        elif response.error.message == "batch limit exceeded":  # type: ignore [union-attr]
+            self.controller._check_request_type()
+        elif errmsg == "batch limit exceeded":  # type: ignore [union-attr]
             self.adjust_batch_size()
 
         if ENVS.DEBUG:

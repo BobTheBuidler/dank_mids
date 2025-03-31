@@ -1,5 +1,6 @@
 import logging
 import re
+from functools import cached_property
 from time import time
 from typing import (
     TYPE_CHECKING,
@@ -208,7 +209,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
     error: Optional[Error] = None
     """The error object, if the call failed."""
 
-    @property
+    @cached_property
     def exception(self) -> Exception:
         """If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."""
         if self.error is None:
