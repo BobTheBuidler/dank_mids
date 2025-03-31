@@ -1250,7 +1250,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     )
                 )
             else:
-                # These do not need to be delegated to asks since they 
+                # These do not need to be delegated to asks since they
                 # will always complete synchronously when called here
                 for coro in map(request_type.spoof_response, requests, responses):
                     await coro
