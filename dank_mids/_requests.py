@@ -1167,7 +1167,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         #       A single `PartialResponse` implies an error.
         if isinstance(response, list):
             return response, calls
-        
+
         # Oops, we failed.
         errmsg = response.error.message
         if errmsg.lower() in ("invalid request", "parse error"):  # type: ignore [union-attr]

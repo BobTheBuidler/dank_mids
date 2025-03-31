@@ -288,7 +288,7 @@ class DankMiddlewareController:
     def _check_request_type(self) -> bool:
         """
         If the controller is still using the PartialRequest type, it will change over to the Request type.
-        
+
         Returns:
             True if the request type was updated, either now or any time in the past 10 minutes. False otherwise.
         """
