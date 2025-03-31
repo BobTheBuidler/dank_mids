@@ -1238,25 +1238,18 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     raise BatchResponseSortError(controller, calls, response)
 
         responses = iter(response)
-        mcall_tasks = []
+        mcall_coros = []
         for request_type, requests in groupby(calls, type):
             if request_type is Multicall:
-                mcall_tasks.append(
-                    create_task(
-                        gatherish(
-                            map(Multicall._spoof_or_retry, requests, responses),
-                            name="JSONRPCBatch.spoof_response",
-                        )
-                    )
-                )
+                mcall_coros.extend(map(Multicall._spoof_or_retry, requests, responses))
             else:
                 # These do not need to be delegated to asks since they
                 # will always complete synchronously when called here
                 for coro in map(request_type.spoof_response, requests, responses):
                     await coro
 
-        for t in mcall_tasks:
-            await t
+        if mcall_coros:
+            await gatherish(mcall_coros)
 
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
