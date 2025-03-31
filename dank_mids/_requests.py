@@ -432,10 +432,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                 selffut.set_exception(exc)
             else:
                 selffut.set_result(dupefut.result())
-        
+
         selffut.add_done_callback(_self_done_callback)
         dupefut.add_done_callback(_dupe_done_callback)
-        
+
         return duplicate
 
     def __set_exception(self, data: Exception) -> None:
