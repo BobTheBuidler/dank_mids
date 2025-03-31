@@ -272,7 +272,10 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
                     if typ is not Block:
                         raise
 
-                    if any(e.args[0] == f"Object contains unknown field `{field}`" for field in ("difficulty", "totalDifficulty")):
+                    if any(
+                        e.args[0] == f"Object contains unknown field `{field}`"
+                        for field in ("difficulty", "totalDifficulty")
+                    ):
                         try:
                             # NOTE should we do this??
                             # _RETURN_TYPES[method] = MinedBlock
