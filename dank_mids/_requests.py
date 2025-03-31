@@ -827,18 +827,16 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         # It was either received as a response to a single rpc call or as a part of a batch response.
         elif isinstance(data, RawResponse):
             response = data.decode(partial=True)
-            if response.error:
-                if (
-                    error_logger.isEnabledFor(DEBUG)
-                    and type(exc := response.exception) is not OutOfGas
-                ):
+            if response.error is not None:
+                exc = response.exception
+                if error_logger.isEnabledFor(DEBUG) and type(exc) is not OutOfGas:
                     error_logger_log_debug(
                         "%s for %s",
                         response.error if type(exc) is BadResponse else repr(exc),
                         self,
                     )
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
-                raise response.exception
+                raise exc
             _log_debug("%s received valid bytes from the rpc", self)
 
             # We write some ugly code to separate successes from reverts
