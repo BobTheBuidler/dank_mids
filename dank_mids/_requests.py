@@ -898,12 +898,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             e: The Exception that occured to cause the retry.
         """
         if error_logger.isEnabledFor(DEBUG):
-            if type(e) is BadResponse:
-                error_logger_log_debug(
-                    "%s had %s, bisecting and retrying...", self, e.response.error
-                )
-            else:
-                error_logger_log_debug("%s had %s: %s, bisecting and retrying...", self, type(e), e)
+            error_logger_log_debug(
+                "%s had %s, bisecting and retrying...", 
+                self, 
+                e.response.error if type(e) is BadResponse else repr(e),
+            )
         controller = self.controller
         # we need to create strong refs to the multicalls here so they dont disappear as soon as the JSONRPCBatch inits
         bisected = [
