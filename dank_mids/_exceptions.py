@@ -25,6 +25,10 @@ class EmptyBatch(ValueError):
     """Exception raised when attempting to process an empty batch."""
 
 
+class OutOfGas(BadResponse):
+    """Exception raised when an eth_call request runs out of gas."""
+
+
 class PayloadTooLarge(BadResponse):
     """Exception raised when the payload for a request is too large."""
 

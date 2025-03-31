@@ -42,6 +42,7 @@ from dank_mids._exceptions import (
     BadResponse,
     ChainstackRateLimited,
     ExceedsMaxBatchSize,
+    OutOfGas,
     PayloadTooLarge,
 )
 
@@ -211,18 +212,22 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         """If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."""
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
+
+        message = self.error.message
+        if "out of gas" in message:
+            return OutOfGas(self)
         if self.payload_too_large:
             return PayloadTooLarge(self)
-        if re.search(r"batch limit (\d+) exceeded", self.error.message):
+        if re.search(r"batch limit (\d+) exceeded", message):
             return ExceedsMaxBatchSize(self)
-        if self.error.message == "invalid argument 1: hex string without 0x prefix":
+        if message == "invalid argument 1: hex string without 0x prefix":
             return TypeError(
-                self.error.message,
+                message,
                 "DANKMIDS NOTE: You're probably passing what should be an integer type as a string type. "
                 "The usual culprit is a block number.",
             )
         # chainstack doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
-        if _CHAINSTACK_429_ERR_MSG in self.error.message:
+        if _CHAINSTACK_429_ERR_MSG in message:
             return ChainstackRateLimited(self)
         return BadResponse(self)
 
