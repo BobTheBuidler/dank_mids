@@ -2,6 +2,7 @@ from asyncio import (
     FIRST_COMPLETED,
     Future,
     TimeoutError,
+    create_task,
     get_running_loop,
     shield,
     sleep,
@@ -36,7 +37,7 @@ from weakref import proxy as weak_proxy
 
 import a_sync
 import eth_retry
-from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, create_task, igather
+from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
 from a_sync.asyncio import sleep0 as yield_to_loop
 from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
