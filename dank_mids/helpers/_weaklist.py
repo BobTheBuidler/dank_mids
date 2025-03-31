@@ -9,6 +9,7 @@ else:
 
 _get_obj_from_ref = ref.__call__
 
+
 class WeakList(Generic[_Request]):
     def __init__(self, data=None):
         self._refs = {}  # Mapping from object ID to weak reference
