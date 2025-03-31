@@ -2,7 +2,6 @@ from asyncio import (
     FIRST_COMPLETED,
     Future,
     TimeoutError,
-    create_task,
     get_running_loop,
     shield,
     sleep,
@@ -37,7 +36,7 @@ from weakref import proxy as weak_proxy
 
 import a_sync
 import eth_retry
-from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
+from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, create_task, igather
 from a_sync.asyncio import sleep0 as yield_to_loop
 from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
@@ -1243,19 +1242,21 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         for request_type, requests in groupby(calls, type):
             if request_type is Multicall:
                 mcall_tasks.append(
-                    gatherish(
-                        map(Multicall._spoof_or_retry, requests, responses),
-                        name="JSONRPCBatch.spoof_response",
+                    create_task(
+                        gatherish(
+                            map(Multicall._spoof_or_retry, requests, responses),
+                            name="JSONRPCBatch.spoof_response",
+                        )
                     )
                 )
             else:
-                # These do not need to be gathered since they will
-                # always complete synchronously when called here
+                # These do not need to be delegated to asks since they 
+                # will always complete synchronously when called here
                 for coro in map(request_type.spoof_response, requests, responses):
                     await coro
 
-        if mcall_tasks:
-            await igather(mcall_tasks)
+        for t in mcall_tasks:
+            await t
 
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
