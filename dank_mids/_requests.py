@@ -345,8 +345,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                     log_request_type_switch()
                 method = f"{self.method}_raw" if self.raw else self.method
                 return await controller(method, self.params)
-
-        error_logger_debug("%s for %s", response.error, self)
+        elif revert_logger.isEnabledFor(DEBUG) and type(response.exception) is ExecutionReverted:
+            revert_logger_log_debug("%s for %s", response.error, self)
+        else:
+            error_logger_debug("%s for %s", response.error, self)
 
         response = response.to_dict(self.method)
         response["error"] = dict(response["error"].items(), dankmids_added_context=self.request)
