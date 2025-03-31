@@ -29,7 +29,7 @@ _super_set_exc = Future.set_exception
 class DebuggableFuture(Future):
     # default values
     _debug_logs_enabled: bool = False
-    __debug_daemon_task: Optional[Task[None]] = None
+    __debug_daemon_task: Optional["Task[None]"] = None
 
     # type hints
     _result: Optional[RPCResponse]
