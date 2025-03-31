@@ -61,6 +61,7 @@ from dank_mids._exceptions import (
     DankMidsInternalError,
     EmptyBatch,
     ExceedsMaxBatchSize,
+    OutOfGas,
     PayloadTooLarge,
     internal_err_types,
 )
@@ -566,14 +567,18 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
     def should_retry(self, e: Exception) -> bool:
         """Should the _Batch be retried based on `e`?"""
-        str_e = f"{e}".lower()
-        if "out of gas" in str_e:
+        if type(e) is OutOfGas:
             # TODO Remember which contracts/calls are gas guzzlers
-            if len(self) > 1 and error_logger.isEnabledFor(DEBUG):
-                error_logger_log_debug(
-                    "%s out of gas. cut in half, trying again", type(self).__name__
-                )
-        elif any(err in str_e for err in constants.RETRY_ERRS):
+            if len(self) > 1:
+                if error_logger.isEnabledFor(DEBUG):
+                    error_logger_log_debug(
+                        "%s out of gas. cut in half, trying again...", self
+                    )
+                return True
+            return False
+    
+        str_e = f"{e}".lower()
+        if any(err in str_e for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
             if len(self) > 1 and error_logger.isEnabledFor(DEBUG):
                 error_logger_log_debug(
@@ -824,8 +829,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         elif isinstance(data, RawResponse):
             response = data.decode(partial=True)
             if response.error:
-                if error_logger.isEnabledFor(DEBUG):
-                    exc = response.exception
+                if (
+                    error_logger.isEnabledFor(DEBUG)
+                    and type(exc := response.exception) is not OutOfGas
+                ):
                     error_logger_log_debug(
                         "%s for %s",
                         response.error if type(exc) is BadResponse else repr(exc),
@@ -1324,6 +1331,10 @@ def _log_exception(e: Exception) -> bool:
     Returns:
         True if the exception should be logged, False otherwise.
     """
+    # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
+    if type(e) is OutOfGas:
+        return ENVS.DEBUG
+    
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
     dont_need_to_see_errs = [

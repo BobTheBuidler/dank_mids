@@ -42,6 +42,7 @@ from dank_mids._exceptions import (
     BadResponse,
     ChainstackRateLimited,
     ExceedsMaxBatchSize,
+    OutOfGas,
     PayloadTooLarge,
 )
 
@@ -211,6 +212,8 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         """If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."""
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
+        if self.error.code in (32000, 32003):
+            return OutOfGas(self)
         if self.payload_too_large:
             return PayloadTooLarge(self)
         if re.search(r"batch limit (\d+) exceeded", self.error.message):
