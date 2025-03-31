@@ -311,8 +311,9 @@ class RPCRequest(_RequestBase[RawResponse]):
                 try:
                     response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
                 except TimeoutError:
+                    duplicate = self.create_duplicate()
                     done, pending = await wait(
-                        (fut, self.create_duplicate()), return_when=FIRST_COMPLETED
+                        (fut, duplicate), return_when=FIRST_COMPLETED
                     )
                     for d in done:
                         if d is not fut:
@@ -359,10 +360,15 @@ class RPCRequest(_RequestBase[RawResponse]):
             await wait_for(shield(task), timeout=_TIMEOUT)
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
-            done, pending = await wait((task, self.create_duplicate()), return_when=FIRST_COMPLETED)
+            duplicate = self.create_duplicate()
+            done, pending = await wait((task, duplicate), return_when=FIRST_COMPLETED)
             for t in pending:
                 t.cancel()
             for t in done:
+                if t is task:
+                    duplicate._fut.cancel()
+                else:
+                    self._fut.cancel()
                 return await t
         response = self._fut.result().decode(partial=True)
         return (
