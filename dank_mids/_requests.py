@@ -1270,10 +1270,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             e: The exception that occurred during the batch request.
         """
         if error_logger.isEnabledFor(DEBUG):
-            if type(e) is BadResponse:
-                error_logger_log_debug("%s had %s", self, e.response.error)
-            else:
-                error_logger_log_debug("%s had %s: %s", self, type(e), e)
+            exc_str = e.response.error if type(e) is BadResponse else repr(e)
+            error_logger_log_debug("%s had %s", self, exc_str)
             error_logger_log_debug("retrying...")
 
         controller = self.controller
