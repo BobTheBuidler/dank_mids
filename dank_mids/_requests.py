@@ -963,7 +963,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
     def is_single_multicall(self) -> bool:
         with self._lock:
             return len(self) == 1 and self.is_multicalls_only
-    
+
     @property
     def bisected(self) -> Generator[Tuple[_Request, ...], None, None]:
         # sourcery skip: for-append-to-extend, hoist-loop-from-if, merge-duplicate-blocks
