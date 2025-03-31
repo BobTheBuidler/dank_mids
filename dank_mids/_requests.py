@@ -870,8 +870,12 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
         """
-        Splits up the calls of a `Multicall` into 2 chunks, then awaits both.
+        Split the :class:`~Multicall` into 2 chunks, then await both.
+
         Calls `self._done.set()` when finished.
+
+        Args:
+            e: The Exception that occured to cause the retry.
         """
         error_logger_debug("%s had exception %s, bisecting and retrying", self, e)
         controller = self.controller
@@ -890,6 +894,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     @set_done
     async def _exec_single_call(self) -> None:
         await next(iter(self.calls)).make_request()
+
+    async def _spoof_or_retry(self, response: RawResponse) -> None:
+        try:
+            await self.spoof_response(response)
+        except Exception as e:
+            if not self.should_retry(e):
+                raise
+            await self.bisect_and_retry(e)
 
 
 def _log_checking_batch_size(
@@ -1227,18 +1239,23 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
                     raise BatchResponseSortError(controller, calls, response)
 
         responses = iter(response)
-        coros = []
+        mcall_tasks = []
         for request_type, requests in groupby(calls, type):
-            spoof_response_coros = map(request_type.spoof_response, requests, responses)
             if request_type is Multicall:
-                coros.extend(spoof_response_coros)
+                mcall_tasks.append(
+                    gatherish(
+                        map(Multicall._spoof_or_retry, requests, responses),
+                        name="JSONRPCBatch.spoof_response",
+                    )
+                )
             else:
                 # These do not need to be gathered since they will
                 # always complete synchronously when called here
-                for coro in spoof_response_coros:
+                for coro in map(request_type.spoof_response, requests, responses):
                     await coro
 
-        await gatherish(coros=coros, name="JSONRPCBatch.spoof_response")
+        if mcall_tasks:
+            await igather(mcall_tasks)
 
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
