@@ -571,12 +571,10 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
             # TODO Remember which contracts/calls are gas guzzlers
             if len(self) > 1:
                 if error_logger.isEnabledFor(DEBUG):
-                    error_logger_log_debug(
-                        "%s out of gas. cut in half, trying again...", self
-                    )
+                    error_logger_log_debug("%s out of gas. cut in half, trying again...", self)
                 return True
             return False
-    
+
         str_e = f"{e}".lower()
         if any(err in str_e for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
@@ -1334,7 +1332,7 @@ def _log_exception(e: Exception) -> bool:
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     if type(e) is OutOfGas:
         return ENVS.DEBUG
-    
+
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
     dont_need_to_see_errs = [
