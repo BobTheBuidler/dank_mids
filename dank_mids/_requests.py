@@ -289,7 +289,8 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         elif current_batch._started is False:
             # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
-            await current_batch
+            await wait((current_batch, self._fut), return_when=FIRST_COMPLETED)
+
         # get rid of the strong reference
         del current_batch
 
