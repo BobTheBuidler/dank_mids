@@ -46,6 +46,7 @@ from eth_typing import ChecksumAddress, HexStr
 from eth_utils import function_signature_to_4byte_selector
 from eth_utils.toolz import concat
 from hexbytes import HexBytes
+from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
 
@@ -69,11 +70,14 @@ from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
     error_logger,
     error_logger_debug,
+    error_logger_log_debug,
     format_error_response,
     is_call_revert,
     log_internal_error,
     log_request_type_switch,
     needs_full_request_spec,
+    revert_logger,
+    revert_logger_log_debug,
 )
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._multicall import MulticallContract
@@ -340,13 +344,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                 method = f"{self.method}_raw" if self.raw else self.method
                 return await controller(method, self.params)
 
-        error = dict(response.error.items())
-        error["dankmids_added_context"] = self.request
+        error_logger_debug("RPC %s for %s", response.error, self)
 
         response = response.to_dict(self.method)
-        response["error"] = error
-        if self._debug_logs_enabled:
-            error_logger_debug("error response for %s: %s", self, response)
+        response["error"] = dict(response["error"].items(), dankmids_added_context=self.request)
         return response
 
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
@@ -388,16 +389,19 @@ class RPCRequest(_RequestBase[RawResponse]):
                         log_request_type_switch()
                     self._fut.set_result(await self.create_duplicate(log=False))
                     return
-            self._fut.set_result(
-                {"error": format_error_response(self.request, data.response.error)}
-            )
-            if self._debug_logs_enabled:
-                error_logger_debug(
-                    "%s _response set to rpc error response %s", self, self._fut.result()
-                )
+            formatted = format_error_response(self.request, data.response.error)
+            self._fut.set_result({"error": formatted})
+            if error_logger.isEnabledFor(DEBUG):
+                error_logger_log_debug("RPC Error for %s", self)
+                error_logger_log_debug("response set: %s", formatted)
         elif isinstance(data, Exception):
-            if self._debug_logs_enabled:
-                error_logger_debug("%s _response set to Exception %s", self, data)
+            if revert_logger.isEnabledFor(DEBUG) and type(data) is ContractLogicError:
+                revert_logger_log_debug("ContractLogicError for %s", self)
+                revert_logger_log_debug("response set: ContractLogicError('%s')", data)
+            elif error_logger.isEnabledFor(DEBUG) and type(data) is not ContractLogicError:
+                exc_type = type(data).__name__
+                error_logger_log_debug("%s for %s", exc_type, self)
+                error_logger_log_debug("response set: %s: %s", exc_type, data)
             self._fut.set_exception(data)
         # From multicalls
         elif isinstance(data, bytes):
@@ -565,16 +569,22 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         str_e = f"{e}".lower()
         if "out of gas" in str_e:
             # TODO Remember which contracts/calls are gas guzzlers
-            error_logger_debug("out of gas. cut in half, trying again")
+            if len(self) > 1 and error_logger.isEnabledFor(DEBUG):
+                error_logger_log_debug(
+                    "%s out of gas. cut in half, trying again", type(self).__name__
+                )
         elif any(err in str_e for err in constants.RETRY_ERRS):
             # TODO: use these exceptions to optimize for the user's node
-            error_logger_debug("Dank too loud. Bisecting batch and retrying.")
+            if len(self) > 1 and error_logger.isEnabledFor(DEBUG):
+                error_logger_log_debug(
+                    "Dank too loud. Bisecting %s and retrying.", type(self).__name__
+                )
         elif isinstance(e, BadResponse) and (
             needs_full_request_spec(e.response) or is_call_revert(e)
         ):
             pass
         elif "429" not in str_e and all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
-            _log_warning("unexpected %s: %s", e.__class__.__name__, e)
+            _log_warning("unexpected %s in a %s: %s", type(e).__name__, type(self).__name__, e)
         return len(self) > 1
 
     def _record_failure(self, e: Exception, data: str) -> None:
@@ -800,11 +810,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     ) -> None:
         # This happens if an Exception takes place during a singular Multicall request.
         if isinstance(data, Exception):
-            if _logger_is_enabled_for(DEBUG):
-                error_logger_debug("%s had Exception %s", self, data)
-                error_logger_debug(
-                    "propagating the %s to all %s's calls", data.__class__.__name__, self
-                )
+            if error_logger.isEnabledFor(DEBUG):
+                exc_type = type(data).__name__
+                error_logger_log_debug("%s had %s %s", self, exc_type, data)
+                error_logger_log_debug("propagating the %s to all %s's calls", exc_type, self)
 
             # No need to gather this, `spoof_response` with an Exception input will complete synchronously
             for call in calls or self.calls:
@@ -815,7 +824,13 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         elif isinstance(data, RawResponse):
             response = data.decode(partial=True)
             if response.error:
-                error_logger_debug("RPC %s for %s", response.exception, self)
+                if error_logger.isEnabledFor(DEBUG):
+                    exc = response.exception
+                    error_logger_log_debug(
+                        "RPC %s for %s",
+                        response.error if type(exc) is BadResponse else exc,
+                        self,
+                    )
                 # NOTE: We raise the exception which will be caught, call will be broken up and retried
                 raise response.exception
             _log_debug("%s received valid bytes from the rpc", self)
@@ -876,7 +891,13 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         Args:
             e: The Exception that occured to cause the retry.
         """
-        error_logger_debug("%s had exception %s, bisecting and retrying", self, e)
+        if error_logger.isEnabledFor(DEBUG):
+            if type(e) is BadResponse:
+                error_logger_log_debug(
+                    "%s had RPC %s, bisecting and retrying...", self, e.response.error
+                )
+            else:
+                error_logger_log_debug("%s had %s: %s, bisecting and retrying...", self, type(e), e)
         controller = self.controller
         # we need to create strong refs to the multicalls here so they dont disappear as soon as the JSONRPCBatch inits
         bisected = [
@@ -1245,7 +1266,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
         Args:
             e: The exception that occurred during the batch request.
         """
-        error_logger_debug("%s had exception %s, retrying", self, e)
+        if error_logger.isEnabledFor(DEBUG):
+            if type(e) is BadResponse:
+                error_logger_log_debug("%s had RPC %s", self, e.response.error)
+            else:
+                error_logger_log_debug("%s had %s: %s", self, type(e), e)
+            error_logger_log_debug("retrying...")
+
         controller = self.controller
         batches = [
             (
