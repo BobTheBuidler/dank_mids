@@ -17,6 +17,7 @@ from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
     DefaultDict,
     Dict,
     Generator,
@@ -193,6 +194,8 @@ def _get_len_for_method(method: str) -> int:
 def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
+
+_REVERT_EXC_TYPES = ContractLogicError, ExecutionReverted
 
 class RPCRequest(_RequestBase[RawResponse]):
     should_batch: bool = True
@@ -400,23 +403,14 @@ class RPCRequest(_RequestBase[RawResponse]):
                 error_logger_log_debug("RPC Error for %s", self)
                 error_logger_log_debug("response set: %s", formatted)
         elif isinstance(data, Exception):
-            if revert_logger.isEnabledFor(DEBUG) and type(data) in (ContractLogicError, ExecutionReverted):
-                revert_logger_log_debug("ContractLogicError for %s", self)
-                revert_logger_log_debug("response set: ContractLogicError('%s')", data)
-            elif error_logger.isEnabledFor(DEBUG) and type(data) not in (ContractLogicError, ExecutionReverted):
-                exc_type = type(data).__name__
-                error_logger_log_debug("%s for %s", exc_type, self)
-                error_logger_log_debug("response set: %s: %s", exc_type, data)
-            self._fut.set_exception(data)
+            self.__set_exception(data)
         # From multicalls
         elif isinstance(data, bytes):
             self._fut.set_result({"result": data})
         else:
-            self._fut.set_exception(
-                TypeError(
-                    f"type {type(data).__name__} not supported for spoofing.", type(data), data
-                )
-            )
+            dtype = type(data)
+            exc = TypeError(f"{dtype.__name__} not supported for spoofing.", dtype, data)
+            self.__set_exception(exc)
 
     async def make_request(self) -> RawResponse:
         """Used to execute the request with no batching."""
@@ -434,6 +428,18 @@ class RPCRequest(_RequestBase[RawResponse]):
             return eth_call(self.controller, self.params)
         method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method
         return RPCRequest(self.controller, method, self.params)
+
+    def __set_exception(self, data: Exception) -> None:
+        if revert_logger.isEnabledFor(DEBUG) and type(data) in _REVERT_EXC_TYPES:
+            self.__log_set_exception(revert_logger_log_debug, data)
+        elif error_logger.isEnabledFor(DEBUG) and type(data) not in _REVERT_EXC_TYPES:
+            self.__log_set_exception(error_logger_log_debug, data)
+        self._fut.set_exception(data)
+    
+    def __log_set_exception(self, log_func: Callable[..., None], exc: Exception):
+        exc_type = type(exc).__name__
+        log_func("%s for %s", exc_type, self)
+        log_func("exception set: %s", repr(exc))
 
 
 _is_revert_bytes = lambda data: isinstance(data, bytes) and any(
