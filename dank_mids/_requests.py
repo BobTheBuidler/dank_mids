@@ -980,27 +980,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
             return len(self) == 1 and self.is_multicalls_only
 
     @property
-    def bisected(self) -> Generator[Tuple[_Request, ...], None, None]:
-        # sourcery skip: for-append-to-extend, hoist-loop-from-if, merge-duplicate-blocks
-        # NOTE: if one call in a batch has an rpc error, we need some spaghetti code
-        #       to make sure we don't re-make calls that completed successfully
-        calls = []
-        for request_type, requests in groupby(self.calls, type):
-            if request_type is Multicall:
-                # TODO refactor this out by setting Multicall._fut to None
-                for call in requests:
-                    if not call._done.is_set():
-                        calls.append(call)
-            else:
-                for call in requests:
-                    if not call._fut.done():
-                        calls.append(call)
-
-        half = len(calls) // 2
-        yield calls[:half]
-        yield calls[half:]
-
-    @property
     def method_counts(self) -> Dict[RPCEndpoint, int]:
         """
         Count the occurrences of each method in the batch.
