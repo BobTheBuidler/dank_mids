@@ -260,7 +260,7 @@ class RPCRequest(_RequestBase[RawResponse]):
 
     def __del__(self) -> None:
         if not self._fut.done():
-            logger.error("%s was garbage collected before finishing")
+            logger.error("%s was garbage collected before finishing", self)
 
     @property
     def request(self) -> Union[Request, PartialRequest]:
