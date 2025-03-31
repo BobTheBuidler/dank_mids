@@ -409,9 +409,34 @@ class RPCRequest(_RequestBase[RawResponse]):
             )
         dupe_uid = f"{self.uid}_copy"
         if type(self) is eth_call:
-            return eth_call(self.controller, self.params, dupe_uid)
-        method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method
-        return RPCRequest(self.controller, method, self.params, dupe_uid)
+            duplicate = eth_call(self.controller, self.params, dupe_uid)
+        else:
+            method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method
+            duplicate = RPCRequest(self.controller, method, self.params, dupe_uid)
+
+        selffut = self._fut
+        dupefut = duplicate._fut
+
+        def _self_done_callback(selffut):
+            if selffut.cancelled():
+                dupefut.cancel()
+            elif (exc := selffut.exception()) is not None:
+                dupefut.set_exception(exc)
+            else:
+                dupefut.set_result(selffut.result())
+
+        def _dupe_done_callback(dupefut):
+            if dupefut.cancelled():
+                selffut.cancel()
+            elif (exc := dupefut.exception()) is not None:
+                selffut.set_exception(exc)
+            else:
+                selffut.set_result(dupefut.result())
+        
+        selffut.add_done_callback(_self_done_callback)
+        dupefut.add_done_callback(_dupe_done_callback)
+        
+        return duplicate
 
     def __set_exception(self, data: Exception) -> None:
         if revert_logger.isEnabledFor(DEBUG) and type(data) in _REVERT_EXC_TYPES:
