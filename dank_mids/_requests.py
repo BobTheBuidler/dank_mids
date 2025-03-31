@@ -310,14 +310,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                     response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
                 except TimeoutError:
                     duplicate = self.create_duplicate()
-                    done, pending = await first_completed(fut, duplicate)
-                    for d in done:
-                        if d is not fut:
-                            return await d
+                    for d in await first_completed(fut, duplicate, cancel=True):
                         response = d.result()
-                    for p in pending:
-                        if p is not fut:
-                            p.cancel()
+                        if d is not fut:
+                            return response
         except ClientResponseError as e:
             # TODO think about getting rid of this
             raise DankMidsClientResponseError(e, self.request) from e
