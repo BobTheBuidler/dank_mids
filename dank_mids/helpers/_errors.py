@@ -13,12 +13,14 @@ error_logger = getLogger("dank_mids.errors")
 error_logger_debug = error_logger.debug
 error_logger_log = error_logger._log
 
+
 def error_logger_log_debug(msg: str, *args) -> None:
     error_logger_log(DEBUG, msg, args)
 
 
 revert_logger = error_logger.getChild("reverts")
 revert_logger_log = revert_logger._log
+
 
 def revert_logger_log_debug(msg: str, *args) -> None:
     revert_logger_log(DEBUG, msg, args)
