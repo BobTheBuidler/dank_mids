@@ -18,11 +18,22 @@ class BadResponse(ValueError):
 
     def __init__(self, response: "PartialResponse") -> None:
         self.response = response
-        super().__init__(response.to_dict())
+        BaseException.__init__(self, response.error.to_dict())
 
 
 class EmptyBatch(ValueError):
     """Exception raised when attempting to process an empty batch."""
+
+
+class ExecutionReverted(BadResponse):
+    """Exception raised when the EVM reverts."""
+
+    def __init__(self, response: "PartialResponse") -> None:
+        self.response = response
+        message = response.error.message
+        if message.count(":") == 1:
+            message = message.split(":")[1]
+        BaseException.__init__(self, message)
 
 
 class OutOfGas(BadResponse):
