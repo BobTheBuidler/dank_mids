@@ -212,7 +212,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         """If the rpc response contains an 'error' field, returns a specialized exception for the specified rpc error."""
         if self.error is None:
             raise AttributeError(f"{self} did not error.")
-        
+
         message = self.error.message
         if "out of gas" in message:
             return OutOfGas(self)
