@@ -299,7 +299,13 @@ class RPCRequest(_RequestBase[RawResponse]):
                 # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
                 await wait_for(shield(batch_task), timeout=_TIMEOUT)
             except TimeoutError:
-                return await self.create_duplicate()
+                done, pending = await first_completed(batch_task, self._fut, self.create_duplicate())
+                for d in done:
+                    if d in (batch_task, self._fut):
+                        # we'll get and decode the value below
+                        pass
+                    else:
+                        return d.result()
 
         fut = self._fut
         try:
