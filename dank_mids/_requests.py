@@ -895,7 +895,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         Args:
             e: The Exception that occured to cause the retry.
         """
-        if error_logger.isEnabledFor(DEBUG):
+        if error_logger.isEnabledFor(DEBUG) and type(e) is not OutOfGas:
             error_logger_log_debug(
                 "%s had %s, bisecting and retrying...",
                 self,
