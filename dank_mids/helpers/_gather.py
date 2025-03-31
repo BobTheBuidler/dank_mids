@@ -1,4 +1,4 @@
-from asyncio import Task, get_running_loop
+from asyncio import Task, get_running_loop, wait
 from typing import Coroutine, Iterable, Optional
 
 from a_sync.asyncio import sleep0 as yield_to_loop
@@ -37,3 +37,12 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
                 except Exception:
                     pass
             raise
+
+
+async def first_completed(*fs: Iterable, cancel: bool = False):
+    if not cancel:
+        return await wait(fs, return_when="FIRST_COMPLETED")
+    done, pending = await wait(fs, return_when="FIRST_COMPLETED")
+    for p in pending:
+        p.cancel()
+    return done

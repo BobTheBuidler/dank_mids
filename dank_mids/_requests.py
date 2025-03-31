@@ -1,12 +1,10 @@
 from asyncio import (
-    FIRST_COMPLETED,
     Future,
     TimeoutError,
     create_task,
     get_running_loop,
     shield,
     sleep,
-    wait,
     wait_for,
 )
 from collections import defaultdict
@@ -83,6 +81,7 @@ from dank_mids.helpers._errors import (
     revert_logger,
     revert_logger_log_debug,
 )
+from dank_mids.helpers._gather import first_completed
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._weaklist import WeakList
@@ -312,9 +311,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                     response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
                 except TimeoutError:
                     duplicate = self.create_duplicate()
-                    done, pending = await wait(
-                        (fut, duplicate), return_when=FIRST_COMPLETED
-                    )
+                    done, pending = await first_completed(fut, duplicate)
                     for d in done:
                         if d is not fut:
                             return await d
@@ -360,16 +357,8 @@ class RPCRequest(_RequestBase[RawResponse]):
             await wait_for(shield(task), timeout=_TIMEOUT)
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
-            duplicate = self.create_duplicate()
-            done, pending = await wait((task, duplicate), return_when=FIRST_COMPLETED)
-            for t in pending:
-                t.cancel()
-            for t in done:
-                if t is task:
-                    duplicate._fut.cancel()
-                else:
-                    self._fut.cancel()
-                return await t
+            for t in await first_completed(task, self.create_duplicate(), cancel=True):
+                return t.result()
         response = self._fut.result().decode(partial=True)
         return (
             {"result": response.result}
