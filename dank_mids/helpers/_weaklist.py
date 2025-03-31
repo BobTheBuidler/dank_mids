@@ -7,6 +7,8 @@ else:
     _Request = TypeVar("_Request")
 
 
+_get_obj_from_ref = ref.__call__
+
 class WeakList(Generic[_Request]):
     def __init__(self, data=None):
         self._refs = {}  # Mapping from object ID to weak reference
@@ -28,10 +30,9 @@ class WeakList(Generic[_Request]):
         return False if ref is None else ref() is item
 
     def __iter__(self) -> Iterator[_Request]:
-        for ref in self._refs.values():
-            item = ref()
-            if item is not None:
-                yield item
+        for obj in map(_get_obj_from_ref, self._refs.values()):
+            if obj is not None:
+                yield obj
 
     def append(self, item: _Request) -> None:
         # Keep a weak reference with a callback for when the item is collected
