@@ -812,7 +812,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     async def spoof_response(
         self, data: Union[RawResponse, Exception], calls: Optional[Sequence[eth_call]] = None
     ) -> None:
-        # This happens if an Exception takes place during a singular Multicall request.
+        # This happens if an Exception takes place during a non-batched Multicall request.
         if isinstance(data, Exception):
             if error_logger.isEnabledFor(DEBUG):
                 exc_type = type(data).__name__
