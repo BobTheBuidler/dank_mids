@@ -1986,13 +1986,13 @@ test = ["hypothesis (>=4.43.0)", "mypy (==0.971)", "pytest (>=7.0.0)", "pytest-x
 
 [[package]]
 name = "evmspec"
-version = "0.2.6"
+version = "0.2.7"
 description = "A collection of msgspec.Struct definitions for use with the Ethereum Virtual Machine"
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "evmspec-0.2.6-py3-none-any.whl", hash = "sha256:ea5f593a698b46f299d91b26d2a319aa0d982cb796db5cc5cfdccde4baada0cd"},
-    {file = "evmspec-0.2.6.tar.gz", hash = "sha256:1ce268144a3ae1a70207d77d07aa05b3561a039b5fbcea1cc4e32184b8cb41aa"},
+    {file = "evmspec-0.2.7-py3-none-any.whl", hash = "sha256:c9fcf9faed85a7596d5f08fe900ef5a368c1771364131beba0a174e09659faed"},
+    {file = "evmspec-0.2.7.tar.gz", hash = "sha256:a135bf48b0257f0610b9be1dad29e2044c9942207096cde3d80a433a1b3ea741"},
 ]
 
 [package.dependencies]
@@ -2033,12 +2033,12 @@ testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
 name = "ez-a-sync"
-version = "0.28.0"
+version = "0.28.1"
 description = "A library that makes it easy to define objects that can be used for both sync and async use cases."
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "ez_a_sync-0.28.0.tar.gz", hash = "sha256:6dabc28bf425673a29dc9bdce973b21f3701837ff8d48eaa1aa8dc22bd17b18a"},
+    {file = "ez_a_sync-0.28.1.tar.gz", hash = "sha256:b2719c95df464515069aff11dd82ff264a236b55df5f79a3c6e0d506a9121248"},
 ]
 
 [package.dependencies]
@@ -5095,4 +5095,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "82bcd29c5a809b548c1b902a6bc4caa120b3637adee2b7309bce95bae65dc07d"
+content-hash = "973564d80d5103c3058a433160bcc051132d6bd7aa2aa8d37e55322f1292fb84"

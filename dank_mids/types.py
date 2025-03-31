@@ -253,7 +253,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
     ) -> Union[HexBytes, Wei, uint, ChainId, BlockNumber, AttributeDict]:
         # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
         if method and (typ := _RETURN_TYPES.get(method)):
-            if method in [
+            if method in (
                 "eth_call",
                 "eth_blockNumber",
                 "eth_getCode",
@@ -263,7 +263,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
                 "eth_getBalance",
                 "eth_chainId",
                 "erigon_getHeaderByNumber",
-            ]:
+            ):
                 try:
                     return better_decode(
                         self.result, type=typ, dec_hook=_decode_hook, method=method
@@ -289,12 +289,12 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
                             return result
 
                     elif e.args[0] == "Object contains unknown field `withdrawals`":
-                        return better_decode(
-                            self.result,
-                            type=ShanghaiCapellaBlock,
-                            dec_hook=_decode_hook,
-                            method=method,
-                        )
+                        typ = ShanghaiCapellaBlock
+
+                    elif e.args[0] == "Object contains unknown field `difficulty`":
+                        # I've only seen this on OP stack so far, not sure what difficulty means for their chain
+                        typ = BaseBlock
+
                     else:
                         raise
 
