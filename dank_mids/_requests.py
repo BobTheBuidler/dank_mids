@@ -899,8 +899,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         """
         if error_logger.isEnabledFor(DEBUG):
             error_logger_log_debug(
-                "%s had %s, bisecting and retrying...", 
-                self, 
+                "%s had %s, bisecting and retrying...",
+                self,
                 e.response.error if type(e) is BadResponse else repr(e),
             )
         controller = self.controller
