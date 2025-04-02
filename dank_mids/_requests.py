@@ -425,7 +425,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         except TimeoutError:
             log_func = error_logger.warning if num_previous_timeouts > 5 else error_logger.debug
             log_func(
-                "`make_request` timed out (30s) %s times for %s, trying again...",
+                "`make_request` timed out (5s) %s times for %s, trying again...",
                 num_previous_timeouts + 1,
                 self,
             )
