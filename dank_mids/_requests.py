@@ -373,7 +373,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                 self,
             )
             done = await first_completed(task, self.create_duplicate(), cancel=True):
-            return next(iter(done)).result()
+            return done[0].result()
         response = self._fut.result().decode(partial=True)
         return (
             {"result": response.result}
@@ -432,7 +432,7 @@ class RPCRequest(_RequestBase[RawResponse]):
             done = await first_completed(
                 task, self.make_request(num_previous_timeouts + 1), cancel=True
             )
-            response = next(iter(done)).result()
+            response = done[0].result()
         self._fut.set_result(response)
         return response
 
