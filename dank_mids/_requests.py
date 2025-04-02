@@ -514,12 +514,17 @@ class eth_call(RPCRequest):
 
     def __repr__(self) -> str:
         tx, block = self.params
-        block = self.block
         if block.startswith("0x"):
             block = int(block, 16)
         batch = self._batch
         batch_info = "" if batch is None else f" batch={batch}"
-        return f"<{self.__class__.__name__} uid={self.uid} block={block} to={tx['to']} data={tx['data']}{batch_info}>"
+        if batch is None or type(batch) is not Multicall:
+            if block.startswith("0x"):
+                block = int(block, 16)
+            block_info = f" block={block}"
+        else:
+            block_info = ""
+        return f"<{self.__class__.__name__} uid={self.uid}{block_info} to={tx['to']} data={tx['data']}{batch_info}>"
 
     @property
     def multicall_compatible(self) -> bool:
