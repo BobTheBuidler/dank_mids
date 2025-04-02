@@ -372,7 +372,7 @@ class RPCRequest(_RequestBase[RawResponse]):
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
                 self,
             )
-            done = await first_completed(task, self.create_duplicate(), cancel=True):
+            done = await first_completed(task, self.create_duplicate(), cancel=True)
             return done[0].result()
         response = self._fut.result().decode(partial=True)
         return (
