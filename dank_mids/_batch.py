@@ -36,8 +36,8 @@ class DankBatch:
         :class:`dank_mids._requests.RPCRequest`: The RPCRequest class used in this batch.
     """
 
-    _started: bool = False
-    """A flag indicating whether the batch has been started."""
+    _awaited: bool = False
+    """A flag indicating whether the batch has been awaited."""
 
     __slots__ = "controller", "multicalls", "rpc_calls", "__dict__"
 
@@ -61,7 +61,7 @@ class DankBatch:
         Executes all operations in the batch.
 
         This method starts the processing of all multicalls and individual RPC calls
-        that have been added to the batch. It marks the batch as started to prevent
+        that have been added to the batch. It marks the batch as awaited to prevent
         duplicate executions.
 
         Note:
@@ -70,9 +70,9 @@ class DankBatch:
 
         Returns a generator that can be awaited to execute the batch.
         """
-        if self._started:
+        if self._awaited:
             raise RuntimeError("The batch has already been awaited")
-        self._started = True
+        self._awaited = True
         for mcall in self.multicalls.values():
             mcall.start(self, cleanup=False)
         for call in self.rpc_calls:
