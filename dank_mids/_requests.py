@@ -936,11 +936,9 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if controller.pending_rpc_calls:
             batch0, batch1 = bisected
             controller.pending_rpc_calls.append(batch0)
-            batch0.start(self, cleanup=False)
             if batch1:
                 if controller.pending_rpc_calls:
                     controller.pending_rpc_calls.append(batch1)
-                    batch1.start(self, cleanup=False)
                 else:
                     await batch1
             await controller.pending_rpc_calls._done.wait()
