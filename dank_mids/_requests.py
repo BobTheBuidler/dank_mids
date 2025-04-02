@@ -780,7 +780,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             except RuntimeError as e:
                 logger.exception(e)
             return
-        
+
         self._started = True
         if (l := len(self)) == 1:
             return await self._exec_single_call()
