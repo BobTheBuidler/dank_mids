@@ -287,8 +287,8 @@ class RPCRequest(_RequestBase[RawResponse]):
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
             await yield_to_loop()
 
-        elif current_batch._started is False:
-            # NOTE: If we're already started, we filled a batch. Let's await it now so we can send something to the node.
+        elif current_batch._awaited is False:
+            # NOTE: If the batch was already awaited, we filled a batch. Let's await it now so we can send something to the node.
             await first_completed(current_batch, self._fut)
 
         if self._batch is None:
@@ -538,8 +538,8 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     calls: WeakList[_Request]
     _done: _RequestEvent
 
-    _started: bool = False
-    """A flag indicating whether the batch has been started."""
+    _awaited: bool = False
+    """A flag indicating whether the batch has been awaited."""
 
     __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
 
@@ -690,8 +690,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     method = "eth_call"
     fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
 
-    _started: bool
-    """A flag indicating whether the Multicall has been started."""
+    _awaited: bool
+    """A flag indicating whether the Multicall has been awaited."""
 
     __slots__ = ("bid",)
 
@@ -709,7 +709,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         block = self.block
         if block.startswith("0x"):
             block = int(block, 16)
-        return f"<Multicall mid={self.bid} block={block} len={len(self)} started={self._started}>"
+        return f"<Multicall mid={self.bid} block={block} len={len(self)} awaited={self._awaited}>"
 
     def __iter__(self) -> Iterator[eth_call]:
         return iter(self.calls)
@@ -774,14 +774,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                     controller._pending_eth_calls_pop(self.block, None)
 
     async def get_response(self) -> None:  # type: ignore [override]
-        if self._started:
+        if self._awaited:
             try:
                 raise RuntimeError(f"{self} early exit")
             except RuntimeError as e:
                 logger.exception(e)
             return
 
-        self._started = True
+        self._awaited = True
         if (l := len(self)) == 1:
             return await self._exec_single_call()
         # elif l < 50: # TODO play with later
@@ -1000,7 +1000,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
 
     def __repr__(self) -> str:
-        return f"<JSONRPCBatch jid={self.jid} len={len(self)} started={self._started}>"
+        return f"<JSONRPCBatch jid={self.jid} len={len(self)} awaited={self._awaited}>"
 
     def __iter__(self) -> Iterator[Union[Multicall, eth_call, RPCRequest]]:
         return filter(None, self.calls)
@@ -1101,10 +1101,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
                     controller.pending_rpc_calls = JSONRPCBatch(controller)
 
     async def get_response(self) -> None:  # type: ignore [override]
-        if self._started:
+        if self._awaited:
             _log_warning("%s exiting early. This shouldn't really happen bro", self)
             return
-        self._started = True
+        self._awaited = True
 
         if self.is_single_multicall:
             await next(iter(self.calls))
