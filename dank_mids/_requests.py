@@ -402,7 +402,7 @@ class RPCRequest(_RequestBase[RawResponse]):
     async def make_request(self, num_previous_timeouts: int = 0) -> RawResponse:
         """
         Used to execute the request with no batching.
-        
+
         NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere else.
         """
         task = create_task(
@@ -411,8 +411,14 @@ class RPCRequest(_RequestBase[RawResponse]):
         try:
             response = await wait_for(shield(task), 30)
         except TimeoutError:
-            error_logger.warning("`make_request` timed out (30s) %s times for %s, trying again...", num_previous_timeouts+1, self)
-            first_done, *_ = await first_completed(task, self.make_request(num_previous_timeouts+1), cancel=True)
+            error_logger.warning(
+                "`make_request` timed out (30s) %s times for %s, trying again...",
+                num_previous_timeouts + 1,
+                self,
+            )
+            first_done, *_ = await first_completed(
+                task, self.make_request(num_previous_timeouts + 1), cancel=True
+            )
             response = first_done.result()
         self._fut.set_result(response)
         return response
