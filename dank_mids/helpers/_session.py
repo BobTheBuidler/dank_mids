@@ -207,9 +207,17 @@ class DankClientSession(ClientSession):
         while True:
             try:
                 async with limiters[endpoint]:
-                    async with ClientSession.post(self, endpoint, *args, **kwargs) as response:
+                    try:
+                        # When you use post as an async context manager prior to python3.11,
+                        # exceptions can get stuck. See here: https://github.com/aio-libs/aiohttp/issues/8191
+                        response = await ClientSession.post(self, endpoint, *args, **kwargs)
                         response_data = await response.json(loads=loads, content_type=None)
+                    except:
+                        response.close()
+                        raise
+                    else:
                         _logger_debug("received response %s", response_data)
+                        response.release()
                         return response_data
             except ClientResponseError as ce:
                 status = ce.status
