@@ -266,8 +266,10 @@ class RPCRequest(_RequestBase[RawResponse]):
         return _get_len_for_method(self.method) if self._tiny_batches else 1
 
     def __repr__(self) -> str:
+        batch = self._batch
+        batch_info = "" if batch is None else f" batch={batch}"
         return (
-            f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}>"
+            f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}{batch_info}>"
         )
 
     def __del__(self) -> None:
@@ -517,7 +519,9 @@ class eth_call(RPCRequest):
         block = self.block
         if block.startswith("0x"):
             block = int(block, 16)
-        return f"<{self.__class__.__name__} uid={self.uid} block={block} to={tx['to']} data={tx['data']}>"
+        batch = self._batch
+        batch_info = "" if batch is None else f" batch={batch}"
+        return f"<{self.__class__.__name__} uid={self.uid} block={block} to={tx['to']} data={tx['data']}{batch_info}>"
 
     @property
     def multicall_compatible(self) -> bool:
@@ -737,7 +741,9 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         block = self.block
         if block.startswith("0x"):
             block = int(block, 16)
-        return f"<Multicall mid={self.bid} block={block} len={len(self)} awaited={self._awaited}>"
+        batch = self._batch
+        batch_info = "" if batch is None else f" batch={batch}"
+        return f"<Multicall mid={self.bid} block={block} len={len(self)}{batch_info} awaited={self._awaited}>"
 
     def __iter__(self) -> Iterator[eth_call]:
         return iter(self.calls)
@@ -1029,7 +1035,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
 
     def __repr__(self) -> str:
-        return f"<JSONRPCBatch jid={self.jid} len={len(self)} awaited={self._awaited}>"
+        batch = self._batch
+        batch_info = "" if batch is None else f" batch={batch}"
+        return f"<JSONRPCBatch jid={self.jid} len={len(self)}{batch_info} awaited={self._awaited}>"
 
     def __iter__(self) -> Iterator[Union[Multicall, eth_call, RPCRequest]]:
         return filter(None, self.calls)
