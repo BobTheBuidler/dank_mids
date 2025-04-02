@@ -299,7 +299,9 @@ class RPCRequest(_RequestBase[RawResponse]):
                 # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
                 await wait_for(shield(batch_task), timeout=_TIMEOUT)
             except TimeoutError:
-                done, pending = await first_completed(batch_task, self._fut, self.create_duplicate())
+                done, pending = await first_completed(
+                    batch_task, self._fut, self.create_duplicate()
+                )
                 for d in done:
                     if d in (batch_task, self._fut):
                         # we'll get and decode the value below
@@ -548,12 +550,6 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         self._lock = _AlertingRLock(name=self.__class__.__name__)
         self._done = _RequestEvent(self)
 
-    def __bool__(self) -> bool:
-        return bool(self.calls)
-
-    def __iter__(self) -> Iterator[_Request]:
-        return iter(self.calls)
-
     def __len__(self) -> int:
         return len(self.calls)
 
@@ -714,6 +710,12 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if block.startswith("0x"):
             block = int(block, 16)
         return f"<Multicall mid={self.bid} block={block} len={len(self)} started={self._started}>"
+
+    def __iter__(self) -> Iterator[eth_call]:
+        return iter(self.calls)
+
+    def __bool__(self) -> bool:
+        return bool(self.calls)
 
     def __del__(self) -> None:
         if (
@@ -967,7 +969,7 @@ def _log_checking_batch_size(
 
 
 @final
-class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
+class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
     """
     Represents a batch of JSON-RPC requests.
 
@@ -997,6 +999,14 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, RPCRequest]]):
 
     def __repr__(self) -> str:
         return f"<JSONRPCBatch jid={self.jid} len={len(self)} started={self._started}>"
+
+    def __iter__(self) -> Iterator[Union[Multicall, eth_call, RPCRequest]]:
+        return filter(None, self.calls)
+
+    def __bool__(self) -> bool:
+        for _ in self:
+            return True
+        return False
 
     def __del__(self) -> None:
         if self.calls and not self._done.is_set():
