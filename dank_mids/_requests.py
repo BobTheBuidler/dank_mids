@@ -1,5 +1,6 @@
 from asyncio import (
     Future,
+    Task,
     TimeoutError,
     create_task,
     get_running_loop,
@@ -26,6 +27,7 @@ from typing import (
     Literal,
     Optional,
     Sequence,
+    Set,
     Tuple,
     TypeVar,
     Union,
@@ -372,8 +374,8 @@ class RPCRequest(_RequestBase[RawResponse]):
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
                 self,
             )
-            done = await first_completed(task, self.create_duplicate(), cancel=True)
-            return done[0].result()
+            done: Set[Task] = await first_completed(task, self.create_duplicate(), cancel=True)
+            return done.pop().result()
         response = self._fut.result().decode(partial=True)
         return (
             {"result": response.result}
@@ -429,10 +431,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                 num_previous_timeouts + 1,
                 self,
             )
-            done = await first_completed(
+            done: Set[Task] = await first_completed(
                 task, self.make_request(num_previous_timeouts + 1), cancel=True
             )
-            response = done[0].result()
+            response = done.pop().result()
         self._fut.set_result(response)
         return response
 
