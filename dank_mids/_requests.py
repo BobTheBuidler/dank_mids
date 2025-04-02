@@ -299,6 +299,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                 # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
                 await wait_for(shield(batch_task), timeout=_TIMEOUT)
             except TimeoutError:
+                _log_warning(
+                    "%s got stuck awaiting its batch, we're creating a new one",
+                    self,
+                )
                 done, pending = await first_completed(
                     batch_task, self._fut, self.create_duplicate()
                 )
@@ -317,6 +321,10 @@ class RPCRequest(_RequestBase[RawResponse]):
                 try:
                     response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
                 except TimeoutError:
+                    _log_warning(
+                        "%s got stuck waiting for its fut, we're creating a new one",
+                        self,
+                    )
                     duplicate = self.create_duplicate()
                     for d in await first_completed(fut, duplicate, cancel=True):
                         response = d.result()
@@ -360,6 +368,10 @@ class RPCRequest(_RequestBase[RawResponse]):
             await wait_for(shield(task), timeout=_TIMEOUT)
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
+            _log_warning(
+                "%s got stuck in `get_response_unbatched`, we're creating a new one...",
+                self,
+            )
             for t in await first_completed(task, self.create_duplicate(), cancel=True):
                 return t.result()
         response = self._fut.result().decode(partial=True)
@@ -382,7 +394,7 @@ class RPCRequest(_RequestBase[RawResponse]):
             self._fut.set_result(data)
         elif isinstance(data, BadResponse):
             if needs_full_request_spec(data.response) and self.controller._check_request_type():
-                self._fut.set_result(await self.create_duplicate(log=False))
+                self._fut.set_result(await self.create_duplicate())
                 return
             formatted = format_error_response(self.request, data.response.error)
             self._fut.set_result({"error": formatted})
@@ -423,12 +435,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         self._fut.set_result(response)
         return response
 
-    def create_duplicate(self, log: bool = True) -> Union["RPCRequest", "eth_call"]:
-        if log:
-            _log_warning(
-                "%s got stuck, we're creating a new one",
-                self,
-            )
+    def create_duplicate(self) -> Union["RPCRequest", "eth_call"]:
         dupe_uid = f"{self.uid}_copy"
         if type(self) is eth_call:
             duplicate = eth_call(self.controller, self.params, dupe_uid)
