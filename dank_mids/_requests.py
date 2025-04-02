@@ -268,9 +268,7 @@ class RPCRequest(_RequestBase[RawResponse]):
     def __repr__(self) -> str:
         batch = self._batch
         batch_info = "" if batch is None else f" batch={batch}"
-        return (
-            f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}{batch_info}>"
-        )
+        return f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}{batch_info}>"
 
     def __del__(self) -> None:
         if not self._fut.done():
