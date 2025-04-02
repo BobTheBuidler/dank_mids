@@ -399,9 +399,27 @@ class RPCRequest(_RequestBase[RawResponse]):
             exc = TypeError(f"{dtype.__name__} not supported for spoofing.", dtype, data)
             self.__set_exception(exc)
 
-    async def make_request(self) -> RawResponse:
-        """Used to execute the request with no batching."""
-        response = await self.controller.make_request(self.method, self.params, request_id=self.uid)
+    async def make_request(self, num_previous_timeouts: int = 0) -> RawResponse:
+        """
+        Used to execute the request with no batching.
+
+        NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere else.
+        """
+        task = create_task(
+            self.controller.make_request(self.method, self.params, request_id=self.uid)
+        )
+        try:
+            response = await wait_for(shield(task), 30)
+        except TimeoutError:
+            error_logger.warning(
+                "`make_request` timed out (30s) %s times for %s, trying again...",
+                num_previous_timeouts + 1,
+                self,
+            )
+            first_done, *_ = await first_completed(
+                task, self.make_request(num_previous_timeouts + 1), cancel=True
+            )
+            response = first_done.result()
         self._fut.set_result(response)
         return response
 
@@ -949,6 +967,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @set_done
     async def _exec_single_call(self) -> None:
+        """NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere in make_request."""
         await next(iter(self.calls)).make_request()
 
     async def _spoof_or_retry(self, response: RawResponse) -> None:
