@@ -399,19 +399,20 @@ class RPCRequest(_RequestBase[RawResponse]):
             exc = TypeError(f"{dtype.__name__} not supported for spoofing.", dtype, data)
             self.__set_exception(exc)
 
-    async def make_request(self) -> RawResponse:
+    async def make_request(self, num_previous_timeouts: int = 0) -> RawResponse:
         """
         Used to execute the request with no batching.
         
         NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere else.
         """
-        coro = self.controller.make_request(self.method, self.params, request_id=self.uid)
-        task = create_task(coro)
+        task = create_task(
+            self.controller.make_request(self.method, self.params, request_id=self.uid)
+        )
         try:
             response = await wait_for(shield(task), 30)
         except TimeoutError:
-            error_logger_debug("`make_request` timed out (30s) for %s, trying again...", self)
-            first_done, *_ = await first_completed(task, self.make_request(), cancel=True)
+            error_logger.warning("`make_request` timed out (30s) %s times for %s, trying again...", num_previous_timeouts+1, self)
+            first_done, *_ = await first_completed(task, self.make_request(num_previous_timeouts+1), cancel=True)
             response = first_done.result()
         self._fut.set_result(response)
         return response
