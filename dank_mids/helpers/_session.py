@@ -118,8 +118,12 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 # default is 50 requests/second
 limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
-_rate_limit_waiters: Dict[str, Event] = {}
+class RateLimitEvent(Event):
+    def __init__(self):
+        Event.__init__(self, debug_daemon_interval=30)
+        self.logger.setLevel(DEBUG)
 
+_rate_limit_waiters: Dict[str, RateLimitEvent] = {}
 
 async def rate_limit_inactive(endpoint: str) -> None:
     """
@@ -136,8 +140,10 @@ async def rate_limit_inactive(endpoint: str) -> None:
         await existing.wait()
         return
 
+    logger.info("creating RateLimitEvent")
+
     # Otherwise, create an Event for others to wait on
-    _rate_limit_waiters[endpoint] = Event()
+    _rate_limit_waiters[endpoint] = RateLimitEvent()
 
     while waiters:
         # pop last item
@@ -159,6 +165,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
             await yield_to_loop()
 
     _rate_limit_waiters.pop(endpoint).set()
+    logger.info("RateLimitEvent popped")
 
 
 @overload
