@@ -120,18 +120,24 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
 def failsafe(event: "RateLimitEvent") -> None:
-    error_logger.warning("%s is stuck for reasons unknown, unsticking...", event)
+    error_logger.debug("%s is stuck for reasons unknown, unsticking...", event)
     Event.set(event)
+    if event is _rate_limit_waiters.get(event._endpoint):
+        _rate_limit_waiters.pop(event._endpoint)
+
 
 class RateLimitEvent(Event):
+    _endpoint: str
     _escape_hatch = TimerHandle
-    def __init__(self):
+    def __init__(self, endpoint: str):
         Event.__init__(self, "dank_mids.RateLimitEvent")
-        self.logger.setLevel(DEBUG)
-        self._escape_hatch = self._get_loop().call_later(5, failsafe, self)
+        self._endpoint = endpoint
+        self._escape_hatch = self._get_loop().call_later(10, failsafe, self)
     def set(self) -> None:
         self._escape_hatch.cancel()
         return super().set()
+    __slots__ = "_endpoint", "_escape_hatch"
+
 
 _rate_limit_waiters: Dict[str, RateLimitEvent] = {}
 
@@ -151,7 +157,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         return
 
     # Otherwise, create an Event for others to wait on
-    _rate_limit_waiters[endpoint] = RateLimitEvent()
+    _rate_limit_waiters[endpoint] = RateLimitEvent(endpoint)
 
     while waiters:
         # pop last item
