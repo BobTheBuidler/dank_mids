@@ -162,7 +162,8 @@ async def rate_limit_inactive(endpoint: str) -> None:
         return
 
     # Otherwise, create an Event for others to wait on
-    _rate_limit_waiters[endpoint] = RateLimitEvent(endpoint)
+    event = RateLimitEvent(endpoint)
+    _rate_limit_waiters[endpoint] = event
 
     while waiters:
         # pop last item
@@ -183,7 +184,9 @@ async def rate_limit_inactive(endpoint: str) -> None:
                 break
             await yield_to_loop()
 
-    _rate_limit_waiters.pop(endpoint).set()
+    event.set()
+    if _rate_limit_waiters.get(endpoint) is event:
+        _rate_limit_waiters.pop(endpoint)
 
 
 @overload
