@@ -186,11 +186,11 @@ async def rate_limit_inactive(endpoint: str) -> None:
                 await shielded
             except CancelledError as e:
                 if shielded.cancelled():
-                    if last_waiter.cancelled():
-                        raise NotImplementedError("They shouldn't both be cancelled") from e
                     raise
-                elif not last_waiter.cancelled():
-                    raise NotImplementedError("At least one should be cancelled") from e
+                elif last_waiter.cancelled():
+                    continue
+                else:
+                    raise RuntimeError("At least one should be cancelled") from e
 
             # let recently popped waiters check the limiter for capacity, they might create new waiters
             # then, let recently popped waiters make some calls to see if we're still being limited
