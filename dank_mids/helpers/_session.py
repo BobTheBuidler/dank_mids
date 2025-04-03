@@ -134,7 +134,7 @@ class RateLimitEvent(Event):
     def __init__(self, endpoint: str):
         Event.__init__(self, "dank_mids.RateLimitEvent")
         self._endpoint = endpoint
-        self._escape_hatch = self._get_loop().call_later(10, failsafe, self)
+        self._escape_hatch = self._get_loop().call_later(30, failsafe, self)
 
     def set(self) -> None:
         self._escape_hatch.cancel()
