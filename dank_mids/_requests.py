@@ -293,7 +293,7 @@ class RPCRequest(_RequestBase[RawResponse]):
 
         elif current_batch._awaited is False:
             # NOTE: If the batch was already awaited, we filled a batch. Let's await it now so we can send something to the node.
-            await first_completed(current_batch, self._fut)
+            _strongref = await first_completed(current_batch, self._fut)
 
         if self._batch is None:
             try:
@@ -376,13 +376,13 @@ class RPCRequest(_RequestBase[RawResponse]):
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
                 self,
             )
-            done: Set[Task] = await first_completed(task, self.create_duplicate(), cancel=True)
-            return done.pop().result()
-        response = self._fut.result().decode(partial=True)
+            await first_completed(task, self.create_duplicate(), cancel=True)
+        response: RawResponse = await self._fut
+        decoded = response.decode(partial=True)
         return (
-            {"result": response.result}
-            if self.raw and response.result
-            else response.to_dict(self.method)
+            {"result": decoded.result}
+            if self.raw and decoded.result
+            else decoded.to_dict(self.method)
         )
 
     async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
