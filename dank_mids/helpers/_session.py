@@ -10,6 +10,7 @@ from time import time
 from typing import Any, Callable, Dict, Tuple, overload
 
 from a_sync import Event
+from a_sync._smart import shield
 from a_sync.asyncio import sleep0 as yield_to_loop
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
@@ -165,28 +166,43 @@ async def rate_limit_inactive(endpoint: str) -> None:
     event = RateLimitEvent(endpoint)
     _rate_limit_waiters[endpoint] = event
 
-    while waiters:
-        # pop last item
-        last_key, last_waiter = waiters.popitem()
-        # replace it
-        waiters[last_key] = last_waiter
-        if last_waiter.done():
-            break
-        # await it
-        try:
-            await last_waiter
-        except CancelledError:
-            pass
-        # let recently popped waiters check the limiter for capacity, they might create new waiters
-        # then, let recently popped waiters make some calls to see if we're still being limited
-        for _ in range(10):
-            if waiters:
-                break
-            await yield_to_loop()
+    try:
+        while waiters:
+            # pop last item
+            last_key, last_waiter = waiters.popitem()
+            if last_waiter.cancelled():
+                continue
+            
+            # replace it
+            waiters[last_key] = last_waiter
+            if last_waiter.done():
+                return
+        
+            # shield it
+            shielded = shield(last_waiter)
 
-    event.set()
-    if _rate_limit_waiters.get(endpoint) is event:
-        _rate_limit_waiters.pop(endpoint)
+            # await it
+            try:
+                await shielded
+            except CancelledError:
+                if shielded.cancelled():
+                    if last_waiter.cancelled():
+                        raise NotImplementedError("They shouldn't both be cancelled")
+                    raise
+                elif not last_waiter.cancelled():
+                    raise NotImplementedError("At least one should be cancelled")
+
+            # let recently popped waiters check the limiter for capacity, they might create new waiters
+            # then, let recently popped waiters make some calls to see if we're still being limited
+            for _ in range(10):
+                if waiters:
+                    break
+                await yield_to_loop()
+    
+    finally:
+        event.set()
+        if _rate_limit_waiters.get(endpoint) is event:
+            _rate_limit_waiters.pop(endpoint)
 
 
 @overload
