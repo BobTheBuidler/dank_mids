@@ -119,6 +119,7 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 # default is 50 requests/second
 limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
+
 def failsafe(event: "RateLimitEvent") -> None:
     error_logger.debug("%s is stuck for reasons unknown, unsticking...", event)
     Event.set(event)
@@ -129,17 +130,21 @@ def failsafe(event: "RateLimitEvent") -> None:
 class RateLimitEvent(Event):
     _endpoint: str
     _escape_hatch = TimerHandle
+
     def __init__(self, endpoint: str):
         Event.__init__(self, "dank_mids.RateLimitEvent")
         self._endpoint = endpoint
         self._escape_hatch = self._get_loop().call_later(10, failsafe, self)
+
     def set(self) -> None:
         self._escape_hatch.cancel()
         return super().set()
+
     __slots__ = "_endpoint", "_escape_hatch"
 
 
 _rate_limit_waiters: Dict[str, RateLimitEvent] = {}
+
 
 async def rate_limit_inactive(endpoint: str) -> None:
     """
