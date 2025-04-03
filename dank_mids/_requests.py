@@ -76,6 +76,7 @@ from dank_mids.helpers._errors import (
     error_logger_debug,
     error_logger_log_debug,
     format_error_response,
+    gas_logger_debug,
     is_call_revert,
     log_internal_error,
     needs_full_request_spec,
@@ -625,8 +626,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         if type(e) is OutOfGas:
             # TODO Remember which contracts/calls are gas guzzlers
             if len(self) > 1:
-                if error_logger.isEnabledFor(DEBUG):
-                    error_logger_log_debug("%s out of gas. cut in half, trying again...", self)
+                gas_logger_debug("%s out of gas. cut in half, trying again...", self)
                 return True
             return False
 
