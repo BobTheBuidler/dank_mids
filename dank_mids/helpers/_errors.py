@@ -63,9 +63,9 @@ def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception):
 
 
 def format_error_response(request: PartialRequest, error: Error) -> RPCError:
-    error = error.to_dict()
-    error["dankmids_added_context"] = request
-    return error
+    response = error.to_dict()
+    response["dankmids_added_context"] = request
+    return response
 
 
 def needs_full_request_spec(response: PartialResponse):

@@ -201,7 +201,7 @@ def _should_batch_method(method: str) -> bool:
 _REVERT_EXC_TYPES = ContractLogicError, ExecutionReverted
 
 
-class RPCRequest(_RequestBase[RawResponse]):
+class RPCRequest(_RequestBase[RPCResponse]):
     should_batch: bool = True
     """`True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
 
@@ -355,7 +355,7 @@ class RPCRequest(_RequestBase[RawResponse]):
             return response.to_dict(self.method)
 
         if needs_full_request_spec(response) and self.controller._check_request_type():
-            method = f"{self.method}_raw" if self.raw else self.method
+            method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method  # type: ignore [assignment]
             return await self.controller(method, self.params)
         elif revert_logger.isEnabledFor(DEBUG) and type(response.exception) is ExecutionReverted:
             revert_logger_log_debug("%s for %s", response.exception, self)
@@ -445,7 +445,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         if type(self) is eth_call:
             duplicate = eth_call(self.controller, self.params, dupe_uid)
         else:
-            method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method
+            method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method  # type: ignore [assignment]
             duplicate = RPCRequest(self.controller, method, self.params, dupe_uid)
 
         selffut = self._fut

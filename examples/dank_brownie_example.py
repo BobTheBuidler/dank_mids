@@ -1,3 +1,4 @@
+# type: ignore
 """
 This example demonstrates how to use dank_mids with Brownie for efficient blockchain data retrieval.
 
