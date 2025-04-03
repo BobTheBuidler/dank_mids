@@ -127,9 +127,8 @@ async def get_timestamp_at_block(block: int) -> Timestamp:
         The timestamp of the block
     """
     data = await dank_mids.eth.get_block(block)
-    # dank mids will turn all dict responses into attr dicts for easier key lookup
-    # the syntax below will work but won't type check correctly
-    not_typed = data.timestamp  # type: ignore [attr-defined]
-    # the syntax below is more annoying to type out everywhere but will work with type checkers
-    typed = data["timestamp"]
+    # dank mids decodes responses into evmspec Struct objects for convenient access and mypy support
+    typed = data.timestamp
+    # the syntax below will still work for compatability with legacy tools
+    not_typed = data["timestamp"]
     return typed
