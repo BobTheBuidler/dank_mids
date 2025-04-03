@@ -129,7 +129,7 @@ def failsafe(event: "RateLimitEvent") -> None:
 
 class RateLimitEvent(Event):
     _endpoint: str
-    _escape_hatch = TimerHandle
+    _escape_hatch: TimerHandle
 
     def __init__(self, endpoint: str):
         Event.__init__(self, "dank_mids.RateLimitEvent")
