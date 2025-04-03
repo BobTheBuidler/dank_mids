@@ -172,25 +172,25 @@ async def rate_limit_inactive(endpoint: str) -> None:
             last_key, last_waiter = waiters.popitem()
             if last_waiter.cancelled():
                 continue
-            
+
             # replace it
             waiters[last_key] = last_waiter
             if last_waiter.done():
                 return
-        
+
             # shield it
             shielded = shield(last_waiter)
 
             # await it
             try:
                 await shielded
-            except CancelledError:
+            except CancelledError as e:
                 if shielded.cancelled():
                     if last_waiter.cancelled():
-                        raise NotImplementedError("They shouldn't both be cancelled")
+                        raise NotImplementedError("They shouldn't both be cancelled") from e
                     raise
                 elif not last_waiter.cancelled():
-                    raise NotImplementedError("At least one should be cancelled")
+                    raise NotImplementedError("At least one should be cancelled") from e
 
             # let recently popped waiters check the limiter for capacity, they might create new waiters
             # then, let recently popped waiters make some calls to see if we're still being limited
@@ -198,7 +198,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
                 if waiters:
                     break
                 await yield_to_loop()
-    
+
     finally:
         event.set()
         if _rate_limit_waiters.get(endpoint) is event:
