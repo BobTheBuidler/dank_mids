@@ -126,9 +126,9 @@ def failsafe(event: "RateLimitEvent") -> None:
 class RateLimitEvent(Event):
     _escape_hatch = TimerHandle
     def __init__(self):
-        Event.__init__(self, debug_daemon_interval=30)
+        Event.__init__(self, "dank_mids.RateLimitEvent")
         self.logger.setLevel(DEBUG)
-        self._escape_hatch = self._get_loop().call_later(120, failsafe, self)
+        self._escape_hatch = self._get_loop().call_later(5, failsafe, self)
     def set(self) -> None:
         self._escape_hatch.cancel()
         return super().set()
@@ -149,8 +149,6 @@ async def rate_limit_inactive(endpoint: str) -> None:
     if existing := _rate_limit_waiters.get(endpoint):
         await existing.wait()
         return
-
-    logger.info("creating RateLimitEvent")
 
     # Otherwise, create an Event for others to wait on
     _rate_limit_waiters[endpoint] = RateLimitEvent()
@@ -175,7 +173,6 @@ async def rate_limit_inactive(endpoint: str) -> None:
             await yield_to_loop()
 
     _rate_limit_waiters.pop(endpoint).set()
-    logger.info("RateLimitEvent popped")
 
 
 @overload
