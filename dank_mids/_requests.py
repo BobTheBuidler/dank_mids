@@ -423,11 +423,11 @@ class RPCRequest(_RequestBase[RawResponse]):
             self.controller.make_request(self.method, self.params, request_id=self.uid)
         )
         try:
-            response = await wait_for(shield(task), 5)
+            response = await wait_for(shield(task), 15)
         except TimeoutError:
-            log_func = error_logger.warning if num_previous_timeouts > 5 else error_logger.debug
+            log_func = error_logger.warning if num_previous_timeouts > 1 else error_logger.debug
             log_func(
-                "`make_request` timed out (5s) %s times for %s, trying again...",
+                "`make_request` timed out (15s) %s times for %s, trying again...",
                 num_previous_timeouts + 1,
                 self,
             )
