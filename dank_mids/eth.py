@@ -219,12 +219,12 @@ class DankEth(AsyncEth):
         try:
             return json.decode(traces_bytes, type=decode_to, dec_hook=decode_hook)
         except ValidationError:
-            if decode_to.__origin__ is not list:
+            if decode_to.__origin__ is not list:  # type: ignore [attr-defined]
                 raise
 
             traces_raw = json.decode(traces_bytes, type=List[Raw])
             traces = []
-            trace_cls = decode_to.__args__[0]
+            trace_cls = decode_to.__args__[0]  # type: ignore [attr-defined]
             for raw in traces_raw:
                 try:
                     traces.append(json.decode(raw, type=trace_cls, dec_hook=decode_hook))
