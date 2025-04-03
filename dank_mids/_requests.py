@@ -78,10 +78,11 @@ from dank_mids.helpers._errors import (
     format_error_response,
     is_call_revert,
     log_internal_error,
-    log_request_type_switch,
     needs_full_request_spec,
     revert_logger,
     revert_logger_log_debug,
+    timeout_logger_debug,
+    timeout_logger_warning,
 )
 from dank_mids.helpers._gather import first_completed
 from dank_mids.helpers._helpers import set_done
@@ -425,7 +426,7 @@ class RPCRequest(_RequestBase[RawResponse]):
         try:
             response = await wait_for(shield(task), 15)
         except TimeoutError:
-            log_func = error_logger.warning if num_previous_timeouts > 1 else error_logger.debug
+            log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
                 "`make_request` timed out (15s) %s times for %s, trying again...",
                 num_previous_timeouts + 1,

@@ -26,6 +26,11 @@ def revert_logger_log_debug(msg: str, *args) -> None:
     revert_logger_log(DEBUG, msg, args)
 
 
+timeout_logger = error_logger.getChild("timeouts")
+timeout_logger_debug = timeout_logger.debug
+timeout_logger_warning = timeout_logger.warning
+
+
 INDIVIDUAL_CALL_REVERT_STRINGS = {
     "invalid opcode",
     "missing trie node",
