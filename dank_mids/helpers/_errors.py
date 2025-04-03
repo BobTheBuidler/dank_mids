@@ -31,6 +31,9 @@ timeout_logger_debug = timeout_logger.debug
 timeout_logger_warning = timeout_logger.warning
 
 
+gas_logger = error_logger.getChild("gas")
+gas_logger_debug = gas_logger.debug
+
 INDIVIDUAL_CALL_REVERT_STRINGS = {
     "invalid opcode",
     "missing trie node",
