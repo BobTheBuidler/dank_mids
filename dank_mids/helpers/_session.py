@@ -250,8 +250,8 @@ class DankClientSession(ClientSession):
                 _logger_info(
                     "reduced requests per second for %s from %s to %s",
                     endpoint,
-                    current_rate,
-                    new_rate,
+                    round(current_rate, 3),
+                    round(new_rate, 3),
                 )
 
         now = time()
