@@ -1,5 +1,5 @@
 import http
-from asyncio import CancelledError, sleep
+from asyncio import CancelledError, TimerHandle, sleep
 from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
@@ -17,6 +17,7 @@ from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids.helpers._errors import error_logger
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
 logger = getLogger("dank_mids.session")
@@ -118,10 +119,19 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 # default is 50 requests/second
 limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
+def failsafe(event: "RateLimitEvent") -> None:
+    error_logger.warning("%s is stuck for reasons unknown, unsticking...")
+    Event.set(event)
+
 class RateLimitEvent(Event):
+    _escape_hatch = TimerHandle
     def __init__(self):
         Event.__init__(self, debug_daemon_interval=30)
         self.logger.setLevel(DEBUG)
+        self._escape_hatch = self._get_loop().call_later(120, failsafe, self)
+    def set(self) -> None:
+        self._escape_hatch.cancel()
+        return super().set()
 
 _rate_limit_waiters: Dict[str, RateLimitEvent] = {}
 
