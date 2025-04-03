@@ -185,10 +185,10 @@ async def rate_limit_inactive(endpoint: str) -> None:
             try:
                 await shielded
             except CancelledError as e:
-                if shielded.cancelled():
-                    raise
-                elif last_waiter.cancelled():
+                if last_waiter.cancelled():
                     continue
+                elif shielded.cancelled():
+                    raise
                 else:
                     raise RuntimeError("At least one should be cancelled") from e
 
