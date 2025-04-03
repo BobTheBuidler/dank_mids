@@ -120,7 +120,7 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
 def failsafe(event: "RateLimitEvent") -> None:
-    error_logger.warning("%s is stuck for reasons unknown, unsticking...")
+    error_logger.warning("%s is stuck for reasons unknown, unsticking...", event)
     Event.set(event)
 
 class RateLimitEvent(Event):
