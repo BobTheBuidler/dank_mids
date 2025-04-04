@@ -3,6 +3,7 @@ from asyncio import (
     Task,
     TimeoutError,
     create_task,
+    current_task,
     get_running_loop,
     shield,
     sleep,
@@ -817,7 +818,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     async def get_response(self) -> None:  # type: ignore [override]
         if self._awaited:
             try:
-                raise RuntimeError(f"{self} early exit")
+                raise RuntimeError(f"{self} early exit", current_task())
             except RuntimeError as e:
                 logger.exception(e)
             return
