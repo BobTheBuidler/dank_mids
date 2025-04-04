@@ -88,19 +88,23 @@ internal_err_types = Union[
 ]
 
 
+class GarbageCollectionError(RuntimeError):
+    """Exception raised when an object is garbage collected prematurely."""
+
+
 class DankMidsInternalError(Exception):
     """Exception raised for unhandled internal errors within Dank Mids."""
 
-    def __init__(self, e: Union[ValueError, internal_err_types]) -> None:
+    def __init__(self, exc: Union[ValueError, internal_err_types]) -> None:
         logger.warning(f"unhandled exception inside dank mids internals: {e}", exc_info=True)
 
-        self._original_exception = e
+        self._original_exception = exc
         """
         The original exception that was caught and wrapped by this DankMidsInternalError.
         This attribute allows access to the underlying error for debugging purposes.
         """
 
-        super().__init__(e.__repr__())
+        super().__init__(repr(exc))
 
 
 class BatchResponseSortError(Exception):
