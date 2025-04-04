@@ -22,8 +22,10 @@ logger = getLogger("dank_mids.future")
 
 _logger_is_enabled_for = logger.isEnabledFor
 
-_super_set_result = Future.set_result
-_super_set_exc = Future.set_exception
+_future_init = Future.__init__
+_future_await = Future.__await__
+_future_set_result = Future.set_result
+_future_set_exc = Future.set_exception
 
 
 class DebuggableFuture(Future):
@@ -35,21 +37,24 @@ class DebuggableFuture(Future):
     _result: Optional[RPCResponse]
 
     def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:
-        Future.__init__(self, loop=loop)
+        _future_init(self, loop=loop)
         if _logger_is_enabled_for(DEBUG):
             self._debug_logs_enabled = True
             self._owner: ProxyType["_RequestBase[_Response]"] = proxy(owner)
 
     def __await__(self) -> Generator[Any, None, RPCResponse]:
         if self._debug_logs_enabled and self.__debug_daemon_task is None:
-            self.__debug_daemon_task = create_task(self.__debug_daemon())
-        return Future.__await__(self)
+            self.__debug_daemon_task = create_task(
+                coro=self.__debug_daemon(), 
+                name="DebuggableFuture debug daemon",
+            )
+        return _future_await(self)
 
     def set_result(self, value: RPCResponse) -> None:
         # sourcery skip: merge-duplicate-blocks, remove-redundant-if
         if self._loop is get_running_loop():
             try:
-                _super_set_result(self, value)
+                _future_set_result(self, value)
             except InvalidStateError as e:
                 if self._result is not None:
                     # We already have a result. We don't really care where it came from, this is fine.
@@ -66,7 +71,7 @@ class DebuggableFuture(Future):
         # The rest of this code just makes it threadsafe(ish) based on an old idea that never was fully implemented
         # One day I'll fully commit to either finishing it up or ripping it out. For now it stays.
         elif self._state == "PENDING":
-            self._loop.call_soon_threadsafe(_super_set_result, self, value)
+            self._loop.call_soon_threadsafe(_future_set_result, self, value)
         elif self._result is not None:
             # We already have a result. We don't really care where it came from, this is fine.
             return
@@ -82,7 +87,7 @@ class DebuggableFuture(Future):
     def set_exception(self, exc: Exception) -> None:
         if self._loop is get_running_loop():
             try:
-                _super_set_exc(self, exc)
+                _future_set_exc(self, exc)
             except InvalidStateError as e:
                 if self._result is not None or self._exception is not None:
                     # its kinda odd that we get here at all but who cares, the fut has a result/exception!
@@ -94,7 +99,7 @@ class DebuggableFuture(Future):
         # The rest of this code just makes it threadsafe(ish) based on an old idea that never was fully implemented
         # One day I'll fully commit to either finishing it up or ripping it out. For now it stays.
         elif self._state == "PENDING":
-            self._loop.call_soon_threadsafe(_super_set_exc, self, exc)
+            self._loop.call_soon_threadsafe(_future_set_exc, self, exc)
         elif self._result is not None or self._exception is not None:
             # its kinda odd that we get here at all but who cares, the fut has a result/exception!
             return

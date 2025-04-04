@@ -256,7 +256,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     controller._pending_rpc_calls_append(self)
         _demo_logger_info("added to queue (cid: %s)", self.uid)
         if _logger_is_enabled_for(DEBUG):
-            self._daemon = create_task(self._debug_daemon())
+            self._daemon = create_task(self._debug_daemon(), name="RPCRequest debug daemon")
 
     def __hash__(self) -> int:
         return id(self)
@@ -298,7 +298,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         if self._batch is None:
             try:
-                batch_task = create_task(self.controller.execute_batch())
+                batch_task = create_task(self.controller.execute_batch(), name="batch task")
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
                 # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
@@ -368,7 +368,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         return response
 
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
-        task = create_task(self.make_request())
+        task = create_task(self.make_request(), "RPCRequest.get_response_unbatched")
         try:
             await wait_for(shield(task), timeout=_TIMEOUT)
         except TimeoutError:
@@ -426,7 +426,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
         NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere else.
         """
         task = create_task(
-            self.controller.make_request(self.method, self.params, request_id=self.uid)
+            coro=self.controller.make_request(self.method, self.params, request_id=self.uid),
+            name=f"RPCRequest.make_request attempt {num_previous_timeouts+1}",
         )
         try:
             response = await wait_for(shield(task), 15)
@@ -806,7 +807,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
         batch = batch or self
         if _logger_is_enabled_for(DEBUG):
-            self._daemon = create_task(self._debug_daemon())
+            self._daemon = create_task(self._debug_daemon(), name="Multicall debug daemon")
         with self._lock:
             for call in self.calls:
                 call._batch = self
@@ -925,7 +926,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                     # `spoof_response` with a successful call result will complete synchronously
                     await eth_call.spoof_response(call, result)
 
-            await gatherish(to_gather, name="Multicall.spoof_response")
+            await gatherish(to_gather, name="Multicall.spoof_response gatherish")
 
         else:
             raise NotImplementedError(f"type {type(data)} not supported.", data)
@@ -1131,7 +1132,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         # sourcery skip: hoist-loop-from-if
         batch = batch or self
         if _logger_is_enabled_for(DEBUG):
-            self._daemon = create_task(self._debug_daemon())
+            self._daemon = create_task(self._debug_daemon(), name="JSONRPCBatch debug daemon")
         with self._lock:
             for typ, calls in groupby(self.calls, type):
                 if typ is Multicall:
@@ -1337,7 +1338,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
                     await coro
 
         if mcall_coros:
-            await gatherish(mcall_coros)
+            await gatherish(mcall_coros, "JSONRPCBatch.spoof_response gatherish")
 
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:

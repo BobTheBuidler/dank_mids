@@ -209,7 +209,7 @@ class _StatsLogger(logging.Logger):
         that occurred during its execution.
         """
         if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:  # type: ignore [attr-defined,has-type]
-            self._daemon = create_task(self._stats_daemon())
+            self._daemon = create_task(self._stats_daemon(), name="_StatsLogger debug daemon")
         elif self._daemon.done():
             raise self._daemon.exception()  # type: ignore [misc]
 
