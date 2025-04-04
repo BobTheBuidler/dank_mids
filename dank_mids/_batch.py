@@ -1,16 +1,19 @@
+from asyncio import Task
 from itertools import tee
 from logging import getLogger
-from typing import TYPE_CHECKING, Any, Awaitable, Generator, Iterable, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Generator, TypeVar, Union
 
 from a_sync import create_task
 
 from dank_mids._exceptions import DankMidsInternalError
-from dank_mids._requests import _Batch, JSONRPCBatch, Multicall, RPCRequest
+from dank_mids._requests import _Batch, JSONRPCBatch, Multicall
 from dank_mids.helpers._errors import log_internal_error
 from dank_mids.types import Multicalls, RawResponse
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
+
+__T = TypeVar("__T")
 
 MIN_SIZE = 1  # TODO: Play with this
 """The minimum size for a batch operation."""
@@ -19,6 +22,10 @@ CHECK = MIN_SIZE - 1
 """A constant used for checking batch sizes."""
 
 logger = getLogger(__name__)
+
+
+def _create_named_task(awaitable: Awaitable[__T]) -> Task[__T]:
+    return create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
 
 
 class DankBatch:
@@ -93,7 +100,8 @@ class DankBatch:
         """
         # tee turns 1 iterator into 2
         batches0, batches1 = tee(self.coroutines, 2)
-        tasks = map(create_task, batches0)
+
+        tasks = map(_create_named_task, batches0)
         for batch, task in zip(batches1, list(tasks)):
             try:
                 await task
