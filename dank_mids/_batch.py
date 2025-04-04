@@ -23,8 +23,10 @@ CHECK = MIN_SIZE - 1
 
 logger = getLogger(__name__)
 
+
 def _create_named_task(awaitable: Awaitable[__T]) -> Task[__T]:
     return create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
+
 
 class DankBatch:
     """
@@ -98,7 +100,7 @@ class DankBatch:
         """
         # tee turns 1 iterator into 2
         batches0, batches1 = tee(self.coroutines, 2)
-        
+
         tasks = map(_create_named_task, batches0)
         for batch, task in zip(batches1, list(tasks)):
             try:

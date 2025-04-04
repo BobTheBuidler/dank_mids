@@ -45,7 +45,7 @@ class DebuggableFuture(Future):
     def __await__(self) -> Generator[Any, None, RPCResponse]:
         if self._debug_logs_enabled and self.__debug_daemon_task is None:
             self.__debug_daemon_task = create_task(
-                coro=self.__debug_daemon(), 
+                coro=self.__debug_daemon(),
                 name="DebuggableFuture debug daemon",
             )
         return _future_await(self)
