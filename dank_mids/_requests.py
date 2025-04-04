@@ -368,7 +368,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         return response
 
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
-        task = create_task(self.make_request(), "RPCRequest.get_response_unbatched")
+        task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
             await wait_for(shield(task), timeout=_TIMEOUT)
         except TimeoutError:
