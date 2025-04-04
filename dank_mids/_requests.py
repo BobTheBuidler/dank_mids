@@ -1338,7 +1338,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
                     await coro
 
         if mcall_coros:
-            await gatherish(mcall_coros, "JSONRPCBatch.spoof_response gatherish")
+            await gatherish(mcall_coros, name="JSONRPCBatch.spoof_response gatherish")
 
     @set_done
     async def bisect_and_retry(self, e: Exception) -> None:
