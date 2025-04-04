@@ -528,8 +528,6 @@ class eth_call(RPCRequest):
 
     def __repr__(self) -> str:
         tx, block = self.params
-        if block.startswith("0x"):
-            block = int(block, 16)
         batch = self._batch
         batch_info = "" if batch is None else f" batch={batch}"
         if batch is None or type(batch) is not Multicall:
