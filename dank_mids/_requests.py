@@ -1148,7 +1148,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._awaited:
-            _log_warning("%s exiting early. This shouldn't really happen bro", self)
+            _log_warning("%s exiting early. This shouldn't really happen bro    current task: %s", self, current_task())
             return
         self._awaited = True
 
