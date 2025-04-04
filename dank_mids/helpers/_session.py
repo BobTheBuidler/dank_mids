@@ -140,7 +140,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
     # Otherwise, create an Event for others to wait on
     task = _rate_limit_tasks.get(endpoint)
     if task is None:
-        _rate_limit_waiters[endpoint] = Event(endpoint)
+        _rate_limit_waiters[endpoint] = Event(endpoint, 10)
         task = _rate_limit_tasks[endpoint] = create_task(__rate_limit_inactive(endpoint))
     await shield(task)
 
