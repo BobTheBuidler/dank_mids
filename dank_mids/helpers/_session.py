@@ -1,5 +1,5 @@
 import http
-from asyncio import CancelledError, sleep
+from asyncio import CancelledError, create_task, sleep
 from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
@@ -10,6 +10,7 @@ from time import time
 from typing import Any, Callable, Dict, Tuple, overload
 
 from a_sync import Event
+from a_sync._smart import shield
 from a_sync.asyncio import sleep0 as yield_to_loop
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
@@ -128,7 +129,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
     Otherwise, set up our own Event and signal once no waiters remain.
     """
     # Quick exit if no queued waiters
-    if not (waiters := limiters[endpoint]._waiters):
+    if not limiters[endpoint]._waiters:
         return
 
     # If another task is already waiting, just join it
@@ -137,20 +138,34 @@ async def rate_limit_inactive(endpoint: str) -> None:
         return
 
     # Otherwise, create an Event for others to wait on
-    _rate_limit_waiters[endpoint] = Event()
+    task = _rate_limit_tasks.get(endpoint)
+    if task is None:
+        _rate_limit_waiters[endpoint] = Event(endpoint)
+        task = _rate_limit_tasks[endpoint] = create_task(__rate_limit_inactive(endpoint))
+    await shield(task)
 
+
+_rate_limit_tasks = {}
+
+
+async def __rate_limit_inactive(endpoint: str) -> None:
+    waiters = limiters[endpoint]._waiters
     while waiters:
         # pop last item
         last_key, last_waiter = waiters.popitem()
+
         # replace it
         waiters[last_key] = last_waiter
         if last_waiter.done():
             break
+
         # await it
         try:
             await last_waiter
         except CancelledError:
+            # AsyncLimiter cancels the fut as part of regular operation
             pass
+
         # let recently popped waiters check the limiter for capacity, they might create new waiters
         # then, let recently popped waiters make some calls to see if we're still being limited
         for _ in range(10):
@@ -159,6 +174,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
             await yield_to_loop()
 
     _rate_limit_waiters.pop(endpoint).set()
+    _rate_limit_tasks.pop(endpoint)
 
 
 @overload
