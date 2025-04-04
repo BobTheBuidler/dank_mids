@@ -65,6 +65,7 @@ from dank_mids._exceptions import (
     EmptyBatch,
     ExceedsMaxBatchSize,
     ExecutionReverted,
+    GarbageCollectionError,
     OutOfGas,
     PayloadTooLarge,
     internal_err_types,
@@ -276,6 +277,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
     def __del__(self) -> None:
         if not self._fut.done():
             logger.error("%s was garbage collected before finishing", self)
+            self._fut.set_exception(
+                GarbageCollectionError(
+                    f"{self} was garbage collected before finishing.\n"
+                    "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
+                )
+            )
 
     @property
     def request(self) -> Union[Request, PartialRequest]:
@@ -761,12 +768,19 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return bool(self.calls)
 
     def __del__(self) -> None:
-        if (
-            self.calls
-            and not self._done.is_set()
-            and any(filterfalse(Future.done, (call._fut for call in self.calls)))
-        ):
-            error_logger.error("%s was garbage collected before finishing", self)
+        if self.calls and not self._done.is_set():
+            logged = False
+            for call in self.calls:
+                if not call._fut.done():
+                    if logged is False:
+                        error_logger.error("%s was garbage collected before finishing", self)
+                        logged = True
+                    call._fut.set_exception(
+                        GarbageCollectionError(
+                            f"{self} was garbage collected before finishing.\n"
+                            "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
+                        )
+                    )
 
     @cached_property
     def block(self) -> BlockId:
@@ -1057,7 +1071,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         return False
 
     def __del__(self) -> None:
-        if self.calls and not self._done.is_set():
+        if any(self) and not self._done.is_set():
             for cls, calls in groupby(self.calls, type):
                 if cls is Multicall:
                     calls = concat(filter(None, calls))
