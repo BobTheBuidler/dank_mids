@@ -445,8 +445,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 num_previous_timeouts + 1,
                 self,
             )
-            done: Set[Task] = await first_completed(
-                task, self.make_request(num_previous_timeouts + 1), cancel=True
+            done: Set[Task]
+            pending: Set[Task]
+            done, pending = await first_completed(
+                task, self.make_request(num_previous_timeouts + 1)
             )
             response = done.pop().result()
         self._fut.set_result(response)
