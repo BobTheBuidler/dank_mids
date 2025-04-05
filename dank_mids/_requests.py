@@ -775,8 +775,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                         logged = True
                     call._fut.set_exception(
                         GarbageCollectionError(
-                            f"{self} was garbage collected before finishing.\n"
-                            f"{call} might hang indefinitely if I don't raise this exception,"
+                            f"{self} was garbage collected before finishing.",
+                            f"{call} might hang indefinitely if I don't raise this exception, "
                             "which only exists to help debug an issue inside of dank mids. "
                             "Please show it to Bob."
                         )
