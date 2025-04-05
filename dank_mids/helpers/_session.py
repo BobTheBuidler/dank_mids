@@ -153,11 +153,19 @@ async def __rate_limit_inactive(endpoint: str) -> None:
     while waiters:
         # pop last item
         last_key, last_waiter = waiters.popitem()
+        
+        if last_waiter.cancelled():
+            # NOTE: I don't think this is possible but want to confirm
+            raise RuntimeError("last waiter is cancelled")
 
         # replace it
         waiters[last_key] = last_waiter
         if last_waiter.done():
             break
+
+        if last_key.cancelled():
+            _logger_info("last waiter's task (%s) is cancelled", last_key)
+            _logger_info("but last waiter is not done: %s", last_waiter)
 
         # await it
         try:
