@@ -217,13 +217,13 @@ speedups = ["Brotli", "aiodns", "brotlicffi"]
 
 [[package]]
 name = "aiolimiter"
-version = "1.1.1"
+version = "1.2.1"
 description = "asyncio rate limiter, a leaky bucket implementation"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "aiolimiter-1.1.1-py3-none-any.whl", hash = "sha256:bf23dafbd1370e0816792fbcfb8fb95d5138c26e05f839fe058f5440bea006f5"},
-    {file = "aiolimiter-1.1.1.tar.gz", hash = "sha256:4b5740c96ecf022d978379130514a26c18001e7450ba38adf19515cd0970f68f"},
+    {file = "aiolimiter-1.2.1-py3-none-any.whl", hash = "sha256:d3f249e9059a20badcb56b61601a83556133655c11d1eb3dd3e04ff069e5f3c7"},
+    {file = "aiolimiter-1.2.1.tar.gz", hash = "sha256:e02a37ea1a855d9e832252a105420ad4d15011505512a1a1d814647451b5cca9"},
 ]
 
 [[package]]
@@ -5092,4 +5092,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "f04a1de4d42a9a307f2c951023419dc3f770f0247433fe0f5e50155f4cd05ae7"
+content-hash = "d0803914907dac29a2dd6895f96ef8ce602640c830f5657d50a9945587879199"

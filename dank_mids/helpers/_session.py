@@ -1,7 +1,8 @@
 import http
-from asyncio import CancelledError, create_task, sleep
+from asyncio import CancelledError, create_task, current_task, sleep
 from collections import defaultdict
 from enum import IntEnum
+from heapq import nlargest
 from itertools import chain
 from logging import DEBUG, getLogger
 from random import random
@@ -153,22 +154,18 @@ async def __rate_limit_inactive(endpoint: str) -> None:
     waiters = limiters[endpoint]._waiters
     while waiters:
         # pop last item
-        last_key, last_waiter = waiters.popitem()
+        last_waiter_tuple = nlargest(1, waiters)[0]
+        last_waiter = last_waiter_tuple[-1]
         
         if last_waiter.cancelled():
+            waiters.remove(last_waiter_tuple)
+            continue
+
+        if last_waiter.done():
             # NOTE: I don't think this is possible but want to confirm
             _rate_limit_waiters.pop(endpoint).set()
             _rate_limit_tasks.pop(endpoint)
-            raise RuntimeError("last waiter is cancelled")
-
-        # replace it
-        waiters[last_key] = last_waiter
-        if last_waiter.done():
-            break
-
-        if last_key.cancelled():
-            _logger_info("last waiter's task (%s) is cancelled", last_key)
-            _logger_info("but last waiter is not done: %s", last_waiter)
+            raise RuntimeError("last waiter is done")
 
         # await it
         try:
