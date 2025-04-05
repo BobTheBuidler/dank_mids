@@ -156,7 +156,7 @@ async def __rate_limit_inactive(endpoint: str) -> None:
         # pop last item
         last_waiter_tuple = nlargest(1, waiters)[0]
         last_waiter = last_waiter_tuple[-1]
-        
+
         if last_waiter.cancelled():
             waiters.remove(last_waiter_tuple)
             continue
