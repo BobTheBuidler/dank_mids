@@ -1247,9 +1247,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         """
         try:
             # we need strong refs so the results all get to the right place
-            calls = tuple(self.calls)
+            calls = tuple(self)
             # for the multicalls too
-            mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if isinstance(call, Multicall))  # type: ignore [union-attr]
+            mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
             response: JSONRPCBatchResponse = await _session.post(
                 self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
             )
