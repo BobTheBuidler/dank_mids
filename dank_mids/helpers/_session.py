@@ -1,5 +1,5 @@
 import http
-from asyncio import CancelledError, create_task, sleep
+from asyncio import CancelledError, create_task, current_task, sleep
 from collections import defaultdict
 from enum import IntEnum
 from itertools import chain
@@ -116,8 +116,18 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
         raise
 
 
+class FixedLimiter(AsyncLimiter):
+    # TODO: PR this fix to aiolimiter lib and update dank dependencies
+    async def acquire(self, amount: float = 1) -> None:
+        try:
+            await AsyncLimiter.acquire(self, amount)
+        except CancelledError:
+            # if we don't pop this, the future will always remain in _waiters
+            self._waiters.pop(current_task(), None)
+            raise
+
 # default is 50 requests/second
-limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
+limiters = defaultdict(lambda: FixedLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
 _rate_limit_waiters: Dict[str, Event] = {}
 
