@@ -149,6 +149,7 @@ _rate_limit_tasks = {}
 
 
 async def __rate_limit_inactive(endpoint: str) -> None:
+    # sourcery skip: use-contextlib-suppress
     waiters = limiters[endpoint]._waiters
     while waiters:
         # pop last item
@@ -156,6 +157,8 @@ async def __rate_limit_inactive(endpoint: str) -> None:
         
         if last_waiter.cancelled():
             # NOTE: I don't think this is possible but want to confirm
+            _rate_limit_waiters.pop(endpoint).set()
+            _rate_limit_tasks.pop(endpoint)
             raise RuntimeError("last waiter is cancelled")
 
         # replace it
