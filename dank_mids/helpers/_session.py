@@ -126,6 +126,7 @@ class FixedLimiter(AsyncLimiter):
             self._waiters.pop(current_task(), None)
             raise
 
+
 # default is 50 requests/second
 limiters = defaultdict(lambda: FixedLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
@@ -164,7 +165,7 @@ async def __rate_limit_inactive(endpoint: str) -> None:
     while waiters:
         # pop last item
         last_key, last_waiter = waiters.popitem()
-        
+
         if last_waiter.cancelled():
             # NOTE: I don't think this is possible but want to confirm
             _rate_limit_waiters.pop(endpoint).set()
