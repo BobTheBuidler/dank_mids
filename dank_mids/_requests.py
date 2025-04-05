@@ -778,7 +778,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                             f"{self} was garbage collected before finishing.",
                             f"{call} might hang indefinitely if I don't raise this exception, "
                             "which only exists to help debug an issue inside of dank mids. "
-                            "Please show it to Bob."
+                            "Please show it to Bob.",
                         )
                     )
 
