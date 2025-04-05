@@ -96,7 +96,7 @@ class DankMidsInternalError(Exception):
     """Exception raised for unhandled internal errors within Dank Mids."""
 
     def __init__(self, exc: Union[ValueError, internal_err_types]) -> None:
-        logger.warning(f"unhandled exception inside dank mids internals: {e}", exc_info=True)
+        logger.warning(f"unhandled exception inside dank mids internals: {exc}", exc_info=True)
 
         self._original_exception = exc
         """
