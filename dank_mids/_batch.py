@@ -102,14 +102,19 @@ class DankBatch:
         batches0, batches1 = tee(self.coroutines, 2)
 
         tasks = map(_create_named_task, batches0)
+        last_failure = None
         for batch, task in zip(batches1, list(tasks)):
             try:
                 await task
-            except DankMidsInternalError:
-                raise
             except Exception as e:
-                log_internal_error(logger, batch, e)
-                raise
+                # we just collect the exceptions for now, we raise later if applicable
+                if not isinstance(e, DankMidsInternalError):
+                    log_internal_error(logger, batch, e)
+                last_failure = task
+
+        if last_failure is not None:
+            # raise the last exception if any
+            await last_failure
 
     @property
     def coroutines(self) -> Generator[Union[_Batch, Awaitable[RawResponse]], None, None]:
