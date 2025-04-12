@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 logger = getLogger("dank_mids.future")
 
 _logger_is_enabled_for = logger.isEnabledFor
-_logger_log = logger.debug
+_logger_log = logger._log
 
 _future_init = Future.__init__
 _future_await = Future.__await__
