@@ -301,8 +301,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         elif current_batch._awaited is False:
             # NOTE: If the batch was already awaited, we filled a batch. Let's await it now so we can send something to the node.
-            _strongref = await first_completed(current_batch, self._fut)
-            for fut in _strongref:
+            done_strongref, _ = await first_completed(current_batch.get_response(), self._fut)
+            for fut in done_strongref:
                 if fut.exception():
                     fut.result()
 
