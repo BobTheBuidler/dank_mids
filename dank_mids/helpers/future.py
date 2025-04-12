@@ -121,7 +121,9 @@ class DebuggableFuture(Future):
         while not done():
             await sleep(60)
             if not done():
-                _logger_log(DEBUG, "%s has not received data after %ss", (self._owner, int(time() - start)))
+                _logger_log(
+                    DEBUG, "%s has not received data after %ss", (self._owner, int(time() - start))
+                )
 
 
 def _check_match(first: Exception, second: Exception):
