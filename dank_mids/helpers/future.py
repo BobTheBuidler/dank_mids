@@ -14,6 +14,8 @@ from weakref import ProxyType, proxy
 
 from web3.types import RPCResponse
 
+from dank_mids.helpers._errors import error_logger_debug
+
 if TYPE_CHECKING:
     from dank_mids._requests import _RequestBase, _Response
 
@@ -21,6 +23,7 @@ if TYPE_CHECKING:
 logger = getLogger("dank_mids.future")
 
 _logger_is_enabled_for = logger.isEnabledFor
+_logger_log = logger._log
 
 _future_init = Future.__init__
 _future_await = Future.__await__
@@ -64,7 +67,8 @@ class DebuggableFuture(Future):
                     # from a JSONRPC batch and the other gets a ContractLogicError from the single call handler
                     return
                 elif self._state == "CANCELLED":
-                    raise InvalidStateError(f"{self} is cancelled") from e
+                    error_logger_debug("cannot set result: %s is cancelled", self)
+                    return
                 else:
                     raise NotImplementedError(f"{self._state} is not a valid state") from e
 
@@ -80,7 +84,8 @@ class DebuggableFuture(Future):
             # from a JSONRPC batch and the other gets a ContractLogicError from the single call handler
             return
         elif self._state == "CANCELLED":
-            raise InvalidStateError(f"{self} is cancelled") from e
+            error_logger_debug("cannot set result: %s is cancelled", self)
+            return
         else:
             raise NotImplementedError(f"{self._state} is not a valid state")
 
@@ -93,7 +98,8 @@ class DebuggableFuture(Future):
                     # its kinda odd that we get here at all but who cares, the fut has a result/exception!
                     return
                 elif self._state == "CANCELLED":
-                    raise InvalidStateError(f"{self} is cancelled") from e
+                    error_logger_debug("cannot set result: %s is cancelled", self)
+                    return
                 raise
 
         # The rest of this code just makes it threadsafe(ish) based on an old idea that never was fully implemented
@@ -104,18 +110,20 @@ class DebuggableFuture(Future):
             # its kinda odd that we get here at all but who cares, the fut has a result/exception!
             return
         elif self._state == "CANCELLED":
-            raise InvalidStateError(f"{self} is cancelled") from e
+            error_logger_debug("cannot set result: %s is cancelled", self)
+            return
         else:
             raise
 
     async def __debug_daemon(self) -> None:
         start = time()
         done = self.done
-        # NOTE: _resonse works for RPCRequst and eth_call, _done works for _Batch classes
         while not done():
             await sleep(60)
             if not done():
-                logger.debug("%s has not received data after %ss", self._owner, int(time() - start))
+                _logger_log(
+                    DEBUG, "%s has not received data after %ss", (self._owner, int(time() - start))
+                )
 
 
 def _check_match(first: Exception, second: Exception):
