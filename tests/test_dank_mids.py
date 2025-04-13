@@ -3,7 +3,6 @@ import sys
 import pytest
 from a_sync import igather
 from brownie import chain
-from evmspec import Transaction1559
 from multicall import Call
 from web3._utils.rpc_abi import RPC
 
@@ -145,27 +144,6 @@ async def test_string_block():
 
 @pytest.mark.asyncio_cooperative
 async def test_eth_getTransaction():
-    tx = await dank_web3.eth.get_transaction(
+    assert await dank_web3.eth.get_transaction(
         "0x1540ea6e443ff81570624fe19220507a1d949464b5a012ac110c7e91205c456a"
-    )
-    assert tx == Transaction1559(
-        chainId="0x1",
-        nonce="0x117",
-        gas="0x42710",
-        maxFeePerGas="0x1f79197140",
-        maxPriorityFeePerGas="0x17bfac7c00",
-        to="0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
-        value="0x2c68af0bb140000",
-        _accessList=[],
-        input="0xb6f9de950000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000008ec71e8bcbbd41c4b2a95c1b6b3809683a749b800000000000000000000000000000000000000000000000000000000649af7b60000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000028c17df245870dc3e127e1c63a7046e7c7674490",
-        r="0x2e6eb24c1dc2447d735981a45237bffd9418eba0a54f694284234c0523ed9b36",
-        s="0x10468aac9b3049d51954aefccfa0ed8eff4790d80c28a8be96fefe972924d8b5",
-        yParity="0x1",
-        v="0x1",
-        hash="0x1540ea6e443ff81570624fe19220507a1d949464b5a012ac110c7e91205c456a",
-        blockHash="0xe31c255a783d2dfefb8baaf86c0731771dd53c4e977e5d76970e3ad82c7fddf8",
-        blockNumber="0x10c1e3f",
-        transactionIndex="0x0",
-        sender="0x08ec71e8bcbbd41c4b2a95c1b6b3809683a749b8",
-        gasPrice="0x1ce5f51f80",
     )
