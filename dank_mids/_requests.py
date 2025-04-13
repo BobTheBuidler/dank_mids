@@ -108,8 +108,12 @@ if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
 
+TIMEOUT_SECONDS_SMALL = 15
+TIMEOUT_SECONDS_BIG = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
+
 logger = getLogger(__name__)
 batch_size_logger = getLogger("dank_mids.batch_size")
+
 
 _Response = TypeVar(
     "_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse
@@ -122,7 +126,6 @@ class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
 
-_TIMEOUT = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
 
 
 _super_init = a_sync.Event.__init__
@@ -312,7 +315,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
                 # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
-                await wait_for(shield(batch_task), timeout=_TIMEOUT)
+                await wait_for(shield(batch_task), timeout=TIMEOUT_SECONDS_BIG)
             except TimeoutError:
                 _log_warning(
                     "%s got stuck awaiting its batch, we're creating a new one",
@@ -334,7 +337,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 response = fut.result()
             else:
                 try:
-                    response = await wait_for(shield(fut), timeout=_TIMEOUT)  # type: ignore [arg-type]
+                    response = await wait_for(shield(fut), timeout=TIMEOUT_SECONDS_BIG)  # type: ignore [arg-type]
                 except TimeoutError:
                     _log_warning(
                         "%s got stuck waiting for its fut, we're creating a new one",
@@ -380,7 +383,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
         task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
-            await wait_for(shield(task), timeout=_TIMEOUT)
+            await wait_for(shield(task), timeout=TIMEOUT_SECONDS_BIG)
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
             _log_warning(
@@ -440,11 +443,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
             name=f"RPCRequest.make_request attempt {num_previous_timeouts+1}",
         )
         try:
-            response = await wait_for(shield(task), 15)
+            response = await wait_for(shield(task), TIMEOUT_SECONDS_SMALL)
         except TimeoutError:
             log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
-                "`make_request` timed out (15s) %s times for %s, trying again...",
+                "`make_request` timed out (%ss) %s times for %s, trying again...",
+                TIMEOUT_SECONDS_SMALL,
                 num_previous_timeouts + 1,
                 self,
             )
