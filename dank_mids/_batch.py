@@ -1,7 +1,7 @@
 from asyncio import Task
 from itertools import tee
 from logging import getLogger
-from typing import TYPE_CHECKING, Any, Awaitable, Generator, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Generator, TypeVar, Union, final
 
 from a_sync import create_task
 
@@ -28,6 +28,7 @@ def _create_named_task(awaitable: Awaitable[__T]) -> Task[__T]:
     return create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
 
 
+@final
 class DankBatch:
     """
     A batch of JSON-RPC batches.
@@ -62,6 +63,9 @@ class DankBatch:
 
         self.rpc_calls = rpc_calls
         """A list of individual RPC calls or multicalls."""
+    
+    def __repr__(self):
+        return f"<dank_mids.DankBatch object at {hex(id(self))}>"
 
     def __await__(self) -> Generator[Any, None, None]:
         """
