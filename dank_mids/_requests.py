@@ -1,4 +1,5 @@
 from asyncio import (
+    CancelledError,
     Future,
     Task,
     TimeoutError,
@@ -451,6 +452,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
         )
         try:
             response = await wait_for(shield(task), TIMEOUT_SECONDS_SMALL)
+        except CancelledError:
+            task.cancel()
+            raise
         except TimeoutError:
             log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
