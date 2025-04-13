@@ -3,7 +3,7 @@ import sys
 import pytest
 from a_sync import igather
 from brownie import chain
-from evmspec import Transaction1559
+from evmspec import Transaction1559, Transaction2930
 from multicall import Call
 from web3._utils.rpc_abi import RPC
 
@@ -144,8 +144,15 @@ async def test_string_block():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransaction():
-    tx = await dank_web3.eth.get_transaction(
+async def test_eth_getTransaction_1559():
+    tx_1559 = await dank_web3.eth.get_transaction(
         "0x1540ea6e443ff81570624fe19220507a1d949464b5a012ac110c7e91205c456a"
     )
-    assert isinstance(tx, Transaction1559)
+    assert isinstance(tx_1559, Transaction1559)
+    
+@pytest.mark.asyncio_cooperative
+async def test_eth_getTransaction_2930():
+    tx_2930 = await dank_web3.eth.get_transaction(
+        "0x3ea6b560065dabfac5218c64fd076ef62ff9d6c08817101e7dbece460eb2c8a5"
+    )
+    assert isinstance(tx_2930, Transaction2930)
