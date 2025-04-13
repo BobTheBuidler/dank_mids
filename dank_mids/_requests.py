@@ -203,6 +203,8 @@ def _should_batch_method(method: str) -> bool:
 
 _REVERT_EXC_TYPES = ContractLogicError, ExecutionReverted
 
+_request_base_init = _RequestBase.__init__
+
 
 class RPCRequest(_RequestBase[RPCResponse]):
     should_batch: bool = True
@@ -226,7 +228,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         params: Any,
         uid: Optional[str] = None,
     ):  # sourcery skip: hoist-statement-from-if
-        _RequestBase.__init__(self, controller, uid)
+        _request_base_init(self, controller, uid)
         if method[-4:] == "_raw":
             self.method = method[:-4]
             """The rpc method for this request."""
@@ -625,6 +627,8 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         raise NotImplementedError(type(self).__name__)
 
     def append(self, call: _Request, skip_check: bool = False) -> None:
+        if self._awaited is True:
+            raise RuntimeError(f"{self} was already awaited")
         with self._lock:
             self.calls.append(call)
             # self._len += 1
@@ -635,6 +639,8 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
                     self.controller.early_start()
 
     def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
+        if self._awaited is True:
+            raise RuntimeError(f"{self} was already awaited")
         with self._lock:
             self.calls.extend(calls)
             if not skip_check:
@@ -1000,10 +1006,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         ]
         if controller.pending_rpc_calls:
             batch0, batch1 = bisected
-            controller.pending_rpc_calls.append(batch0)
+            controller._pending_rpc_calls_append(batch0)
             if batch1:
                 if controller.pending_rpc_calls:
-                    controller.pending_rpc_calls.append(batch1)
+                    controller._pending_rpc_calls_append(batch1)
                 else:
                     await batch1
             await controller.pending_rpc_calls._done.wait()
