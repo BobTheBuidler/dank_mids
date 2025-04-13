@@ -846,11 +846,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._awaited:
-            try:
-                raise RuntimeError(f"{self} early exit", current_task())
-            except RuntimeError as e:
-                logger.exception(e)
-            return
+            raise RuntimeError(f"{self} already awaited", current_task())
 
         self._awaited = True
         if (l := len(self)) == 1:
