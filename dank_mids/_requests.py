@@ -205,6 +205,7 @@ _REVERT_EXC_TYPES = ContractLogicError, ExecutionReverted
 
 _request_base_init = _RequestBase.__init__
 
+
 class RPCRequest(_RequestBase[RPCResponse]):
     should_batch: bool = True
     """`True` if this request should be batched with others into a jsonrpc batch request, `False` if it should be sent as an individual request."""
