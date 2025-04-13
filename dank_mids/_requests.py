@@ -307,7 +307,14 @@ class RPCRequest(_RequestBase[RPCResponse]):
             done_strongref, _ = await first_completed(current_batch.get_response(), self._fut)
             for fut in done_strongref:
                 if fut.exception():
-                    fut.result()
+                    # we do this because a few RPCRequests can reach this point at the 'same time'
+                    # TODO: refactor this so only 1 waiter can await get_response so RuntimeError stops happening
+                    if not (
+                        isinstance(fut.exception(), RuntimeError) 
+                        and "already awaited" in fut.exception()
+                    ):
+                        # raise it
+                        fut.result()
 
         if self._batch is None:
             try:
