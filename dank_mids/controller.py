@@ -135,7 +135,7 @@ class DankMiddlewareController:
 
         self.batcher.step = ENVS.MAX_MULTICALL_SIZE  # type: ignore [attr-defined]
 
-        self.call_uid = UIDGenerator()
+        self.call_uid: UIDGenerator = UIDGenerator()
         """Unique identifier generator for individual calls."""
 
         self.multicall_uid: UIDGenerator = UIDGenerator()
@@ -150,17 +150,22 @@ class DankMiddlewareController:
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(
             lambda: Multicall(self)
         )
-        """A dictionary of pending Multicalls by block. The Multicalls hold all pending eth_calls."""
+        """A dictionary of pending :class:`~Multicall` objects by block. The Multicalls hold all pending eth_calls."""
 
         self._pending_eth_calls_pop = self.pending_eth_calls.pop
+        """An alias for `controller.pending_eth_calls.pop`, intended to minimize attr lookups."""
         self._pending_eth_calls_copy = self.pending_eth_calls.copy
+        """An alias for `controller.pending_eth_calls.copy`, intended to minimize attr lookups."""
         self._pending_eth_calls_clear = self.pending_eth_calls.clear
+        """An alias for `controller.pending_eth_calls.clear`, intended to minimize attr lookups."""
         self._pending_eth_calls_values = self.pending_eth_calls.values
+        """An alias for `controller.pending_eth_calls.values`, intended to minimize attr lookups."""
 
         self.pending_rpc_calls = JSONRPCBatch(self)
-        """A JSONRPCBatch containing all pending rpc requests."""
+        """A :class:`~JSONRPCBatch` containing all pending rpc requests."""
 
         self._pending_rpc_calls_append = self.pending_rpc_calls.append
+        """An alias for `controller.pending_rpc_calls.append`, intended to minimize attr lookups."""
 
     def __repr__(self) -> str:
         """
