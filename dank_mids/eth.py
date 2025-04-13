@@ -258,14 +258,12 @@ class DankEth(AsyncEth):
                              `Transaction` or `TransactionRLP` format.
         """
         transaction_bytes = await self._get_transaction_raw(transaction_hash)
+        decode_to_type = Transaction if b"'type':" in transaction_bytes else TransactionRLP
         try:
-            return json.decode(transaction_bytes, type=Transaction, dec_hook=_decode_hook)
-        except ValidationError:
-            try:
-                return json.decode(transaction_bytes, type=TransactionRLP, dec_hook=_decode_hook)
-            except ValidationError as e:
-                e.args = *e.args, json.decode(transaction_bytes)
-                raise
+            return json.decode(transaction_bytes, type=decode_to_type, dec_hook=_decode_hook)
+        except ValidationError as e:
+            e.args = *e.args, json.decode(transaction_bytes)
+            raise
 
     async def get_logs(
         self,
