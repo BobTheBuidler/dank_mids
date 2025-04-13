@@ -516,6 +516,9 @@ _is_revert_bytes = lambda data: isinstance(data, bytes) and any(
 )
 
 
+_rpcrequest_init = RPCRequest.__init__
+
+
 @final
 class eth_call(RPCRequest):
     revert_threads = PruningThreadPoolExecutor(4)
@@ -538,7 +541,7 @@ class eth_call(RPCRequest):
         self.block: BlockId = block
         """The block height at which the contract will be called."""
 
-        RPCRequest.__init__(self, controller, "eth_call", params, uid)
+        _rpcrequest_init(self, controller, "eth_call", params, uid)
 
     def __repr__(self) -> str:
         tx, block = self.params
@@ -605,7 +608,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
-        _RequestBase.__init__(self, controller)
+        _request_base_init(self, controller)
         self.calls = WeakList(calls)
         self._batcher = controller.batcher
         self._lock = _AlertingRLock(name=self.__class__.__name__)
@@ -696,6 +699,9 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
                 i += 1
 
 
+_batch_init = _Batch.__init__
+
+
 _mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 _mcall_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
 
@@ -766,7 +772,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         bid: Optional[BatchId] = None,
     ):
         # sourcery skip: default-mutable-arg
-        _Batch.__init__(self, controller, calls)
+        _batch_init(self, controller, calls)
         self.bid = bid or self.controller.multicall_uid.next
 
     def __repr__(self) -> str:
@@ -1068,7 +1074,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             calls: A list of :class:`~RPCRequest` or :class:`~Multicall` objects to be included in the batch.
             jid: A unique identifier for this batch. If none is provided, one will be created.
         """
-        _Batch.__init__(self, controller, calls)
+        _batch_init(self, controller, calls)
         self.jid = jid or self.controller.jsonrpc_batch_uid.next
 
     def __repr__(self) -> str:
