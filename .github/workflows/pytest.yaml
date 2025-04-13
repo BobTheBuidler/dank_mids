@@ -63,5 +63,5 @@ jobs:
           PYTEST_NETWORK: mainnet
           ETHERSCAN_TOKEN: ${{ secrets.ETHERSCAN_TOKEN  }}
         run: |
-          poetry run pytest -s --asyncio-task-timeout=3600
+          poetry run pytest -s -v --asyncio-task-timeout=3600
       
