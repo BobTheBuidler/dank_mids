@@ -3,7 +3,7 @@ from collections import defaultdict
 from functools import lru_cache
 from logging import getLogger
 from time import time
-from typing import Any, DefaultDict, List, Literal, Optional, Set, Union
+from typing import Any, Callable, DefaultDict, List, Literal, Optional, Set, Union
 
 import eth_retry
 from cchecksum import to_checksum_address
@@ -47,6 +47,12 @@ class DankMiddlewareController:
     See Also:
         :class:`dank_mids.semaphores.BlockSemaphore`: Used for managing concurrency of eth_calls made with the controller.
     """
+
+    pending_rpc_calls: JSONRPCBatch
+    """A :class:`~JSONRPCBatch` containing all pending rpc requests."""
+
+    _pending_rpc_calls_append: Callable
+    """An alias for `controller.pending_rpc_calls.append`, intended to minimize attr lookups."""
 
     def __init__(self, w3: Web3) -> None:
         """
@@ -161,11 +167,7 @@ class DankMiddlewareController:
         self._pending_eth_calls_values = self.pending_eth_calls.values
         """An alias for `controller.pending_eth_calls.values`, intended to minimize attr lookups."""
 
-        self.pending_rpc_calls = JSONRPCBatch(self)
-        """A :class:`~JSONRPCBatch` containing all pending rpc requests."""
-
-        self._pending_rpc_calls_append = self.pending_rpc_calls.append
-        """An alias for `controller.pending_rpc_calls.append`, intended to minimize attr lookups."""
+        self._start_new_batch()
 
     def __repr__(self) -> str:
         """
@@ -268,8 +270,7 @@ class DankMiddlewareController:
             multicalls = self._pending_eth_calls_copy()
             self._pending_eth_calls_clear()
             rpc_calls = self.pending_rpc_calls
-            self.pending_rpc_calls = JSONRPCBatch(self)
-            self._pending_rpc_calls_append = self.pending_rpc_calls.append
+        self._start_new_batch()
         demo_logger.info(f"executing dank batch (current cid: {self.call_uid.latest})")  # type: ignore
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
@@ -429,6 +430,13 @@ class DankMiddlewareController:
             return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
         return self.mc2 or mc3  # type: ignore [return-value]
+
+    def _start_new_batch(self) -> None:
+        """Creates a new :class:`~JSONRPCBatch` and updates the :meth:`_pending_rpc_calls_append` alias accordingly."""
+        with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
+            batch = JSONRPCBatch(self)
+            self.pending_rpc_calls = batch
+            self._pending_rpc_calls_append = batch.append
 
 
 @eth_retry.auto_retry

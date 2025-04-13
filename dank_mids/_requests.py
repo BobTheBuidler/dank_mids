@@ -1164,9 +1164,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
                     for call in calls:
                         call._batch = self
             if cleanup:
-                controller = self.controller
-                with controller.pools_closed_lock:
-                    controller.pending_rpc_calls = JSONRPCBatch(controller)
+                self.controller._start_new_batch()
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._awaited:
