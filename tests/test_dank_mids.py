@@ -149,4 +149,3 @@ async def test_eth_getTransaction():
         "0x1540ea6e443ff81570624fe19220507a1d949464b5a012ac110c7e91205c456a"
     )
     assert isinstance(tx, Transaction1559)
-    
