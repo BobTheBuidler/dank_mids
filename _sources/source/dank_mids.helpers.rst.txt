@@ -1,6 +1,25 @@
 dank\_mids.helpers package
 ==========================
 
+Submodules
+----------
+
+dank\_mids.helpers.future module
+--------------------------------
+
+.. automodule:: dank_mids.helpers.future
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dank\_mids.helpers.lru\_cache module
+------------------------------------
+
+.. automodule:: dank_mids.helpers.lru_cache
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
