@@ -63,7 +63,7 @@ class DankBatch:
 
         self.rpc_calls = rpc_calls
         """A list of individual RPC calls or multicalls."""
-    
+
     def __repr__(self):
         return f"<dank_mids.DankBatch object at {hex(id(self))}>"
 
