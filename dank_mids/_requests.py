@@ -126,8 +126,6 @@ class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
 
-
-
 _super_init = a_sync.Event.__init__
 _super_set = a_sync.Event.set
 
@@ -307,7 +305,14 @@ class RPCRequest(_RequestBase[RPCResponse]):
             done_strongref, _ = await first_completed(current_batch.get_response(), self._fut)
             for fut in done_strongref:
                 if fut.exception():
-                    fut.result()
+                    # we do this because a few RPCRequests can reach this point at the 'same time'
+                    # TODO: refactor this so only 1 waiter can await get_response so RuntimeError stops happening
+                    if not (
+                        isinstance(exc := fut.exception(), RuntimeError)
+                        and "already awaited" in str(exc)
+                    ):
+                        # raise it
+                        fut.result()
 
         if self._batch is None:
             try:
@@ -839,11 +844,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._awaited:
-            try:
-                raise RuntimeError(f"{self} early exit", current_task())
-            except RuntimeError as e:
-                logger.exception(e)
-            return
+            raise RuntimeError(f"{self} already awaited", current_task())
 
         self._awaited = True
         if (l := len(self)) == 1:
@@ -1169,12 +1170,11 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
     async def get_response(self) -> None:  # type: ignore [override]
         if self._awaited:
-            _log_warning(
-                "%s exiting early. This shouldn't really happen bro    current task: %s",
-                self,
-                current_task(),
+            raise RuntimeError(
+                f"{self} was already awaited. This shouldn't really happen bro",
+                f"task that awaited the 2nd time: {current_task()}",
             )
-            return
+
         self._awaited = True
 
         if self.is_single_multicall:
