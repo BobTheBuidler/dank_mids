@@ -518,6 +518,7 @@ _is_revert_bytes = lambda data: isinstance(data, bytes) and any(
 
 _rpcrequest_init = RPCRequest.__init__
 
+
 @final
 class eth_call(RPCRequest):
     revert_threads = PruningThreadPoolExecutor(4)
