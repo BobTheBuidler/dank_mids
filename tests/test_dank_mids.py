@@ -3,9 +3,12 @@ import sys
 import pytest
 from a_sync import igather
 from brownie import chain
-from dank_mids import dank_web3, instances
+from evmspec import Transaction1559, Transaction2930
 from multicall import Call
 from web3._utils.rpc_abi import RPC
+
+from dank_mids import dank_web3, instances
+
 
 CHAI = "0x06AF07097C9Eeb7fD685c692751D5C66dB49c215"
 
@@ -138,3 +141,19 @@ async def test_AttributeDict():
 async def test_string_block():
     with pytest.raises(TypeError):
         await Call(CHAI, "totalSupply()(uint)", block_id="14000000")
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getTransaction_1559():
+    tx_1559 = await dank_web3.eth.get_transaction(
+        "0x1540ea6e443ff81570624fe19220507a1d949464b5a012ac110c7e91205c456a"
+    )
+    assert isinstance(tx_1559, Transaction1559)
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getTransaction_2930():
+    tx_2930 = await dank_web3.eth.get_transaction(
+        "0x3ea6b560065dabfac5218c64fd076ef62ff9d6c08817101e7dbece460eb2c8a5"
+    )
+    assert isinstance(tx_2930, Transaction2930)
