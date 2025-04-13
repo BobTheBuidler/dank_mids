@@ -47,7 +47,7 @@ class DankMiddlewareController:
     See Also:
         :class:`dank_mids.semaphores.BlockSemaphore`: Used for managing concurrency of eth_calls made with the controller.
     """
-    
+
     pending_rpc_calls: JSONRPCBatch
     """A :class:`~JSONRPCBatch` containing all pending rpc requests."""
 
@@ -430,7 +430,7 @@ class DankMiddlewareController:
             return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
         return self.mc2 or mc3  # type: ignore [return-value]
-    
+
     def _start_new_batch(self) -> None:
         """Creates a new :class:`~JSONRPCBatch` and updates the :meth:`_pending_rpc_calls_append` alias accordingly."""
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
