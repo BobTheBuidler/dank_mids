@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         # pip will install despite the conflicts, poetry will prevent it
         run: |
-          poetry run pip install wheel
+          poetry run pip install setuptools wheel
           poetry run pip install --no-build-isolation "Cython<3" "pyyaml==5.4.1"
           poetry run pip install sphinx sphinx-rtd-theme
 
