@@ -126,8 +126,6 @@ class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
 
-
-
 _super_init = a_sync.Event.__init__
 _super_set = a_sync.Event.set
 
