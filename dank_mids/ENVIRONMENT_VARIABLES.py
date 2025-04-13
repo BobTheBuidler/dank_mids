@@ -160,7 +160,7 @@ COLLECT_STATS = _envs.create_env(
 )
 
 # You probably don't need to use this unless you know you need to
-STUCK_CALL_TIMEOUT = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60 * 60 * 2)
+STUCK_CALL_TIMEOUT = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60 * 2)
 
 # Method-specific Semaphores
 method_semaphores: Dict[str, a_sync.Semaphore] = {
