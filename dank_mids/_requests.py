@@ -346,6 +346,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
             else:
                 try:
                     response = await wait_for(shield(fut), timeout=TIMEOUT_SECONDS_BIG)  # type: ignore [arg-type]
+                except CancelledError:
+                    fut.cancel()
+                    raise
                 except TimeoutError:
                     _log_warning(
                         "%s got stuck waiting for its fut, we're creating a new one",
