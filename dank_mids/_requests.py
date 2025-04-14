@@ -395,6 +395,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
         task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
             await wait_for(shield(task), timeout=TIMEOUT_SECONDS_BIG)
+        except CancelledError:
+            task.cancel()
+            raise
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
             _log_warning(
