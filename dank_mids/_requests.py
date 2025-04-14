@@ -346,6 +346,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
             else:
                 try:
                     response = await wait_for(shield(fut), timeout=TIMEOUT_SECONDS_BIG)  # type: ignore [arg-type]
+                except CancelledError:
+                    fut.cancel()
+                    raise
                 except TimeoutError:
                     _log_warning(
                         "%s got stuck waiting for its fut, we're creating a new one",
@@ -392,16 +395,22 @@ class RPCRequest(_RequestBase[RPCResponse]):
         task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
             await wait_for(shield(task), timeout=TIMEOUT_SECONDS_BIG)
+        except CancelledError:
+            task.cancel()
+            raise
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
             _log_warning(
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
                 self,
             )
-            done: Set[Task] = await first_completed(task, self.create_duplicate(), cancel=True)
+            duplicate = self.create_duplicate()
+            done: Set[Task] = await first_completed(task, duplicate, cancel=True)
             for fut in done:
                 if fut is not task:
                     return fut.result()
+            # cancel the duplicate if it wasn't the one that completed first
+            duplicate._fut.cancel()
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
         return (
