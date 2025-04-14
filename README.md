@@ -37,7 +37,7 @@ dank end: 2025-04-14 21:39:33.982835
 dank took: 0:00:55.821811
 ```
 
-As you can see, dank_mids allowed us to save 7 minutes and 34 seconds, an 89% reduction, or about 10x faster!
+As you can see, dank_mids allowed us to save 7 minutes and 34 seconds, an 89% reduction, or about 9x faster!
 
 ### Usage with web3.py
 
