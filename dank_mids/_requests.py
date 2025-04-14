@@ -404,10 +404,13 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
                 self,
             )
-            done: Set[Task] = await first_completed(task, self.create_duplicate(), cancel=True)
+            duplicate = self.create_duplicate()
+            done: Set[Task] = await first_completed(task, duplicate, cancel=True)
             for fut in done:
                 if fut is not task:
                     return fut.result()
+            # cancel the duplicate if it wasn't the one that completed first
+            duplicate._fut.cancel()
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
         return (
