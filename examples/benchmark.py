@@ -57,7 +57,6 @@ def web3py_threads(num_threads: int):
 
 
 
-import asyncio
 from tqdm.asyncio import tqdm_asyncio
 
 
