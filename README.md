@@ -14,6 +14,31 @@ To install Dank Mids, use pip:
 
 `pip install dank-mids`
 
+### Benchmark
+
+We've included a benchmark script `examples/benchmark.py`. The benchmark fetches the pool tokens (token0 and token1) for each pool on Sushiswap on Ethereum mainnet. Run it with `brownie run examples/benchmark`.
+
+```
+Running 'examples/benchmark.py::main'...
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4213/4213 [08:50<00:00,  7.95it/s]
+brownie sync end: 2025-04-14 21:21:35.531099
+brownie sync took: 0:08:50.212665
+brownie 4 threads start: 2025-04-14 21:21:35.548373
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4213/4213 [08:31<00:00,  8.23it/s]
+brownie 4 threads end: 2025-04-14 21:30:08.065397
+brownie 4 threads took: 0:08:32.517024
+brownie 16 threads start: 2025-04-14 21:30:08.086342
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4213/4213 [08:26<00:00,  8.32it/s]
+brownie 16 threads end: 2025-04-14 21:38:38.141635
+brownie 16 threads took: 0:08:30.055293
+dank start: 2025-04-14 21:38:38.161024
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4213/4213 [00:55<00:00, 75.49it/s]
+dank end: 2025-04-14 21:39:33.982835
+dank took: 0:00:55.821811
+```
+
+As you can see, dank_mids allowed us to save 7 minutes and 34 seconds, an 89% reduction, or about 9x faster!
+
 ### Usage with web3.py
 
 The primary function you need to use Dank Mids is `setup_dank_w3_from_sync`. This function takes a sync Web3 instance and wraps it for async use. If using dank_mids with eth-brownie, you can just import the premade dank_web3 object as well
