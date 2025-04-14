@@ -16,7 +16,7 @@ To install Dank Mids, use pip:
 
 ### Benchmark
 
-We've included a benchmark script `examples/benchmark.py`. The benchmark fetches the pool tokens (token0 and token1) for each pool on Sushiswap on Ethereum mainnet. Run it with `brownie run examples/benchmark`.
+We've included a [benchmark script](./examples/benchmark.py) that compares the time it takes to fetch the pool tokens (token0 and token1) for each pool on Sushiswap on Ethereum mainnet. To run it, first install the repo with `poetry install` and then run the benchmark with `brownie run examples/benchmark`.
 
 ```
 Running 'examples/benchmark.py::main'...
