@@ -18,12 +18,15 @@ Contract = auto_retry(dank_mids.Contract)
 event_loop = asyncio.get_event_loop()
 
 # load the brownie contracts into memory now so we don't pollute the benchmark with irrelevant things, like reading from a sqlite db.
-pool_addresses = event_loop.run_until_complete(UNISWAPV2_FACTORY.allPairs.map(range(UNISWAPV2_FACTORY.allPairsLength())))
+pool_addresses = event_loop.run_until_complete(
+    UNISWAPV2_FACTORY.allPairs.map(range(UNISWAPV2_FACTORY.allPairsLength()))
+)
 pools = list(map(Contract, tqdm(pool_addresses, desc="loading required contracts...")))
+
 
 def web3py_sync():
     pools_by_token = defaultdict(list)
-    
+
     start = datetime.now()
     print(f"brownie sync start: {start}")
     for pool in tqdm(pools):
@@ -33,7 +36,6 @@ def web3py_sync():
     print(f"brownie sync end: {end}")
     duration = end - start
     print(f"brownie sync took: {duration}")
-
 
 
 from joblib import Parallel, delayed
@@ -56,7 +58,6 @@ def web3py_threads(num_threads: int):
     print(f"brownie {num_threads} threads took: {duration}")
 
 
-
 from tqdm.asyncio import tqdm_asyncio
 
 
@@ -75,7 +76,6 @@ async def dank():
     print(f"dank end: {end}")
     duration = end - start
     print(f"dank took: {duration}")
-
 
 
 def main():
