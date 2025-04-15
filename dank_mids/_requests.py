@@ -364,7 +364,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                             # this means duplicate_task finished first
                             return response
                     # this means the original finished first
-                    duplicate_task.cancel()
+                    duplicate._fut.cancel()
 
         except ClientResponseError as e:
             # TODO think about getting rid of this
