@@ -467,7 +467,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
     async def make_request(self, num_previous_timeouts: int = 0) -> RawResponse:
         """
-        Used to execute the request with no batching.
+        Execute the request with no batching.
+
+        Args:
+            num_previous_timeouts (optional): the number of times this request has already been attempted and timed out. Default 0.
         """
         task = create_task(
             coro=self.controller.make_request(self.method, self.params, request_id=self.uid),
