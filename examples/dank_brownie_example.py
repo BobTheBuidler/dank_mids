@@ -12,7 +12,7 @@ Key features of dank_mids Brownie integration:
 2. Asynchronous execution of RPC calls
 3. Easy-to-use interface that mimics standard Brownie patterns
 
-Take note of the liberal use of `asyncio.gather`; this is how you ensure that all of the various parts of your code 
+Take note of the liberal use of `asyncio.gather`; this is how you ensure that all of the various parts of your code
 are running concurrently so that batching is possible.
 
 See Also:
