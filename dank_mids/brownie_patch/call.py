@@ -47,21 +47,39 @@ logger = getLogger(__name__)
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
 """
 A lambda function that encodes input data for contract calls.
-It uses the BROWNIE_ENCODER_PROCESSES to run the __encode_input function asynchronously.
+
+This function uses the Brownie encoder process pool (BROWNIE_ENCODER_PROCESSES) to run the
+synchronous function :func:`__encode_input` in a separate process asynchronously.
 
 Args:
     self: The contract method instance.
     *args: The arguments to be encoded.
+
+Examples:
+    >>> encoded = encode(contract_call_instance, arg1, arg2)
+    >>> # encoded is a hex string that represents the ABI-encoded function call.
+
+See Also:
+    :func:`__encode_input`
 """
 
 decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 """
 A lambda function that decodes output data for contract calls.
-It uses the BROWNIE_DECODER_PROCESSES to run the __decode_input function asynchronously.
+
+This function uses the Brownie decoder process pool (BROWNIE_DECODER_PROCESSES) to run the
+synchronous function :func:`__decode_output` asynchronously.
 
 Args:
     self: The contract method instance.
-    *args: The arguments to be encoded.
+    data: The raw byte data returned from a contract call.
+
+Examples:
+    >>> decoded = decode(contract_call_instance, output_data)
+    >>> # decoded now holds the parsed return value from the contract call.
+
+See Also:
+    :func:`__decode_output`
 """
 
 # We assign this variable so ypricemagic's checksum cache monkey patch will work,
