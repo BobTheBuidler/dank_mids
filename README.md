@@ -49,7 +49,7 @@ Example usage of Dank Mids with web3py:
 from dank_mids.helpers import setup_dank_w3_from_sync
 dank_web3 = setup_dank_w3_from_sync(w3)
 # OR
-from dank_mids.helpers import dank_web3
+from dank_mids import dank_web3
 
 # Then:
 random_block = await dank_web3.eth.get_block(123)
