@@ -467,9 +467,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
     async def make_request(self, num_previous_timeouts: int = 0) -> RawResponse:
         """
-        Used to execute the request with no batching.
+        Execute the request with no batching.
 
-        NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere else.
+        Args:
+            num_previous_timeouts (optional): the number of times this request has already been attempted and timed out. Default 0.
         """
         task = create_task(
             coro=self.controller.make_request(self.method, self.params, request_id=self.uid),
@@ -1037,11 +1038,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             )
         controller = self.controller
         # we need to create strong refs to the multicalls here so they dont disappear as soon as the JSONRPCBatch inits
-        bisected = [
+        bisected = (batch0, batch1) = [
             Multicall(controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)
         ]
         if controller.pending_rpc_calls:
-            batch0, batch1 = bisected
             controller._pending_rpc_calls_append(batch0)
             if batch1:
                 if controller.pending_rpc_calls:
@@ -1049,14 +1049,16 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 else:
                     await batch1
             await controller.pending_rpc_calls._done.wait()
-        else:
+        elif batch1:
             batch = JSONRPCBatch(controller, bisected, f"{self.uid}_bisected")
             batch.start(self, cleanup=False)
             await batch
+        elif batch0:
+            batch0.start(self, cleanup=False)
+            await batch0
 
     @set_done
     async def _exec_single_call(self) -> None:
-        """NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere in make_request."""
         await next(iter(self.calls)).make_request()
 
     async def _spoof_or_retry(self, response: RawResponse) -> None:
