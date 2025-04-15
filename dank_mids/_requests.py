@@ -424,6 +424,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             for fut in done:
                 if fut is not task:
                     # this means the duplicate completed first
+                    self._fut.cancel()
                     return fut.result()
             # cancel the duplicate if it wasn't the one that completed first
             duplicate._fut.cancel()
