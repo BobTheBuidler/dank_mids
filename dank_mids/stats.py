@@ -95,7 +95,20 @@ class _StatsLogger(logging.Logger):
 
     @property
     def enabled(self) -> bool:
-        """Returns `True` if level is set to `STATS` (`11`) or below."""
+        """Returns True if the logger is enabled for the STATS logging level (which is set to 13) or lower.
+
+        This property checks if the current logging level is less than or equal to STATS and ensures the stats daemon
+        is running. The STATS level is defined to be between DEBUG and INFO.
+
+        Example:
+            >>> _logger = _StatsLogger(__name__)
+            >>> _logger.setLevel(STATS)
+            >>> _logger.enabled
+            True
+
+        See Also:
+            :meth:`isEnabledFor`
+        """
         self._ensure_daemon()
         return self.isEnabledFor(STATS)
 
@@ -109,6 +122,9 @@ class _StatsLogger(logging.Logger):
             msg: The message to log.
             *args: Additional positional arguments for the logger.
             **kwargs: Additional keyword arguments for the logger.
+
+        Example:
+            >>> _logger.stats("Operation took %s seconds", 3.14)
         """
         if self.enabled:
             self._log_nocheck(STATS, msg, args, **kwargs)
@@ -121,6 +137,9 @@ class _StatsLogger(logging.Logger):
             msg: The message to log.
             *args: Additional positional arguments for the logger.
             **kwargs: Additional keyword arguments for the logger.
+
+        Example:
+            >>> _logger.devhint("This is a developer hint for debugging purposes")
         """
         self._log(DEVHINT, msg, args, **kwargs)
 
@@ -132,6 +151,9 @@ class _StatsLogger(logging.Logger):
 
         Args:
             level: The logging level to use. Defaults to STATS.
+
+        Example:
+            >>> _logger.log_brownie_stats()
         """
         self._log_fn_result(level, _Writer.brownie)
 
@@ -141,6 +163,9 @@ class _StatsLogger(logging.Logger):
 
         Args:
             level: The logging level to use. Defaults to STATS.
+
+        Example:
+            >>> _logger.log_event_loop_stats()
         """
         self._log_fn_result(level, _Writer.event_loop)
 
@@ -150,6 +175,9 @@ class _StatsLogger(logging.Logger):
 
         Args:
             level: The logging level to use. Defaults to STATS.
+
+        Example:
+            >>> _logger.log_subprocess_stats()
         """
         for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:  # type: ignore [attr-defined]
             self._log_fn_result(level, _Writer.queue, pool)
@@ -207,6 +235,9 @@ class _StatsLogger(logging.Logger):
         Ensures that the stats daemon is running. If it's not running and conditions are met,
         it creates and starts the daemon task. If the daemon has finished, it raises any exception
         that occurred during its execution.
+
+        Example:
+            This method is automatically invoked when logger.enabled is accessed.
         """
         if (ENVS.COLLECT_STATS or self.enabled) and self._daemon is None:  # type: ignore [attr-defined,has-type]
             self._daemon = create_task(self._stats_daemon(), name="_StatsLogger debug daemon")
@@ -217,6 +248,9 @@ class _StatsLogger(logging.Logger):
         """
         The main loop of the stats daemon. It continuously collects event loop times
         and periodically logs various statistics about the system's performance.
+
+        Example:
+            The daemon logs subprocess, brownie and event loop stats every 300 seconds.
         """
         start = time()
         time_since_notified = 0
@@ -242,6 +276,9 @@ class _StatsLogger(logging.Logger):
         Args:
             method: The RPC method that encountered the error.
             e: The validation error that occurred.
+
+        Example:
+            >>> _logger.log_validation_error("eth_call", some_validation_error)
         """
         enabled = self.isEnabledFor(DEVHINT)
         if COLLECT_STATS or enabled:
@@ -265,6 +302,9 @@ class _StatsLogger(logging.Logger):
         Args:
             method: The RPC method being logged.
             decoded: The decoded response data from the RPC call.
+
+        Example:
+            >>> _logger.log_types("eth_call", decoded_response)
         """
         # TODO fix this, use enabled check
         types = {type(v) for v in decoded.values()}
@@ -284,6 +324,9 @@ class _StatsLogger(logging.Logger):
         Args:
             values: The list of values to analyze and log types for.
             level: The logging level to use. Defaults to DEVHINT.
+
+        Example:
+            >>> _logger._log_list_types(some_list)
         """
         list_types = {type(_) for v in values if isinstance(v, list) for _ in v}
         collector.types.update(list_types)
@@ -340,6 +383,9 @@ class _Collector:
 
         Returns:
             The average time taken for event loop iterations.
+
+        Example:
+            >>> avg_time = collector.avg_loop_time
         """
         return sum(collector.event_loop_times) / len(collector.event_loop_times)
 
@@ -350,6 +396,9 @@ class _Collector:
 
         Returns:
             The count of active Brownie calls.
+
+        Example:
+            >>> active_calls = collector.count_active_brownie_calls
         """
         return ENVS.BROWNIE_CALL_SEMAPHORE.default_value - ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._value  # type: ignore [attr-defined]
 
@@ -360,6 +409,9 @@ class _Collector:
 
         Returns:
             The count of queued Brownie calls.
+
+        Example:
+            >>> queued_calls = collector.count_queued_brownie_calls
         """
         return len(ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._waiters)  # type: ignore [attr-defined]
 
@@ -370,6 +422,9 @@ class _Collector:
 
         Returns:
             The number of items in the encoder queue.
+
+        Example:
+            >>> encoder_length = collector.encoder_queue_len
         """
         return ENVS.BROWNIE_ENCODER_PROCESSES._queue_count  # type: ignore [attr-defined]
 
@@ -380,6 +435,9 @@ class _Collector:
 
         Returns:
             The number of items in the decoder queue.
+
+        Example:
+            >>> decoder_length = collector.decoder_queue_len
         """
         return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
 
@@ -390,14 +448,17 @@ class _Collector:
 
         Returns:
             The number of items in the multicall decoder queue.
+
+        Example:
+            >>> mcall_length = collector.mcall_decoder_queue_len
         """
         return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
 
 
 class _Writer:
     """
-    `Writer` is used to turn `Collector` stats into human readable on a as-needed, JIT basis
-    without wasting compute or cluttering `Collector` or `StatsLogger` class definitions.
+    Writer is used to turn Collector stats into human readable on a as-needed, JIT basis
+    without wasting compute or cluttering Collector or StatsLogger class definitions.
     """
 
     def event_loop(self) -> str:
@@ -406,6 +467,9 @@ class _Writer:
 
         Returns:
             A string containing the average event loop time.
+
+        Example:
+            >>> print(_Writer().event_loop())
         """
         return f"Average event loop time: {collector.avg_loop_time}"
 
@@ -415,6 +479,9 @@ class _Writer:
 
         Returns:
             A string containing the number of active and queued Brownie calls.
+
+        Example:
+            >>> print(_Writer().brownie())
         """
         return f"{collector.count_active_brownie_calls} brownie calls are processing, {collector.count_queued_brownie_calls} are queued in {ENVS.BROWNIE_CALL_SEMAPHORE}."
 
@@ -427,6 +494,9 @@ class _Writer:
 
         Returns:
             A string containing the number of items in the pool's queue.
+
+        Example:
+            >>> print(_Writer().queue(some_pool))
         """
         return f"{pool} has {pool._queue_count} items in its queue"
 
@@ -456,7 +526,7 @@ class _SentryExporter:
 
     def push_measurements(self) -> None:
         """
-        Pushes all metrics in `self.metrics` to Sentry.
+        Push all metrics in `self.metrics` to Sentry.
         """
         if self._exc:
             raise self._exc
@@ -468,9 +538,12 @@ class _SentryExporter:
 
     def push_envs(self) -> None:
         """
-        Pushes environment variables set by the user to Sentry.
+        Push environment variables set by the user to Sentry.
 
         Any exceptions during tagging are logged as warnings.
+
+        Example:
+            >>> sentry.push_envs()
         """
         for env, value in _ENVIRONMENT_VARIABLES_SET_BY_USER.items():
             try:
