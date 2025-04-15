@@ -305,7 +305,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         elif current_batch._awaited is False:
             # NOTE: If the batch was already awaited, we filled a batch. Let's await it now so we can send something to the node.
-            done_strongref, _ = await first_completed(current_batch.get_response(), self._fut)
+            batch_task = create_task(current_batch.get_response(), name="batch task get_response")
+            done_strongref, _ = await first_completed(batch_task, self._fut)
             for fut in done_strongref:
                 if fut.exception():
                     # we do this because a few RPCRequests can reach this point at the 'same time'
@@ -319,7 +320,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         if self._batch is None:
             try:
-                batch_task = create_task(self.controller.execute_batch(), name="batch task")
+                batch_task = create_task(
+                    self.controller.execute_batch(), name="batch task execute_batch"
+                )
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
                 # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
@@ -329,9 +332,11 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     "%s got stuck awaiting its batch, we're creating a new one",
                     self,
                 )
-                done, pending = await first_completed(
-                    batch_task, self._fut, self.create_duplicate()
+                duplicate = self.create_duplicate()
+                duplicate_task = create_task(
+                    duplicate.get_response(), name="duplicate task get_response"
                 )
+                done, pending = await first_completed(batch_task, self._fut, duplicate_task)
                 for d in done:
                     if d in (batch_task, self._fut):
                         # we'll get and decode the value below
@@ -483,9 +488,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 num_previous_timeouts + 1,
                 self,
             )
-            done: Set[Task] = await first_completed(
-                task, self.make_request(num_previous_timeouts + 1), cancel=True
+            next_attempt_task = create_task(
+                self.make_request(num_previous_timeouts + 1), name="next attempt task"
             )
+            done: Set[Task] = await first_completed(task, next_attempt_task, cancel=True)
             response = done.pop().result()
         self._fut.set_result(response)
         return response
