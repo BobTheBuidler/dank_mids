@@ -50,6 +50,10 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
+      - name: Add Poetry to PATH on Windows
+        if: runner.os == 'Windows'
+        run: echo "##[add-path]C:\Users\runneradmin\.local\bin"
+
       - name: Install Dependencies
         run: poetry install --no-interaction
       
