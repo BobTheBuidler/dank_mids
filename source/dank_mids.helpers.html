@@ -230,7 +230,32 @@ InvalidStateError.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.helpers.lru_cache.lru_cache_lite">
 <span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.lru_cache.</span></span><span class="sig-name descname"><span class="pre">lru_cache_lite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.lru_cache.lru_cache_lite" title="Link to this definition"></a></dt>
-<dd><p>A faster implementation of functools.lru_cache with no maxsize</p>
+<dd><p>A faster implementation of functools.lru_cache with no maxsize.</p>
+<p>This decorator caches the results of the decorated function without imposing a
+maximum cache size. It uses a unique internal cache-miss marker to determine if a
+result is cached.</p>
+<p><strong>Example:</strong></p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@lru_cache_lite</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing add...&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+
+<span class="c1"># First call with same arguments results in function execution.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>  <span class="c1"># prints &quot;Computing add...&quot; then 5</span>
+
+<span class="c1"># Subsequent calls with the same arguments return the cached result.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>  <span class="c1"># prints 5 without &quot;Computing add...&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="simple">
+<dt><strong>See Also:</strong></dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/functools.html#functools.lru_cache">functools.lru_cache</a></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">lru_cache_lite_nonull()</span></code> for a variant using <code class="docutils literal notranslate"><span class="pre">None</span></code> as the cache-miss marker.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><em>~__P</em><em>]</em><em>, </em><em>__T</em><em>]</em>)</p>
@@ -244,7 +269,39 @@ InvalidStateError.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.helpers.lru_cache.lru_cache_lite_nonull">
 <span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.lru_cache.</span></span><span class="sig-name descname"><span class="pre">lru_cache_lite_nonull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.lru_cache.lru_cache_lite_nonull" title="Link to this definition"></a></dt>
-<dd><p>A faster implementation of functools.lru_cache with no maxsize</p>
+<dd><p>A faster implementation of functools.lru_cache with no maxsize that uses None as the cache miss indicator.</p>
+<p>This decorator behaves similarly to <code class="xref py py-func docutils literal notranslate"><span class="pre">lru_cache_lite()</span></code> but differs by using
+<code class="docutils literal notranslate"><span class="pre">None</span></code> as the default value returned by the cache when a key is missing.
+Consequently, if the decorated function legitimately returns <code class="docutils literal notranslate"><span class="pre">None</span></code> for a given input,
+the cache will interpret the cached <code class="docutils literal notranslate"><span class="pre">None</span></code> as a miss and will re-evaluate the function.</p>
+<p><strong>Example:</strong></p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@lru_cache_lite_nonull</span>
+<span class="k">def</span> <span class="nf">might_return_none</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Executing might_return_none...&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+
+<span class="c1"># First call with x = -1 triggers a cache miss and function execution.</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">might_return_none</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># prints &quot;Executing might_return_none...&quot; then None</span>
+
+<span class="c1"># Second call with x = -1 also triggers a cache miss because None is used as the cache-miss marker.</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">might_return_none</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># prints &quot;Executing might_return_none...&quot; then None</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="simple">
+<dt><strong>Warnings:</strong></dt><dd><p>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">lru_cache_lite_nonull()</span></code> only when it is acceptable that a cached return value
+of <code class="docutils literal notranslate"><span class="pre">None</span></code> results in re-execution of the decorated function. If the function may validly return <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+consider using <code class="xref py py-func docutils literal notranslate"><span class="pre">lru_cache_lite()</span></code> instead.</p>
+</dd>
+<dt><strong>See Also:</strong></dt><dd><ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">lru_cache_lite()</span></code> which uses a unique cache-miss marker.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/functools.html#functools.lru_cache">functools.lru_cache</a></p></li>
+</ul>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><em>~__P</em><em>]</em><em>, </em><em>__T</em><em>]</em>)</p>

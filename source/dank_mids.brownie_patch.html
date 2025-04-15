@@ -104,16 +104,26 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.call.decode">
 <span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.decode" title="Link to this definition"></a></dt>
-<dd><p>A lambda function that decodes output data for contract calls.
-It uses the BROWNIE_DECODER_PROCESSES to run the __decode_input function asynchronously.</p>
+<dd><p>A lambda function that decodes output data for contract calls.</p>
+<p>This function uses the Brownie decoder process pool (BROWNIE_DECODER_PROCESSES) to run the
+synchronous function <code class="xref py py-func docutils literal notranslate"><span class="pre">__decode_output()</span></code> asynchronously.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> – The contract method instance.</p></li>
-<li><p><strong>*args</strong> – The arguments to be encoded.</p></li>
+<li><p><strong>data</strong> – The raw byte data returned from a contract call.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decoded</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="n">contract_call_instance</span><span class="p">,</span> <span class="n">output_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># decoded now holds the parsed return value from the contract call.</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">__decode_output()</span></code></p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -135,8 +145,9 @@ It uses the BROWNIE_DECODER_PROCESSES to run the __decode_input function asynchr
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.call.encode">
 <span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.encode" title="Link to this definition"></a></dt>
-<dd><p>A lambda function that encodes input data for contract calls.
-It uses the BROWNIE_ENCODER_PROCESSES to run the __encode_input function asynchronously.</p>
+<dd><p>A lambda function that encodes input data for contract calls.</p>
+<p>This function uses the Brownie encoder process pool (BROWNIE_ENCODER_PROCESSES) to run the
+synchronous function <code class="xref py py-func docutils literal notranslate"><span class="pre">__encode_input()</span></code> in a separate process asynchronously.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -145,6 +156,15 @@ It uses the BROWNIE_ENCODER_PROCESSES to run the __encode_input function asynchr
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">encoded</span> <span class="o">=</span> <span class="n">encode</span><span class="p">(</span><span class="n">contract_call_instance</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># encoded is a hex string that represents the ABI-encoded function call.</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">__encode_input()</span></code></p>
+</div>
 </dd></dl>
 
 <dl class="py function">

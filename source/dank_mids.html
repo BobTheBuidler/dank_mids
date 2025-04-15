@@ -2006,26 +2006,49 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.middleware.dank_middleware">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.middleware.</span></span><span class="sig-name descname"><span class="pre">dank_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">make_request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">web3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.middleware.dank_middleware" title="Link to this definition"></a></dt>
-<dd><p>Create and return a <code class="xref py py-class docutils literal notranslate"><span class="pre">DankMiddlewareController</span></code> instance for an asynchronous <code class="xref py py-class docutils literal notranslate"><span class="pre">Web3</span></code>.</p>
-<p>This function is used to create a middleware instance that can be added to an
-asynchronous Web3 object.</p>
+<dd><p>Creates and returns a DankMiddlewareController middleware function for an asynchronous Web3 instance.</p>
+<p>This function initializes the DankMiddlewareController that batches and processes JSON-RPC
+requests for asynchronous Web3 calls. It is intended to be added to the middleware onion
+of an asynchronous Web3 instance to optimize large-scale blockchain operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>make_request</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>]</em>) – The next middleware in the chain or the actual request sender.</p></li>
-<li><p><strong>web3</strong> (<em>Web3</em>) – The synchronous Web3 instance this middleware is attached to.</p></li>
+<li><p><strong>make_request</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>]</em>) – The next middleware callable in the chain or the actual request sender.</p></li>
+<li><p><strong>web3</strong> (<em>Web3</em>) – The asynchronous Web3 instance to which the middleware will be attached.
+Must be an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWeb3</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An <code class="xref py py-type docutils literal notranslate"><span class="pre">AsyncMiddleware</span></code> function that can be used with synchronous Web3.</p>
+<dd class="field-even"><p>An asynchronous middleware callable that can be used with an asynchronous Web3 instance.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.13)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>, <em>RPCResponse</em>]]</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Setting up Dank Mids middleware with an asynchronous Web3 instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">web3</span> <span class="kn">import</span> <span class="n">AsyncWeb3</span><span class="p">,</span> <span class="n">HTTPProvider</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dank_mids.middleware</span> <span class="kn">import</span> <span class="n">dank_middleware</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w3</span> <span class="o">=</span> <span class="n">AsyncWeb3</span><span class="p">(</span><span class="n">HTTPProvider</span><span class="p">(</span><span class="s2">&quot;http://localhost:8545&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Inject Dank Mids at the lowest layer so that all calls are batched.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w3</span><span class="o">.</span><span class="n">middleware_onion</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">dank_middleware</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Now calling any method uses Dank Mids batching.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">block</span> <span class="o">=</span> <span class="k">await</span> <span class="n">w3</span><span class="o">.</span><span class="n">eth</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;latest&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another example demonstrating the middleware injection:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">web3</span> <span class="kn">import</span> <span class="n">AsyncWeb3</span><span class="p">,</span> <span class="n">WebsocketProvider</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dank_mids.middleware</span> <span class="kn">import</span> <span class="n">dank_middleware</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">async_w3</span> <span class="o">=</span> <span class="n">AsyncWeb3</span><span class="p">(</span><span class="n">WebsocketProvider</span><span class="p">(</span><span class="s2">&quot;ws://localhost:8546&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">async_w3</span><span class="o">.</span><span class="n">middleware_onion</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dank_middleware</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Retrieve the latest block asynchronously with the middleware active.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">latest</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_w3</span><span class="o">.</span><span class="n">eth</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;latest&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#dank_mids.controller.DankMiddlewareController" title="dank_mids.controller.DankMiddlewareController"><code class="xref py py-class docutils literal notranslate"><span class="pre">dank_mids.controller.DankMiddlewareController</span></code></a>: The controller class that manages RPC requests sent thru the middleware.</p>
+<p><a class="reference internal" href="#dank_mids.controller.DankMiddlewareController" title="dank_mids.controller.DankMiddlewareController"><code class="xref py py-class docutils literal notranslate"><span class="pre">dank_mids.controller.DankMiddlewareController</span></code></a>: Manages batched JSON-RPC requests.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWeb3</span></code>: The asynchronous Web3 class.</p>
 </div>
 </dd></dl>
 
@@ -2276,6 +2299,10 @@ It includes custom logging levels, a specialized logger, and classes for collect
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_logger</span><span class="o">.</span><span class="n">devhint</span><span class="p">(</span><span class="s2">&quot;This is a developer hint for debugging purposes&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2294,6 +2321,10 @@ It includes custom logging levels, a specialized logger, and classes for collect
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_logger</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="s2">&quot;Operation took </span><span class="si">%s</span><span class="s2"> seconds&quot;</span><span class="p">,</span> <span class="mf">3.14</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -4024,26 +4055,49 @@ object in future sessions.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.dank_middleware">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.</span></span><span class="sig-name descname"><span class="pre">dank_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">make_request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">web3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.dank_middleware" title="Link to this definition"></a></dt>
-<dd><p>Create and return a <code class="xref py py-class docutils literal notranslate"><span class="pre">DankMiddlewareController</span></code> instance for an asynchronous <code class="xref py py-class docutils literal notranslate"><span class="pre">Web3</span></code>.</p>
-<p>This function is used to create a middleware instance that can be added to an
-asynchronous Web3 object.</p>
+<dd><p>Creates and returns a DankMiddlewareController middleware function for an asynchronous Web3 instance.</p>
+<p>This function initializes the DankMiddlewareController that batches and processes JSON-RPC
+requests for asynchronous Web3 calls. It is intended to be added to the middleware onion
+of an asynchronous Web3 instance to optimize large-scale blockchain operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>make_request</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>]</em>) – The next middleware in the chain or the actual request sender.</p></li>
-<li><p><strong>web3</strong> (<em>Web3</em>) – The synchronous Web3 instance this middleware is attached to.</p></li>
+<li><p><strong>make_request</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><em>RPCEndpoint</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>]</em>) – The next middleware callable in the chain or the actual request sender.</p></li>
+<li><p><strong>web3</strong> (<em>Web3</em>) – The asynchronous Web3 instance to which the middleware will be attached.
+Must be an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWeb3</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An <code class="xref py py-type docutils literal notranslate"><span class="pre">AsyncMiddleware</span></code> function that can be used with synchronous Web3.</p>
+<dd class="field-even"><p>An asynchronous middleware callable that can be used with an asynchronous Web3 instance.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[<em>RPCEndpoint</em>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Coroutine" title="(in Python v3.13)"><em>Coroutine</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>, <em>RPCResponse</em>]]</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Setting up Dank Mids middleware with an asynchronous Web3 instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">web3</span> <span class="kn">import</span> <span class="n">AsyncWeb3</span><span class="p">,</span> <span class="n">HTTPProvider</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dank_mids.middleware</span> <span class="kn">import</span> <span class="n">dank_middleware</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w3</span> <span class="o">=</span> <span class="n">AsyncWeb3</span><span class="p">(</span><span class="n">HTTPProvider</span><span class="p">(</span><span class="s2">&quot;http://localhost:8545&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Inject Dank Mids at the lowest layer so that all calls are batched.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w3</span><span class="o">.</span><span class="n">middleware_onion</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">dank_middleware</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Now calling any method uses Dank Mids batching.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">block</span> <span class="o">=</span> <span class="k">await</span> <span class="n">w3</span><span class="o">.</span><span class="n">eth</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;latest&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another example demonstrating the middleware injection:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">web3</span> <span class="kn">import</span> <span class="n">AsyncWeb3</span><span class="p">,</span> <span class="n">WebsocketProvider</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dank_mids.middleware</span> <span class="kn">import</span> <span class="n">dank_middleware</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">async_w3</span> <span class="o">=</span> <span class="n">AsyncWeb3</span><span class="p">(</span><span class="n">WebsocketProvider</span><span class="p">(</span><span class="s2">&quot;ws://localhost:8546&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">async_w3</span><span class="o">.</span><span class="n">middleware_onion</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dank_middleware</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Retrieve the latest block asynchronously with the middleware active.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">latest</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_w3</span><span class="o">.</span><span class="n">eth</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;latest&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#dank_mids.controller.DankMiddlewareController" title="dank_mids.controller.DankMiddlewareController"><code class="xref py py-class docutils literal notranslate"><span class="pre">dank_mids.controller.DankMiddlewareController</span></code></a>: The controller class that manages RPC requests sent thru the middleware.</p>
+<p><a class="reference internal" href="#dank_mids.controller.DankMiddlewareController" title="dank_mids.controller.DankMiddlewareController"><code class="xref py py-class docutils literal notranslate"><span class="pre">dank_mids.controller.DankMiddlewareController</span></code></a>: Manages batched JSON-RPC requests.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWeb3</span></code>: The asynchronous Web3 class.</p>
 </div>
 </dd></dl>
 
