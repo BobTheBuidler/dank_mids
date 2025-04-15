@@ -874,7 +874,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return self.mcall.needs_override_code_for_block(self.block)
 
     def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
-        batch = batch or self
+        self._batch = batch
         if _logger_is_enabled_for(DEBUG):
             self._daemon = create_task(self._debug_daemon(), name="Multicall debug daemon")
         with self._lock:
