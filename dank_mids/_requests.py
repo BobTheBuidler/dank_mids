@@ -468,8 +468,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
     async def make_request(self, num_previous_timeouts: int = 0) -> RawResponse:
         """
         Used to execute the request with no batching.
-
-        NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere else.
         """
         task = create_task(
             coro=self.controller.make_request(self.method, self.params, request_id=self.uid),
@@ -1058,7 +1056,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @set_done
     async def _exec_single_call(self) -> None:
-        """NOTE: There is some hanging behavior happening here. Not sure if specific to this func or somewhere in make_request."""
         await next(iter(self.calls)).make_request()
 
     async def _spoof_or_retry(self, response: RawResponse) -> None:
