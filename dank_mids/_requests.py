@@ -355,10 +355,15 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         self,
                     )
                     duplicate = self.create_duplicate()
-                    for d in await first_completed(fut, duplicate, cancel=True):
+                    duplicate_task = create_task(duplicate.get_response(), name="duplicate.get_response")
+                    for d in await first_completed(fut, duplicate_task, cancel=True):
                         response = d.result()
                         if d is not fut:
+                            # this means duplicate_task finished first
                             return response
+                    # this means the original finished first
+                    duplicate_task.cancel()
+                    
         except ClientResponseError as e:
             # TODO think about getting rid of this
             raise DankMidsClientResponseError(e, self.request) from e
@@ -405,9 +410,11 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 self,
             )
             duplicate = self.create_duplicate()
-            done: Set[Task] = await first_completed(task, duplicate, cancel=True)
+            duplicate_task = create_task(duplicate.get_response_unbatched(), name="duplicate.get_response_unbatched")
+            done: Set[Task] = await first_completed(task, duplicate_task, cancel=True)
             for fut in done:
                 if fut is not task:
+                    # this means the duplicate completed first
                     return fut.result()
             # cancel the duplicate if it wasn't the one that completed first
             duplicate._fut.cancel()
