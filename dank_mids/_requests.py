@@ -1052,7 +1052,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             batch = JSONRPCBatch(controller, bisected, f"{self.uid}_bisected")
             batch.start(self, cleanup=False)
             await batch
-        else:
+        elif batch0:
             batch0.start(self, cleanup=False)
             await batch0
 
