@@ -1,6 +1,9 @@
 name: MyPy
 
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - '**.py'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
