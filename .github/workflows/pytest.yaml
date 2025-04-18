@@ -47,14 +47,30 @@ jobs:
         with:
           python-version: ${{ matrix.pyversion }}
 
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v4
+        with:
+          path: ~/.local  # the path depends on the OS
+          key: poetry-${{ runner.os }}-${{ matrix.pyversion }}-0  # increment to reset cache
+          
       - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
 
       - name: Add Poetry to PATH on Windows
         if: runner.os == 'Windows'
         run: echo "##[add-path]C:\Users\runneradmin\.local\bin"
-
+        
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.pyversion }}-${{ hashFiles('**/poetry.lock') }}-0  # increment to reset cache
+          
       - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
       
       - name: Setup brownie networks
