@@ -30,7 +30,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.local  # the path depends on the OS
-        key: 3.9-poetry-0  # increment to reset cache
+        key: poetry-${{ runner.os }}-3.9-0  # increment to reset cache
           
     - name: Install Poetry
       if: steps.cached-poetry.outputs.cache-hit != 'true'
