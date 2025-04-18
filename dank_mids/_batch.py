@@ -24,7 +24,7 @@ CHECK = MIN_SIZE - 1
 logger = getLogger(__name__)
 
 
-def _create_named_task(awaitable: Awaitable[__T]) -> Task[__T]:
+def _create_named_task(awaitable: Awaitable[__T]) -> "Task[__T]":
     return create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
 
 
