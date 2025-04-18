@@ -39,7 +39,6 @@ jobs:
       - name: Install Poetry
         if: steps.cached-poetry.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
-        uses: snok/install-poetry@v1
 
       - name: Install Dependencies
         run: |
