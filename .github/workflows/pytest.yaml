@@ -58,7 +58,7 @@ jobs:
         if: steps.cached-poetry.outputs.cache-hit != 'true' || ${{ matrix.pyversion }} == "3.8"
         uses: snok/install-poetry@v1
         with:
-          version: "<2" 
+          version: "1.8.5" 
           
       - name: Install Poetry
         if: steps.cached-poetry.outputs.cache-hit != 'true' || ${{ matrix.pyversion }} != "3.8"
