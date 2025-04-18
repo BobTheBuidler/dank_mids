@@ -6,7 +6,6 @@ on:
     paths:
       - '**.py'
       - '**/pytest.yaml'
-      - 'pyproject.toml'
       - 'poetry.lock'
       
 concurrency:
