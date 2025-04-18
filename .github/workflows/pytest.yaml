@@ -55,13 +55,13 @@ jobs:
           key: poetry-${{ runner.os }}-${{ matrix.pyversion }}-0  # increment to reset cache
           
       - name: Install Poetry (Python3.8)
-        if: steps.cached-poetry.outputs.cache-hit != 'true' && ${{ matrix.pyversion }} == "3.8"
+        if: steps.cached-poetry.outputs.cache-hit != 'true' &&  matrix.pyversion == "3.8"
         uses: snok/install-poetry@v1
         with:
           version: "1.8.5" 
           
       - name: Install Poetry
-        if: steps.cached-poetry.outputs.cache-hit != 'true' && ${{ matrix.pyversion }} != "3.8"
+        if: steps.cached-poetry.outputs.cache-hit != 'true' && matrix.pyversion != "3.8"
         uses: snok/install-poetry@v1
 
       - name: Add Poetry to PATH on Windows
