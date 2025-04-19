@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Optional
+from typing import Callable, Optional
 
 from eth_typing import BlockNumber, ChecksumAddress
 from eth_utils import to_checksum_address
