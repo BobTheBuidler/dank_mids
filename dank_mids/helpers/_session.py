@@ -8,7 +8,7 @@ from logging import DEBUG, getLogger
 from random import random
 from threading import get_ident
 from time import time
-from typing import Any, Callable, Dict, Tuple, overload
+from typing import Any, Callable, DefaultDict, Dict, Tuple, overload
 
 from a_sync import Event
 from a_sync._smart import shield
