@@ -9,7 +9,7 @@ from asyncio import (
 )
 from logging import DEBUG, getLogger
 from time import time
-from typing import TYPE_CHECKING, Any, Generator, Optional
+from typing import TYPE_CHECKING, Any, Generator, Optional, Union
 from weakref import ProxyType, proxy
 
 from web3.types import RPCResponse
@@ -89,7 +89,7 @@ class DebuggableFuture(Future):
         else:
             raise NotImplementedError(f"{self._state} is not a valid state")
 
-    def set_exception(self, exc: BaseException) -> None:
+    def set_exception(self, exc: Union[type, BaseException]) -> None:
         if self._loop is get_running_loop():
             try:
                 _future_set_exc(self, exc)
