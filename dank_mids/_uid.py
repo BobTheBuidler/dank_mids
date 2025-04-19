@@ -1,5 +1,5 @@
 from logging import getLogger
-from threading import _RLock, _allocate_lock  # type: ignore [has-attr]
+from threading import _RLock, _allocate_lock  # type: ignore [attr-defined]
 
 
 class UIDGenerator:
