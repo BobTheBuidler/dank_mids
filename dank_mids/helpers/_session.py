@@ -1,5 +1,5 @@
 import http
-from asyncio import CancelledError, create_task, current_task, sleep
+from asyncio import CancelledError, Task, create_task, current_task, sleep
 from collections import defaultdict
 from enum import IntEnum
 from heapq import nlargest
@@ -118,7 +118,7 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 
 
 # default is 50 requests/second
-limiters = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
+limiters: DefaultDict[str, AsyncLimiter] = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
 
 _rate_limit_waiters: Dict[str, Event] = {}
 
@@ -146,7 +146,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
     await shield(task)
 
 
-_rate_limit_tasks = {}
+_rate_limit_tasks: Dict[str, "Task[None]"] = {}
 
 
 async def __rate_limit_inactive(endpoint: str) -> None:
