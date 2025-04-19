@@ -41,7 +41,10 @@ class MulticallContract(Struct):
     This is used for state override if necessary.
     """
 
-    @lru_cache(maxsize=1024)
+    def __post_init__(self) -> None:
+        # we don't need to include `self` in the cache key, that's wasteful
+        self.needs_override_code_for_block = lru_cache(maxsize=1024)(self.needs_override_code_for_block)
+
     def needs_override_code_for_block(self, block: BlockNumber) -> bool:
         """
         Determine if the contract needs override code for a specific block.
