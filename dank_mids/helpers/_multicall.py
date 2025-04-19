@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Optional, overload
+from typing import Optional
 
 from eth_typing import BlockNumber, ChecksumAddress
 from eth_utils import to_checksum_address
@@ -41,23 +41,22 @@ class MulticallContract(Struct):
     This is used for state override if necessary.
     """
 
+    needs_override_code_for_block: Callable[[BlockNumber], bool] = None
+    """
+    A cached function that, when called, determines if the contract needs override code for a specific block.
+
+    Args:
+        block: The block number to check.
+
+    Returns:
+        True if override code is needed, False otherwise.
+    """
+
     def __post_init__(self) -> None:
         # we don't need to include `self` in the cache key, that's wasteful
         self.needs_override_code_for_block = lru_cache(maxsize=1024)(
             self.__needs_override_code_for_block
         )
-
-    @overload
-    def needs_override_code_for_block(self, block: BlockNumber) -> bool:
-        """
-        Determine if the contract needs override code for a specific block.
-
-        Args:
-            block: The block number to check.
-
-        Returns:
-            True if override code is needed, False otherwise.
-        """
 
     def __needs_override_code_for_block(self, block: BlockNumber) -> bool:
         """
