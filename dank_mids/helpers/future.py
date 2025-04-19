@@ -89,7 +89,7 @@ class DebuggableFuture(Future):
         else:
             raise NotImplementedError(f"{self._state} is not a valid state")
 
-    def set_exception(self, exc: Exception) -> None:
+    def set_exception(self, exc: BaseException) -> None:
         if self._loop is get_running_loop():
             try:
                 _future_set_exc(self, exc)
