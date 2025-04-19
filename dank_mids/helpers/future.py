@@ -124,16 +124,3 @@ class DebuggableFuture(Future):
                 _logger_log(
                     DEBUG, "%s has not received data after %ss", (self._owner, int(time() - start))
                 )
-
-
-def _check_match(first: Exception, second: Exception):
-    """Check if two exceptions are similar enough to be considered matching"""
-    return (
-        type(first) is type(second)
-        # Sometimes we add extra info to the back of `exc.args` in various places in this lib.
-        # We might get the same exc for the same reason but it might not match exactly since
-        # we might have already added the context to the first Exception set to the Future.
-        and len(first.args) <= len(second.args)
-        # so we check for a match with this goofy map instead...
-        and all(map(lambda a, b: a == b, first.args, second.args))
-    )
