@@ -12,7 +12,8 @@ from dank_mids.brownie_patch.types import (
 
 __all__ = ["DankContractCall", "DankContractMethod", "DankContractTx", "DankOverloadedMethod"]
 
-from dank_mids.helpers._helpers import DankEth, DankWeb3
+from dank_mids.eth import DankEth
+from dank_mids.helpers._helpers import DankWeb3
 
 dank_web3: DankWeb3
 """
