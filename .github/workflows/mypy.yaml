@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - '**.py'
+      - '**/mypy.yaml'
+      - 'poetry.lock'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
