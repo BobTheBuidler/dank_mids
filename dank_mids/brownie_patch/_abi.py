@@ -39,8 +39,8 @@ class FunctionABI:
         """
 
     @functools.lru_cache(maxsize=None)
-    @classmethod
-    def singleton(cls, **abi: Any) -> "FunctionABI":
+    @staticmethod
+    def singleton(**abi: Any) -> "FunctionABI":
         """
         Get a singleton FunctionABI to hold function ABI information.
 
