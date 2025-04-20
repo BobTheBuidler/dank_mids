@@ -8,6 +8,13 @@ The goal of this tool is to reduce the workload on RPC nodes and allow users to 
 
 ![](https://i.imgur.com/o9FUmAn.jpg)
 
+### Why is Dank so fast?
+
+There are a number of optimizations that went into making Dank the fastest way to pull rpc data to Python.
+1. JSON encoding and decoding is handled by [msgspec](https://jcristharif.com/msgspec/). All responses are decoded to specialized [msgspec.Struct](https://jcristharif.com/msgspec/structs.html) objects defined by the [evmspec](https://github.com/BobTheBuidler/evmspec) library.
+2. Responses are decoded on a JIT (just-in-time) basis, meaning individual task cancellation works as expected even when response data is received as part of a larger batch. 
+3. more stuff I'll write down later...
+
 ### Installation
 
 To install Dank Mids, use pip:
