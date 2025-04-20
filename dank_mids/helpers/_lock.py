@@ -62,5 +62,3 @@ class AlertingRLock(_RLock):  # type: ignore [misc]
             logger.warning("wtf?! %s with name %s is locked!", self, self._name)
             acquire_lock(self, blocking=blocking, timeout=timeout)
         return acquired
-
-    __enter__ = acquire
