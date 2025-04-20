@@ -63,4 +63,5 @@ class AlertingRLock(_RLock):  # type: ignore [misc]
             acquire_lock(self, blocking=blocking, timeout=timeout)
         return acquired
 
+
 __all__ = ["AlertingRLock"]
