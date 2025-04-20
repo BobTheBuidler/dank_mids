@@ -43,7 +43,7 @@ def lru_cache_lite(func: Callable[__P, __T]) -> Callable[__P, __T]:
         if retval is cache_miss:
             retval = func(*args)  # type: ignore [call-arg]
             cache[args] = retval
-        return retval
+        return retval  # type: ignore [return-value]
 
     lru_cache_lite_wrap.cache = cache  # type: ignore [attr-defined]
     return lru_cache_lite_wrap  # type: ignore [return-value]
