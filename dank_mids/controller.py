@@ -3,7 +3,7 @@ from collections import defaultdict
 from functools import lru_cache
 from logging import getLogger
 from time import time
-from typing import Any, Callable, DefaultDict, List, Literal, Optional, Set, Union
+from typing import Any, Callable, DefaultDict, List, Literal, Optional, Set
 
 import eth_retry
 from cchecksum import to_checksum_address
@@ -215,7 +215,7 @@ class DankMiddlewareController:
         # queue found, queue up the call and await the future
         try:
             # NOTE: is this a strong enough ref?
-            return await queue(self, method, params)
+            return await queue(self, method, params)  # type: ignore [return-type]
         except TypeError as e:
             if "unhashable type" not in str(e):
                 raise
@@ -305,7 +305,7 @@ class DankMiddlewareController:
             return True
         return time() - self._request_type_changed_ts <= 600
 
-    def early_start(self):
+    def early_start(self) -> None:
         """
         Initiate processing of queued calls when a full batch is available.
 
@@ -400,8 +400,8 @@ class DankMiddlewareController:
             new_limit: The new maximum number of calls in a JSON-RPC batch.
         """
         existing_limit = self.max_jsonrpc_batch_size
-        if new_limit < existing_limit:  # type: ignore [operator]
-            self.max_jsonrpc_batch_size = new_limit  # type: ignore [attr-defined,assignment]
+        if new_limit < existing_limit:
+            self.max_jsonrpc_batch_size = new_limit
             logger.warning(
                 "jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit
             )
