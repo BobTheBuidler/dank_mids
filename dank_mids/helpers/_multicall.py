@@ -76,15 +76,6 @@ class MulticallContract(Struct):
             block = int(block, 16)
         return block < self.deploy_block
 
-    def __hash__(self) -> int:
-        """
-        Generates a hash for the MulticallContract instance.
-
-        Returns:
-            A hash value based on the contract's address.
-        """
-        return hash(self.address)
-
 
 def _get_multicall2(chainid: int) -> Optional[MulticallContract]:
     if multicall2 := MULTICALL2_ADDRESSES.get(chainid):
