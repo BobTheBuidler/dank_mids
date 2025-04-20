@@ -29,10 +29,18 @@ class WeakList(Generic[__T]):
         return False if ref is None else ref() is item
 
     def __iter__(self) -> Iterator[__T]:
+        # sourcery skip: use-contextlib-suppress
         refs = (r for r in self._refs.values() if r is not None)
-        for obj in map(_get_obj_from_ref, refs):
-            if obj is not None:
-                yield obj
+        try:
+            for obj in map(_get_obj_from_ref, refs):
+                if obj is not None:
+                    yield obj
+        except TypeError:
+            # if this happens even with `refs` filtering the Nones,
+            # that means python is shutting down and we can ignore it.
+            # Otherwise, we can get ugly logs on shutdown as Multicall
+            # and JSONRPCBatch objects have their __del__ method called.
+            pass
 
     def append(self, item: __T) -> None:
         # Keep a weak reference with a callback for when the item is collected
