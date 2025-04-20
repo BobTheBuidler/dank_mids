@@ -39,4 +39,3 @@ with suppress(ImportError):
         dank_web3 = setup_dank_w3_from_sync(web3)
         dank_eth = dank_web3.eth
         __all__ += ["Contract", "patch_contract", "dank_web3", "dank_eth"]
-
