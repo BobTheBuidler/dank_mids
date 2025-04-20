@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, Iterable, Iterator, TypeVar
+from typing import Any, Dict, Generic, Iterable, Iterator, Optional, TypeVar
 from weakref import ReferenceType, ref
 
 
@@ -8,7 +8,7 @@ _get_obj_from_ref = ref.__call__
 
 
 class WeakList(Generic[_T]):
-    def __init__(self, data=None):
+    def __init__(self, data: Optional[Iterable[_T]] = None) -> None:
         # Mapping from object ID to weak reference
         self._refs: Dict[int, ReferenceType[_T]] = {}
         if data is not None:
