@@ -4,16 +4,13 @@ from typing import Any
 from brownie.convert.utils import build_function_selector, build_function_signature
 
 
-@functools.lru_cache(maxsize=None)
 class FunctionABI:
     """
-    A singleton class to hold function ABI information.
+    A class to hold function ABI information.
 
     This class uses the lru_cache decorator to ensure only one instance is created
     for each unique set of ABI parameters, optimizing memory usage and performance.
     """
-
-    __slots__ = "abi", "input_sig", "signature"
 
     def __init__(self, **abi: Any):
         """
@@ -40,3 +37,14 @@ class FunctionABI:
         The function selector (4-byte signature) of the function.
         This is used in Ethereum transactions to identify which function to call.
         """
+
+    @functools.lru_cache(maxsize=None)
+    @classmethod
+    def singleton(cls, **abi: Any) -> "FunctionABI":
+        """
+        Get a singleton FunctionABI to hold function ABI information.
+
+        This class uses the lru_cache decorator to ensure only one instance is created
+        for each unique set of ABI parameters, optimizing memory usage and performance.
+        """
+        return FunctionABI(**abi)
