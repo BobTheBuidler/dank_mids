@@ -37,14 +37,6 @@ dank\_mids.controller module
    :undoc-members:
    :show-inheritance:
 
-dank\_mids.controller\_\_mypyc module
--------------------------------------
-
-.. automodule:: dank_mids.controller__mypyc
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 dank\_mids.eth module
 ---------------------
 
