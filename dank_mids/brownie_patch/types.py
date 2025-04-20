@@ -90,7 +90,7 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ign
         self.natspec.update(natspec)
 
 
-DankContractMethod = Union[DankContractCall, DankContractTx, DankOverloadedMethod]
+DankContractMethod = Union[DankContractCall, DankContractTx, DankOverloadedMethod]  # type: ignore [type-arg]
 """
 Alias for `ContractMethod` objects with async support via an additional `coroutine` method.
 
