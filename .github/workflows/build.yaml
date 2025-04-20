@@ -27,7 +27,7 @@ jobs:
       run: pip install mypy[mypyc] types-requests
 
     - name: Run Mypyc
-      run: make mypyc
+      run: make mypyc-3-8
 
     - name: Check for changes
       id: changes

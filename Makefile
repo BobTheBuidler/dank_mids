@@ -17,3 +17,11 @@ mypyc:
 	mypyc dank_mids/brownie_patch/overloaded.py
 	mypyc dank_mids/brownie_patch/types.py
 	mypyc dank_mids/helpers/_weaklist.py
+
+mypyc-3-8:
+	mypyc dank_mids/_uid.py
+	mypyc dank_mids/brownie_patch/__init__.py
+	mypyc dank_mids/brownie_patch/_abi.py
+	mypyc dank_mids/brownie_patch/call.py
+	mypyc dank_mids/brownie_patch/overloaded.py
+	mypyc dank_mids/brownie_patch/types.py
