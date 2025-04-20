@@ -1,0 +1,243 @@
+name: Build Mypyc
+
+on:
+  pull_request:
+    branches:
+      - master
+      
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mypyc-3-8:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}  # Check out the PR branch
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.8"
+
+    - name: Install Mypyc
+      run: pip install mypy[mypyc] types-requests
+
+    - name: Run Mypyc
+      run: make mypyc
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "changes_detected=true" >> $GITHUB_ENV
+        else
+          echo "changes_detected=false" >> $GITHUB_ENV
+        fi
+
+    - name: Commit changes
+      if: env.changes_detected == 'true'
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "chore: \`mypyc\` for python3.8"
+        git push
+
+        
+  mypyc-3-9:
+    needs: mypyc-3-8
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}  # Check out the PR branch
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - name: Install Mypyc
+      run: pip install mypy[mypyc] types-requests
+
+    - name: Run Mypyc
+      run: make mypyc
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "changes_detected=true" >> $GITHUB_ENV
+        else
+          echo "changes_detected=false" >> $GITHUB_ENV
+        fi
+
+    - name: Commit changes
+      if: env.changes_detected == 'true'
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "chore: \`mypyc\` for python3.9"
+        git push
+
+        
+  mypyc-3-10:
+    needs: [mypyc-3-8, mypyc-3-9]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}  # Check out the PR branch
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install Mypyc
+      run: pip install mypy[mypyc] types-requests
+
+    - name: Run Mypyc
+      run: make mypyc
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "changes_detected=true" >> $GITHUB_ENV
+        else
+          echo "changes_detected=false" >> $GITHUB_ENV
+        fi
+
+    - name: Commit changes
+      if: env.changes_detected == 'true'
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "chore: \`mypyc\` for python3.10"
+        git push
+
+        
+  mypyc-3-11:
+    needs: [mypyc-3-8, mypyc-3-9, mypyc-3-10]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}  # Check out the PR branch
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install Mypyc
+      run: pip install mypy[mypyc] types-requests
+
+    - name: Run Mypyc
+      run: make mypyc
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "changes_detected=true" >> $GITHUB_ENV
+        else
+          echo "changes_detected=false" >> $GITHUB_ENV
+        fi
+
+    - name: Commit changes
+      if: env.changes_detected == 'true'
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "chore: \`mypyc\` for python3.11"
+        git push
+
+        
+  mypyc-3-12:
+    needs: [mypyc-3-8, mypyc-3-9, mypyc-3-10, mypyc-3-11]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}  # Check out the PR branch
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+
+    - name: Install Mypyc
+      run: pip install mypy[mypyc] types-requests
+
+    - name: Run Mypyc
+      run: make mypyc
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "changes_detected=true" >> $GITHUB_ENV
+        else
+          echo "changes_detected=false" >> $GITHUB_ENV
+        fi
+
+    - name: Commit changes
+      if: env.changes_detected == 'true'
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "chore: \`mypyc\` for python3.12"
+        git push
+
+        
+  mypyc-3-13:
+    needs: [mypyc-3-8, mypyc-3-9, mypyc-3-10, mypyc-3-11, mypyc-3-12]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}  # Check out the PR branch
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.13"
+
+    - name: Install Mypyc
+      run: pip install mypy[mypyc] types-requests
+
+    - name: Run Mypyc
+      run: make mypyc
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "changes_detected=true" >> $GITHUB_ENV
+        else
+          echo "changes_detected=false" >> $GITHUB_ENV
+        fi
+
+    - name: Commit changes
+      if: env.changes_detected == 'true'
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "chore: \`mypyc\` for python3.13"
+        git push
