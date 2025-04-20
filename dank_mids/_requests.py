@@ -71,7 +71,6 @@ from dank_mids._exceptions import (
     PayloadTooLarge,
     internal_err_types,
 )
-from dank_mids._uid import _AlertingRLock
 from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
 from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
@@ -90,6 +89,7 @@ from dank_mids.helpers._errors import (
 )
 from dank_mids.helpers._gather import first_completed
 from dank_mids.helpers._helpers import set_done
+from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._weaklist import WeakList
 from dank_mids.types import (
@@ -642,7 +642,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         _request_base_init(self, controller)
         self.calls = WeakList(calls)
         self._batcher = controller.batcher
-        self._lock = _AlertingRLock(name=self.__class__.__name__)
+        self._lock = AlertingRLock(name=self.__class__.__name__)
         self._done = _RequestEvent(self)
 
     def __len__(self) -> int:
