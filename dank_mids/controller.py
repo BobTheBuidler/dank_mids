@@ -20,7 +20,7 @@ from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
-from dank_mids._uid import UIDGenerator, _AlertingRLock
+from dank_mids._uid import UIDGenerator, AlertingRLock
 from dank_mids.helpers._codec import decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _make_hashable, _sync_w3_from_async
@@ -151,7 +151,7 @@ class DankMiddlewareController:
         """Unique identifier generator for RPC requests."""
 
         self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.pools_closed_lock: _AlertingRLock = _AlertingRLock(name="pools closed")
+        self.pools_closed_lock: AlertingRLock = AlertingRLock(name="pools closed")
 
         self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(
             lambda: Multicall(self)
@@ -271,10 +271,10 @@ class DankMiddlewareController:
             self._pending_eth_calls_clear()
             rpc_calls = self.pending_rpc_calls
         self._start_new_batch()
-        demo_logger.info(f"executing dank batch (current cid: {self.call_uid.latest})")  # type: ignore
+        demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)  # type: ignore
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
-        demo_logger.info(f"{batch} done")
+        demo_logger.info("%s done", batch)
 
     @property
     def queue_is_full(self) -> bool:
