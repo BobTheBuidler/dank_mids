@@ -95,5 +95,8 @@ def lru_cache_lite_nonull(func: Callable[__P, __T]) -> Callable[__P, __T]:
             cache[args] = retval
         return retval
 
-    lru_cache_lite_wrap.cache = cache
-    return lru_cache_lite_wrap
+    lru_cache_lite_wrap.cache = cache  # type: ignore [attr-defined]
+    return lru_cache_lite_wrap  # type: ignore [return-value]
+
+
+__all__ = ["lru_cache_lite", "lru_cache_lite_nonull"]
