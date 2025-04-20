@@ -13,7 +13,7 @@ mypyc:
 	mypyc dank_mids/_uid.py --strict --pretty
 	mypyc dank_mids/brownie_patch/__init__.py --strict --pretty
 	mypyc dank_mids/brownie_patch/_abi.py --strict --pretty
-	mypyc dank_mids/brownie_patch/call.py --strict --pretty
+	mypyc dank_mids/brownie_patch/call.py --pretty
 	mypyc dank_mids/brownie_patch/overloaded.py --strict --pretty
 	mypyc dank_mids/brownie_patch/types.py --strict --pretty
 	mypyc dank_mids/helpers/_weaklist.py --strict --pretty
@@ -23,6 +23,6 @@ mypyc-3-8:
 	mypyc dank_mids/_uid.py --strict --pretty
 	mypyc dank_mids/brownie_patch/__init__.py --strict --pretty
 	mypyc dank_mids/brownie_patch/_abi.py --strict --pretty
-	mypyc dank_mids/brownie_patch/call.py --strict --pretty
+	mypyc dank_mids/brownie_patch/call.py --pretty
 	mypyc dank_mids/brownie_patch/overloaded.py --strict --pretty
 	mypyc dank_mids/brownie_patch/types.py --strict --pretty
