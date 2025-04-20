@@ -6,7 +6,7 @@ from brownie.convert.utils import build_function_selector, build_function_signat
 
 class FunctionABI:
     """
-    A singleton class to hold function ABI information.
+    A class to hold function ABI information.
 
     This class uses the lru_cache decorator to ensure only one instance is created
     for each unique set of ABI parameters, optimizing memory usage and performance.
@@ -41,4 +41,10 @@ class FunctionABI:
     @functools.lru_cache(maxsize=None)
     @classmethod
     def singleton(cls, **abi: Any) -> "FunctionABI":
+        """
+        Get a singleton FunctionABI to hold function ABI information.
+
+        This class uses the lru_cache decorator to ensure only one instance is created
+        for each unique set of ABI parameters, optimizing memory usage and performance.
+        """
         return FunctionABI(**abi)
