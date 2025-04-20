@@ -53,6 +53,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.ENVIRONMENT_VARIABLES">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.brownie_patch__mypyc">dank_mids.brownie_patch__mypyc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.constants">dank_mids.constants module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.controller">dank_mids.controller module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.eth">dank_mids.eth module</a></li>
@@ -103,115 +104,37 @@
 <span id="dank-mids-brownie-patch-call-module"></span><h2>dank_mids.brownie_patch.call module<a class="headerlink" href="#module-dank_mids.brownie_patch.call" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.call.decode">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.decode" title="Link to this definition"></a></dt>
-<dd><p>A lambda function that decodes output data for contract calls.</p>
-<p>This function uses the Brownie decoder process pool (BROWNIE_DECODER_PROCESSES) to run the
-synchronous function <code class="xref py py-func docutils literal notranslate"><span class="pre">__decode_output()</span></code> asynchronously.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> – The contract method instance.</p></li>
-<li><p><strong>data</strong> – The raw byte data returned from a contract call.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decoded</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="n">contract_call_instance</span><span class="p">,</span> <span class="n">output_data</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># decoded now holds the parsed return value from the contract call.</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">__decode_output()</span></code></p>
-</div>
-</dd></dl>
+<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.decode" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.call.decode_output">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">decode_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.decode_output" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>call</strong> (<a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.20.3)"><em>ContractCall</em></a>)</p></li>
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.13)"><em>bytes</em></a>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a></p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">decode_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.decode_output" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.call.encode">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.encode" title="Link to this definition"></a></dt>
-<dd><p>A lambda function that encodes input data for contract calls.</p>
-<p>This function uses the Brownie encoder process pool (BROWNIE_ENCODER_PROCESSES) to run the
-synchronous function <code class="xref py py-func docutils literal notranslate"><span class="pre">__encode_input()</span></code> in a separate process asynchronously.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> – The contract method instance.</p></li>
-<li><p><strong>*args</strong> – The arguments to be encoded.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">encoded</span> <span class="o">=</span> <span class="n">encode</span><span class="p">(</span><span class="n">contract_call_instance</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># encoded is a hex string that represents the ABI-encoded function call.</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">__encode_input()</span></code></p>
-</div>
-</dd></dl>
+<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.encode" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.call.encode_input">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">len_inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_request_data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.encode_input" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>call</strong> (<a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.20.3)"><em>ContractCall</em></a>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>HexStr</em></p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">encode_input</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.encode_input" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.call.format_input_but_cache_checksums">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">format_input_but_cache_checksums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.format_input_but_cache_checksums" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><em>Dict</em></a>)</p></li>
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><em>List</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><em>Tuple</em></a>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><em>List</em></a></p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">format_input_but_cache_checksums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.format_input_but_cache_checksums" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.call.format_output_but_cache_checksums">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">format_output_but_cache_checksums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.format_output_but_cache_checksums" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>abi</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>)</p></li>
-<li><p><strong>outputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><em>List</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><em>Tuple</em></a>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-convert.html#brownie.convert.datatypes.ReturnValue" title="(in Brownie v1.20.3)"><em>ReturnValue</em></a></p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.call.</span></span><span class="sig-name descname"><span class="pre">format_output_but_cache_checksums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.call.format_output_but_cache_checksums" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
+</section>
+<section id="module-dank_mids.brownie_patch.call__mypyc">
+<span id="dank-mids-brownie-patch-call-mypyc-module"></span><h2>dank_mids.brownie_patch.call__mypyc module<a class="headerlink" href="#module-dank_mids.brownie_patch.call__mypyc" title="Link to this heading"></a></h2>
 </section>
 <section id="module-dank_mids.brownie_patch.contract">
 <span id="dank-mids-brownie-patch-contract-module"></span><h2>dank_mids.brownie_patch.contract module<a class="headerlink" href="#module-dank_mids.brownie_patch.contract" title="Link to this heading"></a></h2>
@@ -516,16 +439,15 @@ object in future sessions.</p>
 <section id="module-dank_mids.brownie_patch.overloaded">
 <span id="dank-mids-brownie-patch-overloaded-module"></span><h2>dank_mids.brownie_patch.overloaded module<a class="headerlink" href="#module-dank_mids.brownie_patch.overloaded" title="Link to this heading"></a></h2>
 </section>
+<section id="module-dank_mids.brownie_patch.overloaded__mypyc">
+<span id="dank-mids-brownie-patch-overloaded-mypyc-module"></span><h2>dank_mids.brownie_patch.overloaded__mypyc module<a class="headerlink" href="#module-dank_mids.brownie_patch.overloaded__mypyc" title="Link to this heading"></a></h2>
+</section>
 <section id="module-dank_mids.brownie_patch.types">
 <span id="dank-mids-brownie-patch-types-module"></span><h2>dank_mids.brownie_patch.types module<a class="headerlink" href="#module-dank_mids.brownie_patch.types" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.types.</span></span><span class="sig-name descname"><span class="pre">DankContractCall</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethod</span></code>, <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractCall</span></code></a></p>
-<p>A subclass of <cite>brownie.network.contract.ContractCall</cite> with async support via the <cite>coroutine</cite> method.</p>
-<p>This class uses less memory than a typical <cite>ContractTx</cite> by employing the <cite>__slots__</cite> functionality alongside
-the <cite>FunctionABI</cite> singleton to manage the function ABI and related logic.</p>
-<p>You can await an instance of this class directly to call the contract method without arguments at the latest block.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractCall.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractCall.__call__" title="Link to this definition"></a></dt>
@@ -762,10 +684,6 @@ which is used to identify the function in transactions.</p>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.types.</span></span><span class="sig-name descname"><span class="pre">DankContractTx</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethod</span></code>, <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractTx" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractTx</span></code></a></p>
-<p>A subclass of <cite>brownie.network.contract.ContractTx</cite> with async support via the <cite>coroutine</cite> method.</p>
-<p>This class is optimized for memory use compared to a standard <cite>ContractTx</cite>, by using <cite>__slots__</cite> in combination
-with the <cite>FunctionABI</cite> singleton to handle the function ABI and associated logic.</p>
-<p>Awaiting an instance of this class directly executes the contract method without arguments at the latest block.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractTx.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractTx.__call__" title="Link to this definition"></a></dt>
@@ -1001,10 +919,6 @@ which is used to identify the function in transactions.</p>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.types.</span></span><span class="sig-name descname"><span class="pre">DankOverloadedMethod</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.OverloadedMethod" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OverloadedMethod</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethodMixin</span></code></p>
-<p>A subclass of <cite>brownie.network.contract.OverloadedMethod</cite> with async support via the <cite>coroutine</cite> method.</p>
-<p>This class is designed to be memory efficient compared to a typical <cite>OverloadedMethod</cite>, employing <cite>__slots__</cite>
-and the <cite>FunctionABI</cite> singleton to manage the function ABI and related logic.</p>
-<p>You can await instances of this class directly to call the contract method without arguments at the latest block.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.__call__" title="Link to this definition"></a></dt>
@@ -1077,24 +991,23 @@ overrides for the context of the call.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.coroutine">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coroutine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.coroutine" title="Link to this definition"></a></dt>
-<dd><p>Asynchronously call the contract method using dank mids and await the result.</p>
+<span class="sig-name descname"><span class="pre">coroutine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.coroutine" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously call the contract method with the given arguments.</p>
+<p>This method is the core of the asynchronous functionality while using dank_mids with eth_brownie.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> – The arguments for the contract method.</p></li>
-<li><p><strong>block_identifier</strong> (<em>optional</em>) – Specifies the block at which the chain will be read. Defaults to the latest block if not provided.</p></li>
-<li><p><strong>decimals</strong> (<em>optional</em>) – If specified, the output will be <cite>result / 10 ** decimals</cite>.</p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>*args</strong> – Variable length argument list for the contract method.</p></li>
+<li><p><strong>block_identifier</strong> – The block number or identifier for the call.</p></li>
+<li><p><strong>decimals</strong> – The number of decimals by which to scale numeric results.</p></li>
+<li><p><strong>override</strong> – Optional parameters to override chain state in the call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Whatever the node sends back as the output for this contract method.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>_EVMType</em></p>
-</dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a generic method and should be implemented in subclasses.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1204,12 +1117,7 @@ dictionary of transaction properties as the last arg.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.methods">
-<span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall" title="dank_mids.brownie_patch.types.DankContractCall"><span class="pre">DankContractCall</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx" title="dank_mids.brownie_patch.types.DankContractTx"><span class="pre">DankContractTx</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.methods" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankOverloadedMethod.natspec">
-<span class="sig-name descname"><span class="pre">natspec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.natspec" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#dank_mids.brownie_patch.types.DankOverloadedMethod.methods" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -1222,22 +1130,9 @@ which is used to identify the function in transactions.</p>
 
 </dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.ContractMethod">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.types.</span></span><span class="sig-name descname"><span class="pre">ContractMethod</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.ContractMethod" title="Link to this definition"></a></dt>
-<dd><p>Type alias for Brownie contract methods.</p>
-<p>alias of <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractCall</span></code></a> | <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractTx" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractTx</span></code></a> | <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.OverloadedMethod" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OverloadedMethod</span></code></a></p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.types.DankContractMethod">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.types.</span></span><span class="sig-name descname"><span class="pre">DankContractMethod</span></span><a class="headerlink" href="#dank_mids.brownie_patch.types.DankContractMethod" title="Link to this definition"></a></dt>
-<dd><p>Alias for <cite>ContractMethod</cite> objects with async support via an additional <cite>coroutine</cite> method.</p>
-<p>These objects consume less memory than standard <cite>ContractMethod</cite> objects by utilizing the <cite>FunctionABI</cite> singleton to handle the function ABI and associated logic.</p>
-<p>Instances of this class can be awaited directly to call the contract method without arguments at the latest block.</p>
-<p>alias of <a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall" title="dank_mids.brownie_patch.types.DankContractCall"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankContractCall</span></code></a> | <a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx" title="dank_mids.brownie_patch.types.DankContractTx"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankContractTx</span></code></a> | <a class="reference internal" href="#dank_mids.brownie_patch.types.DankOverloadedMethod" title="dank_mids.brownie_patch.types.DankOverloadedMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">DankOverloadedMethod</span></code></a></p>
-</dd></dl>
-
+</section>
+<section id="module-dank_mids.brownie_patch.types__mypyc">
+<span id="dank-mids-brownie-patch-types-mypyc-module"></span><h2>dank_mids.brownie_patch.types__mypyc module<a class="headerlink" href="#module-dank_mids.brownie_patch.types__mypyc" title="Link to this heading"></a></h2>
 </section>
 <section id="module-dank_mids.brownie_patch">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dank_mids.brownie_patch" title="Link to this heading"></a></h2>
@@ -1483,10 +1378,6 @@ object in future sessions.</p>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractCall">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.</span></span><span class="sig-name descname"><span class="pre">DankContractCall</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractCall" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethod</span></code>, <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractCall" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractCall</span></code></a></p>
-<p>A subclass of <cite>brownie.network.contract.ContractCall</cite> with async support via the <cite>coroutine</cite> method.</p>
-<p>This class uses less memory than a typical <cite>ContractTx</cite> by employing the <cite>__slots__</cite> functionality alongside
-the <cite>FunctionABI</cite> singleton to manage the function ABI and related logic.</p>
-<p>You can await an instance of this class directly to call the contract method without arguments at the latest block.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractCall.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractCall.__call__" title="Link to this definition"></a></dt>
@@ -1723,10 +1614,6 @@ which is used to identify the function in transactions.</p>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.</span></span><span class="sig-name descname"><span class="pre">DankContractTx</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethod</span></code>, <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.ContractTx" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractTx</span></code></a></p>
-<p>A subclass of <cite>brownie.network.contract.ContractTx</cite> with async support via the <cite>coroutine</cite> method.</p>
-<p>This class is optimized for memory use compared to a standard <cite>ContractTx</cite>, by using <cite>__slots__</cite> in combination
-with the <cite>FunctionABI</cite> singleton to handle the function ABI and associated logic.</p>
-<p>Awaiting an instance of this class directly executes the contract method without arguments at the latest block.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankContractTx.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankContractTx.__call__" title="Link to this definition"></a></dt>
@@ -1962,10 +1849,6 @@ which is used to identify the function in transactions.</p>
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.</span></span><span class="sig-name descname"><span class="pre">DankOverloadedMethod</span></span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.OverloadedMethod" title="(in Brownie v1.20.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OverloadedMethod</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_DankMethodMixin</span></code></p>
-<p>A subclass of <cite>brownie.network.contract.OverloadedMethod</cite> with async support via the <cite>coroutine</cite> method.</p>
-<p>This class is designed to be memory efficient compared to a typical <cite>OverloadedMethod</cite>, employing <cite>__slots__</cite>
-and the <cite>FunctionABI</cite> singleton to manage the function ABI and related logic.</p>
-<p>You can await instances of this class directly to call the contract method without arguments at the latest block.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.__call__" title="Link to this definition"></a></dt>
@@ -2038,24 +1921,23 @@ overrides for the context of the call.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.coroutine">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coroutine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.coroutine" title="Link to this definition"></a></dt>
-<dd><p>Asynchronously call the contract method using dank mids and await the result.</p>
+<span class="sig-name descname"><span class="pre">coroutine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.coroutine" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously call the contract method with the given arguments.</p>
+<p>This method is the core of the asynchronous functionality while using dank_mids with eth_brownie.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> – The arguments for the contract method.</p></li>
-<li><p><strong>block_identifier</strong> (<em>optional</em>) – Specifies the block at which the chain will be read. Defaults to the latest block if not provided.</p></li>
-<li><p><strong>decimals</strong> (<em>optional</em>) – If specified, the output will be <cite>result / 10 ** decimals</cite>.</p></li>
-<li><p><strong>override</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>*args</strong> – Variable length argument list for the contract method.</p></li>
+<li><p><strong>block_identifier</strong> – The block number or identifier for the call.</p></li>
+<li><p><strong>decimals</strong> – The number of decimals by which to scale numeric results.</p></li>
+<li><p><strong>override</strong> – Optional parameters to override chain state in the call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Whatever the node sends back as the output for this contract method.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>_EVMType</em></p>
-</dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a generic method and should be implemented in subclasses.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2165,7 +2047,7 @@ dictionary of transaction properties as the last arg.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.brownie_patch.DankOverloadedMethod.methods">
-<span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractCall" title="dank_mids.brownie_patch.types.DankContractCall"><span class="pre">DankContractCall</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.brownie_patch.types.DankContractTx" title="dank_mids.brownie_patch.types.DankContractTx"><span class="pre">DankContractTx</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.methods" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#dank_mids.brownie_patch.DankOverloadedMethod.methods" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -2201,22 +2083,6 @@ which is used to identify the function in transactions.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#dank_mids.brownie_patch.contract.Contract" title="dank_mids.brownie_patch.contract.Contract"><em>Contract</em></a> | <a class="reference external" href="https://eth-brownie.readthedocs.io/en/stable/api-network.html#brownie.network.contract.Contract" title="(in Brownie v1.20.3)"><em>Contract</em></a></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.dank_eth">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.</span></span><span class="sig-name descname"><span class="pre">dank_eth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth" title="dank_mids.eth.DankEth"><span class="pre">DankEth</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;dank_mids.eth.DankEth</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#dank_mids.brownie_patch.dank_eth" title="Link to this definition"></a></dt>
-<dd><p>An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">DankEth</span></code>, providing access to Ethereum blockchain methods via <a class="reference internal" href="#dank_mids.brownie_patch.dank_web3" title="dank_mids.brownie_patch.dank_web3"><code class="xref py py-const docutils literal notranslate"><span class="pre">dank_web3</span></code></a>.
-This is initialized if Brownie is installed and connected when this module is loaded.
-If Brownie is not installed or not connected to an RPC, this instance will not be available.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.brownie_patch.dank_web3">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.</span></span><span class="sig-name descname"><span class="pre">dank_web3</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DankWeb3</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;web3.main.AsyncWeb3</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#dank_mids.brownie_patch.dank_web3" title="Link to this definition"></a></dt>
-<dd><p>An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">DankWeb3</span></code>, which is a wrapper around brownie’s standard Web3 object with Dank Middleware injected.
-This is initialized if Brownie is installed and connected when this module is loaded.
-If Brownie is not installed or not connected to an RPC, this instance will not be available.</p>
 </dd></dl>
 
 </section>

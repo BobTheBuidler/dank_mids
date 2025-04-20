@@ -12,6 +12,14 @@ dank\_mids.brownie\_patch.call module
    :undoc-members:
    :show-inheritance:
 
+dank\_mids.brownie\_patch.call\_\_mypyc module
+----------------------------------------------
+
+.. automodule:: dank_mids.brownie_patch.call__mypyc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dank\_mids.brownie\_patch.contract module
 -----------------------------------------
 
@@ -28,10 +36,26 @@ dank\_mids.brownie\_patch.overloaded module
    :undoc-members:
    :show-inheritance:
 
+dank\_mids.brownie\_patch.overloaded\_\_mypyc module
+----------------------------------------------------
+
+.. automodule:: dank_mids.brownie_patch.overloaded__mypyc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dank\_mids.brownie\_patch.types module
 --------------------------------------
 
 .. automodule:: dank_mids.brownie_patch.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dank\_mids.brownie\_patch.types\_\_mypyc module
+-----------------------------------------------
+
+.. automodule:: dank_mids.brownie_patch.types__mypyc
    :members:
    :undoc-members:
    :show-inheritance:
