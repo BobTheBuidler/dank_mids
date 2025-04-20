@@ -1,15 +1,18 @@
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, TypeVar, Union
 
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from brownie.typing import AccountsType
 
 from dank_mids.brownie_patch._method import _DankMethod, _DankMethodMixin, _EVMType
 
+
+_T = TypeVar("_T")
+
 ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
 """Type alias for Brownie contract methods."""
 
 
-class DankContractCall(_DankMethod, ContractCall):
+class DankContractCall(_DankMethod, ContractCall):  # type: ignore [misc]
     """
     A subclass of `brownie.network.contract.ContractCall` with async support via the `coroutine` method.
 
@@ -20,7 +23,7 @@ class DankContractCall(_DankMethod, ContractCall):
     """
 
 
-class DankContractTx(_DankMethod, ContractTx):
+class DankContractTx(_DankMethod, ContractTx):  # type: ignore [misc]
     """
     A subclass of `brownie.network.contract.ContractTx` with async support via the `coroutine` method.
 
@@ -35,7 +38,7 @@ _NonOverloaded = Union[DankContractCall, DankContractTx]
 """Type alias for non-overloaded Dank contract methods."""
 
 
-class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
+class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ignore [misc]
     """
     A subclass of `brownie.network.contract.OverloadedMethod` with async support via the `coroutine` method.
 
@@ -70,7 +73,7 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
             *args, block_identifier=block_identifier, decimals=decimals, override=override
         )
 
-    def _add_fn(self, abi: Dict, natspec: Dict) -> None:
+    def _add_fn(self, abi: Dict, natspec: Dict) -> None:  # type: ignore [type-arg]
         """
         Add a function to the overloaded method.
 
@@ -87,7 +90,7 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
         self.natspec.update(natspec)
 
 
-DankContractMethod = Union[DankContractCall, DankContractTx, DankOverloadedMethod]
+DankContractMethod = Union[DankContractCall, DankContractTx, DankOverloadedMethod]  # type: ignore [type-arg]
 """
 Alias for `ContractMethod` objects with async support via an additional `coroutine` method.
 
@@ -98,7 +101,7 @@ Instances of this class can be awaited directly to call the contract method with
 
 
 def _get_method_object(
-    address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Dict
+    address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Dict  # type: ignore [type-arg]
 ) -> Union["ContractCall", "ContractTx"]:
     """
     Retrieve an appropriate method object based on the ABI.

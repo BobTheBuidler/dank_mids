@@ -38,12 +38,12 @@ def lru_cache_lite(func: Callable[__P, __T]) -> Callable[__P, __T]:
     cache_miss = object()
 
     @wraps(func)
-    def lru_cache_lite_wrap(*args: __P.args):  # type: ignore [valid-type]
+    def lru_cache_lite_wrap(*args: __P.args) -> __T:  # type: ignore [valid-type]
         retval = cache.get(args, cache_miss)
         if retval is cache_miss:
             retval = func(*args)  # type: ignore [call-arg]
             cache[args] = retval
-        return retval
+        return retval  # type: ignore [return-value]
 
     lru_cache_lite_wrap.cache = cache  # type: ignore [attr-defined]
     return lru_cache_lite_wrap  # type: ignore [return-value]
@@ -86,7 +86,7 @@ def lru_cache_lite_nonull(func: Callable[__P, __T]) -> Callable[__P, __T]:
     cache: Dict[__P.args, __T] = {}  # type: ignore [valid-type]
 
     @wraps(func)
-    def lru_cache_lite_wrap(*args: __P.args):  # type: ignore [valid-type]
+    def lru_cache_lite_wrap(*args: __P.args) -> __T:  # type: ignore [valid-type]
         retval = cache.get(args)
         if retval is None:
             retval = func(*args)  # type: ignore [call-arg]
