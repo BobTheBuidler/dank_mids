@@ -34,20 +34,19 @@ def lru_cache_lite(func: Callable[__P, __T]) -> Callable[__P, __T]:
         - `functools.lru_cache <https://docs.python.org/3/library/functools.html#functools.lru_cache>`_
         - :func:`~dank_mids.lru_cache_lite_nonull` for a variant using ``None`` as the cache-miss marker.
     """
-    cache: Dict[__P.args, __T] = {}
+    cache: Dict[__P.args, __T] = {}  # type: ignore [valid-type]
     cache_miss = object()
-    cache_get = cache.get
 
     @wraps(func)
-    def lru_cache_lite_wrap(*args: __P.args):
-        retval = cache_get(args, cache_miss)
+    def lru_cache_lite_wrap(*args: __P.args):  # type: ignore [valid-type]
+        retval = cache.get(args, cache_miss)
         if retval is cache_miss:
-            retval = func(*args)
+            retval = func(*args)  # type: ignore [call-arg]
             cache[args] = retval
         return retval
 
-    lru_cache_lite_wrap.cache = cache
-    return lru_cache_lite_wrap
+    lru_cache_lite_wrap.cache = cache  # type: ignore [attr-defined]
+    return lru_cache_lite_wrap  # type: ignore [return-value]
 
 
 def lru_cache_lite_nonull(func: Callable[__P, __T]) -> Callable[__P, __T]:
@@ -84,14 +83,13 @@ def lru_cache_lite_nonull(func: Callable[__P, __T]) -> Callable[__P, __T]:
         - :func:`~dank_mids.lru_cache_lite` which uses a unique cache-miss marker.
         - `functools.lru_cache <https://docs.python.org/3/library/functools.html#functools.lru_cache>`_
     """
-    cache: Dict[__P.args, __T] = {}
-    cache_get = cache.get
+    cache: Dict[__P.args, __T] = {}  # type: ignore [valid-type]
 
     @wraps(func)
-    def lru_cache_lite_wrap(*args: __P.args):
-        retval = cache_get(args, None)
+    def lru_cache_lite_wrap(*args: __P.args):  # type: ignore [valid-type]
+        retval = cache.get(args)
         if retval is None:
-            retval = func(*args)
+            retval = func(*args)  # type: ignore [call-arg]
             cache[args] = retval
         return retval
 
