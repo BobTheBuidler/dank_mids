@@ -11,3 +11,4 @@ docs:
 
 mypyc:
 	mypyc dank_mids/_uid.py
+	mypyc dank_mids/helpers/_weaklist.py

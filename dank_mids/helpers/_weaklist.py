@@ -1,18 +1,16 @@
-from typing import TYPE_CHECKING, Generic, Iterable, Iterator, TypeVar
-from weakref import ref
+from typing import Any, Dict, Generic, Iterable, Iterator, TypeVar
+from weakref import ReferenceType, ref
 
-if TYPE_CHECKING:
-    from dank_mids._requests import _Request
-else:
-    _Request = TypeVar("_Request")
 
+__T = TypeVar("__T")
 
 _get_obj_from_ref = ref.__call__
 
 
-class WeakList(Generic[_Request]):
+class WeakList(Generic[__T]):
     def __init__(self, data=None):
-        self._refs = {}  # Mapping from object ID to weak reference
+        # Mapping from object ID to weak reference
+        self._refs: Dict[int, ReferenceType[__T]] = {}
         if data is not None:
             self.extend(data)
 
@@ -26,31 +24,31 @@ class WeakList(Generic[_Request]):
     def __bool__(self) -> bool:
         return bool(self._refs)
 
-    def __contains__(self, item: _Request) -> bool:
+    def __contains__(self, item: __T) -> bool:
         ref = self._refs.get(id(item))
         return False if ref is None else ref() is item
 
-    def __iter__(self) -> Iterator[_Request]:
-        for obj in map(_get_obj_from_ref, self._refs.values()):
+    def __iter__(self) -> Iterator[__T]:
+        refs = (r for r in self._refs.values() if r is not None)
+        for obj in map(_get_obj_from_ref, refs):
             if obj is not None:
                 yield obj
 
-    def append(self, item: _Request) -> None:
+    def append(self, item: __T) -> None:
         # Keep a weak reference with a callback for when the item is collected
         self._refs[id(item)] = ref(item, self._gc_callback)
 
-    def extend(self, items: Iterable[_Request]) -> None:
+    def extend(self, items: Iterable[__T]) -> None:
         callback = self._gc_callback
         self._refs.update((id(obj), ref(obj, callback)) for obj in items)
 
-    def remove(self, item: _Request) -> None:
+    def remove(self, item: __T) -> None:
         obj_id = id(item)
         ref = self._refs.get(obj_id)
-        if ref is not None and ref() is item:
-            del self._refs[obj_id]
-        else:
+        if ref is None or ref() is not item:
             raise ValueError("list.remove(x): x not in list")
+        del self._refs[obj_id]
 
-    def _gc_callback(self, item: _Request) -> None:
+    def _gc_callback(self, item: Any) -> None:
         # Callback when a weakly-referenced object is garbage collected
         self._refs.pop(id(item), None)  # Safely remove the item if it exists
