@@ -2,15 +2,15 @@ from typing import Any, Dict, Generic, Iterable, Iterator, TypeVar
 from weakref import ReferenceType, ref
 
 
-__T = TypeVar("__T")
+_T = TypeVar("_T")
 
 _get_obj_from_ref = ref.__call__
 
 
-class WeakList(Generic[__T]):
+class WeakList(Generic[_T]):
     def __init__(self, data=None):
         # Mapping from object ID to weak reference
-        self._refs: Dict[int, ReferenceType[__T]] = {}
+        self._refs: Dict[int, ReferenceType[_T]] = {}
         if data is not None:
             self.extend(data)
 
@@ -24,25 +24,25 @@ class WeakList(Generic[__T]):
     def __bool__(self) -> bool:
         return bool(self._refs)
 
-    def __contains__(self, item: __T) -> bool:
+    def __contains__(self, item: _T) -> bool:
         ref = self._refs.get(id(item))
         return False if ref is None else ref() is item
 
-    def __iter__(self) -> Iterator[__T]:
+    def __iter__(self) -> Iterator[_T]:
         refs = (r for r in self._refs.values() if r is not None)
         for obj in map(_get_obj_from_ref, refs):
             if obj is not None:
                 yield obj
 
-    def append(self, item: __T) -> None:
+    def append(self, item: _T) -> None:
         # Keep a weak reference with a callback for when the item is collected
         self._refs[id(item)] = ref(item, self._gc_callback)
 
-    def extend(self, items: Iterable[__T]) -> None:
+    def extend(self, items: Iterable[_T]) -> None:
         callback = self._gc_callback
         self._refs.update((id(obj), ref(obj, callback)) for obj in items)
 
-    def remove(self, item: __T) -> None:
+    def remove(self, item: _T) -> None:
         obj_id = id(item)
         ref = self._refs.get(obj_id)
         if ref is None or ref() is not item:
