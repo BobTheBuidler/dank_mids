@@ -130,23 +130,8 @@ class _DankMethodMixin(Generic[_EVMType]):
     def _input_sig(self) -> str:
         return self._abi.input_sig
 
-    __slots__ = (
-        "_address",
-        "_abi",
-        "_name",
-        "_owner",
-        "natspec",
-        "_call",
-        "_len_inputs",
-        "_encode_input",
-        "_prep_request_data",
-        "_skip_decoder_proc_pool",
-    )
-
 
 class _DankMethod(_DankMethodMixin):
-    __slots__ = "_address", "_abi", "_name", "_owner", "natspec", "_encode_input", "_decode_output"
-
     def __init__(
         self,
         address: str,
@@ -202,9 +187,6 @@ class _DankMethod(_DankMethodMixin):
         encode_input_coro = self._encode_input(
             self, self._len_inputs, self._prep_request_data, *args
         )
-
-        # The coroutine is holding a reference for as long as it needs, we can release it here
-        del args
 
         async with ENVS.BROWNIE_ENCODER_SEMAPHORE[block_identifier]:  # type: ignore [attr-defined,index]
             output_coro = self._call(

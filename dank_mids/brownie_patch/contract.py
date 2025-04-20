@@ -234,7 +234,7 @@ class Contract(brownie.Contract):
 
             # special logic to handle function overloading
             elif overloaded is True:
-                overloaded = DankOverloadedMethod(self.address, full_name, self._owner)
+                overloaded = DankOverloadedMethod(self.address, full_name, self._owner)  # type: ignore [call-arg]
 
             overloaded._add_fn(abi, natspec)
 

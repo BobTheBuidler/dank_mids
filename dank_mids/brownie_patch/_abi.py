@@ -13,8 +13,6 @@ class FunctionABI:
     for each unique set of ABI parameters, optimizing memory usage and performance.
     """
 
-    __slots__ = "abi", "input_sig", "signature"
-
     def __init__(self, **abi: Any):
         """
         Initialize a FunctionABI instance with the given ABI information.

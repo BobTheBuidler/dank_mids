@@ -46,7 +46,6 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin):
     """
 
     methods: Dict[Tuple[str, ...], _NonOverloaded]
-    __slots__ = "_address", "_name", "_owner", "methods", "natspec"
 
     async def coroutine(
         self,
