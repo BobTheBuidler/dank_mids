@@ -118,7 +118,7 @@ typedef struct {
     CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *_call;
-    PyObject *_len_inputs;
+    CPyTagged _len_inputs;
     PyObject *_get_request_data;
     PyObject *_args;
     PyObject *_type;
@@ -274,7 +274,7 @@ struct export_table_dank_mids___brownie_patch___call {
     PyObject *(*CPyDef_encode_input_gen___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
     PyObject *(*CPyDef_encode_input_gen___close)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_encode_input_gen_____await__)(PyObject *cpy_r___mypyc_self__);
-    PyObject *(*CPyDef_encode_input)(PyObject *cpy_r_call, PyObject *cpy_r_len_inputs, PyObject *cpy_r_get_request_data, PyObject *cpy_r_args);
+    PyObject *(*CPyDef_encode_input)(PyObject *cpy_r_call, CPyTagged cpy_r_len_inputs, PyObject *cpy_r_get_request_data, PyObject *cpy_r_args);
     PyObject *(*CPyDef_decode_output_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
     PyObject *(*CPyDef_decode_output_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_decode_output_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -293,7 +293,7 @@ struct export_table_dank_mids___brownie_patch___call {
     PyObject *(*CPyDef__request_data_no_args)(PyObject *cpy_r_call);
     PyObject *(*CPyDef___encode_input)(PyObject *cpy_r_abi, PyObject *cpy_r_signature, PyObject *cpy_r_args);
     PyObject *(*CPyDef___decode_output)(PyObject *cpy_r_hexstr, PyObject *cpy_r_abi);
-    PyObject *(*CPyDef___validate_output)(PyObject *cpy_r_abi, PyObject *cpy_r_hexstr);
+    char (*CPyDef___validate_output)(PyObject *cpy_r_abi, PyObject *cpy_r_hexstr);
     PyObject *(*CPyDef_format_input_but_cache_checksums)(PyObject *cpy_r_abi, PyObject *cpy_r_inputs);
     PyObject *(*CPyDef_format_output_but_cache_checksums)(PyObject *cpy_r_abi, PyObject *cpy_r_outputs);
     PyObject *(*CPyDef__format_tuple_but_cache_checksums)(PyObject *cpy_r_abi_types, PyObject *cpy_r_values);

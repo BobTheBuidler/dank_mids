@@ -123,7 +123,7 @@ extern PyObject *CPyDef_encode_input_gen___close(PyObject *cpy_r___mypyc_self__)
 extern PyObject *CPyPy_encode_input_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_encode_input_gen_____await__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_encode_input_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_encode_input(PyObject *cpy_r_call, PyObject *cpy_r_len_inputs, PyObject *cpy_r_get_request_data, PyObject *cpy_r_args);
+extern PyObject *CPyDef_encode_input(PyObject *cpy_r_call, CPyTagged cpy_r_len_inputs, PyObject *cpy_r_get_request_data, PyObject *cpy_r_args);
 extern PyObject *CPyPy_encode_input(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_decode_output_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
 extern PyObject *CPyPy_decode_output_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
@@ -161,7 +161,7 @@ extern PyObject *CPyDef___encode_input(PyObject *cpy_r_abi, PyObject *cpy_r_sign
 extern PyObject *CPyPy___encode_input(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef___decode_output(PyObject *cpy_r_hexstr, PyObject *cpy_r_abi);
 extern PyObject *CPyPy___decode_output(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef___validate_output(PyObject *cpy_r_abi, PyObject *cpy_r_hexstr);
+extern char CPyDef___validate_output(PyObject *cpy_r_abi, PyObject *cpy_r_hexstr);
 extern PyObject *CPyPy___validate_output(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_format_input_but_cache_checksums(PyObject *cpy_r_abi, PyObject *cpy_r_inputs);
 extern PyObject *CPyPy_format_input_but_cache_checksums(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
