@@ -22,7 +22,7 @@ __T = TypeVar("__T")
 
 MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
 
-DecodedMulticall = Tuple[int, int, List[Tuple["Success", bytes]]]
+DecodedMulticall = Tuple[int, int, Tuple[Tuple["Success", bytes], ...]]
 MulticallDecoder = Callable[..., DecodedMulticall]
 
 
@@ -126,8 +126,4 @@ def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
         e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
         return e
     else:
-        return list(map(__get_bytes, decoded))
-
-
-def __get_bytes(tup: Tuple[Any, __T]) -> __T:
-    return tup[1]
+        return [tup[1] for tup in decoded]
