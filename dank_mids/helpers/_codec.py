@@ -20,6 +20,12 @@ from dank_mids.types import (
 __T = TypeVar("__T")
 
 
+MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
+
+DecodedMulticall = Tuple[int, int, List[Tuple["Success", bytes]]]
+MulticallDecoder = Callable[..., DecodedMulticall]
+
+
 def decode_raw(data: AnyStr) -> RawResponse:
     """
     Decode json-encoded bytes into a `msgspec.Raw` object.
@@ -71,8 +77,8 @@ def encode(obj: Any) -> bytes:
 
 # multicall specific stuff
 
-_mcall_encoder: Final[Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]] = (
-    default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+_mcall_encoder: Final[MulticallEncoder] = default_codec._registry.get_encoder(
+    "(bool,(address,bytes)[])"
 )
 _array_encoder: Final[DynamicArrayEncoder] = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
 _item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder
@@ -98,9 +104,10 @@ def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]
 _array_encoder.encode = __encode_new  # type: ignore [method-assign]
 _array_encoder.encode_elements = __encode_elements_new  # type: ignore [method-assign]
 
-_mcall_decoder: Final[Callable[..., Tuple[bool, bool, List[Tuple["Success", bytes]]]]] = (
-    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
-)
+
+_mcall_decoder: Final[MulticallDecoder] = default_codec._registry.get_decoder(
+    "(uint256,uint256,(bool,bytes)[])"
+).decode
 
 
 def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
@@ -113,11 +120,7 @@ Success = bool
 
 def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
     try:
-        decoded: List[Tuple[Success, bytes]] = _mcall_decoder(
-            ContextFramesBytesIO(data.decode_result("eth_call"))
-        )[
-            2
-        ]  # type: ignore [arg-type]
+        decoded = _mcall_decoder(ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
