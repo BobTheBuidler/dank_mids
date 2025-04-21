@@ -4,12 +4,9 @@ PyMODINIT_FUNC
 PyInit_call(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("dank_mids.brownie_patch.call__mypyc"))) return NULL;
-    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___brownie_patch___call");
+    if (!(tmp = PyImport_ImportModule("09f9aecb699d55c89e25__mypyc"))) return NULL;
     Py_DECREF(tmp);
-    if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "dank_mids.brownie_patch.call__mypyc.init_dank_mids___brownie_patch___call");
-    Py_DECREF(capsule);
+    void *init_func = PyCapsule_Import("09f9aecb699d55c89e25__mypyc.init_dank_mids___brownie_patch___call", 0);
     if (!init_func) {
         return NULL;
     }
