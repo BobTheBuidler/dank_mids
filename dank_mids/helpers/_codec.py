@@ -1,7 +1,8 @@
 from itertools import accumulate, chain
 from typing import Any, Callable, Iterable, List, Union, Tuple
 
-from eth_abi import abi, decoding
+from eth_abi.abi import default_codec
+from eth_abi.decoding import ContextFramesBytesIO
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
 from msgspec import DecodeError, Raw
 from msgspec.json import decode as json_decode
@@ -93,7 +94,7 @@ def encode(obj: Any) -> bytes:
 # multicall specific stuff
 
 _mcall_encoder: Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]  # TupleEncoder
-_mcall_encoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+_mcall_encoder = default_codec._registry.get_encoder("(bool,(address,bytes)[])")
 _mcall_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined]
 
 
@@ -122,7 +123,7 @@ def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]
 _array_encoder.encode = __encode_new  # type: ignore [method-assign]
 _array_encoder.encode_elements = __encode_elements_new  # type: ignore [method-assign]
 
-_mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
+_mcall_decoder = default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
 
 
 def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
@@ -137,7 +138,7 @@ __get_bytes = lambda tup: tup[1]
 def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
     try:
         decoded: List[Tuple[Success, bytes]] = _mcall_decoder(
-            decoding.ContextFramesBytesIO(data.decode_result("eth_call"))
+            ContextFramesBytesIO(data.decode_result("eth_call"))
         )[
             2
         ]  # type: ignore [arg-type]
