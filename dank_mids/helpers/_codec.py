@@ -43,7 +43,7 @@ def decode_raw(data: AnyStr) -> RawResponse:
         raise
 
 
-def decode_jsonrpc_batch(data: bytes) -> Union[PartialResponse, List[RawResponse]]:
+def decode_jsonrpc_batch(data: AnyStr) -> Union[PartialResponse, List[RawResponse]]:
     """
     Decode json-encoded bytes into a list of response structs, or a single error response struct if applicable.
 
