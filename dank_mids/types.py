@@ -378,6 +378,8 @@ class RawResponse:
         """Decode the wrapped :class:`Raw` object into a :class:`Response` or a :class:`PartialResponse`."""
         return better_decode(self._raw, type=PartialResponse if partial else Response)
 
+    __slots__ = "_raw",
+
 
 MulticallChunk = Tuple[ChecksumAddress, HexBytes]
 
