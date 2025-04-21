@@ -238,9 +238,7 @@ def __decode_output(hexstr: BytesLike, abi: Dict[str, Any]) -> Any:
         types_list = get_type_strings(abi["outputs"])
         result = __eth_abi_decode(types_list, HexBytes(hexstr))
         result = format_output_but_cache_checksums(abi, result)
-        if len(result) == 1:
-            result = result[0]
-        return result
+        return result[0] if len(result) == 1 else result
     except Exception as e:
         return e
 
