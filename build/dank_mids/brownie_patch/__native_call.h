@@ -19,6 +19,13 @@ typedef struct tuple_T2OO {
 } tuple_T2OO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T1O
+#define MYPYC_DECLARED_tuple_T1O
+typedef struct tuple_T1O {
+    PyObject *f0;
+} tuple_T1O;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T5OOOOO
 #define MYPYC_DECLARED_tuple_T5OOOOO
 typedef struct tuple_T5OOOOO {
@@ -219,6 +226,9 @@ typedef struct {
 
 
 struct export_table_dank_mids___brownie_patch___call {
+    PyObject **CPyStatic_decode;
+    PyObject **CPyStatic___eth_abi_encode;
+    PyObject **CPyStatic___eth_abi_decode;
     PyTypeObject **CPyType___mypyc_lambda__0_obj;
     PyObject *(*CPyDef___mypyc_lambda__0_obj)(void);
     PyTypeObject **CPyType___mypyc_lambda__1_obj;

@@ -3,7 +3,7 @@ from decimal import Decimal
 from logging import getLogger
 from pickle import PicklingError
 from types import MethodType
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Final, List, NewType, Optional, Sequence, Tuple, Union
 
 import brownie.convert.normalize
 import brownie.network.contract
@@ -42,6 +42,10 @@ from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
 
 
+TypeStr = NewType("TypeStr", str)
+TypeStrList = List[TypeStr]
+
+
 logger = getLogger(__name__)
 
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
@@ -63,7 +67,7 @@ See Also:
     :func:`__encode_input`
 """
 
-decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
+decode: Final[Callable[[Any, bytes], Any]] = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 """
 A lambda function that decodes output data for contract calls.
 
@@ -199,8 +203,12 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
 
 
 # These methods were renamed in eth-abi 4.0.0
-__eth_abi_encode = eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
-__eth_abi_decode = eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+__eth_abi_encode: Final[Callable[[TypeStrList, List[Any]], HexStr]] = (
+    eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
+)
+__eth_abi_decode: Final[Callable[[TypeStrList, HexBytes], Tuple[Any, ...]]] = (
+    eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+)
 
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Any) -> Union[HexStr, Exception]:
