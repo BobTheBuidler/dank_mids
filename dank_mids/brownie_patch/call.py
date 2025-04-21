@@ -3,7 +3,7 @@ from decimal import Decimal
 from logging import getLogger
 from pickle import PicklingError
 from types import MethodType
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Final, List, NewType, Optional, Sequence, Tuple, Union
 
 import brownie.convert.normalize
 import brownie.network.contract
@@ -33,6 +33,7 @@ from evmspec.data import Address
 from hexbytes import HexBytes
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
+from typing_extensions import Self
 from web3.types import BlockIdentifier
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
@@ -40,6 +41,10 @@ from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.exceptions import Revert
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
+
+
+TypeStr = NewType("TypeStr", str)
+TypeStrList = List[TypeStr]
 
 
 logger = getLogger(__name__)
@@ -63,7 +68,7 @@ See Also:
     :func:`__encode_input`
 """
 
-decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
+decode: Final[Callable[[Any, bytes], Any]] = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 """
 A lambda function that decodes output data for contract calls.
 
@@ -103,7 +108,7 @@ def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
 
 
 @lru_cache_lite_nonull
-def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable:
+def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable:  # type: ignore [type-arg]
     if ENVS.OPERATION_MODE.application or len_inputs:  # type: ignore [attr-defined]
         get_request_data = encode
     else:
@@ -132,12 +137,12 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable:
     return coroutine
 
 
-def _call_no_args(self: ContractMethod):
+def _call_no_args(self: ContractMethod) -> Any:
     """Asynchronously call `self` with no arguments at the latest block."""
     return self.coroutine().__await__()
 
 
-async def encode_input(call: ContractCall, len_inputs, get_request_data, *args) -> HexStr:
+async def encode_input(call: ContractCall, len_inputs: int, get_request_data, *args) -> HexStr:  # type: ignore [no-untyped-def]
     # We will just assume containers contain a Contract object until we have a better way to handle this
     if any(isinstance(arg, Contract) or hasattr(arg, "__contains__") for arg in args):
         # We can't unpickle these because of the added `coroutine` method.
@@ -199,8 +204,12 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
 
 
 # These methods were renamed in eth-abi 4.0.0
-__eth_abi_encode = eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
-__eth_abi_decode = eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+__eth_abi_encode: Final[Callable[[TypeStrList, List[Any]], HexStr]] = (
+    eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
+)
+__eth_abi_decode: Final[Callable[[TypeStrList, HexBytes], Tuple[Any, ...]]] = (
+    eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+)
 
 
 def __encode_input(abi: Dict[str, Any], signature: str, *args: Any) -> Union[HexStr, Exception]:
@@ -237,7 +246,7 @@ def __decode_output(hexstr: BytesLike, abi: Dict[str, Any]) -> Any:
         return e
 
 
-def __validate_output(abi: Dict[str, Any], hexstr: BytesLike):
+def __validate_output(abi: Dict[str, Any], hexstr: BytesLike) -> None:
     try:
         selector = HexBytes(hexstr)[:4].hex()
         if selector == "0x08c379a0":
@@ -264,7 +273,7 @@ def __validate_output(abi: Dict[str, Any], hexstr: BytesLike):
 # NOTE: We do a little monkey patching to save cpu cycles on checksums
 
 
-def format_input_but_cache_checksums(abi: Dict, inputs: Union[List, Tuple]) -> List:
+def format_input_but_cache_checksums(abi: Dict, inputs: Union[List, Tuple]) -> List:  # type: ignore [type-arg]
     # Format contract inputs based on ABI types
     if len(inputs) and not len(abi["inputs"]):
         raise TypeError(f"{abi['name']} requires no arguments")
@@ -275,7 +284,7 @@ def format_input_but_cache_checksums(abi: Dict, inputs: Union[List, Tuple]) -> L
         raise type(e)(f"{abi['name']} {e}") from e
 
 
-def format_output_but_cache_checksums(abi: dict, outputs: Union[List, Tuple]) -> ReturnValue:
+def format_output_but_cache_checksums(abi: dict, outputs: Union[List, Tuple]) -> ReturnValue:  # type: ignore [type-arg]
     # Format contract outputs based on ABI types
     abi_types = _get_abi_types(abi["outputs"])
     result = _format_tuple_but_cache_checksums(abi_types, outputs)
@@ -287,8 +296,8 @@ brownie.network.contract.format_output = format_output_but_cache_checksums
 
 
 def _format_tuple_but_cache_checksums(
-    abi_types: Sequence[ABIType], values: Union[List, Tuple]
-) -> List:
+    abi_types: Sequence[ABIType], values: Union[List, Tuple]  # type: ignore [type-arg]
+) -> List:  # type: ignore [type-arg]
     result = []
     _check_array(values, len(abi_types))
     for type_, value in zip(abi_types, values):
@@ -304,7 +313,7 @@ def _format_tuple_but_cache_checksums(
     return result
 
 
-def _format_array_but_cache_checksums(abi_type: ABIType, values: Union[List, Tuple]) -> List:
+def _format_array_but_cache_checksums(abi_type: ABIType, values: Union[List, Tuple]) -> List:  # type: ignore [type-arg]
     _check_array(values, abi_type.arrlist[-1][0] if len(abi_type.arrlist[-1]) else None)
     item_type = abi_type.item_type
     if item_type.is_array:
