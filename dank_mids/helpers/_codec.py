@@ -138,7 +138,9 @@ def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
     try:
         decoded: List[Tuple[Success, bytes]] = _mcall_decoder(
             decoding.ContextFramesBytesIO(data.decode_result("eth_call"))
-        )[2]  # type: ignore [arg-type]
+        )[
+            2
+        ]  # type: ignore [arg-type]
     except Exception as e:
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)

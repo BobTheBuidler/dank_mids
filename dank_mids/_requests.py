@@ -730,6 +730,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
 _batch_init = _Batch.__init__
 
+
 @final
 class Multicall(_Batch[RPCResponse, eth_call]):
     method = "eth_call"
