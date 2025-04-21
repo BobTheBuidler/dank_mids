@@ -20,11 +20,6 @@ static PyObject *CPyDunder___get____mypyc_lambda__0_obj(PyObject *self, PyObject
     instance = instance ? instance : Py_None;
     return CPyDef___mypyc_lambda__0_obj_____get__(self, instance, owner);
 }
-PyMemberDef __mypyc_lambda__0_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *__mypyc_lambda__0_obj_setup(PyTypeObject *type);
 PyObject *CPyDef___mypyc_lambda__0_obj(void);
 
@@ -41,16 +36,14 @@ __mypyc_lambda__0_obj_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 __mypyc_lambda__0_obj_traverse(dank_mids___helpers____codec_____mypyc_lambda__0_objObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 __mypyc_lambda__0_obj_clear(dank_mids___helpers____codec_____mypyc_lambda__0_objObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -105,12 +98,9 @@ static PyTypeObject CPyType___mypyc_lambda__0_obj_template_ = {
     .tp_methods = __mypyc_lambda__0_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get____mypyc_lambda__0_obj,
-    .tp_members = __mypyc_lambda__0_obj_members,
-    .tp_basicsize = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType___mypyc_lambda__0_obj_template = &CPyType___mypyc_lambda__0_obj_template_;
 
