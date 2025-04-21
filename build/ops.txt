@@ -1,0 +1,1601 @@
+def decode_raw(data):
+    data :: object
+    r0 :: dict
+    r1 :: str
+    r2 :: object
+    r3 :: dict
+    r4 :: str
+    r5 :: object
+    r6 :: object[2]
+    r7 :: object_ptr
+    r8, r9 :: object
+    r10 :: dict
+    r11 :: str
+    r12 :: object
+    r13 :: object[1]
+    r14 :: object_ptr
+    r15 :: object
+    r16 :: tuple[object, object, object]
+    r17 :: dict
+    r18 :: str
+    r19 :: object
+    r20 :: bit
+    r21 :: object
+    r22 :: str
+    r23 :: object
+    r24 :: list
+    r25 :: object
+    r26 :: i32
+    r27 :: bit
+    r28 :: tuple
+    r29 :: str
+    r30 :: i32
+    r31, r32 :: bit
+    r33 :: object
+L0:
+L1:
+    r0 = dank_mids.helpers._codec.globals :: static
+    r1 = 'Raw'
+    r2 = CPyDict_GetItem(r0, r1)
+    if is_error(r2) goto L7 (error at decode_raw:40) else goto L2
+L2:
+    r3 = dank_mids.helpers._codec.globals :: static
+    r4 = 'json_decode'
+    r5 = CPyDict_GetItem(r3, r4)
+    if is_error(r5) goto L22 (error at decode_raw:40) else goto L3
+L3:
+    r6 = [data, r2]
+    r7 = load_address r6
+    r8 = ('type',)
+    r9 = _PyObject_Vectorcall(r5, r7, 1, r8)
+    dec_ref r5
+    if is_error(r9) goto L22 (error at decode_raw:40) else goto L4
+L4:
+    dec_ref r2
+    r10 = dank_mids.helpers._codec.globals :: static
+    r11 = 'RawResponse'
+    r12 = CPyDict_GetItem(r10, r11)
+    if is_error(r12) goto L23 (error at decode_raw:40) else goto L5
+L5:
+    r13 = [r9]
+    r14 = load_address r13
+    r15 = _PyObject_Vectorcall(r12, r14, 1, 0)
+    dec_ref r12
+    if is_error(r15) goto L23 (error at decode_raw:40) else goto L6
+L6:
+    dec_ref r9
+    return r15
+L7:
+    r16 = CPy_CatchError()
+    r17 = dank_mids.helpers._codec.globals :: static
+    r18 = 'DecodeError'
+    r19 = CPyDict_GetItem(r17, r18)
+    if is_error(r19) goto L19 (error at decode_raw:41) else goto L8
+L8:
+    r20 = CPy_ExceptionMatches(r19)
+    dec_ref r19
+    if r20 goto L9 else goto L17 :: bool
+L9:
+    r21 = CPy_GetExcValue()
+    r22 = 'args'
+    r23 = CPyObject_GetAttr(r21, r22)
+    if is_error(r23) goto L24 (error at decode_raw:42) else goto L10
+L10:
+    r24 = PyList_New(0)
+    if is_error(r24) goto L25 (error at decode_raw:42) else goto L11
+L11:
+    r25 = CPyList_Extend(r24, r23)
+    dec_ref r23
+    if is_error(r25) goto L26 (error at decode_raw:42) else goto L27
+L12:
+    r26 = PyList_Append(r24, data)
+    r27 = r26 >= 0 :: signed
+    if not r27 goto L26 (error at decode_raw:42) else goto L13 :: bool
+L13:
+    r28 = PyList_AsTuple(r24)
+    dec_ref r24
+    if is_error(r28) goto L24 (error at decode_raw:42) else goto L14
+L14:
+    r29 = 'args'
+    r30 = PyObject_SetAttr(r21, r29, r28)
+    dec_ref r21
+    dec_ref r28
+    r31 = r30 >= 0 :: signed
+    if not r31 goto L19 (error at decode_raw:42) else goto L15 :: bool
+L15:
+    CPy_Reraise()
+    if not 0 goto L19 else goto L28 :: bool
+L16:
+    unreachable
+L17:
+    CPy_Reraise()
+    if not 0 goto L19 else goto L29 :: bool
+L18:
+    unreachable
+L19:
+    CPy_RestoreExcInfo(r16)
+    dec_ref r16
+    r32 = CPy_KeepPropagating()
+    if not r32 goto L21 else goto L20 :: bool
+L20:
+    unreachable
+L21:
+    r33 = <error> :: object
+    return r33
+L22:
+    dec_ref r2
+    goto L7
+L23:
+    dec_ref r9
+    goto L7
+L24:
+    dec_ref r21
+    goto L19
+L25:
+    dec_ref r21
+    dec_ref r23
+    goto L19
+L26:
+    dec_ref r21
+    dec_ref r24
+    goto L19
+L27:
+    dec_ref r25
+    goto L12
+L28:
+    dec_ref r16
+    goto L16
+L29:
+    dec_ref r16
+    goto L18
+
+def decode_jsonrpc_batch(data):
+    data :: object
+    r0 :: dict
+    r1 :: str
+    r2 :: object
+    r3 :: dict
+    r4 :: str
+    r5 :: object
+    r6 :: object[2]
+    r7 :: object_ptr
+    r8, r9 :: object
+    r10 :: dict
+    r11 :: str
+    r12 :: object
+    r13 :: i32
+    r14 :: bit
+    r15 :: bool
+    r16 :: union[object, list]
+    r17 :: dict
+    r18 :: str
+    r19, r20 :: object
+    r21 :: str
+    r22 :: object
+    r23 :: object[2]
+    r24 :: object_ptr
+    r25 :: object
+    r26 :: list
+    r27 :: union[object, list]
+L0:
+    r0 = dank_mids.helpers._codec.globals :: static
+    r1 = 'JSONRPCBatchResponseRaw'
+    r2 = CPyDict_GetItem(r0, r1)
+    if is_error(r2) goto L13 (error at decode_jsonrpc_batch:56) else goto L1
+L1:
+    r3 = dank_mids.helpers._codec.globals :: static
+    r4 = 'json_decode'
+    r5 = CPyDict_GetItem(r3, r4)
+    if is_error(r5) goto L14 (error at decode_jsonrpc_batch:56) else goto L2
+L2:
+    r6 = [data, r2]
+    r7 = load_address r6
+    r8 = ('type',)
+    r9 = _PyObject_Vectorcall(r5, r7, 1, r8)
+    dec_ref r5
+    if is_error(r9) goto L14 (error at decode_jsonrpc_batch:56) else goto L3
+L3:
+    dec_ref r2
+    r10 = dank_mids.helpers._codec.globals :: static
+    r11 = 'PartialResponse'
+    r12 = CPyDict_GetItem(r10, r11)
+    if is_error(r12) goto L15 (error at decode_jsonrpc_batch:57) else goto L4
+L4:
+    r13 = PyObject_IsInstance(r9, r12)
+    dec_ref r12
+    r14 = r13 >= 0 :: signed
+    if not r14 goto L15 (error at decode_jsonrpc_batch:57) else goto L5 :: bool
+L5:
+    r15 = truncate r13: i32 to builtins.bool
+    if r15 goto L6 else goto L7 :: bool
+L6:
+    r16 = r9
+    goto L12
+L7:
+    r17 = dank_mids.helpers._codec.globals :: static
+    r18 = 'RawResponse'
+    r19 = CPyDict_GetItem(r17, r18)
+    if is_error(r19) goto L15 (error at decode_jsonrpc_batch:57) else goto L8
+L8:
+    r20 = builtins :: module
+    r21 = 'map'
+    r22 = CPyObject_GetAttr(r20, r21)
+    if is_error(r22) goto L16 (error at decode_jsonrpc_batch:57) else goto L9
+L9:
+    r23 = [r19, r9]
+    r24 = load_address r23
+    r25 = _PyObject_Vectorcall(r22, r24, 2, 0)
+    dec_ref r22
+    if is_error(r25) goto L16 (error at decode_jsonrpc_batch:57) else goto L10
+L10:
+    dec_ref r19
+    dec_ref r9
+    r26 = PySequence_List(r25)
+    dec_ref r25
+    if is_error(r26) goto L13 (error at decode_jsonrpc_batch:57) else goto L11
+L11:
+    r16 = r26
+L12:
+    return r16
+L13:
+    r27 = <error> :: union[object, list]
+    return r27
+L14:
+    dec_ref r2
+    goto L13
+L15:
+    dec_ref r9
+    goto L13
+L16:
+    dec_ref r9
+    dec_ref r19
+    goto L13
+
+def encode(obj):
+    obj :: object
+    r0 :: dict
+    r1 :: str
+    r2 :: object
+    r3 :: dict
+    r4 :: str
+    r5 :: object
+    r6 :: object[2]
+    r7 :: object_ptr
+    r8, r9 :: object
+    r10, r11 :: bytes
+L0:
+    r0 = dank_mids.helpers._codec.globals :: static
+    r1 = '_encode_hook'
+    r2 = CPyDict_GetItem(r0, r1)
+    if is_error(r2) goto L5 (error at encode:75) else goto L1
+L1:
+    r3 = dank_mids.helpers._codec.globals :: static
+    r4 = 'json_encode'
+    r5 = CPyDict_GetItem(r3, r4)
+    if is_error(r5) goto L6 (error at encode:75) else goto L2
+L2:
+    r6 = [obj, r2]
+    r7 = load_address r6
+    r8 = ('enc_hook',)
+    r9 = _PyObject_Vectorcall(r5, r7, 1, r8)
+    dec_ref r5
+    if is_error(r9) goto L6 (error at encode:75) else goto L3
+L3:
+    dec_ref r2
+    r10 = cast(bytes, r9)
+    if is_error(r10) goto L5 (error at encode:75) else goto L4
+L4:
+    return r10
+L5:
+    r11 = <error> :: bytes
+    return r11
+L6:
+    dec_ref r2
+    goto L5
+
+def __mypyc_lambda__0_obj.__get__(__mypyc_self__, instance, owner):
+    __mypyc_self__, instance, owner, r0 :: object
+    r1 :: bit
+    r2, r3 :: object
+L0:
+    r0 = load_address _Py_NoneStruct
+    r1 = instance == r0
+    if r1 goto L1 else goto L2 :: bool
+L1:
+    inc_ref __mypyc_self__
+    return __mypyc_self__
+L2:
+    r2 = PyMethod_New(__mypyc_self__, instance)
+    if is_error(r2) goto L4 else goto L3
+L3:
+    return r2
+L4:
+    r3 = <error> :: object
+    return r3
+
+def __mypyc_lambda__0_obj.__call__(__mypyc_self__, _):
+    __mypyc_self__ :: dank_mids.helpers._codec.__mypyc_lambda__0_obj
+    _, r0 :: object
+L0:
+    r0 = load_address _Py_EllipsisObject
+    inc_ref r0
+    return r0
+
+def __encode_new(values):
+    values :: object
+    r0 :: tuple[bytes, int]
+    r1, r2 :: bytes
+    r3, r4 :: int
+    r5 :: dict
+    r6 :: str
+    r7, r8 :: object
+    r9 :: object[1]
+    r10 :: object_ptr
+    r11, r12 :: object
+    r13, r14 :: bytes
+L0:
+    r0 = __encode_elements_new(values)
+    if is_error(r0) goto L6 (error at __encode_new:91) else goto L1
+L1:
+    r1 = borrow r0[0]
+    r2 = unborrow r1
+    r3 = borrow r0[1]
+    r4 = unborrow r3
+    r5 = dank_mids.helpers._codec.globals :: static
+    r6 = 'encode_uint_256'
+    r7 = CPyDict_GetItem(r5, r6)
+    if is_error(r7) goto L7 (error at __encode_new:92) else goto L2
+L2:
+    r8 = box(int, r4)
+    r9 = [r8]
+    r10 = load_address r9
+    r11 = _PyObject_Vectorcall(r7, r10, 1, 0)
+    dec_ref r7
+    if is_error(r11) goto L8 (error at __encode_new:92) else goto L3
+L3:
+    dec_ref r8
+    r12 = PyNumber_Add(r11, r2)
+    dec_ref r11
+    dec_ref r2
+    if is_error(r12) goto L6 (error at __encode_new:92) else goto L4
+L4:
+    r13 = cast(bytes, r12)
+    if is_error(r13) goto L6 (error at __encode_new:92) else goto L5
+L5:
+    return r13
+L6:
+    r14 = <error> :: bytes
+    return r14
+L7:
+    dec_ref r2
+    dec_ref r4 :: int
+    goto L6
+L8:
+    dec_ref r2
+    dec_ref r8
+    goto L6
+
+def __encode_elements_new(values):
+    values, r0 :: object
+    r1 :: bool
+    r2 :: object
+    r3 :: str
+    r4 :: object
+    r5 :: object[2]
+    r6 :: object_ptr
+    r7 :: object
+    r8 :: tuple
+    r9 :: ptr
+    r10 :: native_int
+    r11 :: short_int
+    count, r12 :: int
+    r13 :: tuple[int]
+    r14 :: object
+    r15 :: str
+    r16, r17 :: object
+    r18 :: tuple
+    r19 :: object
+    r20 :: str
+    r21 :: object
+    r22 :: object[2]
+    r23 :: object_ptr
+    r24 :: object
+    r25 :: dict
+    r26 :: str
+    r27 :: object
+    r28 :: object[1]
+    r29 :: object_ptr
+    r30 :: object
+    r31 :: dict
+    r32 :: str
+    r33, r34 :: object
+    r35 :: object[2]
+    r36 :: object_ptr
+    r37 :: object
+    r38 :: dict
+    r39 :: str
+    r40 :: object
+    r41 :: str
+    r42, r43, r44 :: object
+    r45 :: str
+    r46 :: object
+    r47 :: object[2]
+    r48 :: object_ptr
+    r49, r50 :: object
+    r51 :: str
+    r52 :: object
+    r53 :: object[2]
+    r54 :: object_ptr
+    r55 :: object
+    r56 :: bytes
+    r57 :: dict
+    r58 :: str
+    r59 :: object
+    r60 :: object[2]
+    r61 :: object_ptr
+    r62 :: object
+    r63 :: bytes
+    r64, r65 :: tuple[bytes, int]
+L0:
+    r0 = dank_mids.helpers._codec._item_encoder :: static
+    if is_error(r0) goto L1 else goto L3
+L1:
+    r1 = raise NameError('value for final name "_item_encoder" was not set')
+    if not r1 goto L25 (error at __encode_elements_new:96) else goto L2 :: bool
+L2:
+    unreachable
+L3:
+    r2 = builtins :: module
+    r3 = 'map'
+    r4 = CPyObject_GetAttr(r2, r3)
+    if is_error(r4) goto L25 (error at __encode_elements_new:96) else goto L4
+L4:
+    r5 = [r0, values]
+    r6 = load_address r5
+    r7 = _PyObject_Vectorcall(r4, r6, 2, 0)
+    dec_ref r4
+    if is_error(r7) goto L25 (error at __encode_elements_new:96) else goto L5
+L5:
+    r8 = PySequence_Tuple(r7)
+    dec_ref r7
+    if is_error(r8) goto L25 (error at __encode_elements_new:96) else goto L6
+L6:
+    r9 = get_element_ptr r8 ob_size :: PyVarObject
+    r10 = load_mem r9 :: native_int*
+    r11 = r10 << 1
+    count = r11
+    r12 = CPyTagged_Multiply(64, count)
+    r13 = (0)
+    r14 = builtins :: module
+    r15 = 'len'
+    r16 = CPyObject_GetAttr(r14, r15)
+    if is_error(r16) goto L26 (error at __encode_elements_new:99) else goto L7
+L7:
+    r17 = CPySequenceTuple_GetSlice(r8, 0, -2)
+    if is_error(r17) goto L27 (error at __encode_elements_new:99) else goto L8
+L8:
+    r18 = cast(tuple, r17)
+    if is_error(r18) goto L27 (error at __encode_elements_new:99) else goto L9
+L9:
+    r19 = builtins :: module
+    r20 = 'map'
+    r21 = CPyObject_GetAttr(r19, r20)
+    if is_error(r21) goto L28 (error at __encode_elements_new:99) else goto L10
+L10:
+    r22 = [r16, r18]
+    r23 = load_address r22
+    r24 = _PyObject_Vectorcall(r21, r23, 2, 0)
+    dec_ref r21
+    if is_error(r24) goto L28 (error at __encode_elements_new:99) else goto L11
+L11:
+    dec_ref r16
+    dec_ref r18
+    r25 = dank_mids.helpers._codec.globals :: static
+    r26 = 'accumulate'
+    r27 = CPyDict_GetItem(r25, r26)
+    if is_error(r27) goto L29 (error at __encode_elements_new:99) else goto L12
+L12:
+    r28 = [r24]
+    r29 = load_address r28
+    r30 = _PyObject_Vectorcall(r27, r29, 1, 0)
+    dec_ref r27
+    if is_error(r30) goto L29 (error at __encode_elements_new:99) else goto L13
+L13:
+    dec_ref r24
+    r31 = dank_mids.helpers._codec.globals :: static
+    r32 = 'chain'
+    r33 = CPyDict_GetItem(r31, r32)
+    if is_error(r33) goto L30 (error at __encode_elements_new:99) else goto L14
+L14:
+    r34 = box(tuple[int], r13)
+    r35 = [r34, r30]
+    r36 = load_address r35
+    r37 = _PyObject_Vectorcall(r33, r36, 2, 0)
+    dec_ref r33
+    if is_error(r37) goto L31 (error at __encode_elements_new:99) else goto L15
+L15:
+    dec_ref r34
+    dec_ref r30
+    r38 = dank_mids.helpers._codec.globals :: static
+    r39 = 'encode_uint_256'
+    r40 = CPyDict_GetItem(r38, r39)
+    if is_error(r40) goto L32 (error at __encode_elements_new:100) else goto L16
+L16:
+    r41 = '__add__'
+    r42 = box(int, r12)
+    r43 = CPyObject_GetAttr(r42, r41)
+    dec_ref r42
+    if is_error(r43) goto L33 (error at __encode_elements_new:100) else goto L17
+L17:
+    r44 = builtins :: module
+    r45 = 'map'
+    r46 = CPyObject_GetAttr(r44, r45)
+    if is_error(r46) goto L34 (error at __encode_elements_new:100) else goto L18
+L18:
+    r47 = [r43, r37]
+    r48 = load_address r47
+    r49 = _PyObject_Vectorcall(r46, r48, 2, 0)
+    dec_ref r46
+    if is_error(r49) goto L34 (error at __encode_elements_new:100) else goto L19
+L19:
+    dec_ref r43
+    dec_ref r37
+    r50 = builtins :: module
+    r51 = 'map'
+    r52 = CPyObject_GetAttr(r50, r51)
+    if is_error(r52) goto L35 (error at __encode_elements_new:100) else goto L20
+L20:
+    r53 = [r40, r49]
+    r54 = load_address r53
+    r55 = _PyObject_Vectorcall(r52, r54, 2, 0)
+    dec_ref r52
+    if is_error(r55) goto L35 (error at __encode_elements_new:100) else goto L21
+L21:
+    dec_ref r40
+    dec_ref r49
+    r56 = b''
+    r57 = dank_mids.helpers._codec.globals :: static
+    r58 = 'chain'
+    r59 = CPyDict_GetItem(r57, r58)
+    if is_error(r59) goto L36 (error at __encode_elements_new:101) else goto L22
+L22:
+    r60 = [r55, r8]
+    r61 = load_address r60
+    r62 = _PyObject_Vectorcall(r59, r61, 2, 0)
+    dec_ref r59
+    if is_error(r62) goto L36 (error at __encode_elements_new:101) else goto L23
+L23:
+    dec_ref r55
+    dec_ref r8
+    r63 = CPyBytes_Join(r56, r62)
+    dec_ref r62
+    if is_error(r63) goto L37 (error at __encode_elements_new:101) else goto L24
+L24:
+    r64 = (r63, count)
+    return r64
+L25:
+    r65 = <error> :: tuple[bytes, int]
+    return r65
+L26:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r12 :: int
+    dec_ref r13
+    goto L25
+L27:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r12 :: int
+    dec_ref r13
+    dec_ref r16
+    goto L25
+L28:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r12 :: int
+    dec_ref r13
+    dec_ref r16
+    dec_ref r18
+    goto L25
+L29:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r12 :: int
+    dec_ref r13
+    dec_ref r24
+    goto L25
+L30:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r12 :: int
+    dec_ref r13
+    dec_ref r30
+    goto L25
+L31:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r12 :: int
+    dec_ref r30
+    dec_ref r34
+    goto L25
+L32:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r12 :: int
+    dec_ref r37
+    goto L25
+L33:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r37
+    dec_ref r40
+    goto L25
+L34:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r37
+    dec_ref r40
+    dec_ref r43
+    goto L25
+L35:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r40
+    dec_ref r49
+    goto L25
+L36:
+    dec_ref r8
+    dec_ref count :: int
+    dec_ref r55
+    goto L25
+L37:
+    dec_ref count :: int
+    goto L25
+
+def mcall_encode(data):
+    data :: object
+    r0 :: tuple[bool, object]
+    r1 :: object
+    r2 :: bool
+    r3 :: object
+    r4 :: object[1]
+    r5 :: object_ptr
+    r6 :: object
+    r7, r8 :: bytes
+L0:
+    inc_ref data
+    r0 = (0, data)
+    r1 = dank_mids.helpers._codec._mcall_encoder :: static
+    if is_error(r1) goto L7 else goto L3
+L1:
+    r2 = raise NameError('value for final name "_mcall_encoder" was not set')
+    if not r2 goto L6 (error at mcall_encode:114) else goto L2 :: bool
+L2:
+    unreachable
+L3:
+    r3 = box(tuple[bool, object], r0)
+    r4 = [r3]
+    r5 = load_address r4
+    r6 = _PyObject_Vectorcall(r1, r5, 1, 0)
+    if is_error(r6) goto L8 (error at mcall_encode:114) else goto L4
+L4:
+    dec_ref r3
+    r7 = cast(bytes, r6)
+    if is_error(r7) goto L6 (error at mcall_encode:114) else goto L5
+L5:
+    return r7
+L6:
+    r8 = <error> :: bytes
+    return r8
+L7:
+    dec_ref r0
+    goto L1
+L8:
+    dec_ref r3
+    goto L6
+
+def mcall_decode(data):
+    data :: object
+    r0, r1 :: str
+    r2 :: object
+    r3 :: dict
+    r4 :: str
+    r5 :: object
+    r6 :: object[1]
+    r7 :: object_ptr
+    r8, r9 :: object
+    r10 :: bool
+    r11 :: object[1]
+    r12 :: object_ptr
+    r13 :: object
+    r14 :: tuple[int, int, tuple]
+    r15 :: tuple
+    r16 :: tuple[object, object, object]
+    r17 :: object
+    r18 :: str
+    r19 :: object
+    r20 :: bit
+    r21 :: object
+    r22 :: str
+    r23 :: object
+    r24 :: tuple
+    r25 :: dict
+    r26 :: str
+    r27 :: object
+    r28 :: i32
+    r29 :: bit
+    r30 :: bool
+    r31 :: str
+    r32, r33 :: object
+    r34 :: list
+    r35 :: object
+    r36 :: i32
+    r37 :: bit
+    r38 :: tuple
+    r39 :: str
+    r40 :: i32
+    r41, r42 :: bit
+    r43 :: ptr
+    r44 :: native_int
+    r45 :: list
+    r46 :: short_int
+    r47 :: ptr
+    r48 :: native_int
+    r49 :: short_int
+    r50 :: bit
+    r51 :: object
+    r52 :: tuple[bool, bytes]
+    r53 :: bytes
+    r54 :: bit
+    r55 :: short_int
+    r56 :: union[list, object]
+L0:
+L1:
+    r0 = 'eth_call'
+    r1 = 'decode_result'
+    r2 = CPyObject_CallMethodObjArgs(data, r1, r0, 0)
+    if is_error(r2) goto L10 (error at mcall_decode:123) else goto L2
+L2:
+    r3 = dank_mids.helpers._codec.globals :: static
+    r4 = 'ContextFramesBytesIO'
+    r5 = CPyDict_GetItem(r3, r4)
+    if is_error(r5) goto L39 (error at mcall_decode:123) else goto L3
+L3:
+    r6 = [r2]
+    r7 = load_address r6
+    r8 = _PyObject_Vectorcall(r5, r7, 1, 0)
+    dec_ref r5
+    if is_error(r8) goto L39 (error at mcall_decode:123) else goto L4
+L4:
+    dec_ref r2
+    r9 = dank_mids.helpers._codec._mcall_decoder :: static
+    if is_error(r9) goto L40 else goto L7
+L5:
+    r10 = raise NameError('value for final name "_mcall_decoder" was not set')
+    if not r10 goto L10 (error at mcall_decode:123) else goto L6 :: bool
+L6:
+    unreachable
+L7:
+    r11 = [r8]
+    r12 = load_address r11
+    r13 = _PyObject_Vectorcall(r9, r12, 1, 0)
+    if is_error(r13) goto L41 (error at mcall_decode:123) else goto L8
+L8:
+    dec_ref r8
+    r14 = unbox(tuple[int, int, tuple], r13)
+    dec_ref r13
+    if is_error(r14) goto L10 (error at mcall_decode:123) else goto L9
+L9:
+    r15 = r14[2]
+    dec_ref r14
+    goto L30
+L10:
+    r16 = CPy_CatchError()
+    r17 = builtins :: module
+    r18 = 'Exception'
+    r19 = CPyObject_GetAttr(r17, r18)
+    if is_error(r19) goto L28 (error at mcall_decode:124) else goto L11
+L11:
+    r20 = CPy_ExceptionMatches(r19)
+    dec_ref r19
+    if r20 goto L12 else goto L26 :: bool
+L12:
+    r21 = CPy_GetExcValue()
+    r22 = 'args'
+    r23 = CPyObject_GetAttr(r21, r22)
+    if is_error(r23) goto L42 (error at mcall_decode:126) else goto L13
+L13:
+    r24 = cast(tuple, r23)
+    if is_error(r24) goto L42 (error at mcall_decode:126) else goto L14
+L14:
+    r25 = dank_mids.helpers._codec.globals :: static
+    r26 = 'PartialResponse'
+    r27 = CPyDict_GetItem(r25, r26)
+    if is_error(r27) goto L43 (error at mcall_decode:126) else goto L15
+L15:
+    r28 = PyObject_IsInstance(data, r27)
+    dec_ref r27
+    r29 = r28 >= 0 :: signed
+    if not r29 goto L43 (error at mcall_decode:126) else goto L16 :: bool
+L16:
+    r30 = truncate r28: i32 to builtins.bool
+    if r30 goto L17 else goto L19 :: bool
+L17:
+    r31 = 'decode_result'
+    r32 = CPyObject_CallMethodObjArgs(data, r31, 0)
+    if is_error(r32) goto L43 (error at mcall_decode:126) else goto L18
+L18:
+    r33 = r32
+    goto L20
+L19:
+    inc_ref data
+    r33 = data
+L20:
+    r34 = PyList_New(0)
+    if is_error(r34) goto L44 (error at mcall_decode:126) else goto L21
+L21:
+    r35 = CPyList_Extend(r34, r24)
+    dec_ref r24
+    if is_error(r35) goto L45 (error at mcall_decode:126) else goto L46
+L22:
+    r36 = PyList_Append(r34, r33)
+    dec_ref r33
+    r37 = r36 >= 0 :: signed
+    if not r37 goto L47 (error at mcall_decode:126) else goto L23 :: bool
+L23:
+    r38 = PyList_AsTuple(r34)
+    dec_ref r34
+    if is_error(r38) goto L42 (error at mcall_decode:126) else goto L24
+L24:
+    r39 = 'args'
+    r40 = PyObject_SetAttr(r21, r39, r38)
+    dec_ref r38
+    r41 = r40 >= 0 :: signed
+    if not r41 goto L42 (error at mcall_decode:126) else goto L25 :: bool
+L25:
+    CPy_RestoreExcInfo(r16)
+    dec_ref r16
+    return r21
+L26:
+    CPy_Reraise()
+    if not 0 goto L28 else goto L48 :: bool
+L27:
+    unreachable
+L28:
+    CPy_RestoreExcInfo(r16)
+    dec_ref r16
+    r42 = CPy_KeepPropagating()
+    if not r42 goto L38 else goto L29 :: bool
+L29:
+    unreachable
+L30:
+    r43 = get_element_ptr r15 ob_size :: PyVarObject
+    r44 = load_mem r43 :: native_int*
+    r45 = PyList_New(r44)
+    if is_error(r45) goto L49 (error at mcall_decode:129) else goto L31
+L31:
+    r46 = 0
+L32:
+    r47 = get_element_ptr r15 ob_size :: PyVarObject
+    r48 = load_mem r47 :: native_int*
+    r49 = r48 << 1
+    r50 = r46 < r49 :: signed
+    if r50 goto L33 else goto L50 :: bool
+L33:
+    r51 = CPySequenceTuple_GetItem(r15, r46)
+    if is_error(r51) goto L51 (error at mcall_decode:129) else goto L34
+L34:
+    r52 = unbox(tuple[bool, bytes], r51)
+    dec_ref r51
+    if is_error(r52) goto L51 (error at mcall_decode:129) else goto L35
+L35:
+    r53 = r52[1]
+    dec_ref r52
+    r54 = CPyList_SetItemUnsafe(r45, r46, r53)
+    if not r54 goto L51 (error at mcall_decode:129) else goto L36 :: bool
+L36:
+    r55 = r46 + 2
+    r46 = r55
+    goto L32
+L37:
+    return r45
+L38:
+    r56 = <error> :: union[list, object]
+    return r56
+L39:
+    dec_ref r2
+    goto L10
+L40:
+    dec_ref r8
+    goto L5
+L41:
+    dec_ref r8
+    goto L10
+L42:
+    dec_ref r21
+    goto L28
+L43:
+    dec_ref r21
+    dec_ref r24
+    goto L28
+L44:
+    dec_ref r21
+    dec_ref r24
+    dec_ref r33
+    goto L28
+L45:
+    dec_ref r21
+    dec_ref r33
+    dec_ref r34
+    goto L28
+L46:
+    dec_ref r35
+    goto L22
+L47:
+    dec_ref r21
+    dec_ref r34
+    goto L28
+L48:
+    dec_ref r16
+    goto L27
+L49:
+    dec_ref r15
+    goto L38
+L50:
+    dec_ref r15
+    goto L37
+L51:
+    dec_ref r15
+    dec_ref r45
+    goto L38
+
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4, r5 :: object
+    r6 :: str
+    r7 :: dict
+    r8, r9 :: object
+    r10 :: str
+    r11 :: dict
+    r12, r13 :: object
+    r14 :: str
+    r15 :: dict
+    r16, r17 :: object
+    r18 :: str
+    r19 :: dict
+    r20, r21 :: object
+    r22 :: str
+    r23 :: dict
+    r24, r25 :: object
+    r26 :: str
+    r27 :: dict
+    r28, r29, r30 :: object
+    r31 :: str
+    r32 :: dict
+    r33, r34, r35 :: object
+    r36 :: str
+    r37 :: dict
+    r38, r39 :: object
+    r40 :: str
+    r41 :: dict
+    r42 :: object
+    r43 :: str
+    r44 :: dict
+    r45 :: str
+    r46 :: object
+    r47 :: object[1]
+    r48 :: object_ptr
+    r49 :: object
+    r50 :: dict
+    r51 :: str
+    r52 :: i32
+    r53 :: bit
+    r54 :: dict
+    r55 :: str
+    r56 :: object
+    r57 :: dict
+    r58 :: str
+    r59, r60 :: object
+    r61 :: dict
+    r62 :: str
+    r63 :: object
+    r64 :: dict
+    r65 :: str
+    r66, r67 :: object
+    r68 :: tuple[object, object]
+    r69, r70 :: object
+    r71 :: list
+    r72, r73 :: ptr
+    r74 :: object
+    r75 :: tuple[list, object]
+    r76, r77 :: object
+    r78 :: dict
+    r79 :: str
+    r80 :: i32
+    r81 :: bit
+    r82 :: dict
+    r83 :: str
+    r84, r85, r86 :: object
+    r87 :: dict
+    r88 :: str
+    r89 :: object
+    r90 :: dict
+    r91 :: str
+    r92 :: object
+    r93 :: str
+    r94 :: object
+    r95 :: tuple[str, object]
+    r96, r97, r98 :: object
+    r99 :: tuple[object, object]
+    r100, r101 :: object
+    r102 :: tuple[object, object, object]
+    r103, r104 :: object
+    r105 :: dict
+    r106 :: str
+    r107 :: i32
+    r108 :: bit
+    r109 :: dict
+    r110 :: str
+    r111, r112 :: object
+    r113 :: dict
+    r114 :: str
+    r115 :: object
+    r116 :: tuple[object, object]
+    r117, r118 :: object
+    r119 :: dict
+    r120 :: str
+    r121 :: i32
+    r122 :: bit
+    r123 :: dict
+    r124 :: str
+    r125 :: object
+    r126 :: str
+    r127 :: object
+    r128, r129 :: str
+    r130 :: object
+    r131 :: dict
+    r132 :: str
+    r133 :: i32
+    r134 :: bit
+    r135 :: object
+    r136 :: bool
+    r137 :: str
+    r138, r139, r140 :: object
+    r141 :: dict
+    r142 :: str
+    r143 :: i32
+    r144 :: bit
+    r145 :: object
+    r146 :: bool
+    r147 :: str
+    r148 :: object
+    r149 :: dict
+    r150 :: str
+    r151 :: i32
+    r152 :: bit
+    r153 :: dank_mids.helpers._codec.__mypyc_lambda__0_obj
+    r154 :: object
+    r155 :: bool
+    r156 :: str
+    r157 :: i32
+    r158 :: bit
+    r159 :: object
+    r160 :: bool
+    r161 :: str
+    r162 :: i32
+    r163 :: bit
+    r164 :: object
+    r165 :: bool
+    r166 :: str
+    r167 :: i32
+    r168 :: bit
+    r169 :: dict
+    r170 :: str
+    r171, r172 :: object
+    r173 :: bool
+    r174 :: str
+    r175 :: i32
+    r176 :: bit
+    r177 :: dict
+    r178 :: str
+    r179, r180 :: object
+    r181 :: bool
+    r182 :: str
+    r183 :: i32
+    r184 :: bit
+    r185 :: dict
+    r186 :: str
+    r187 :: object
+    r188 :: str
+    r189 :: object
+    r190, r191 :: str
+    r192 :: object
+    r193 :: str
+    r194 :: object
+    r195 :: dict
+    r196 :: str
+    r197 :: i32
+    r198 :: bit
+    r199 :: object
+    r200 :: dict
+    r201 :: str
+    r202 :: i32
+    r203 :: bit
+    r204 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L80 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    r5 = ('accumulate', 'chain')
+    r6 = 'itertools'
+    r7 = dank_mids.helpers._codec.globals :: static
+    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
+    if is_error(r8) goto L80 (error at <module>:1) else goto L4
+L4:
+    itertools = r8 :: module
+    dec_ref r8
+    r9 = ('Any', 'AnyStr', 'Callable', 'Final', 'Iterable', 'List', 'Union', 'Tuple', 'TypeVar')
+    r10 = 'typing'
+    r11 = dank_mids.helpers._codec.globals :: static
+    r12 = CPyImport_ImportFromMany(r10, r9, r9, r11)
+    if is_error(r12) goto L80 (error at <module>:2) else goto L5
+L5:
+    typing = r12 :: module
+    dec_ref r12
+    r13 = ('default_codec',)
+    r14 = 'eth_abi.abi'
+    r15 = dank_mids.helpers._codec.globals :: static
+    r16 = CPyImport_ImportFromMany(r14, r13, r13, r15)
+    if is_error(r16) goto L80 (error at <module>:4) else goto L6
+L6:
+    eth_abi.abi = r16 :: module
+    dec_ref r16
+    r17 = ('ContextFramesBytesIO',)
+    r18 = 'eth_abi.decoding'
+    r19 = dank_mids.helpers._codec.globals :: static
+    r20 = CPyImport_ImportFromMany(r18, r17, r17, r19)
+    if is_error(r20) goto L80 (error at <module>:5) else goto L7
+L7:
+    eth_abi.decoding = r20 :: module
+    dec_ref r20
+    r21 = ('DynamicArrayEncoder', 'TupleEncoder', 'encode_uint_256')
+    r22 = 'eth_abi.encoding'
+    r23 = dank_mids.helpers._codec.globals :: static
+    r24 = CPyImport_ImportFromMany(r22, r21, r21, r23)
+    if is_error(r24) goto L80 (error at <module>:6) else goto L8
+L8:
+    eth_abi.encoding = r24 :: module
+    dec_ref r24
+    r25 = ('DecodeError', 'Raw')
+    r26 = 'msgspec'
+    r27 = dank_mids.helpers._codec.globals :: static
+    r28 = CPyImport_ImportFromMany(r26, r25, r25, r27)
+    if is_error(r28) goto L80 (error at <module>:7) else goto L9
+L9:
+    msgspec = r28 :: module
+    dec_ref r28
+    r29 = ('decode',)
+    r30 = ('json_decode',)
+    r31 = 'msgspec.json'
+    r32 = dank_mids.helpers._codec.globals :: static
+    r33 = CPyImport_ImportFromMany(r31, r29, r30, r32)
+    if is_error(r33) goto L80 (error at <module>:8) else goto L10
+L10:
+    msgspec.json = r33 :: module
+    dec_ref r33
+    r34 = ('encode',)
+    r35 = ('json_encode',)
+    r36 = 'msgspec.json'
+    r37 = dank_mids.helpers._codec.globals :: static
+    r38 = CPyImport_ImportFromMany(r36, r34, r35, r37)
+    if is_error(r38) goto L80 (error at <module>:9) else goto L11
+L11:
+    msgspec.json = r38 :: module
+    dec_ref r38
+    r39 = ('JSONRPCBatchResponseRaw', 'MulticallChunk', 'PartialResponse', 'RawResponse', '_encode_hook')
+    r40 = 'dank_mids.types'
+    r41 = dank_mids.helpers._codec.globals :: static
+    r42 = CPyImport_ImportFromMany(r40, r39, r39, r41)
+    if is_error(r42) goto L80 (error at <module>:11) else goto L12
+L12:
+    dank_mids.types = r42 :: module
+    dec_ref r42
+    r43 = '__T'
+    r44 = dank_mids.helpers._codec.globals :: static
+    r45 = 'TypeVar'
+    r46 = CPyDict_GetItem(r44, r45)
+    if is_error(r46) goto L80 (error at <module>:20) else goto L13
+L13:
+    r47 = [r43]
+    r48 = load_address r47
+    r49 = _PyObject_Vectorcall(r46, r48, 1, 0)
+    dec_ref r46
+    if is_error(r49) goto L80 (error at <module>:20) else goto L14
+L14:
+    r50 = dank_mids.helpers._codec.globals :: static
+    r51 = '__T'
+    r52 = CPyDict_SetItem(r50, r51, r49)
+    dec_ref r49
+    r53 = r52 >= 0 :: signed
+    if not r53 goto L80 (error at <module>:20) else goto L15 :: bool
+L15:
+    r54 = dank_mids.helpers._codec.globals :: static
+    r55 = 'Callable'
+    r56 = CPyDict_GetItem(r54, r55)
+    if is_error(r56) goto L80 (error at <module>:23) else goto L16
+L16:
+    r57 = dank_mids.helpers._codec.globals :: static
+    r58 = 'Tuple'
+    r59 = CPyDict_GetItem(r57, r58)
+    if is_error(r59) goto L81 (error at <module>:23) else goto L17
+L17:
+    r60 = load_address PyBool_Type
+    r61 = dank_mids.helpers._codec.globals :: static
+    r62 = 'Iterable'
+    r63 = CPyDict_GetItem(r61, r62)
+    if is_error(r63) goto L82 (error at <module>:23) else goto L18
+L18:
+    r64 = dank_mids.helpers._codec.globals :: static
+    r65 = 'MulticallChunk'
+    r66 = CPyDict_GetItem(r64, r65)
+    if is_error(r66) goto L83 (error at <module>:23) else goto L19
+L19:
+    r67 = PyObject_GetItem(r63, r66)
+    dec_ref r63
+    dec_ref r66
+    if is_error(r67) goto L82 (error at <module>:23) else goto L20
+L20:
+    inc_ref r60
+    r68 = (r60, r67)
+    r69 = box(tuple[object, object], r68)
+    r70 = PyObject_GetItem(r59, r69)
+    dec_ref r59
+    dec_ref r69
+    if is_error(r70) goto L81 (error at <module>:23) else goto L21
+L21:
+    r71 = PyList_New(1)
+    if is_error(r71) goto L84 (error at <module>:23) else goto L22
+L22:
+    r72 = get_element_ptr r71 ob_item :: PyListObject
+    r73 = load_mem r72 :: ptr*
+    set_mem r73, r70 :: builtins.object*
+    r74 = load_address PyBytes_Type
+    inc_ref r74
+    r75 = (r71, r74)
+    r76 = box(tuple[list, object], r75)
+    r77 = PyObject_GetItem(r56, r76)
+    dec_ref r56
+    dec_ref r76
+    if is_error(r77) goto L80 (error at <module>:23) else goto L23
+L23:
+    r78 = dank_mids.helpers._codec.globals :: static
+    r79 = 'MulticallEncoder'
+    r80 = CPyDict_SetItem(r78, r79, r77)
+    dec_ref r77
+    r81 = r80 >= 0 :: signed
+    if not r81 goto L80 (error at <module>:23) else goto L24 :: bool
+L24:
+    r82 = dank_mids.helpers._codec.globals :: static
+    r83 = 'Tuple'
+    r84 = CPyDict_GetItem(r82, r83)
+    if is_error(r84) goto L80 (error at <module>:25) else goto L25
+L25:
+    r85 = load_address PyLong_Type
+    r86 = load_address PyLong_Type
+    r87 = dank_mids.helpers._codec.globals :: static
+    r88 = 'Tuple'
+    r89 = CPyDict_GetItem(r87, r88)
+    if is_error(r89) goto L85 (error at <module>:25) else goto L26
+L26:
+    r90 = dank_mids.helpers._codec.globals :: static
+    r91 = 'Tuple'
+    r92 = CPyDict_GetItem(r90, r91)
+    if is_error(r92) goto L86 (error at <module>:25) else goto L27
+L27:
+    r93 = 'Success'
+    r94 = load_address PyBytes_Type
+    inc_ref r93
+    inc_ref r94
+    r95 = (r93, r94)
+    r96 = box(tuple[str, object], r95)
+    r97 = PyObject_GetItem(r92, r96)
+    dec_ref r92
+    dec_ref r96
+    if is_error(r97) goto L86 (error at <module>:25) else goto L28
+L28:
+    r98 = load_address _Py_EllipsisObject
+    inc_ref r98
+    r99 = (r97, r98)
+    r100 = box(tuple[object, object], r99)
+    r101 = PyObject_GetItem(r89, r100)
+    dec_ref r89
+    dec_ref r100
+    if is_error(r101) goto L85 (error at <module>:25) else goto L29
+L29:
+    inc_ref r85
+    inc_ref r86
+    r102 = (r85, r86, r101)
+    r103 = box(tuple[object, object, object], r102)
+    r104 = PyObject_GetItem(r84, r103)
+    dec_ref r84
+    dec_ref r103
+    if is_error(r104) goto L80 (error at <module>:25) else goto L30
+L30:
+    r105 = dank_mids.helpers._codec.globals :: static
+    r106 = 'DecodedMulticall'
+    r107 = CPyDict_SetItem(r105, r106, r104)
+    dec_ref r104
+    r108 = r107 >= 0 :: signed
+    if not r108 goto L80 (error at <module>:25) else goto L31 :: bool
+L31:
+    r109 = dank_mids.helpers._codec.globals :: static
+    r110 = 'Callable'
+    r111 = CPyDict_GetItem(r109, r110)
+    if is_error(r111) goto L80 (error at <module>:26) else goto L32
+L32:
+    r112 = load_address _Py_EllipsisObject
+    r113 = dank_mids.helpers._codec.globals :: static
+    r114 = 'DecodedMulticall'
+    r115 = CPyDict_GetItem(r113, r114)
+    if is_error(r115) goto L87 (error at <module>:26) else goto L33
+L33:
+    inc_ref r112
+    r116 = (r112, r115)
+    r117 = box(tuple[object, object], r116)
+    r118 = PyObject_GetItem(r111, r117)
+    dec_ref r111
+    dec_ref r117
+    if is_error(r118) goto L80 (error at <module>:26) else goto L34
+L34:
+    r119 = dank_mids.helpers._codec.globals :: static
+    r120 = 'MulticallDecoder'
+    r121 = CPyDict_SetItem(r119, r120, r118)
+    dec_ref r118
+    r122 = r121 >= 0 :: signed
+    if not r122 goto L80 (error at <module>:26) else goto L35 :: bool
+L35:
+    r123 = dank_mids.helpers._codec.globals :: static
+    r124 = 'default_codec'
+    r125 = CPyDict_GetItem(r123, r124)
+    if is_error(r125) goto L80 (error at <module>:80) else goto L36
+L36:
+    r126 = '_registry'
+    r127 = CPyObject_GetAttr(r125, r126)
+    dec_ref r125
+    if is_error(r127) goto L80 (error at <module>:80) else goto L37
+L37:
+    r128 = '(bool,(address,bytes)[])'
+    r129 = 'get_encoder'
+    r130 = CPyObject_CallMethodObjArgs(r127, r129, r128, 0)
+    dec_ref r127
+    if is_error(r130) goto L80 (error at <module>:80) else goto L38
+L38:
+    dank_mids.helpers._codec._mcall_encoder = r130 :: static
+    r131 = dank_mids.helpers._codec.globals :: static
+    r132 = '_mcall_encoder'
+    r133 = CPyDict_SetItem(r131, r132, r130)
+    dec_ref r130
+    r134 = r133 >= 0 :: signed
+    if not r134 goto L80 (error at <module>:80) else goto L39 :: bool
+L39:
+    r135 = dank_mids.helpers._codec._mcall_encoder :: static
+    if is_error(r135) goto L40 else goto L42
+L40:
+    r136 = raise NameError('value for final name "_mcall_encoder" was not set')
+    if not r136 goto L80 (error at <module>:83) else goto L41 :: bool
+L41:
+    unreachable
+L42:
+    r137 = 'encoders'
+    r138 = CPyObject_GetAttr(r135, r137)
+    if is_error(r138) goto L80 (error at <module>:83) else goto L43
+L43:
+    r139 = object -1
+    r140 = PyObject_GetItem(r138, r139)
+    dec_ref r138
+    if is_error(r140) goto L80 (error at <module>:83) else goto L44
+L44:
+    dank_mids.helpers._codec._array_encoder = r140 :: static
+    r141 = dank_mids.helpers._codec.globals :: static
+    r142 = '_array_encoder'
+    r143 = CPyDict_SetItem(r141, r142, r140)
+    dec_ref r140
+    r144 = r143 >= 0 :: signed
+    if not r144 goto L80 (error at <module>:83) else goto L45 :: bool
+L45:
+    r145 = dank_mids.helpers._codec._array_encoder :: static
+    if is_error(r145) goto L46 else goto L48
+L46:
+    r146 = raise NameError('value for final name "_array_encoder" was not set')
+    if not r146 goto L80 (error at <module>:84) else goto L47 :: bool
+L47:
+    unreachable
+L48:
+    r147 = 'item_encoder'
+    r148 = CPyObject_GetAttr(r145, r147)
+    if is_error(r148) goto L80 (error at <module>:84) else goto L49
+L49:
+    dank_mids.helpers._codec._item_encoder = r148 :: static
+    r149 = dank_mids.helpers._codec.globals :: static
+    r150 = '_item_encoder'
+    r151 = CPyDict_SetItem(r149, r150, r148)
+    dec_ref r148
+    r152 = r151 >= 0 :: signed
+    if not r152 goto L80 (error at <module>:84) else goto L50 :: bool
+L50:
+    r153 = __mypyc_lambda__0_obj()
+    if is_error(r153) goto L80 (error at <module>:87) else goto L51
+L51:
+    r154 = dank_mids.helpers._codec._mcall_encoder :: static
+    if is_error(r154) goto L88 else goto L54
+L52:
+    r155 = raise NameError('value for final name "_mcall_encoder" was not set')
+    if not r155 goto L80 (error at <module>:87) else goto L53 :: bool
+L53:
+    unreachable
+L54:
+    r156 = 'validate_value'
+    r157 = PyObject_SetAttr(r154, r156, r153)
+    r158 = r157 >= 0 :: signed
+    if not r158 goto L89 (error at <module>:87) else goto L55 :: bool
+L55:
+    r159 = dank_mids.helpers._codec._array_encoder :: static
+    if is_error(r159) goto L90 else goto L58
+L56:
+    r160 = raise NameError('value for final name "_array_encoder" was not set')
+    if not r160 goto L80 (error at <module>:87) else goto L57 :: bool
+L57:
+    unreachable
+L58:
+    r161 = 'validate_value'
+    r162 = PyObject_SetAttr(r159, r161, r153)
+    r163 = r162 >= 0 :: signed
+    if not r163 goto L89 (error at <module>:87) else goto L59 :: bool
+L59:
+    r164 = dank_mids.helpers._codec._item_encoder :: static
+    if is_error(r164) goto L91 else goto L62
+L60:
+    r165 = raise NameError('value for final name "_item_encoder" was not set')
+    if not r165 goto L80 (error at <module>:87) else goto L61 :: bool
+L61:
+    unreachable
+L62:
+    r166 = 'validate_value'
+    r167 = PyObject_SetAttr(r164, r166, r153)
+    dec_ref r153
+    r168 = r167 >= 0 :: signed
+    if not r168 goto L80 (error at <module>:87) else goto L63 :: bool
+L63:
+    r169 = dank_mids.helpers._codec.globals :: static
+    r170 = '__encode_new'
+    r171 = CPyDict_GetItem(r169, r170)
+    if is_error(r171) goto L80 (error at <module>:104) else goto L64
+L64:
+    r172 = dank_mids.helpers._codec._array_encoder :: static
+    if is_error(r172) goto L92 else goto L67
+L65:
+    r173 = raise NameError('value for final name "_array_encoder" was not set')
+    if not r173 goto L80 (error at <module>:104) else goto L66 :: bool
+L66:
+    unreachable
+L67:
+    r174 = 'encode'
+    r175 = PyObject_SetAttr(r172, r174, r171)
+    dec_ref r171
+    r176 = r175 >= 0 :: signed
+    if not r176 goto L80 (error at <module>:104) else goto L68 :: bool
+L68:
+    r177 = dank_mids.helpers._codec.globals :: static
+    r178 = '__encode_elements_new'
+    r179 = CPyDict_GetItem(r177, r178)
+    if is_error(r179) goto L80 (error at <module>:105) else goto L69
+L69:
+    r180 = dank_mids.helpers._codec._array_encoder :: static
+    if is_error(r180) goto L93 else goto L72
+L70:
+    r181 = raise NameError('value for final name "_array_encoder" was not set')
+    if not r181 goto L80 (error at <module>:105) else goto L71 :: bool
+L71:
+    unreachable
+L72:
+    r182 = 'encode_elements'
+    r183 = PyObject_SetAttr(r180, r182, r179)
+    dec_ref r179
+    r184 = r183 >= 0 :: signed
+    if not r184 goto L80 (error at <module>:105) else goto L73 :: bool
+L73:
+    r185 = dank_mids.helpers._codec.globals :: static
+    r186 = 'default_codec'
+    r187 = CPyDict_GetItem(r185, r186)
+    if is_error(r187) goto L80 (error at <module>:108) else goto L74
+L74:
+    r188 = '_registry'
+    r189 = CPyObject_GetAttr(r187, r188)
+    dec_ref r187
+    if is_error(r189) goto L80 (error at <module>:108) else goto L75
+L75:
+    r190 = '(uint256,uint256,(bool,bytes)[])'
+    r191 = 'get_decoder'
+    r192 = CPyObject_CallMethodObjArgs(r189, r191, r190, 0)
+    dec_ref r189
+    if is_error(r192) goto L80 (error at <module>:108) else goto L76
+L76:
+    r193 = 'decode'
+    r194 = CPyObject_GetAttr(r192, r193)
+    dec_ref r192
+    if is_error(r194) goto L80 (error at <module>:108) else goto L77
+L77:
+    dank_mids.helpers._codec._mcall_decoder = r194 :: static
+    r195 = dank_mids.helpers._codec.globals :: static
+    r196 = '_mcall_decoder'
+    r197 = CPyDict_SetItem(r195, r196, r194)
+    dec_ref r194
+    r198 = r197 >= 0 :: signed
+    if not r198 goto L80 (error at <module>:108) else goto L78 :: bool
+L78:
+    r199 = load_address PyBool_Type
+    r200 = dank_mids.helpers._codec.globals :: static
+    r201 = 'Success'
+    r202 = CPyDict_SetItem(r200, r201, r199)
+    r203 = r202 >= 0 :: signed
+    if not r203 goto L80 (error at <module>:118) else goto L79 :: bool
+L79:
+    return 1
+L80:
+    r204 = <error> :: None
+    return r204
+L81:
+    dec_ref r56
+    goto L80
+L82:
+    dec_ref r56
+    dec_ref r59
+    goto L80
+L83:
+    dec_ref r56
+    dec_ref r59
+    dec_ref r63
+    goto L80
+L84:
+    dec_ref r56
+    dec_ref r70
+    goto L80
+L85:
+    dec_ref r84
+    goto L80
+L86:
+    dec_ref r84
+    dec_ref r89
+    goto L80
+L87:
+    dec_ref r111
+    goto L80
+L88:
+    dec_ref r153
+    goto L52
+L89:
+    dec_ref r153
+    goto L80
+L90:
+    dec_ref r153
+    goto L56
+L91:
+    dec_ref r153
+    goto L60
+L92:
+    dec_ref r171
+    goto L65
+L93:
+    dec_ref r179
+    goto L70
