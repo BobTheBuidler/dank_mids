@@ -71,7 +71,9 @@ def encode(obj: Any) -> bytes:
 
 # multicall specific stuff
 
-_mcall_encoder: Final[Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]] = default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+_mcall_encoder: Final[Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]] = (
+    default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+)
 _array_encoder: Final[DynamicArrayEncoder] = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
 _item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder
 
@@ -96,7 +98,9 @@ def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]
 _array_encoder.encode = __encode_new  # type: ignore [method-assign]
 _array_encoder.encode_elements = __encode_elements_new  # type: ignore [method-assign]
 
-_mcall_decoder: Final[Callable[..., Tuple[bool, bool, List[Tuple["Success", bytes]]]]] = default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
+_mcall_decoder: Final[Callable[..., Tuple[bool, bool, List[Tuple["Success", bytes]]]]] = (
+    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
+)
 
 
 def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
