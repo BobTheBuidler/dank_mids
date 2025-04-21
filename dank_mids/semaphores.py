@@ -72,7 +72,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
             priority = int(block.hex(), 16)
         elif isinstance(block, str) and "0x" in block:
             priority = int(block, 16)
-        elif block not in [None, "latest"]:
+        elif block not in {None, "latest"}:
             # NOTE: We do this to generate an err if an unsuitable value was provided
             priority = block
         else:
