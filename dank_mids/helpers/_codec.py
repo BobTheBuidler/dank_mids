@@ -95,15 +95,11 @@ def encode(obj: Any) -> bytes:
 
 _mcall_encoder: Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]  # TupleEncoder
 _mcall_encoder = default_codec._registry.get_encoder("(bool,(address,bytes)[])")
-_mcall_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined]
-
-
 _array_encoder: DynamicArrayEncoder = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
-_array_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
-
-
 _item_encoder: TupleEncoder = _array_encoder.item_encoder
-_item_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
+
+# We don't need to follow the validation code from eth-abi since we guarantee the input types
+_mcall_encoder.validate_value = _array_encoder.validate_value = _item_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined, method-assign]
 
 
 def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
