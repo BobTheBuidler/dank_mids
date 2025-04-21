@@ -16,11 +16,6 @@
 #include "__native_types.h"
 #include "__native_internal_types.h"
 
-PyMemberDef DankContractCall_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractCallObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *DankContractCall_setup(PyTypeObject *type);
 PyObject *CPyDef_DankContractCall(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -37,16 +32,14 @@ DankContractCall_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 DankContractCall_traverse(dank_mids___brownie_patch___types___DankContractCallObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 DankContractCall_clear(dank_mids___brownie_patch___types___DankContractCallObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -92,11 +85,8 @@ static PyTypeObject CPyType_DankContractCall_template_ = {
     .tp_clear = (inquiry)DankContractCall_clear,
     .tp_getset = DankContractCall_getseters,
     .tp_methods = DankContractCall_methods,
-    .tp_members = DankContractCall_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankContractCallObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + sizeof(PyObject *),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractCallObject),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_DankContractCall_template = &CPyType_DankContractCall_template_;
 
@@ -125,11 +115,6 @@ PyObject *CPyDef_DankContractCall(PyObject *cpy_r_args, PyObject *cpy_r_kwargs)
 }
 
 
-PyMemberDef DankContractTx_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractTxObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *DankContractTx_setup(PyTypeObject *type);
 PyObject *CPyDef_DankContractTx(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -146,16 +131,14 @@ DankContractTx_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 DankContractTx_traverse(dank_mids___brownie_patch___types___DankContractTxObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 DankContractTx_clear(dank_mids___brownie_patch___types___DankContractTxObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -201,11 +184,8 @@ static PyTypeObject CPyType_DankContractTx_template_ = {
     .tp_clear = (inquiry)DankContractTx_clear,
     .tp_getset = DankContractTx_getseters,
     .tp_methods = DankContractTx_methods,
-    .tp_members = DankContractTx_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankContractTxObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + sizeof(PyObject *),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractTxObject),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_DankContractTx_template = &CPyType_DankContractTx_template_;
 
@@ -234,11 +214,6 @@ PyObject *CPyDef_DankContractTx(PyObject *cpy_r_args, PyObject *cpy_r_kwargs)
 }
 
 
-PyMemberDef DankOverloadedMethod_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *DankOverloadedMethod_setup(PyTypeObject *type);
 PyObject *CPyDef_DankOverloadedMethod(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -256,8 +231,7 @@ static int
 DankOverloadedMethod_traverse(dank_mids___brownie_patch___types___DankOverloadedMethodObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->_methods);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -265,8 +239,7 @@ static int
 DankOverloadedMethod_clear(dank_mids___brownie_patch___types___DankOverloadedMethodObject *self)
 {
     Py_CLEAR(self->_methods);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -326,11 +299,8 @@ static PyTypeObject CPyType_DankOverloadedMethod_template_ = {
     .tp_clear = (inquiry)DankOverloadedMethod_clear,
     .tp_getset = DankOverloadedMethod_getseters,
     .tp_methods = DankOverloadedMethod_methods,
-    .tp_members = DankOverloadedMethod_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + sizeof(PyObject *),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_DankOverloadedMethod_template = &CPyType_DankOverloadedMethod_template_;
 
