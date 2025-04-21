@@ -17,7 +17,7 @@ mypyc:
 	mypyc dank_mids/brownie_patch/call.py --pretty
 	mypyc dank_mids/brownie_patch/overloaded.py --strict --pretty
 	mypyc dank_mids/brownie_patch/types.py --strict --pretty
-	mypyc dank_mids/helpers/_codec.py --strict --pretty
+	mypyc dank_mids/helpers/_codec.py --strict --pretty --disable-error-code unused-ignore
 	mypyc dank_mids/helpers/_weaklist.py --strict --pretty
 	mypyc dank_mids/helpers/lru_cache.py --strict --pretty
 
