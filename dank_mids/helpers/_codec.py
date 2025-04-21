@@ -1,5 +1,5 @@
 from itertools import accumulate, chain
-from typing import Any, AnyStr, Callable, Iterable, List, Union, Tuple
+from typing import Any, AnyStr, Callable, Final, Iterable, List, Union, Tuple, TypeVar
 
 from eth_abi.abi import default_codec
 from eth_abi.decoding import ContextFramesBytesIO
@@ -14,8 +14,10 @@ from dank_mids.types import (
     PartialResponse,
     RawResponse,
     _encode_hook,
-    _nested_dict_of_stuff,
 )
+
+
+__T = TypeVar("__T")
 
 
 def decode_raw(data: AnyStr) -> RawResponse:
@@ -35,18 +37,6 @@ def decode_raw(data: AnyStr) -> RawResponse:
         raise
 
 
-decode_nested_dict = lambda data: json_decode(data, type=_nested_dict_of_stuff)
-"""
-Decode json-encoded bytes into a nested dictionary.
-
-Args:
-    data: The json-encoded bytes to decode.
-
-Returns:
-    The decoded nested dictionary.
-"""
-
-
 def decode_jsonrpc_batch(data: bytes) -> Union[PartialResponse, List[RawResponse]]:
     """
     Decode json-encoded bytes into a list of response structs, or a single error response struct if applicable.
@@ -58,19 +48,7 @@ def decode_jsonrpc_batch(data: bytes) -> Union[PartialResponse, List[RawResponse
         Either a PartialResponse if there's an error, or a list of RawResponse objects.
     """
     decoded = json_decode(data, type=JSONRPCBatchResponseRaw)
-    return decoded if isinstance(decoded, PartialResponse) else _map_raw(decoded)
-
-
-_map_raw: Callable[[List[Raw]], List[RawResponse]] = lambda decoded: list(map(RawResponse, decoded))
-"""
-Converts a list of `msgspec.Raw` objects into a list of `RawResponse` objects.
-
-Args:
-    decoded: A list of msgspec.Raw objects.
-
-Returns:
-    A list of RawResponse objects.
-"""
+    return decoded if isinstance(decoded, PartialResponse) else list(map(RawResponse, decoded))
 
 
 def encode(obj: Any) -> bytes:
@@ -93,10 +71,9 @@ def encode(obj: Any) -> bytes:
 
 # multicall specific stuff
 
-_mcall_encoder: Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]  # TupleEncoder
-_mcall_encoder = default_codec._registry.get_encoder("(bool,(address,bytes)[])")
-_array_encoder: DynamicArrayEncoder = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
-_item_encoder: TupleEncoder = _array_encoder.item_encoder
+_mcall_encoder: Final[Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]] = default_codec._registry.get_encoder("(bool,(address,bytes)[])")
+_array_encoder: Final[DynamicArrayEncoder] = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
+_item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder
 
 # We don't need to follow the validation code from eth-abi since we guarantee the input types
 _mcall_encoder.validate_value = _array_encoder.validate_value = _item_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined, method-assign]
@@ -119,7 +96,7 @@ def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]
 _array_encoder.encode = __encode_new  # type: ignore [method-assign]
 _array_encoder.encode_elements = __encode_elements_new  # type: ignore [method-assign]
 
-_mcall_decoder = default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
+_mcall_decoder: Final[Callable[..., Tuple[bool, bool, List[Tuple["Success", bytes]]]]] = default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
 
 
 def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
@@ -128,7 +105,6 @@ def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
 
 # maybe use this success flag to do something later
 Success = bool
-__get_bytes = lambda tup: tup[1]
 
 
 def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
@@ -144,3 +120,7 @@ def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
         return e
     else:
         return list(map(__get_bytes, decoded))
+
+
+def __get_bytes(tup: Tuple[Any, __T]) -> __T:
+    return tup[1]
