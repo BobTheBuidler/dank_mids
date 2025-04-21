@@ -1,5 +1,5 @@
 from itertools import accumulate, chain
-from typing import Any, Callable, Iterable, List, Union, Tuple
+from typing import Any, AnyStr, Callable, Iterable, List, Union, Tuple
 
 from eth_abi.abi import default_codec
 from eth_abi.decoding import ContextFramesBytesIO
@@ -18,7 +18,7 @@ from dank_mids.types import (
 )
 
 
-def decode_raw(data: bytes) -> RawResponse:
+def decode_raw(data: AnyStr) -> RawResponse:
     """
     Decode json-encoded bytes into a `msgspec.Raw` object.
 
