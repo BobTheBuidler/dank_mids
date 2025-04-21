@@ -20,11 +20,6 @@ static PyObject *CPyDunder___get____mypyc_lambda__0_obj(PyObject *self, PyObject
     instance = instance ? instance : Py_None;
     return CPyDef___mypyc_lambda__0_obj_____get__(self, instance, owner);
 }
-PyMemberDef __mypyc_lambda__0_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *__mypyc_lambda__0_obj_setup(PyTypeObject *type);
 PyObject *CPyDef___mypyc_lambda__0_obj(void);
 
@@ -41,16 +36,14 @@ __mypyc_lambda__0_obj_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 __mypyc_lambda__0_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 __mypyc_lambda__0_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -105,12 +98,9 @@ static PyTypeObject CPyType___mypyc_lambda__0_obj_template_ = {
     .tp_methods = __mypyc_lambda__0_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get____mypyc_lambda__0_obj,
-    .tp_members = __mypyc_lambda__0_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType___mypyc_lambda__0_obj_template = &CPyType___mypyc_lambda__0_obj_template_;
 
@@ -139,11 +129,6 @@ static PyObject *CPyDunder___get____mypyc_lambda__1_obj(PyObject *self, PyObject
     instance = instance ? instance : Py_None;
     return CPyDef___mypyc_lambda__1_obj_____get__(self, instance, owner);
 }
-PyMemberDef __mypyc_lambda__1_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *__mypyc_lambda__1_obj_setup(PyTypeObject *type);
 PyObject *CPyDef___mypyc_lambda__1_obj(void);
 
@@ -160,16 +145,14 @@ __mypyc_lambda__1_obj_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 __mypyc_lambda__1_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 __mypyc_lambda__1_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -224,12 +207,9 @@ static PyTypeObject CPyType___mypyc_lambda__1_obj_template_ = {
     .tp_methods = __mypyc_lambda__1_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get____mypyc_lambda__1_obj,
-    .tp_members = __mypyc_lambda__1_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType___mypyc_lambda__1_obj_template = &CPyType___mypyc_lambda__1_obj_template_;
 
@@ -596,11 +576,6 @@ static PyObject *CPyDunder___get__coroutine__get_coroutine_fn_obj(PyObject *self
     instance = instance ? instance : Py_None;
     return CPyDef_coroutine__get_coroutine_fn_obj_____get__(self, instance, owner);
 }
-PyMemberDef coroutine__get_coroutine_fn_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *coroutine__get_coroutine_fn_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_coroutine__get_coroutine_fn_obj(void);
 
@@ -618,8 +593,7 @@ static int
 coroutine__get_coroutine_fn_obj_traverse(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -627,8 +601,7 @@ static int
 coroutine__get_coroutine_fn_obj_clear(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -690,12 +663,9 @@ static PyTypeObject CPyType_coroutine__get_coroutine_fn_obj_template_ = {
     .tp_methods = coroutine__get_coroutine_fn_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__coroutine__get_coroutine_fn_obj,
-    .tp_members = coroutine__get_coroutine_fn_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_coroutine__get_coroutine_fn_obj_template = &CPyType_coroutine__get_coroutine_fn_obj_template_;
 
@@ -1728,11 +1698,6 @@ static PyObject *CPyDunder___get____mypyc_lambda__2__format_array_but_cache_chec
     instance = instance ? instance : Py_None;
     return CPyDef___mypyc_lambda__2__format_array_but_cache_checksums_obj_____get__(self, instance, owner);
 }
-PyMemberDef __mypyc_lambda__2__format_array_but_cache_checksums_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *__mypyc_lambda__2__format_array_but_cache_checksums_obj_setup(PyTypeObject *type);
 PyObject *CPyDef___mypyc_lambda__2__format_array_but_cache_checksums_obj(void);
 
@@ -1750,8 +1715,7 @@ static int
 __mypyc_lambda__2__format_array_but_cache_checksums_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -1759,8 +1723,7 @@ static int
 __mypyc_lambda__2__format_array_but_cache_checksums_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -1822,12 +1785,9 @@ static PyTypeObject CPyType___mypyc_lambda__2__format_array_but_cache_checksums_
     .tp_methods = __mypyc_lambda__2__format_array_but_cache_checksums_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get____mypyc_lambda__2__format_array_but_cache_checksums_obj,
-    .tp_members = __mypyc_lambda__2__format_array_but_cache_checksums_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType___mypyc_lambda__2__format_array_but_cache_checksums_obj_template = &CPyType___mypyc_lambda__2__format_array_but_cache_checksums_obj_template_;
 
@@ -1893,11 +1853,6 @@ static PyObject *CPyDunder___get____mypyc_lambda__3__format_array_but_cache_chec
     instance = instance ? instance : Py_None;
     return CPyDef___mypyc_lambda__3__format_array_but_cache_checksums_obj_____get__(self, instance, owner);
 }
-PyMemberDef __mypyc_lambda__3__format_array_but_cache_checksums_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *__mypyc_lambda__3__format_array_but_cache_checksums_obj_setup(PyTypeObject *type);
 PyObject *CPyDef___mypyc_lambda__3__format_array_but_cache_checksums_obj(void);
 
@@ -1915,8 +1870,7 @@ static int
 __mypyc_lambda__3__format_array_but_cache_checksums_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -1924,8 +1878,7 @@ static int
 __mypyc_lambda__3__format_array_but_cache_checksums_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -1987,12 +1940,9 @@ static PyTypeObject CPyType___mypyc_lambda__3__format_array_but_cache_checksums_
     .tp_methods = __mypyc_lambda__3__format_array_but_cache_checksums_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get____mypyc_lambda__3__format_array_but_cache_checksums_obj,
-    .tp_members = __mypyc_lambda__3__format_array_but_cache_checksums_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType___mypyc_lambda__3__format_array_but_cache_checksums_obj_template = &CPyType___mypyc_lambda__3__format_array_but_cache_checksums_obj_template_;
 
@@ -2058,11 +2008,6 @@ static PyObject *CPyDunder___get____mypyc_lambda__4__format_array_but_cache_chec
     instance = instance ? instance : Py_None;
     return CPyDef___mypyc_lambda__4__format_array_but_cache_checksums_obj_____get__(self, instance, owner);
 }
-PyMemberDef __mypyc_lambda__4__format_array_but_cache_checksums_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *__mypyc_lambda__4__format_array_but_cache_checksums_obj_setup(PyTypeObject *type);
 PyObject *CPyDef___mypyc_lambda__4__format_array_but_cache_checksums_obj(void);
 
@@ -2080,8 +2025,7 @@ static int
 __mypyc_lambda__4__format_array_but_cache_checksums_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -2089,8 +2033,7 @@ static int
 __mypyc_lambda__4__format_array_but_cache_checksums_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -2152,12 +2095,9 @@ static PyTypeObject CPyType___mypyc_lambda__4__format_array_but_cache_checksums_
     .tp_methods = __mypyc_lambda__4__format_array_but_cache_checksums_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get____mypyc_lambda__4__format_array_but_cache_checksums_obj,
-    .tp_members = __mypyc_lambda__4__format_array_but_cache_checksums_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType___mypyc_lambda__4__format_array_but_cache_checksums_obj_template = &CPyType___mypyc_lambda__4__format_array_but_cache_checksums_obj_template_;
 
