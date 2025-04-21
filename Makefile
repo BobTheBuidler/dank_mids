@@ -10,6 +10,7 @@ docs:
 	poetry run sphinx-apidoc -o ./docs/source ./dank_mids
 
 mypyc:
+	mypyc dank_mids/_eth_utils.py --strict --pretty --disable-error-code unused-ignore
 	mypyc dank_mids/_uid.py --strict --pretty
 	mypyc dank_mids/brownie_patch/__init__.py --strict --pretty
 	mypyc dank_mids/brownie_patch/_abi.py --strict --pretty
@@ -20,6 +21,7 @@ mypyc:
 	mypyc dank_mids/helpers/lru_cache.py --strict --pretty
 
 mypyc-3-8:
+	mypyc dank_mids/_eth_utils.py --strict --pretty --disable-error-code unused-ignore
 	mypyc dank_mids/_uid.py --strict --pretty
 	mypyc dank_mids/brownie_patch/__init__.py --strict --pretty
 	mypyc dank_mids/brownie_patch/_abi.py --strict --pretty
