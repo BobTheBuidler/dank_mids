@@ -1,4 +1,3 @@
-import logging
 import re
 from functools import cached_property
 from time import time
@@ -15,7 +14,6 @@ from typing import (
     Literal,
     Mapping,
     NewType,
-    NoReturn,
     Optional,
     Set,
     Tuple,
@@ -34,7 +32,9 @@ from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
 from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
 from evmspec.structs.log import Log
 from hexbytes import HexBytes
-from msgspec import UNSET, Raw, ValidationError, json
+from msgspec import UNSET, Raw, ValidationError
+from msgspec.json import decode as json_decode
+from msgspec.json import encode as json_encode
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -120,7 +120,7 @@ class PartialRequest(DictStruct, frozen=True, omit_defaults=True, repr_omit_defa
 
     @property
     def data(self) -> bytes:
-        return json.encode(self, enc_hook=_encode_hook)
+        return json_encode(self, enc_hook=_encode_hook)
 
 
 class Request(PartialRequest):
@@ -137,7 +137,7 @@ class Request(PartialRequest):
     def data(self) -> bytes:
         # we have to do some hacky stuff because omit_defaults kwarg on PartialRequest
         # is preventing jsonrpc field from being included in the encoded bytes
-        encoded_omit_defaults = json.encode(self, enc_hook=_encode_hook)
+        encoded_omit_defaults = json_encode(self, enc_hook=_encode_hook)
         return encoded_omit_defaults[:-1] + b',"jsonrpc":"2.0"}'
 
 
@@ -317,18 +317,18 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         if method:
             try:
                 if method in _dict_responses:
-                    decoded = AttributeDict(json.decode(self.result, type=_nested_dict_of_stuff))
+                    decoded = AttributeDict(json_decode(self.result, type=_nested_dict_of_stuff))
                     stats.logger.log_types(method, decoded)
                     return decoded
                 elif method in _str_responses:
                     # TODO: finish adding methods and get rid of this
                     stats.logger.devhint("Must add `%s: str` to `_RETURN_TYPES`", method)
-                    return json.decode(self.result, type=str)
+                    return json_decode(self.result, type=str)
             except (ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(method, e)
 
         # In this case we can provide no hints, let's let the decoder figure it out
-        decoded = json.decode(self.result)
+        decoded = json_decode(self.result)
         if isinstance(decoded, str):
             if method:
                 _str_responses.add(method)
@@ -378,6 +378,8 @@ class RawResponse:
         """Decode the wrapped :class:`Raw` object into a :class:`Response` or a :class:`PartialResponse`."""
         return better_decode(self._raw, type=PartialResponse if partial else Response)
 
+
+MulticallChunk = Tuple[ChecksumAddress, HexBytes]
 
 JSONRPCBatchRequest = List[Request]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
@@ -436,11 +438,11 @@ def better_decode(
     method: Optional[str] = None,
 ) -> T:
     try:
-        return json.decode(data, type=type, dec_hook=dec_hook)
+        return json_decode(data, type=type, dec_hook=dec_hook)
     except (ValidationError, TypeError) as e:
         extra_args = [
             f"type: {type.__module__}.{type.__qualname__}",
-            f"result: {json.decode(data)}",
+            f"result: {json_decode(data)}",
         ]
         if method:
             extra_args.insert(0, f"method: {method}")

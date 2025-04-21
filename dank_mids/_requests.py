@@ -12,7 +12,7 @@ from asyncio import (
 )
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
-from itertools import accumulate, chain, filterfalse, groupby
+from itertools import chain, filterfalse, groupby
 from logging import DEBUG, getLogger
 from time import time
 from typing import (
@@ -44,9 +44,7 @@ from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
 from a_sync.asyncio import sleep0 as yield_to_loop
 from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
-from eth_abi import abi, decoding
-from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
-from eth_typing import ChecksumAddress, HexStr
+from eth_typing import ChecksumAddress
 from eth_utils import function_signature_to_4byte_selector
 from eth_utils.toolz import concat
 from hexbytes import HexBytes
@@ -72,6 +70,7 @@ from dank_mids._exceptions import (
     internal_err_types,
 )
 from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
+from dank_mids.helpers._codec import mcall_decode, mcall_encode
 from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
     error_logger,
@@ -97,6 +96,7 @@ from dank_mids.types import (
     BlockId,
     JSONRPCBatchResponse,
     JsonrpcParams,
+    MulticallChunk,
     PartialRequest,
     PartialResponse,
     RawResponse,
@@ -119,8 +119,6 @@ batch_size_logger = getLogger("dank_mids.batch_size")
 _Response = TypeVar(
     "_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse
 )
-
-MulticallChunk = Tuple[ChecksumAddress, HexStr]
 
 
 class RPCError(_RPCError, total=False):
@@ -731,60 +729,6 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
 
 _batch_init = _Batch.__init__
-
-
-_mcall_encoder: TupleEncoder = abi.default_codec._registry.get_encoder("(bool,(address,bytes)[])")
-_mcall_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
-
-
-_array_encoder: DynamicArrayEncoder = _mcall_encoder.encoders[-1]  # type: ignore [index]
-_array_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
-
-
-_item_encoder: TupleEncoder = _array_encoder.item_encoder
-_item_encoder.validate_value = lambda *_: ...  # type: ignore [method-assign]
-
-
-def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
-    encoded_elements, num_elements = __encode_elements_new(values)
-    return encode_uint_256(num_elements) + encoded_elements
-
-
-def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]:
-    tail_chunks = tuple(map(_item_encoder, values))
-    count = len(tail_chunks)
-    head_length = 32 * count
-    tail_offsets = chain((0,), accumulate(map(len, tail_chunks[:-1])))
-    head_chunks = map(encode_uint_256, map(head_length.__add__, tail_offsets))
-    return b"".join(chain(head_chunks, tail_chunks)), count
-
-
-_array_encoder.encode = __encode_new  # type: ignore [method-assign]
-_array_encoder.encode_elements = __encode_elements_new  # type: ignore [method-assign]
-
-_mcall_decoder = abi.default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
-
-
-def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
-    return _mcall_encoder((False, data))
-
-
-# maybe use this success flag to do something later
-Success = bool
-__get_bytes = lambda tup: tup[1]
-
-
-def mcall_decode(data: PartialResponse) -> Union[List[bytes], Exception]:
-    decoded: List[Tuple[Success, bytes]]
-    try:
-        decoded = _mcall_decoder(decoding.ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type]
-    except Exception as e:
-        # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
-        e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)
-        return e
-    else:
-        return list(map(__get_bytes, decoded))
-
 
 @final
 class Multicall(_Batch[RPCResponse, eth_call]):
