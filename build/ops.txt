@@ -1,0 +1,637 @@
+def lru_cache_lite_wrap_lru_cache_lite_obj.__get__(__mypyc_self__, instance, owner):
+    __mypyc_self__, instance, owner, r0 :: object
+    r1 :: bit
+    r2, r3 :: object
+L0:
+    r0 = load_address _Py_NoneStruct
+    r1 = instance == r0
+    if r1 goto L1 else goto L2 :: bool
+L1:
+    inc_ref __mypyc_self__
+    return __mypyc_self__
+L2:
+    r2 = PyMethod_New(__mypyc_self__, instance)
+    if is_error(r2) goto L4 else goto L3
+L3:
+    return r2
+L4:
+    r3 = <error> :: object
+    return r3
+
+def lru_cache_lite_wrap_lru_cache_lite_obj.__call__(__mypyc_self__, args):
+    __mypyc_self__ :: dank_mids.helpers.lru_cache.lru_cache_lite_wrap_lru_cache_lite_obj
+    args :: tuple
+    r0 :: dank_mids.helpers.lru_cache.lru_cache_lite_env
+    r1 :: dict
+    r2, r3, retval, r4 :: object
+    r5 :: bit
+    r6 :: object
+    r7 :: list
+    r8 :: object
+    r9 :: tuple
+    r10 :: dict
+    r11 :: object
+    r12 :: dict
+    r13 :: i32
+    r14 :: bit
+    r15 :: object
+L0:
+    r0 = __mypyc_self__.__mypyc_env__
+    if is_error(r0) goto L15 (error at lru_cache_lite_wrap:41) else goto L1
+L1:
+    r1 = r0.cache
+    if is_error(r1) goto L16 (error at lru_cache_lite_wrap:42) else goto L2
+L2:
+    r2 = r0.cache_miss
+    if is_error(r2) goto L17 (error at lru_cache_lite_wrap:42) else goto L3
+L3:
+    r3 = CPyDict_Get(r1, args, r2)
+    dec_ref r1
+    dec_ref r2
+    if is_error(r3) goto L16 (error at lru_cache_lite_wrap:42) else goto L4
+L4:
+    retval = r3
+    r4 = r0.cache_miss
+    if is_error(r4) goto L18 (error at lru_cache_lite_wrap:43) else goto L5
+L5:
+    r5 = retval == r4
+    dec_ref r4
+    if r5 goto L19 else goto L20 :: bool
+L6:
+    r6 = r0.func
+    if is_error(r6) goto L16 (error at lru_cache_lite_wrap:44) else goto L7
+L7:
+    r7 = PyList_New(0)
+    if is_error(r7) goto L21 (error at lru_cache_lite_wrap:44) else goto L8
+L8:
+    r8 = CPyList_Extend(r7, args)
+    if is_error(r8) goto L22 (error at lru_cache_lite_wrap:44) else goto L23
+L9:
+    r9 = PyList_AsTuple(r7)
+    dec_ref r7
+    if is_error(r9) goto L21 (error at lru_cache_lite_wrap:44) else goto L10
+L10:
+    r10 = PyDict_New()
+    if is_error(r10) goto L24 (error at lru_cache_lite_wrap:44) else goto L11
+L11:
+    r11 = PyObject_Call(r6, r9, r10)
+    dec_ref r6
+    dec_ref r9
+    dec_ref r10
+    if is_error(r11) goto L16 (error at lru_cache_lite_wrap:44) else goto L12
+L12:
+    retval = r11
+    r12 = r0.cache
+    dec_ref r0
+    if is_error(r12) goto L25 (error at lru_cache_lite_wrap:45) else goto L13
+L13:
+    r13 = CPyDict_SetItem(r12, args, retval)
+    dec_ref r12
+    r14 = r13 >= 0 :: signed
+    if not r14 goto L25 (error at lru_cache_lite_wrap:45) else goto L14 :: bool
+L14:
+    return retval
+L15:
+    r15 = <error> :: object
+    return r15
+L16:
+    dec_ref r0
+    goto L15
+L17:
+    dec_ref r0
+    dec_ref r1
+    goto L15
+L18:
+    dec_ref r0
+    dec_ref retval
+    goto L15
+L19:
+    dec_ref retval
+    goto L6
+L20:
+    dec_ref r0
+    goto L14
+L21:
+    dec_ref r0
+    dec_ref r6
+    goto L15
+L22:
+    dec_ref r0
+    dec_ref r6
+    dec_ref r7
+    goto L15
+L23:
+    dec_ref r8
+    goto L9
+L24:
+    dec_ref r0
+    dec_ref r6
+    dec_ref r9
+    goto L15
+L25:
+    dec_ref retval
+    goto L15
+
+def lru_cache_lite(func):
+    func :: object
+    r0 :: dank_mids.helpers.lru_cache.lru_cache_lite_env
+    r1 :: bool
+    r2 :: dict
+    r3 :: bool
+    r4 :: object
+    r5 :: str
+    r6, r7 :: object
+    r8 :: bool
+    r9 :: dank_mids.helpers.lru_cache.lru_cache_lite_wrap_lru_cache_lite_obj
+    r10 :: bool
+    r11 :: object
+    r12 :: dict
+    r13 :: str
+    r14 :: object
+    r15 :: object[1]
+    r16 :: object_ptr
+    r17 :: object
+    r18 :: object[1]
+    r19 :: object_ptr
+    r20 :: object
+    r21 :: dict
+    r22 :: str
+    r23 :: i32
+    r24 :: bit
+    r25 :: dict
+    r26 :: str
+    r27 :: i32
+    r28 :: bit
+    r29 :: object
+L0:
+    r0 = lru_cache_lite_env()
+    if is_error(r0) goto L17 (error at lru_cache_lite:11) else goto L1
+L1:
+    inc_ref func
+    r0.func = func; r1 = is_error
+    if not r1 goto L18 (error at lru_cache_lite:11) else goto L2 :: bool
+L2:
+    r2 = PyDict_New()
+    if is_error(r2) goto L18 (error at lru_cache_lite:37) else goto L3
+L3:
+    r0.cache = r2; r3 = is_error
+    if not r3 goto L18 (error at lru_cache_lite:37) else goto L4 :: bool
+L4:
+    r4 = builtins :: module
+    r5 = 'object'
+    r6 = CPyObject_GetAttr(r4, r5)
+    if is_error(r6) goto L18 (error at lru_cache_lite:38) else goto L5
+L5:
+    r7 = _PyObject_Vectorcall(r6, 0, 0, 0)
+    dec_ref r6
+    if is_error(r7) goto L18 (error at lru_cache_lite:38) else goto L6
+L6:
+    r0.cache_miss = r7; r8 = is_error
+    if not r8 goto L18 (error at lru_cache_lite:38) else goto L7 :: bool
+L7:
+    r9 = lru_cache_lite_wrap_lru_cache_lite_obj()
+    if is_error(r9) goto L18 (error at lru_cache_lite:41) else goto L8
+L8:
+    inc_ref r0
+    r9.__mypyc_env__ = r0; r10 = is_error
+    if not r10 goto L19 (error at lru_cache_lite:41) else goto L9 :: bool
+L9:
+    r11 = r0.func
+    if is_error(r11) goto L19 (error at lru_cache_lite:40) else goto L10
+L10:
+    r12 = dank_mids.helpers.lru_cache.globals :: static
+    r13 = 'wraps'
+    r14 = CPyDict_GetItem(r12, r13)
+    if is_error(r14) goto L20 (error at lru_cache_lite:40) else goto L11
+L11:
+    r15 = [r11]
+    r16 = load_address r15
+    r17 = _PyObject_Vectorcall(r14, r16, 1, 0)
+    dec_ref r14
+    if is_error(r17) goto L20 (error at lru_cache_lite:40) else goto L12
+L12:
+    dec_ref r11
+    r18 = [r9]
+    r19 = load_address r18
+    r20 = _PyObject_Vectorcall(r17, r19, 1, 0)
+    dec_ref r17
+    if is_error(r20) goto L19 (error at lru_cache_lite:41) else goto L13
+L13:
+    dec_ref r9
+    inc_ref r20
+    r21 = dank_mids.helpers.lru_cache.globals :: static
+    r22 = 'lru_cache_lite_wrap'
+    r23 = CPyDict_SetItem(r21, r22, r20)
+    dec_ref r20
+    r24 = r23 >= 0 :: signed
+    if not r24 goto L21 (error at lru_cache_lite:41) else goto L14 :: bool
+L14:
+    r25 = r0.cache
+    dec_ref r0
+    if is_error(r25) goto L22 (error at lru_cache_lite:48) else goto L15
+L15:
+    r26 = 'cache'
+    r27 = PyObject_SetAttr(r20, r26, r25)
+    dec_ref r25
+    r28 = r27 >= 0 :: signed
+    if not r28 goto L22 (error at lru_cache_lite:48) else goto L16 :: bool
+L16:
+    return r20
+L17:
+    r29 = <error> :: object
+    return r29
+L18:
+    dec_ref r0
+    goto L17
+L19:
+    dec_ref r0
+    dec_ref r9
+    goto L17
+L20:
+    dec_ref r0
+    dec_ref r9
+    dec_ref r11
+    goto L17
+L21:
+    dec_ref r0
+    dec_ref r20
+    goto L17
+L22:
+    dec_ref r20
+    goto L17
+
+def lru_cache_lite_wrap_lru_cache_lite_nonull_obj.__get__(__mypyc_self__, instance, owner):
+    __mypyc_self__, instance, owner, r0 :: object
+    r1 :: bit
+    r2, r3 :: object
+L0:
+    r0 = load_address _Py_NoneStruct
+    r1 = instance == r0
+    if r1 goto L1 else goto L2 :: bool
+L1:
+    inc_ref __mypyc_self__
+    return __mypyc_self__
+L2:
+    r2 = PyMethod_New(__mypyc_self__, instance)
+    if is_error(r2) goto L4 else goto L3
+L3:
+    return r2
+L4:
+    r3 = <error> :: object
+    return r3
+
+def lru_cache_lite_wrap_lru_cache_lite_nonull_obj.__call__(__mypyc_self__, args):
+    __mypyc_self__ :: dank_mids.helpers.lru_cache.lru_cache_lite_wrap_lru_cache_lite_nonull_obj
+    args :: tuple
+    r0 :: dank_mids.helpers.lru_cache.lru_cache_lite_nonull_env
+    r1 :: dict
+    r2 :: object
+    retval :: union[object, None]
+    r3 :: object
+    r4 :: bit
+    r5 :: object
+    r6 :: list
+    r7 :: object
+    r8 :: tuple
+    r9 :: dict
+    r10 :: object
+    r11 :: dict
+    r12 :: i32
+    r13 :: bit
+    r14 :: object
+L0:
+    r0 = __mypyc_self__.__mypyc_env__
+    if is_error(r0) goto L13 (error at lru_cache_lite_wrap:89) else goto L1
+L1:
+    r1 = r0.cache
+    if is_error(r1) goto L14 (error at lru_cache_lite_wrap:90) else goto L2
+L2:
+    r2 = CPyDict_GetWithNone(r1, args)
+    dec_ref r1
+    if is_error(r2) goto L14 (error at lru_cache_lite_wrap:90) else goto L3
+L3:
+    retval = r2
+    r3 = load_address _Py_NoneStruct
+    r4 = retval == r3
+    if r4 goto L15 else goto L16 :: bool
+L4:
+    r5 = r0.func
+    if is_error(r5) goto L14 (error at lru_cache_lite_wrap:92) else goto L5
+L5:
+    r6 = PyList_New(0)
+    if is_error(r6) goto L17 (error at lru_cache_lite_wrap:92) else goto L6
+L6:
+    r7 = CPyList_Extend(r6, args)
+    if is_error(r7) goto L18 (error at lru_cache_lite_wrap:92) else goto L19
+L7:
+    r8 = PyList_AsTuple(r6)
+    dec_ref r6
+    if is_error(r8) goto L17 (error at lru_cache_lite_wrap:92) else goto L8
+L8:
+    r9 = PyDict_New()
+    if is_error(r9) goto L20 (error at lru_cache_lite_wrap:92) else goto L9
+L9:
+    r10 = PyObject_Call(r5, r8, r9)
+    dec_ref r5
+    dec_ref r8
+    dec_ref r9
+    if is_error(r10) goto L14 (error at lru_cache_lite_wrap:92) else goto L10
+L10:
+    retval = r10
+    r11 = r0.cache
+    dec_ref r0
+    if is_error(r11) goto L21 (error at lru_cache_lite_wrap:93) else goto L11
+L11:
+    r12 = CPyDict_SetItem(r11, args, retval)
+    dec_ref r11
+    r13 = r12 >= 0 :: signed
+    if not r13 goto L21 (error at lru_cache_lite_wrap:93) else goto L12 :: bool
+L12:
+    return retval
+L13:
+    r14 = <error> :: object
+    return r14
+L14:
+    dec_ref r0
+    goto L13
+L15:
+    dec_ref retval
+    goto L4
+L16:
+    dec_ref r0
+    goto L12
+L17:
+    dec_ref r0
+    dec_ref r5
+    goto L13
+L18:
+    dec_ref r0
+    dec_ref r5
+    dec_ref r6
+    goto L13
+L19:
+    dec_ref r7
+    goto L7
+L20:
+    dec_ref r0
+    dec_ref r5
+    dec_ref r8
+    goto L13
+L21:
+    dec_ref retval
+    goto L13
+
+def lru_cache_lite_nonull(func):
+    func :: object
+    r0 :: dank_mids.helpers.lru_cache.lru_cache_lite_nonull_env
+    r1 :: bool
+    r2 :: dict
+    r3 :: bool
+    r4 :: dank_mids.helpers.lru_cache.lru_cache_lite_wrap_lru_cache_lite_nonull_obj
+    r5 :: bool
+    r6 :: object
+    r7 :: dict
+    r8 :: str
+    r9 :: object
+    r10 :: object[1]
+    r11 :: object_ptr
+    r12 :: object
+    r13 :: object[1]
+    r14 :: object_ptr
+    r15 :: object
+    r16 :: dict
+    r17 :: str
+    r18 :: i32
+    r19 :: bit
+    r20 :: dict
+    r21 :: str
+    r22 :: i32
+    r23 :: bit
+    r24 :: object
+L0:
+    r0 = lru_cache_lite_nonull_env()
+    if is_error(r0) goto L14 (error at lru_cache_lite_nonull:52) else goto L1
+L1:
+    inc_ref func
+    r0.func = func; r1 = is_error
+    if not r1 goto L15 (error at lru_cache_lite_nonull:52) else goto L2 :: bool
+L2:
+    r2 = PyDict_New()
+    if is_error(r2) goto L15 (error at lru_cache_lite_nonull:86) else goto L3
+L3:
+    r0.cache = r2; r3 = is_error
+    if not r3 goto L15 (error at lru_cache_lite_nonull:86) else goto L4 :: bool
+L4:
+    r4 = lru_cache_lite_wrap_lru_cache_lite_nonull_obj()
+    if is_error(r4) goto L15 (error at lru_cache_lite_nonull:89) else goto L5
+L5:
+    inc_ref r0
+    r4.__mypyc_env__ = r0; r5 = is_error
+    if not r5 goto L16 (error at lru_cache_lite_nonull:89) else goto L6 :: bool
+L6:
+    r6 = r0.func
+    if is_error(r6) goto L16 (error at lru_cache_lite_nonull:88) else goto L7
+L7:
+    r7 = dank_mids.helpers.lru_cache.globals :: static
+    r8 = 'wraps'
+    r9 = CPyDict_GetItem(r7, r8)
+    if is_error(r9) goto L17 (error at lru_cache_lite_nonull:88) else goto L8
+L8:
+    r10 = [r6]
+    r11 = load_address r10
+    r12 = _PyObject_Vectorcall(r9, r11, 1, 0)
+    dec_ref r9
+    if is_error(r12) goto L17 (error at lru_cache_lite_nonull:88) else goto L9
+L9:
+    dec_ref r6
+    r13 = [r4]
+    r14 = load_address r13
+    r15 = _PyObject_Vectorcall(r12, r14, 1, 0)
+    dec_ref r12
+    if is_error(r15) goto L16 (error at lru_cache_lite_nonull:89) else goto L10
+L10:
+    dec_ref r4
+    inc_ref r15
+    r16 = dank_mids.helpers.lru_cache.globals :: static
+    r17 = 'lru_cache_lite_wrap'
+    r18 = CPyDict_SetItem(r16, r17, r15)
+    dec_ref r15
+    r19 = r18 >= 0 :: signed
+    if not r19 goto L18 (error at lru_cache_lite_nonull:89) else goto L11 :: bool
+L11:
+    r20 = r0.cache
+    dec_ref r0
+    if is_error(r20) goto L19 (error at lru_cache_lite_nonull:96) else goto L12
+L12:
+    r21 = 'cache'
+    r22 = PyObject_SetAttr(r15, r21, r20)
+    dec_ref r20
+    r23 = r22 >= 0 :: signed
+    if not r23 goto L19 (error at lru_cache_lite_nonull:96) else goto L13 :: bool
+L13:
+    return r15
+L14:
+    r24 = <error> :: object
+    return r24
+L15:
+    dec_ref r0
+    goto L14
+L16:
+    dec_ref r0
+    dec_ref r4
+    goto L14
+L17:
+    dec_ref r0
+    dec_ref r4
+    dec_ref r6
+    goto L14
+L18:
+    dec_ref r0
+    dec_ref r15
+    goto L14
+L19:
+    dec_ref r15
+    goto L14
+
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4, r5 :: object
+    r6 :: str
+    r7 :: dict
+    r8, r9 :: object
+    r10 :: str
+    r11 :: dict
+    r12, r13 :: object
+    r14 :: str
+    r15 :: dict
+    r16 :: object
+    r17 :: str
+    r18 :: dict
+    r19 :: str
+    r20 :: object
+    r21 :: object[1]
+    r22 :: object_ptr
+    r23 :: object
+    r24 :: dict
+    r25 :: str
+    r26 :: i32
+    r27 :: bit
+    r28 :: str
+    r29 :: dict
+    r30 :: str
+    r31 :: object
+    r32 :: object[1]
+    r33 :: object_ptr
+    r34 :: object
+    r35 :: dict
+    r36 :: str
+    r37 :: i32
+    r38 :: bit
+    r39, r40 :: str
+    r41 :: list
+    r42, r43, r44 :: ptr
+    r45 :: dict
+    r46 :: str
+    r47 :: i32
+    r48 :: bit
+    r49 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L15 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    r5 = ('wraps',)
+    r6 = 'functools'
+    r7 = dank_mids.helpers.lru_cache.globals :: static
+    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
+    if is_error(r8) goto L15 (error at <module>:1) else goto L4
+L4:
+    functools = r8 :: module
+    dec_ref r8
+    r9 = ('Callable', 'Dict', 'TypeVar')
+    r10 = 'typing'
+    r11 = dank_mids.helpers.lru_cache.globals :: static
+    r12 = CPyImport_ImportFromMany(r10, r9, r9, r11)
+    if is_error(r12) goto L15 (error at <module>:2) else goto L5
+L5:
+    typing = r12 :: module
+    dec_ref r12
+    r13 = ('ParamSpec',)
+    r14 = 'typing_extensions'
+    r15 = dank_mids.helpers.lru_cache.globals :: static
+    r16 = CPyImport_ImportFromMany(r14, r13, r13, r15)
+    if is_error(r16) goto L15 (error at <module>:4) else goto L6
+L6:
+    typing_extensions = r16 :: module
+    dec_ref r16
+    r17 = '__P'
+    r18 = dank_mids.helpers.lru_cache.globals :: static
+    r19 = 'ParamSpec'
+    r20 = CPyDict_GetItem(r18, r19)
+    if is_error(r20) goto L15 (error at <module>:7) else goto L7
+L7:
+    r21 = [r17]
+    r22 = load_address r21
+    r23 = _PyObject_Vectorcall(r20, r22, 1, 0)
+    dec_ref r20
+    if is_error(r23) goto L15 (error at <module>:7) else goto L8
+L8:
+    r24 = dank_mids.helpers.lru_cache.globals :: static
+    r25 = '__P'
+    r26 = CPyDict_SetItem(r24, r25, r23)
+    dec_ref r23
+    r27 = r26 >= 0 :: signed
+    if not r27 goto L15 (error at <module>:7) else goto L9 :: bool
+L9:
+    r28 = '__T'
+    r29 = dank_mids.helpers.lru_cache.globals :: static
+    r30 = 'TypeVar'
+    r31 = CPyDict_GetItem(r29, r30)
+    if is_error(r31) goto L15 (error at <module>:8) else goto L10
+L10:
+    r32 = [r28]
+    r33 = load_address r32
+    r34 = _PyObject_Vectorcall(r31, r33, 1, 0)
+    dec_ref r31
+    if is_error(r34) goto L15 (error at <module>:8) else goto L11
+L11:
+    r35 = dank_mids.helpers.lru_cache.globals :: static
+    r36 = '__T'
+    r37 = CPyDict_SetItem(r35, r36, r34)
+    dec_ref r34
+    r38 = r37 >= 0 :: signed
+    if not r38 goto L15 (error at <module>:8) else goto L12 :: bool
+L12:
+    r39 = 'lru_cache_lite'
+    r40 = 'lru_cache_lite_nonull'
+    r41 = PyList_New(2)
+    if is_error(r41) goto L15 (error at <module>:100) else goto L13
+L13:
+    r42 = get_element_ptr r41 ob_item :: PyListObject
+    r43 = load_mem r42 :: ptr*
+    inc_ref r39
+    set_mem r43, r39 :: builtins.object*
+    inc_ref r40
+    r44 = r43 + 8
+    set_mem r44, r40 :: builtins.object*
+    r45 = dank_mids.helpers.lru_cache.globals :: static
+    r46 = '__all__'
+    r47 = CPyDict_SetItem(r45, r46, r41)
+    dec_ref r41
+    r48 = r47 >= 0 :: signed
+    if not r48 goto L15 (error at <module>:100) else goto L14 :: bool
+L14:
+    return 1
+L15:
+    r49 = <error> :: None
+    return r49
