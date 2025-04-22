@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[37];
+extern PyObject *CPyStatics[44];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -18,8 +18,10 @@ extern CPyModule *CPyModule_dank_mids___helpers____weaklist_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist;
 extern PyObject *CPyStatic_globals;
 extern CPyModule *CPyModule_builtins;
-extern CPyModule *CPyModule_typing;
 extern CPyModule *CPyModule_weakref;
+extern CPyModule *CPyModule_typing;
+extern PyObject *CPyStatic_ref;
+extern PyObject *CPyStatic__call_ref;
 extern PyTypeObject *CPyType_WeakList;
 extern PyObject *CPyDef_WeakList(PyObject *cpy_r_data);
 extern PyTypeObject *CPyType___iter___3_WeakList_env;
