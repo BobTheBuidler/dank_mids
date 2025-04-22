@@ -7,7 +7,7 @@ _T = TypeVar("_T")
 Ref = weakref.ReferenceType[_T]
 GCCallback = Callable[[Any], None]
 
-ref: Final[Callable[[_T, GCCallback], Ref[_T]]] = weakref.ref
+ref: Final[Callable[[_T, Optional[GCCallback]], Ref[_T]]] = weakref.ref
 _call_ref: Final[Callable[[Ref[_T]], _T]] = ref.__call__
 
 
