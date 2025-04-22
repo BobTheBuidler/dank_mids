@@ -53,14 +53,10 @@ typedef struct {
     PyObject *_arg;
     CPyTagged ___mypyc_next_label__;
     PyObject *___mypyc_temp__0;
-    PyObject *___mypyc_temp__1;
+    CPyTagged ___mypyc_temp__1;
     CPyTagged ___mypyc_temp__2;
-    CPyTagged ___mypyc_temp__3;
-    PyObject *___mypyc_temp__4;
+    PyObject *___mypyc_temp__3;
     PyObject *_r;
-    PyObject *_refs;
-    PyObject *___mypyc_temp__5;
-    PyObject *___mypyc_temp__6;
     PyObject *_obj;
 } dank_mids___helpers____weaklist_____iter___3_WeakList_envObject;
 
@@ -72,6 +68,8 @@ typedef struct {
 
 
 struct export_table_dank_mids___helpers____weaklist {
+    PyObject **CPyStatic_ref;
+    PyObject **CPyStatic__call_ref;
     PyTypeObject **CPyType_WeakList;
     PyObject *(*CPyDef_WeakList)(PyObject *cpy_r_data);
     PyTypeObject **CPyType___iter___3_WeakList_env;

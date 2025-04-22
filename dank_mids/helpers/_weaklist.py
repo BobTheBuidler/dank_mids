@@ -1,16 +1,20 @@
-from typing import Any, Dict, Generic, Iterable, Iterator, Optional, TypeVar
-from weakref import ReferenceType, ref
+import weakref
+from typing import Any, Callable, Dict, Final, Generic, Iterable, Iterator, Optional, TypeVar
 
 
 _T = TypeVar("_T")
 
-_get_obj_from_ref = ref.__call__
+Ref = weakref.ReferenceType[_T]
+GCCallback = Callable[[Any], None]
+
+ref: Final[Callable[[_T, Optional[GCCallback]], Ref[_T]]] = weakref.ref
+_call_ref: Final[Callable[[Ref[_T]], Optional[_T]]] = weakref.ref.__call__
 
 
 class WeakList(Generic[_T]):
     def __init__(self, data: Optional[Iterable[_T]] = None) -> None:
         # Mapping from object ID to weak reference
-        self._refs: Dict[int, ReferenceType[_T]] = {}
+        self._refs: Dict[int, Ref[_T]] = {}
         if data is not None:
             self.extend(data)
 
@@ -29,10 +33,11 @@ class WeakList(Generic[_T]):
         return False if ref is None else ref() is item
 
     def __iter__(self) -> Iterator[_T]:
-        refs = (r for r in self._refs.values() if r is not None)
-        for obj in map(_get_obj_from_ref, refs):
-            if obj is not None:
-                yield obj
+        for r in self._refs.values():
+            if r is not None:
+                obj = _call_ref(r)
+                if obj is not None:
+                    yield obj
 
     def append(self, item: _T) -> None:
         # Keep a weak reference with a callback for when the item is collected
