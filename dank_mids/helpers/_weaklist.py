@@ -14,7 +14,7 @@ _call_ref: Final[Callable[[Ref[_T]], Optional[_T]]] = weakref.ref.__call__
 class WeakList(Generic[_T]):
     def __init__(self, data: Optional[Iterable[_T]] = None) -> None:
         # Mapping from object ID to weak reference
-        self._refs: Dict[int, Ref[_T]] = {}
+        self._refs: Final[Dict[int, Ref[_T]]] = {}
         if data is not None:
             self.extend(data)
 
