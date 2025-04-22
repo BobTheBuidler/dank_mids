@@ -1,6 +1,5 @@
 import weakref
-from typing import Any, Dict, Generic, Iterable, Iterator, Optional, TypeVar
-from weakref import ref
+from typing import Any, Dict, Final, Generic, Iterable, Iterator, Optional, TypeVar
 
 
 _T = TypeVar("_T")
