@@ -5,8 +5,11 @@ PyInit_overloaded(void)
 {
     PyObject *tmp;
     if (!(tmp = PyImport_ImportModule("dank_mids.brownie_patch.overloaded__mypyc"))) return NULL;
+    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___brownie_patch___overloaded");
     Py_DECREF(tmp);
-    void *init_func = PyCapsule_Import("dank_mids.brownie_patch.overloaded__mypyc.init_dank_mids___brownie_patch___overloaded", 0);
+    if (capsule == NULL) return NULL;
+    void *init_func = PyCapsule_GetPointer(capsule, "dank_mids.brownie_patch.overloaded__mypyc.init_dank_mids___brownie_patch___overloaded");
+    Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
     }
