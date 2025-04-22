@@ -10,6 +10,7 @@ GCCallback = Callable[[Any], None]
 ref: Final[Callable[[_T, Optional[GCCallback]], Ref[_T]]] = weakref.ref
 _call_ref: Final[Callable[[Ref[_T]], Optional[_T]]] = weakref.ref.__call__
 
+
 @final
 class WeakList(Generic[_T]):
     def __init__(self, data: Optional[Iterable[_T]] = None) -> None:
