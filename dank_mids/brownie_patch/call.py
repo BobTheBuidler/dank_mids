@@ -39,18 +39,17 @@ TypeStr = NewType("TypeStr", str)
 TypeStrs = List[TypeStr]
 
 Decimal: Final[Callable[[Any], decimal.Decimal]] = decimal.Decimal
-
 HexBytes: Final = hexbytes.HexBytes
+Contract: Final = brownie.network.contract.Contract
+ReturnValue: Final = brownie.convert.datatypes.ReturnValue
+HexString: Final = brownie.convert.normalize.HexString
+TupleType: Final = brownie.convert.normalize.TupleType
 
 
 logger: Final[Logger] = getLogger(__name__)
 
 
 # these compile to c constants to avoid global name lookups
-Contract: Final = brownie.network.contract.Contract
-ReturnValue: Final = brownie.convert.datatypes.ReturnValue
-HexString: Final = brownie.convert.normalize.HexString
-TupleType: Final = brownie.convert.normalize.TupleType
 to_bool: Final = brownie.convert.normalize.to_bool
 to_decimal: Final = brownie.convert.normalize.to_decimal
 to_int: Final = brownie.convert.normalize.to_int
