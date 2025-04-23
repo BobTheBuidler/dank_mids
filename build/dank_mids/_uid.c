@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit__uid(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("dank_mids._uid__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("24ef3908732c5ac78273__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____uid");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "dank_mids._uid__mypyc.init_dank_mids____uid");
+    void *init_func = PyCapsule_GetPointer(capsule, "24ef3908732c5ac78273__mypyc.init_dank_mids____uid");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
