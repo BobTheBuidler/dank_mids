@@ -5,32 +5,21 @@ from pickle import PicklingError
 from types import MethodType, ModuleType
 from typing import Any, Callable, Dict, Final, List, NewType, Optional, Sequence, Tuple, Union
 
+import brownie.convert.datatypes
 import brownie.convert.normalize
 import brownie.network.contract
 import eth_abi
+import hexbytes
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
-from brownie.convert.datatypes import ReturnValue
-from brownie.convert.normalize import (
-    ABIType,
-    HexString,
-    TupleType,
-    _check_array,
-    _get_abi_types,
-    to_bool,
-    to_decimal,
-    to_int,
-    to_string,
-    to_uint,
-)
+from brownie.convert.normalize import ABIType
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
-from brownie.network.contract import Contract, ContractCall
+from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from eth_abi.exceptions import InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
-from hexbytes import HexBytes
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
 from web3.types import BlockIdentifier
@@ -51,8 +40,25 @@ TypeStrs = List[TypeStr]
 
 Decimal: Final[Callable[[Any], decimal.Decimal]] = decimal.Decimal
 
+HexBytes: Final = hexbytes.HexBytes
+
 
 logger: Final[Logger] = getLogger(__name__)
+
+
+# these compile to c constants to avoid global name lookups
+Contract: Final = brownie.network.contract.Contract
+ReturnValue: Final = brownie.convert.datatypes.ReturnValue
+HexString: Final = brownie.convert.normalize.HexString
+TupleType: Final = brownie.convert.normalize.TupleType
+to_bool: Final = brownie.convert.normalize.to_bool
+to_decimal: Final = brownie.convert.normalize.to_decimal
+to_int: Final = brownie.convert.normalize.to_int
+to_string: Final = brownie.convert.normalize.to_string
+to_uint: Final = brownie.convert.normalize.to_uint
+_check_array: Final = brownie.convert.normalize._check_array
+_get_abi_types: Final = brownie.convert.normalize._get_abi_types
+
 
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
 """
@@ -94,7 +100,7 @@ See Also:
 
 # We assign this variable so ypricemagic's checksum cache monkey patch will work,
 # This is only relevant to you if your project uses ypricemagic as well.
-to_checksum_address = Address.checksum
+to_checksum_address: Final = Address.checksum
 
 
 def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
