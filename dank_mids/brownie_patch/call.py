@@ -43,7 +43,7 @@ from dank_mids.helpers._helpers import DankWeb3
 
 
 TypeStr = NewType("TypeStr", str)
-TypeStrList = List[TypeStr]
+TypeStrs = List[TypeStr]
 
 
 logger = getLogger(__name__)
@@ -203,10 +203,10 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
 
 
 # These methods were renamed in eth-abi 4.0.0
-__eth_abi_encode: Final[Callable[[TypeStrList, List[Any]], HexStr]] = (
+__eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], HexStr]] = (
     eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
 )
-__eth_abi_decode: Final[Callable[[TypeStrList, HexBytes], Tuple[Any, ...]]] = (
+__eth_abi_decode: Final[Callable[[TypeStrs, HexBytes], Tuple[Any, ...]]] = (
     eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
 )
 
