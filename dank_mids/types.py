@@ -218,7 +218,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         message = self.error.message
         if "out of gas" in message:
             return OutOfGas(self)
-        if "execution reverted" in message or message == "EVM error: InvalidFEOpcode":
+        if "execution reverted" in message or message in {"invalid opcode: INVALID", "EVM error: InvalidFEOpcode"}:
             return ExecutionReverted(self)
         if self.payload_too_large:
             return PayloadTooLarge(self)
