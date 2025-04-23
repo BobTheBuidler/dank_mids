@@ -327,13 +327,13 @@ def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any
     _check_array(values, abi_type.arrlist[-1][0] if len(abi_type.arrlist[-1]) else None)
     item_type = abi_type.item_type
     if item_type.is_array:
-        return list(map(lambda v: _format_array(item_type, v), values))
+        return [_format_array_but_cache_checksums(item_type, v) for v in values]
     elif isinstance(item_type, TupleType):
         components = item_type.components
-        return list(map(lambda v: _format_tuple(components, v), values))
+        return [_format_tuple_but_cache_checksums(components, v) for v in values]
     else:
         type_str = item_type.to_type_str()
-        return list(map(lambda v: _format_single(type_str, v), values))
+        return [_format_single_but_cache_checksums(type_str, v) for v in values]
 
 
 def _format_single_but_cache_checksums(type_str: str, value: Any) -> HexStr:
