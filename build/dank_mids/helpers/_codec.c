@@ -4,12 +4,9 @@ PyMODINIT_FUNC
 PyInit__codec(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("24ef3908732c5ac78273__mypyc"))) return NULL;
-    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___helpers____codec");
+    if (!(tmp = PyImport_ImportModule("0242e99686567650a5ab__mypyc"))) return NULL;
     Py_DECREF(tmp);
-    if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "24ef3908732c5ac78273__mypyc.init_dank_mids___helpers____codec");
-    Py_DECREF(capsule);
+    void *init_func = PyCapsule_Import("0242e99686567650a5ab__mypyc.init_dank_mids___helpers____codec", 0);
     if (!init_func) {
         return NULL;
     }
