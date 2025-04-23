@@ -5,11 +5,8 @@ PyInit__abi(void)
 {
     PyObject *tmp;
     if (!(tmp = PyImport_ImportModule("dank_mids.brownie_patch._abi__mypyc"))) return NULL;
-    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___brownie_patch____abi");
     Py_DECREF(tmp);
-    if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "dank_mids.brownie_patch._abi__mypyc.init_dank_mids___brownie_patch____abi");
-    Py_DECREF(capsule);
+    void *init_func = PyCapsule_Import("dank_mids.brownie_patch._abi__mypyc.init_dank_mids___brownie_patch____abi", 0);
     if (!init_func) {
         return NULL;
     }
