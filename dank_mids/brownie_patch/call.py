@@ -3,7 +3,19 @@ from decimal import Decimal
 from logging import getLogger
 from pickle import PicklingError
 from types import MethodType
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Final,
+    List,
+    NewType,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 import brownie.convert.normalize
 import brownie.network.contract
@@ -42,9 +54,16 @@ from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
 
 
+_T = TypeVar("_T")
+TypeStr = NewType("TypeStr", str)
+TypeStrs = List[TypeStr]
+ListOrTuple = Union[List[_T], Tuple[_T, ...]]
+AbiDict = NewType("AbiDict", Dict[str, Any])
+
+
 logger = getLogger(__name__)
 
-encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
+encode: Final = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
 """
 A lambda function that encodes input data for contract calls.
 
@@ -137,7 +156,7 @@ def _call_no_args(self: ContractMethod) -> Any:
     return self.coroutine().__await__()
 
 
-async def encode_input(call: ContractCall, len_inputs: int, get_request_data, *args) -> HexStr:  # type: ignore [no-untyped-def]
+async def encode_input(call: ContractCall, len_inputs: int, get_request_data: Callable, *args: Any) -> HexStr:  # type: ignore [type-var]
     # We will just assume containers contain a Contract object until we have a better way to handle this
     if any(isinstance(arg, Contract) or hasattr(arg, "__contains__") for arg in args):
         # We can't unpickle these because of the added `coroutine` method.
@@ -152,7 +171,7 @@ async def encode_input(call: ContractCall, len_inputs: int, get_request_data, *a
         except BrokenProcessPool:
             logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_ENCODER_PROCESSES, data, call.abi)  # type: ignore [attr-defined]
             # Let's fix that right up
-            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)  # type: ignore [attr-defined,assignment]
+            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)  # type: ignore [attr-defined, assignment]
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
         except PicklingError:  # But if that fails, don't worry. I got you.
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
@@ -203,7 +222,7 @@ __eth_abi_encode = eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.enc
 __eth_abi_decode = eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
 
 
-def __encode_input(abi: Dict[str, Any], signature: str, *args: Any) -> Union[HexStr, Exception]:
+def __encode_input(abi: AbiDict, signature: str, *args: Any) -> Union[HexStr, Exception]:
     try:
         data = format_input_but_cache_checksums(abi, args)
         types_list = get_type_strings(abi["inputs"])
@@ -225,7 +244,7 @@ if multicall2 := MULTICALL2_ADDRESSES.get(chainid, None):
     _skip_proc_pool.add(to_checksum_address(multicall2))
 
 
-def __decode_output(hexstr: BytesLike, abi: Dict[str, Any]) -> Any:
+def __decode_output(hexstr: BytesLike, abi: AbiDict) -> Any:
     try:
         types_list = get_type_strings(abi["outputs"])
         result = __eth_abi_decode(types_list, HexBytes(hexstr))
@@ -237,7 +256,7 @@ def __decode_output(hexstr: BytesLike, abi: Dict[str, Any]) -> Any:
         return e
 
 
-def __validate_output(abi: Dict[str, Any], hexstr: BytesLike) -> None:
+def __validate_output(abi: AbiDict, hexstr: BytesLike) -> None:
     try:
         selector = HexBytes(hexstr)[:4].hex()
         if selector == "0x08c379a0":
@@ -264,7 +283,7 @@ def __validate_output(abi: Dict[str, Any], hexstr: BytesLike) -> None:
 # NOTE: We do a little monkey patching to save cpu cycles on checksums
 
 
-def format_input_but_cache_checksums(abi: Dict, inputs: Union[List, Tuple]) -> List:  # type: ignore [type-arg]
+def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> List[Any]:
     # Format contract inputs based on ABI types
     if len(inputs) and not len(abi["inputs"]):
         raise TypeError(f"{abi['name']} requires no arguments")
@@ -275,7 +294,7 @@ def format_input_but_cache_checksums(abi: Dict, inputs: Union[List, Tuple]) -> L
         raise type(e)(f"{abi['name']} {e}") from e
 
 
-def format_output_but_cache_checksums(abi: dict, outputs: Union[List, Tuple]) -> ReturnValue:  # type: ignore [type-arg]
+def format_output_but_cache_checksums(abi: AbiDict, outputs: ListOrTuple[Any]) -> ReturnValue:
     # Format contract outputs based on ABI types
     abi_types = _get_abi_types(abi["outputs"])
     result = _format_tuple_but_cache_checksums(abi_types, outputs)
@@ -287,8 +306,8 @@ brownie.network.contract.format_output = format_output_but_cache_checksums
 
 
 def _format_tuple_but_cache_checksums(
-    abi_types: Sequence[ABIType], values: Union[List, Tuple]  # type: ignore [type-arg]
-) -> List:  # type: ignore [type-arg]
+    abi_types: Sequence[ABIType], values: ListOrTuple[Any]
+) -> List[Any]:
     result = []
     _check_array(values, len(abi_types))
     for type_, value in zip(abi_types, values):
@@ -304,7 +323,7 @@ def _format_tuple_but_cache_checksums(
     return result
 
 
-def _format_array_but_cache_checksums(abi_type: ABIType, values: Union[List, Tuple]) -> List:  # type: ignore [type-arg]
+def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any]) -> List[Any]:
     _check_array(values, abi_type.arrlist[-1][0] if len(abi_type.arrlist[-1]) else None)
     item_type = abi_type.item_type
     if item_type.is_array:
@@ -317,7 +336,7 @@ def _format_array_but_cache_checksums(abi_type: ABIType, values: Union[List, Tup
         return list(map(lambda v: _format_single(type_str, v), values))
 
 
-def _format_single_but_cache_checksums(type_str: str, value: Any) -> Any:
+def _format_single_but_cache_checksums(type_str: str, value: Any) -> HexStr:
     # Apply standard formatting to a single value
     if "uint" in type_str:
         return to_uint(value, type_str)

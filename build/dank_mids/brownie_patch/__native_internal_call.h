@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[217];
+extern PyObject *CPyStatics[225];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -45,6 +45,7 @@ extern CPyModule *CPyModule_dank_mids___brownie_patch___types;
 extern CPyModule *CPyModule_dank_mids___exceptions;
 extern CPyModule *CPyModule_dank_mids___helpers___lru_cache;
 extern CPyModule *CPyModule_dank_mids___helpers____helpers;
+extern PyObject *CPyStatic_encode;
 extern PyTypeObject *CPyType___mypyc_lambda__0_obj;
 extern PyObject *CPyDef___mypyc_lambda__0_obj(void);
 extern PyTypeObject *CPyType___mypyc_lambda__1_obj;
