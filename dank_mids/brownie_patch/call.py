@@ -364,7 +364,3 @@ def _format_single_but_cache_checksums(type_str: str, value: Any) -> HexStr:
 brownie.convert.normalize._format_array = _format_array_but_cache_checksums
 brownie.convert.normalize._format_single = _format_single_but_cache_checksums
 brownie.convert.normalize._format_tuple = _format_tuple_but_cache_checksums
-
-_format_array = _format_array_but_cache_checksums
-_format_tuple = _format_tuple_but_cache_checksums
-_format_single = _format_single_but_cache_checksums
