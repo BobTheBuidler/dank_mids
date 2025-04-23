@@ -9,11 +9,11 @@ documentation = "https://BobTheBuidler.github.io/dank_mids"
 license = "MIT"
 readme = "README.md"
 include = [
-    "0242e99686567650a5ab__mypyc.cpython-38-x86_64-linux-gnu.so",
-    "24ef3908732c5ac78273__mypyc.cpython-39-x86_64-linux-gnu.so",
-    "24ef3908732c5ac78273__mypyc.cpython-310-x86_64-linux-gnu.so",
-    "24ef3908732c5ac78273__mypyc.cpython-311-x86_64-linux-gnu.so",
-    "24ef3908732c5ac78273__mypyc.cpython-312-x86_64-linux-gnu.so",
+    { path = "0242e99686567650a5ab__mypyc.cpython-38-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "24ef3908732c5ac78273__mypyc.cpython-39-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "24ef3908732c5ac78273__mypyc.cpython-310-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "24ef3908732c5ac78273__mypyc.cpython-311-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "24ef3908732c5ac78273__mypyc.cpython-312-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
 ]
 [tool.poetry.dependencies]
 python = ">=3.8,<3.13"
