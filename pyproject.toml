@@ -8,7 +8,13 @@ repository = "https://github.com/BobTheBuidler/dank_mids"
 documentation = "https://BobTheBuidler.github.io/dank_mids"
 license = "MIT"
 readme = "README.md"
-
+include = [
+    "0242e99686567650a5ab__mypyc.cpython-38-x86_64-linux-gnu.so",
+    "24ef3908732c5ac78273__mypyc.cpython-39-x86_64-linux-gnu.so",
+    "24ef3908732c5ac78273__mypyc.cpython-310-x86_64-linux-gnu.so",
+    "24ef3908732c5ac78273__mypyc.cpython-311-x86_64-linux-gnu.so",
+    "24ef3908732c5ac78273__mypyc.cpython-312-x86_64-linux-gnu.so",
+]
 [tool.poetry.dependencies]
 python = ">=3.8,<3.13"
 aiofiles = "*"

@@ -168,7 +168,7 @@ def _call_no_args(self: ContractMethod) -> Any:
     return self.coroutine().__await__()
 
 
-async def encode_input(call: ContractCall, len_inputs: int, get_request_data: Callable, *args: Any) -> HexStr:  # type: ignore [type-var]
+async def encode_input(call: ContractCall, len_inputs: int, get_request_data: Callable, *args: Any) -> HexStr:  # type: ignore [type-arg]
     # We will just assume containers contain a Contract object until we have a better way to handle this
     if any(isinstance(arg, Contract) or hasattr(arg, "__contains__") for arg in args):
         # We can't unpickle these because of the added `coroutine` method.
@@ -348,7 +348,7 @@ def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any
         components = item_type.components
         return [_format_tuple_but_cache_checksums(components, v) for v in values]
     else:
-        type_str = item_type.to_type_str()
+        type_str: str = item_type.to_type_str()
         return [_format_single_but_cache_checksums(type_str, v) for v in values]
 
 
