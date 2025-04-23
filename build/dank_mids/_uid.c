@@ -5,11 +5,8 @@ PyInit__uid(void)
 {
     PyObject *tmp;
     if (!(tmp = PyImport_ImportModule("dank_mids._uid__mypyc"))) return NULL;
-    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____uid");
     Py_DECREF(tmp);
-    if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "dank_mids._uid__mypyc.init_dank_mids____uid");
-    Py_DECREF(capsule);
+    void *init_func = PyCapsule_Import("dank_mids._uid__mypyc.init_dank_mids____uid", 0);
     if (!init_func) {
         return NULL;
     }
