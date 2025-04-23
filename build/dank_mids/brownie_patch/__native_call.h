@@ -185,38 +185,6 @@ typedef struct {
     PyObject *___mypyc_env__;
 } dank_mids___brownie_patch___call____request_data_no_args_genObject;
 
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_components;
-    PyObject *_item_type;
-    PyObject *_type_str;
-    PyObject *_abi_type;
-    PyObject *_values;
-} dank_mids___brownie_patch___call____format_array_but_cache_checksums_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___brownie_patch___call_____mypyc_lambda__2__format_array_but_cache_checksums_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___brownie_patch___call_____mypyc_lambda__3__format_array_but_cache_checksums_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___brownie_patch___call_____mypyc_lambda__4__format_array_but_cache_checksums_objObject;
-
 
 struct export_table_dank_mids___brownie_patch___call {
     PyObject **CPyStatic_encode;
@@ -244,14 +212,6 @@ struct export_table_dank_mids___brownie_patch___call {
     PyObject *(*CPyDef__request_data_no_args_env)(void);
     PyTypeObject **CPyType__request_data_no_args_gen;
     PyObject *(*CPyDef__request_data_no_args_gen)(void);
-    PyTypeObject **CPyType__format_array_but_cache_checksums_env;
-    PyObject *(*CPyDef__format_array_but_cache_checksums_env)(void);
-    PyTypeObject **CPyType___mypyc_lambda__2__format_array_but_cache_checksums_obj;
-    PyObject *(*CPyDef___mypyc_lambda__2__format_array_but_cache_checksums_obj)(void);
-    PyTypeObject **CPyType___mypyc_lambda__3__format_array_but_cache_checksums_obj;
-    PyObject *(*CPyDef___mypyc_lambda__3__format_array_but_cache_checksums_obj)(void);
-    PyTypeObject **CPyType___mypyc_lambda__4__format_array_but_cache_checksums_obj;
-    PyObject *(*CPyDef___mypyc_lambda__4__format_array_but_cache_checksums_obj)(void);
     PyObject *(*CPyDef___mypyc_lambda__0_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
     PyObject *(*CPyDef___mypyc_lambda__0_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_args);
     PyObject *(*CPyDef___mypyc_lambda__1_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
@@ -298,12 +258,6 @@ struct export_table_dank_mids___brownie_patch___call {
     PyObject *(*CPyDef_format_input_but_cache_checksums)(PyObject *cpy_r_abi, PyObject *cpy_r_inputs);
     PyObject *(*CPyDef_format_output_but_cache_checksums)(PyObject *cpy_r_abi, PyObject *cpy_r_outputs);
     PyObject *(*CPyDef__format_tuple_but_cache_checksums)(PyObject *cpy_r_abi_types, PyObject *cpy_r_values);
-    PyObject *(*CPyDef___mypyc_lambda__2__format_array_but_cache_checksums_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef___mypyc_lambda__2__format_array_but_cache_checksums_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_v);
-    PyObject *(*CPyDef___mypyc_lambda__3__format_array_but_cache_checksums_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef___mypyc_lambda__3__format_array_but_cache_checksums_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_v);
-    PyObject *(*CPyDef___mypyc_lambda__4__format_array_but_cache_checksums_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef___mypyc_lambda__4__format_array_but_cache_checksums_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_v);
     PyObject *(*CPyDef__format_array_but_cache_checksums)(PyObject *cpy_r_abi_type, PyObject *cpy_r_values);
     PyObject *(*CPyDef__format_single_but_cache_checksums)(PyObject *cpy_r_type_str, PyObject *cpy_r_value);
     char (*CPyDef___top_level__)(void);
