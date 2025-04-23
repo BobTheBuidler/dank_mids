@@ -1,6 +1,6 @@
 import decimal
 from concurrent.futures.process import BrokenProcessPool
-from logging import getLogger
+from logging import Logger, getLogger
 from pickle import PicklingError
 from types import MethodType, ModuleType
 from typing import Any, Callable, Dict, Final, List, NewType, Optional, Sequence, Tuple, Union
@@ -52,7 +52,7 @@ TypeStrs = List[TypeStr]
 Decimal: Final[Callable[[Any], decimal.Decimal]] = decimal.Decimal
 
 
-logger = getLogger(__name__)
+logger: Final[Logger] = getLogger(__name__)
 
 encode = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
 """
