@@ -36,7 +36,6 @@ from multicall.constants import MULTICALL2_ADDRESSES
 from web3.types import BlockIdentifier
 
 from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids._mode import OperationMode
 from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.exceptions import Revert
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
