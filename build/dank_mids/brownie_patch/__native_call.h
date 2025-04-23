@@ -219,6 +219,7 @@ typedef struct {
 
 
 struct export_table_dank_mids___brownie_patch___call {
+    PyObject **CPyStatic_encode;
     PyTypeObject **CPyType___mypyc_lambda__0_obj;
     PyObject *(*CPyDef___mypyc_lambda__0_obj)(void);
     PyTypeObject **CPyType___mypyc_lambda__1_obj;
