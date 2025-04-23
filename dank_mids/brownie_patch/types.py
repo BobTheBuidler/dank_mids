@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple, TypeVar, Union
+from typing import Any, Dict, Optional, Tuple, TypeVar, Union, final
 
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from brownie.typing import AccountsType
@@ -12,6 +12,7 @@ ContractMethod = Union[ContractCall, ContractTx, OverloadedMethod]
 """Type alias for Brownie contract methods."""
 
 
+@final
 class DankContractCall(_DankMethod, ContractCall):  # type: ignore [misc]
     """
     A subclass of `brownie.network.contract.ContractCall` with async support via the `coroutine` method.
@@ -23,6 +24,7 @@ class DankContractCall(_DankMethod, ContractCall):  # type: ignore [misc]
     """
 
 
+@final
 class DankContractTx(_DankMethod, ContractTx):  # type: ignore [misc]
     """
     A subclass of `brownie.network.contract.ContractTx` with async support via the `coroutine` method.
@@ -38,6 +40,7 @@ _NonOverloaded = Union[DankContractCall, DankContractTx]
 """Type alias for non-overloaded Dank contract methods."""
 
 
+@final
 class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ignore [misc]
     """
     A subclass of `brownie.network.contract.OverloadedMethod` with async support via the `coroutine` method.

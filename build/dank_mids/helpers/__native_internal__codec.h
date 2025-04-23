@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[83];
+extern PyObject *CPyStatics[86];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -20,12 +20,21 @@ extern PyObject *CPyStatic_globals;
 extern CPyModule *CPyModule_builtins;
 extern CPyModule *CPyModule_itertools;
 extern CPyModule *CPyModule_typing;
-extern CPyModule *CPyModule_eth_abi___abi;
-extern CPyModule *CPyModule_eth_abi___decoding;
-extern CPyModule *CPyModule_eth_abi___encoding;
 extern CPyModule *CPyModule_msgspec;
 extern CPyModule *CPyModule_msgspec___json;
+extern CPyModule *CPyModule_eth_abi;
+extern CPyModule *CPyModule_eth_abi___abi;
+extern CPyModule *CPyModule_eth_abi___encoding;
+extern CPyModule *CPyModule_dank_mids;
 extern CPyModule *CPyModule_dank_mids___types;
+extern PyObject *CPyStatic_Raw;
+extern PyObject *CPyStatic_RawResponse;
+extern PyObject *CPyStatic_ContextFramesBytesIO;
+extern PyObject *CPyStatic_DecodeError;
+extern PyObject *CPyStatic_json_encode;
+extern PyObject *CPyStatic_json_decode;
+extern PyObject *CPyStatic_encode_uint_256;
+extern PyObject *CPyStatic__encode_hook;
 extern PyObject *CPyStatic__mcall_encoder;
 extern PyObject *CPyStatic__array_encoder;
 extern PyObject *CPyStatic__item_encoder;
