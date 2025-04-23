@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[225];
+extern PyObject *CPyStatics[224];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -70,14 +70,6 @@ extern PyTypeObject *CPyType__request_data_no_args_env;
 extern PyObject *CPyDef__request_data_no_args_env(void);
 extern PyTypeObject *CPyType__request_data_no_args_gen;
 extern PyObject *CPyDef__request_data_no_args_gen(void);
-extern PyTypeObject *CPyType__format_array_but_cache_checksums_env;
-extern PyObject *CPyDef__format_array_but_cache_checksums_env(void);
-extern PyTypeObject *CPyType___mypyc_lambda__2__format_array_but_cache_checksums_obj;
-extern PyObject *CPyDef___mypyc_lambda__2__format_array_but_cache_checksums_obj(void);
-extern PyTypeObject *CPyType___mypyc_lambda__3__format_array_but_cache_checksums_obj;
-extern PyObject *CPyDef___mypyc_lambda__3__format_array_but_cache_checksums_obj(void);
-extern PyTypeObject *CPyType___mypyc_lambda__4__format_array_but_cache_checksums_obj;
-extern PyObject *CPyDef___mypyc_lambda__4__format_array_but_cache_checksums_obj(void);
 extern PyObject *CPyDef___mypyc_lambda__0_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 extern PyObject *CPyPy___mypyc_lambda__0_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef___mypyc_lambda__0_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_args);
@@ -170,18 +162,6 @@ extern PyObject *CPyDef_format_output_but_cache_checksums(PyObject *cpy_r_abi, P
 extern PyObject *CPyPy_format_output_but_cache_checksums(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__format_tuple_but_cache_checksums(PyObject *cpy_r_abi_types, PyObject *cpy_r_values);
 extern PyObject *CPyPy__format_tuple_but_cache_checksums(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef___mypyc_lambda__2__format_array_but_cache_checksums_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-extern PyObject *CPyPy___mypyc_lambda__2__format_array_but_cache_checksums_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef___mypyc_lambda__2__format_array_but_cache_checksums_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_v);
-extern PyObject *CPyPy___mypyc_lambda__2__format_array_but_cache_checksums_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef___mypyc_lambda__3__format_array_but_cache_checksums_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-extern PyObject *CPyPy___mypyc_lambda__3__format_array_but_cache_checksums_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef___mypyc_lambda__3__format_array_but_cache_checksums_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_v);
-extern PyObject *CPyPy___mypyc_lambda__3__format_array_but_cache_checksums_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef___mypyc_lambda__4__format_array_but_cache_checksums_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-extern PyObject *CPyPy___mypyc_lambda__4__format_array_but_cache_checksums_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef___mypyc_lambda__4__format_array_but_cache_checksums_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_v);
-extern PyObject *CPyPy___mypyc_lambda__4__format_array_but_cache_checksums_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__format_array_but_cache_checksums(PyObject *cpy_r_abi_type, PyObject *cpy_r_values);
 extern PyObject *CPyPy__format_array_but_cache_checksums(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__format_single_but_cache_checksums(PyObject *cpy_r_type_str, PyObject *cpy_r_value);
