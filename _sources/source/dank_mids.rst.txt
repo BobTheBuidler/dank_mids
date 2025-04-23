@@ -21,14 +21,6 @@ dank\_mids.ENVIRONMENT\_VARIABLES module
    :undoc-members:
    :show-inheritance:
 
-dank\_mids.brownie\_patch\_\_mypyc module
------------------------------------------
-
-.. automodule:: dank_mids.brownie_patch__mypyc
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 dank\_mids.constants module
 ---------------------------
 

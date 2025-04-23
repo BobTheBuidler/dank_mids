@@ -20,14 +20,6 @@ dank\_mids.helpers.lru\_cache module
    :undoc-members:
    :show-inheritance:
 
-dank\_mids.helpers.lru\_cache\_\_mypyc module
----------------------------------------------
-
-.. automodule:: dank_mids.helpers.lru_cache__mypyc
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
