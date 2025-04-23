@@ -134,8 +134,8 @@ def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
 
 
 @lru_cache_lite_nonull
-def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable:  # type: ignore [type-arg]
-    if APPLICATION_MODE or len_inputs:  # type: ignore [attr-defined]
+def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
+    if APPLICATION_MODE or len_inputs:
         get_request_data = encode
     else:
         get_request_data = _request_data_no_args  # type: ignore [assignment]
