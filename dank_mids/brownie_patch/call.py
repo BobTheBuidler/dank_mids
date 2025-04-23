@@ -57,7 +57,7 @@ from dank_mids.helpers._helpers import DankWeb3
 _T = TypeVar("_T")
 TypeStr = NewType("TypeStr", str)
 TypeStrs = List[TypeStr]
-ListOrTuple = Union[List[_T], Tuple[_T]]
+ListOrTuple = Union[List[_T], Tuple[_T, ...]]
 AbiDict = NewType("AbiDict", Dict[str, Any])
 
 
