@@ -1,24 +1,17 @@
 from itertools import accumulate, chain
 from typing import Any, AnyStr, Callable, Final, Iterable, List, Union, Tuple, TypeVar
 
+import msgspec
+import msgspec.json
+from eth_abi import decoding, encoding
 from eth_abi.abi import default_codec
-from eth_abi.decoding import ContextFramesBytesIO
-from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder, encode_uint_256
-from msgspec import DecodeError, Raw
-from msgspec.json import decode as json_decode
-from msgspec.json import encode as json_encode
+from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 
-from dank_mids.types import (
-    JSONRPCBatchResponseRaw,
-    MulticallChunk,
-    PartialResponse,
-    RawResponse,
-    _encode_hook,
-)
+from dank_mids import types
+from dank_mids.types import JSONRPCBatchResponseRaw, MulticallChunk, PartialResponse
 
 
 __T = TypeVar("__T")
-
 
 MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
 
@@ -26,7 +19,19 @@ DecodedMulticall = Tuple[int, int, Tuple[Tuple["Success", bytes], ...]]
 MulticallDecoder = Callable[..., DecodedMulticall]
 
 
-def decode_raw(data: AnyStr) -> RawResponse:
+# these compile to c constants
+Raw: Final = msgspec.Raw
+RawResponse: Final = types.RawResponse
+ContextFramesBytesIO: Final = decoding.ContextFramesBytesIO
+DecodeError: Final = msgspec.DecodeError
+
+json_encode: Final = msgspec.json.encode
+json_decode: Final = msgspec.json.decode
+encode_uint_256: Final = encoding.encode_uint_256
+_encode_hook: Final = types._encode_hook
+
+
+def decode_raw(data: AnyStr) -> types.RawResponse:
     """
     Decode json-encoded bytes into a `msgspec.Raw` object.
 
@@ -43,7 +48,7 @@ def decode_raw(data: AnyStr) -> RawResponse:
         raise
 
 
-def decode_jsonrpc_batch(data: AnyStr) -> Union[PartialResponse, List[RawResponse]]:
+def decode_jsonrpc_batch(data: AnyStr) -> Union[PartialResponse, List[types.RawResponse]]:
     """
     Decode json-encoded bytes into a list of response structs, or a single error response struct if applicable.
 
@@ -54,7 +59,7 @@ def decode_jsonrpc_batch(data: AnyStr) -> Union[PartialResponse, List[RawRespons
         Either a PartialResponse if there's an error, or a list of RawResponse objects.
     """
     decoded = json_decode(data, type=JSONRPCBatchResponseRaw)
-    return decoded if isinstance(decoded, PartialResponse) else list(map(RawResponse, decoded))
+    return [RawResponse(d) for d in decoded] if isinstance(decoded, list) else decoded
 
 
 def encode(obj: Any) -> bytes:
@@ -93,11 +98,11 @@ def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
 
 
 def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]:
-    tail_chunks = tuple(map(_item_encoder, values))
+    tail_chunks = [_item_encoder(v) for v in values]
     count = len(tail_chunks)
     head_length = 32 * count
-    tail_offsets = chain((0,), accumulate(map(len, tail_chunks[:-1])))
-    head_chunks = map(encode_uint_256, map(head_length.__add__, tail_offsets))
+    tail_offsets = chain((0,), accumulate((len(chunk) for chunk in tail_chunks[:-1])))
+    head_chunks = (encode_uint_256(head_length + tail_offset) for tail_offset in tail_offsets)
     return b"".join(chain(head_chunks, tail_chunks)), count
 
 

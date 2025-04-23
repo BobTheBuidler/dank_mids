@@ -19,6 +19,14 @@ typedef struct tuple_T2OI {
 } tuple_T2OI;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T2OO
+#define MYPYC_DECLARED_tuple_T2OO
+typedef struct tuple_T2OO {
+    PyObject *f0;
+    PyObject *f1;
+} tuple_T2OO;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T1I
 #define MYPYC_DECLARED_tuple_T1I
 typedef struct tuple_T1I {
@@ -43,14 +51,6 @@ typedef struct tuple_T3IIO {
 } tuple_T3IIO;
 #endif
 
-#ifndef MYPYC_DECLARED_tuple_T2OO
-#define MYPYC_DECLARED_tuple_T2OO
-typedef struct tuple_T2OO {
-    PyObject *f0;
-    PyObject *f1;
-} tuple_T2OO;
-#endif
-
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
@@ -59,6 +59,14 @@ typedef struct {
 
 
 struct export_table_dank_mids___helpers____codec {
+    PyObject **CPyStatic_Raw;
+    PyObject **CPyStatic_RawResponse;
+    PyObject **CPyStatic_ContextFramesBytesIO;
+    PyObject **CPyStatic_DecodeError;
+    PyObject **CPyStatic_json_encode;
+    PyObject **CPyStatic_json_decode;
+    PyObject **CPyStatic_encode_uint_256;
+    PyObject **CPyStatic__encode_hook;
     PyObject **CPyStatic__mcall_encoder;
     PyObject **CPyStatic__array_encoder;
     PyObject **CPyStatic__item_encoder;

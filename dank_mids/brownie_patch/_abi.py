@@ -1,9 +1,10 @@
 import functools
-from typing import Any
+from typing import Any, final
 
 from brownie.convert.utils import build_function_selector, build_function_signature
 
 
+@final
 class FunctionABI:
     """
     A class to hold function ABI information.
@@ -38,8 +39,8 @@ class FunctionABI:
         This is used in Ethereum transactions to identify which function to call.
         """
 
-    @functools.lru_cache(maxsize=None)
     @staticmethod
+    @functools.lru_cache(maxsize=None)
     def singleton(**abi: Any) -> "FunctionABI":
         """
         Get a singleton FunctionABI to hold function ABI information.
