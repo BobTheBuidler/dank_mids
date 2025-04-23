@@ -19,6 +19,13 @@ typedef struct tuple_T2OO {
 } tuple_T2OO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T1O
+#define MYPYC_DECLARED_tuple_T1O
+typedef struct tuple_T1O {
+    PyObject *f0;
+} tuple_T1O;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T5OOOOO
 #define MYPYC_DECLARED_tuple_T5OOOOO
 typedef struct tuple_T5OOOOO {
@@ -187,7 +194,28 @@ typedef struct {
 
 
 struct export_table_dank_mids___brownie_patch___call {
+    PyObject **CPyStatic_ENVS;
+    char *CPyStatic_APPLICATION_MODE;
+    PyObject **CPyStatic_Decimal;
+    PyObject **CPyStatic_HexBytes;
+    PyObject **CPyStatic_Contract;
+    PyObject **CPyStatic_ReturnValue;
+    PyObject **CPyStatic_HexString;
+    PyObject **CPyStatic_TupleType;
+    PyObject **CPyStatic_Revert;
+    PyObject **CPyStatic_to_bool;
+    PyObject **CPyStatic_to_decimal;
+    PyObject **CPyStatic_to_int;
+    PyObject **CPyStatic_to_string;
+    PyObject **CPyStatic_to_uint;
+    PyObject **CPyStatic__check_array;
+    PyObject **CPyStatic__get_abi_types;
+    PyObject **CPyStatic_logger;
     PyObject **CPyStatic_encode;
+    PyObject **CPyStatic_decode;
+    PyObject **CPyStatic_to_checksum_address;
+    PyObject **CPyStatic___eth_abi_encode;
+    PyObject **CPyStatic___eth_abi_decode;
     PyTypeObject **CPyType___mypyc_lambda__0_obj;
     PyObject *(*CPyDef___mypyc_lambda__0_obj)(void);
     PyTypeObject **CPyType___mypyc_lambda__1_obj;

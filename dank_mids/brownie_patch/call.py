@@ -1,8 +1,8 @@
+import decimal
 from concurrent.futures.process import BrokenProcessPool
-from decimal import Decimal
-from logging import getLogger
+from logging import Logger, getLogger
 from pickle import PicklingError
-from types import MethodType
+from types import MethodType, ModuleType
 from typing import (
     Any,
     Callable,
@@ -17,41 +17,33 @@ from typing import (
     Union,
 )
 
+import brownie.convert.datatypes
 import brownie.convert.normalize
 import brownie.network.contract
 import eth_abi
+import hexbytes
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
-from brownie.convert.datatypes import ReturnValue
-from brownie.convert.normalize import (
-    ABIType,
-    HexString,
-    TupleType,
-    _check_array,
-    _get_abi_types,
-    to_bool,
-    to_decimal,
-    to_int,
-    to_string,
-    to_uint,
-)
+from brownie.convert.normalize import ABIType
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
-from brownie.network.contract import Contract, ContractCall
+from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
 from eth_abi.exceptions import InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
-from hexbytes import HexBytes
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
 from web3.types import BlockIdentifier
 
-from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids import ENVIRONMENT_VARIABLES, exceptions
 from dank_mids.brownie_patch.types import ContractMethod
-from dank_mids.exceptions import Revert
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
+
+
+ENVS: Final[ModuleType] = ENVIRONMENT_VARIABLES
+APPLICATION_MODE: Final[bool] = ENVS.OPERATION_MODE.application
 
 
 _T = TypeVar("_T")
@@ -61,7 +53,27 @@ ListOrTuple = Union[List[_T], Tuple[_T, ...]]
 AbiDict = NewType("AbiDict", Dict[str, Any])
 
 
-logger = getLogger(__name__)
+# these compile to c constants to avoid global name lookups
+Decimal: Final[Callable[[Any], decimal.Decimal]] = decimal.Decimal
+HexBytes: Final = hexbytes.HexBytes
+Contract: Final = brownie.network.contract.Contract
+ReturnValue: Final = brownie.convert.datatypes.ReturnValue
+HexString: Final = brownie.convert.normalize.HexString
+TupleType: Final = brownie.convert.normalize.TupleType
+
+Revert: Final = exceptions.Revert
+
+to_bool: Final = brownie.convert.normalize.to_bool
+to_decimal: Final = brownie.convert.normalize.to_decimal
+to_int: Final = brownie.convert.normalize.to_int
+to_string: Final = brownie.convert.normalize.to_string
+to_uint: Final = brownie.convert.normalize.to_uint
+_check_array: Final = brownie.convert.normalize._check_array
+_get_abi_types: Final = brownie.convert.normalize._get_abi_types
+
+
+logger: Final[Logger] = getLogger(__name__)
+
 
 encode: Final = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
 """
@@ -82,7 +94,7 @@ See Also:
     :func:`__encode_input`
 """
 
-decode = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
+decode: Final[Callable[[Any, bytes], Any]] = lambda self, data: ENVS.BROWNIE_DECODER_PROCESSES.run(__decode_output, data, self.abi)  # type: ignore [attr-defined]
 """
 A lambda function that decodes output data for contract calls.
 
@@ -103,7 +115,7 @@ See Also:
 
 # We assign this variable so ypricemagic's checksum cache monkey patch will work,
 # This is only relevant to you if your project uses ypricemagic as well.
-to_checksum_address = Address.checksum
+to_checksum_address: Final = Address.checksum
 
 
 def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
@@ -123,7 +135,7 @@ def _patch_call(call: ContractCall, w3: DankWeb3) -> None:
 
 @lru_cache_lite_nonull
 def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable:  # type: ignore [type-arg]
-    if ENVS.OPERATION_MODE.application or len_inputs:  # type: ignore [attr-defined]
+    if APPLICATION_MODE or len_inputs:  # type: ignore [attr-defined]
         get_request_data = encode
     else:
         get_request_data = _request_data_no_args  # type: ignore [assignment]
@@ -218,8 +230,12 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
 
 
 # These methods were renamed in eth-abi 4.0.0
-__eth_abi_encode = eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
-__eth_abi_decode = eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+__eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], bytes]] = (
+    eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
+)
+__eth_abi_decode: Final[Callable[[TypeStrs, hexbytes.HexBytes], Tuple[Any, ...]]] = (
+    eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+)
 
 
 def __encode_input(abi: AbiDict, signature: str, *args: Any) -> Union[HexStr, Exception]:
@@ -249,9 +265,7 @@ def __decode_output(hexstr: BytesLike, abi: AbiDict) -> Any:
         types_list = get_type_strings(abi["outputs"])
         result = __eth_abi_decode(types_list, HexBytes(hexstr))
         result = format_output_but_cache_checksums(abi, result)
-        if len(result) == 1:
-            result = result[0]
-        return result
+        return result[0] if len(result) == 1 else result
     except Exception as e:
         return e
 
@@ -294,7 +308,9 @@ def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> 
         raise type(e)(f"{abi['name']} {e}") from e
 
 
-def format_output_but_cache_checksums(abi: AbiDict, outputs: ListOrTuple[Any]) -> ReturnValue:
+def format_output_but_cache_checksums(
+    abi: AbiDict, outputs: ListOrTuple[Any]
+) -> brownie.convert.datatypes.ReturnValue:
     # Format contract outputs based on ABI types
     abi_types = _get_abi_types(abi["outputs"])
     result = _format_tuple_but_cache_checksums(abi_types, outputs)
@@ -359,8 +375,6 @@ def _format_single_but_cache_checksums(type_str: str, value: Any) -> HexStr:
 
 
 # NOTE: The monkey patches above work for call input and output but the ones below help with event decoding.
-
-
 brownie.convert.normalize._format_array = _format_array_but_cache_checksums
 brownie.convert.normalize._format_single = _format_single_but_cache_checksums
 brownie.convert.normalize._format_tuple = _format_tuple_but_cache_checksums
