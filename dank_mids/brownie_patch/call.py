@@ -156,7 +156,7 @@ def _call_no_args(self: ContractMethod) -> Any:
     return self.coroutine().__await__()
 
 
-async def encode_input(call: ContractCall, len_inputs: int, get_request_data, *args) -> HexStr:  # type: ignore [no-untyped-def]
+async def encode_input(call: ContractCall, len_inputs: int, get_request_data: Callable, *args: Any) -> HexStr:  # type: ignore [type-var]
     # We will just assume containers contain a Contract object until we have a better way to handle this
     if any(isinstance(arg, Contract) or hasattr(arg, "__contains__") for arg in args):
         # We can't unpickle these because of the added `coroutine` method.
@@ -171,7 +171,7 @@ async def encode_input(call: ContractCall, len_inputs: int, get_request_data, *a
         except BrokenProcessPool:
             logger.critical("Oh fuck, you broke the %s while decoding %s with abi %s", ENVS.BROWNIE_ENCODER_PROCESSES, data, call.abi)  # type: ignore [attr-defined]
             # Let's fix that right up
-            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)  # type: ignore [attr-defined,assignment]
+            ENVS.BROWNIE_ENCODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.BROWNIE_ENCODER_PROCESSES._max_workers)  # type: ignore [attr-defined, assignment]
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
         except PicklingError:  # But if that fails, don't worry. I got you.
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
@@ -283,7 +283,7 @@ def __validate_output(abi: AbiDict, hexstr: BytesLike) -> None:
 # NOTE: We do a little monkey patching to save cpu cycles on checksums
 
 
-def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> List[Any]:  # type: ignore [type-arg]
+def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> List[Any]:
     # Format contract inputs based on ABI types
     if len(inputs) and not len(abi["inputs"]):
         raise TypeError(f"{abi['name']} requires no arguments")
@@ -294,7 +294,7 @@ def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> 
         raise type(e)(f"{abi['name']} {e}") from e
 
 
-def format_output_but_cache_checksums(abi: AbiDict, outputs: ListOrTuple[Any]) -> ReturnValue:  # type: ignore [type-arg]
+def format_output_but_cache_checksums(abi: AbiDict, outputs: ListOrTuple[Any]) -> ReturnValue:
     # Format contract outputs based on ABI types
     abi_types = _get_abi_types(abi["outputs"])
     result = _format_tuple_but_cache_checksums(abi_types, outputs)
