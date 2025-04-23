@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, Final, Generic, Iterable, Iterator, Opti
 
 _T = TypeVar("_T")
 
-Ref = weakref.ReferenceType[_T]
+Ref = weakref.ReferenceType
 GCCallback = Callable[[Any], None]
 
 ref: Final[Callable[[_T, Optional[GCCallback]], Ref[_T]]] = weakref.ref
