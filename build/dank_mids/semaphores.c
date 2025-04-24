@@ -1,14 +1,14 @@
 #include <Python.h>
 
 PyMODINIT_FUNC
-PyInit_constants(void)
+PyInit_semaphores(void)
 {
     PyObject *tmp;
     if (!(tmp = PyImport_ImportModule("302c1e1ec9faa87d20e6__mypyc"))) return NULL;
-    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___constants");
+    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___semaphores");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "302c1e1ec9faa87d20e6__mypyc.init_dank_mids___constants");
+    void *init_func = PyCapsule_GetPointer(capsule, "302c1e1ec9faa87d20e6__mypyc.init_dank_mids___semaphores");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
@@ -18,4 +18,4 @@ PyInit_constants(void)
 
 // distutils sometimes spuriously tells cl to export CPyInit___init__,
 // so provide that so it chills out
-PyMODINIT_FUNC PyInit___init__(void) { return PyInit_constants(); }
+PyMODINIT_FUNC PyInit___init__(void) { return PyInit_semaphores(); }
