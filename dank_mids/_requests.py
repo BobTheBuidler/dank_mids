@@ -21,6 +21,7 @@ from typing import (
     Callable,
     DefaultDict,
     Dict,
+    Final,
     Generator,
     Generic,
     Iterable,
@@ -109,11 +110,11 @@ if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
 
-TIMEOUT_SECONDS_SMALL = 15
-TIMEOUT_SECONDS_BIG = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
+TIMEOUT_SECONDS_SMALL: Final = 30
+TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
 
-logger = getLogger(__name__)
-batch_size_logger = getLogger("dank_mids.batch_size")
+logger: Final = getLogger(__name__)
+batch_size_logger: Final = getLogger("dank_mids.batch_size")
 
 
 _Response = TypeVar(
@@ -125,8 +126,8 @@ class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
 
-_super_init = a_sync.Event.__init__
-_super_set = a_sync.Event.set
+_super_init: Final = a_sync.Event.__init__
+_super_set: Final = a_sync.Event.set
 
 
 class _RequestEvent(a_sync.Event):
@@ -178,7 +179,7 @@ class _RequestBase(Generic[_Response]):
 
 ### Single requests:
 
-BYPASS_METHODS = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
+BYPASS_METHODS: Final = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
 """
 A tuple of method names that should bypass batching.
 These methods are typically handled separately or have special requirements.
@@ -200,9 +201,9 @@ def _should_batch_method(method: str) -> bool:
     return all(bypass not in method for bypass in BYPASS_METHODS)
 
 
-_REVERT_EXC_TYPES = ContractLogicError, ExecutionReverted
+_REVERT_EXC_TYPES: Final = ContractLogicError, ExecutionReverted
 
-_request_base_init = _RequestBase.__init__
+_request_base_init: Final = _RequestBase.__init__
 
 
 class RPCRequest(_RequestBase[RPCResponse]):
@@ -215,8 +216,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
     _debug_logs_enabled: bool = False
     """`True` if debug logging is currently enabled."""
 
-    method: RPCEndpoint
-    _fut: DebuggableFuture
+    method: Final[RPCEndpoint]
+    params: Final[Any]
+    raw: Final[bool]
+    _fut: Final[DebuggableFuture]
+    _daemon: Final[Optional["Task[None]"]]
+    __dict__: Final[Dict[str, Any]]
 
     __slots__ = "method", "params", "raw", "_daemon", "__dict__"
 
@@ -540,12 +545,11 @@ class RPCRequest(_RequestBase[RPCResponse]):
         log_func("exception set: %s", repr(exc))
 
 
-_is_revert_bytes = lambda data: isinstance(data, bytes) and any(
-    filter(data.startswith, constants.REVERT_SELECTORS)
-)
+def _is_revert_bytes(data: Any) -> bool:
+    return isinstance(data, bytes) and any(filter(data.startswith, constants.REVERT_SELECTORS))
 
 
-_rpcrequest_init = RPCRequest.__init__
+_rpcrequest_init: Final = RPCRequest.__init__
 
 
 @final
@@ -628,8 +632,8 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 
 
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
-    calls: WeakList[_Request]
-    _done: _RequestEvent
+    calls: Final[WeakList[_Request]]
+    _done: Final[_RequestEvent]
 
     _awaited: bool = False
     """A flag indicating whether the batch has been awaited."""
@@ -728,7 +732,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
                 i += 1
 
 
-_batch_init = _Batch.__init__
+_batch_init: Final = _Batch.__init__
 
 
 @final
@@ -1409,6 +1413,14 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             )
 
 
+# NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
+_DONT_NEED_TO_SEE_ERRS = [
+    "non_empty_data",
+    "exceeding --rpc.returndata.limit",
+    "'code': 429",
+]
+
+
 def _log_exception(e: Exception) -> bool:
     """
     Log exceptions that occur during a multicall or batch.
@@ -1426,15 +1438,10 @@ def _log_exception(e: Exception) -> bool:
     if type(e) is OutOfGas:
         return ENVS.DEBUG
 
-    # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
     # TODO: Better filter what we choose to log here
-    dont_need_to_see_errs = [
-        "non_empty_data",
-        "exceeding --rpc.returndata.limit",
-        "'code': 429",
-    ]
 
-    dont_need_to_see_errs += [
+    dont_need_to_see_errs = [
+        *_DONT_NEED_TO_SEE_ERRS,
         # We catch and correct these
         "invalid request",
         # We pass these down to the call they originated from
@@ -1453,9 +1460,9 @@ def _log_exception(e: Exception) -> bool:
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
 
 
-_log_debug = logger.debug
-_log_info = logger.info
-_log_warning = logger.warning
-_logger_is_enabled_for = logger.isEnabledFor
-_log_devhint = stats.logger.devhint
-_demo_logger_info = demo_logger.info
+_log_debug: Final = logger.debug
+_log_info: Final = logger.info
+_log_warning: Final = logger.warning
+_logger_is_enabled_for: Final = logger.isEnabledFor
+_log_devhint: Final = stats.logger.devhint
+_demo_logger_info: Final = demo_logger.info
