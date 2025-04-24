@@ -709,7 +709,9 @@ struct export_table_e6672d9bb5f5e6f1d9d6 {
     char (*CPyDef_semaphores____BlockSemaphoreContextManager_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_parent, PyObject *cpy_r_priority, PyObject *cpy_r_name);
     char (*CPyDef_semaphores____BlockSemaphoreContextManager_____mypyc_defaults_setup)(PyObject *cpy_r___mypyc_self__);
     char (*CPyDef_semaphores___BlockSemaphore_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_value, PyObject *cpy_r_name);
+    char (*CPyDef_semaphores___BlockSemaphore_____init___3__BlockSemaphore_glue)(PyObject *cpy_r_self, PyObject *cpy_r_value, PyObject *cpy_r_name);
     PyObject *(*CPyDef_semaphores___BlockSemaphore_____getitem__)(PyObject *cpy_r_self, PyObject *cpy_r_block);
+    PyObject *(*CPyDef_semaphores___BlockSemaphore_____getitem___3__BlockSemaphore_glue)(PyObject *cpy_r_self, PyObject *cpy_r_block);
     char (*CPyDef_semaphores____MethodQueues_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_controller);
     PyObject *(*CPyDef_semaphores____MethodQueues_____getitem__)(PyObject *cpy_r_self, PyObject *cpy_r_method);
     char (*CPyDef_semaphores_____top_level__)(void);
