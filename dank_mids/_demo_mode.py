@@ -14,7 +14,8 @@ class DummyLogger:
     enabled, saving processing time by avoiding unnecessary logging operations.
     """
 
-    def info(self, *args: Any, **kwargs: Any) -> None:
+    @staticmethod
+    def info(*args: Any, **kwargs: Any) -> None:
         """
         Does nothing. Mimics the API of logging.Logger.info by accepting
         any arguments.
@@ -31,4 +32,4 @@ if ENVIRONMENT_VARIABLES.DEMO_MODE:  # type: ignore [has-type]
 else:
     _logger = DummyLogger()  # type: ignore [assignment]
 
-demo_logger: Final[Logger] = _logger
+demo_logger: Final = _logger

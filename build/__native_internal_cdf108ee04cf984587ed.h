@@ -110,7 +110,7 @@ extern CPyModule *CPyModule_dank_mids___semaphores;
 extern PyObject *CPyStatic__demo_mode___demo_logger;
 extern PyTypeObject *CPyType__demo_mode___DummyLogger;
 extern PyObject *CPyDef__demo_mode___DummyLogger(void);
-extern char CPyDef__demo_mode___DummyLogger___info(PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
+extern char CPyDef__demo_mode___DummyLogger___info(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 extern PyObject *CPyPy__demo_mode___DummyLogger___info(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__demo_mode_____top_level__(void);
 extern PyObject *CPyStatic__eth_utils___hexlify;

@@ -70,7 +70,7 @@ static PyGetSetDef _demo_mode___DummyLogger_getseters[] = {
 static PyMethodDef _demo_mode___DummyLogger_methods[] = {
     {"info",
      (PyCFunction)CPyPy__demo_mode___DummyLogger___info,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
+     METH_FASTCALL | METH_KEYWORDS | METH_STATIC, NULL},
     {"__setstate__", (PyCFunction)CPyPickle_SetState, METH_O, NULL},
     {"__getstate__", (PyCFunction)CPyPickle_GetState, METH_NOARGS, NULL},
     {NULL}  /* Sentinel */
@@ -152,12 +152,11 @@ PyObject *CPyInit_dank_mids____demo_mode(void)
     return NULL;
 }
 
-char CPyDef__demo_mode___DummyLogger___info(PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_kwargs) {
+char CPyDef__demo_mode___DummyLogger___info(PyObject *cpy_r_args, PyObject *cpy_r_kwargs) {
     return 1;
 }
 
 PyObject *CPyPy__demo_mode___DummyLogger___info(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj_self = self;
     static const char * const kwlist[] = {0};
     static CPyArg_Parser parser = {"%:info", kwlist, 0};
     PyObject *obj_args;
@@ -165,16 +164,9 @@ PyObject *CPyPy__demo_mode___DummyLogger___info(PyObject *self, PyObject *const 
     if (!CPyArg_ParseStackAndKeywords(args, nargs, kwnames, &parser, &obj_args, &obj_kwargs)) {
         return NULL;
     }
-    PyObject *arg_self;
-    if (likely(Py_TYPE(obj_self) == CPyType__demo_mode___DummyLogger))
-        arg_self = obj_self;
-    else {
-        CPy_TypeError("dank_mids._demo_mode.DummyLogger", obj_self); 
-        goto fail;
-    }
     PyObject *arg_args = obj_args;
     PyObject *arg_kwargs = obj_kwargs;
-    char retval = CPyDef__demo_mode___DummyLogger___info(arg_self, arg_args, arg_kwargs);
+    char retval = CPyDef__demo_mode___DummyLogger___info(arg_args, arg_kwargs);
     CPy_DECREF(obj_args);
     CPy_DECREF(obj_kwargs);
     if (retval == 2) {
@@ -186,7 +178,7 @@ PyObject *CPyPy__demo_mode___DummyLogger___info(PyObject *self, PyObject *const 
 fail: ;
     CPy_DECREF(obj_args);
     CPy_DECREF(obj_kwargs);
-    CPy_AddTraceback("dank_mids/_demo_mode.py", "info", 17, CPyStatic__demo_mode___globals);
+    CPy_AddTraceback("dank_mids/_demo_mode.py", "info", 18, CPyStatic__demo_mode___globals);
     return NULL;
 }
 
@@ -338,7 +330,7 @@ CPyL3: ;
     PyErr_SetString(PyExc_NameError, "value for final name \"DEMO_MODE\" was not set");
     cpy_r_r31 = 0;
     if (unlikely(!cpy_r_r31)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 29, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 30, CPyStatic__demo_mode___globals);
         goto CPyL24;
     }
     CPy_Unreachable();
@@ -346,7 +338,7 @@ CPyL14: ;
     cpy_r_r32 = PyObject_IsTrue(cpy_r_r30);
     cpy_r_r33 = cpy_r_r32 >= 0;
     if (unlikely(!cpy_r_r33)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 29, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 30, CPyStatic__demo_mode___globals);
         goto CPyL24;
     }
     cpy_r_r34 = cpy_r_r32;
@@ -356,7 +348,7 @@ CPyL14: ;
     cpy_r_r37 = CPyStatics[5]; /* 'getLogger' */
     cpy_r_r38 = CPyDict_GetItem(cpy_r_r36, cpy_r_r37);
     if (unlikely(cpy_r_r38 == NULL)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 30, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 31, CPyStatic__demo_mode___globals);
         goto CPyL24;
     }
     PyObject *cpy_r_r39[1] = {cpy_r_r35};
@@ -364,7 +356,7 @@ CPyL14: ;
     cpy_r_r41 = _PyObject_Vectorcall(cpy_r_r38, cpy_r_r40, 1, 0);
     CPy_DECREF(cpy_r_r38);
     if (unlikely(cpy_r_r41 == NULL)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 30, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 31, CPyStatic__demo_mode___globals);
         goto CPyL24;
     }
     cpy_r_r42 = CPyStatic__demo_mode___globals;
@@ -373,14 +365,14 @@ CPyL14: ;
     CPy_DECREF(cpy_r_r41);
     cpy_r_r45 = cpy_r_r44 >= 0;
     if (unlikely(!cpy_r_r45)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 30, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 31, CPyStatic__demo_mode___globals);
         goto CPyL24;
     } else
         goto CPyL21;
 CPyL19: ;
     cpy_r_r46 = CPyDef__demo_mode___DummyLogger();
     if (unlikely(cpy_r_r46 == NULL)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 32, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 33, CPyStatic__demo_mode___globals);
         goto CPyL24;
     }
     cpy_r_r47 = CPyStatic__demo_mode___globals;
@@ -389,7 +381,7 @@ CPyL19: ;
     CPy_DECREF(cpy_r_r46);
     cpy_r_r50 = cpy_r_r49 >= 0;
     if (unlikely(!cpy_r_r50)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 32, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 33, CPyStatic__demo_mode___globals);
         goto CPyL24;
     }
 CPyL21: ;
@@ -397,7 +389,7 @@ CPyL21: ;
     cpy_r_r52 = CPyStatics[17]; /* '_logger' */
     cpy_r_r53 = CPyDict_GetItem(cpy_r_r51, cpy_r_r52);
     if (unlikely(cpy_r_r53 == NULL)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 34, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 35, CPyStatic__demo_mode___globals);
         goto CPyL24;
     }
     CPyStatic__demo_mode___demo_logger = cpy_r_r53;
@@ -408,7 +400,7 @@ CPyL21: ;
     CPy_DECREF(cpy_r_r53);
     cpy_r_r57 = cpy_r_r56 >= 0;
     if (unlikely(!cpy_r_r57)) {
-        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 34, CPyStatic__demo_mode___globals);
+        CPy_AddTraceback("dank_mids/_demo_mode.py", "<module>", 35, CPyStatic__demo_mode___globals);
         goto CPyL24;
     }
     return 1;
@@ -40492,7 +40484,7 @@ CPyModule *CPyModule_dank_mids___semaphores;
 PyObject *CPyStatic__demo_mode___demo_logger = NULL;
 PyTypeObject *CPyType__demo_mode___DummyLogger;
 PyObject *CPyDef__demo_mode___DummyLogger(void);
-char CPyDef__demo_mode___DummyLogger___info(PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
+char CPyDef__demo_mode___DummyLogger___info(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 PyObject *CPyPy__demo_mode___DummyLogger___info(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 char CPyDef__demo_mode_____top_level__(void);
 PyObject *CPyStatic__eth_utils___hexlify = NULL;
