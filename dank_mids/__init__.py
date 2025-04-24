@@ -64,4 +64,3 @@ def __getattr__(name: str):
     if name in __brownie_objects:
         raise BrownieNotConnectedError(name)
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
-
