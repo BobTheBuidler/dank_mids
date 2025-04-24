@@ -4,9 +4,12 @@ PyMODINIT_FUNC
 PyInit__weaklist(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("27078baed46c2b030b63__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("cdf108ee04cf984587ed__mypyc"))) return NULL;
+    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___helpers____weaklist");
     Py_DECREF(tmp);
-    void *init_func = PyCapsule_Import("27078baed46c2b030b63__mypyc.init_dank_mids___helpers____weaklist", 0);
+    if (capsule == NULL) return NULL;
+    void *init_func = PyCapsule_GetPointer(capsule, "cdf108ee04cf984587ed__mypyc.init_dank_mids___helpers____weaklist");
+    Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
     }
