@@ -65,11 +65,11 @@ from dank_mids._exceptions import (
     EmptyBatch,
     ExceedsMaxBatchSize,
     ExecutionReverted,
-    GarbageCollectionError,
     OutOfGas,
     PayloadTooLarge,
     internal_err_types,
 )
+from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
 from dank_mids.helpers._codec import mcall_decode, mcall_encode
 from dank_mids.helpers._errors import (

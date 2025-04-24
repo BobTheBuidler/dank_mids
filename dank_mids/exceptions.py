@@ -16,3 +16,7 @@ class BrownieNotConnectedError(RuntimeError):
         super().__init__(
             f"Brownie is not connected to a network. You must be connected to a network in order to access `dank_mids.{obj_name}`."
         )
+
+
+class GarbageCollectionError(RuntimeError):
+    """Exception raised when an object is garbage collected prematurely."""
