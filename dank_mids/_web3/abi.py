@@ -70,10 +70,10 @@ def get_mapper(
 class IteratorProxy(Iterable[TValue]):
     """Wraps an iterator to return when iterated upon"""
 
-    def __init__(self, iterator: Iterator[TValue]):
+    def __init__(self, iterator: Iterator[TValue]) -> None:
         self.__wrapped = iterator
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[TValue]:
         try:
             return self.__dict__.pop("_IteratorProxy__wrapped")
         except KeyError as e:

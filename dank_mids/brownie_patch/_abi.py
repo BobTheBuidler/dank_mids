@@ -13,7 +13,7 @@ class FunctionABI:
     for each unique set of ABI parameters, optimizing memory usage and performance.
     """
 
-    def __init__(self, **abi: Any):
+    def __init__(self, **abi: Any) -> None:
         """
         Initialize a FunctionABI instance with the given ABI information.
 
