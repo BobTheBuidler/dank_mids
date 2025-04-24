@@ -13,6 +13,7 @@ class OperationMode(str):
     These modes affect how dank_mids optimizes requests and interacts
     with different Ethereum node providers.
     """
+
     def __init__(self) -> None:
         super().__init__()
 
