@@ -1,9 +1,10 @@
-import logging
-from typing import Any
+from logging import Logger, getLogger
+from typing import Any, Final, final
 
 from dank_mids import ENVIRONMENT_VARIABLES
 
 
+@final
 class DummyLogger:
     """
     A dummy logger class that provides a no-op implementation of the info
@@ -25,4 +26,9 @@ class DummyLogger:
 
 
 # Choose between a real logger and a dummy logger based on the demo mode setting
-demo_logger: logging.Logger = logging.getLogger("dank_mids.demo") if ENVIRONMENT_VARIABLES.DEMO_MODE else DummyLogger()  # type: ignore [attr-defined, assignment]
+if ENVIRONMENT_VARIABLES.DEMO_MODE:
+    _logger = getLogger("dank_mids.demo")
+else:
+    _logger = DummyLogger()  # type: ignore [assignment]
+
+demo_logger: Final[Logger] = _logger
