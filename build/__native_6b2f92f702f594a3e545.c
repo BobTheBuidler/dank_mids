@@ -3279,8 +3279,6 @@ static PyTypeObject CPyType__exceptions___BadResponse_template_ = {
     .tp_init = _exceptions___BadResponse_init,
     .tp_members = _exceptions___BadResponse_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___BadResponse_template = &CPyType__exceptions___BadResponse_template_;
@@ -3310,8 +3308,6 @@ static PyTypeObject CPyType__exceptions___EmptyBatch_template_ = {
     .tp_methods = _exceptions___EmptyBatch_methods,
     .tp_members = _exceptions___EmptyBatch_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___EmptyBatch_template = &CPyType__exceptions___EmptyBatch_template_;
@@ -3350,8 +3346,6 @@ static PyTypeObject CPyType__exceptions___ExecutionReverted_template_ = {
     .tp_init = _exceptions___ExecutionReverted_init,
     .tp_members = _exceptions___ExecutionReverted_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___ExecutionReverted_template = &CPyType__exceptions___ExecutionReverted_template_;
@@ -3381,8 +3375,6 @@ static PyTypeObject CPyType__exceptions___OutOfGas_template_ = {
     .tp_methods = _exceptions___OutOfGas_methods,
     .tp_members = _exceptions___OutOfGas_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___OutOfGas_template = &CPyType__exceptions___OutOfGas_template_;
@@ -3412,8 +3404,6 @@ static PyTypeObject CPyType__exceptions___PayloadTooLarge_template_ = {
     .tp_methods = _exceptions___PayloadTooLarge_methods,
     .tp_members = _exceptions___PayloadTooLarge_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___PayloadTooLarge_template = &CPyType__exceptions___PayloadTooLarge_template_;
@@ -3448,8 +3438,6 @@ static PyTypeObject CPyType__exceptions___ExceedsMaxBatchSize_template_ = {
     .tp_methods = _exceptions___ExceedsMaxBatchSize_methods,
     .tp_members = _exceptions___ExceedsMaxBatchSize_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___ExceedsMaxBatchSize_template = &CPyType__exceptions___ExceedsMaxBatchSize_template_;
@@ -3734,8 +3722,6 @@ static PyTypeObject CPyType__exceptions___DankMidsInternalError_template_ = {
     .tp_init = _exceptions___DankMidsInternalError_init,
     .tp_members = _exceptions___DankMidsInternalError_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___DankMidsInternalError_template = &CPyType__exceptions___DankMidsInternalError_template_;
@@ -3774,8 +3760,6 @@ static PyTypeObject CPyType__exceptions___BatchResponseSortError_template_ = {
     .tp_init = _exceptions___BatchResponseSortError_init,
     .tp_members = _exceptions___BatchResponseSortError_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___BatchResponseSortError_template = &CPyType__exceptions___BatchResponseSortError_template_;
@@ -3810,8 +3794,6 @@ static PyTypeObject CPyType__exceptions___ChainstackRateLimited_template_ = {
     .tp_methods = _exceptions___ChainstackRateLimited_methods,
     .tp_members = _exceptions___ChainstackRateLimited_members,
     .tp_basicsize = sizeof(PyBaseExceptionObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(PyBaseExceptionObject),
-    .tp_weaklistoffset = sizeof(PyBaseExceptionObject) + sizeof(PyObject *),
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
 };
 static PyTypeObject *CPyType__exceptions___ChainstackRateLimited_template = &CPyType__exceptions___ChainstackRateLimited_template_;
@@ -4808,26 +4790,26 @@ CPyL7: ;
     cpy_r_r36 = CPyStatics[98]; /* 'endpoint' */
     cpy_r_r37 = CPyObject_GetAttr(cpy_r_controller, cpy_r_r36);
     if (unlikely(cpy_r_r37 == NULL)) {
-        CPy_AddTraceback("dank_mids/_exceptions.py", "__init__", 133, CPyStatic__exceptions___globals);
+        CPy_AddTraceback("dank_mids/_exceptions.py", "__init__", 134, CPyStatic__exceptions___globals);
         goto CPyL31;
     }
     if (likely(PyUnicode_Check(cpy_r_r37)))
         cpy_r_r38 = cpy_r_r37;
     else {
-        CPy_TypeErrorTraceback("dank_mids/_exceptions.py", "__init__", 133, CPyStatic__exceptions___globals, "str", cpy_r_r37);
+        CPy_TypeErrorTraceback("dank_mids/_exceptions.py", "__init__", 134, CPyStatic__exceptions___globals, "str", cpy_r_r37);
         goto CPyL31;
     }
     cpy_r_r39 = CPyStatics[99]; /* '\nclient_version=' */
     cpy_r_r40 = CPyStatics[100]; /* 'client_version' */
     cpy_r_r41 = CPyObject_GetAttr(cpy_r_controller, cpy_r_r40);
     if (unlikely(cpy_r_r41 == NULL)) {
-        CPy_AddTraceback("dank_mids/_exceptions.py", "__init__", 133, CPyStatic__exceptions___globals);
+        CPy_AddTraceback("dank_mids/_exceptions.py", "__init__", 135, CPyStatic__exceptions___globals);
         goto CPyL32;
     }
     if (likely(PyUnicode_Check(cpy_r_r41)))
         cpy_r_r42 = cpy_r_r41;
     else {
-        CPy_TypeErrorTraceback("dank_mids/_exceptions.py", "__init__", 133, CPyStatic__exceptions___globals, "str", cpy_r_r41);
+        CPy_TypeErrorTraceback("dank_mids/_exceptions.py", "__init__", 135, CPyStatic__exceptions___globals, "str", cpy_r_r41);
         goto CPyL32;
     }
     cpy_r_r43 = CPyStatics[101]; /* '\ncalls=' */
@@ -4878,13 +4860,13 @@ CPyL21: ;
     cpy_r_r64 = CPyStatics[96]; /* 'results' */
     cpy_r_r65 = CPyObject_GetAttr(cpy_r_self, cpy_r_r64);
     if (unlikely(cpy_r_r65 == NULL)) {
-        CPy_AddTraceback("dank_mids/_exceptions.py", "__init__", 133, CPyStatic__exceptions___globals);
+        CPy_AddTraceback("dank_mids/_exceptions.py", "__init__", 137, CPyStatic__exceptions___globals);
         goto CPyL35;
     }
     if (likely(PyList_Check(cpy_r_r65)))
         cpy_r_r66 = cpy_r_r65;
     else {
-        CPy_TypeErrorTraceback("dank_mids/_exceptions.py", "__init__", 133, CPyStatic__exceptions___globals, "list", cpy_r_r65);
+        CPy_TypeErrorTraceback("dank_mids/_exceptions.py", "__init__", 137, CPyStatic__exceptions___globals, "list", cpy_r_r65);
         goto CPyL35;
     }
     cpy_r_r67 = PyObject_Str(cpy_r_r66);
@@ -8095,11 +8077,6 @@ static PyObject *CPyDunder___get__call_____mypyc_lambda__0_obj(PyObject *self, P
     instance = instance ? instance : Py_None;
     return CPyDef_call_____mypyc_lambda__0_obj_____get__(self, instance, owner);
 }
-PyMemberDef call_____mypyc_lambda__0_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *call_____mypyc_lambda__0_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_call_____mypyc_lambda__0_obj(void);
 
@@ -8116,16 +8093,14 @@ call_____mypyc_lambda__0_obj_new(PyTypeObject *type, PyObject *args, PyObject *k
 static int
 call_____mypyc_lambda__0_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 call_____mypyc_lambda__0_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -8180,12 +8155,9 @@ static PyTypeObject CPyType_call_____mypyc_lambda__0_obj_template_ = {
     .tp_methods = call_____mypyc_lambda__0_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__call_____mypyc_lambda__0_obj,
-    .tp_members = call_____mypyc_lambda__0_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_call_____mypyc_lambda__0_obj_template = &CPyType_call_____mypyc_lambda__0_obj_template_;
 
@@ -8214,11 +8186,6 @@ static PyObject *CPyDunder___get__call_____mypyc_lambda__1_obj(PyObject *self, P
     instance = instance ? instance : Py_None;
     return CPyDef_call_____mypyc_lambda__1_obj_____get__(self, instance, owner);
 }
-PyMemberDef call_____mypyc_lambda__1_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *call_____mypyc_lambda__1_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_call_____mypyc_lambda__1_obj(void);
 
@@ -8235,16 +8202,14 @@ call_____mypyc_lambda__1_obj_new(PyTypeObject *type, PyObject *args, PyObject *k
 static int
 call_____mypyc_lambda__1_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 call_____mypyc_lambda__1_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -8299,12 +8264,9 @@ static PyTypeObject CPyType_call_____mypyc_lambda__1_obj_template_ = {
     .tp_methods = call_____mypyc_lambda__1_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__call_____mypyc_lambda__1_obj,
-    .tp_members = call_____mypyc_lambda__1_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_call_____mypyc_lambda__1_obj_template = &CPyType_call_____mypyc_lambda__1_obj_template_;
 
@@ -8671,11 +8633,6 @@ static PyObject *CPyDunder___get__call___coroutine__get_coroutine_fn_obj(PyObjec
     instance = instance ? instance : Py_None;
     return CPyDef_call___coroutine__get_coroutine_fn_obj_____get__(self, instance, owner);
 }
-PyMemberDef call___coroutine__get_coroutine_fn_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *call___coroutine__get_coroutine_fn_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_call___coroutine__get_coroutine_fn_obj(void);
 
@@ -8693,8 +8650,7 @@ static int
 call___coroutine__get_coroutine_fn_obj_traverse(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -8702,8 +8658,7 @@ static int
 call___coroutine__get_coroutine_fn_obj_clear(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -8765,12 +8720,9 @@ static PyTypeObject CPyType_call___coroutine__get_coroutine_fn_obj_template_ = {
     .tp_methods = call___coroutine__get_coroutine_fn_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__call___coroutine__get_coroutine_fn_obj,
-    .tp_members = call___coroutine__get_coroutine_fn_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_call___coroutine__get_coroutine_fn_obj_template = &CPyType_call___coroutine__get_coroutine_fn_obj_template_;
 
@@ -26287,11 +26239,6 @@ static PyObject *CPyDunder___get__overloaded___coroutine__patch_overloaded_metho
     instance = instance ? instance : Py_None;
     return CPyDef_overloaded___coroutine__patch_overloaded_method_obj_____get__(self, instance, owner);
 }
-PyMemberDef overloaded___coroutine__patch_overloaded_method_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *overloaded___coroutine__patch_overloaded_method_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_obj(void);
 
@@ -26309,8 +26256,7 @@ static int
 overloaded___coroutine__patch_overloaded_method_obj_traverse(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -26318,8 +26264,7 @@ static int
 overloaded___coroutine__patch_overloaded_method_obj_clear(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -26381,12 +26326,9 @@ static PyTypeObject CPyType_overloaded___coroutine__patch_overloaded_method_obj_
     .tp_methods = overloaded___coroutine__patch_overloaded_method_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__overloaded___coroutine__patch_overloaded_method_obj,
-    .tp_members = overloaded___coroutine__patch_overloaded_method_obj_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_overloaded___coroutine__patch_overloaded_method_obj_template = &CPyType_overloaded___coroutine__patch_overloaded_method_obj_template_;
 
@@ -29347,11 +29289,6 @@ CPyL12: ;
     return cpy_r_r37;
 }
 
-PyMemberDef types___DankContractCall_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractCallObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *types___DankContractCall_setup(PyTypeObject *type);
 PyObject *CPyDef_types___DankContractCall(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -29368,16 +29305,14 @@ types___DankContractCall_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 types___DankContractCall_traverse(dank_mids___brownie_patch___types___DankContractCallObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 types___DankContractCall_clear(dank_mids___brownie_patch___types___DankContractCallObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -29423,11 +29358,8 @@ static PyTypeObject CPyType_types___DankContractCall_template_ = {
     .tp_clear = (inquiry)types___DankContractCall_clear,
     .tp_getset = types___DankContractCall_getseters,
     .tp_methods = types___DankContractCall_methods,
-    .tp_members = types___DankContractCall_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankContractCallObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + sizeof(PyObject *),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractCallObject),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_types___DankContractCall_template = &CPyType_types___DankContractCall_template_;
 
@@ -29456,11 +29388,6 @@ PyObject *CPyDef_types___DankContractCall(PyObject *cpy_r_args, PyObject *cpy_r_
 }
 
 
-PyMemberDef types___DankContractTx_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractTxObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *types___DankContractTx_setup(PyTypeObject *type);
 PyObject *CPyDef_types___DankContractTx(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -29477,16 +29404,14 @@ types___DankContractTx_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 types___DankContractTx_traverse(dank_mids___brownie_patch___types___DankContractTxObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 types___DankContractTx_clear(dank_mids___brownie_patch___types___DankContractTxObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -29532,11 +29457,8 @@ static PyTypeObject CPyType_types___DankContractTx_template_ = {
     .tp_clear = (inquiry)types___DankContractTx_clear,
     .tp_getset = types___DankContractTx_getseters,
     .tp_methods = types___DankContractTx_methods,
-    .tp_members = types___DankContractTx_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankContractTxObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + sizeof(PyObject *),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractTxObject),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_types___DankContractTx_template = &CPyType_types___DankContractTx_template_;
 
@@ -29565,11 +29487,6 @@ PyObject *CPyDef_types___DankContractTx(PyObject *cpy_r_args, PyObject *cpy_r_kw
 }
 
 
-PyMemberDef types___DankOverloadedMethod_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *types___DankOverloadedMethod_setup(PyTypeObject *type);
 PyObject *CPyDef_types___DankOverloadedMethod(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -29587,8 +29504,7 @@ static int
 types___DankOverloadedMethod_traverse(dank_mids___brownie_patch___types___DankOverloadedMethodObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->_methods);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -29596,8 +29512,7 @@ static int
 types___DankOverloadedMethod_clear(dank_mids___brownie_patch___types___DankOverloadedMethodObject *self)
 {
     Py_CLEAR(self->_methods);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -29657,11 +29572,8 @@ static PyTypeObject CPyType_types___DankOverloadedMethod_template_ = {
     .tp_clear = (inquiry)types___DankOverloadedMethod_clear,
     .tp_getset = types___DankOverloadedMethod_getseters,
     .tp_methods = types___DankOverloadedMethod_methods,
-    .tp_members = types___DankOverloadedMethod_members,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject),
-    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + sizeof(PyObject *),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_types___DankOverloadedMethod_template = &CPyType_types___DankOverloadedMethod_template_;
 
@@ -32230,11 +32142,6 @@ static PyObject *CPyDunder___get___codec_____mypyc_lambda__0_obj(PyObject *self,
     instance = instance ? instance : Py_None;
     return CPyDef__codec_____mypyc_lambda__0_obj_____get__(self, instance, owner);
 }
-PyMemberDef _codec_____mypyc_lambda__0_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *_codec_____mypyc_lambda__0_obj_setup(PyTypeObject *type);
 PyObject *CPyDef__codec_____mypyc_lambda__0_obj(void);
 
@@ -32251,16 +32158,14 @@ _codec_____mypyc_lambda__0_obj_new(PyTypeObject *type, PyObject *args, PyObject 
 static int
 _codec_____mypyc_lambda__0_obj_traverse(dank_mids___helpers____codec_____mypyc_lambda__0_objObject *self, visitproc visit, void *arg)
 {
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
 static int
 _codec_____mypyc_lambda__0_obj_clear(dank_mids___helpers____codec_____mypyc_lambda__0_objObject *self)
 {
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -32315,12 +32220,9 @@ static PyTypeObject CPyType__codec_____mypyc_lambda__0_obj_template_ = {
     .tp_methods = _codec_____mypyc_lambda__0_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get___codec_____mypyc_lambda__0_obj,
-    .tp_members = _codec_____mypyc_lambda__0_obj_members,
-    .tp_basicsize = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType__codec_____mypyc_lambda__0_obj_template = &CPyType__codec_____mypyc_lambda__0_obj_template_;
 
@@ -35314,11 +35216,6 @@ static PyObject *CPyDunder___get__lru_cache___lru_cache_lite_wrap_lru_cache_lite
     instance = instance ? instance : Py_None;
     return CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(self, instance, owner);
 }
-PyMemberDef lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj(void);
 
@@ -35336,8 +35233,7 @@ static int
 lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_traverse(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -35345,8 +35241,7 @@ static int
 lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_clear(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -35408,12 +35303,9 @@ static PyTypeObject CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_t
     .tp_methods = lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj,
-    .tp_members = lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_members,
-    .tp_basicsize = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_template = &CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_template_;
 
@@ -35572,11 +35464,6 @@ static PyObject *CPyDunder___get__lru_cache___lru_cache_lite_wrap_lru_cache_lite
     instance = instance ? instance : Py_None;
     return CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(self, instance, owner);
 }
-PyMemberDef lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj(void);
 
@@ -35594,8 +35481,7 @@ static int
 lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_traverse(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -35603,8 +35489,7 @@ static int
 lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_clear(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -35666,12 +35551,9 @@ static PyTypeObject CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonul
     .tp_methods = lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj,
-    .tp_members = lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_members,
-    .tp_basicsize = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject),
-    .tp_weaklistoffset = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject) + sizeof(PyObject *),
+    .tp_basicsize = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject),
     .tp_vectorcall_offset = offsetof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_template = &CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_template_;
 
@@ -36787,11 +36669,6 @@ static int CPyDunder___bool___weaklist___WeakList(PyObject *self) {
 static PyNumberMethods _weaklist___WeakList_as_number = {
     .nb_bool = CPyDunder___bool___weaklist___WeakList,
 };
-PyMemberDef _weaklist___WeakList_members[] = {
-    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers____weaklist___WeakListObject), 0, NULL},
-    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers____weaklist___WeakListObject) + sizeof(PyObject *), 0, NULL},
-    {0}
-};
 static PyObject *_weaklist___WeakList_setup(PyTypeObject *type);
 PyObject *CPyDef__weaklist___WeakList(PyObject *cpy_r_data);
 
@@ -36815,8 +36692,7 @@ static int
 _weaklist___WeakList_traverse(dank_mids___helpers____weaklist___WeakListObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->__refs);
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____weaklist___WeakListObject))));
-    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____weaklist___WeakListObject))));
+    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
     return 0;
 }
 
@@ -36824,8 +36700,7 @@ static int
 _weaklist___WeakList_clear(dank_mids___helpers____weaklist___WeakListObject *self)
 {
     Py_CLEAR(self->__refs);
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____weaklist___WeakListObject))));
-    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____weaklist___WeakListObject))));
+    PyObject_ClearManagedDict((PyObject *)self);
     return 0;
 }
 
@@ -36923,11 +36798,8 @@ static PyTypeObject CPyType__weaklist___WeakList_template_ = {
     .tp_as_mapping = &_weaklist___WeakList_as_mapping,
     .tp_as_sequence = &_weaklist___WeakList_as_sequence,
     .tp_as_number = &_weaklist___WeakList_as_number,
-    .tp_members = _weaklist___WeakList_members,
-    .tp_basicsize = sizeof(dank_mids___helpers____weaklist___WeakListObject) + 2*sizeof(PyObject *),
-    .tp_dictoffset = sizeof(dank_mids___helpers____weaklist___WeakListObject),
-    .tp_weaklistoffset = sizeof(dank_mids___helpers____weaklist___WeakListObject) + sizeof(PyObject *),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
+    .tp_basicsize = sizeof(dank_mids___helpers____weaklist___WeakListObject),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
 };
 static PyTypeObject *CPyType__weaklist___WeakList_template = &CPyType__weaklist___WeakList_template_;
 
