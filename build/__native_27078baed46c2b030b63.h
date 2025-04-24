@@ -437,7 +437,7 @@ struct export_table_27078baed46c2b030b63 {
     PyObject **CPyStatic__demo_mode___demo_logger;
     PyTypeObject **CPyType__demo_mode___DummyLogger;
     PyObject *(*CPyDef__demo_mode___DummyLogger)(void);
-    char (*CPyDef__demo_mode___DummyLogger___info)(PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
+    char (*CPyDef__demo_mode___DummyLogger___info)(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
     char (*CPyDef__demo_mode_____top_level__)(void);
     PyObject **CPyStatic__eth_utils___hexlify;
     PyObject **CPyStatic__eth_utils___unhexlify;
