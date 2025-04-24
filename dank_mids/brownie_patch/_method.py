@@ -1,5 +1,16 @@
 from decimal import Decimal
-from typing import Any, Awaitable, Callable, Dict, Generator, Generic, Iterable, List, Optional, TypeVar
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Generator,
+    Generic,
+    Iterable,
+    List,
+    Optional,
+    TypeVar,
+)
 
 from a_sync import igather
 from brownie.convert.datatypes import EthAddress
