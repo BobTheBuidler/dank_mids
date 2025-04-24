@@ -1,14 +1,14 @@
 #include <Python.h>
 
 PyMODINIT_FUNC
-PyInit__eth_utils(void)
+PyInit_lru_cache(void)
 {
     PyObject *tmp;
     if (!(tmp = PyImport_ImportModule("6b2f92f702f594a3e545__mypyc"))) return NULL;
-    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____eth_utils");
+    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___helpers___lru_cache");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "6b2f92f702f594a3e545__mypyc.init_dank_mids____eth_utils");
+    void *init_func = PyCapsule_GetPointer(capsule, "6b2f92f702f594a3e545__mypyc.init_dank_mids___helpers___lru_cache");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
@@ -18,4 +18,4 @@ PyInit__eth_utils(void)
 
 // distutils sometimes spuriously tells cl to export CPyInit___init__,
 // so provide that so it chills out
-PyMODINIT_FUNC PyInit___init__(void) { return PyInit__eth_utils(); }
+PyMODINIT_FUNC PyInit___init__(void) { return PyInit_lru_cache(); }
