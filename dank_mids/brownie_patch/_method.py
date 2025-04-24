@@ -1,5 +1,16 @@
 from decimal import Decimal
-from typing import Any, Awaitable, Callable, Dict, Generic, Iterable, List, Optional, TypeVar
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Generator,
+    Generic,
+    Iterable,
+    List,
+    Optional,
+    TypeVar,
+)
 
 from a_sync import igather
 from brownie.convert.datatypes import EthAddress
@@ -27,7 +38,7 @@ class _DankMethodMixin(Generic[_EVMType]):
 
     _prep_request_data: Callable[..., Awaitable[BytesLike]]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._len_inputs = len(self.abi["inputs"])
 
         # cache `_call` on this object to prevent repeated imports due to circ import
@@ -44,7 +55,7 @@ class _DankMethodMixin(Generic[_EVMType]):
 
         self._skip_decoder_proc_pool = self._address in call._skip_proc_pool
 
-    def __await__(self):
+    def __await__(self) -> Generator[Any, None, _EVMType]:
         """
         Allow the contract method to be awaited.
 

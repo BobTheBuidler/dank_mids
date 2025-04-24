@@ -340,7 +340,7 @@ _Times = Deque[float]
 class _Collector:
     """Handles the collection and computation of stats-related data."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.errd_batches: Deque["JSONRPCBatch"] = deque(maxlen=500)
         """
         A deque that stores information about failed JSON-RPC batches.

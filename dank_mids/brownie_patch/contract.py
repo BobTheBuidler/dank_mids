@@ -152,7 +152,7 @@ class Contract(brownie.Contract):
     signatures: Dict[Method, Signature]
     """A dictionary mapping method names to their corresponding signatures."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """
         Initialize the Contract instance.
 
@@ -241,7 +241,7 @@ class Contract(brownie.Contract):
         return overloaded  # type: ignore [return-value]
 
 
-def _is_function_abi(abi: dict):
+def _is_function_abi(abi: dict) -> bool:
     return abi["type"] == "function"
 
 

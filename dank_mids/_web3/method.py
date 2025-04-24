@@ -204,7 +204,7 @@ skip_formatters = (
 )
 
 
-def bypass_formatters(eth):
+def bypass_formatters(eth) -> None:
     """Executes a sequence of bypass methods to remove default formatters for ETH methods.
 
     Utilizes a predefined list of bypass methods to systematically modify the corresponding

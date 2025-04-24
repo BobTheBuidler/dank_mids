@@ -43,7 +43,7 @@ INDIVIDUAL_CALL_REVERT_STRINGS = {
 }
 
 
-def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception):
+def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception) -> None:
     try:
         batch_objs = list(batch)
     except TypeError:
@@ -68,7 +68,7 @@ def format_error_response(request: PartialRequest, error: Error) -> RPCError:
     return response
 
 
-def needs_full_request_spec(response: PartialResponse):
+def needs_full_request_spec(response: PartialResponse) -> bool:
     """
     Determine if a response indicates that the node requires the full request specification.
 
@@ -97,7 +97,7 @@ def is_call_revert(e: BadResponse) -> bool:
     return any(map(f"{e}".lower().__contains__, INDIVIDUAL_CALL_REVERT_STRINGS))
 
 
-def log_request_type_switch():
+def log_request_type_switch() -> None:
     error_logger_debug(
         "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
     )

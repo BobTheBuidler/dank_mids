@@ -19,7 +19,7 @@ Mode = Literal["a"]
 class _FileHelper(metaclass=abc.ABCMeta):
     path = f"{os.path.expanduser('~')}/.dank_mids/debug"
 
-    def __init__(self, chainid: int):
+    def __init__(self, chainid: int) -> None:
         if not isinstance(chainid, int):
             raise TypeError(f"`chainid` must be an integer. You passed {chainid}") from None
 

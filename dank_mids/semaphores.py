@@ -62,7 +62,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
     _top_priority: Literal[-1]
     """The highest priority value, set to -1."""
 
-    def __init__(self, value=1, *, name=None):
+    def __init__(self, value=1, *, name=None) -> None:
         super().__init__(_BlockSemaphoreContextManager, -1, int(value), name=name)
 
     def __getitem__(self, block: Union[int, HexStr, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]

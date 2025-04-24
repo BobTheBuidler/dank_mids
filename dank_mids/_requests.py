@@ -226,7 +226,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         method: RPCEndpoint,
         params: Any,
         uid: Optional[str] = None,
-    ):  # sourcery skip: hoist-statement-from-if
+    ) -> None:  # sourcery skip: hoist-statement-from-if
         _request_base_init(self, controller, uid)
         if method[-4:] == "_raw":
             self.method = method[:-4]
@@ -534,7 +534,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             self.__log_set_exception(error_logger_log_debug, data)
         self._fut.set_exception(data)
 
-    def __log_set_exception(self, log_func: Callable[..., None], exc: Exception):
+    def __log_set_exception(self, log_func: Callable[..., None], exc: Exception) -> None:
         exc_type = type(exc).__name__
         log_func("%s for %s", exc_type, self)
         log_func("exception set: %s", repr(exc))
@@ -636,7 +636,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
     __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
 
-    def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]):
+    def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]) -> None:
         _request_base_init(self, controller)
         self.calls = WeakList(calls)
         self._batcher = controller.batcher
@@ -746,7 +746,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         controller: "DankMiddlewareController",
         calls: Iterable[eth_call] = [],
         bid: Optional[BatchId] = None,
-    ):
+    ) -> None:
         # sourcery skip: default-mutable-arg
         _batch_init(self, controller, calls)
         self.bid = bid or self.controller.multicall_uid.next

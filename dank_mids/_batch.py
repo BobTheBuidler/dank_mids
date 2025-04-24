@@ -54,7 +54,7 @@ class DankBatch:
         controller: "DankMiddlewareController",
         multicalls: Multicalls,
         rpc_calls: JSONRPCBatch,
-    ):
+    ) -> None:
         self.controller = controller
         """The controller managing this batch."""
 
@@ -64,7 +64,7 @@ class DankBatch:
         self.rpc_calls = rpc_calls
         """A list of individual RPC calls or multicalls."""
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<dank_mids.DankBatch object at {hex(id(self))}>"
 
     def __await__(self) -> Generator[Any, None, None]:
