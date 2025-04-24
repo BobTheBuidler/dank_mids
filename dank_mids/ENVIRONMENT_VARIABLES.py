@@ -68,11 +68,8 @@ brownie_semaphore: Final = _envs._deprecated_format.create_env(
     "BROWNIE_CALL_SEMAPHORE", int, default=100_000, string_converter=int, verbose=False
 )
 BROWNIE_CALL_SEMAPHORE: Final = BlockSemaphore(
-    _envs.create_env(
-        "BROWNIE_CALL_SEMAPHORE",
-        int,
-        default=brownie_semaphore,
-        verbose=not OPERATION_MODE.infura,
+    int(
+        _envs.create_env("BROWNIE_CALL_SEMAPHORE", int, default=brownie_semaphore, verbose=not OPERATION_MODE.infura)
     )
 )
 """
@@ -83,11 +80,13 @@ See Also:
 """
 
 BROWNIE_ENCODER_SEMAPHORE: Final = BlockSemaphore(
-    _envs.create_env(
-        "BROWNIE_ENCODER_SEMAPHORE",
-        int,
-        default=BROWNIE_CALL_SEMAPHORE._default_value * 2,
-        verbose=not OPERATION_MODE.infura,
+    int(
+        _envs.create_env(
+            "BROWNIE_ENCODER_SEMAPHORE",
+            int,
+            default=BROWNIE_CALL_SEMAPHORE._default_value * 2,
+            verbose=not OPERATION_MODE.infura,
+        )
     )
 )
 """
@@ -171,11 +170,13 @@ STUCK_CALL_TIMEOUT: Final = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=
 # Method-specific Semaphores
 method_semaphores: Final[Dict[str, a_sync.Semaphore]] = {
     "eth_call": BlockSemaphore(
-        _envs.create_env(
-            "ETH_CALL_SEMAPHORE",
-            int,
-            default=BROWNIE_CALL_SEMAPHORE._value,
-            verbose=False,
+        int(
+            _envs.create_env(
+                "ETH_CALL_SEMAPHORE",
+                int,
+                default=BROWNIE_CALL_SEMAPHORE._value,
+                verbose=False,
+            )
         )
     ),
     "eth_getBlock": _envs.create_env(
