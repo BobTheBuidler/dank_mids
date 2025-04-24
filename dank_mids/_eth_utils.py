@@ -5,10 +5,14 @@ This is helpful for development but adds unnecessary overhead for production use
 This module lets us redefine those functions without the decorator so our scripts can go fast. Vroom.
 """
 
-from binascii import hexlify, unhexlify
-from typing import Any, AnyStr, Optional
+import binascii
+from typing import Any, AnyStr, Final, Optional
 
 from eth_typing import HexStr
+
+
+hexlify: Final = binascii.hexlify
+unhexlify: Final = binascii.unhexlify
 
 
 def patch_eth_utils() -> None:
@@ -138,7 +142,8 @@ def encode_hex(value: AnyStr) -> HexStr:
         ascii_bytes = value.encode("ascii")
     else:
         raise TypeError("Value must be an instance of str or unicode")
-    return add_0x_prefix(hexlify(ascii_bytes).decode("ascii"))  # type: ignore [arg-type]
+    ascii_hex = hexlify(ascii_bytes).decode("ascii")
+    return add_0x_prefix(ascii_hex)  # type: ignore [arg-type]
 
 
 def is_0x_prefixed(value: str) -> bool:

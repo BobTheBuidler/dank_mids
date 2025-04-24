@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_24ef3908732c5ac78273_H
-#define MYPYC_NATIVE_INTERNAL_24ef3908732c5ac78273_H
+#ifndef MYPYC_NATIVE_INTERNAL_27078baed46c2b030b63_H
+#define MYPYC_NATIVE_INTERNAL_27078baed46c2b030b63_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_24ef3908732c5ac78273.h"
+#include "__native_27078baed46c2b030b63.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[469];
+extern PyObject *CPyStatics[600];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -14,12 +14,17 @@ extern const double CPyLit_Float[];
 extern const double CPyLit_Complex[];
 extern const int CPyLit_Tuple[];
 extern const int CPyLit_FrozenSet[];
+extern CPyModule *CPyModule_dank_mids____demo_mode_internal;
+extern CPyModule *CPyModule_dank_mids____demo_mode;
+extern PyObject *CPyStatic__demo_mode___globals;
+extern CPyModule *CPyModule_builtins;
+extern CPyModule *CPyModule_logging;
+extern CPyModule *CPyModule_typing;
+extern CPyModule *CPyModule_dank_mids;
 extern CPyModule *CPyModule_dank_mids____eth_utils_internal;
 extern CPyModule *CPyModule_dank_mids____eth_utils;
 extern PyObject *CPyStatic__eth_utils___globals;
-extern CPyModule *CPyModule_builtins;
 extern CPyModule *CPyModule_binascii;
-extern CPyModule *CPyModule_typing;
 extern CPyModule *CPyModule_eth_typing;
 extern CPyModule *CPyModule_eth_utils___crypto;
 extern CPyModule *CPyModule_web3___main;
@@ -55,7 +60,6 @@ extern CPyModule *CPyModule_dank_mids___brownie_patch___call;
 extern PyObject *CPyStatic_call___globals;
 extern CPyModule *CPyModule_decimal;
 extern CPyModule *CPyModule_concurrent___futures___process;
-extern CPyModule *CPyModule_logging;
 extern CPyModule *CPyModule_pickle;
 extern CPyModule *CPyModule_types;
 extern CPyModule *CPyModule_brownie___convert___datatypes;
@@ -71,8 +75,6 @@ extern CPyModule *CPyModule_evmspec___data;
 extern CPyModule *CPyModule_hexbytes___main;
 extern CPyModule *CPyModule_multicall___constants;
 extern CPyModule *CPyModule_web3___types;
-extern CPyModule *CPyModule_dank_mids;
-extern CPyModule *CPyModule_dank_mids___helpers___lru_cache_internal;
 extern CPyModule *CPyModule_dank_mids___helpers___lru_cache;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___overloaded_internal;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___overloaded;
@@ -89,12 +91,27 @@ extern CPyModule *CPyModule_msgspec___json;
 extern CPyModule *CPyModule_eth_abi___abi;
 extern CPyModule *CPyModule_eth_abi___encoding;
 extern CPyModule *CPyModule_dank_mids___types;
-extern PyObject *CPyStatic_lru_cache___globals;
-extern CPyModule *CPyModule_typing_extensions;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist;
 extern PyObject *CPyStatic__weaklist___globals;
 extern CPyModule *CPyModule_weakref;
+extern CPyModule *CPyModule_dank_mids___constants_internal;
+extern CPyModule *CPyModule_dank_mids___constants;
+extern PyObject *CPyStatic_constants___globals;
+extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal;
+extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___globals;
+extern CPyModule *CPyModule_typed_envs;
+extern CPyModule *CPyModule_dank_mids____mode;
+extern CPyModule *CPyModule_dank_mids___semaphores;
+extern PyObject *CPyStatic__demo_mode___demo_logger;
+extern PyTypeObject *CPyType__demo_mode___DummyLogger;
+extern PyObject *CPyDef__demo_mode___DummyLogger(void);
+extern char CPyDef__demo_mode___DummyLogger___info(PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
+extern PyObject *CPyPy__demo_mode___DummyLogger___info(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__demo_mode_____top_level__(void);
+extern PyObject *CPyStatic__eth_utils___hexlify;
+extern PyObject *CPyStatic__eth_utils___unhexlify;
 extern char CPyDef__eth_utils___patch_eth_utils(void);
 extern PyObject *CPyPy__eth_utils___patch_eth_utils(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__eth_utils___to_hex(PyObject *cpy_r_primitive, PyObject *cpy_r_hexstr, PyObject *cpy_r_text);
@@ -365,27 +382,6 @@ extern PyObject *CPyPy__codec___mcall_encode(PyObject *self, PyObject *const *ar
 extern PyObject *CPyDef__codec___mcall_decode(PyObject *cpy_r_data);
 extern PyObject *CPyPy__codec___mcall_decode(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__codec_____top_level__(void);
-extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_env;
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_env(void);
-extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj(void);
-extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_nonull_env;
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_nonull_env(void);
-extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj(void);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite(PyObject *cpy_r_func);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_nonull(PyObject *cpy_r_func);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_nonull(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_lru_cache_____top_level__(void);
 extern PyObject *CPyStatic__weaklist___ref;
 extern PyObject *CPyStatic__weaklist____call_ref;
 extern PyTypeObject *CPyType__weaklist___WeakList;
@@ -427,4 +423,36 @@ extern PyObject *CPyPy__weaklist___WeakList___remove(PyObject *self, PyObject *c
 extern char CPyDef__weaklist___WeakList____gc_callback(PyObject *cpy_r_self, PyObject *cpy_r_item);
 extern PyObject *CPyPy__weaklist___WeakList____gc_callback(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist_____top_level__(void);
+extern tuple_T4OOOO CPyStatic_constants___TOO_MUCH_DATA_ERRS;
+extern tuple_T5OOOOO CPyStatic_constants___RETRY_ERRS;
+extern PyObject *CPyStatic_constants___GAS_LIMIT;
+extern PyObject *CPyStatic_constants___MULTICALL2_OVERRIDE_CODE;
+extern PyObject *CPyStatic_constants___MULTICALL3_OVERRIDE_CODE;
+extern PyObject *CPyStatic_constants___MULTICALL2_DEPLOY_BLOCKS;
+extern PyObject *CPyStatic_constants___MULTICALL3_DEPLOY_BLOCKS;
+extern tuple_T10OOOOOOOOOO CPyStatic_constants___BAD_HEXES;
+extern tuple_T2OO CPyStatic_constants___REVERT_SELECTORS;
+extern char CPyDef_constants_____top_level__(void);
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___logger;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___OPERATION_MODE;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___MAX_MULTICALL_SIZE;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___MAX_JSONRPC_BATCH_SIZE;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___REQUESTS_PER_SECOND;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___MIN_REQUESTS_PER_SECOND;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___demo_mode;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___DEMO_MODE;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___ganache_fork;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___GANACHE_FORK;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___AIOHTTP_TIMEOUT;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___brownie_semaphore;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___BROWNIE_CALL_SEMAPHORE;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___BROWNIE_ENCODER_SEMAPHORE;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___COLLECTION_FACTOR;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___USE_FULL_REQUEST;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___DEBUG;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___EXPORT_STATS;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___COLLECT_STATS;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___STUCK_CALL_TIMEOUT;
+extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___method_semaphores;
+extern char CPyDef_ENVIRONMENT_VARIABLES_____top_level__(void);
 #endif

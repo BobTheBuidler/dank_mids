@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_24ef3908732c5ac78273_H
-#define MYPYC_NATIVE_24ef3908732c5ac78273_H
+#ifndef MYPYC_NATIVE_cdf108ee04cf984587ed_H
+#define MYPYC_NATIVE_cdf108ee04cf984587ed_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3OOO
@@ -95,6 +95,37 @@ typedef struct tuple_T2IO {
     PyObject *f1;
 } tuple_T2IO;
 #endif
+
+#ifndef MYPYC_DECLARED_tuple_T4OOOO
+#define MYPYC_DECLARED_tuple_T4OOOO
+typedef struct tuple_T4OOOO {
+    PyObject *f0;
+    PyObject *f1;
+    PyObject *f2;
+    PyObject *f3;
+} tuple_T4OOOO;
+#endif
+
+#ifndef MYPYC_DECLARED_tuple_T10OOOOOOOOOO
+#define MYPYC_DECLARED_tuple_T10OOOOOOOOOO
+typedef struct tuple_T10OOOOOOOOOO {
+    PyObject *f0;
+    PyObject *f1;
+    PyObject *f2;
+    PyObject *f3;
+    PyObject *f4;
+    PyObject *f5;
+    PyObject *f6;
+    PyObject *f7;
+    PyObject *f8;
+    PyObject *f9;
+} tuple_T10OOOOOOOOOO;
+#endif
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____demo_mode___DummyLoggerObject;
 
 typedef struct {
     PyObject_HEAD
@@ -435,7 +466,14 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_24ef3908732c5ac78273 {
+struct export_table_cdf108ee04cf984587ed {
+    PyObject **CPyStatic__demo_mode___demo_logger;
+    PyTypeObject **CPyType__demo_mode___DummyLogger;
+    PyObject *(*CPyDef__demo_mode___DummyLogger)(void);
+    char (*CPyDef__demo_mode___DummyLogger___info)(PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
+    char (*CPyDef__demo_mode_____top_level__)(void);
+    PyObject **CPyStatic__eth_utils___hexlify;
+    PyObject **CPyStatic__eth_utils___unhexlify;
     char (*CPyDef__eth_utils___patch_eth_utils)(void);
     PyObject *(*CPyDef__eth_utils___to_hex)(PyObject *cpy_r_primitive, PyObject *cpy_r_hexstr, PyObject *cpy_r_text);
     PyObject *(*CPyDef__eth_utils___to_bytes)(PyObject *cpy_r_primitive, PyObject *cpy_r_hexstr, PyObject *cpy_r_text);
@@ -656,5 +694,37 @@ struct export_table_24ef3908732c5ac78273 {
     char (*CPyDef__weaklist___WeakList___remove)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist___WeakList____gc_callback)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist_____top_level__)(void);
+    tuple_T4OOOO *CPyStatic_constants___TOO_MUCH_DATA_ERRS;
+    tuple_T5OOOOO *CPyStatic_constants___RETRY_ERRS;
+    PyObject **CPyStatic_constants___GAS_LIMIT;
+    PyObject **CPyStatic_constants___MULTICALL2_OVERRIDE_CODE;
+    PyObject **CPyStatic_constants___MULTICALL3_OVERRIDE_CODE;
+    PyObject **CPyStatic_constants___MULTICALL2_DEPLOY_BLOCKS;
+    PyObject **CPyStatic_constants___MULTICALL3_DEPLOY_BLOCKS;
+    tuple_T10OOOOOOOOOO *CPyStatic_constants___BAD_HEXES;
+    tuple_T2OO *CPyStatic_constants___REVERT_SELECTORS;
+    char (*CPyDef_constants_____top_level__)(void);
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___logger;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___OPERATION_MODE;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___MAX_MULTICALL_SIZE;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___MAX_JSONRPC_BATCH_SIZE;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___REQUESTS_PER_SECOND;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___MIN_REQUESTS_PER_SECOND;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___demo_mode;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___DEMO_MODE;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___ganache_fork;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___GANACHE_FORK;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___AIOHTTP_TIMEOUT;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___brownie_semaphore;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___BROWNIE_CALL_SEMAPHORE;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___BROWNIE_ENCODER_SEMAPHORE;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___COLLECTION_FACTOR;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___USE_FULL_REQUEST;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___DEBUG;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___EXPORT_STATS;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___COLLECT_STATS;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___STUCK_CALL_TIMEOUT;
+    PyObject **CPyStatic_ENVIRONMENT_VARIABLES___method_semaphores;
+    char (*CPyDef_ENVIRONMENT_VARIABLES_____top_level__)(void);
 };
 #endif

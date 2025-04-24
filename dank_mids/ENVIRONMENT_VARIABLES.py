@@ -1,6 +1,6 @@
 # mypy: disable-error-code="attr-defined,dict-item"
-import logging
-from typing import Dict
+from logging import INFO, StreamHandler, getLogger
+from typing import Dict, Final
 
 import a_sync
 import typed_envs
@@ -11,13 +11,13 @@ from dank_mids._mode import OperationMode
 from dank_mids.semaphores import BlockSemaphore
 
 
-logger = logging.getLogger("dank_mids.envs")
+logger: Final = getLogger("dank_mids.envs")
 
 if not typed_envs.logger.disabled:
     if not logger.hasHandlers():
-        logger.addHandler(logging.StreamHandler())
-    if not logger.isEnabledFor(logging.INFO):
-        logger.setLevel(logging.INFO)
+        logger.addHandler(StreamHandler())
+    if not logger.isEnabledFor(INFO):
+        logger.setLevel(INFO)
     logger.info(
         "For your information, you can tweak your configuration for optimal performance using any of the envs below:"
     )
@@ -29,41 +29,45 @@ if not typed_envs.logger.disabled:
 # What mode should dank mids operate in?
 # NOTE: infura mode is required for now
 # TODO: fix the other modes, set default='default', and make this verbose again
-OPERATION_MODE: OperationMode = _envs.create_env(
+OPERATION_MODE: Final[OperationMode] = _envs.create_env(
     "OPERATION_MODE", OperationMode, default="infura", verbose=False
-)
+)  # type: ignore [assignment]
 
 # Max number of eth calls to include in one multicall
-MAX_MULTICALL_SIZE = _envs.create_env("MAX_MULTICALL_SIZE", int, default=10_000)
+MAX_MULTICALL_SIZE: Final = _envs.create_env("MAX_MULTICALL_SIZE", int, default=10_000)
 # Max number of rpc calls to include in one batch call
-MAX_JSONRPC_BATCH_SIZE = _envs.create_env("MAX_JSONRPC_BATCH_SIZE", int, default=500)
+MAX_JSONRPC_BATCH_SIZE: Final = _envs.create_env("MAX_JSONRPC_BATCH_SIZE", int, default=500)
 # Maximum amount of requests per second
-REQUESTS_PER_SECOND = _envs.create_env("REQUESTS_PER_SECOND", int, default=50)
+REQUESTS_PER_SECOND: Final = _envs.create_env("REQUESTS_PER_SECOND", int, default=50)
 # Minimum amount of requests per second after rate limit reduction
-MIN_REQUESTS_PER_SECOND = _envs.create_env("MIN_REQUESTS_PER_SECOND", int, default=10)
+MIN_REQUESTS_PER_SECOND: Final = _envs.create_env("MIN_REQUESTS_PER_SECOND", int, default=10)
 
 # Enable Demo Mode?
-demo_mode = _envs._deprecated_format.create_env("DEMO_MODE", bool, default=False, verbose=False)
-DEMO_MODE = _envs.create_env("DEMO_MODE", bool, default=demo_mode, verbose=False)
+demo_mode: Final = _envs._deprecated_format.create_env(
+    "DEMO_MODE", bool, default=False, verbose=False
+)
+DEMO_MODE: Final = _envs.create_env("DEMO_MODE", bool, default=bool(demo_mode), verbose=False)
 
 # Are you calling a ganache fork? Can't use state override code
-ganache_fork = _envs._deprecated_format.create_env(
+ganache_fork: Final = _envs._deprecated_format.create_env(
     "GANACHE_FORK", bool, default=False, verbose=False
 )
-GANACHE_FORK = _envs.create_env("GANACHE_FORK", bool, default=ganache_fork)
+GANACHE_FORK: Final = _envs.create_env("GANACHE_FORK", bool, default=bool(ganache_fork))
 """Flag indicating whether the current environment is a Ganache fork."""
 
 # We set the default to 20 minutes to account for potentially long event loop times if you're doing serious work.
-AIOHTTP_TIMEOUT = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20 * 60, string_converter=int)
+AIOHTTP_TIMEOUT: Final = _envs.create_env(
+    "AIOHTTP_TIMEOUT", int, default=20 * 60, string_converter=int
+)
 """Timeout value in seconds for aiohttp requests."""
 
 # Brownie call Semaphore
 #   Used because I experienced some OOM errs due to web3 formatters when I was batching an absurd number of brownie calls.
 #   We need a separate semaphore here because the method-specific semaphores are too late in the code to prevent this OOM issue.
-brownie_semaphore = _envs._deprecated_format.create_env(
+brownie_semaphore: Final = _envs._deprecated_format.create_env(
     "BROWNIE_CALL_SEMAPHORE", int, default=100_000, string_converter=int, verbose=False
 )
-BROWNIE_CALL_SEMAPHORE = _envs.create_env(
+BROWNIE_CALL_SEMAPHORE: Final = _envs.create_env(
     "BROWNIE_CALL_SEMAPHORE",
     BlockSemaphore,
     default=brownie_semaphore,
@@ -77,7 +81,7 @@ See Also:
     :class:`dank_mids.semaphores.BlockSemaphore`: The semaphore class used for concurrency control.
 """
 
-BROWNIE_ENCODER_SEMAPHORE = _envs.create_env(
+BROWNIE_ENCODER_SEMAPHORE: Final = _envs.create_env(
     "BROWNIE_ENCODER_SEMAPHORE",
     BlockSemaphore,
     default=BROWNIE_CALL_SEMAPHORE._default_value * 2,
@@ -136,7 +140,7 @@ See Also:
     :class:`a_sync.AsyncProcessPoolExecutor`: The executor class used for managing asynchronous processes.
 """
 
-COLLECTION_FACTOR = _envs.create_env(
+COLLECTION_FACTOR: Final = _envs.create_env(
     "COLLECTION_FACTOR",
     int,
     default=10 if OPERATION_MODE.infura else 1,
@@ -147,23 +151,23 @@ COLLECTION_FACTOR = _envs.create_env(
 
 # We use a modified version of the request spec that doesn't contain unnecessary fields, and switch to the full spec if necessary for your node.
 # Set this env var to any value to force the full request spec always
-USE_FULL_REQUEST = _envs.create_env("USE_FULL_REQUEST", bool, default=False, verbose=False)
+USE_FULL_REQUEST: Final = _envs.create_env("USE_FULL_REQUEST", bool, default=False, verbose=False)
 """Flag indicating whether to use the full request specification."""
 
-DEBUG = _envs.create_env("DEBUG", bool, default=False, verbose=False)
+DEBUG: Final = _envs.create_env("DEBUG", bool, default=False, verbose=False)
 # NOTE: EXPORT_STATS is not implemented
 # TODO: implement this
-EXPORT_STATS = _envs.create_env("EXPORT_STATS", bool, default=False, verbose=False)
+EXPORT_STATS: Final = _envs.create_env("EXPORT_STATS", bool, default=False, verbose=False)
 # NOTE: COLLECT_STATS is implemented
-COLLECT_STATS = _envs.create_env(
+COLLECT_STATS: Final = _envs.create_env(
     "COLLECT_STATS", bool, default=EXPORT_STATS, verbose=not EXPORT_STATS
 )
 
 # You probably don't need to use this unless you know you need to
-STUCK_CALL_TIMEOUT = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60 * 2)
+STUCK_CALL_TIMEOUT: Final = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60 * 2)
 
 # Method-specific Semaphores
-method_semaphores: Dict[str, a_sync.Semaphore] = {
+method_semaphores: Final[Dict[str, a_sync.Semaphore]] = {
     "eth_call": _envs.create_env(
         "ETH_CALL_SEMAPHORE",
         BlockSemaphore,
