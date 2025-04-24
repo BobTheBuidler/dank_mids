@@ -43,7 +43,9 @@ REQUESTS_PER_SECOND: Final = _envs.create_env("REQUESTS_PER_SECOND", int, defaul
 MIN_REQUESTS_PER_SECOND: Final = _envs.create_env("MIN_REQUESTS_PER_SECOND", int, default=10)
 
 # Enable Demo Mode?
-demo_mode: Final = _envs._deprecated_format.create_env("DEMO_MODE", bool, default=False, verbose=False)
+demo_mode: Final = _envs._deprecated_format.create_env(
+    "DEMO_MODE", bool, default=False, verbose=False
+)
 DEMO_MODE: Final = _envs.create_env("DEMO_MODE", bool, default=bool(demo_mode), verbose=False)
 
 # Are you calling a ganache fork? Can't use state override code
@@ -54,7 +56,9 @@ GANACHE_FORK: Final = _envs.create_env("GANACHE_FORK", bool, default=bool(ganach
 """Flag indicating whether the current environment is a Ganache fork."""
 
 # We set the default to 20 minutes to account for potentially long event loop times if you're doing serious work.
-AIOHTTP_TIMEOUT: Final = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20 * 60, string_converter=int)
+AIOHTTP_TIMEOUT: Final = _envs.create_env(
+    "AIOHTTP_TIMEOUT", int, default=20 * 60, string_converter=int
+)
 """Timeout value in seconds for aiohttp requests."""
 
 # Brownie call Semaphore
