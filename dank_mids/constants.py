@@ -50,7 +50,7 @@ except AttributeError:
     __MULTICALL3_OVERRIDE_CODE = multicall.constants.MULTICALL2_BYTECODE
 finally:
     MULTICALL3_OVERRIDE_CODE: Final = __MULTICALL3_OVERRIDE_CODE
-    
+
 MULTICALL2_DEPLOY_BLOCKS: Final[Dict[Network, BlockNumber]] = {
     Network.Mainnet: 12336033,
     Network.Fantom: 16572242,
