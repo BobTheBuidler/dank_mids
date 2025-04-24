@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_lru_cache(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("24ef3908732c5ac78273__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("cdf108ee04cf984587ed__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___helpers___lru_cache");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "24ef3908732c5ac78273__mypyc.init_dank_mids___helpers___lru_cache");
+    void *init_func = PyCapsule_GetPointer(capsule, "cdf108ee04cf984587ed__mypyc.init_dank_mids___helpers___lru_cache");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
