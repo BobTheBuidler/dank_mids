@@ -26,7 +26,7 @@ class DummyLogger:
 
 
 # Choose between a real logger and a dummy logger based on the demo mode setting
-if ENVIRONMENT_VARIABLES.DEMO_MODE:
+if ENVIRONMENT_VARIABLES.DEMO_MODE:  # type: ignore [has-type]
     _logger = getLogger("dank_mids.demo")
 else:
     _logger = DummyLogger()  # type: ignore [assignment]
