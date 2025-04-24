@@ -66,6 +66,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.exceptions">dank_mids.exceptions module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.exceptions.BrownieNotConnectedError"><code class="docutils literal notranslate"><span class="pre">BrownieNotConnectedError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.exceptions.GarbageCollectionError"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionError</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.exceptions.Revert"><code class="docutils literal notranslate"><span class="pre">Revert</span></code></a></li>
 </ul>
 </li>
@@ -551,7 +552,7 @@ to dynamically adjust the batch size to prevent future failures.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.client_version">
-<span class="sig-name descname"><span class="pre">client_version</span></span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.client_version" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">client_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.client_version" title="Link to this definition"></a></dt>
 <dd><p>The client version for the currently connected rpc.</p>
 </dd></dl>
 
@@ -1843,6 +1844,13 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="dank_mids.exceptions.GarbageCollectionError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.exceptions.</span></span><span class="sig-name descname"><span class="pre">GarbageCollectionError</span></span><a class="headerlink" href="#dank_mids.exceptions.GarbageCollectionError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
+<p>Exception raised when an object is garbage collected prematurely.</p>
 </dd></dl>
 
 <dl class="py exception">
