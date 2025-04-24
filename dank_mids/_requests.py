@@ -546,9 +546,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
 
 def _is_revert_bytes(data: Any) -> bool:
-    return isinstance(data, bytes) and any(
-        filter(data.startswith, constants.REVERT_SELECTORS)
-    )
+    return isinstance(data, bytes) and any(filter(data.startswith, constants.REVERT_SELECTORS))
 
 
 _rpcrequest_init: Final = RPCRequest.__init__
@@ -1421,6 +1419,7 @@ _DONT_NEED_TO_SEE_ERRS = [
     "exceeding --rpc.returndata.limit",
     "'code': 429",
 ]
+
 
 def _log_exception(e: Exception) -> bool:
     """
