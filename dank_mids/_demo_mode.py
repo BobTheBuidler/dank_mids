@@ -13,7 +13,7 @@ class DummyLogger:
     This class is used to replace the actual logger when demo mode is not
     enabled, saving processing time by avoiding unnecessary logging operations.
     """
-    
+
     @staticmethod
     def info(*args: Any, **kwargs: Any) -> None:
         """
