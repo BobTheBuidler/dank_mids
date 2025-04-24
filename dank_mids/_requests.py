@@ -268,8 +268,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
         return (self.uid == __o.uid) if type(__o) is type(self) else False
 
     def __len__(self) -> int:
-        # NOTE: We dont need to consider this for very small batch sizes since the requests/responses will never get too large
-        return _get_len_for_method(self.method) if self._tiny_batches else 1
+        # NOTE: We dont need to consider response size for each method for very small batch sizes since the requests/responses will never get too large
+        return 1 if self._tiny_batches else _get_len_for_method(self.method)
 
     def __repr__(self) -> str:
         batch = self._batch
