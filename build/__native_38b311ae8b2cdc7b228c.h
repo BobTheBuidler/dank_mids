@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_27078baed46c2b030b63_H
-#define MYPYC_NATIVE_27078baed46c2b030b63_H
+#ifndef MYPYC_NATIVE_38b311ae8b2cdc7b228c_H
+#define MYPYC_NATIVE_38b311ae8b2cdc7b228c_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3OOO
@@ -17,6 +17,18 @@ typedef struct tuple_T2OO {
     PyObject *f0;
     PyObject *f1;
 } tuple_T2OO;
+#endif
+
+#ifndef MYPYC_DECLARED_tuple_T6OOOOOO
+#define MYPYC_DECLARED_tuple_T6OOOOOO
+typedef struct tuple_T6OOOOOO {
+    PyObject *f0;
+    PyObject *f1;
+    PyObject *f2;
+    PyObject *f3;
+    PyObject *f4;
+    PyObject *f5;
+} tuple_T6OOOOOO;
 #endif
 
 #ifndef MYPYC_DECLARED_tuple_T1O
@@ -126,6 +138,59 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
 } dank_mids____demo_mode___DummyLoggerObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___BadResponseObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___EmptyBatchObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___ExecutionRevertedObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___OutOfGasObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___PayloadTooLargeObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___ExceedsMaxBatchSizeObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *_request;
+    PyObject *_args;
+    PyObject *__exception;
+} dank_mids____exceptions___DankMidsClientResponseErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___DankMidsInternalErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___BatchResponseSortErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___ChainstackRateLimitedObject;
 
 typedef struct {
     PyObject_HEAD
@@ -433,7 +498,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_27078baed46c2b030b63 {
+struct export_table_38b311ae8b2cdc7b228c {
     PyObject **CPyStatic__demo_mode___demo_logger;
     PyTypeObject **CPyType__demo_mode___DummyLogger;
     PyObject *(*CPyDef__demo_mode___DummyLogger)(void);
@@ -450,6 +515,27 @@ struct export_table_27078baed46c2b030b63 {
     PyObject *(*CPyDef__eth_utils___remove_0x_prefix)(PyObject *cpy_r_value);
     PyObject *(*CPyDef__eth_utils___add_0x_prefix)(PyObject *cpy_r_value);
     char (*CPyDef__eth_utils_____top_level__)(void);
+    PyObject **CPyStatic__exceptions___logger;
+    PyObject **CPyStatic__exceptions___internal_err_types;
+    PyTypeObject **CPyType__exceptions___BadResponse;
+    PyTypeObject **CPyType__exceptions___EmptyBatch;
+    PyTypeObject **CPyType__exceptions___ExecutionReverted;
+    PyTypeObject **CPyType__exceptions___OutOfGas;
+    PyTypeObject **CPyType__exceptions___PayloadTooLarge;
+    PyTypeObject **CPyType__exceptions___ExceedsMaxBatchSize;
+    PyTypeObject **CPyType__exceptions___DankMidsClientResponseError;
+    PyObject *(*CPyDef__exceptions___DankMidsClientResponseError)(PyObject *cpy_r_exc, PyObject *cpy_r_request);
+    PyTypeObject **CPyType__exceptions___DankMidsInternalError;
+    PyTypeObject **CPyType__exceptions___BatchResponseSortError;
+    PyTypeObject **CPyType__exceptions___ChainstackRateLimited;
+    char (*CPyDef__exceptions___BadResponse_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_response);
+    char (*CPyDef__exceptions___ExecutionReverted_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_response);
+    CPyTagged (*CPyDef__exceptions___ExceedsMaxBatchSize___limit)(PyObject *cpy_r_self);
+    char (*CPyDef__exceptions___DankMidsClientResponseError_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_exc, PyObject *cpy_r_request);
+    char (*CPyDef__exceptions___DankMidsInternalError_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_exc);
+    char (*CPyDef__exceptions___BatchResponseSortError_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_controller, PyObject *cpy_r_calls, PyObject *cpy_r_response);
+    double (*CPyDef__exceptions___ChainstackRateLimited___try_again_in)(PyObject *cpy_r_self);
+    char (*CPyDef__exceptions_____top_level__)(void);
     PyTypeObject **CPyType__uid___UIDGenerator;
     PyObject *(*CPyDef__uid___UIDGenerator)(void);
     char (*CPyDef__uid___UIDGenerator_____init__)(PyObject *cpy_r_self);

@@ -77,7 +77,7 @@ class DankMiddlewareController:
         self.chain_id = chainid
         """The chainid for the currently connected rpc."""
 
-        self.client_version = _get_client_version(self.sync_w3)
+        self.client_version: str = _get_client_version(self.sync_w3)
         """The client version for the currently connected rpc."""
 
         # NOTE: We need this mutable for node types that require the full jsonrpc spec

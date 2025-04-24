@@ -1,16 +1,16 @@
 import logging
 import re
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, Final, List, Union
 
 from aiohttp.client_exceptions import ClientResponseError
 
 if TYPE_CHECKING:
     from dank_mids._requests import RPCRequest
     from dank_mids.controller import DankMiddlewareController
-    from dank_mids.types import PartialRequest, PartialResponse, RawResponse, Response
+    from dank_mids.types import PartialRequest, PartialResponse, RawResponse
 
 
-logger = logging.getLogger("dank_mids.exceptions")
+logger: Final = logging.getLogger("dank_mids.exceptions")
 
 
 class BadResponse(ValueError):
@@ -18,7 +18,7 @@ class BadResponse(ValueError):
 
     def __init__(self, response: "PartialResponse") -> None:
         self.response = response
-        BaseException.__init__(self, response.error.to_dict())
+        BaseException.__init__(self, response.error.to_dict())  # type: ignore [union-attr]
 
 
 class EmptyBatch(ValueError):
@@ -30,7 +30,7 @@ class ExecutionReverted(BadResponse):
 
     def __init__(self, response: "PartialResponse") -> None:
         self.response = response
-        message = response.error.message
+        message: str = response.error.message  # type: ignore [union-attr]
         if message.count(":") == 1:
             message = message.split(":")[1]
         BaseException.__init__(self, message)
@@ -53,7 +53,7 @@ class ExceedsMaxBatchSize(BadResponse):
         return int(re.search(r"batch limit (\d+) exceeded", self.response.error.message)[1])  # type: ignore [index, union-attr]
 
 
-class DankMidsClientResponseError(ClientResponseError):
+class DankMidsClientResponseError(ClientResponseError):  # type: ignore [misc]
     """A wrapper around the standard aiohttp ClientResponseError that attaches the request that generated the error."""
 
     def __init__(
@@ -61,10 +61,18 @@ class DankMidsClientResponseError(ClientResponseError):
         exc: ClientResponseError,
         request: "PartialRequest",
     ) -> None:
-        self.request = request
+        self.request: Final = request
         """
         The PartialRequest object associated with this error.
         It contains information about the request that led to this error.
+        """
+
+        self.args = (*self.args, request)  # type: ignore [has-type]
+
+        self._exception: Final = exc
+        """
+        The original ClientResponseError that this class is wrapping.
+        It contains the underlying error information from aiohttp.
         """
 
         super().__init__(
@@ -74,31 +82,21 @@ class DankMidsClientResponseError(ClientResponseError):
             message=exc.message,
             headers=exc.headers,
         )
-        self.args = (*self.args, request)  # type: ignore [has-type]
-
-        self._exception = exc
-        """
-        The original ClientResponseError that this class is wrapping.
-        It contains the underlying error information from aiohttp.
-        """
 
 
-internal_err_types = Union[
+_internal_err_types = Union[
     AttributeError, TypeError, UnboundLocalError, NotImplementedError, RuntimeError, SyntaxError
 ]
-
-
-class GarbageCollectionError(RuntimeError):
-    """Exception raised when an object is garbage collected prematurely."""
+internal_err_types: Final = _internal_err_types
 
 
 class DankMidsInternalError(Exception):
     """Exception raised for unhandled internal errors within Dank Mids."""
 
-    def __init__(self, exc: Union[ValueError, internal_err_types]) -> None:
+    def __init__(self, exc: Union[ValueError, _internal_err_types]) -> None:
         logger.warning(f"unhandled exception inside dank mids internals: {exc}", exc_info=True)
 
-        self._original_exception = exc
+        self._original_exception: Final = exc
         """
         The original exception that was caught and wrapped by this DankMidsInternalError.
         This attribute allows access to the underlying error for debugging purposes.
@@ -119,13 +117,13 @@ class BatchResponseSortError(Exception):
         calls: List["RPCRequest"],
         response: List["RawResponse"],
     ) -> None:
-        self.calls = calls
+        self.calls: Final = calls
         """
         A list of RPCRequest objects representing the calls that were made in the batch.
         This can be used to analyze which calls were included in the problematic batch.
         """
 
-        self.results = [raw.decode() for raw in response]
+        self.results: Final = [raw.decode() for raw in response]
         """
         A list of Response objects representing the decoded results from the RPC call.
         This can be used to analyze the responses that couldn't be properly sorted.
@@ -158,7 +156,7 @@ class ChainstackRateLimited(BadResponse):
         Raises:
             NotImplementedError: If the time format is not recognized.
         """
-        decimal_string = self.response.error.data["try_again_in"]
+        decimal_string: str = self.response.error.data["try_again_in"]  # type: ignore [union-attr, index]
         if "ms" in decimal_string:
             ms = float(decimal_string[:-2])
             logger.warning("rate limited by chainstack, retrying in %sms", ms)

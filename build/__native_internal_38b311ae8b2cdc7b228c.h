@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_27078baed46c2b030b63_H
-#define MYPYC_NATIVE_INTERNAL_27078baed46c2b030b63_H
+#ifndef MYPYC_NATIVE_INTERNAL_38b311ae8b2cdc7b228c_H
+#define MYPYC_NATIVE_INTERNAL_38b311ae8b2cdc7b228c_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_27078baed46c2b030b63.h"
+#include "__native_38b311ae8b2cdc7b228c.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[600];
+extern PyObject *CPyStatics[665];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -34,6 +34,11 @@ extern CPyModule *CPyModule_web3____utils___encoding;
 extern CPyModule *CPyModule_web3____utils___events;
 extern CPyModule *CPyModule_web3____utils___normalizers;
 extern CPyModule *CPyModule_web3____utils___type_conversion;
+extern CPyModule *CPyModule_dank_mids____exceptions_internal;
+extern CPyModule *CPyModule_dank_mids____exceptions;
+extern PyObject *CPyStatic__exceptions___globals;
+extern CPyModule *CPyModule_re;
+extern CPyModule *CPyModule_aiohttp___client_exceptions;
 extern CPyModule *CPyModule_dank_mids____uid_internal;
 extern CPyModule *CPyModule_dank_mids____uid;
 extern PyObject *CPyStatic__uid___globals;
@@ -129,6 +134,34 @@ extern PyObject *CPyPy__eth_utils___remove_0x_prefix(PyObject *self, PyObject *c
 extern PyObject *CPyDef__eth_utils___add_0x_prefix(PyObject *cpy_r_value);
 extern PyObject *CPyPy__eth_utils___add_0x_prefix(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__eth_utils_____top_level__(void);
+extern PyObject *CPyStatic__exceptions___logger;
+extern PyObject *CPyStatic__exceptions___internal_err_types;
+extern PyTypeObject *CPyType__exceptions___BadResponse;
+extern PyTypeObject *CPyType__exceptions___EmptyBatch;
+extern PyTypeObject *CPyType__exceptions___ExecutionReverted;
+extern PyTypeObject *CPyType__exceptions___OutOfGas;
+extern PyTypeObject *CPyType__exceptions___PayloadTooLarge;
+extern PyTypeObject *CPyType__exceptions___ExceedsMaxBatchSize;
+extern PyTypeObject *CPyType__exceptions___DankMidsClientResponseError;
+extern PyObject *CPyDef__exceptions___DankMidsClientResponseError(PyObject *cpy_r_exc, PyObject *cpy_r_request);
+extern PyTypeObject *CPyType__exceptions___DankMidsInternalError;
+extern PyTypeObject *CPyType__exceptions___BatchResponseSortError;
+extern PyTypeObject *CPyType__exceptions___ChainstackRateLimited;
+extern char CPyDef__exceptions___BadResponse_____init__(PyObject *cpy_r_self, PyObject *cpy_r_response);
+extern PyObject *CPyPy__exceptions___BadResponse_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern char CPyDef__exceptions___ExecutionReverted_____init__(PyObject *cpy_r_self, PyObject *cpy_r_response);
+extern PyObject *CPyPy__exceptions___ExecutionReverted_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern CPyTagged CPyDef__exceptions___ExceedsMaxBatchSize___limit(PyObject *cpy_r_self);
+extern PyObject *CPyPy__exceptions___ExceedsMaxBatchSize___limit(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__exceptions___DankMidsClientResponseError_____init__(PyObject *cpy_r_self, PyObject *cpy_r_exc, PyObject *cpy_r_request);
+extern PyObject *CPyPy__exceptions___DankMidsClientResponseError_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern char CPyDef__exceptions___DankMidsInternalError_____init__(PyObject *cpy_r_self, PyObject *cpy_r_exc);
+extern PyObject *CPyPy__exceptions___DankMidsInternalError_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern char CPyDef__exceptions___BatchResponseSortError_____init__(PyObject *cpy_r_self, PyObject *cpy_r_controller, PyObject *cpy_r_calls, PyObject *cpy_r_response);
+extern PyObject *CPyPy__exceptions___BatchResponseSortError_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern double CPyDef__exceptions___ChainstackRateLimited___try_again_in(PyObject *cpy_r_self);
+extern PyObject *CPyPy__exceptions___ChainstackRateLimited___try_again_in(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__exceptions_____top_level__(void);
 extern PyTypeObject *CPyType__uid___UIDGenerator;
 extern PyObject *CPyDef__uid___UIDGenerator(void);
 extern char CPyDef__uid___UIDGenerator_____init__(PyObject *cpy_r_self);
