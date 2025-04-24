@@ -69,7 +69,12 @@ brownie_semaphore: Final = _envs._deprecated_format.create_env(
 )
 BROWNIE_CALL_SEMAPHORE: Final = BlockSemaphore(
     int(
-        _envs.create_env("BROWNIE_CALL_SEMAPHORE", int, default=brownie_semaphore, verbose=not OPERATION_MODE.infura)
+        _envs.create_env(
+            "BROWNIE_CALL_SEMAPHORE",
+            int,
+            default=brownie_semaphore,
+            verbose=not OPERATION_MODE.infura,
+        )
     )
 )
 """
