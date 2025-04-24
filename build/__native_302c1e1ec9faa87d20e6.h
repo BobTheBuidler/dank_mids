@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_27078baed46c2b030b63_H
-#define MYPYC_NATIVE_27078baed46c2b030b63_H
+#ifndef MYPYC_NATIVE_302c1e1ec9faa87d20e6_H
+#define MYPYC_NATIVE_302c1e1ec9faa87d20e6_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3OOO
@@ -405,6 +405,39 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_func;
+    PyObject *_cache;
+    PyObject *_cache_miss;
+    PyObject *_lru_cache_lite_wrap;
+} dank_mids___helpers___lru_cache___lru_cache_lite_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_func;
+    PyObject *_cache;
+    PyObject *_lru_cache_lite_wrap;
+} dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     PyObject *__refs;
 } dank_mids___helpers____weaklist___WeakListObject;
 
@@ -432,8 +465,29 @@ typedef struct {
     PyObject *___mypyc_env__;
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *__priority_name;
+} dank_mids___semaphores____BlockSemaphoreContextManagerObject;
 
-struct export_table_27078baed46c2b030b63 {
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *__context_manager_class;
+    CPyTagged __top_priority;
+} dank_mids___semaphores___BlockSemaphoreObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *_controller;
+    PyObject *_method_queues;
+    PyObject *_keys;
+} dank_mids___semaphores____MethodQueuesObject;
+
+
+struct export_table_302c1e1ec9faa87d20e6 {
     PyObject **CPyStatic__demo_mode___demo_logger;
     PyTypeObject **CPyType__demo_mode___DummyLogger;
     PyObject *(*CPyDef__demo_mode___DummyLogger)(void);
@@ -621,6 +675,21 @@ struct export_table_27078baed46c2b030b63 {
     PyObject *(*CPyDef__codec___mcall_encode)(PyObject *cpy_r_data);
     PyObject *(*CPyDef__codec___mcall_decode)(PyObject *cpy_r_data);
     char (*CPyDef__codec_____top_level__)(void);
+    PyTypeObject **CPyType_lru_cache___lru_cache_lite_env;
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_env)(void);
+    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj)(void);
+    PyTypeObject **CPyType_lru_cache___lru_cache_lite_nonull_env;
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull_env)(void);
+    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj)(void);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite)(PyObject *cpy_r_func);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull)(PyObject *cpy_r_func);
+    char (*CPyDef_lru_cache_____top_level__)(void);
     PyObject **CPyStatic__weaklist___ref;
     PyObject **CPyStatic__weaklist____call_ref;
     PyTypeObject **CPyType__weaklist___WeakList;
@@ -678,5 +747,21 @@ struct export_table_27078baed46c2b030b63 {
     PyObject **CPyStatic_ENVIRONMENT_VARIABLES___STUCK_CALL_TIMEOUT;
     PyObject **CPyStatic_ENVIRONMENT_VARIABLES___method_semaphores;
     char (*CPyDef_ENVIRONMENT_VARIABLES_____top_level__)(void);
+    PyObject **CPyStatic_semaphores___dank_mids___semaphores___BlockSemaphore_____init_____value;
+    PyTypeObject **CPyType_semaphores____BlockSemaphoreContextManager;
+    PyObject *(*CPyDef_semaphores____BlockSemaphoreContextManager)(PyObject *cpy_r_parent, PyObject *cpy_r_priority, PyObject *cpy_r_name);
+    PyTypeObject **CPyType_semaphores___BlockSemaphore;
+    PyObject *(*CPyDef_semaphores___BlockSemaphore)(PyObject *cpy_r_value, PyObject *cpy_r_name);
+    PyTypeObject **CPyType_semaphores____MethodQueues;
+    PyObject *(*CPyDef_semaphores____MethodQueues)(PyObject *cpy_r_controller);
+    char (*CPyDef_semaphores____BlockSemaphoreContextManager_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_parent, PyObject *cpy_r_priority, PyObject *cpy_r_name);
+    char (*CPyDef_semaphores____BlockSemaphoreContextManager_____mypyc_defaults_setup)(PyObject *cpy_r___mypyc_self__);
+    char (*CPyDef_semaphores___BlockSemaphore_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_value, PyObject *cpy_r_name);
+    char (*CPyDef_semaphores___BlockSemaphore_____init___3__BlockSemaphore_glue)(PyObject *cpy_r_self, PyObject *cpy_r_value, PyObject *cpy_r_name);
+    PyObject *(*CPyDef_semaphores___BlockSemaphore_____getitem__)(PyObject *cpy_r_self, PyObject *cpy_r_block);
+    PyObject *(*CPyDef_semaphores___BlockSemaphore_____getitem___3__BlockSemaphore_glue)(PyObject *cpy_r_self, PyObject *cpy_r_block);
+    char (*CPyDef_semaphores____MethodQueues_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_controller);
+    PyObject *(*CPyDef_semaphores____MethodQueues_____getitem__)(PyObject *cpy_r_self, PyObject *cpy_r_method);
+    char (*CPyDef_semaphores_____top_level__)(void);
 };
 #endif

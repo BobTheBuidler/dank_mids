@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_types(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("cdf108ee04cf984587ed__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("302c1e1ec9faa87d20e6__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___brownie_patch___types");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "cdf108ee04cf984587ed__mypyc.init_dank_mids___brownie_patch___types");
+    void *init_func = PyCapsule_GetPointer(capsule, "302c1e1ec9faa87d20e6__mypyc.init_dank_mids___brownie_patch___types");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;

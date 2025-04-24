@@ -67,12 +67,14 @@ AIOHTTP_TIMEOUT: Final = _envs.create_env(
 brownie_semaphore: Final = _envs._deprecated_format.create_env(
     "BROWNIE_CALL_SEMAPHORE", int, default=100_000, string_converter=int, verbose=False
 )
-BROWNIE_CALL_SEMAPHORE: Final = _envs.create_env(
-    "BROWNIE_CALL_SEMAPHORE",
-    BlockSemaphore,
-    default=brownie_semaphore,
-    string_converter=int,
-    verbose=not OPERATION_MODE.infura,
+BROWNIE_CALL_SEMAPHORE: Final = BlockSemaphore(
+    _envs.create_env(
+        "BROWNIE_CALL_SEMAPHORE",
+        int,
+        default=brownie_semaphore,
+        verbose=not OPERATION_MODE.infura,
+    ),
+    name="dank_mids.BROWNIE_CALL_SEMAPHORE",
 )
 """
 Semaphore for limiting concurrent Brownie calls.
@@ -81,12 +83,14 @@ See Also:
     :class:`dank_mids.semaphores.BlockSemaphore`: The semaphore class used for concurrency control.
 """
 
-BROWNIE_ENCODER_SEMAPHORE: Final = _envs.create_env(
-    "BROWNIE_ENCODER_SEMAPHORE",
-    BlockSemaphore,
-    default=BROWNIE_CALL_SEMAPHORE._default_value * 2,
-    string_converter=int,
-    verbose=not OPERATION_MODE.infura,
+BROWNIE_ENCODER_SEMAPHORE: Final = BlockSemaphore(
+    _envs.create_env(
+        "BROWNIE_ENCODER_SEMAPHORE",
+        int,
+        default=BROWNIE_CALL_SEMAPHORE._default_value * 2,
+        verbose=not OPERATION_MODE.infura,
+    ),
+    name="dank_mids.BROWNIE_ENCODER_SEMAPHORE",
 )
 """
 Semaphore for limiting concurrent Brownie encoding operations. This limits memory consumption.
@@ -168,12 +172,14 @@ STUCK_CALL_TIMEOUT: Final = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=
 
 # Method-specific Semaphores
 method_semaphores: Final[Dict[str, a_sync.Semaphore]] = {
-    "eth_call": _envs.create_env(
-        "ETH_CALL_SEMAPHORE",
-        BlockSemaphore,
-        default=BROWNIE_CALL_SEMAPHORE._value,
-        string_converter=int,
-        verbose=False,
+    "eth_call": BlockSemaphore(
+        _envs.create_env(
+            "ETH_CALL_SEMAPHORE",
+            int,
+            default=BROWNIE_CALL_SEMAPHORE._value,
+            verbose=False,
+        ),
+        name="dank_mids.ETH_CALL_SEMAPHORE",
     ),
     "eth_getBlock": _envs.create_env(
         "ETH_GETBLOCK_SEMAPHORE",

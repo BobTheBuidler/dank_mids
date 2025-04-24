@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_27078baed46c2b030b63_H
-#define MYPYC_NATIVE_INTERNAL_27078baed46c2b030b63_H
+#ifndef MYPYC_NATIVE_INTERNAL_e6672d9bb5f5e6f1d9d6_H
+#define MYPYC_NATIVE_INTERNAL_e6672d9bb5f5e6f1d9d6_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_27078baed46c2b030b63.h"
+#include "__native_e6672d9bb5f5e6f1d9d6.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[600];
+extern PyObject *CPyStatics[649];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -103,7 +103,13 @@ extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES;
 extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___globals;
 extern CPyModule *CPyModule_typed_envs;
 extern CPyModule *CPyModule_dank_mids____mode;
+extern CPyModule *CPyModule_dank_mids___semaphores_internal;
 extern CPyModule *CPyModule_dank_mids___semaphores;
+extern PyObject *CPyStatic_semaphores___globals;
+extern CPyModule *CPyModule_a_sync___primitives;
+extern CPyModule *CPyModule_a_sync___primitives___locks___prio_semaphore;
+extern CPyModule *CPyModule_mypy_extensions;
+extern CPyModule *CPyModule_dank_mids____requests;
 extern PyObject *CPyStatic__demo_mode___demo_logger;
 extern PyTypeObject *CPyType__demo_mode___DummyLogger;
 extern PyObject *CPyDef__demo_mode___DummyLogger(void);
@@ -455,4 +461,28 @@ extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___COLLECT_STATS;
 extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___STUCK_CALL_TIMEOUT;
 extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___method_semaphores;
 extern char CPyDef_ENVIRONMENT_VARIABLES_____top_level__(void);
+extern PyObject *CPyStatic_semaphores___dank_mids___semaphores___BlockSemaphore_____init_____value;
+extern PyTypeObject *CPyType_semaphores____BlockSemaphoreContextManager;
+extern PyObject *CPyDef_semaphores____BlockSemaphoreContextManager(PyObject *cpy_r_parent, PyObject *cpy_r_priority, PyObject *cpy_r_name);
+extern PyTypeObject *CPyType_semaphores___BlockSemaphore;
+extern PyObject *CPyDef_semaphores___BlockSemaphore(PyObject *cpy_r_value, PyObject *cpy_r_name);
+extern PyTypeObject *CPyType_semaphores____MethodQueues;
+extern PyObject *CPyDef_semaphores____MethodQueues(PyObject *cpy_r_controller);
+extern char CPyDef_semaphores____BlockSemaphoreContextManager_____init__(PyObject *cpy_r_self, PyObject *cpy_r_parent, PyObject *cpy_r_priority, PyObject *cpy_r_name);
+extern PyObject *CPyPy_semaphores____BlockSemaphoreContextManager_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern char CPyDef_semaphores____BlockSemaphoreContextManager_____mypyc_defaults_setup(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_semaphores____BlockSemaphoreContextManager_____mypyc_defaults_setup(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_semaphores___BlockSemaphore_____init__(PyObject *cpy_r_self, PyObject *cpy_r_value, PyObject *cpy_r_name);
+extern PyObject *CPyPy_semaphores___BlockSemaphore_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern char CPyDef_semaphores___BlockSemaphore_____init___3__BlockSemaphore_glue(PyObject *cpy_r_self, PyObject *cpy_r_value, PyObject *cpy_r_name);
+extern PyObject *CPyPy_semaphores___BlockSemaphore_____init___3__BlockSemaphore_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_semaphores___BlockSemaphore_____getitem__(PyObject *cpy_r_self, PyObject *cpy_r_block);
+extern PyObject *CPyPy_semaphores___BlockSemaphore_____getitem__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_semaphores___BlockSemaphore_____getitem___3__BlockSemaphore_glue(PyObject *cpy_r_self, PyObject *cpy_r_block);
+extern PyObject *CPyPy_semaphores___BlockSemaphore_____getitem___3__BlockSemaphore_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_semaphores____MethodQueues_____init__(PyObject *cpy_r_self, PyObject *cpy_r_controller);
+extern PyObject *CPyPy_semaphores____MethodQueues_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern PyObject *CPyDef_semaphores____MethodQueues_____getitem__(PyObject *cpy_r_self, PyObject *cpy_r_method);
+extern PyObject *CPyPy_semaphores____MethodQueues_____getitem__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_semaphores_____top_level__(void);
 #endif
