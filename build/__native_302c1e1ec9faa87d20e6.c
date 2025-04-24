@@ -41610,7 +41610,7 @@ CPyL12: ;
     cpy_r_priority = cpy_r_r28;
     goto CPyL26;
 CPyL21: ;
-    cpy_r_r29 = CPyStatics[653]; /* frozenset({'latest', None}) */
+    cpy_r_r29 = CPyStatics[653]; /* frozenset({None, 'latest'}) */
     cpy_r_r30 = PySet_Contains(cpy_r_r29, cpy_r_block);
     cpy_r_r31 = cpy_r_r30 >= 0;
     if (unlikely(!cpy_r_r31)) {
@@ -43001,7 +43001,7 @@ const int CPyLit_Tuple[] = {
     209, 1, 631, 2, 495, 501, 1, 502, 2, 504, 505, 2, 395, 71, 1, 507, 1,
     509, 1, 372
 };
-const int CPyLit_FrozenSet[] = {1, 2, 491, 0};
+const int CPyLit_FrozenSet[] = {1, 2, 0, 491};
 CPyModule *CPyModule_dank_mids____demo_mode_internal = NULL;
 CPyModule *CPyModule_dank_mids____demo_mode;
 PyObject *CPyStatic__demo_mode___globals;
