@@ -1,9 +1,9 @@
-from a_sync.functools import cached_property_unsafe as cached_property
+from typing import Final
 
 from typing_extensions import Self
 
 
-MODES = "default", "application", "infura"
+MODES: Final = "default", "application", "infura"
 
 
 class OperationMode(str):
@@ -13,32 +13,28 @@ class OperationMode(str):
     These modes affect how dank_mids optimizes requests and interacts
     with different Ethereum node providers.
     """
+    def __init__(self):
+        super().__init__()
 
-    @cached_property
-    def application(self):
+        self.application: Final = self.mode == "application"
         """
-        Checks if the current mode is 'application'.
+        True if the current mode is 'application'.
 
         The 'application' mode keeps the event loop as unblocked as possible
         so an asyncio application can run as designed.
         """
-        return self.mode == "application"
 
-    @cached_property
-    def default(self):
+        self.default: Final = self.mode == "default"
         """
-        Checks if the current mode is 'default'.
+        True if the current mode is 'default'.
         """
-        return self.mode == "default"
 
-    @cached_property
-    def infura(self):
+        self.infura: Final = self.mode == "infura"
         """
-        Checks if the current mode is 'infura'.
+        True if the current mode is 'infura'.
 
         The 'infura' mode minimizes the total number of calls sent to the node.
         """
-        return self.mode == "infura"
 
     @property
     def mode(self) -> Self:
