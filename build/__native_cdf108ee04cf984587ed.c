@@ -5131,6 +5131,11 @@ static PyObject *CPyDunder___get__call_____mypyc_lambda__0_obj(PyObject *self, P
     instance = instance ? instance : Py_None;
     return CPyDef_call_____mypyc_lambda__0_obj_____get__(self, instance, owner);
 }
+PyMemberDef call_____mypyc_lambda__0_obj_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *call_____mypyc_lambda__0_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_call_____mypyc_lambda__0_obj(void);
 
@@ -5147,14 +5152,16 @@ call_____mypyc_lambda__0_obj_new(PyTypeObject *type, PyObject *args, PyObject *k
 static int
 call_____mypyc_lambda__0_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject *self, visitproc visit, void *arg)
 {
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
     return 0;
 }
 
 static int
 call_____mypyc_lambda__0_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject *self)
 {
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject))));
     return 0;
 }
 
@@ -5209,9 +5216,12 @@ static PyTypeObject CPyType_call_____mypyc_lambda__0_obj_template_ = {
     .tp_methods = call_____mypyc_lambda__0_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__call_____mypyc_lambda__0_obj,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject),
+    .tp_members = call_____mypyc_lambda__0_obj_members,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject),
+    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject) + sizeof(PyObject *),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
 };
 static PyTypeObject *CPyType_call_____mypyc_lambda__0_obj_template = &CPyType_call_____mypyc_lambda__0_obj_template_;
 
@@ -5240,6 +5250,11 @@ static PyObject *CPyDunder___get__call_____mypyc_lambda__1_obj(PyObject *self, P
     instance = instance ? instance : Py_None;
     return CPyDef_call_____mypyc_lambda__1_obj_____get__(self, instance, owner);
 }
+PyMemberDef call_____mypyc_lambda__1_obj_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *call_____mypyc_lambda__1_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_call_____mypyc_lambda__1_obj(void);
 
@@ -5256,14 +5271,16 @@ call_____mypyc_lambda__1_obj_new(PyTypeObject *type, PyObject *args, PyObject *k
 static int
 call_____mypyc_lambda__1_obj_traverse(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject *self, visitproc visit, void *arg)
 {
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
     return 0;
 }
 
 static int
 call_____mypyc_lambda__1_obj_clear(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject *self)
 {
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject))));
     return 0;
 }
 
@@ -5318,9 +5335,12 @@ static PyTypeObject CPyType_call_____mypyc_lambda__1_obj_template_ = {
     .tp_methods = call_____mypyc_lambda__1_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__call_____mypyc_lambda__1_obj,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject),
+    .tp_members = call_____mypyc_lambda__1_obj_members,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject),
+    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject) + sizeof(PyObject *),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
 };
 static PyTypeObject *CPyType_call_____mypyc_lambda__1_obj_template = &CPyType_call_____mypyc_lambda__1_obj_template_;
 
@@ -5687,6 +5707,11 @@ static PyObject *CPyDunder___get__call___coroutine__get_coroutine_fn_obj(PyObjec
     instance = instance ? instance : Py_None;
     return CPyDef_call___coroutine__get_coroutine_fn_obj_____get__(self, instance, owner);
 }
+PyMemberDef call___coroutine__get_coroutine_fn_obj_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *call___coroutine__get_coroutine_fn_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_call___coroutine__get_coroutine_fn_obj(void);
 
@@ -5704,7 +5729,8 @@ static int
 call___coroutine__get_coroutine_fn_obj_traverse(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
     return 0;
 }
 
@@ -5712,7 +5738,8 @@ static int
 call___coroutine__get_coroutine_fn_obj_clear(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject))));
     return 0;
 }
 
@@ -5774,9 +5801,12 @@ static PyTypeObject CPyType_call___coroutine__get_coroutine_fn_obj_template_ = {
     .tp_methods = call___coroutine__get_coroutine_fn_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__call___coroutine__get_coroutine_fn_obj,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject),
+    .tp_members = call___coroutine__get_coroutine_fn_obj_members,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject),
+    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject) + sizeof(PyObject *),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
 };
 static PyTypeObject *CPyType_call___coroutine__get_coroutine_fn_obj_template = &CPyType_call___coroutine__get_coroutine_fn_obj_template_;
 
@@ -23293,6 +23323,11 @@ static PyObject *CPyDunder___get__overloaded___coroutine__patch_overloaded_metho
     instance = instance ? instance : Py_None;
     return CPyDef_overloaded___coroutine__patch_overloaded_method_obj_____get__(self, instance, owner);
 }
+PyMemberDef overloaded___coroutine__patch_overloaded_method_obj_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *overloaded___coroutine__patch_overloaded_method_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_obj(void);
 
@@ -23310,7 +23345,8 @@ static int
 overloaded___coroutine__patch_overloaded_method_obj_traverse(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject))));
     return 0;
 }
 
@@ -23318,7 +23354,8 @@ static int
 overloaded___coroutine__patch_overloaded_method_obj_clear(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject))));
     return 0;
 }
 
@@ -23380,9 +23417,12 @@ static PyTypeObject CPyType_overloaded___coroutine__patch_overloaded_method_obj_
     .tp_methods = overloaded___coroutine__patch_overloaded_method_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__overloaded___coroutine__patch_overloaded_method_obj,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject),
+    .tp_members = overloaded___coroutine__patch_overloaded_method_obj_members,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject),
+    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject) + sizeof(PyObject *),
     .tp_vectorcall_offset = offsetof(dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
 };
 static PyTypeObject *CPyType_overloaded___coroutine__patch_overloaded_method_obj_template = &CPyType_overloaded___coroutine__patch_overloaded_method_obj_template_;
 
@@ -26343,6 +26383,11 @@ CPyL12: ;
     return cpy_r_r37;
 }
 
+PyMemberDef types___DankContractCall_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractCallObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *types___DankContractCall_setup(PyTypeObject *type);
 PyObject *CPyDef_types___DankContractCall(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -26359,14 +26404,16 @@ types___DankContractCall_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 types___DankContractCall_traverse(dank_mids___brownie_patch___types___DankContractCallObject *self, visitproc visit, void *arg)
 {
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
     return 0;
 }
 
 static int
 types___DankContractCall_clear(dank_mids___brownie_patch___types___DankContractCallObject *self)
 {
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractCallObject))));
     return 0;
 }
 
@@ -26412,8 +26459,11 @@ static PyTypeObject CPyType_types___DankContractCall_template_ = {
     .tp_clear = (inquiry)types___DankContractCall_clear,
     .tp_getset = types___DankContractCall_getseters,
     .tp_methods = types___DankContractCall_methods,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractCallObject),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
+    .tp_members = types___DankContractCall_members,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankContractCallObject),
+    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankContractCallObject) + sizeof(PyObject *),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
 };
 static PyTypeObject *CPyType_types___DankContractCall_template = &CPyType_types___DankContractCall_template_;
 
@@ -26442,6 +26492,11 @@ PyObject *CPyDef_types___DankContractCall(PyObject *cpy_r_args, PyObject *cpy_r_
 }
 
 
+PyMemberDef types___DankContractTx_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractTxObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *types___DankContractTx_setup(PyTypeObject *type);
 PyObject *CPyDef_types___DankContractTx(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -26458,14 +26513,16 @@ types___DankContractTx_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static int
 types___DankContractTx_traverse(dank_mids___brownie_patch___types___DankContractTxObject *self, visitproc visit, void *arg)
 {
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
     return 0;
 }
 
 static int
 types___DankContractTx_clear(dank_mids___brownie_patch___types___DankContractTxObject *self)
 {
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankContractTxObject))));
     return 0;
 }
 
@@ -26511,8 +26568,11 @@ static PyTypeObject CPyType_types___DankContractTx_template_ = {
     .tp_clear = (inquiry)types___DankContractTx_clear,
     .tp_getset = types___DankContractTx_getseters,
     .tp_methods = types___DankContractTx_methods,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractTxObject),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
+    .tp_members = types___DankContractTx_members,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankContractTxObject),
+    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankContractTxObject) + sizeof(PyObject *),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
 };
 static PyTypeObject *CPyType_types___DankContractTx_template = &CPyType_types___DankContractTx_template_;
 
@@ -26541,6 +26601,11 @@ PyObject *CPyDef_types___DankContractTx(PyObject *cpy_r_args, PyObject *cpy_r_kw
 }
 
 
+PyMemberDef types___DankOverloadedMethod_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *types___DankOverloadedMethod_setup(PyTypeObject *type);
 PyObject *CPyDef_types___DankOverloadedMethod(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 
@@ -26558,7 +26623,8 @@ static int
 types___DankOverloadedMethod_traverse(dank_mids___brownie_patch___types___DankOverloadedMethodObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->_methods);
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
     return 0;
 }
 
@@ -26566,7 +26632,8 @@ static int
 types___DankOverloadedMethod_clear(dank_mids___brownie_patch___types___DankOverloadedMethodObject *self)
 {
     Py_CLEAR(self->_methods);
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject))));
     return 0;
 }
 
@@ -26626,8 +26693,11 @@ static PyTypeObject CPyType_types___DankOverloadedMethod_template_ = {
     .tp_clear = (inquiry)types___DankOverloadedMethod_clear,
     .tp_getset = types___DankOverloadedMethod_getseters,
     .tp_methods = types___DankOverloadedMethod_methods,
-    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
+    .tp_members = types___DankOverloadedMethod_members,
+    .tp_basicsize = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject),
+    .tp_weaklistoffset = sizeof(dank_mids___brownie_patch___types___DankOverloadedMethodObject) + sizeof(PyObject *),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
 };
 static PyTypeObject *CPyType_types___DankOverloadedMethod_template = &CPyType_types___DankOverloadedMethod_template_;
 
@@ -29196,6 +29266,11 @@ static PyObject *CPyDunder___get___codec_____mypyc_lambda__0_obj(PyObject *self,
     instance = instance ? instance : Py_None;
     return CPyDef__codec_____mypyc_lambda__0_obj_____get__(self, instance, owner);
 }
+PyMemberDef _codec_____mypyc_lambda__0_obj_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *_codec_____mypyc_lambda__0_obj_setup(PyTypeObject *type);
 PyObject *CPyDef__codec_____mypyc_lambda__0_obj(void);
 
@@ -29212,14 +29287,16 @@ _codec_____mypyc_lambda__0_obj_new(PyTypeObject *type, PyObject *args, PyObject 
 static int
 _codec_____mypyc_lambda__0_obj_traverse(dank_mids___helpers____codec_____mypyc_lambda__0_objObject *self, visitproc visit, void *arg)
 {
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
     return 0;
 }
 
 static int
 _codec_____mypyc_lambda__0_obj_clear(dank_mids___helpers____codec_____mypyc_lambda__0_objObject *self)
 {
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject))));
     return 0;
 }
 
@@ -29274,9 +29351,12 @@ static PyTypeObject CPyType__codec_____mypyc_lambda__0_obj_template_ = {
     .tp_methods = _codec_____mypyc_lambda__0_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get___codec_____mypyc_lambda__0_obj,
-    .tp_basicsize = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject),
+    .tp_members = _codec_____mypyc_lambda__0_obj_members,
+    .tp_basicsize = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject),
+    .tp_weaklistoffset = sizeof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject) + sizeof(PyObject *),
     .tp_vectorcall_offset = offsetof(dank_mids___helpers____codec_____mypyc_lambda__0_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
 };
 static PyTypeObject *CPyType__codec_____mypyc_lambda__0_obj_template = &CPyType__codec_____mypyc_lambda__0_obj_template_;
 
@@ -32270,6 +32350,11 @@ static PyObject *CPyDunder___get__lru_cache___lru_cache_lite_wrap_lru_cache_lite
     instance = instance ? instance : Py_None;
     return CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(self, instance, owner);
 }
+PyMemberDef lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj(void);
 
@@ -32287,7 +32372,8 @@ static int
 lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_traverse(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject))));
     return 0;
 }
 
@@ -32295,7 +32381,8 @@ static int
 lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_clear(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject))));
     return 0;
 }
 
@@ -32357,9 +32444,12 @@ static PyTypeObject CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_t
     .tp_methods = lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj,
-    .tp_basicsize = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject),
+    .tp_members = lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_members,
+    .tp_basicsize = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject),
+    .tp_weaklistoffset = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject) + sizeof(PyObject *),
     .tp_vectorcall_offset = offsetof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
 };
 static PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_template = &CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_template_;
 
@@ -32518,6 +32608,11 @@ static PyObject *CPyDunder___get__lru_cache___lru_cache_lite_wrap_lru_cache_lite
     instance = instance ? instance : Py_None;
     return CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(self, instance, owner);
 }
+PyMemberDef lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_setup(PyTypeObject *type);
 PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj(void);
 
@@ -32535,7 +32630,8 @@ static int
 lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_traverse(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->___mypyc_env__);
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject))));
     return 0;
 }
 
@@ -32543,7 +32639,8 @@ static int
 lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_clear(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject *self)
 {
     Py_CLEAR(self->___mypyc_env__);
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject))));
     return 0;
 }
 
@@ -32605,9 +32702,12 @@ static PyTypeObject CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonul
     .tp_methods = lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_methods,
     .tp_call = PyVectorcall_Call,
     .tp_descr_get = CPyDunder___get__lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj,
-    .tp_basicsize = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject),
+    .tp_members = lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_members,
+    .tp_basicsize = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject),
+    .tp_weaklistoffset = sizeof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject) + sizeof(PyObject *),
     .tp_vectorcall_offset = offsetof(dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject, vectorcall),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL | Py_TPFLAGS_MANAGED_DICT,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | _Py_TPFLAGS_HAVE_VECTORCALL,
 };
 static PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_template = &CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_template_;
 
@@ -32764,7 +32864,7 @@ fail: ;
     return NULL;
 }
 
-PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args) {
+PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args, PyObject *cpy_r__) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
     PyObject *cpy_r_r2;
@@ -32776,30 +32876,32 @@ PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(P
     PyObject *cpy_r_r7;
     PyObject *cpy_r_r8;
     PyObject *cpy_r_r9;
-    PyObject *cpy_r_r10;
-    PyObject *cpy_r_r11;
+    int32_t cpy_r_r10;
+    char cpy_r_r11;
     PyObject *cpy_r_r12;
-    int32_t cpy_r_r13;
-    char cpy_r_r14;
-    PyObject *cpy_r_r15;
+    PyObject *cpy_r_r13;
+    PyObject *cpy_r_r14;
+    int32_t cpy_r_r15;
+    char cpy_r_r16;
+    PyObject *cpy_r_r17;
     cpy_r_r0 = ((dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject *)cpy_r___mypyc_self__)->___mypyc_env__;
     if (unlikely(cpy_r_r0 == NULL)) {
         CPy_AttributeError("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", "lru_cache_lite_wrap_lru_cache_lite_obj", "__mypyc_env__", 41, CPyStatic_lru_cache___globals);
-        goto CPyL15;
+        goto CPyL16;
     }
     CPy_INCREF(cpy_r_r0);
 CPyL1: ;
     cpy_r_r1 = ((dank_mids___helpers___lru_cache___lru_cache_lite_envObject *)cpy_r_r0)->_cache;
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AttributeError("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", "lru_cache_lite_env", "cache", 42, CPyStatic_lru_cache___globals);
-        goto CPyL16;
+        goto CPyL17;
     }
     CPy_INCREF(cpy_r_r1);
 CPyL2: ;
     cpy_r_r2 = ((dank_mids___helpers___lru_cache___lru_cache_lite_envObject *)cpy_r_r0)->_cache_miss;
     if (unlikely(cpy_r_r2 == NULL)) {
         CPy_AttributeError("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", "lru_cache_lite_env", "cache_miss", 42, CPyStatic_lru_cache___globals);
-        goto CPyL17;
+        goto CPyL18;
     }
     CPy_INCREF(cpy_r_r2);
 CPyL3: ;
@@ -32808,123 +32910,135 @@ CPyL3: ;
     CPy_DECREF(cpy_r_r2);
     if (unlikely(cpy_r_r3 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 42, CPyStatic_lru_cache___globals);
-        goto CPyL16;
+        goto CPyL17;
     }
     cpy_r_retval = cpy_r_r3;
     cpy_r_r4 = ((dank_mids___helpers___lru_cache___lru_cache_lite_envObject *)cpy_r_r0)->_cache_miss;
     if (unlikely(cpy_r_r4 == NULL)) {
         CPy_AttributeError("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", "lru_cache_lite_env", "cache_miss", 43, CPyStatic_lru_cache___globals);
-        goto CPyL18;
+        goto CPyL19;
     }
     CPy_INCREF(cpy_r_r4);
 CPyL5: ;
     cpy_r_r5 = cpy_r_retval == cpy_r_r4;
     CPy_DECREF(cpy_r_r4);
     if (cpy_r_r5) {
-        goto CPyL19;
-    } else
         goto CPyL20;
+    } else
+        goto CPyL21;
 CPyL6: ;
     cpy_r_r6 = ((dank_mids___helpers___lru_cache___lru_cache_lite_envObject *)cpy_r_r0)->_func;
     if (unlikely(cpy_r_r6 == NULL)) {
         CPy_AttributeError("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", "lru_cache_lite_env", "func", 44, CPyStatic_lru_cache___globals);
-        goto CPyL16;
+        goto CPyL17;
     }
     CPy_INCREF(cpy_r_r6);
 CPyL7: ;
     cpy_r_r7 = PyList_New(0);
     if (unlikely(cpy_r_r7 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 44, CPyStatic_lru_cache___globals);
-        goto CPyL21;
+        goto CPyL22;
     }
     cpy_r_r8 = CPyList_Extend(cpy_r_r7, cpy_r_args);
     if (unlikely(cpy_r_r8 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 44, CPyStatic_lru_cache___globals);
-        goto CPyL22;
-    } else
         goto CPyL23;
+    } else
+        goto CPyL24;
 CPyL9: ;
-    cpy_r_r9 = PyList_AsTuple(cpy_r_r7);
-    CPy_DECREF(cpy_r_r7);
+    cpy_r_r9 = PyDict_New();
     if (unlikely(cpy_r_r9 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 44, CPyStatic_lru_cache___globals);
-        goto CPyL21;
+        goto CPyL23;
     }
-    cpy_r_r10 = PyDict_New();
-    if (unlikely(cpy_r_r10 == NULL)) {
+    cpy_r_r10 = CPyDict_UpdateInDisplay(cpy_r_r9, cpy_r__);
+    cpy_r_r11 = cpy_r_r10 >= 0;
+    if (unlikely(!cpy_r_r11)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 44, CPyStatic_lru_cache___globals);
-        goto CPyL24;
+        goto CPyL25;
     }
-    cpy_r_r11 = PyObject_Call(cpy_r_r6, cpy_r_r9, cpy_r_r10);
-    CPy_DECREF(cpy_r_r6);
-    CPy_DECREF(cpy_r_r9);
-    CPy_DECREF(cpy_r_r10);
-    if (unlikely(cpy_r_r11 == NULL)) {
-        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 44, CPyStatic_lru_cache___globals);
-        goto CPyL16;
-    }
-    cpy_r_retval = cpy_r_r11;
-    cpy_r_r12 = ((dank_mids___helpers___lru_cache___lru_cache_lite_envObject *)cpy_r_r0)->_cache;
+    cpy_r_r12 = PyList_AsTuple(cpy_r_r7);
+    CPy_DECREF(cpy_r_r7);
     if (unlikely(cpy_r_r12 == NULL)) {
+        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 44, CPyStatic_lru_cache___globals);
+        goto CPyL26;
+    }
+    cpy_r_r13 = PyObject_Call(cpy_r_r6, cpy_r_r12, cpy_r_r9);
+    CPy_DECREF(cpy_r_r6);
+    CPy_DECREF(cpy_r_r12);
+    CPy_DECREF(cpy_r_r9);
+    if (unlikely(cpy_r_r13 == NULL)) {
+        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 44, CPyStatic_lru_cache___globals);
+        goto CPyL17;
+    }
+    cpy_r_retval = cpy_r_r13;
+    cpy_r_r14 = ((dank_mids___helpers___lru_cache___lru_cache_lite_envObject *)cpy_r_r0)->_cache;
+    if (unlikely(cpy_r_r14 == NULL)) {
         PyErr_SetString(PyExc_AttributeError, "attribute 'cache' of 'lru_cache_lite_env' undefined");
     } else {
-        CPy_INCREF(cpy_r_r12);
+        CPy_INCREF(cpy_r_r14);
     }
     CPy_DECREF(cpy_r_r0);
-    if (unlikely(cpy_r_r12 == NULL)) {
+    if (unlikely(cpy_r_r14 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 45, CPyStatic_lru_cache___globals);
-        goto CPyL25;
-    }
-CPyL13: ;
-    cpy_r_r13 = CPyDict_SetItem(cpy_r_r12, cpy_r_args, cpy_r_retval);
-    CPy_DECREF(cpy_r_r12);
-    cpy_r_r14 = cpy_r_r13 >= 0;
-    if (unlikely(!cpy_r_r14)) {
-        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 45, CPyStatic_lru_cache___globals);
-        goto CPyL25;
+        goto CPyL27;
     }
 CPyL14: ;
-    return cpy_r_retval;
+    cpy_r_r15 = CPyDict_SetItem(cpy_r_r14, cpy_r_args, cpy_r_retval);
+    CPy_DECREF(cpy_r_r14);
+    cpy_r_r16 = cpy_r_r15 >= 0;
+    if (unlikely(!cpy_r_r16)) {
+        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 45, CPyStatic_lru_cache___globals);
+        goto CPyL27;
+    }
 CPyL15: ;
-    cpy_r_r15 = NULL;
-    return cpy_r_r15;
+    return cpy_r_retval;
 CPyL16: ;
-    CPy_DecRef(cpy_r_r0);
-    goto CPyL15;
+    cpy_r_r17 = NULL;
+    return cpy_r_r17;
 CPyL17: ;
     CPy_DecRef(cpy_r_r0);
-    CPy_DecRef(cpy_r_r1);
-    goto CPyL15;
+    goto CPyL16;
 CPyL18: ;
     CPy_DecRef(cpy_r_r0);
-    CPy_DecRef(cpy_r_retval);
-    goto CPyL15;
+    CPy_DecRef(cpy_r_r1);
+    goto CPyL16;
 CPyL19: ;
+    CPy_DecRef(cpy_r_r0);
+    CPy_DecRef(cpy_r_retval);
+    goto CPyL16;
+CPyL20: ;
     CPy_DECREF(cpy_r_retval);
     goto CPyL6;
-CPyL20: ;
-    CPy_DECREF(cpy_r_r0);
-    goto CPyL14;
 CPyL21: ;
-    CPy_DecRef(cpy_r_r0);
-    CPy_DecRef(cpy_r_r6);
+    CPy_DECREF(cpy_r_r0);
     goto CPyL15;
 CPyL22: ;
     CPy_DecRef(cpy_r_r0);
     CPy_DecRef(cpy_r_r6);
-    CPy_DecRef(cpy_r_r7);
-    goto CPyL15;
+    goto CPyL16;
 CPyL23: ;
+    CPy_DecRef(cpy_r_r0);
+    CPy_DecRef(cpy_r_r6);
+    CPy_DecRef(cpy_r_r7);
+    goto CPyL16;
+CPyL24: ;
     CPy_DECREF(cpy_r_r8);
     goto CPyL9;
-CPyL24: ;
+CPyL25: ;
+    CPy_DecRef(cpy_r_r0);
+    CPy_DecRef(cpy_r_r6);
+    CPy_DecRef(cpy_r_r7);
+    CPy_DecRef(cpy_r_r9);
+    goto CPyL16;
+CPyL26: ;
     CPy_DecRef(cpy_r_r0);
     CPy_DecRef(cpy_r_r6);
     CPy_DecRef(cpy_r_r9);
-    goto CPyL15;
-CPyL25: ;
+    goto CPyL16;
+CPyL27: ;
     CPy_DecRef(cpy_r_retval);
-    goto CPyL15;
+    goto CPyL16;
 }
 
 PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
@@ -32932,16 +33046,20 @@ PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(Py
     static const char * const kwlist[] = {0};
     static CPyArg_Parser parser = {"%:__call__", kwlist, 0};
     PyObject *obj_args;
-    if (!CPyArg_ParseStackAndKeywords(args, PyVectorcall_NARGS(nargs), kwnames, &parser, &obj_args, NULL)) {
+    PyObject *obj__;
+    if (!CPyArg_ParseStackAndKeywords(args, PyVectorcall_NARGS(nargs), kwnames, &parser, &obj_args, &obj__)) {
         return NULL;
     }
     PyObject *arg___mypyc_self__ = obj___mypyc_self__;
     PyObject *arg_args = obj_args;
-    PyObject *retval = CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(arg___mypyc_self__, arg_args);
+    PyObject *arg__ = obj__;
+    PyObject *retval = CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(arg___mypyc_self__, arg_args, arg__);
     CPy_DECREF(obj_args);
+    CPy_DECREF(obj__);
     return retval;
 fail: ;
     CPy_DECREF(obj_args);
+    CPy_DECREF(obj__);
     CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 41, CPyStatic_lru_cache___globals);
     return NULL;
 }
@@ -33181,7 +33299,7 @@ fail: ;
     return NULL;
 }
 
-PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args) {
+PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args, PyObject *cpy_r__) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
     PyObject *cpy_r_r2;
@@ -33192,23 +33310,25 @@ PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____c
     PyObject *cpy_r_r6;
     PyObject *cpy_r_r7;
     PyObject *cpy_r_r8;
-    PyObject *cpy_r_r9;
-    PyObject *cpy_r_r10;
+    int32_t cpy_r_r9;
+    char cpy_r_r10;
     PyObject *cpy_r_r11;
-    int32_t cpy_r_r12;
-    char cpy_r_r13;
-    PyObject *cpy_r_r14;
+    PyObject *cpy_r_r12;
+    PyObject *cpy_r_r13;
+    int32_t cpy_r_r14;
+    char cpy_r_r15;
+    PyObject *cpy_r_r16;
     cpy_r_r0 = ((dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject *)cpy_r___mypyc_self__)->___mypyc_env__;
     if (unlikely(cpy_r_r0 == NULL)) {
         CPy_AttributeError("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", "lru_cache_lite_wrap_lru_cache_lite_nonull_obj", "__mypyc_env__", 89, CPyStatic_lru_cache___globals);
-        goto CPyL13;
+        goto CPyL14;
     }
     CPy_INCREF(cpy_r_r0);
 CPyL1: ;
     cpy_r_r1 = ((dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject *)cpy_r_r0)->_cache;
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AttributeError("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", "lru_cache_lite_nonull_env", "cache", 90, CPyStatic_lru_cache___globals);
-        goto CPyL14;
+        goto CPyL15;
     }
     CPy_INCREF(cpy_r_r1);
 CPyL2: ;
@@ -33216,108 +33336,120 @@ CPyL2: ;
     CPy_DECREF(cpy_r_r1);
     if (unlikely(cpy_r_r2 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 90, CPyStatic_lru_cache___globals);
-        goto CPyL14;
+        goto CPyL15;
     }
     cpy_r_retval = cpy_r_r2;
     cpy_r_r3 = (PyObject *)&_Py_NoneStruct;
     cpy_r_r4 = cpy_r_retval == cpy_r_r3;
     if (cpy_r_r4) {
-        goto CPyL15;
-    } else
         goto CPyL16;
+    } else
+        goto CPyL17;
 CPyL4: ;
     cpy_r_r5 = ((dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject *)cpy_r_r0)->_func;
     if (unlikely(cpy_r_r5 == NULL)) {
         CPy_AttributeError("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", "lru_cache_lite_nonull_env", "func", 92, CPyStatic_lru_cache___globals);
-        goto CPyL14;
+        goto CPyL15;
     }
     CPy_INCREF(cpy_r_r5);
 CPyL5: ;
     cpy_r_r6 = PyList_New(0);
     if (unlikely(cpy_r_r6 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 92, CPyStatic_lru_cache___globals);
-        goto CPyL17;
+        goto CPyL18;
     }
     cpy_r_r7 = CPyList_Extend(cpy_r_r6, cpy_r_args);
     if (unlikely(cpy_r_r7 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 92, CPyStatic_lru_cache___globals);
-        goto CPyL18;
-    } else
         goto CPyL19;
+    } else
+        goto CPyL20;
 CPyL7: ;
-    cpy_r_r8 = PyList_AsTuple(cpy_r_r6);
-    CPy_DECREF(cpy_r_r6);
+    cpy_r_r8 = PyDict_New();
     if (unlikely(cpy_r_r8 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 92, CPyStatic_lru_cache___globals);
-        goto CPyL17;
+        goto CPyL19;
     }
-    cpy_r_r9 = PyDict_New();
-    if (unlikely(cpy_r_r9 == NULL)) {
+    cpy_r_r9 = CPyDict_UpdateInDisplay(cpy_r_r8, cpy_r__);
+    cpy_r_r10 = cpy_r_r9 >= 0;
+    if (unlikely(!cpy_r_r10)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 92, CPyStatic_lru_cache___globals);
-        goto CPyL20;
+        goto CPyL21;
     }
-    cpy_r_r10 = PyObject_Call(cpy_r_r5, cpy_r_r8, cpy_r_r9);
-    CPy_DECREF(cpy_r_r5);
-    CPy_DECREF(cpy_r_r8);
-    CPy_DECREF(cpy_r_r9);
-    if (unlikely(cpy_r_r10 == NULL)) {
-        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 92, CPyStatic_lru_cache___globals);
-        goto CPyL14;
-    }
-    cpy_r_retval = cpy_r_r10;
-    cpy_r_r11 = ((dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject *)cpy_r_r0)->_cache;
+    cpy_r_r11 = PyList_AsTuple(cpy_r_r6);
+    CPy_DECREF(cpy_r_r6);
     if (unlikely(cpy_r_r11 == NULL)) {
+        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 92, CPyStatic_lru_cache___globals);
+        goto CPyL22;
+    }
+    cpy_r_r12 = PyObject_Call(cpy_r_r5, cpy_r_r11, cpy_r_r8);
+    CPy_DECREF(cpy_r_r5);
+    CPy_DECREF(cpy_r_r11);
+    CPy_DECREF(cpy_r_r8);
+    if (unlikely(cpy_r_r12 == NULL)) {
+        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 92, CPyStatic_lru_cache___globals);
+        goto CPyL15;
+    }
+    cpy_r_retval = cpy_r_r12;
+    cpy_r_r13 = ((dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject *)cpy_r_r0)->_cache;
+    if (unlikely(cpy_r_r13 == NULL)) {
         PyErr_SetString(PyExc_AttributeError, "attribute 'cache' of 'lru_cache_lite_nonull_env' undefined");
     } else {
-        CPy_INCREF(cpy_r_r11);
+        CPy_INCREF(cpy_r_r13);
     }
     CPy_DECREF(cpy_r_r0);
-    if (unlikely(cpy_r_r11 == NULL)) {
+    if (unlikely(cpy_r_r13 == NULL)) {
         CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 93, CPyStatic_lru_cache___globals);
-        goto CPyL21;
-    }
-CPyL11: ;
-    cpy_r_r12 = CPyDict_SetItem(cpy_r_r11, cpy_r_args, cpy_r_retval);
-    CPy_DECREF(cpy_r_r11);
-    cpy_r_r13 = cpy_r_r12 >= 0;
-    if (unlikely(!cpy_r_r13)) {
-        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 93, CPyStatic_lru_cache___globals);
-        goto CPyL21;
+        goto CPyL23;
     }
 CPyL12: ;
-    return cpy_r_retval;
+    cpy_r_r14 = CPyDict_SetItem(cpy_r_r13, cpy_r_args, cpy_r_retval);
+    CPy_DECREF(cpy_r_r13);
+    cpy_r_r15 = cpy_r_r14 >= 0;
+    if (unlikely(!cpy_r_r15)) {
+        CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 93, CPyStatic_lru_cache___globals);
+        goto CPyL23;
+    }
 CPyL13: ;
-    cpy_r_r14 = NULL;
-    return cpy_r_r14;
+    return cpy_r_retval;
 CPyL14: ;
-    CPy_DecRef(cpy_r_r0);
-    goto CPyL13;
+    cpy_r_r16 = NULL;
+    return cpy_r_r16;
 CPyL15: ;
+    CPy_DecRef(cpy_r_r0);
+    goto CPyL14;
+CPyL16: ;
     CPy_DECREF(cpy_r_retval);
     goto CPyL4;
-CPyL16: ;
-    CPy_DECREF(cpy_r_r0);
-    goto CPyL12;
 CPyL17: ;
-    CPy_DecRef(cpy_r_r0);
-    CPy_DecRef(cpy_r_r5);
+    CPy_DECREF(cpy_r_r0);
     goto CPyL13;
 CPyL18: ;
     CPy_DecRef(cpy_r_r0);
     CPy_DecRef(cpy_r_r5);
-    CPy_DecRef(cpy_r_r6);
-    goto CPyL13;
+    goto CPyL14;
 CPyL19: ;
+    CPy_DecRef(cpy_r_r0);
+    CPy_DecRef(cpy_r_r5);
+    CPy_DecRef(cpy_r_r6);
+    goto CPyL14;
+CPyL20: ;
     CPy_DECREF(cpy_r_r7);
     goto CPyL7;
-CPyL20: ;
+CPyL21: ;
+    CPy_DecRef(cpy_r_r0);
+    CPy_DecRef(cpy_r_r5);
+    CPy_DecRef(cpy_r_r6);
+    CPy_DecRef(cpy_r_r8);
+    goto CPyL14;
+CPyL22: ;
     CPy_DecRef(cpy_r_r0);
     CPy_DecRef(cpy_r_r5);
     CPy_DecRef(cpy_r_r8);
-    goto CPyL13;
-CPyL21: ;
+    goto CPyL14;
+CPyL23: ;
     CPy_DecRef(cpy_r_retval);
-    goto CPyL13;
+    goto CPyL14;
 }
 
 PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
@@ -33325,16 +33457,20 @@ PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____ca
     static const char * const kwlist[] = {0};
     static CPyArg_Parser parser = {"%:__call__", kwlist, 0};
     PyObject *obj_args;
-    if (!CPyArg_ParseStackAndKeywords(args, PyVectorcall_NARGS(nargs), kwnames, &parser, &obj_args, NULL)) {
+    PyObject *obj__;
+    if (!CPyArg_ParseStackAndKeywords(args, PyVectorcall_NARGS(nargs), kwnames, &parser, &obj_args, &obj__)) {
         return NULL;
     }
     PyObject *arg___mypyc_self__ = obj___mypyc_self__;
     PyObject *arg_args = obj_args;
-    PyObject *retval = CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(arg___mypyc_self__, arg_args);
+    PyObject *arg__ = obj__;
+    PyObject *retval = CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(arg___mypyc_self__, arg_args, arg__);
     CPy_DECREF(obj_args);
+    CPy_DECREF(obj__);
     return retval;
 fail: ;
     CPy_DECREF(obj_args);
+    CPy_DECREF(obj__);
     CPy_AddTraceback("dank_mids/helpers/lru_cache.py", "lru_cache_lite_wrap", 89, CPyStatic_lru_cache___globals);
     return NULL;
 }
@@ -33723,6 +33859,11 @@ static int CPyDunder___bool___weaklist___WeakList(PyObject *self) {
 static PyNumberMethods _weaklist___WeakList_as_number = {
     .nb_bool = CPyDunder___bool___weaklist___WeakList,
 };
+PyMemberDef _weaklist___WeakList_members[] = {
+    {"__dict__", T_OBJECT_EX, sizeof(dank_mids___helpers____weaklist___WeakListObject), 0, NULL},
+    {"__weakref__", T_OBJECT_EX, sizeof(dank_mids___helpers____weaklist___WeakListObject) + sizeof(PyObject *), 0, NULL},
+    {0}
+};
 static PyObject *_weaklist___WeakList_setup(PyTypeObject *type);
 PyObject *CPyDef__weaklist___WeakList(PyObject *cpy_r_data);
 
@@ -33746,7 +33887,8 @@ static int
 _weaklist___WeakList_traverse(dank_mids___helpers____weaklist___WeakListObject *self, visitproc visit, void *arg)
 {
     Py_VISIT(self->__refs);
-    PyObject_VisitManagedDict((PyObject *)self, visit, arg);
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____weaklist___WeakListObject))));
+    Py_VISIT(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____weaklist___WeakListObject))));
     return 0;
 }
 
@@ -33754,7 +33896,8 @@ static int
 _weaklist___WeakList_clear(dank_mids___helpers____weaklist___WeakListObject *self)
 {
     Py_CLEAR(self->__refs);
-    PyObject_ClearManagedDict((PyObject *)self);
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(dank_mids___helpers____weaklist___WeakListObject))));
+    Py_CLEAR(*((PyObject **)((char *)self + sizeof(PyObject *) + sizeof(dank_mids___helpers____weaklist___WeakListObject))));
     return 0;
 }
 
@@ -33852,8 +33995,11 @@ static PyTypeObject CPyType__weaklist___WeakList_template_ = {
     .tp_as_mapping = &_weaklist___WeakList_as_mapping,
     .tp_as_sequence = &_weaklist___WeakList_as_sequence,
     .tp_as_number = &_weaklist___WeakList_as_number,
-    .tp_basicsize = sizeof(dank_mids___helpers____weaklist___WeakListObject),
-    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT,
+    .tp_members = _weaklist___WeakList_members,
+    .tp_basicsize = sizeof(dank_mids___helpers____weaklist___WeakListObject) + 2*sizeof(PyObject *),
+    .tp_dictoffset = sizeof(dank_mids___helpers____weaklist___WeakListObject),
+    .tp_weaklistoffset = sizeof(dank_mids___helpers____weaklist___WeakListObject) + sizeof(PyObject *),
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,
 };
 static PyTypeObject *CPyType__weaklist___WeakList_template = &CPyType__weaklist___WeakList_template_;
 
@@ -40769,13 +40915,13 @@ PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
 PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj(void);
 PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
+PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args, PyObject *cpy_r__);
 PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_lru_cache___lru_cache_lite(PyObject *cpy_r_func);
 PyObject *CPyPy_lru_cache___lru_cache_lite(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
+PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args, PyObject *cpy_r__);
 PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_lru_cache___lru_cache_lite_nonull(PyObject *cpy_r_func);
 PyObject *CPyPy_lru_cache___lru_cache_lite_nonull(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
