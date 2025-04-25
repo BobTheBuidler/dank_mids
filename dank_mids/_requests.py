@@ -1151,7 +1151,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             for typ, calls in groupby(self.calls, type):
                 if typ is Multicall:
                     for call in calls:
-                        call.start(batch, cleanup=cleanup)
+                        call.start(batch, cleanup=False)
                 else:
                     for call in calls:
                         call._batch = self
