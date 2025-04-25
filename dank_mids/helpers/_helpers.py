@@ -168,17 +168,13 @@ Default formatters dictionary used in middleware configuration.
 It provides empty dictionaries for request, result, and error formatters.
 """
 
-remap_geth_poa_fields: Final = apply_key_map(
-    {"extraData": "proofOfAuthorityData"}
-)
+remap_geth_poa_fields: Final = apply_key_map({"extraData": "proofOfAuthorityData"})
 """
 A function that remaps Geth Proof of Authority (PoA) fields.
 It changes the key 'extraData' to 'proofOfAuthorityData'.
 """
 
-pythonic_geth_poa: Final = apply_formatters_to_dict(
-    {"proofOfAuthorityData": HexBytes}
-)
+pythonic_geth_poa: Final = apply_formatters_to_dict({"proofOfAuthorityData": HexBytes})
 """
 A function that applies formatters to Geth Proof of Authority (PoA) fields.
 It converts the 'proofOfAuthorityData' field to HexBytes.
