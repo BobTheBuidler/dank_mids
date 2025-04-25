@@ -125,18 +125,6 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
     return setup_dank_w3(get_async_w3(sync_w3))
 
 
-async def await_all(futs: Iterable[Awaitable]) -> None:
-    """
-    Awaits all given awaitables in the order they complete.
-
-    Args:
-        futs: An iterable of awaitables to be executed.
-    """
-    for fut in as_completed([*futs]):
-        await fut
-        del fut
-
-
 def set_done(
     fn: Callable[Concatenate[Batch, P], Awaitable[T]],
 ) -> Callable[Concatenate[Batch, P], Awaitable[T]]:
