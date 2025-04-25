@@ -59,7 +59,7 @@ from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import (
     BadResponse,
     BatchResponseSortError,
-    ChainstackRateLimited,
+    ChainstackRateLimitError,
     DankMidsClientResponseError,
     DankMidsInternalError,
     EmptyBatch,
@@ -67,6 +67,7 @@ from dank_mids._exceptions import (
     ExecutionReverted,
     OutOfGas,
     PayloadTooLarge,
+    RateLimitError,
     internal_err_types,
 )
 from dank_mids.exceptions import GarbageCollectionError
@@ -1187,10 +1188,15 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
                     # NOTE: We do this inline so we never have to allocate the response to memory
                     await self.spoof_response(*await self.post())
                     break
-                except ChainstackRateLimited as e:
-                    # Chainstack doesn't use 429 for rate limiting, it sends a successful response back to the rpc
-                    # with an error message so our usual rate-limiting handlers don't work and we need to handle that case with bespoke logic.
+                except ChainstackRateLimitError as e:
+                    # Chainstack doesn't use 429 for rate limiting, it sends a successful response back to the rpc with an error
+                    # message so our usual rate-limiting handlers don't work and we need to handle that case with bespoke logic.
                     await sleep(e.try_again_in)
+                except RateLimitError:
+                    # Quiknode doesn't use 429 for rate limiting, it sends a successful response back to the rpc with an error
+                    # message so our usual rate-limiting handlers don't work and we need to handle that case with bespoke logic.
+                    logger.warning("rate limited by quiknode")
+                    await sleep(5)
 
         # I want to see these asap when working on the lib.
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]

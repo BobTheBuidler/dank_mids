@@ -138,7 +138,10 @@ class BatchResponseSortError(Exception):
         )
 
 
-class ChainstackRateLimited(BadResponse):
+class RateLimitError(BadResponse): ...
+
+
+class ChainstackRateLimitError(RateLimitError):
     """
     Exception raised when Chainstack hits a rate limit without using a 429 status code.
     Chainstack sends a 200 status code with an error message for rate limiting.
@@ -166,3 +169,6 @@ class ChainstackRateLimited(BadResponse):
             logger.warning("rate limited by chainstack, retrying in %sµs", µs)
             return µs / 1000000
         raise NotImplementedError(f"must define a handler for decimal_string {decimal_string}")
+
+
+class QuiknodeRateLimitError(RateLimitError): ...

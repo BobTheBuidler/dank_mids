@@ -7,6 +7,7 @@ from typing import (
     Callable,
     Coroutine,
     Dict,
+    Final,
     List,
     Literal,
     Mapping,
@@ -38,11 +39,12 @@ from web3.types import RPCEndpoint, RPCError, RPCResponse
 from dank_mids import constants, stats
 from dank_mids._exceptions import (
     BadResponse,
-    ChainstackRateLimited,
+    ChainstackRateLimitError,
     ExceedsMaxBatchSize,
     ExecutionReverted,
     OutOfGas,
     PayloadTooLarge,
+    QuiknodeRateLimitError,
 )
 
 if TYPE_CHECKING:
@@ -207,7 +209,10 @@ Used to enable more efficient decoding and validation of RPC responses.
 """
 
 
-_CHAINSTACK_429_ERR_MSG = "You've exceeded the RPS limit available on the current plan."
+_CHAINSTACK_429_ERR_MSG: Final = "You've exceeded the RPS limit available on the current plan."
+_QUIKNODE_429_ERR_MSG: Final = (
+    "500/second request limit reached - reduce calls per second or upgrade your account at quiknode.com"
+)
 
 
 class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):
@@ -249,7 +254,10 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
             )
         # chainstack doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
         if _CHAINSTACK_429_ERR_MSG in message:
-            return ChainstackRateLimited(self)
+            return ChainstackRateLimitError(self)
+        # quiknode doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
+        if message == _QUIKNODE_429_ERR_MSG:
+            return QuiknodeRateLimitError(self)
         return BadResponse(self)
 
     @property
