@@ -147,7 +147,7 @@ def set_done(
         self._done.set()
         return retval
 
-    return set_done_wrap
+    return set_done_wrap  # type: ignore [return-value]
 
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
