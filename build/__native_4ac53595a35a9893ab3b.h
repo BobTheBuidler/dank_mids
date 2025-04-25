@@ -190,7 +190,17 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-} dank_mids____exceptions___ChainstackRateLimitedObject;
+} dank_mids____exceptions___RateLimitErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___ChainstackRateLimitErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids____exceptions___QuiknodeRateLimitErrorObject;
 
 typedef struct {
     PyObject_HEAD
@@ -628,14 +638,16 @@ struct export_table_4ac53595a35a9893ab3b {
     PyObject *(*CPyDef__exceptions___DankMidsClientResponseError)(PyObject *cpy_r_exc, PyObject *cpy_r_request);
     PyTypeObject **CPyType__exceptions___DankMidsInternalError;
     PyTypeObject **CPyType__exceptions___BatchResponseSortError;
-    PyTypeObject **CPyType__exceptions___ChainstackRateLimited;
+    PyTypeObject **CPyType__exceptions___RateLimitError;
+    PyTypeObject **CPyType__exceptions___ChainstackRateLimitError;
+    PyTypeObject **CPyType__exceptions___QuiknodeRateLimitError;
     char (*CPyDef__exceptions___BadResponse_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_response);
     char (*CPyDef__exceptions___ExecutionReverted_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_response);
     CPyTagged (*CPyDef__exceptions___ExceedsMaxBatchSize___limit)(PyObject *cpy_r_self);
     char (*CPyDef__exceptions___DankMidsClientResponseError_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_exc, PyObject *cpy_r_request);
     char (*CPyDef__exceptions___DankMidsInternalError_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_exc);
     char (*CPyDef__exceptions___BatchResponseSortError_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_controller, PyObject *cpy_r_calls, PyObject *cpy_r_response);
-    double (*CPyDef__exceptions___ChainstackRateLimited___try_again_in)(PyObject *cpy_r_self);
+    double (*CPyDef__exceptions___ChainstackRateLimitError___try_again_in)(PyObject *cpy_r_self);
     char (*CPyDef__exceptions_____top_level__)(void);
     PyTypeObject **CPyType__uid___UIDGenerator;
     PyObject *(*CPyDef__uid___UIDGenerator)(void);
