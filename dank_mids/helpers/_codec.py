@@ -19,7 +19,7 @@ DecodedMulticall = Tuple[int, int, Tuple[Tuple["Success", bytes], ...]]
 MulticallDecoder = Callable[..., DecodedMulticall]
 
 
-# these compile to c constants
+# these compile to C constants
 Raw: Final = msgspec.Raw
 RawResponse: Final = types.RawResponse
 ContextFramesBytesIO: Final = decoding.ContextFramesBytesIO
