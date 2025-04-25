@@ -80,6 +80,8 @@ jobs:
         run: poetry install --no-interaction
       
       - name: Setup brownie networks
+        env:
+          MAX_RETRIES: 2
         run: |
           poetry run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
         continue-on-error: true
