@@ -104,7 +104,7 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
             async_w3.middleware_onion.add(geth_poa_middleware)
         dank_w3s.append(async_w3)
     async_w3.eth = DankEth(async_w3)
-    return async_w3
+    return async_w3  # type: ignore [no-any-return]
 
 
 def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
@@ -130,7 +130,7 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
 
 def set_done(
     fn: Callable[Concatenate[Batch, P], Awaitable[T]],
-) -> Callable[Concatenate[Batch, P], Awaitable[T]]:
+) -> Callable[Concatenate[Batch, P], Coroutine[Any, Any, T]]:
     """
     A decorator that sets the '_done' flag of a _Request object after the decorated function completes.
 
@@ -196,7 +196,7 @@ async def geth_poa_middleware(
             RPC.eth_getBlockByNumber: apply_formatter_if(is_not_null, geth_poa_cleanup),
         },
     )
-    return await middleware(make_request, w3)  # type: ignore [arg-type, return-value]
+    return await middleware(make_request, w3)  # type: ignore [arg-type, return-value, no-any-return]
 
 
 async def async_construct_formatting_middleware(
