@@ -10,10 +10,20 @@ license = "MIT"
 readme = "README.md"
 include = [
     { path = "38b311ae8b2cdc7b228c__mypyc.cpython-38-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "38b311ae8b2cdc7b228c__mypyc.cpython-38-darwin.so", format = ["sdist", "wheel"] },
+    { path = "38b311ae8b2cdc7b228c__mypyc.cp38-win_amd64.pyd", format = ["sdist", "wheel"] },
     { path = "6b2f92f702f594a3e545__mypyc.cpython-39-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "6b2f92f702f594a3e545__mypyc.cpython-39-darwin.so", format = ["sdist", "wheel"] },
+    { path = "6b2f92f702f594a3e545__mypyc.cp39-win_amd64.pyd", format = ["sdist", "wheel"] },
     { path = "6b2f92f702f594a3e545__mypyc.cpython-310-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "6b2f92f702f594a3e545__mypyc.cpython-310-darwin.so", format = ["sdist", "wheel"] },
+    { path = "6b2f92f702f594a3e545__mypyc.cp310-win_amd64.pyd", format = ["sdist", "wheel"] },
     { path = "6b2f92f702f594a3e545__mypyc.cpython-311-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "6b2f92f702f594a3e545__mypyc.cpython-311-darwin.so", format = ["sdist", "wheel"] },
+    { path = "6b2f92f702f594a3e545__mypyc.cp311-win_amd64.pyd", format = ["sdist", "wheel"] },
     { path = "6b2f92f702f594a3e545__mypyc.cpython-312-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "6b2f92f702f594a3e545__mypyc.cpython-312-darwin.so", format = ["sdist", "wheel"] },
+    { path = "6b2f92f702f594a3e545__mypyc.cp312-win_amd64.pyd", format = ["sdist", "wheel"] },
 ]
 
 [tool.poetry.dependencies]

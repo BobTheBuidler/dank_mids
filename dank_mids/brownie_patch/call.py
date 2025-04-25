@@ -53,7 +53,7 @@ ListOrTuple = Union[List[_T], Tuple[_T, ...]]
 AbiDict = NewType("AbiDict", Dict[str, Any])
 
 
-# these compile to c constants to avoid global name lookups
+# these compile to C constants to avoid global name lookups
 Decimal: Final[Callable[[Any], decimal.Decimal]] = decimal.Decimal
 HexBytes: Final = hexbytes.HexBytes
 Contract: Final = brownie.network.contract.Contract
