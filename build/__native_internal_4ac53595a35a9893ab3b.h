@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_a6bf1912b3ebbb452765_H
-#define MYPYC_NATIVE_INTERNAL_a6bf1912b3ebbb452765_H
+#ifndef MYPYC_NATIVE_INTERNAL_4ac53595a35a9893ab3b_H
+#define MYPYC_NATIVE_INTERNAL_4ac53595a35a9893ab3b_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_a6bf1912b3ebbb452765.h"
+#include "__native_4ac53595a35a9893ab3b.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[705];
+extern PyObject *CPyStatics[731];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -100,6 +100,11 @@ extern CPyModule *CPyModule_dank_mids___types;
 extern CPyModule *CPyModule_dank_mids___helpers____errors_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____errors;
 extern PyObject *CPyStatic__errors___globals;
+extern CPyModule *CPyModule_dank_mids___helpers____gather_internal;
+extern CPyModule *CPyModule_dank_mids___helpers____gather;
+extern PyObject *CPyStatic__gather___globals;
+extern CPyModule *CPyModule_asyncio;
+extern CPyModule *CPyModule_a_sync___asyncio;
 extern PyObject *CPyStatic_lru_cache___globals;
 extern CPyModule *CPyModule_typing_extensions;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist_internal;
@@ -445,6 +450,51 @@ extern PyObject *CPyPy__errors___is_call_revert(PyObject *self, PyObject *const 
 extern char CPyDef__errors___log_request_type_switch(void);
 extern PyObject *CPyPy__errors___log_request_type_switch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors_____top_level__(void);
+extern PyObject *CPyStatic__gather___Task;
+extern PyObject *CPyStatic__gather___get_running_loop;
+extern PyObject *CPyStatic__gather___wait;
+extern PyObject *CPyStatic__gather___yield_to_loop;
+extern PyTypeObject *CPyType__gather___gatherish_env;
+extern PyObject *CPyDef__gather___gatherish_env(void);
+extern PyTypeObject *CPyType__gather___gatherish_gen;
+extern PyObject *CPyDef__gather___gatherish_gen(void);
+extern PyTypeObject *CPyType__gather___first_completed_env;
+extern PyObject *CPyDef__gather___first_completed_env(void);
+extern PyTypeObject *CPyType__gather___first_completed_gen;
+extern PyObject *CPyDef__gather___first_completed_gen(void);
+extern PyObject *CPyDef__gather___gatherish_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+extern PyObject *CPyPy__gather___gatherish_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___gatherish_gen_____next__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__gather___gatherish_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___gatherish_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+extern PyObject *CPyPy__gather___gatherish_gen___send(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___gatherish_gen_____iter__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__gather___gatherish_gen_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___gatherish_gen___throw(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+extern PyObject *CPyPy__gather___gatherish_gen___throw(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___gatherish_gen___close(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__gather___gatherish_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___gatherish_gen_____await__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__gather___gatherish_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___gatherish(PyObject *cpy_r_coros, PyObject *cpy_r_name);
+extern PyObject *CPyPy__gather___gatherish(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___first_completed_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+extern PyObject *CPyPy__gather___first_completed_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___first_completed_gen_____next__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__gather___first_completed_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___first_completed_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+extern PyObject *CPyPy__gather___first_completed_gen___send(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___first_completed_gen_____iter__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__gather___first_completed_gen_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___first_completed_gen___throw(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+extern PyObject *CPyPy__gather___first_completed_gen___throw(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___first_completed_gen___close(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__gather___first_completed_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___first_completed_gen_____await__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__gather___first_completed_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__gather___first_completed(PyObject *cpy_r_fs, char cpy_r_cancel);
+extern PyObject *CPyPy__gather___first_completed(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__gather_____top_level__(void);
 extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_env;
 extern PyObject *CPyDef_lru_cache___lru_cache_lite_env(void);
 extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;

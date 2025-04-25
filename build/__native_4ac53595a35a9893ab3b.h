@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_a6bf1912b3ebbb452765_H
-#define MYPYC_NATIVE_a6bf1912b3ebbb452765_H
+#ifndef MYPYC_NATIVE_4ac53595a35a9893ab3b_H
+#define MYPYC_NATIVE_4ac53595a35a9893ab3b_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3OOO
@@ -471,6 +471,74 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
+    PyObject *_coros;
+    PyObject *_name;
+    PyObject *_type;
+    PyObject *_value;
+    PyObject *_traceback;
+    PyObject *_arg;
+    CPyTagged ___mypyc_next_label__;
+    PyObject *_loop;
+    PyObject *___mypyc_temp__0;
+    PyObject *___mypyc_temp__1;
+    PyObject *___mypyc_temp__2;
+    PyObject *_coro;
+    PyObject *_tasks;
+    PyObject *___mypyc_temp__3;
+    tuple_T3OOO ___mypyc_temp__4;
+    PyObject *___mypyc_temp__5;
+    tuple_T3OOO ___mypyc_temp__6;
+    PyObject *___mypyc_temp__7;
+    PyObject *___mypyc_temp__8;
+    PyObject *_task;
+    PyObject *___mypyc_temp__9;
+    tuple_T3OOO ___mypyc_temp__10;
+    tuple_T3OOO ___mypyc_temp__11;
+    PyObject *___mypyc_temp__12;
+    PyObject *___mypyc_temp__13;
+    PyObject *___mypyc_temp__14;
+    tuple_T3OOO ___mypyc_temp__15;
+    tuple_T3OOO ___mypyc_temp__16;
+} dank_mids___helpers____gather___gatherish_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers____gather___gatherish_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_fs;
+    char _cancel;
+    PyObject *_type;
+    PyObject *_value;
+    PyObject *_traceback;
+    PyObject *_arg;
+    CPyTagged ___mypyc_next_label__;
+    PyObject *___mypyc_temp__17;
+    tuple_T3OOO ___mypyc_temp__18;
+    PyObject *___mypyc_temp__19;
+    tuple_T3OOO ___mypyc_temp__20;
+    PyObject *_done;
+    PyObject *_pending;
+    PyObject *___mypyc_temp__21;
+    PyObject *___mypyc_temp__22;
+    PyObject *_p;
+} dank_mids___helpers____gather___first_completed_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers____gather___first_completed_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
     PyObject *_func;
     PyObject *_cache;
     PyObject *_cache_miss;
@@ -531,7 +599,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_a6bf1912b3ebbb452765 {
+struct export_table_4ac53595a35a9893ab3b {
     PyObject **CPyStatic__demo_mode___demo_logger;
     PyTypeObject **CPyType__demo_mode___DummyLogger;
     PyObject *(*CPyDef__demo_mode___DummyLogger)(void);
@@ -758,6 +826,35 @@ struct export_table_a6bf1912b3ebbb452765 {
     char (*CPyDef__errors___is_call_revert)(PyObject *cpy_r_e);
     char (*CPyDef__errors___log_request_type_switch)(void);
     char (*CPyDef__errors_____top_level__)(void);
+    PyObject **CPyStatic__gather___Task;
+    PyObject **CPyStatic__gather___get_running_loop;
+    PyObject **CPyStatic__gather___wait;
+    PyObject **CPyStatic__gather___yield_to_loop;
+    PyTypeObject **CPyType__gather___gatherish_env;
+    PyObject *(*CPyDef__gather___gatherish_env)(void);
+    PyTypeObject **CPyType__gather___gatherish_gen;
+    PyObject *(*CPyDef__gather___gatherish_gen)(void);
+    PyTypeObject **CPyType__gather___first_completed_env;
+    PyObject *(*CPyDef__gather___first_completed_env)(void);
+    PyTypeObject **CPyType__gather___first_completed_gen;
+    PyObject *(*CPyDef__gather___first_completed_gen)(void);
+    PyObject *(*CPyDef__gather___gatherish_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef__gather___gatherish_gen_____next__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef__gather___gatherish_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef__gather___gatherish_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef__gather___gatherish_gen___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+    PyObject *(*CPyDef__gather___gatherish_gen___close)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef__gather___gatherish_gen_____await__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef__gather___gatherish)(PyObject *cpy_r_coros, PyObject *cpy_r_name);
+    PyObject *(*CPyDef__gather___first_completed_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef__gather___first_completed_gen_____next__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef__gather___first_completed_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef__gather___first_completed_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef__gather___first_completed_gen___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+    PyObject *(*CPyDef__gather___first_completed_gen___close)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef__gather___first_completed_gen_____await__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef__gather___first_completed)(PyObject *cpy_r_fs, char cpy_r_cancel);
+    char (*CPyDef__gather_____top_level__)(void);
     PyTypeObject **CPyType_lru_cache___lru_cache_lite_env;
     PyObject *(*CPyDef_lru_cache___lru_cache_lite_env)(void);
     PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
