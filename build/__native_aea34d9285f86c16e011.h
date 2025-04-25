@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_6b2f92f702f594a3e545_H
-#define MYPYC_NATIVE_6b2f92f702f594a3e545_H
+#ifndef MYPYC_NATIVE_aea34d9285f86c16e011_H
+#define MYPYC_NATIVE_aea34d9285f86c16e011_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3OOO
@@ -470,39 +470,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_func;
-    PyObject *_cache;
-    PyObject *_cache_miss;
-    PyObject *_lru_cache_lite_wrap;
-} dank_mids___helpers___lru_cache___lru_cache_lite_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_func;
-    PyObject *_cache;
-    PyObject *_lru_cache_lite_wrap;
-} dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     PyObject *__refs;
 } dank_mids___helpers____weaklist___WeakListObject;
 
@@ -531,7 +498,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_6b2f92f702f594a3e545 {
+struct export_table_aea34d9285f86c16e011 {
     PyObject **CPyStatic__demo_mode___demo_logger;
     PyTypeObject **CPyType__demo_mode___DummyLogger;
     PyObject *(*CPyDef__demo_mode___DummyLogger)(void);
@@ -740,21 +707,24 @@ struct export_table_6b2f92f702f594a3e545 {
     PyObject *(*CPyDef__codec___mcall_encode)(PyObject *cpy_r_data);
     PyObject *(*CPyDef__codec___mcall_decode)(PyObject *cpy_r_data);
     char (*CPyDef__codec_____top_level__)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_env;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_env)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_nonull_env;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull_env)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj)(void);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite)(PyObject *cpy_r_func);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull)(PyObject *cpy_r_func);
-    char (*CPyDef_lru_cache_____top_level__)(void);
+    PyObject **CPyStatic__errors___error_logger;
+    PyObject **CPyStatic__errors___error_logger_debug;
+    PyObject **CPyStatic__errors___error_logger_log;
+    PyObject **CPyStatic__errors___revert_logger;
+    PyObject **CPyStatic__errors___revert_logger_log;
+    PyObject **CPyStatic__errors___timeout_logger;
+    PyObject **CPyStatic__errors___timeout_logger_debug;
+    PyObject **CPyStatic__errors___timeout_logger_warning;
+    PyObject **CPyStatic__errors___gas_logger;
+    PyObject **CPyStatic__errors___gas_logger_debug;
+    PyObject **CPyStatic__errors___INDIVIDUAL_CALL_REVERT_STRINGS;
+    char (*CPyDef__errors___error_logger_log_debug)(PyObject *cpy_r_msg, PyObject *cpy_r_args);
+    char (*CPyDef__errors___revert_logger_log_debug)(PyObject *cpy_r_msg, PyObject *cpy_r_args);
+    char (*CPyDef__errors___log_internal_error)(PyObject *cpy_r_logger, PyObject *cpy_r_batch, PyObject *cpy_r_exc);
+    char (*CPyDef__errors___needs_full_request_spec)(PyObject *cpy_r_response);
+    char (*CPyDef__errors___is_call_revert)(PyObject *cpy_r_e);
+    char (*CPyDef__errors___log_request_type_switch)(void);
+    char (*CPyDef__errors_____top_level__)(void);
     PyObject **CPyStatic__weaklist___ref;
     PyObject **CPyStatic__weaklist____call_ref;
     PyTypeObject **CPyType__weaklist___WeakList;
