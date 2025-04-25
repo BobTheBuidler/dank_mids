@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[722];
+extern PyObject *CPyStatics[724];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -154,7 +154,9 @@ extern PyTypeObject *CPyType__exceptions___DankMidsClientResponseError;
 extern PyObject *CPyDef__exceptions___DankMidsClientResponseError(PyObject *cpy_r_exc, PyObject *cpy_r_request);
 extern PyTypeObject *CPyType__exceptions___DankMidsInternalError;
 extern PyTypeObject *CPyType__exceptions___BatchResponseSortError;
-extern PyTypeObject *CPyType__exceptions___ChainstackRateLimited;
+extern PyTypeObject *CPyType__exceptions___RateLimitError;
+extern PyTypeObject *CPyType__exceptions___ChainstackRateLimitError;
+extern PyTypeObject *CPyType__exceptions___QuiknodeRateLimitError;
 extern char CPyDef__exceptions___BadResponse_____init__(PyObject *cpy_r_self, PyObject *cpy_r_response);
 extern PyObject *CPyPy__exceptions___BadResponse_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern char CPyDef__exceptions___ExecutionReverted_____init__(PyObject *cpy_r_self, PyObject *cpy_r_response);
@@ -167,8 +169,8 @@ extern char CPyDef__exceptions___DankMidsInternalError_____init__(PyObject *cpy_
 extern PyObject *CPyPy__exceptions___DankMidsInternalError_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern char CPyDef__exceptions___BatchResponseSortError_____init__(PyObject *cpy_r_self, PyObject *cpy_r_controller, PyObject *cpy_r_calls, PyObject *cpy_r_response);
 extern PyObject *CPyPy__exceptions___BatchResponseSortError_____init__(PyObject *self, PyObject *args, PyObject *kw);
-extern double CPyDef__exceptions___ChainstackRateLimited___try_again_in(PyObject *cpy_r_self);
-extern PyObject *CPyPy__exceptions___ChainstackRateLimited___try_again_in(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern double CPyDef__exceptions___ChainstackRateLimitError___try_again_in(PyObject *cpy_r_self);
+extern PyObject *CPyPy__exceptions___ChainstackRateLimitError___try_again_in(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__exceptions_____top_level__(void);
 extern PyTypeObject *CPyType__uid___UIDGenerator;
 extern PyObject *CPyDef__uid___UIDGenerator(void);
