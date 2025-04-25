@@ -77,7 +77,6 @@ from dank_mids.helpers._errors import (
     error_logger,
     error_logger_debug,
     error_logger_log_debug,
-    format_error_response,
     gas_logger_debug,
     is_call_revert,
     log_internal_error,
@@ -453,7 +452,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             if needs_full_request_spec(data.response) and self.controller._check_request_type():
                 self._fut.set_result(await self.create_duplicate())
                 return
-            formatted = format_error_response(self.request, data.response.error)
+            formatted = data.response.error.to_dict(context=self.request)  # type: ignore [union-attr]
             self._fut.set_result({"error": formatted})
             if error_logger.isEnabledFor(DEBUG):
                 error_logger_log_debug("RPC Error for %s", self)

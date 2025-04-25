@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_38b311ae8b2cdc7b228c_H
-#define MYPYC_NATIVE_INTERNAL_38b311ae8b2cdc7b228c_H
+#ifndef MYPYC_NATIVE_INTERNAL_a6bf1912b3ebbb452765_H
+#define MYPYC_NATIVE_INTERNAL_a6bf1912b3ebbb452765_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_38b311ae8b2cdc7b228c.h"
+#include "__native_a6bf1912b3ebbb452765.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[665];
+extern PyObject *CPyStatics[705];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -80,6 +80,7 @@ extern CPyModule *CPyModule_evmspec___data;
 extern CPyModule *CPyModule_hexbytes___main;
 extern CPyModule *CPyModule_multicall___constants;
 extern CPyModule *CPyModule_web3___types;
+extern CPyModule *CPyModule_dank_mids___helpers___lru_cache_internal;
 extern CPyModule *CPyModule_dank_mids___helpers___lru_cache;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___overloaded_internal;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___overloaded;
@@ -96,6 +97,11 @@ extern CPyModule *CPyModule_msgspec___json;
 extern CPyModule *CPyModule_eth_abi___abi;
 extern CPyModule *CPyModule_eth_abi___encoding;
 extern CPyModule *CPyModule_dank_mids___types;
+extern CPyModule *CPyModule_dank_mids___helpers____errors_internal;
+extern CPyModule *CPyModule_dank_mids___helpers____errors;
+extern PyObject *CPyStatic__errors___globals;
+extern PyObject *CPyStatic_lru_cache___globals;
+extern CPyModule *CPyModule_typing_extensions;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist;
 extern PyObject *CPyStatic__weaklist___globals;
@@ -415,6 +421,51 @@ extern PyObject *CPyPy__codec___mcall_encode(PyObject *self, PyObject *const *ar
 extern PyObject *CPyDef__codec___mcall_decode(PyObject *cpy_r_data);
 extern PyObject *CPyPy__codec___mcall_decode(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__codec_____top_level__(void);
+extern PyObject *CPyStatic__errors___error_logger;
+extern PyObject *CPyStatic__errors___error_logger_debug;
+extern PyObject *CPyStatic__errors___error_logger_log;
+extern PyObject *CPyStatic__errors___revert_logger;
+extern PyObject *CPyStatic__errors___revert_logger_log;
+extern PyObject *CPyStatic__errors___timeout_logger;
+extern PyObject *CPyStatic__errors___timeout_logger_debug;
+extern PyObject *CPyStatic__errors___timeout_logger_warning;
+extern PyObject *CPyStatic__errors___gas_logger;
+extern PyObject *CPyStatic__errors___gas_logger_debug;
+extern PyObject *CPyStatic__errors___INDIVIDUAL_CALL_REVERT_STRINGS;
+extern char CPyDef__errors___error_logger_log_debug(PyObject *cpy_r_msg, PyObject *cpy_r_args);
+extern PyObject *CPyPy__errors___error_logger_log_debug(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__errors___revert_logger_log_debug(PyObject *cpy_r_msg, PyObject *cpy_r_args);
+extern PyObject *CPyPy__errors___revert_logger_log_debug(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__errors___log_internal_error(PyObject *cpy_r_logger, PyObject *cpy_r_batch, PyObject *cpy_r_exc);
+extern PyObject *CPyPy__errors___log_internal_error(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__errors___needs_full_request_spec(PyObject *cpy_r_response);
+extern PyObject *CPyPy__errors___needs_full_request_spec(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__errors___is_call_revert(PyObject *cpy_r_e);
+extern PyObject *CPyPy__errors___is_call_revert(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__errors___log_request_type_switch(void);
+extern PyObject *CPyPy__errors___log_request_type_switch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__errors_____top_level__(void);
+extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_env;
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_env(void);
+extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj(void);
+extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_nonull_env;
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_nonull_env(void);
+extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj(void);
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
+extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_lru_cache___lru_cache_lite(PyObject *cpy_r_func);
+extern PyObject *CPyPy_lru_cache___lru_cache_lite(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
+extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_lru_cache___lru_cache_lite_nonull(PyObject *cpy_r_func);
+extern PyObject *CPyPy_lru_cache___lru_cache_lite_nonull(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_lru_cache_____top_level__(void);
 extern PyObject *CPyStatic__weaklist___ref;
 extern PyObject *CPyStatic__weaklist____call_ref;
 extern PyTypeObject *CPyType__weaklist___WeakList;

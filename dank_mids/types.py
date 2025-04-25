@@ -6,10 +6,7 @@ from typing import (
     Any,
     Callable,
     Coroutine,
-    DefaultDict,
     Dict,
-    Iterable,
-    Iterator,
     List,
     Literal,
     Mapping,
@@ -36,7 +33,7 @@ from msgspec import UNSET, Raw, ValidationError
 from msgspec.json import decode as json_decode
 from msgspec.json import encode as json_encode
 from web3.datastructures import AttributeDict
-from web3.types import RPCEndpoint, RPCResponse
+from web3.types import RPCEndpoint, RPCError, RPCResponse
 
 from dank_mids import constants, stats
 from dank_mids._exceptions import (
@@ -141,6 +138,10 @@ class Request(PartialRequest):
         return encoded_omit_defaults[:-1] + b',"jsonrpc":"2.0"}'
 
 
+class RPCErrorWithContext(RPCError):
+    dank_mids_added_context: PartialRequest
+
+
 _getattribute = object.__getattribute__
 
 
@@ -155,15 +156,28 @@ class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True
     message: str
     """The error message."""
 
-    data: Optional[Any] = UNSET
+    data: str = UNSET  # type: ignore [assignment]
     """Additional error data, if any."""
 
-    def to_dict(self) -> Dict[str, Any]:
-        d = {"code": self.code, "message": self.message}
+    @overload
+    def to_dict(self, *, context: None = None) -> RPCError: ...
+    @overload
+    def to_dict(self, *, context: PartialRequest) -> RPCErrorWithContext: ...
+    def to_dict(self, *, context: Optional[PartialRequest] = None) -> RPCError:
         data = _getattribute(self, "data")
-        if data is not UNSET:
-            d["data"] = data
-        return d
+        if context is None:
+            if data is UNSET:
+                return RPCError(code=self.code, message=self.message)
+            else:
+                return RPCError(code=self.code, message=self.message, data=data)
+        elif data is UNSET:
+            return RPCErrorWithContext(
+                code=self.code, message=self.message, dank_mids_added_context=context
+            )
+        else:
+            return RPCErrorWithContext(
+                code=self.code, message=self.message, data=data, dank_mids_added_context=context
+            )
 
 
 # some devving tools that will go away eventually

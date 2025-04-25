@@ -1,40 +1,39 @@
 from logging import DEBUG, Logger, getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Final
 
-from web3.types import RPCError
-
-from dank_mids.types import BadResponse, Error, PartialRequest, PartialResponse
+from dank_mids._exceptions import BadResponse
+from dank_mids.types import PartialResponse
 
 if TYPE_CHECKING:
     from dank_mids._requests import _Batch
 
 
-error_logger = getLogger("dank_mids.errors")
-error_logger_debug = error_logger.debug
-error_logger_log = error_logger._log
+error_logger: Final = getLogger("dank_mids.errors")
+error_logger_debug: Final = error_logger.debug
+error_logger_log: Final = error_logger._log
 
 
-def error_logger_log_debug(msg: str, *args) -> None:
+def error_logger_log_debug(msg: str, *args: Any) -> None:
     error_logger_log(DEBUG, msg, args)
 
 
-revert_logger = error_logger.getChild("reverts")
-revert_logger_log = revert_logger._log
+revert_logger: Final = error_logger.getChild("reverts")
+revert_logger_log: Final = revert_logger._log
 
 
-def revert_logger_log_debug(msg: str, *args) -> None:
+def revert_logger_log_debug(msg: str, *args: Any) -> None:
     revert_logger_log(DEBUG, msg, args)
 
 
-timeout_logger = error_logger.getChild("timeouts")
-timeout_logger_debug = timeout_logger.debug
-timeout_logger_warning = timeout_logger.warning
+timeout_logger: Final = error_logger.getChild("timeouts")
+timeout_logger_debug: Final = timeout_logger.debug
+timeout_logger_warning: Final = timeout_logger.warning
 
 
-gas_logger = error_logger.getChild("gas")
-gas_logger_debug = gas_logger.debug
+gas_logger: Final = error_logger.getChild("gas")
+gas_logger_debug: Final = gas_logger.debug
 
-INDIVIDUAL_CALL_REVERT_STRINGS = {
+INDIVIDUAL_CALL_REVERT_STRINGS: Final = {
     "invalid opcode",
     "missing trie node",
     "resource not found",
@@ -43,7 +42,7 @@ INDIVIDUAL_CALL_REVERT_STRINGS = {
 }
 
 
-def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception) -> None:
+def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception) -> None:  # type: ignore [type-arg]
     try:
         batch_objs = list(batch)
     except TypeError:
@@ -62,12 +61,6 @@ def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception) -> None:
     )
 
 
-def format_error_response(request: PartialRequest, error: Error) -> RPCError:
-    response = error.to_dict()
-    response["dankmids_added_context"] = request
-    return response
-
-
 def needs_full_request_spec(response: PartialResponse) -> bool:
     """
     Determine if a response indicates that the node requires the full request specification.
@@ -81,7 +74,10 @@ def needs_full_request_spec(response: PartialResponse) -> bool:
     Returns:
         True if the full request specification is needed, False otherwise.
     """
-    return response.error and response.error.message.lower() in ("invalid request", "parse error")
+    return response.error is not None and response.error.message.lower() in (
+        "invalid request",
+        "parse error",
+    )
 
 
 def is_call_revert(e: BadResponse) -> bool:
