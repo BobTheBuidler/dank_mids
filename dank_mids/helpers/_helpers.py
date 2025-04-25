@@ -7,12 +7,14 @@ from typing import (
     Awaitable,
     Callable,
     Coroutine,
+    Final,
     Iterable,
     List,
     Literal,
     Optional,
     TypeVar,
     Union,
+    final,
 )
 
 from eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map, is_null
@@ -38,13 +40,13 @@ if TYPE_CHECKING:
 else:
     Batch = Union["Multicall", "JSONRPCBatch"]
 
-dank_w3s: List[Web3] = []
+dank_w3s: Final[List[Web3]] = []
 """
 A list that stores instances of :class:`Web3` objects that have been set up with Dank Middleware.
 This list is used to keep track of all Dank-enabled Web3 instances created in the application.
 """
 
-sync_w3s: List[Web3] = []
+sync_w3s: Final[List[Web3]] = []
 """
 A list that stores instances of synchronous Web3 objects.
 This list is used to keep track of all synchronous Web3 instances that have been created or modified.
@@ -56,7 +58,7 @@ T = TypeVar("T")
 P = ParamSpec("P")
 """Parameter specification for use in type hints."""
 
-w3_version_major = int(version("web3").split(".")[0])
+w3_version_major: Final = int(version("web3").split(".")[0])
 """
 The major version number of the currently installed web3.py package.
 This is extracted from the full version string and stored as an integer for easy comparison.
@@ -65,13 +67,14 @@ Example: for `web3==6.0.1`, the major version is 6.
 """
 
 
+@final
 class DankWeb3:
     """This is just a helper for type checkers. Your object will just be a modified :class:`~web3.Web3` object."""
 
     eth: DankEth
 
 
-skip_poa_middleware = {
+skip_poa_middleware: Final = {
     1,  # eth mainnet
 }
 """
@@ -101,7 +104,7 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
             async_w3.middleware_onion.add(geth_poa_middleware)
         dank_w3s.append(async_w3)
     async_w3.eth = DankEth(async_w3)
-    return async_w3
+    return async_w3  # type: ignore [no-any-return]
 
 
 def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
@@ -127,7 +130,7 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
 
 def set_done(
     fn: Callable[Concatenate[Batch, P], Awaitable[T]],
-) -> Callable[Concatenate[Batch, P], Awaitable[T]]:
+) -> Callable[Concatenate[Batch, P], Coroutine[Any, Any, T]]:
     """
     A decorator that sets the '_done' flag of a _Request object after the decorated function completes.
 
@@ -144,18 +147,18 @@ def set_done(
         self._done.set()
         return retval
 
-    return set_done_wrap
+    return set_done_wrap  # type: ignore [return-value]
 
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 
-is_not_null = complement(is_null)
+is_not_null: Final = complement(is_null)
 """
 A function that returns True if the input is not null, False otherwise.
 This is the complement of the `is_null` function.
 """
 
-FORMATTER_DEFAULTS: FormattersDict = {
+FORMATTER_DEFAULTS: Final[FormattersDict] = {
     "request_formatters": {},
     "result_formatters": {},
     "error_formatters": {},
@@ -165,27 +168,19 @@ Default formatters dictionary used in middleware configuration.
 It provides empty dictionaries for request, result, and error formatters.
 """
 
-remap_geth_poa_fields = apply_key_map(
-    {
-        "extraData": "proofOfAuthorityData",
-    }
-)
+remap_geth_poa_fields: Final = apply_key_map({"extraData": "proofOfAuthorityData"})
 """
 A function that remaps Geth Proof of Authority (PoA) fields.
 It changes the key 'extraData' to 'proofOfAuthorityData'.
 """
 
-pythonic_geth_poa = apply_formatters_to_dict(
-    {
-        "proofOfAuthorityData": HexBytes,
-    }
-)
+pythonic_geth_poa: Final = apply_formatters_to_dict({"proofOfAuthorityData": HexBytes})
 """
 A function that applies formatters to Geth Proof of Authority (PoA) fields.
 It converts the 'proofOfAuthorityData' field to HexBytes.
 """
 
-geth_poa_cleanup = compose(pythonic_geth_poa, remap_geth_poa_fields)
+geth_poa_cleanup: Final = compose(pythonic_geth_poa, remap_geth_poa_fields)
 """
 A composed function that applies both remapping and formatting to Geth PoA fields.
 It first remaps the fields and then applies the pythonic formatters.
@@ -201,7 +196,7 @@ async def geth_poa_middleware(
             RPC.eth_getBlockByNumber: apply_formatter_if(is_not_null, geth_poa_cleanup),
         },
     )
-    return await middleware(make_request, w3)  # type: ignore [arg-type, return-value]
+    return await middleware(make_request, w3)  # type: ignore [arg-type, return-value, no-any-return]
 
 
 async def async_construct_formatting_middleware(
@@ -311,9 +306,9 @@ def _make_hashable(obj: Any) -> Any:
         obj: The object to make hashable.
     """
     if isinstance(obj, (list, tuple)):
-        return tuple(map(_make_hashable, obj))
+        return tuple(_make_hashable(o) for o in obj)
     elif isinstance(obj, dict):
-        return AttributeDict(zip(obj.keys(), map(_make_hashable, obj.values())))  # type: ignore [arg-type]
+        return AttributeDict(zip(obj.keys(), (_make_hashable(o) for o in obj.values())))  # type: ignore [arg-type]
     return obj
 
 
