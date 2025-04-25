@@ -1,10 +1,36 @@
-from asyncio import Task, get_running_loop, wait
-from typing import Coroutine, Iterable, Optional
+import asyncio
+from typing import (
+    Coroutine,
+    Final,
+    Iterable,
+    Literal,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+    overload,
+)
 
-from a_sync.asyncio import sleep0 as yield_to_loop
+import a_sync.asyncio
 
 
-async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -> None:
+__T = TypeVar("__T")
+
+FinishedTasks = Set["asyncio.Future[__T]"]
+PendingTasks = Set["asyncio.Future[__T]"]
+
+
+# These compile to C constants
+Task: Final = asyncio.Task
+get_running_loop: Final = asyncio.get_running_loop
+wait: Final = asyncio.wait
+
+
+yield_to_loop: Final = a_sync.asyncio.sleep0
+
+
+async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -> None:  # type: ignore [type-arg]
     # sourcery skip: use-contextlib-suppress
     """
     An implementation of asyncio.gather optimized for use cases that:
@@ -14,10 +40,8 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
     """
     loop = get_running_loop()
 
-    create_task = lambda coro: Task(coro, loop=loop, name=name)
-
     # materialize the map into a list to make sure all the tasks start
-    tasks = iter(list(map(create_task, coros)))
+    tasks = iter([Task(coro, loop=loop, name=name) for coro in coros])
     # sleep twice to let 99% of the tasks complete
     # NOTE: By doing this we allow any successful calls to get their results sooner without being interrupted
     #       by the first exc in the gather and having to wait for the bisect and retry process
@@ -39,7 +63,17 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
             raise
 
 
-async def first_completed(*fs: Iterable, cancel: bool = False):
+@overload
+async def first_completed(
+    *fs: asyncio.Future[__T], cancel: Literal[True]
+) -> FinishedTasks[__T]: ...
+@overload
+async def first_completed(
+    *fs: asyncio.Future[__T], cancel: Literal[False] = False
+) -> Tuple[FinishedTasks[__T], PendingTasks[__T]]: ...
+async def first_completed(
+    *fs: asyncio.Future[__T], cancel: bool = False
+) -> Union[FinishedTasks[__T], Tuple[FinishedTasks[__T], PendingTasks[__T]]]:
     if not cancel:
         return await wait(fs, return_when="FIRST_COMPLETED")
     done, pending = await wait(fs, return_when="FIRST_COMPLETED")
