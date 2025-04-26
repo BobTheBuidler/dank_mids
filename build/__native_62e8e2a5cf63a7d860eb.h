@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_4ac53595a35a9893ab3b_H
-#define MYPYC_NATIVE_4ac53595a35a9893ab3b_H
+#ifndef MYPYC_NATIVE_62e8e2a5cf63a7d860eb_H
+#define MYPYC_NATIVE_62e8e2a5cf63a7d860eb_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3OOO
@@ -548,39 +548,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_func;
-    PyObject *_cache;
-    PyObject *_cache_miss;
-    PyObject *_lru_cache_lite_wrap;
-} dank_mids___helpers___lru_cache___lru_cache_lite_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_func;
-    PyObject *_cache;
-    PyObject *_lru_cache_lite_wrap;
-} dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     PyObject *__refs;
 } dank_mids___helpers____weaklist___WeakListObject;
 
@@ -608,8 +575,40 @@ typedef struct {
     PyObject *___mypyc_env__;
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    char __debug_logs_enabled;
+    PyObject *___debug_daemon_task;
+    PyObject *__result;
+    PyObject *__owner;
+} dank_mids___helpers___future___DebuggableFutureObject;
 
-struct export_table_4ac53595a35a9893ab3b {
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    uint32_t bitmap;
+    PyObject *___mypyc_self__;
+    PyObject *_self;
+    PyObject *_type;
+    PyObject *_value;
+    PyObject *_traceback;
+    PyObject *_arg;
+    CPyTagged ___mypyc_next_label__;
+    double _start;
+    PyObject *_done;
+    PyObject *___mypyc_temp__0;
+    tuple_T3OOO ___mypyc_temp__1;
+} dank_mids___helpers___future_____debug_daemon_DebuggableFuture_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers___future_____debug_daemon_DebuggableFuture_genObject;
+
+
+struct export_table_62e8e2a5cf63a7d860eb {
     PyObject **CPyStatic__demo_mode___demo_logger;
     PyTypeObject **CPyType__demo_mode___DummyLogger;
     PyObject *(*CPyDef__demo_mode___DummyLogger)(void);
@@ -867,21 +866,6 @@ struct export_table_4ac53595a35a9893ab3b {
     PyObject *(*CPyDef__gather___first_completed_gen_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__gather___first_completed)(PyObject *cpy_r_fs, char cpy_r_cancel);
     char (*CPyDef__gather_____top_level__)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_env;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_env)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_nonull_env;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull_env)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj)(void);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite)(PyObject *cpy_r_func);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull)(PyObject *cpy_r_func);
-    char (*CPyDef_lru_cache_____top_level__)(void);
     PyObject **CPyStatic__weaklist___ref;
     PyObject **CPyStatic__weaklist____call_ref;
     PyTypeObject **CPyType__weaklist___WeakList;
@@ -907,6 +891,42 @@ struct export_table_4ac53595a35a9893ab3b {
     char (*CPyDef__weaklist___WeakList___remove)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist___WeakList____gc_callback)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist_____top_level__)(void);
+    PyObject **CPyStatic_future___logger;
+    PyObject **CPyStatic_future____logger_is_enabled_for;
+    PyObject **CPyStatic_future____logger_log;
+    PyObject **CPyStatic_future____future_init;
+    PyObject **CPyStatic_future____future_await;
+    PyObject **CPyStatic_future____future_set_result;
+    PyObject **CPyStatic_future____future_set_exc;
+    PyObject **CPyStatic_future___create_task;
+    PyObject **CPyStatic_future___get_running_loop;
+    PyObject **CPyStatic_future___sleep;
+    PyObject **CPyStatic_future___proxy;
+    PyTypeObject **CPyType_future___DebuggableFuture;
+    PyObject *(*CPyDef_future___DebuggableFuture)(PyObject *cpy_r_owner, PyObject *cpy_r_loop);
+    PyTypeObject **CPyType_future_____debug_daemon_DebuggableFuture_env;
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_env)(void);
+    PyTypeObject **CPyType_future_____debug_daemon_DebuggableFuture_gen;
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_gen)(void);
+    char (*CPyDef_future___DebuggableFuture_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_owner, PyObject *cpy_r_loop);
+    char (*CPyDef_future___DebuggableFuture_____init___3__DebuggableFuture_glue)(PyObject *cpy_r_self, PyObject *cpy_r_owner, PyObject *cpy_r_loop);
+    PyObject *(*CPyDef_future___DebuggableFuture_____await__)(PyObject *cpy_r_self);
+    PyObject *(*CPyDef_future___DebuggableFuture_____await___3__DebuggableFuture_glue)(PyObject *cpy_r_self);
+    char (*CPyDef_future___DebuggableFuture___set_result)(PyObject *cpy_r_self, PyObject *cpy_r_value);
+    char (*CPyDef_future___DebuggableFuture___set_result__DebuggableFuture_glue)(PyObject *cpy_r_self, PyObject *cpy_r_value);
+    char (*CPyDef_future___DebuggableFuture___set_exception)(PyObject *cpy_r_self, PyObject *cpy_r_exc);
+    char (*CPyDef_future___DebuggableFuture___set_exception__DebuggableFuture_glue)(PyObject *cpy_r_self, PyObject *cpy_r_exc);
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_gen_____next__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_gen___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_gen___close)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_future_____debug_daemon_DebuggableFuture_gen_____await__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_future___DebuggableFuture_____debug_daemon)(PyObject *cpy_r_self);
+    PyObject *(*CPyDef_future___DebuggableFuture_____debug_daemon__DebuggableFuture_glue)(PyObject *cpy_r_self);
+    char (*CPyDef_future___DebuggableFuture_____mypyc_defaults_setup)(PyObject *cpy_r___mypyc_self__);
+    char (*CPyDef_future_____top_level__)(void);
     tuple_T4OOOO *CPyStatic_constants___TOO_MUCH_DATA_ERRS;
     tuple_T5OOOOO *CPyStatic_constants___RETRY_ERRS;
     PyObject **CPyStatic_constants___GAS_LIMIT;
