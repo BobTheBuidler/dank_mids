@@ -1,11 +1,10 @@
-from typing import Any, Callable, Dict, Iterable, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Final, Iterable, List, Sequence, Tuple, Union
 
 from eth_typing import TypeStr
 from eth_utils import to_dict
 from eth_utils.curried import apply_formatter_at_index
 from eth_utils.toolz import compose
 from web3._utils.method_formatters import (
-    ABI_REQUEST_FORMATTERS,
     ERROR_FORMATTERS,
     METHOD_NORMALIZERS,
     NULL_RESULT_FORMATTERS,
@@ -25,7 +24,7 @@ return_as_is = lambda x: x
 @to_dict
 def abi_request_formatters(
     normalizers: Sequence[Callable[[TypeStr, Any], Tuple[TypeStr, Any]]],
-    abis: Dict[RPCEndpoint, Union[list, dict]],
+    abis: Dict[RPCEndpoint, Union[List[Any], Dict[str, Any]]],
 ) -> Iterable[Tuple[RPCEndpoint, Callable[..., Any]]]:
     for method, abi_types in abis.items():
         if isinstance(abi_types, list):
@@ -37,9 +36,9 @@ def abi_request_formatters(
             raise TypeError(f"ABI definitions must be a list or dictionary, got {abi_types!r}")
 
 
-ABI_REQUEST_FORMATTERS: Formatters = abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
+ABI_REQUEST_FORMATTERS: Final[Formatters] = abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
 
-REQUEST_FORMATTER_MAPS = (
+REQUEST_FORMATTER_MAPS: Final = (
     ABI_REQUEST_FORMATTERS,
     # METHOD_NORMALIZERS needs to be after ABI_REQUEST_FORMATTERS
     # so that eth_getLogs's apply_formatter_at_index formatter
@@ -52,17 +51,15 @@ REQUEST_FORMATTER_MAPS = (
 _request_formatters: Dict[RPCEndpoint, Callable] = {}
 
 
-def get_request_formatters(
-    method_name: Union[RPCEndpoint, Callable[..., RPCEndpoint]],
-) -> Callable[..., Any]:
+def get_request_formatters(method_name: RPCEndpoint) -> Callable[..., Any]:
     formatters = _request_formatters.get(method_name)
     if formatters is None:
         combined = (formatter_map.get(method_name) for formatter_map in REQUEST_FORMATTER_MAPS)
-        combined = list(filter(None, combined))
-        if not combined:
+        filtered = list(filter(None, combined))
+        if not filtered:
             formatters = return_as_is
-        elif len(combined) == 1:
-            formatters = combined[0]
+        elif len(filtered) == 1:
+            formatters = filtered[0]
         else:
             # NOTE the web3 implementation uses both pipe and compose which I think is unnecessary
             # even compose by itself adds unnecessary overhead if used for only 1 formatter
