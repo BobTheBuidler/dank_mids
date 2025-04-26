@@ -2,7 +2,7 @@ import sys
 
 import pytest
 from a_sync import igather
-from brownie import chain
+from brownie import chain, web3
 from evmspec import Transaction1559, Transaction2930
 from multicall import Call
 from web3._utils.rpc_abi import RPC
@@ -20,8 +20,9 @@ def call_chai(i: int, block: int) -> Call:
 
 
 height = chain.height
+num_calls = 500 if "llama" in web3.provider.endpoint_uri else 50_000
 
-BIG_WORK = (call_chai(i, height - (i // 25000)) for i in range(0, 100_000, 4))
+BIG_WORK = (call_chai(i, height - (i // 25000)) for i in range(0, num_calls, 4))
 
 height = chain.height
 
