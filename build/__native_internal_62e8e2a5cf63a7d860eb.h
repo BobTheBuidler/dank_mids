@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_a9f9f6d0b5201de4e266_H
-#define MYPYC_NATIVE_INTERNAL_a9f9f6d0b5201de4e266_H
+#ifndef MYPYC_NATIVE_INTERNAL_62e8e2a5cf63a7d860eb_H
+#define MYPYC_NATIVE_INTERNAL_62e8e2a5cf63a7d860eb_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_a9f9f6d0b5201de4e266.h"
+#include "__native_62e8e2a5cf63a7d860eb.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[724];
+extern PyObject *CPyStatics[774];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -108,6 +108,11 @@ extern CPyModule *CPyModule_dank_mids___helpers____weaklist_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist;
 extern PyObject *CPyStatic__weaklist___globals;
 extern CPyModule *CPyModule_weakref;
+extern CPyModule *CPyModule_dank_mids___helpers___future_internal;
+extern CPyModule *CPyModule_dank_mids___helpers___future;
+extern PyObject *CPyStatic_future___globals;
+extern CPyModule *CPyModule_time;
+extern CPyModule *CPyModule_mypy_extensions;
 extern CPyModule *CPyModule_dank_mids___constants_internal;
 extern CPyModule *CPyModule_dank_mids___constants;
 extern PyObject *CPyStatic_constants___globals;
@@ -535,6 +540,60 @@ extern PyObject *CPyPy__weaklist___WeakList___remove(PyObject *self, PyObject *c
 extern char CPyDef__weaklist___WeakList____gc_callback(PyObject *cpy_r_self, PyObject *cpy_r_item);
 extern PyObject *CPyPy__weaklist___WeakList____gc_callback(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist_____top_level__(void);
+extern PyObject *CPyStatic_future___logger;
+extern PyObject *CPyStatic_future____logger_is_enabled_for;
+extern PyObject *CPyStatic_future____logger_log;
+extern PyObject *CPyStatic_future____future_init;
+extern PyObject *CPyStatic_future____future_await;
+extern PyObject *CPyStatic_future____future_set_result;
+extern PyObject *CPyStatic_future____future_set_exc;
+extern PyObject *CPyStatic_future___create_task;
+extern PyObject *CPyStatic_future___get_running_loop;
+extern PyObject *CPyStatic_future___sleep;
+extern PyObject *CPyStatic_future___proxy;
+extern PyTypeObject *CPyType_future___DebuggableFuture;
+extern PyObject *CPyDef_future___DebuggableFuture(PyObject *cpy_r_owner, PyObject *cpy_r_loop);
+extern PyTypeObject *CPyType_future_____debug_daemon_DebuggableFuture_env;
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_env(void);
+extern PyTypeObject *CPyType_future_____debug_daemon_DebuggableFuture_gen;
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen(void);
+extern char CPyDef_future___DebuggableFuture_____init__(PyObject *cpy_r_self, PyObject *cpy_r_owner, PyObject *cpy_r_loop);
+extern PyObject *CPyPy_future___DebuggableFuture_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern char CPyDef_future___DebuggableFuture_____init___3__DebuggableFuture_glue(PyObject *cpy_r_self, PyObject *cpy_r_owner, PyObject *cpy_r_loop);
+extern PyObject *CPyPy_future___DebuggableFuture_____init___3__DebuggableFuture_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future___DebuggableFuture_____await__(PyObject *cpy_r_self);
+extern PyObject *CPyPy_future___DebuggableFuture_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future___DebuggableFuture_____await___3__DebuggableFuture_glue(PyObject *cpy_r_self);
+extern PyObject *CPyPy_future___DebuggableFuture_____await___3__DebuggableFuture_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_future___DebuggableFuture___set_result(PyObject *cpy_r_self, PyObject *cpy_r_value);
+extern PyObject *CPyPy_future___DebuggableFuture___set_result(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_future___DebuggableFuture___set_result__DebuggableFuture_glue(PyObject *cpy_r_self, PyObject *cpy_r_value);
+extern PyObject *CPyPy_future___DebuggableFuture___set_result__DebuggableFuture_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_future___DebuggableFuture___set_exception(PyObject *cpy_r_self, PyObject *cpy_r_exc);
+extern PyObject *CPyPy_future___DebuggableFuture___set_exception(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_future___DebuggableFuture___set_exception__DebuggableFuture_glue(PyObject *cpy_r_self, PyObject *cpy_r_exc);
+extern PyObject *CPyPy_future___DebuggableFuture___set_exception__DebuggableFuture_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+extern PyObject *CPyPy_future_____debug_daemon_DebuggableFuture_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen_____next__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_future_____debug_daemon_DebuggableFuture_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+extern PyObject *CPyPy_future_____debug_daemon_DebuggableFuture_gen___send(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen_____iter__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_future_____debug_daemon_DebuggableFuture_gen_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen___throw(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+extern PyObject *CPyPy_future_____debug_daemon_DebuggableFuture_gen___throw(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen___close(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_future_____debug_daemon_DebuggableFuture_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen_____await__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_future_____debug_daemon_DebuggableFuture_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future___DebuggableFuture_____debug_daemon(PyObject *cpy_r_self);
+extern PyObject *CPyPy_future___DebuggableFuture_____debug_daemon(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_future___DebuggableFuture_____debug_daemon__DebuggableFuture_glue(PyObject *cpy_r_self);
+extern PyObject *CPyPy_future___DebuggableFuture_____debug_daemon__DebuggableFuture_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_future___DebuggableFuture_____mypyc_defaults_setup(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_future___DebuggableFuture_____mypyc_defaults_setup(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_future_____top_level__(void);
 extern tuple_T4OOOO CPyStatic_constants___TOO_MUCH_DATA_ERRS;
 extern tuple_T5OOOOO CPyStatic_constants___RETRY_ERRS;
 extern PyObject *CPyStatic_constants___GAS_LIMIT;
