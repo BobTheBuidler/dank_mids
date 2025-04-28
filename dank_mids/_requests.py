@@ -13,7 +13,6 @@ from asyncio import (
 from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from itertools import chain, filterfalse, groupby
-from logging import DEBUG, getLogger
 from time import time
 from typing import (
     TYPE_CHECKING,
@@ -70,6 +69,7 @@ from dank_mids._exceptions import (
     RateLimitError,
     internal_err_types,
 )
+from dank_mids._logging import DEBUG, getLogger
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
 from dank_mids.helpers._codec import mcall_decode, mcall_encode

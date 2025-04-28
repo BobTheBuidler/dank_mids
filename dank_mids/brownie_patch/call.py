@@ -1,6 +1,6 @@
 import decimal
 from concurrent.futures.process import BrokenProcessPool
-from logging import Logger, getLogger
+from logging import Logger
 from pickle import PicklingError
 from types import MethodType, ModuleType
 from typing import (
@@ -37,6 +37,7 @@ from multicall.constants import MULTICALL2_ADDRESSES
 from web3.types import BlockIdentifier
 
 from dank_mids import ENVIRONMENT_VARIABLES, exceptions
+from dank_mids._logging import getLogger
 from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3

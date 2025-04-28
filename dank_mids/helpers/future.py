@@ -7,13 +7,13 @@ from asyncio import (
     get_running_loop,
     sleep,
 )
-from logging import DEBUG, getLogger
 from time import time
 from typing import TYPE_CHECKING, Any, Generator, Optional, Union
 from weakref import ProxyType, proxy
 
 from web3.types import RPCResponse
 
+from dank_mids._logging import DEBUG, getLogger
 from dank_mids.helpers._errors import error_logger_debug
 
 if TYPE_CHECKING:

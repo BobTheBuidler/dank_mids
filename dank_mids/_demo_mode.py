@@ -1,7 +1,7 @@
-from logging import Logger, getLogger
 from typing import Any, Final, final
 
 from dank_mids import ENVIRONMENT_VARIABLES
+from dank_mids._logging import getLogger
 
 
 @final

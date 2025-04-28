@@ -4,11 +4,10 @@ from collections import defaultdict
 from enum import IntEnum
 from heapq import nlargest
 from itertools import chain
-from logging import DEBUG, getLogger
 from random import random
 from threading import get_ident
 from time import time
-from typing import Any, Callable, DefaultDict, Dict, Tuple, overload
+from typing import Any, Callable, DefaultDict, Dict, Final, Tuple, overload
 
 from a_sync import Event
 from a_sync._smart import shield
@@ -18,10 +17,13 @@ from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
+
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids._logging import DEBUG, getLogger
 from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
 
-logger = getLogger("dank_mids.session")
+
+logger: Final = getLogger("dank_mids.session")
 
 
 # NOTE: You cannot subclass an IntEnum object so we have to do some hacky shit here.

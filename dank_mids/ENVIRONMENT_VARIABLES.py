@@ -1,5 +1,5 @@
 # mypy: disable-error-code="attr-defined,dict-item"
-from logging import INFO, StreamHandler, getLogger
+from logging import StreamHandler
 from typing import Dict, Final
 
 import a_sync
@@ -7,6 +7,7 @@ import typed_envs
 from a_sync import AsyncProcessPoolExecutor
 
 from dank_mids import _envs
+from dank_mids._logging import INFO, getLogger
 from dank_mids._mode import OperationMode
 from dank_mids.semaphores import BlockSemaphore
 
