@@ -1,7 +1,6 @@
 from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
-from logging import getLogger
 from time import time
 from typing import Any, Callable, DefaultDict, List, Literal, Optional, Set
 
@@ -19,6 +18,7 @@ from dank_mids import _debugging
 from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
+from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, AlertingRLock
 from dank_mids.helpers._codec import decode_raw

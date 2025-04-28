@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit__demo_mode(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("4ac53595a35a9893ab3b__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("c6c6c8f11e2c85534eef__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____demo_mode");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "4ac53595a35a9893ab3b__mypyc.init_dank_mids____demo_mode");
+    void *init_func = PyCapsule_GetPointer(capsule, "c6c6c8f11e2c85534eef__mypyc.init_dank_mids____demo_mode");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;

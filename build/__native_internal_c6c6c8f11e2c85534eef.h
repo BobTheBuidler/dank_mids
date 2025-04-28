@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_4ac53595a35a9893ab3b_H
-#define MYPYC_NATIVE_INTERNAL_4ac53595a35a9893ab3b_H
+#ifndef MYPYC_NATIVE_INTERNAL_c6c6c8f11e2c85534eef_H
+#define MYPYC_NATIVE_INTERNAL_c6c6c8f11e2c85534eef_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_4ac53595a35a9893ab3b.h"
+#include "__native_c6c6c8f11e2c85534eef.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[733];
+extern PyObject *CPyStatics[747];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -18,9 +18,10 @@ extern CPyModule *CPyModule_dank_mids____demo_mode_internal;
 extern CPyModule *CPyModule_dank_mids____demo_mode;
 extern PyObject *CPyStatic__demo_mode___globals;
 extern CPyModule *CPyModule_builtins;
-extern CPyModule *CPyModule_logging;
 extern CPyModule *CPyModule_typing;
 extern CPyModule *CPyModule_dank_mids;
+extern CPyModule *CPyModule_dank_mids____logging_internal;
+extern CPyModule *CPyModule_dank_mids____logging;
 extern CPyModule *CPyModule_dank_mids____eth_utils_internal;
 extern CPyModule *CPyModule_dank_mids____eth_utils;
 extern PyObject *CPyStatic__eth_utils___globals;
@@ -37,8 +38,10 @@ extern CPyModule *CPyModule_web3____utils___type_conversion;
 extern CPyModule *CPyModule_dank_mids____exceptions_internal;
 extern CPyModule *CPyModule_dank_mids____exceptions;
 extern PyObject *CPyStatic__exceptions___globals;
+extern CPyModule *CPyModule_logging;
 extern CPyModule *CPyModule_re;
 extern CPyModule *CPyModule_aiohttp___client_exceptions;
+extern PyObject *CPyStatic__logging___globals;
 extern CPyModule *CPyModule_dank_mids____uid_internal;
 extern CPyModule *CPyModule_dank_mids____uid;
 extern PyObject *CPyStatic__uid___globals;
@@ -175,6 +178,16 @@ extern PyObject *CPyPy__exceptions___BatchResponseSortError_____init__(PyObject 
 extern double CPyDef__exceptions___ChainstackRateLimitError___try_again_in(PyObject *cpy_r_self);
 extern PyObject *CPyPy__exceptions___ChainstackRateLimitError___try_again_in(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__exceptions_____top_level__(void);
+extern PyObject *CPyStatic__logging___getLogger;
+extern CPyTagged CPyStatic__logging___CRITICAL;
+extern CPyTagged CPyStatic__logging___FATAL;
+extern CPyTagged CPyStatic__logging___ERROR;
+extern CPyTagged CPyStatic__logging___WARN;
+extern CPyTagged CPyStatic__logging___WARNING;
+extern CPyTagged CPyStatic__logging___INFO;
+extern CPyTagged CPyStatic__logging___DEBUG;
+extern CPyTagged CPyStatic__logging___NOTSET;
+extern char CPyDef__logging_____top_level__(void);
 extern PyTypeObject *CPyType__uid___UIDGenerator;
 extern PyObject *CPyDef__uid___UIDGenerator(void);
 extern char CPyDef__uid___UIDGenerator_____init__(PyObject *cpy_r_self);

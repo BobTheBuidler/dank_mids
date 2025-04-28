@@ -1,5 +1,6 @@
-from logging import getLogger
 from threading import _RLock, _allocate_lock
+
+from dank_mids._logging import getLogger
 
 
 logger = getLogger("dank_mids.AlertingRLock")

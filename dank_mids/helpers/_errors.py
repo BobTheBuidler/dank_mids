@@ -1,7 +1,8 @@
-from logging import DEBUG, Logger, getLogger
+from logging import Logger
 from typing import TYPE_CHECKING, Any, Final
 
 from dank_mids._exceptions import BadResponse
+from dank_mids._logging import DEBUG, getLogger
 from dank_mids.types import PartialResponse
 
 if TYPE_CHECKING:

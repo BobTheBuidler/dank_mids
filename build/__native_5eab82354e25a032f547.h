@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_4ac53595a35a9893ab3b_H
-#define MYPYC_NATIVE_4ac53595a35a9893ab3b_H
+#ifndef MYPYC_NATIVE_5eab82354e25a032f547_H
+#define MYPYC_NATIVE_5eab82354e25a032f547_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3OOO
@@ -548,39 +548,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_func;
-    PyObject *_cache;
-    PyObject *_cache_miss;
-    PyObject *_lru_cache_lite_wrap;
-} dank_mids___helpers___lru_cache___lru_cache_lite_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_func;
-    PyObject *_cache;
-    PyObject *_lru_cache_lite_wrap;
-} dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     PyObject *__refs;
 } dank_mids___helpers____weaklist___WeakListObject;
 
@@ -609,7 +576,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_4ac53595a35a9893ab3b {
+struct export_table_5eab82354e25a032f547 {
     PyObject **CPyStatic__demo_mode___demo_logger;
     PyTypeObject **CPyType__demo_mode___DummyLogger;
     PyObject *(*CPyDef__demo_mode___DummyLogger)(void);
@@ -649,6 +616,16 @@ struct export_table_4ac53595a35a9893ab3b {
     char (*CPyDef__exceptions___BatchResponseSortError_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_controller, PyObject *cpy_r_calls, PyObject *cpy_r_response);
     double (*CPyDef__exceptions___ChainstackRateLimitError___try_again_in)(PyObject *cpy_r_self);
     char (*CPyDef__exceptions_____top_level__)(void);
+    PyObject **CPyStatic__logging___getLogger;
+    CPyTagged *CPyStatic__logging___CRITICAL;
+    CPyTagged *CPyStatic__logging___FATAL;
+    CPyTagged *CPyStatic__logging___ERROR;
+    CPyTagged *CPyStatic__logging___WARN;
+    CPyTagged *CPyStatic__logging___WARNING;
+    CPyTagged *CPyStatic__logging___INFO;
+    CPyTagged *CPyStatic__logging___DEBUG;
+    CPyTagged *CPyStatic__logging___NOTSET;
+    char (*CPyDef__logging_____top_level__)(void);
     PyTypeObject **CPyType__uid___UIDGenerator;
     PyObject *(*CPyDef__uid___UIDGenerator)(void);
     char (*CPyDef__uid___UIDGenerator_____init__)(PyObject *cpy_r_self);
@@ -867,21 +844,6 @@ struct export_table_4ac53595a35a9893ab3b {
     PyObject *(*CPyDef__gather___first_completed_gen_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__gather___first_completed)(PyObject *cpy_r_fs, char cpy_r_cancel);
     char (*CPyDef__gather_____top_level__)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_env;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_env)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_nonull_env;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull_env)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj)(void);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite)(PyObject *cpy_r_func);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull)(PyObject *cpy_r_func);
-    char (*CPyDef_lru_cache_____top_level__)(void);
     PyObject **CPyStatic__weaklist___ref;
     PyObject **CPyStatic__weaklist____call_ref;
     PyTypeObject **CPyType__weaklist___WeakList;
