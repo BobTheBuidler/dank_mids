@@ -436,6 +436,26 @@ object in future sessions.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.brownie_patch.contract.retry_etherscan">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.brownie_patch.contract.</span></span><span class="sig-name descname"><span class="pre">retry_etherscan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_logs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.brownie_patch.contract.retry_etherscan" title="Link to this definition"></a></dt>
+<dd><p>A wrapper that retries failed calls to the Etherscan API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><em>~__P</em><em>]</em><em>, </em><em>__T</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>max_retries</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+<li><p><strong>min_sleep_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+<li><p><strong>max_sleep_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+<li><p><strong>suppress_logs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[~__P], <em>__T</em>] | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[~__P], <em>__T</em>]], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[~__P], <em>__T</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-dank_mids.brownie_patch.overloaded">
 <span id="dank-mids-brownie-patch-overloaded-module"></span><h2>dank_mids.brownie_patch.overloaded module<a class="headerlink" href="#module-dank_mids.brownie_patch.overloaded" title="Link to this heading"></a></h2>
