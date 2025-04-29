@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import TYPE_CHECKING, Final, List, Union
+from typing import TYPE_CHECKING, Final, List, Union, final
 
 from aiohttp.client_exceptions import ClientResponseError
 
@@ -21,10 +21,12 @@ class BadResponse(ValueError):
         BaseException.__init__(self, response.error.to_dict())  # type: ignore [union-attr]
 
 
+@final
 class EmptyBatch(ValueError):
     """Exception raised when attempting to process an empty batch."""
 
 
+@final
 class ExecutionReverted(BadResponse):
     """Exception raised when the EVM reverts."""
 
@@ -36,14 +38,17 @@ class ExecutionReverted(BadResponse):
         BaseException.__init__(self, message)
 
 
+@final
 class OutOfGas(BadResponse):
     """Exception raised when an eth_call request runs out of gas."""
 
 
+@final
 class PayloadTooLarge(BadResponse):
     """Exception raised when the payload for a request is too large."""
 
 
+@final
 class ExceedsMaxBatchSize(BadResponse):
     """Exception raised when a batch operation exceeds the maximum allowed size for the RPC."""
 
@@ -53,6 +58,7 @@ class ExceedsMaxBatchSize(BadResponse):
         return int(re.search(r"batch limit (\d+) exceeded", self.response.error.message)[1])  # type: ignore [index, union-attr]
 
 
+@final
 class DankMidsClientResponseError(ClientResponseError):  # type: ignore [misc]
     """A wrapper around the standard aiohttp ClientResponseError that attaches the request that generated the error."""
 
@@ -105,6 +111,7 @@ class DankMidsInternalError(Exception):
         super().__init__(repr(exc))
 
 
+@final
 class BatchResponseSortError(Exception):
     """
     Exception raised when there is an issue with sorting batch responses.
@@ -141,6 +148,7 @@ class BatchResponseSortError(Exception):
 class RateLimitError(BadResponse): ...
 
 
+@final
 class ChainstackRateLimitError(RateLimitError):
     """
     Exception raised when Chainstack hits a rate limit without using a 429 status code.
@@ -151,24 +159,13 @@ class ChainstackRateLimitError(RateLimitError):
     @property
     def try_again_in(self) -> float:
         """
-        Calculates the time to wait before retrying the request.
+        Parses the response to determine the time to wait before retrying the request.
 
         Returns:
             The number of seconds to wait before retrying.
-
-        Raises:
-            NotImplementedError: If the time format is not recognized.
         """
-        decimal_string: str = self.response.error.data["try_again_in"]  # type: ignore [union-attr, index]
-        if "ms" in decimal_string:
-            ms = float(decimal_string[:-2])
-            logger.warning("rate limited by chainstack, retrying in %sms", ms)
-            return ms / 1000
-        elif "µs" in decimal_string:
-            µs = float(decimal_string[:-2])
-            logger.warning("rate limited by chainstack, retrying in %sµs", µs)
-            return µs / 1000000
-        raise NotImplementedError(f"must define a handler for decimal_string {decimal_string}")
+        return self.response.error.data.try_again_in  # type: ignore [union-attr]
 
 
+@final
 class QuiknodeRateLimitError(RateLimitError): ...
