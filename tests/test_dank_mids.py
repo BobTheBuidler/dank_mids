@@ -158,3 +158,18 @@ async def test_eth_getTransaction_2930():
         "0x3ea6b560065dabfac5218c64fd076ef62ff9d6c08817101e7dbece460eb2c8a5"
     )
     assert isinstance(tx_2930, Transaction2930)
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getBalance_no_block():
+    assert isinstance(await dank_web3.eth.get_balance(CHAI), int)
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getBalance_int_block():
+    assert isinstance(await dank_web3.eth.get_balance(CHAI, 20_000_000), int)
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getBalance_latest():
+    assert isinstance(await dank_web3.eth.get_balance(CHAI, "latest"), int)
