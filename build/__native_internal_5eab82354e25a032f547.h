@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[738];
+extern PyObject *CPyStatics[739];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -548,8 +548,8 @@ extern PyObject *CPyPy__weaklist___WeakList___remove(PyObject *self, PyObject *c
 extern char CPyDef__weaklist___WeakList____gc_callback(PyObject *cpy_r_self, PyObject *cpy_r_item);
 extern PyObject *CPyPy__weaklist___WeakList____gc_callback(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist_____top_level__(void);
-extern tuple_T4OOOO CPyStatic_constants___TOO_MUCH_DATA_ERRS;
-extern tuple_T5OOOOO CPyStatic_constants___RETRY_ERRS;
+extern PyObject *CPyStatic_constants___TOO_MUCH_DATA_ERRS;
+extern PyObject *CPyStatic_constants___RETRY_ERRS;
 extern PyObject *CPyStatic_constants___GAS_LIMIT;
 extern PyObject *CPyStatic_constants___MULTICALL2_OVERRIDE_CODE;
 extern PyObject *CPyStatic_constants___MULTICALL3_OVERRIDE_CODE;
