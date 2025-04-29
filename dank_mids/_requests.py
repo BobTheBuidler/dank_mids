@@ -737,9 +737,9 @@ _batch_init: Final = _Batch.__init__
 @final
 class Multicall(_Batch[RPCResponse, eth_call]):
     method: Final = "eth_call"
-    
+
     # NOTE: value comes from eth_utils.function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
-    fourbyte: Final = b'9\x95B\xe9'
+    fourbyte: Final = b"9\x95B\xe9"
 
     _awaited: bool
     """A flag indicating whether the Multicall has been awaited."""
