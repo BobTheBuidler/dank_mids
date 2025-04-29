@@ -30,7 +30,7 @@ from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
 from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
 from evmspec.structs.log import Log
 from hexbytes import HexBytes
-from msgspec import UNSET, Raw, ValidationError
+from msgspec import UNSET, Raw, ValidationError, field
 from msgspec.json import decode as json_decode
 from msgspec.json import encode as json_encode
 from web3.datastructures import AttributeDict
@@ -147,6 +147,35 @@ class RPCErrorWithContext(RPCError):
 _getattribute = object.__getattribute__
 
 
+class ChainstackRateLimitContext(DictStruct, frozen=True):  # type: ignore [call-arg]
+    """Chainstack doesn't use status code 429 for rate limiting, they attach one of these objects to a 200 response."""
+
+    _try_again_in: str = field(name="try_again_in")
+
+    @property
+    def try_again_in(self) -> float:
+        """
+        Calculates the time to wait before retrying the request.
+
+        Returns:
+            The number of seconds to wait before retrying.
+
+        Raises:
+            NotImplementedError: If the time string is in an unrecognized format.
+        """
+        error: Error = self.response.error
+        decimal_string = error.data.try_again_in
+        if "ms" in decimal_string:
+            ms = float(decimal_string[:-2])
+            logger.warning("rate limited by chainstack, retrying in %sms", ms)
+            return ms / 1000
+        elif "µs" in decimal_string:
+            µs = float(decimal_string[:-2])
+            logger.warning("rate limited by chainstack, retrying in %sµs", µs)
+            return µs / 1000000
+        raise NotImplementedError(f"must define a handler for decimal_string {decimal_string}")
+
+
 class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents an error in a JSON-RPC response.
@@ -158,8 +187,13 @@ class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True
     message: str
     """The error message."""
 
-    data: str = UNSET  # type: ignore [assignment]
-    """Additional error data, if any."""
+    # evm spec
+    data: Optional[Union[str, ChainstackRateLimitContext]] = UNSET  # type: ignore [assignment]
+    """
+    Additional error data, if any.
+    
+    EVM specs say it should be a string, but some providers will return a dictionary here with even more context.
+    """
 
     @overload
     def to_dict(self, *, context: None = None) -> RPCError: ...

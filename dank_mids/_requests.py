@@ -700,11 +700,13 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
                 error_logger_log_debug(
                     "Dank too loud. Bisecting %s and retrying.", type(self).__name__
                 )
+        elif "429" in str_e or isinstance(e, ChainstackRateLimitError):
+            pass
         elif isinstance(e, BadResponse) and (
             needs_full_request_spec(e.response) or is_call_revert(e)
         ):
             pass
-        elif "429" not in str_e and all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
+        elif all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
             _log_warning("unexpected %s in a %s: %s", type(e).__name__, type(self).__name__, e)
         return len(self) > 1
 
