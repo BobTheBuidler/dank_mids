@@ -45,7 +45,6 @@ from a_sync.asyncio import sleep0 as yield_to_loop
 from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
 from eth_typing import ChecksumAddress
-from eth_utils import function_signature_to_4byte_selector
 from eth_utils.toolz import concat
 from hexbytes import HexBytes
 from web3.exceptions import ContractLogicError
@@ -737,8 +736,10 @@ _batch_init: Final = _Batch.__init__
 
 @final
 class Multicall(_Batch[RPCResponse, eth_call]):
-    method = "eth_call"
-    fourbyte = function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
+    method: Final = "eth_call"
+    
+    # NOTE: value comes from eth_utils.function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
+    fourbyte: Final = b'9\x95B\xe9'
 
     _awaited: bool
     """A flag indicating whether the Multicall has been awaited."""
@@ -753,7 +754,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     ) -> None:
         # sourcery skip: default-mutable-arg
         _batch_init(self, controller, calls)
-        self.bid = bid or self.controller.multicall_uid.next
+        self.bid: Final = bid or self.controller.multicall_uid.next
 
     def __repr__(self) -> str:
         block = self.block
