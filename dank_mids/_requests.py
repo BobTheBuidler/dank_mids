@@ -282,7 +282,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         return f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}{batch_info}>"
 
     def __del__(self) -> None:
-        if not self._fut.done():
+        if not self._fut.done() and not self._fut._loop.is_closed():
             logger.error("%s was garbage collected before finishing", self)
             self._fut.set_exception(
                 GarbageCollectionError(
@@ -773,11 +773,12 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if self.calls and not self._done.is_set():
             logged = False
             for call in self.calls:
-                if not call._fut.done():
+                fut = call._fut
+                if not fut.done() and not fut._loop.is_closed():
                     if logged is False:
                         error_logger.error("%s was garbage collected before finishing", self)
                         logged = True
-                    call._fut.set_exception(
+                    fut.set_exception(
                         GarbageCollectionError(
                             f"{self} was garbage collected before finishing.",
                             f"{call} might hang indefinitely if I don't raise this exception, "
