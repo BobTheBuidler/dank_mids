@@ -773,12 +773,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         if self.calls and not self._done.is_set():
             logged = False
             for call in self.calls:
-                fut = call._fut
-                if not fut.done() and not fut._loop.is_closed():
+                if not call._fut.done() and not call._fut._loop.is_closed():
                     if logged is False:
                         error_logger.error("%s was garbage collected before finishing", self)
                         logged = True
-                    fut.set_exception(
+                    call._fut.set_exception(
                         GarbageCollectionError(
                             f"{self} was garbage collected before finishing.",
                             f"{call} might hang indefinitely if I don't raise this exception, "
