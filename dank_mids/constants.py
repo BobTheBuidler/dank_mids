@@ -5,24 +5,25 @@ import multicall.constants
 from eth_typing import BlockNumber
 from multicall.constants import Network
 
-TOO_MUCH_DATA_ERRS: Final = (
+TOO_MUCH_DATA_ERRS: Final = {
     "payload too large",
     "content length too large",
     "request entity too large",
     "batch limit exceeded",
-)
+}
 """A list of error messages indicating that the request sent to the RPC was too large and must be split up.
 
 These error messages are used to identify when a request needs to be broken into smaller chunks.
 """
 
-RETRY_ERRS: Final = (
+RETRY_ERRS: Final = {
     "connection reset by peer",
     "server disconnected",
     "execution aborted (timeout =",
     "batch limit exceeded",
     "request timed out",
-)
+    "evm timeout",
+}
 """A list of error messages that are expected during normal use and are not indicative of any problem(s).
 
 These errors will be automatically retried until success is achieved.
