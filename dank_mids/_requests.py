@@ -1233,7 +1233,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
         _demo_logger_info("request %s for jsonrpc batch %s complete", rid, self.jid)  # type: ignore
 
-    @eth_retry.auto_retry
+    @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1, suppress_logs=2)
     async def post(self) -> Tuple[List[RawResponse], List[Union[Multicall, RPCRequest]]]:
         """
         Send the batch of requests to the Ethereum node and process the responses.

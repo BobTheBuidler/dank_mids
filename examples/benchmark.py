@@ -3,7 +3,6 @@ from collections import defaultdict
 from datetime import datetime
 
 import brownie
-from eth_retry import auto_retry
 from tqdm import tqdm
 
 import dank_mids
@@ -14,14 +13,12 @@ brownie.config["autofetch_sources"] = True
 
 UNISWAPV2_FACTORY = dank_mids.Contract.from_explorer("0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac")
 
-Contract = auto_retry(dank_mids.Contract)
-event_loop = asyncio.get_event_loop()
 
 # load the brownie contracts into memory now so we don't pollute the benchmark with irrelevant things, like reading from a sqlite db.
-pool_addresses = event_loop.run_until_complete(
+pool_addresses = asyncio.get_event_loop().run_until_complete(
     UNISWAPV2_FACTORY.allPairs.map(range(UNISWAPV2_FACTORY.allPairsLength()))
 )
-pools = list(map(Contract, tqdm(pool_addresses, desc="loading required contracts...")))
+pools = list(map(dank_mids.Contract, tqdm(pool_addresses, desc="loading required contracts...")))
 
 
 def web3py_sync():

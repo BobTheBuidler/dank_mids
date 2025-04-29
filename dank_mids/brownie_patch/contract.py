@@ -46,6 +46,10 @@ Signature = NewType("Signature", str)
 """A type representing the signature of a method in a smart contract."""
 
 
+retry_etherscan = auto_retry(min_sleep_time=0.5, max_sleep_time=2, suppress_logs=2)
+"""A wrapper that retries failed calls to the Etherscan API."""
+
+
 class Contract(brownie.Contract):
     """
     An extended version of brownie.Contract with additional functionality for Dank Mids.
@@ -55,7 +59,7 @@ class Contract(brownie.Contract):
     """
 
     @classmethod
-    @auto_retry
+    @retry_etherscan
     def from_abi(
         cls,
         name: str,
@@ -85,7 +89,7 @@ class Contract(brownie.Contract):
         return Contract(persisted.address)
 
     @classmethod
-    @auto_retry
+    @retry_etherscan
     def from_ethpm(
         cls,
         name: str,
@@ -116,7 +120,7 @@ class Contract(brownie.Contract):
         return Contract(persisted.address)
 
     @classmethod
-    @auto_retry
+    @retry_etherscan
     def from_explorer(
         cls,
         address: str,
@@ -152,6 +156,7 @@ class Contract(brownie.Contract):
     signatures: Dict[Method, Signature]
     """A dictionary mapping method names to their corresponding signatures."""
 
+    @retry_etherscan
     def __init__(self, *args, **kwargs) -> None:
         """
         Initialize the Contract instance.
