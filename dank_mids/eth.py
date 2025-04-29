@@ -129,6 +129,9 @@ class DankEth(AsyncEth):
                 block_bytes, type=_Timestamped, dec_hook=UnixTimestamp._decode_hook
             ).timestamp
 
+    async def get_balance(self, account: ChecksumAddress, block_identifier: Optional[BlockNumber]):
+        return self._get_balance(account, hex(block) if isinstance(block, int) else block)
+    
     @overload
     async def get_transactions(self, block_identifier: Union[int, HexStr]) -> List[Transaction]: ...
     @overload
