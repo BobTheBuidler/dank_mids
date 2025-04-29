@@ -3,15 +3,16 @@ from decimal import Decimal
 
 import brownie
 import dank_mids
-import eth_retry
 import pytest
 from a_sync import igather
 from dank_mids.brownie_patch.call import _patch_call
+from dank_mids.brownie_patch.contract import retry_etherscan
 
-# NOTE: we don't want tests to fail due to api limits
-get_contract = eth_retry.auto_retry(brownie.Contract)
+# NOTE: we don't want tests to fail due to api limits (dank's Contract already has this wrapper.)
+get_contract = retry_etherscan(brownie.Contract)
+
 # must try from_explorer too
-get_dank_contract = eth_retry.auto_retry(dank_mids.Contract.from_explorer)
+get_dank_contract = dank_mids.Contract.from_explorer
 
 
 @pytest.mark.asyncio_cooperative
