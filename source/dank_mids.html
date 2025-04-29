@@ -90,6 +90,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.types">dank_mids.types module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.BlockId"><code class="docutils literal notranslate"><span class="pre">BlockId</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.ChainstackRateLimitContext"><code class="docutils literal notranslate"><span class="pre">ChainstackRateLimitContext</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Error"><code class="docutils literal notranslate"><span class="pre">Error</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.OverrideParams"><code class="docutils literal notranslate"><span class="pre">OverrideParams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.PartialRequest"><code class="docutils literal notranslate"><span class="pre">PartialRequest</span></code></a></li>
@@ -2267,6 +2268,166 @@ It includes custom logging levels, a specialized logger, and classes for collect
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">ChainstackRateLimitContext</span></span><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://bobthebuidler.github.io/dictstruct/index.html#dictstruct.DictStruct" title="(in dictstruct)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictStruct</span></code></a></p>
+<p>Chainstack doesn’t use status code 429 for rate limiting, they attach one of these objects to a 200 response.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.__getitem__" title="Link to this definition"></a></dt>
+<dd><p>Lookup an attribute value via dictionary-style access.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the attribute to access.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.13)"><strong>KeyError</strong></a> – If the provided key is not a member of the struct.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyStruct</span><span class="p">(</span><span class="n">DictStruct</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">field1</span><span class="p">:</span> <span class="nb">str</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">MyStruct</span><span class="p">(</span><span class="n">field1</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;field1&#39;</span><span class="p">]</span>
+<span class="go">&#39;value&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;field2&#39;</span><span class="p">]</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">KeyError</span>: <span class="n">(&#39;field2&#39;, MyStruct(field1=&#39;value&#39;))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.__iter__" title="Link to this definition"></a></dt>
+<dd><p>Iterate through the keys of the Struct.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Struct key.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyStruct</span><span class="p">(</span><span class="n">DictStruct</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">field1</span><span class="p">:</span> <span class="nb">str</span>
+<span class="gp">... </span>    <span class="n">field2</span><span class="p">:</span> <span class="nb">int</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">MyStruct</span><span class="p">(</span><span class="n">field1</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">field2</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<span class="go">[&#39;field1&#39;, &#39;field2&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.get" title="Link to this definition"></a></dt>
+<dd><p>Get the value associated with a key, or a default value if the key is not present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The key to look up.</p></li>
+<li><p><strong>default</strong> (<em>optional</em>) – The value to return if the key is not present.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyStruct</span><span class="p">(</span><span class="n">DictStruct</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">field1</span><span class="p">:</span> <span class="nb">str</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">MyStruct</span><span class="p">(</span><span class="n">field1</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;field1&#39;</span><span class="p">)</span>
+<span class="go">&#39;value&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;field2&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+<span class="go">&#39;default&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.items" title="Link to this definition"></a></dt>
+<dd><p>Returns an iterator over the struct’s field name and value pairs.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyStruct</span><span class="p">(</span><span class="n">DictStruct</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">field1</span><span class="p">:</span> <span class="nb">str</span>
+<span class="gp">... </span>    <span class="n">field2</span><span class="p">:</span> <span class="nb">int</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">MyStruct</span><span class="p">(</span><span class="n">field1</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">field2</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+<span class="go">[(&#39;field1&#39;, &#39;value&#39;), (&#39;field2&#39;, 42)]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><em>Tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.keys" title="Link to this definition"></a></dt>
+<dd><p>Returns an iterator over the field names of the struct.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyStruct</span><span class="p">(</span><span class="n">DictStruct</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">field1</span><span class="p">:</span> <span class="nb">str</span>
+<span class="gp">... </span>    <span class="n">field2</span><span class="p">:</span> <span class="nb">int</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">MyStruct</span><span class="p">(</span><span class="n">field1</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">field2</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="go">[&#39;field1&#39;, &#39;field2&#39;]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.values" title="Link to this definition"></a></dt>
+<dd><p>Returns an iterator over the struct’s field values.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyStruct</span><span class="p">(</span><span class="n">DictStruct</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">field1</span><span class="p">:</span> <span class="nb">str</span>
+<span class="gp">... </span>    <span class="n">field2</span><span class="p">:</span> <span class="nb">int</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">MyStruct</span><span class="p">(</span><span class="n">field1</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">field2</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="go">[&#39;value&#39;, 42]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.try_again_in">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">try_again_in</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.try_again_in" title="Link to this definition"></a></dt>
+<dd><p>Calculates the time to wait before retrying the request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of seconds to wait before retrying.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – If the time string is in an unrecognized format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="dank_mids.types.Error">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">Error</span></span><a class="headerlink" href="#dank_mids.types.Error" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://bobthebuidler.github.io/dictstruct/index.html#dictstruct.DictStruct" title="(in dictstruct)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictStruct</span></code></a></p>
@@ -2425,8 +2586,9 @@ It includes custom logging levels, a specialized logger, and classes for collect
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dank_mids.types.Error.data">
-<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.Error.data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#dank_mids.types.ChainstackRateLimitContext" title="dank_mids.types.ChainstackRateLimitContext"><span class="pre">ChainstackRateLimitContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#dank_mids.types.Error.data" title="Link to this definition"></a></dt>
 <dd><p>Additional error data, if any.</p>
+<p>EVM specs say it should be a string, but some providers will return a dictionary here with even more context.</p>
 </dd></dl>
 
 <dl class="py attribute">
