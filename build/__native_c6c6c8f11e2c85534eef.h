@@ -108,16 +108,6 @@ typedef struct tuple_T2IO {
 } tuple_T2IO;
 #endif
 
-#ifndef MYPYC_DECLARED_tuple_T4OOOO
-#define MYPYC_DECLARED_tuple_T4OOOO
-typedef struct tuple_T4OOOO {
-    PyObject *f0;
-    PyObject *f1;
-    PyObject *f2;
-    PyObject *f3;
-} tuple_T4OOOO;
-#endif
-
 #ifndef MYPYC_DECLARED_tuple_T10OOOOOOOOOO
 #define MYPYC_DECLARED_tuple_T10OOOOOOOOOO
 typedef struct tuple_T10OOOOOOOOOO {
@@ -917,8 +907,8 @@ struct export_table_c6c6c8f11e2c85534eef {
     char (*CPyDef__weaklist___WeakList___remove)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist___WeakList____gc_callback)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist_____top_level__)(void);
-    tuple_T4OOOO *CPyStatic_constants___TOO_MUCH_DATA_ERRS;
-    tuple_T5OOOOO *CPyStatic_constants___RETRY_ERRS;
+    PyObject **CPyStatic_constants___TOO_MUCH_DATA_ERRS;
+    PyObject **CPyStatic_constants___RETRY_ERRS;
     PyObject **CPyStatic_constants___GAS_LIMIT;
     PyObject **CPyStatic_constants___MULTICALL2_OVERRIDE_CODE;
     PyObject **CPyStatic_constants___MULTICALL3_OVERRIDE_CODE;
