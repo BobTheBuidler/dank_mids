@@ -131,7 +131,7 @@ class DankEth(AsyncEth):
 
     async def get_balance(self, account: ChecksumAddress, block_identifier: Optional[BlockNumber]):
         return self._get_balance(account, hex(block) if isinstance(block, int) else block)
-    
+
     @overload
     async def get_transactions(self, block_identifier: Union[int, HexStr]) -> List[Transaction]: ...
     @overload
