@@ -25,6 +25,7 @@ include = [
     { path = "c6c6c8f11e2c85534eef__mypyc.cpython-312-darwin.so", format = ["sdist", "wheel"] },
     { path = "c6c6c8f11e2c85534eef__mypyc.cp312-win_amd64.pyd", format = ["sdist", "wheel"] },
 ]
+exclude = ["tests", "tests.*"]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.13"
