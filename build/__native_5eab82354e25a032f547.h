@@ -309,6 +309,7 @@ typedef struct {
     PyObject *___mypyc_temp__29;
     tuple_T3OOO ___mypyc_temp__30;
     tuple_T3OOO ___mypyc_temp__31;
+    PyObject *_exc_str;
 } dank_mids___brownie_patch___call___encode_input_envObject;
 
 typedef struct {
