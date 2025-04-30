@@ -3,7 +3,7 @@ from typing import Final
 import a_sync
 from typed_envs import EnvVarFactory
 
-from dank_mids.semaphore import BlockSemaphore
+from dank_mids.semaphores import BlockSemaphore
 
 
 _factory: Final = EnvVarFactory("DANKMIDS")
