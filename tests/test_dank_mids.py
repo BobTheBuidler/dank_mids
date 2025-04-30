@@ -171,5 +171,30 @@ async def test_eth_getBalance_int_block():
 
 
 @pytest.mark.asyncio_cooperative
+async def test_eth_getBalance_hex_block():
+    assert isinstance(await dank_web3.eth.get_balance(CHAI, hex(20_000_000)), int)
+
+
+@pytest.mark.asyncio_cooperative
 async def test_eth_getBalance_latest():
     assert isinstance(await dank_web3.eth.get_balance(CHAI, "latest"), int)
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getTransactionCount_no_block():
+    assert isinstance(await dank_web3.eth.get_transaction_count(CHAI), int)
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getTransactionCount_int_block():
+    assert isinstance(await dank_web3.eth.get_transaction_count(CHAI, 20_000_000), int)
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getTransactionCount_hex_block():
+    assert isinstance(await dank_web3.eth.get_transaction_count(CHAI, hex(20_000_000)), int)
+
+
+@pytest.mark.asyncio_cooperative
+async def test_eth_getTransactionCount_latest():
+    assert isinstance(await dank_web3.eth.get_transaction_count(CHAI, "latest"), int)
