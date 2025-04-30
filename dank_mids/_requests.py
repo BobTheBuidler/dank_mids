@@ -330,7 +330,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
                 await wait_for(shield(batch_task), timeout=TIMEOUT_SECONDS_BIG)
             except TimeoutError:
-                _log_warning(
+                _log_debug(
                     "%s got stuck awaiting its batch, we're creating a new one",
                     self,
                 )
@@ -357,7 +357,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     fut.cancel()
                     raise
                 except TimeoutError:
-                    _log_warning(
+                    _log_debug(
                         "%s got stuck waiting for its fut, we're creating a new one",
                         self,
                     )
@@ -414,7 +414,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             raise
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
-            _log_warning(
+            _log_debug(
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
                 self,
             )
