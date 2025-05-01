@@ -257,16 +257,14 @@ class DankEth(AsyncEth):
                 if errmsg.startswith(block_range_err) and from_block and to_block:
                     rest_of_msg = errmsg.split(block_range_err)[1]
                     max_range_size = int(
-                        rest_of_msg.split(" ")[0]
-                        if " " in rest_of_msg 
-                        else rest_of_msg
+                        rest_of_msg.split(" ")[0] if " " in rest_of_msg else rest_of_msg
                     )
-                    
+
                     # lets break this range to the appropriate size
                     template = filter_params.copy()
                     template.pop("fromBlock")
                     template.pop("toBlock")
-                    
+
                     chunks = (
                         {**template, "fromBlock": i, "toBlock": i + max_range_size - 1}
                         for i in range(start, end, max_range_size)
