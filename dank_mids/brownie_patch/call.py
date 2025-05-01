@@ -190,12 +190,14 @@ async def encode_input(call: ContractCall, len_inputs: int, get_request_data: Ca
             data = __encode_input(call.abi, call.signature, *args) if len_inputs else call.signature
     # We have to do it like this so we don't break the process pool.
     if isinstance(data, Exception):
-        if len(data.args) > 1:
+        if len(data.args) != 1:
             raise data
         exc_str = str(data)
         if exc_str.startswith(call._name):
-            exc_str = exc_str.split(call._name, 1)[1]
-        raise type(data)(f"{call} {exc_str}") from None
+            exc_str = exc_str.split(" ", 1)[1]
+        else:
+            exc_str = f": {exc_str}
+        raise type(data)(f"Contract('{call._address}').{call._name}: {exc_str}") from None
     return data
 
 
