@@ -268,15 +268,13 @@ class DankEth(AsyncEth):
 
                     if isinstance(from_block, str):
                         from_block = int(from_block, 16)
-                    
+
                     if isinstance(to_block, str):
                         to_block = int(to_block, 16)
 
                     summand = max_range_size - 1
                     traces = await igather(
-                        self.trace_filter(
-                            {**template, "fromBlock": i, "toBlock": i + summand}
-                        )
+                        self.trace_filter({**template, "fromBlock": i, "toBlock": i + summand})
                         for i in range(from_block, to_block, max_range_size)
                     )
                     return list(concat(traces))
