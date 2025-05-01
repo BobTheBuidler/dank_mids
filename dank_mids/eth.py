@@ -267,7 +267,7 @@ class DankEth(AsyncEth):
 
                     chunks = (
                         {**template, "fromBlock": i, "toBlock": i + max_range_size - 1}
-                        for i in range(start, end, max_range_size)
+                        for i in range(from_block, to_block, max_range_size)
                     )
                     return list(concat(await igather(self.trace_filter(chunk) for chunk in chunks)))
             raise
