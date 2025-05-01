@@ -145,6 +145,14 @@ class DankEth(AsyncEth):
         else:
             return await self._get_transaction_count(account, block_identifier)
 
+    async def get_code(
+        self, account: ChecksumAddress, block_identifier: Optional[BlockNumber] = None
+    ):
+        if isinstance(block_identifier, int):
+            return await self._get_code(account, hex(block_identifier))
+        else:
+            return await self._get_code(account, block_identifier)
+
     @overload
     async def get_transactions(self, block_identifier: Union[int, HexStr]) -> List[Transaction]: ...
     @overload
