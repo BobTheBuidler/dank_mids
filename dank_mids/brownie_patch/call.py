@@ -196,7 +196,7 @@ async def encode_input(call: ContractCall, len_inputs: int, get_request_data: Ca
         if exc_str.startswith(call._name):
             exc_str = exc_str.split(" ", 1)[1]
         else:
-            exc_str = f": {exc_str}
+            exc_str = f": {exc_str}"
         raise type(data)(f"Contract('{call._address}').{call._name}: {exc_str}") from None
     return data
 
