@@ -37,7 +37,7 @@ from dank_mids._web3.method import (
     bypass_formatters,
     _block_selectors,
 )
-from dank_mids.types import T
+from dank_mids.types import T, Error
 
 
 # These 2 type defs are in recent, but not all, web3.py versions
@@ -239,7 +239,39 @@ class DankEth(AsyncEth):
         Raises:
             ValidationError: If a trace cannot be decoded.
         """
-        traces_bytes = await self._trace_filter(filter_params)
+        # convert block params from int to hexstr if needed
+        from_block = filter_params.get("fromBlock")
+        if isinstance(from_block, int):
+            filter_params["fromBlock"] = hex(from_block)
+        to_block = filter_params.get("fromBlock")
+        if isinstance(to_block, int):
+            filter_params["toBlock"] = hex(to_block)
+
+        try:
+            traces_bytes = await self._trace_filter(filter_params)
+        except ValueError as e:
+            block_range_err = "Block range too large; currently limited to "
+            arg0, *_ = e.args
+            if isinstance(arg0, Error):
+                errmsg = arg0.message
+                if errmsg.startswith(block_range_err) and from_block and to_block:
+                    rest_of_msg = errmsg.split(block_range_err)[1]
+                    max_range_size = int(
+                        rest_of_msg.split(" ")[0] if " " in rest_of_msg else rest_of_msg
+                    )
+
+                    # lets break this range to the appropriate size
+                    template = filter_params.copy()
+                    template.pop("fromBlock")
+                    template.pop("toBlock")
+
+                    chunks = (
+                        {**template, "fromBlock": i, "toBlock": i + max_range_size - 1}
+                        for i in range(from_block, to_block, max_range_size)
+                    )
+                    return list(concat(await igather(self.trace_filter(chunk) for chunk in chunks)))
+            raise
+
         try:
             return json.decode(traces_bytes, type=decode_to, dec_hook=decode_hook)
         except ValidationError:
