@@ -23,6 +23,7 @@ if not typed_envs.logger.disabled:
         "For your information, you can tweak your configuration for optimal performance using any of the envs below:"
     )
 
+
 ###############
 # ENVIRONMENT #
 ###############
@@ -57,22 +58,19 @@ GANACHE_FORK: Final = _envs.create_env("GANACHE_FORK", bool, default=bool(ganach
 """Flag indicating whether the current environment is a Ganache fork."""
 
 # We set the default to 20 minutes to account for potentially long event loop times if you're doing serious work.
-AIOHTTP_TIMEOUT: Final = _envs.create_env(
-    "AIOHTTP_TIMEOUT", int, default=20 * 60, string_converter=int
-)
+AIOHTTP_TIMEOUT: Final = _envs.create_env("AIOHTTP_TIMEOUT", int, default=20 * 60)
 """Timeout value in seconds for aiohttp requests."""
 
 # Brownie call Semaphore
 #   Used because I experienced some OOM errs due to web3 formatters when I was batching an absurd number of brownie calls.
 #   We need a separate semaphore here because the method-specific semaphores are too late in the code to prevent this OOM issue.
 brownie_semaphore: Final = _envs._deprecated_format.create_env(
-    "BROWNIE_CALL_SEMAPHORE", int, default=100_000, string_converter=int, verbose=False
+    "BROWNIE_CALL_SEMAPHORE", int, default=100_000, verbose=False
 )
 BROWNIE_CALL_SEMAPHORE: Final = _envs.create_env(
     "BROWNIE_CALL_SEMAPHORE",
     BlockSemaphore,
     default=brownie_semaphore,
-    string_converter=int,
     verbose=not OPERATION_MODE.infura,
 )
 """
@@ -86,7 +84,6 @@ BROWNIE_ENCODER_SEMAPHORE: Final = _envs.create_env(
     "BROWNIE_ENCODER_SEMAPHORE",
     BlockSemaphore,
     default=BROWNIE_CALL_SEMAPHORE._default_value * 2,
-    string_converter=int,
     verbose=not OPERATION_MODE.infura,
 )
 """
@@ -98,12 +95,11 @@ See Also:
 
 # Processes for decoding. This determines process pool size, not total subprocess count.
 # There are 3 pools, each initialized with the same value.
-# NOTE: Don't stress, these are good for you and will not hog your cpu. You can disable them by setting the var = 0. #TODO: lol u cant yet
+# NOTE: Don't stress, these are good for you and will not hog your cpu. You can disable them by setting the var = 0.
 BROWNIE_ENCODER_PROCESSES = _envs.create_env(
     "BROWNIE_ENCODER_PROCESSES",
     AsyncProcessPoolExecutor,
     default=0 if OPERATION_MODE.infura else 1,
-    string_converter=int,
     verbose=not OPERATION_MODE.infura,
 )
 """
@@ -117,7 +113,6 @@ BROWNIE_DECODER_PROCESSES = _envs.create_env(
     "BROWNIE_DECODER_PROCESSES",
     AsyncProcessPoolExecutor,
     default=0 if OPERATION_MODE.infura else 1,
-    string_converter=int,
     verbose=not OPERATION_MODE.infura,
 )
 """
@@ -131,7 +126,6 @@ MULTICALL_DECODER_PROCESSES = _envs.create_env(
     "MULTICALL_DECODER_PROCESSES",
     AsyncProcessPoolExecutor,
     default=0 if OPERATION_MODE.infura else 1,
-    string_converter=int,
     verbose=not OPERATION_MODE.infura,
 )
 """
@@ -145,7 +139,6 @@ COLLECTION_FACTOR: Final = _envs.create_env(
     "COLLECTION_FACTOR",
     int,
     default=10 if OPERATION_MODE.infura else 1,
-    string_converter=int,
     verbose=not OPERATION_MODE.infura,
 )
 """Factor determining the size of data collection operations."""
@@ -173,21 +166,18 @@ method_semaphores: Final[Dict[str, a_sync.Semaphore]] = {
         "ETH_CALL_SEMAPHORE",
         BlockSemaphore,
         default=BROWNIE_CALL_SEMAPHORE._value,
-        string_converter=int,
         verbose=False,
     ),
     "eth_getBlock": _envs.create_env(
         "ETH_GETBLOCK_SEMAPHORE",
         a_sync.Semaphore,
         default=1_000,
-        string_converter=int,
         verbose=False,
     ),
     "eth_getCode": _envs.create_env(
         "ETH_GETCODE_SEMAPHORE",
         a_sync.Semaphore,
         default=5_000,
-        string_converter=int,
         verbose=False,
     ),
 }
