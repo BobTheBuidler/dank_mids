@@ -14,9 +14,11 @@ from typing import (
     overload,
 )
 
+from a_sync import igather
 from async_lru import alru_cache
 from async_property import async_cached_property
 from eth_typing import Address, BlockNumber, ChecksumAddress, HexStr
+from eth_utils.toolz import concat
 from evmspec import AnyTransaction, FilterTrace, Transaction, TransactionRLP, TransactionReceipt
 from evmspec.data import TransactionHash, UnixTimestamp, _decode_hook
 from evmspec.data._main import DecodeHook
@@ -265,11 +267,18 @@ class DankEth(AsyncEth):
                     template.pop("fromBlock")
                     template.pop("toBlock")
 
-                    chunks = (
-                        {**template, "fromBlock": i, "toBlock": i + max_range_size - 1}
+                    if isinstance(from_block, str):
+                        from_block = int(from_block, 16)
+
+                    if isinstance(to_block, str):
+                        to_block = int(to_block, 16)
+
+                    summand = max_range_size - 1
+                    traces = await igather(
+                        self.trace_filter({**template, "fromBlock": i, "toBlock": i + summand})
                         for i in range(from_block, to_block, max_range_size)
                     )
-                    return list(concat(await igather(self.trace_filter(chunk) for chunk in chunks)))
+                    return list(concat(traces))
             raise
 
         try:
