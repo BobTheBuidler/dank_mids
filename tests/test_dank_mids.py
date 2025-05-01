@@ -4,6 +4,7 @@ import pytest
 from a_sync import igather
 from brownie import chain, web3
 from evmspec import Transaction1559, Transaction2930
+from hexbytes import HexBytes
 from multicall import Call
 from web3._utils.rpc_abi import RPC
 
@@ -202,19 +203,19 @@ async def test_eth_getTransactionCount_latest():
 
 @pytest.mark.asyncio_cooperative
 async def test_eth_getCode_no_block():
-    assert isinstance(await dank_web3.eth.get_code(CHAI), int)
+    assert isinstance(await dank_web3.eth.get_code(CHAI), HexBytes)
 
 
 @pytest.mark.asyncio_cooperative
 async def test_eth_getCode_int_block():
-    assert isinstance(await dank_web3.eth.get_code(CHAI, 20_000_000), int)
+    assert isinstance(await dank_web3.eth.get_code(CHAI, 20_000_000), HexBytes)
 
 
 @pytest.mark.asyncio_cooperative
 async def test_eth_getCode_hex_block():
-    assert isinstance(await dank_web3.eth.get_code(CHAI, hex(20_000_000)), int)
+    assert isinstance(await dank_web3.eth.get_code(CHAI, hex(20_000_000)), HexBytes)
 
 
 @pytest.mark.asyncio_cooperative
 async def test_eth_getCode_latest():
-    assert isinstance(await dank_web3.eth.get_code(CHAI, "latest"), int)
+    assert isinstance(await dank_web3.eth.get_code(CHAI, "latest"), HexBytes)
