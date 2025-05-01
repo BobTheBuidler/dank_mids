@@ -188,7 +188,7 @@ class DankEth(AsyncEth):
         self,
         *args,
         decode_to: Type[T] = TransactionReceipt,
-        decode_hook: DecodeHook[T] = _decode_hook,
+        decode_hook: Optional[DecodeHook[T]] = _decode_hook,
         **kwargs,
     ) -> T:
         """
@@ -224,7 +224,7 @@ class DankEth(AsyncEth):
         self,
         filter_params: TraceFilterParams,
         decode_to: Type[T] = List[FilterTrace],
-        decode_hook: DecodeHook[T] = _decode_hook,
+        decode_hook: Optional[DecodeHook[T]] = _decode_hook,
     ) -> T:
         """
         Returns all traces matching a filter. If the decoding to the specified
@@ -295,7 +295,7 @@ class DankEth(AsyncEth):
         self,
         *args,
         decode_to: Type[T] = Tuple[Log, ...],  # type: ignore [assignment]
-        decode_hook: DecodeHook[T] = _decode_hook,
+        decode_hook: Optional[DecodeHook[T]] = _decode_hook,
         **kwargs,
     ) -> T:
         """
