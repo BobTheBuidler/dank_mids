@@ -37,7 +37,7 @@ from dank_mids._web3.method import (
     bypass_formatters,
     _block_selectors,
 )
-from dank_mids.types import T
+from dank_mids.types import T, Error
 
 
 # These 2 type defs are in recent, but not all, web3.py versions
