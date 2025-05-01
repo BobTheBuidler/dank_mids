@@ -193,8 +193,8 @@ async def encode_input(call: ContractCall, len_inputs: int, get_request_data: Ca
         if len(data.args) > 1:
             raise data
         exc_str = str(data)
-        if exc_str.startswith(call.name):
-            exc_str = exc_str.split(call.name, 1)[1]
+        if exc_str.startswith(call._name):
+            exc_str = exc_str.split(call._name, 1)[1]
         raise type(data)(f"{call} {exc_str}") from None
     return data
 
