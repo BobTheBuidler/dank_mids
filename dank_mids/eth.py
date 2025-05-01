@@ -246,7 +246,7 @@ class DankEth(AsyncEth):
         to_block = filter_params.get("fromBlock")
         if isinstance(to_block, int):
             filter_params["toBlock"] = hex(to_block)
-            
+
         try:
             traces_bytes = await self._trace_filter(filter_params)
         except ValueError as e:
@@ -261,7 +261,7 @@ class DankEth(AsyncEth):
                     template.pop("toBlock")
                     max_range_size = int(errmsg.split(block_range_err)[1].split(" "))
                     chunks = (
-                        {**template, "fromBlock": i, "toBlock": i+max_range_size-1}
+                        {**template, "fromBlock": i, "toBlock": i + max_range_size - 1}
                         for i in range(start, end, max_range_size)
                     )
                     return list(concat(await igather(self.trace_filter(chunk) for chunk in chunks)))
