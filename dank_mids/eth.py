@@ -252,6 +252,10 @@ class DankEth(AsyncEth):
         try:
             traces_bytes = await self._trace_filter(filter_params)
         except ValueError as e:
+            if "cannot unmarshal non-string into Go struct field" in str(e):
+                e.args = *e.args, f"params: {filter_params}"
+                raise
+
             block_range_err = "Block range too large; currently limited to "
             arg0, *_ = e.args
             if isinstance(arg0, Error):
