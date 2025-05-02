@@ -255,7 +255,7 @@ class DankEth(AsyncEth):
             if "cannot unmarshal non-string into Go struct field" in str(e):
                 e.args = *e.args, f"params: {filter_params}"
                 raise
-                
+
             block_range_err = "Block range too large; currently limited to "
             arg0, *_ = e.args
             if isinstance(arg0, Error):
