@@ -6,6 +6,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    ClassVar,
     Coroutine,
     Dict,
     Final,
@@ -155,8 +156,8 @@ _getattribute = object.__getattribute__
 class ChainstackRateLimitContext(DictStruct, frozen=True):  # type: ignore [call-arg]
     """Chainstack doesn't use status code 429 for rate limiting, they attach one of these objects to a 200 response."""
 
-    logger: Final: Final = getLogger("dank_mids.chainstack")
-    _try_again_in: Final[str] = field(name="try_again_in")
+    logger: ClassVar = getLogger("dank_mids.chainstack")
+    _try_again_in: str = field(name="try_again_in")
 
     @property
     def try_again_in(self) -> float:
