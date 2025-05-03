@@ -245,7 +245,7 @@ class DankEth(AsyncEth):
         from_block = filter_params.get("fromBlock")
         if isinstance(from_block, int):
             filter_params["fromBlock"] = hex(from_block)
-        to_block = filter_params.get("fromBlock")
+        to_block = filter_params.get("toBlock")
         if isinstance(to_block, int):
             filter_params["toBlock"] = hex(to_block)
 
