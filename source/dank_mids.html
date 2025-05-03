@@ -101,6 +101,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Response"><code class="docutils literal notranslate"><span class="pre">Response</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.eth_callParams"><code class="docutils literal notranslate"><span class="pre">eth_callParams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.better_decode"><code class="docutils literal notranslate"><span class="pre">better_decode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.decode_nested_dict"><code class="docutils literal notranslate"><span class="pre">decode_nested_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.AsyncMiddleware"><code class="docutils literal notranslate"><span class="pre">AsyncMiddleware</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.BatchId"><code class="docutils literal notranslate"><span class="pre">BatchId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.JsonrpcParams"><code class="docutils literal notranslate"><span class="pre">JsonrpcParams</span></code></a></li>
@@ -2405,6 +2406,11 @@ It includes custom logging levels, a specialized logger, and classes for collect
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.13)"><span class="pre">ClassVar</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Logger</span> <span class="pre">dank_mids.chainstack</span> <span class="pre">(WARNING)&gt;</span></em><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.types.ChainstackRateLimitContext.try_again_in">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">try_again_in</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#dank_mids.types.ChainstackRateLimitContext.try_again_in" title="Link to this definition"></a></dt>
@@ -3702,6 +3708,23 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>T</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.types.decode_nested_dict">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">decode_nested_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.decode_nested_dict" title="Link to this definition"></a></dt>
+<dd><p>Deserialize an object from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buf</strong> (<em>bytes-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The message to decode.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>obj</strong> – The deserialized object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
 </dd></dl>
