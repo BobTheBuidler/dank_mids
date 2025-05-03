@@ -251,9 +251,9 @@ Used to enable more efficient decoding and validation of RPC responses.
 
 
 _CHAINSTACK_429_ERR_MSG: Final = "You've exceeded the RPS limit available on the current plan."
-_QUIKNODE_429_ERR_MSG: Final = (
+_QUICKNODE_429_ERR_MSG: Final = (
     # the actual rate limit can vary but the err message always ends like this
-    "/second request limit reached - reduce calls per second or upgrade your account at quiknode.com",
+    "/second request limit reached - reduce calls per second or upgrade your account at quicknode.com",
 )
 
 
@@ -297,8 +297,8 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         # chainstack doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
         if _CHAINSTACK_429_ERR_MSG in message:
             return ChainstackRateLimitError(self)
-        # quiknode doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
-        if message.endswith(_QUIKNODE_429_ERR_MSG):
+        # quicknode doesnt return a response with status code 429 when we reach rate limits, so we need to handle it specifically here instead of in the usual place
+        if message.endswith(_QUICKNODE_429_ERR_MSG):
             return QuiknodeRateLimitError(self)
         return BadResponse(self)
 
