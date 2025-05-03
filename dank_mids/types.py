@@ -1,5 +1,6 @@
 import re
 from functools import cached_property
+from logging import getLogger
 from time import time
 from typing import (
     TYPE_CHECKING,
@@ -31,6 +32,7 @@ from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaB
 from evmspec.structs.log import Log
 from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field
+from msgspec.json import Decoder
 from msgspec.json import decode as json_decode
 from msgspec.json import encode as json_encode
 from web3.datastructures import AttributeDict
@@ -97,6 +99,9 @@ _nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuf
 """A type alias for a nested dictionary structure."""
 
 
+decode_nested_dict: Final = Decoder(type=_nested_dict_of_stuff).decode
+
+
 class PartialRequest(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):  # type: ignore [call-arg]
     """
     Represents a partial JSON-RPC request.
@@ -150,7 +155,8 @@ _getattribute = object.__getattribute__
 class ChainstackRateLimitContext(DictStruct, frozen=True):  # type: ignore [call-arg]
     """Chainstack doesn't use status code 429 for rate limiting, they attach one of these objects to a 200 response."""
 
-    _try_again_in: str = field(name="try_again_in")
+    logger: Final: Final = getLogger("dank_mids.chainstack")
+    _try_again_in: Final[str] = field(name="try_again_in")
 
     @property
     def try_again_in(self) -> float:
@@ -167,11 +173,11 @@ class ChainstackRateLimitContext(DictStruct, frozen=True):  # type: ignore [call
         decimal_string = error.data.try_again_in
         if "ms" in decimal_string:
             ms = float(decimal_string[:-2])
-            logger.warning("rate limited by chainstack, retrying in %sms", ms)
+            self.logger.warning("rate limited by chainstack, retrying in %sms", ms)
             return ms / 1000
         elif "µs" in decimal_string:
             µs = float(decimal_string[:-2])
-            logger.warning("rate limited by chainstack, retrying in %sµs", µs)
+            self.logger.warning("rate limited by chainstack, retrying in %sµs", µs)
             return µs / 1000000
         raise NotImplementedError(f"must define a handler for decimal_string {decimal_string}")
 
@@ -377,7 +383,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         if method:
             try:
                 if method in _dict_responses:
-                    decoded = AttributeDict(json_decode(self.result, type=_nested_dict_of_stuff))
+                    decoded = AttributeDict(decode_nested_dict(self.result))
                     stats.logger.log_types(method, decoded)
                     return decoded
                 elif method in _str_responses:
