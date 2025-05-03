@@ -46,7 +46,7 @@ Signature = NewType("Signature", str)
 """A type representing the signature of a method in a smart contract."""
 
 
-retry_etherscan = auto_retry(min_sleep_time=0.5, max_sleep_time=2, suppress_logs=2)
+retry_etherscan = auto_retry(min_sleep_time=1, max_sleep_time=2, suppress_logs=2)
 """A wrapper that retries failed calls to the Etherscan API."""
 
 

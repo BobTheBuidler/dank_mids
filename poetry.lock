@@ -2018,14 +2018,14 @@ test = ["asn1tools (>=0.146.2)", "eth-hash[pysha3]", "factory-boy (>=3.0.1)", "h
 
 [[package]]
 name = "eth-retry"
-version = "0.3.1"
+version = "0.3.3"
 description = "Provides a decorator that automatically catches known transient exceptions that are common in the Ethereum/EVM ecosystem and reattempts to evaluate your decorated function"
 optional = false
 python-versions = "<3.14,>=3.8"
 groups = ["main"]
 files = [
-    {file = "eth_retry-0.3.1-py3-none-any.whl", hash = "sha256:20edac5e0acd60ef7e66587050a34c82ae2ef943756283e4a6cdd5f09e6535f4"},
-    {file = "eth_retry-0.3.1.tar.gz", hash = "sha256:1d13417c84de2ea37604034229157753f14d3e0d4af52943d075f461b4085ebf"},
+    {file = "eth_retry-0.3.3-py3-none-any.whl", hash = "sha256:d3758da776ab010812c34267f052385df7904415b54c4b0fd85ffe746086912e"},
+    {file = "eth_retry-0.3.3.tar.gz", hash = "sha256:cc7c1c60b9503324d701fbaceb3f7e1ee3c046b0bdb23e9a57bd8692e4caac02"},
 ]
 
 [package.dependencies]
@@ -2172,14 +2172,14 @@ test = ["hypothesis (>=4.43.0)", "mypy (==0.971)", "pytest (>=7.0.0)", "pytest-x
 
 [[package]]
 name = "evmspec"
-version = "0.2.8"
+version = "0.2.10"
 description = "A collection of msgspec.Struct definitions for use with the Ethereum Virtual Machine"
 optional = false
 python-versions = "<3.13,>=3.8"
 groups = ["main"]
 files = [
-    {file = "evmspec-0.2.8-py3-none-any.whl", hash = "sha256:9457a92a1bf45db4e1ef299907f559ea86866d2bd42e8152c0a5749a968da151"},
-    {file = "evmspec-0.2.8.tar.gz", hash = "sha256:c92077fa0293deb447a3e818ad36b6b88627990b165042836577bf21548b4037"},
+    {file = "evmspec-0.2.10-py3-none-any.whl", hash = "sha256:23f8d8650d3922827d3a9b6537d21ad2087f9055ceb1d4e74584389a4e3a8529"},
+    {file = "evmspec-0.2.10.tar.gz", hash = "sha256:d9873e034f9b0f315dcae80ec7076846531f5bf6dc5a467020f17affa67390f5"},
 ]
 
 [package.dependencies]
@@ -2224,13 +2224,13 @@ testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
 name = "ez-a-sync"
-version = "0.32.6"
+version = "0.32.8"
 description = "A library that makes it easy to define objects that can be used for both sync and async use cases."
 optional = false
 python-versions = "<3.14,>=3.8"
 groups = ["main"]
 files = [
-    {file = "ez_a_sync-0.32.6.tar.gz", hash = "sha256:b76587d0f2f3142ff10c4110e67976c98344203a8ca358ca97850b22e02a7f13"},
+    {file = "ez_a_sync-0.32.8.tar.gz", hash = "sha256:09b22a89a85f55b48b4cd29e2f8fa694508dd8677c9882d4c4f10dbb00cf3f8e"},
 ]
 
 [package.dependencies]
@@ -4642,15 +4642,15 @@ tests = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "termcolor"
-version = "3.0.1"
+version = "3.1.0"
 description = "ANSI color formatting for output in terminal"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 markers = "python_version >= \"3.10\""
 files = [
-    {file = "termcolor-3.0.1-py3-none-any.whl", hash = "sha256:da1ed4ec8a5dc5b2e17476d859febdb3cccb612be1c36e64511a6f2485c10c69"},
-    {file = "termcolor-3.0.1.tar.gz", hash = "sha256:a6abd5c6e1284cea2934443ba806e70e5ec8fd2449021be55c280f8a3731b611"},
+    {file = "termcolor-3.1.0-py3-none-any.whl", hash = "sha256:591dd26b5c2ce03b9e43f391264626557873ce1d379019786f99b0c2bee140aa"},
+    {file = "termcolor-3.1.0.tar.gz", hash = "sha256:6a6dd7fbee581909eeec6a756cff1d7f7c376063b14e4a298dc4980309e55970"},
 ]
 
 [package.extras]
