@@ -525,8 +525,12 @@ typedef struct {
     tuple_T3OOO ___mypyc_temp__20;
     PyObject *_done;
     PyObject *_pending;
-    PyObject *___mypyc_temp__21;
+    tuple_T3OOO ___mypyc_temp__21;
     PyObject *___mypyc_temp__22;
+    CPyTagged ___mypyc_temp__23;
+    PyObject *_f;
+    PyObject *___mypyc_temp__24;
+    PyObject *___mypyc_temp__25;
     PyObject *_p;
 } dank_mids___helpers____gather___first_completed_envObject;
 
@@ -843,6 +847,7 @@ struct export_table_d65c1fb6f7cf4e30fde8 {
     char (*CPyDef__errors___is_call_revert)(PyObject *cpy_r_e);
     char (*CPyDef__errors___log_request_type_switch)(void);
     char (*CPyDef__errors_____top_level__)(void);
+    PyObject **CPyStatic__gather___CancelledError;
     PyObject **CPyStatic__gather___Task;
     PyObject **CPyStatic__gather___get_running_loop;
     PyObject **CPyStatic__gather___wait;
