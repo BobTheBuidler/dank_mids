@@ -62,6 +62,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.eth.CallOverrideParams"><code class="docutils literal notranslate"><span class="pre">CallOverrideParams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.eth.DankEth"><code class="docutils literal notranslate"><span class="pre">DankEth</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.eth.TraceFilterParams"><code class="docutils literal notranslate"><span class="pre">TraceFilterParams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.eth.decode_timestamped"><code class="docutils literal notranslate"><span class="pre">decode_timestamped()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.eth.decode_tiny_block"><code class="docutils literal notranslate"><span class="pre">decode_tiny_block()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.eth.decode_transaction"><code class="docutils literal notranslate"><span class="pre">decode_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.eth.decode_transaction_rlp"><code class="docutils literal notranslate"><span class="pre">decode_transaction_rlp()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.exceptions">dank_mids.exceptions module</a><ul>
@@ -96,12 +100,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.PartialRequest"><code class="docutils literal notranslate"><span class="pre">PartialRequest</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.PartialResponse"><code class="docutils literal notranslate"><span class="pre">PartialResponse</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.RPCErrorWithContext"><code class="docutils literal notranslate"><span class="pre">RPCErrorWithContext</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.RawResponse"><code class="docutils literal notranslate"><span class="pre">RawResponse</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Request"><code class="docutils literal notranslate"><span class="pre">Request</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.Response"><code class="docutils literal notranslate"><span class="pre">Response</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.eth_callParams"><code class="docutils literal notranslate"><span class="pre">eth_callParams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.better_decode"><code class="docutils literal notranslate"><span class="pre">better_decode()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.decode_nested_dict"><code class="docutils literal notranslate"><span class="pre">decode_nested_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.decode_string"><code class="docutils literal notranslate"><span class="pre">decode_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.encode"><code class="docutils literal notranslate"><span class="pre">encode()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.AsyncMiddleware"><code class="docutils literal notranslate"><span class="pre">AsyncMiddleware</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.BatchId"><code class="docutils literal notranslate"><span class="pre">BatchId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.types.JsonrpcParams"><code class="docutils literal notranslate"><span class="pre">JsonrpcParams</span></code></a></li>
@@ -489,7 +494,7 @@ sends it to the node, and returns the raw response.</p>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><strong>Exception</strong></a> – If DEBUG environment variable is set, any exception that occurs during the request is logged and re-raised.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#dank_mids.types.RawResponse" title="dank_mids.types.RawResponse"><em>RawResponse</em></a></p>
+<dd class="field-even"><p><em>RawResponse</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1834,6 +1839,74 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.eth.decode_timestamped">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.eth.</span></span><span class="sig-name descname"><span class="pre">decode_timestamped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.eth.decode_timestamped" title="Link to this definition"></a></dt>
+<dd><p>Deserialize an object from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buf</strong> (<em>bytes-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The message to decode.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>obj</strong> – The deserialized object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.eth.decode_tiny_block">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.eth.</span></span><span class="sig-name descname"><span class="pre">decode_tiny_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.eth.decode_tiny_block" title="Link to this definition"></a></dt>
+<dd><p>Deserialize an object from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buf</strong> (<em>bytes-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The message to decode.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>obj</strong> – The deserialized object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.eth.decode_transaction">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.eth.</span></span><span class="sig-name descname"><span class="pre">decode_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.eth.decode_transaction" title="Link to this definition"></a></dt>
+<dd><p>Deserialize an object from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buf</strong> (<em>bytes-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The message to decode.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>obj</strong> – The deserialized object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.eth.decode_transaction_rlp">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.eth.</span></span><span class="sig-name descname"><span class="pre">decode_transaction_rlp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.eth.decode_transaction_rlp" title="Link to this definition"></a></dt>
+<dd><p>Deserialize an object from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buf</strong> (<em>bytes-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The message to decode.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>obj</strong> – The deserialized object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-dank_mids.exceptions">
 <span id="dank-mids-exceptions-module"></span><h2>dank_mids.exceptions module<a class="headerlink" href="#module-dank_mids.exceptions" title="Link to this heading"></a></h2>
@@ -2933,7 +3006,7 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 <dd class="field-odd"><p><strong>method</strong> (<em>RPCEndpoint</em><em> | </em><em>None</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://hexbytes.readthedocs.io/en/stable/hexbytes.html#hexbytes.main.HexBytes" title="(in HexBytes v1.3)"><em>HexBytes</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.Wei" title="(in evmspec)"><em>Wei</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.uint" title="(in evmspec)"><em>uint</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.ChainId" title="(in evmspec)"><em>ChainId</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.BlockNumber" title="(in evmspec)"><em>BlockNumber</em></a> | <em>AttributeDict</em></p>
+<dd class="field-even"><p><a class="reference external" href="https://hexbytes.readthedocs.io/en/stable/hexbytes.html#hexbytes.main.HexBytes" title="(in HexBytes v1.3)"><em>HexBytes</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.Wei" title="(in evmspec)"><em>Wei</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.uint" title="(in evmspec)"><em>uint</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.ChainId" title="(in evmspec)"><em>ChainId</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.BlockNumber" title="(in evmspec)"><em>BlockNumber</em></a> | <em>AttributeDict</em> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3171,36 +3244,6 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 <dt class="sig sig-object py" id="dank_mids.types.RPCErrorWithContext.message">
 <span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#dank_mids.types.RPCErrorWithContext.message" title="Link to this definition"></a></dt>
 <dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="dank_mids.types.RawResponse">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">RawResponse</span></span><a class="headerlink" href="#dank_mids.types.RawResponse" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Wraps a Raw object that we know represents a Response with a <cite>decode</cite> helper method.
-A <cite>RawResponse</cite> is a properly shaped response for one rpc call, received back from a jsonrpc batch request.
-They represent either a successful or a failed response, stored as pre-decoded bytes.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.RawResponse.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.RawResponse.__init__" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>raw</strong> (<em>Raw</em>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dank_mids.types.RawResponse.decode">
-<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">True</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dank_mids.types.PartialResponse" title="dank_mids.types.PartialResponse"><span class="pre">PartialResponse</span></a></span></span><a class="headerlink" href="#dank_mids.types.RawResponse.decode" title="Link to this definition"></a></dt>
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dank_mids.types.Response" title="dank_mids.types.Response"><span class="pre">Response</span></a></span></span></dt>
-<dd><p>Decode the wrapped <code class="xref py py-class docutils literal notranslate"><span class="pre">Raw</span></code> object into a <a class="reference internal" href="#dank_mids.types.Response" title="dank_mids.types.Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a> or a <a class="reference internal" href="#dank_mids.types.PartialResponse" title="dank_mids.types.PartialResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialResponse</span></code></a>.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -3446,7 +3489,7 @@ They represent either a successful or a failed response, stored as pre-decoded b
 <dd class="field-odd"><p><strong>method</strong> (<em>RPCEndpoint</em><em> | </em><em>None</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://hexbytes.readthedocs.io/en/stable/hexbytes.html#hexbytes.main.HexBytes" title="(in HexBytes v1.3)"><em>HexBytes</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.Wei" title="(in evmspec)"><em>Wei</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.uint" title="(in evmspec)"><em>uint</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.ChainId" title="(in evmspec)"><em>ChainId</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.BlockNumber" title="(in evmspec)"><em>BlockNumber</em></a> | <em>AttributeDict</em></p>
+<dd class="field-even"><p><a class="reference external" href="https://hexbytes.readthedocs.io/en/stable/hexbytes.html#hexbytes.main.HexBytes" title="(in HexBytes v1.3)"><em>HexBytes</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.Wei" title="(in evmspec)"><em>Wei</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.uint" title="(in evmspec)"><em>uint</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.ChainId" title="(in evmspec)"><em>ChainId</em></a> | <a class="reference external" href="https://bobthebuidler.github.io/evmspec/source/evmspec.data.html#evmspec.data.BlockNumber" title="(in evmspec)"><em>BlockNumber</em></a> | <em>AttributeDict</em> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3725,6 +3768,40 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.types.decode_string">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">decode_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.decode_string" title="Link to this definition"></a></dt>
+<dd><p>Deserialize an object from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buf</strong> (<em>bytes-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The message to decode.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>obj</strong> – The deserialized object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.types.encode">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.types.</span></span><span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.types.encode" title="Link to this definition"></a></dt>
+<dd><p>Serialize an object to bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>Any</em>) – The object to serialize.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – The serialized object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.13)">bytes</a></p>
 </dd>
 </dl>
 </dd></dl>
