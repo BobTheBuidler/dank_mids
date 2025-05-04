@@ -339,7 +339,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 duplicate = self.create_duplicate()
 
                 # don't start counting for the timeout while we still have a queue of requests to send
-                await rate_limit_inactive(controller.endpoint)
+                await rate_limit_inactive(self.controller.endpoint)
 
                 duplicate_task = create_task(
                     duplicate.get_response(), name="duplicate task get_response"
@@ -371,7 +371,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     duplicate = self.create_duplicate()
 
                     # don't start counting for the timeout while we still have a queue of requests to send
-                    await rate_limit_inactive(controller.endpoint)
+                    await rate_limit_inactive(self.controller.endpoint)
 
                     duplicate_task = create_task(
                         duplicate.get_response(), name="duplicate.get_response"
@@ -433,7 +433,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             duplicate = self.create_duplicate()
 
             # don't start counting for the timeout while we still have a queue of requests to send
-            await rate_limit_inactive(controller.endpoint)
+            await rate_limit_inactive(self.controller.endpoint)
 
             duplicate_task = create_task(
                 duplicate.get_response_unbatched(), name="duplicate.get_response_unbatched"
