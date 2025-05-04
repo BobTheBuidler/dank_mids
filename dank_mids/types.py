@@ -12,7 +12,6 @@ from typing import (
     Final,
     List,
     Literal,
-    Mapping,
     NewType,
     Optional,
     Set,
@@ -26,8 +25,7 @@ from typing import (
 
 import evmspec
 from dictstruct import DictStruct
-from eth_typing import ChecksumAddress, HexStr
-from eth_utils.toolz import valmap
+from eth_typing import ChecksumAddress
 from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
 from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
 from evmspec.structs.log import Log
@@ -35,7 +33,6 @@ from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field
 from msgspec.json import Decoder
 from msgspec.json import decode as json_decode
-from msgspec.json import encode as json_encode
 from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
 
@@ -49,6 +46,8 @@ from dank_mids._exceptions import (
     PayloadTooLarge,
     QuiknodeRateLimitError,
 )
+from dank_mids.helpers._codec import decode_string, encode
+from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
@@ -125,7 +124,7 @@ class PartialRequest(DictStruct, frozen=True, omit_defaults=True, repr_omit_defa
 
     @property
     def data(self) -> bytes:
-        return json_encode(self, enc_hook=_encode_hook)
+        return encode(self)
 
 
 class Request(PartialRequest):
@@ -142,8 +141,7 @@ class Request(PartialRequest):
     def data(self) -> bytes:
         # we have to do some hacky stuff because omit_defaults kwarg on PartialRequest
         # is preventing jsonrpc field from being included in the encoded bytes
-        encoded_omit_defaults = json_encode(self, enc_hook=_encode_hook)
-        return encoded_omit_defaults[:-1] + b',"jsonrpc":"2.0"}'
+        return encode(self)[:-1] + b',"jsonrpc":"2.0"}'
 
 
 class RPCErrorWithContext(RPCError):
@@ -317,7 +315,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
 
     def decode_result(
         self, method: Optional[RPCEndpoint] = None, *, caller=None
-    ) -> Union[HexBytes, Wei, uint, ChainId, BlockNumber, AttributeDict]:
+    ) -> Union[HexBytes, Wei, uint, ChainId, BlockNumber, AttributeDict, str]:
         # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
         if method and (typ := _RETURN_TYPES.get(method)):
             if method in (
@@ -390,7 +388,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
                 elif method in _str_responses:
                     # TODO: finish adding methods and get rid of this
                     stats.logger.devhint("Must add `%s: str` to `_RETURN_TYPES`", method)
-                    return json_decode(self.result, type=str)
+                    return decode_string(self.result)
             except (ValidationError, TypeError) as e:
                 stats.logger.log_validation_error(method, e)
 
@@ -426,79 +424,6 @@ class Response(PartialResponse, omit_defaults=True, repr_omit_defaults=True):  #
     """The JSON-RPC version, always set to "2.0"."""
 
 
-class RawResponse:
-    """
-    Wraps a Raw object that we know represents a Response with a `decode` helper method.
-    A `RawResponse` is a properly shaped response for one rpc call, received back from a jsonrpc batch request.
-    They represent either a successful or a failed response, stored as pre-decoded bytes.
-    """
-
-    def __init__(self, raw: Raw) -> None:
-        self._raw = raw
-        """The :class:`Raw` object wrapped by this wrapper."""
-
-    @overload
-    def decode(self, partial: Literal[True]) -> PartialResponse: ...
-    @overload
-    def decode(self, partial: Literal[False] = False) -> Response: ...
-    def decode(self, partial: bool = False) -> Union[Response, PartialResponse]:
-        """Decode the wrapped :class:`Raw` object into a :class:`Response` or a :class:`PartialResponse`."""
-        return better_decode(self._raw, type=PartialResponse if partial else Response)
-
-    __slots__ = ("_raw",)
-
-
-MulticallChunk = Tuple[ChecksumAddress, HexBytes]
-
-JSONRPCBatchRequest = List[Request]
-# NOTE: A PartialResponse result implies a failure response from the rpc.
-JSONRPCBatchResponse = Union[List[RawResponse], PartialResponse]
-# We need this for proper decoding.
-JSONRPCBatchResponseRaw = Union[List[Raw], PartialResponse]
-
-
-StrEncodable = Union[ChecksumAddress, HexStr]
-Encodable = Union[int, StrEncodable, HexBytes, bytes]
-
-RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
-
-
-def _encode_hook(obj: Encodable) -> RpcThing:
-    """
-    A hook function for encoding objects during JSON serialization.
-
-    Args:
-        obj: The object to encode.
-
-    Returns:
-        The encoded object.
-
-    Raises:
-        NotImplementedError: If the object type is not supported for encoding.
-    """
-    try:
-        # We just assume `obj` is an int subclass instead of performing if checks because it usually is.
-        return hex(int(obj))  # type: ignore [return-value]
-    except TypeError as e:
-        # I put this here for AttributeDicts which come from eth_getLogs params
-        # but I check for mapping so it can work with user custom classes
-        if not isinstance(obj, Mapping):
-            raise TypeError(obj, type(obj)) from e
-        return valmap(_rudimentary_encode_dict_value, obj)
-    except ValueError as e:
-        # NOTE: The error is probably this if `obj` is a string:
-        # ValueError: invalid literal for int() with base 10:"""
-        if not isinstance(obj, HexBytes):
-            e.args = *e.args, obj, type(obj)
-            raise ValueError(obj, type(obj)) from e
-        return obj.hex()  # type: ignore [return-value]
-
-
-def _rudimentary_encode_dict_value(value):
-    # I dont think this needs to be robust, time will tell
-    return hex(value) if isinstance(value, int) else value
-
-
 def better_decode(
     data: Raw,
     *,
@@ -506,8 +431,9 @@ def better_decode(
     dec_hook: Optional[Callable[[Type, object], T]] = None,
     method: Optional[str] = None,
 ) -> T:
+    decode = _get_decode_func(type, dec_hook)  # type: ignore [arg-type]
     try:
-        return json_decode(data, type=type, dec_hook=dec_hook)
+        return decode(data)
     except (ValidationError, TypeError) as e:
         extra_args = [
             f"type: {type.__module__}.{type.__qualname__}",
@@ -517,3 +443,11 @@ def better_decode(
             extra_args.insert(0, f"method: {method}")
         e.args = (*e.args, *extra_args)
         raise
+
+
+@lru_cache_lite_nonull
+def _get_decode_func(
+    type: Type[T], 
+    dec_hook: Callable[[Type[T], Union[str, bytes]], T],
+) -> Callable[[Union[str, bytes]], T]:
+    return Decoder(type=type, dec_hook=dec_hook).decode
