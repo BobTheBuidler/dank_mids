@@ -125,7 +125,7 @@ def decode_jsonrpc_batch(data: AnyStr) -> Union["types.PartialResponse", List[Ra
     if _decode_batch is None:
         __make_decode_batch()
 
-    decoded = _decode_batch(data)
+    decoded = _decode_batch(data)  # type: ignore [misc]
     return [RawResponse(d) for d in decoded] if isinstance(decoded, list) else decoded
 
 
