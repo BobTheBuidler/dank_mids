@@ -46,7 +46,7 @@ from dank_mids._exceptions import (
     PayloadTooLarge,
     QuiknodeRateLimitError,
 )
-from dank_mids.helpers._codec import decode_string, encode
+from dank_mids.helpers._codec import RawResponse, decode_string, encode
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 
 if TYPE_CHECKING:
