@@ -170,3 +170,4 @@ class ChainstackRateLimitError(RateLimitError):
 
 @final
 class QuiknodeRateLimitError(RateLimitError): ...
+
