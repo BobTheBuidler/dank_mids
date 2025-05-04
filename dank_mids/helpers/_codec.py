@@ -255,7 +255,9 @@ def __import_from_types() -> None:
     from dank_mids.types import PartialResponse, Request, Response, better_decode
 
 
-def __make_decode_batch() -> Callable[[Union[str, bytes]], Union[List[msgspec.Raw], "types.PartialResponse"]]:
+def __make_decode_batch() -> (
+    Callable[[Union[str, bytes]], Union[List[msgspec.Raw], "types.PartialResponse"]]
+):
     from dank_mids.types import PartialResponse
 
     global _decode_batch
