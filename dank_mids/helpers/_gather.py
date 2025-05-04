@@ -76,7 +76,12 @@ async def first_completed(
 ) -> Union[FinishedTasks[__T], Tuple[FinishedTasks[__T], PendingTasks[__T]]]:
     if not cancel:
         return await wait(fs, return_when="FIRST_COMPLETED")
-    done, pending = await wait(fs, return_when="FIRST_COMPLETED")
+    try:
+        done, pending = await wait(fs, return_when="FIRST_COMPLETED")
+    except CancelledError:
+        for f in fs:
+            f.cancel()
+        raise
     for p in pending:
         p.cancel()
     return done
