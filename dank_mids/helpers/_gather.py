@@ -22,6 +22,7 @@ PendingTasks = Set["asyncio.Future[__T]"]
 
 
 # These compile to C constants
+CancelledError: Final = asyncio.CancelledError
 Task: Final = asyncio.Task
 get_running_loop: Final = asyncio.get_running_loop
 wait: Final = asyncio.wait
