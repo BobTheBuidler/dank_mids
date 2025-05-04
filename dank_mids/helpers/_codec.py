@@ -237,7 +237,7 @@ def mcall_decode(data: "types.PartialResponse") -> Union[List[bytes], Exception]
         return [tup[1] for tup in decoded]
 
 
-def __import_from_types():
+def __import_from_types() -> None:
     """This helper function is called once to import PartialResponse, Request, Response, and better_decode."""
     global PartialResponse, Request, Response, better_decode
     from dank_mids.types import PartialResponse, Request, Response, better_decode
