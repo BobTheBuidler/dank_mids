@@ -120,7 +120,7 @@ def decode_jsonrpc_batch(data: AnyStr) -> Union["types.PartialResponse", List[Ra
         Either a PartialResponse if there's an error, or a list of RawResponse objects.
     """
     if _decode_batch is None:
-        _decode_batch = Decoder(type=JSONRPCBatchResponseRaw).decode
+        __make_decode_batch()
 
     decoded = _decode_batch(data)
     return [RawResponse(d) for d in decoded] if isinstance(decoded, list) else decoded
@@ -245,3 +245,8 @@ def __import_from_types() -> None:
     """This helper function is called once to import PartialResponse, Request, Response, and better_decode."""
     global PartialResponse, Request, Response, better_decode
     from dank_mids.types import PartialResponse, Request, Response, better_decode
+
+
+def __make_decode_batch() -> Callable[[Union[str, bytes]], JSONRPCBatchResponseRaw]:
+    global _decode_batch
+    _decode_batch = Decoder(type=JSONRPCBatchResponseRaw).decode
