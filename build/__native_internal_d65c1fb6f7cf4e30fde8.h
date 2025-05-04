@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[752];
+extern PyObject *CPyStatics[753];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -472,6 +472,7 @@ extern PyObject *CPyPy__errors___is_call_revert(PyObject *self, PyObject *const 
 extern char CPyDef__errors___log_request_type_switch(void);
 extern PyObject *CPyPy__errors___log_request_type_switch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors_____top_level__(void);
+extern PyObject *CPyStatic__gather___CancelledError;
 extern PyObject *CPyStatic__gather___Task;
 extern PyObject *CPyStatic__gather___get_running_loop;
 extern PyObject *CPyStatic__gather___wait;
