@@ -2,6 +2,7 @@ from typing import (
     Awaitable,
     Callable,
     Dict,
+    Final,
     List,
     Literal,
     Optional,
@@ -127,9 +128,7 @@ class DankEth(AsyncEth):
             block_identifier = hex(block_identifier)
         finally:
             block_bytes = await self._get_block_raw(block_identifier, False)
-            return json.decode(
-                block_bytes, type=_Timestamped, dec_hook=UnixTimestamp._decode_hook
-            ).timestamp
+            return decode_timestamped(block_bytes).timestamp
 
     async def get_balance(
         self, account: ChecksumAddress, block_identifier: Optional[BlockNumber] = None
@@ -184,7 +183,7 @@ class DankEth(AsyncEth):
             block_identifier = hex(block_identifier)  # type: ignore [arg-type, assignment]
         finally:
             block_bytes = await self._get_block_raw(block_identifier, not hashes_only)
-            return json.decode(block_bytes, type=TinyBlock, dec_hook=_decode_hook).transactions
+            return decode_tiny_block(block_bytes).transactions  # type: ignore [return-value]
 
     async def get_transaction_receipt(
         self,
@@ -278,7 +277,7 @@ class DankEth(AsyncEth):
                         to_block = int(to_block, 16)
 
                     summand = max_range_size - 1
-                    traces = await igather(
+                    traces: List[FilterTrace] = await igather(
                         self.trace_filter({**template, "fromBlock": i, "toBlock": i + summand})
                         for i in range(from_block, to_block, max_range_size)
                     )
@@ -294,9 +293,10 @@ class DankEth(AsyncEth):
             traces_raw = json.decode(traces_bytes, type=List[Raw])
             traces = []
             trace_cls = decode_to.__args__[0]  # type: ignore [attr-defined]
+            decode = json.Decoder(type=trace_cls, dec_hook=decode_hook).decode
             for raw in traces_raw:
                 try:
-                    traces.append(json.decode(raw, type=trace_cls, dec_hook=decode_hook))
+                    traces.append(decode(raw))
                 except ValidationError as e:
                     e.args = *e.args, json.decode(raw)
                     raise
@@ -328,10 +328,10 @@ class DankEth(AsyncEth):
         """
         transaction_bytes = await self._get_transaction_raw(transaction_hash)
         try:
-            return json.decode(transaction_bytes, type=Transaction, dec_hook=_decode_hook)
+            return decode_transaction(transaction_bytes)
         except ValidationError:
             try:
-                return json.decode(transaction_bytes, type=TransactionRLP, dec_hook=_decode_hook)
+                return decode_transaction_rlp(transaction_bytes)
             except ValidationError as e:
                 e.args = *e.args, json.decode(transaction_bytes)
                 raise
@@ -391,3 +391,11 @@ class _Timestamped(Struct, frozen=True):  # type: ignore [call-arg]
 
     timestamp: UnixTimestamp
     """The Unix timestamp for when the block was collated."""
+
+
+decode_tiny_block: Final = json.Decoder(type=TinyBlock, dec_hook=_decode_hook).decode
+decode_timestamped: Final = json.Decoder(
+    type=_Timestamped, dec_hook=UnixTimestamp._decode_hook
+).decode
+decode_transaction: Final = json.Decoder(type=Transaction, dec_hook=_decode_hook).decode
+decode_transaction_rlp: Final = json.Decoder(type=TransactionRLP, dec_hook=_decode_hook).decode

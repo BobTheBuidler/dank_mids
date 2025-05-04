@@ -7,7 +7,7 @@ from itertools import chain
 from random import random
 from threading import get_ident
 from time import time
-from typing import Any, Callable, DefaultDict, Dict, Final, Tuple, overload
+from typing import Any, Callable, DefaultDict, Dict, Final, Tuple, final, overload
 
 from a_sync import Event
 from a_sync._smart import shield
@@ -20,7 +20,8 @@ from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._logging import DEBUG, getLogger
-from dank_mids.types import JSONRPCBatchResponse, PartialRequest, RawResponse
+from dank_mids.helpers._codec import JSONRPCBatchResponse, RawResponse
+from dank_mids.types import PartialRequest
 
 
 logger: Final = getLogger("dank_mids.session")
@@ -94,14 +95,14 @@ class _HTTPStatusExtension(IntEnum):
 
 
 # Then, combine the standard HTTPStatus enum and the custom extension to get the full custom HTTPStatus enum we need.
-HTTPStatusExtended = IntEnum("HTTPStatusExtended", [(i.name, i.value) for i in chain(http.HTTPStatus, _HTTPStatusExtension)])  # type: ignore [misc]
+HTTPStatusExtended: Final = IntEnum("HTTPStatusExtended", [(i.name, i.value) for i in chain(http.HTTPStatus, _HTTPStatusExtension)])  # type: ignore [misc]
 """
 An extension of :class:`http.HTTPStatus`, supporting both standard HTTP status codes as well as custom codes used by specific services like Cloudflare.
 
 This enum includes status codes and descriptions for server errors that are not part of the standard HTTP specification.
 """
 
-RETRY_FOR_CODES = {
+RETRY_FOR_CODES: Final = {
     HTTPStatusExtended.BAD_GATEWAY,  # type: ignore [attr-defined]
     HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR,  # type: ignore [attr-defined]
     HTTPStatusExtended.CLOUDFLARE_CONNECTION_TIMEOUT,  # type: ignore [attr-defined]
@@ -120,9 +121,11 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
 
 
 # default is 50 requests/second
-limiters: DefaultDict[str, AsyncLimiter] = defaultdict(lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND))  # type: ignore [operator]
+limiters: Final[DefaultDict[str, AsyncLimiter]] = defaultdict(
+    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)  # type: ignore [operator]
+)
 
-_rate_limit_waiters: Dict[str, Event] = {}
+_rate_limit_waiters: Final[Dict[str, Event]] = {}
 
 
 async def rate_limit_inactive(endpoint: str) -> None:
@@ -148,7 +151,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
     await shield(task)
 
 
-_rate_limit_tasks: Dict[str, "Task[None]"] = {}
+_rate_limit_tasks: Final[Dict[str, "Task[None]"]] = {}
 
 
 async def __rate_limit_inactive(endpoint: str) -> None:
@@ -205,6 +208,7 @@ async def get_session() -> "DankClientSession":
     return await _get_session_for_thread(get_ident())
 
 
+@final
 class DankClientSession(ClientSession):
     _limited = False
     _last_rate_limited_at = 0
@@ -337,8 +341,8 @@ def _logger_debug(msg: str, *args: Any) -> None: ...
 def _logger_log(level: int, msg: str, args: Tuple[Any, ...]) -> None: ...
 
 
-_logger_is_enabled_for = logger.isEnabledFor
-_logger_warning = logger.warning
-_logger_info = logger.info
-_logger_debug = logger.debug
-_logger_log = logger._log
+_logger_is_enabled_for: Final = logger.isEnabledFor
+_logger_warning: Final = logger.warning
+_logger_info: Final = logger.info
+_logger_debug: Final = logger.debug
+_logger_log: Final = logger._log

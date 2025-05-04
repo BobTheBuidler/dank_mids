@@ -7,7 +7,8 @@ from aiohttp.client_exceptions import ClientResponseError
 if TYPE_CHECKING:
     from dank_mids._requests import RPCRequest
     from dank_mids.controller import DankMiddlewareController
-    from dank_mids.types import PartialRequest, PartialResponse, RawResponse
+    from dank_mids.helpers._codec import RawResponse
+    from dank_mids.types import PartialRequest, PartialResponse
 
 
 logger: Final = logging.getLogger("dank_mids.exceptions")

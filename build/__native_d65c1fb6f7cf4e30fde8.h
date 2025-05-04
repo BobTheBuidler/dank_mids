@@ -91,6 +91,16 @@ typedef struct tuple_T3IIO {
 } tuple_T3IIO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T4OOOO
+#define MYPYC_DECLARED_tuple_T4OOOO
+typedef struct tuple_T4OOOO {
+    PyObject *f0;
+    PyObject *f1;
+    PyObject *f2;
+    PyObject *f3;
+} tuple_T4OOOO;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T3CIO
 #define MYPYC_DECLARED_tuple_T3CIO
 typedef struct tuple_T3CIO {
@@ -465,6 +475,12 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *__raw;
+} dank_mids___helpers____codec___RawResponseObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
 } dank_mids___helpers____codec_____mypyc_lambda__0_objObject;
 
@@ -801,29 +817,38 @@ struct export_table_d65c1fb6f7cf4e30fde8 {
     char (*CPyDef_types___DankOverloadedMethod____add_fn)(PyObject *cpy_r_self, PyObject *cpy_r_abi, PyObject *cpy_r_natspec);
     PyObject *(*CPyDef_types____get_method_object)(PyObject *cpy_r_address, PyObject *cpy_r_abi, PyObject *cpy_r_name, PyObject *cpy_r_owner, PyObject *cpy_r_natspec);
     char (*CPyDef_types_____top_level__)(void);
+    PyObject **CPyStatic__codec___HexBytes;
     PyObject **CPyStatic__codec___Raw;
-    PyObject **CPyStatic__codec___RawResponse;
     PyObject **CPyStatic__codec___ContextFramesBytesIO;
     PyObject **CPyStatic__codec___DecodeError;
-    PyObject **CPyStatic__codec___json_encode;
-    PyObject **CPyStatic__codec___json_decode;
     PyObject **CPyStatic__codec___encode_uint_256;
-    PyObject **CPyStatic__codec____encode_hook;
+    PyObject **CPyStatic__codec___decode_string;
+    PyObject **CPyStatic__codec____decode_raw;
+    PyObject **CPyStatic__codec___accumulate;
+    PyObject **CPyStatic__codec___chain;
+    PyObject **CPyStatic__codec___encode;
     PyObject **CPyStatic__codec____mcall_encoder;
     PyObject **CPyStatic__codec____array_encoder;
     PyObject **CPyStatic__codec____item_encoder;
     PyObject **CPyStatic__codec____mcall_decoder;
+    PyTypeObject **CPyType__codec___RawResponse;
+    PyObject *(*CPyDef__codec___RawResponse)(PyObject *cpy_r_raw);
     PyTypeObject **CPyType__codec_____mypyc_lambda__0_obj;
     PyObject *(*CPyDef__codec_____mypyc_lambda__0_obj)(void);
+    char (*CPyDef__codec___RawResponse_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_raw);
+    PyObject *(*CPyDef__codec___RawResponse___decode)(PyObject *cpy_r_self, char cpy_r_partial);
     PyObject *(*CPyDef__codec___decode_raw)(PyObject *cpy_r_data);
     PyObject *(*CPyDef__codec___decode_jsonrpc_batch)(PyObject *cpy_r_data);
-    PyObject *(*CPyDef__codec___encode)(PyObject *cpy_r_obj);
+    PyObject *(*CPyDef__codec____encode_hook)(PyObject *cpy_r_obj);
+    PyObject *(*CPyDef__codec____rudimentary_encode_dict_value)(PyObject *cpy_r_value);
     PyObject *(*CPyDef__codec_____mypyc_lambda__0_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
     PyObject *(*CPyDef__codec_____mypyc_lambda__0_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r__);
     PyObject *(*CPyDef__codec_____encode_new)(PyObject *cpy_r_values);
     tuple_T2OI (*CPyDef__codec_____encode_elements_new)(PyObject *cpy_r_values);
     PyObject *(*CPyDef__codec___mcall_encode)(PyObject *cpy_r_data);
     PyObject *(*CPyDef__codec___mcall_decode)(PyObject *cpy_r_data);
+    char (*CPyDef__codec_____import_from_types)(void);
+    char (*CPyDef__codec_____make_decode_batch)(void);
     char (*CPyDef__codec_____top_level__)(void);
     PyObject **CPyStatic__errors___error_logger;
     PyObject **CPyStatic__errors___error_logger_debug;
