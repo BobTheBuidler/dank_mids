@@ -1,4 +1,4 @@
-from itertools import accumulate, chain
+import itertools
 from typing import (
     TYPE_CHECKING,
     AnyStr,
@@ -65,6 +65,9 @@ decode_string: Final = Decoder(type=str).decode
 _decode_raw: Final = Decoder(type=Raw).decode
 # due to a forward reference issue we will populate this later
 _decode_batch = None
+
+accumulate: Final = itertools.accumulate
+chain: Final = itertools.chain
 
 
 @final
