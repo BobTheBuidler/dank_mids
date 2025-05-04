@@ -90,6 +90,7 @@ from dank_mids.helpers._gather import first_completed
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract
+from dank_mids.helpers._session import rate_limit_inactive
 from dank_mids.helpers._weaklist import WeakList
 from dank_mids.types import (
     BatchId,
@@ -334,7 +335,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     "%s got stuck awaiting its batch, we're creating a new one",
                     self,
                 )
+                
                 duplicate = self.create_duplicate()
+                
+                # don't start counting for the timeout while we still have a queue of requests to send
+                await rate_limit_inactive()
+                
                 duplicate_task = create_task(
                     duplicate.get_response(), name="duplicate task get_response"
                 )
@@ -361,7 +367,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         "%s got stuck waiting for its fut, we're creating a new one",
                         self,
                     )
+                    
                     duplicate = self.create_duplicate()
+                
+                    # don't start counting for the timeout while we still have a queue of requests to send
+                    await rate_limit_inactive()
+                    
                     duplicate_task = create_task(
                         duplicate.get_response(), name="duplicate.get_response"
                     )
@@ -418,7 +429,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
                 self,
             )
+            
             duplicate = self.create_duplicate()
+                
+            # don't start counting for the timeout while we still have a queue of requests to send
+            await rate_limit_inactive()
+            
             duplicate_task = create_task(
                 duplicate.get_response_unbatched(), name="duplicate.get_response_unbatched"
             )
