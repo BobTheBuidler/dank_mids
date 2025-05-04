@@ -71,7 +71,13 @@ from dank_mids._exceptions import (
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
-from dank_mids.helpers._codec import mcall_decode, mcall_encode
+from dank_mids.helpers._codec import (
+    JSONRPCBatchResponse, 
+    MulticallChunk, 
+    RawResponse, 
+    mcall_decode, 
+    mcall_encode,
+)
 from dank_mids.helpers._errors import (
     INDIVIDUAL_CALL_REVERT_STRINGS,
     error_logger,
@@ -95,12 +101,9 @@ from dank_mids.helpers._weaklist import WeakList
 from dank_mids.types import (
     BatchId,
     BlockId,
-    JSONRPCBatchResponse,
     JsonrpcParams,
-    MulticallChunk,
     PartialRequest,
     PartialResponse,
-    RawResponse,
     Request,
     Response,
 )
