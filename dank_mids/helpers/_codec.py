@@ -63,7 +63,6 @@ DecodeError: Final = msgspec.DecodeError
 encode_uint_256: Final = encoding.encode_uint_256
 decode_string: Final = Decoder(type=str).decode
 _decode_raw: Final = Decoder(type=Raw).decode
-_decode_batch: Final = Decoder(type=JSONRPCBatchResponseRaw).decode
 
 
 @final
