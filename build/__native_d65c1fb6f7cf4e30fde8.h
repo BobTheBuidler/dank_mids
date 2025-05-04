@@ -817,6 +817,7 @@ struct export_table_d65c1fb6f7cf4e30fde8 {
     char (*CPyDef_types___DankOverloadedMethod____add_fn)(PyObject *cpy_r_self, PyObject *cpy_r_abi, PyObject *cpy_r_natspec);
     PyObject *(*CPyDef_types____get_method_object)(PyObject *cpy_r_address, PyObject *cpy_r_abi, PyObject *cpy_r_name, PyObject *cpy_r_owner, PyObject *cpy_r_natspec);
     char (*CPyDef_types_____top_level__)(void);
+    PyObject **CPyStatic__codec___HexBytes;
     PyObject **CPyStatic__codec___Raw;
     PyObject **CPyStatic__codec___ContextFramesBytesIO;
     PyObject **CPyStatic__codec___DecodeError;

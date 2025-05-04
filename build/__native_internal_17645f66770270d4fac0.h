@@ -412,6 +412,7 @@ extern PyObject *CPyPy_types___DankOverloadedMethod____add_fn(PyObject *self, Py
 extern PyObject *CPyDef_types____get_method_object(PyObject *cpy_r_address, PyObject *cpy_r_abi, PyObject *cpy_r_name, PyObject *cpy_r_owner, PyObject *cpy_r_natspec);
 extern PyObject *CPyPy_types____get_method_object(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_types_____top_level__(void);
+extern PyObject *CPyStatic__codec___HexBytes;
 extern PyObject *CPyStatic__codec___Raw;
 extern PyObject *CPyStatic__codec___ContextFramesBytesIO;
 extern PyObject *CPyStatic__codec___DecodeError;
