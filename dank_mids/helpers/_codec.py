@@ -159,7 +159,7 @@ def _encode_hook(obj: Encodable) -> RpcThing:
 def _rudimentary_encode_dict_value(value: int) -> HexStr: ...
 @overload
 def _rudimentary_encode_dict_value(value: __T) -> __T: ...
-def _rudimentary_encode_dict_value(value):
+def _rudimentary_encode_dict_value(value: Union[int, __T]) -> Union[HexStr, __T]:
     # I dont think this needs to be robust, time will tell
     return hex(value) if isinstance(value, int) else value
 
