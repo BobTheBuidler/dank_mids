@@ -790,7 +790,8 @@ struct export_table_17645f66770270d4fac0 {
     PyObject **CPyStatic__codec___encode_uint_256;
     PyObject **CPyStatic__codec___decode_string;
     PyObject **CPyStatic__codec____decode_raw;
-    PyObject **CPyStatic__codec____decode_batch;
+    PyObject **CPyStatic__codec___accumulate;
+    PyObject **CPyStatic__codec___chain;
     PyObject **CPyStatic__codec___encode;
     PyObject **CPyStatic__codec____mcall_encoder;
     PyObject **CPyStatic__codec____array_encoder;
@@ -813,6 +814,7 @@ struct export_table_17645f66770270d4fac0 {
     PyObject *(*CPyDef__codec___mcall_encode)(PyObject *cpy_r_data);
     PyObject *(*CPyDef__codec___mcall_decode)(PyObject *cpy_r_data);
     char (*CPyDef__codec_____import_from_types)(void);
+    PyObject *(*CPyDef__codec_____make_decode_batch)(void);
     char (*CPyDef__codec_____top_level__)(void);
     PyObject **CPyStatic__errors___error_logger;
     PyObject **CPyStatic__errors___error_logger_debug;

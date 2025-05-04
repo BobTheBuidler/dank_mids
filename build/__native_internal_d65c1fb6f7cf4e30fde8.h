@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[770];
+extern PyObject *CPyStatics[771];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -421,7 +421,8 @@ extern PyObject *CPyStatic__codec___DecodeError;
 extern PyObject *CPyStatic__codec___encode_uint_256;
 extern PyObject *CPyStatic__codec___decode_string;
 extern PyObject *CPyStatic__codec____decode_raw;
-extern PyObject *CPyStatic__codec____decode_batch;
+extern PyObject *CPyStatic__codec___accumulate;
+extern PyObject *CPyStatic__codec___chain;
 extern PyObject *CPyStatic__codec___encode;
 extern PyObject *CPyStatic__codec____mcall_encoder;
 extern PyObject *CPyStatic__codec____array_encoder;
@@ -457,6 +458,8 @@ extern PyObject *CPyDef__codec___mcall_decode(PyObject *cpy_r_data);
 extern PyObject *CPyPy__codec___mcall_decode(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__codec_____import_from_types(void);
 extern PyObject *CPyPy__codec_____import_from_types(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__codec_____make_decode_batch(void);
+extern PyObject *CPyPy__codec_____make_decode_batch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__codec_____top_level__(void);
 extern PyObject *CPyStatic__errors___error_logger;
 extern PyObject *CPyStatic__errors___error_logger_debug;
