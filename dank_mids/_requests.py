@@ -283,7 +283,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
     def __del__(self) -> None:
         if not self._fut.done() and not self._fut._loop.is_closed():
-            error_logger.error("%s was garbage collected before finishing", self)
+            logger.error("%s was garbage collected before finishing", self)
             self._fut.set_exception(
                 GarbageCollectionError(
                     f"{self} was garbage collected before finishing.\n"
