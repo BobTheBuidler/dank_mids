@@ -63,6 +63,8 @@ DecodeError: Final = msgspec.DecodeError
 encode_uint_256: Final = encoding.encode_uint_256
 decode_string: Final = Decoder(type=str).decode
 _decode_raw: Final = Decoder(type=Raw).decode
+# due to a forward reference issue we will populate this later
+_decode_batch = None
 
 
 @final
@@ -117,6 +119,9 @@ def decode_jsonrpc_batch(data: AnyStr) -> Union["types.PartialResponse", List[Ra
     Returns:
         Either a PartialResponse if there's an error, or a list of RawResponse objects.
     """
+    if _decode_batch is None:
+        _decode_batch = Decoder(type=JSONRPCBatchResponseRaw).decode
+    
     decoded = _decode_batch(data)
     return [RawResponse(d) for d in decoded] if isinstance(decoded, list) else decoded
 
