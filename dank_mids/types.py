@@ -451,4 +451,3 @@ def _get_decode_func(
     dec_hook: Callable[[Type[T], Union[str, bytes]], T],
 ) -> Callable[[Union[str, bytes]], T]:
     return Decoder(type=type, dec_hook=dec_hook).decode
-
