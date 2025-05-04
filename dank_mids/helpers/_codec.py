@@ -86,7 +86,7 @@ class RawResponse:
         """Decode the wrapped :class:`Raw` object into a :class:`Response` or a :class:`PartialResponse`."""
         if better_decode is None:
             __import_from_types()
-        return better_decode(self._raw, type=PartialResponse if partial else Response)  # type: ignore [misc]
+        return better_decode(self._raw, type=PartialResponse if partial else Response)  # type: ignore [no-any-return, misc]
 
     __slots__ = ("_raw",)
 
