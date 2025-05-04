@@ -335,12 +335,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     "%s got stuck awaiting its batch, we're creating a new one",
                     self,
                 )
-                
+
                 duplicate = self.create_duplicate()
-                
+
                 # don't start counting for the timeout while we still have a queue of requests to send
                 await rate_limit_inactive()
-                
+
                 duplicate_task = create_task(
                     duplicate.get_response(), name="duplicate task get_response"
                 )
@@ -367,12 +367,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         "%s got stuck waiting for its fut, we're creating a new one",
                         self,
                     )
-                    
+
                     duplicate = self.create_duplicate()
-                
+
                     # don't start counting for the timeout while we still have a queue of requests to send
                     await rate_limit_inactive()
-                    
+
                     duplicate_task = create_task(
                         duplicate.get_response(), name="duplicate.get_response"
                     )
@@ -429,12 +429,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
                 self,
             )
-            
+
             duplicate = self.create_duplicate()
-                
+
             # don't start counting for the timeout while we still have a queue of requests to send
             await rate_limit_inactive()
-            
+
             duplicate_task = create_task(
                 duplicate.get_response_unbatched(), name="duplicate.get_response_unbatched"
             )
