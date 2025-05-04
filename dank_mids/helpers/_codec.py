@@ -57,8 +57,6 @@ MulticallDecoder = Callable[..., DecodedMulticall]
 JSONRPCBatchRequest = List["types.Request"]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
 JSONRPCBatchResponse = Union[List["RawResponse"], "types.PartialResponse"]
-# We need this for proper decoding.
-JSONRPCBatchResponseRaw = Union[List[msgspec.Raw], "types.PartialResponse"]
 
 
 # these compile to C constants
@@ -257,7 +255,7 @@ def __import_from_types() -> None:
     from dank_mids.types import PartialResponse, Request, Response, better_decode
 
 
-def __make_decode_batch() -> Callable[[Union[str, bytes]], JSONRPCBatchResponseRaw]:
+def __make_decode_batch() -> Callable[[Union[str, bytes]], Union[List[msgspec.Raw], "types.PartialResponse"]]:
     from dank_mids.types import PartialResponse
 
     global _decode_batch
