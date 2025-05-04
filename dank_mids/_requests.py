@@ -283,7 +283,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
     def __del__(self) -> None:
         if not self._fut.done() and not self._fut._loop.is_closed():
-            logger.error("%s was garbage collected before finishing", self)
+            error_logger.error("%s was garbage collected before finishing", self)
             self._fut.set_exception(
                 GarbageCollectionError(
                     f"{self} was garbage collected before finishing.\n"
@@ -878,7 +878,13 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 calls,
             )
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
-            raise e if "invalid argument" in str(e) else DankMidsInternalError(e) from e
+            stre = str(e)
+            if "invalid argument" in stre:
+                raise
+            elif "iteration" in stre:
+                error_logger.error("ERROR: stop iteration in dank mids:")
+                error_logger.exception(e)
+            raise DankMidsInternalError(e) from e
         except Exception as e:
             if isinstance(e, ClientResponseError) and e.message == "Payload Too Large":
                 _log_info("Payload too large. response headers: %s", e.headers)
