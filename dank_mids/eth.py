@@ -394,6 +394,8 @@ class _Timestamped(Struct, frozen=True):  # type: ignore [call-arg]
 
 
 decode_tiny_block: Final = json.Decoder(type=TinyBlock, dec_hook=_decode_hook).decode
-decode_timestamped: Final = json.Decoder(type=_Timestamped, dec_hook=UnixTimestamp._decode_hook).decode
+decode_timestamped: Final = json.Decoder(
+    type=_Timestamped, dec_hook=UnixTimestamp._decode_hook
+).decode
 decode_transaction: Final = json.Decoder(type=Transaction, dec_hook=_decode_hook).decode
 decode_transaction_rlp: Final = json.Decoder(type=TransactionRLP, dec_hook=_decode_hook).decode

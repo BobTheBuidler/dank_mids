@@ -1,5 +1,20 @@
 from itertools import accumulate, chain
-from typing import TYPE_CHECKING, AnyStr, Callable, Dict, Final, Iterable, List, Literal, Mapping, Union, Tuple, TypeVar, final, overload
+from typing import (
+    TYPE_CHECKING,
+    AnyStr,
+    Callable,
+    Dict,
+    Final,
+    Iterable,
+    List,
+    Literal,
+    Mapping,
+    Union,
+    Tuple,
+    TypeVar,
+    final,
+    overload,
+)
 
 import msgspec
 from eth_abi import decoding, encoding
@@ -141,9 +156,9 @@ def _encode_hook(obj: Encodable) -> RpcThing:
 
 
 @overload
-def _rudimentary_encode_dict_value(value: int) -> HexStr:...
+def _rudimentary_encode_dict_value(value: int) -> HexStr: ...
 @overload
-def _rudimentary_encode_dict_value(value: __T) -> __T:...
+def _rudimentary_encode_dict_value(value: __T) -> __T: ...
 def _rudimentary_encode_dict_value(value):
     # I dont think this needs to be robust, time will tell
     return hex(value) if isinstance(value, int) else value
