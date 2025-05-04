@@ -251,5 +251,6 @@ def __import_from_types() -> None:
 
 
 def __make_decode_batch() -> Callable[[Union[str, bytes]], JSONRPCBatchResponseRaw]:
+    from dank_mids import types
     global _decode_batch
     _decode_batch = Decoder(type=JSONRPCBatchResponseRaw).decode
