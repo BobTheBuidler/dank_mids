@@ -1,6 +1,7 @@
 import itertools
 from typing import (
     TYPE_CHECKING,
+    Any,
     AnyStr,
     Callable,
     Dict,
@@ -16,12 +17,12 @@ from typing import (
     overload,
 )
 
+import hexbytes
 import msgspec
 from eth_abi import decoding, encoding
 from eth_abi.abi import default_codec
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 from eth_typing import ChecksumAddress, HexStr
-from hexbytes import HexBytes
 from msgspec.json import Decoder, Encoder
 
 if TYPE_CHECKING:
@@ -29,19 +30,22 @@ if TYPE_CHECKING:
 
 
 # due to a circ import issue we will import these later
-PartialResponse, Request, Response, better_decode = None, None, None, None  # type: ignore [var-annotated, assignment]
+PartialResponse: Optional[Type["types.PartialResponse"]] = None
+Request: Optional[Type["types.Request"]] = None
+Response: Optional[Type["types.Response"]] = None
+better_decode: Optional[Callable[..., Any]] = None  # type: ignore [type-arg]
 
 
 __T = TypeVar("__T")
 
 
 StrEncodable = Union[ChecksumAddress, HexStr]
-Encodable = Union[int, StrEncodable, HexBytes, bytes]
+Encodable = Union[int, StrEncodable, hexbytes.HexBytes, bytes]
 
 RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
 
 
-MulticallChunk = Tuple[ChecksumAddress, HexBytes]
+MulticallChunk = Tuple[ChecksumAddress, hexbytes.HexBytes]
 MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
 
 DecodedMulticall = Tuple[int, int, Tuple[Tuple["Success", bytes], ...]]
@@ -56,6 +60,7 @@ JSONRPCBatchResponseRaw = Union[List[msgspec.Raw], "types.PartialResponse"]
 
 
 # these compile to C constants
+HexBytes: Final = hexbytes.HexBytes
 Raw: Final = msgspec.Raw
 ContextFramesBytesIO: Final = decoding.ContextFramesBytesIO
 DecodeError: Final = msgspec.DecodeError
