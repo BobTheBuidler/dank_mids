@@ -113,7 +113,7 @@ if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
 
-TIMEOUT_SECONDS_SMALL: Final = 30
+TIMEOUT_SECONDS_SMALL: Final = 60
 TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
 
 logger: Final = getLogger(__name__)
