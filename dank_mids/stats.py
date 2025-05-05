@@ -541,21 +541,21 @@ class _SentryExporter:
         :mod:`sentry_sdk`: The Sentry SDK for Python.
     """
 
-    metrics = {
+    metrics: Final = {
         "active_eth_calls": "count_active_brownie_calls",
         "queued_eth_calls": "count_queued_brownie_calls",
         "encoder_queue": "encoder_queue_len",
         "decoder_queue": "decoder_queue_len",
         "loop_time": "avg_loop_time",
     }
-    units = {"loop_time": "seconds"}
+    units: Final = {"loop_time": "seconds"}
 
     def push_measurements(self) -> None:
         """
         Push all metrics in `self.metrics` to Sentry.
         """
         if self._exc:
-            raise self._exc
+            raise deepcopy(self._exc).with_traceback(self._exc.__traceback__)
         for tag, attr_name in self.metrics.items():
             attr = getattr(collector, attr_name)
             if callable(attr):
@@ -612,6 +612,8 @@ class _SentryExporter:
         """
     except ImportError as e:
         _exc = e
+        set_tag = None
+        set_measurement = None
 
 
 logger: Final = _StatsLogger(__name__)
