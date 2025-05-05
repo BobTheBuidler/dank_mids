@@ -26,6 +26,14 @@ def revert_logger_log_debug(msg: str, *args: Any) -> None:
     revert_logger_log(DEBUG, msg, args)
 
 
+http_error_logger: Final = error_logger.getChild("http")
+http_error_log: Final = http_error_log
+
+
+def log_http_error(msg: str, *args: Any) -> None:
+    http_error_log(DEBUG, msg, args)
+
+
 timeout_logger: Final = error_logger.getChild("timeouts")
 timeout_logger_debug: Final = timeout_logger.debug
 timeout_logger_warning: Final = timeout_logger.warning
