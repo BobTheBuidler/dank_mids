@@ -233,7 +233,11 @@ class _StatsLogger(logging.Logger):
             raise ValueError("Both a level and a message are required.") from None
 
     def _log_fn_result(
-        self, level: _LogLevel, callable: Callable[[T], str], *callable_args: T, **logging_kwargs: Any
+        self,
+        level: _LogLevel,
+        callable: Callable[[T], str],
+        *callable_args: T,
+        **logging_kwargs: Any,
     ) -> None:
         """
         Call a function and log its result if the logger is enabled for the level.
