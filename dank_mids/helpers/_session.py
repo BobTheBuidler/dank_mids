@@ -21,6 +21,7 @@ from async_lru import alru_cache
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.helpers._codec import JSONRPCBatchResponse, RawResponse
+from dank_mids.helpers._errors import log_http_error
 from dank_mids.types import PartialRequest
 
 
@@ -241,6 +242,7 @@ class DankClientSession(ClientSession):
                         response_data = await response.json(loads=loads, content_type=None)
                         _logger_debug("received response %s", response_data)
                         return response_data
+            
             except ClientResponseError as ce:
                 status = ce.status
                 if status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
@@ -250,10 +252,10 @@ class DankClientSession(ClientSession):
                     tried += 1
                     if debug_logs_enabled:
                         sleep_for = random()
-                        _logger_log(
-                            DEBUG,
+                        log_http_error(
                             "response failed with status %s, retrying in %.f2s",
-                            (HTTPStatusExtended(status), sleep_for),
+                            HTTPStatusExtended(status)
+                            sleep_for,
                         )
                         await sleep(sleep_for)
                     else:
@@ -261,10 +263,10 @@ class DankClientSession(ClientSession):
 
                 else:
                     if debug_logs_enabled:
-                        _logger_log(
-                            DEBUG,
+                        log_http_error(
                             "response failed with status %s  request data: %s",
-                            (_get_status_enum(ce), data),
+                            _get_status_enum(ce),
+                            data,
                         )
                     raise
 
