@@ -21,10 +21,10 @@ from asyncio import create_task
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor
 from time import time
-from typing import TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Set, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Final, Set, Type, TypeVar, final
 
 import msgspec
-from a_sync.asyncio import sleep0 as yield_to_loop
+from a_sync.asyncio import sleep0
 from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
 from web3.types import RPCEndpoint
 
@@ -40,17 +40,22 @@ T = TypeVar("T")
 
 # New logging levels:
 # DEBUG=10, INFO=20,
-STATS = 13
+STATS: Final = 13
 """Custom logging level for statistics, between DEBUG and INFO."""
 
-DEVHINT = 15
+DEVHINT: Final = 15
 """Custom logging level for developer hints, between STATS and INFO."""
 
 COLLECT_STATS: bool = False  # TODO: enable this
 """Flag to enable or disable stats collection."""
 
-# if you're both collecting data and logging something, put the function here:
+_ENVS: Final = _ENVIRONMENT_VARIABLES_SET_BY_USER
 
+yield_to_loop: Final = sleep0
+
+
+# if you're both collecting data and logging something, put the function here:
+# <func>
 
 def log_errd_batch(batch: "JSONRPCBatch") -> None:
     """
@@ -85,6 +90,7 @@ def log_duration(work_descriptor: str, start: float, *, level: _LogLevel = STATS
             logger._log_nocheck(level, f"{work_descriptor} took {duration}")
 
 
+@final
 class _StatsLogger(logging.Logger):
     """
     A custom logger class for collecting and logging statistics about RPC method calls and responses.
@@ -337,6 +343,7 @@ class _StatsLogger(logging.Logger):
 _Times = Deque[float]
 
 
+@final
 class _Collector:
     """Handles the collection and computation of stats-related data."""
 
@@ -545,7 +552,7 @@ class _SentryExporter:
         Example:
             >>> sentry.push_envs()
         """
-        for env, value in _ENVIRONMENT_VARIABLES_SET_BY_USER.items():
+        for env, value in _ENVS.items():
             try:
                 self.set_tag(env, value)
             except Exception as e:
@@ -588,8 +595,8 @@ class _SentryExporter:
         _exc = e
 
 
-logger = _StatsLogger(__name__)
-log = logger.stats
-devhint = logger.devhint
-collector = _Collector()
-sentry = _SentryExporter()
+logger: Final = _StatsLogger(__name__)
+log: Final = logger.stats
+devhint: Final = logger.devhint
+collector: Final = _Collector()
+sentry: Final = _SentryExporter()
