@@ -15,7 +15,7 @@ from typing import (
     overload,
 )
 
-from a_sync import igather
+from a_sync import Semaphore, igather
 from async_lru import alru_cache
 from async_property import async_cached_property
 from eth_typing import Address, BlockNumber, ChecksumAddress, HexStr
