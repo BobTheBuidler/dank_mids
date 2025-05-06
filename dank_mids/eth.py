@@ -276,9 +276,10 @@ class DankEth(AsyncEth):
                     if isinstance(to_block, str):
                         to_block = int(to_block, 16)
 
+                    get_chunk = Semaphore(2)(self.trace_filter)
                     summand = max_range_size - 1
-                    traces: List[FilterTrace] = await igather(
-                        self.trace_filter({**template, "fromBlock": i, "toBlock": i + summand})
+                    traces: List[List[FilterTrace]] = await igather(
+                        get_chunk({**template, "fromBlock": i, "toBlock": i + summand})
                         for i in range(from_block, to_block, max_range_size)
                     )
                     return list(concat(traces))
