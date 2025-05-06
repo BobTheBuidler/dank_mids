@@ -21,7 +21,18 @@ from asyncio import create_task
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor
 from time import time
-from typing import TYPE_CHECKING, Any, Callable, DefaultDict, Deque, Final, Set, Type, TypeVar, final
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    DefaultDict,
+    Deque,
+    Final,
+    Set,
+    Type,
+    TypeVar,
+    final,
+)
 
 import msgspec
 from a_sync.asyncio import sleep0
@@ -56,6 +67,7 @@ yield_to_loop: Final = sleep0
 
 # if you're both collecting data and logging something, put the function here:
 # <func>
+
 
 def log_errd_batch(batch: "JSONRPCBatch") -> None:
     """

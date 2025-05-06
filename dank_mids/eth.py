@@ -15,7 +15,7 @@ from typing import (
     overload,
 )
 
-from a_sync import igather
+from a_sync import Semaphore, igather
 from async_lru import alru_cache
 from async_property import async_cached_property
 from eth_typing import Address, BlockNumber, ChecksumAddress, HexStr
@@ -276,10 +276,13 @@ class DankEth(AsyncEth):
                     if isinstance(to_block, str):
                         to_block = int(to_block, 16)
 
+                    get_chunk = Semaphore(2)(self.trace_filter)
                     summand = max_range_size - 1
-                    traces: List[FilterTrace] = await igather(
-                        self.trace_filter({**template, "fromBlock": i, "toBlock": i + summand})
-                        for i in range(from_block, to_block, max_range_size)
+                    ranges = [(i, i + summand) for i in range(from_block, to_block, max_range_size)]
+                    ranges[-1][-1] = min(ranges[-1][-1], to_block)
+                    traces: List[List[FilterTrace]] = await igather(
+                        get_chunk({**template, "fromBlock": start, "toBlock": end})
+                        for start, end in ranges
                     )
                     return list(concat(traces))
             raise
