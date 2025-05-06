@@ -278,8 +278,9 @@ class DankEth(AsyncEth):
 
                     get_chunk = Semaphore(2)(self.trace_filter)
                     summand = max_range_size - 1
-                    ranges = [(i, i + summand) for i in range(from_block, to_block, max_range_size)]
-                    ranges[-1][-1] = min(ranges[-1][-1], to_block)
+                    ranges = [[i, i + summand] for i in range(from_block, to_block, max_range_size)]
+                    last_chunk = ranges[-1]
+                    last_chunk[1] = min(last_chunk[1], to_block)
                     traces: List[List[FilterTrace]] = await igather(
                         get_chunk({**template, "fromBlock": start, "toBlock": end})
                         for start, end in ranges
