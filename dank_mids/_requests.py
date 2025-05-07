@@ -310,16 +310,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
             await yield_to_loop()
 
         elif current_batch._awaited is False:
-            # NOTE: If the batch was already awaited, we filled a batch. Let's await it now so we can send something to the node.
-            batch_task = create_task(current_batch.get_response(), name="batch task get_response")
-            done_strongref, _ = await first_completed(batch_task, self._fut)
-            for fut in done_strongref:
-                if fut.exception():
-                    # we do this because a few RPCRequests can reach this point at the 'same time'
-                    # TODO: refactor this so only 1 waiter can await get_response so RuntimeError stops happening
-                    exc = fut.exception()
-                    if not (isinstance(exc, RuntimeError) and "already awaited" in str(exc)):
-                        raise exc.with_traceback(exc.__traceback__) from exc.__cause__
+            # NOTE: If current_batch is not None, that means we filled a batch. Let's await it now so we can send something to the node.
+            await first_completed(current_batch._task, self._fut)
 
         fut = self._fut
 
@@ -681,6 +673,12 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     @property
     def is_full(self) -> bool:
         raise NotImplementedError(type(self).__name__)
+
+    @cached_property
+    def _task(self) -> "Task[None]":
+        return create_task(
+            self.get_response(), name=f"{type(self).__name__} {self.uid} get_response"
+        )
 
     def append(self, call: _Request, skip_check: bool = False) -> None:
         if self._awaited is True:
