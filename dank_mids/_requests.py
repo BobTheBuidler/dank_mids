@@ -876,7 +876,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
         elif len(calls) == 1:
             await self._exec_single_call()
-            self._done.set()
             return
 
         # elif l < 50: # TODO play with later
