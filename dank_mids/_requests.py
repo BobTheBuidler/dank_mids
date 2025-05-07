@@ -513,7 +513,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 self._fut.set_result(response)
         else:
             self._fut.set_result(response)
-            
+
         return response
 
     def create_duplicate(self) -> Union["RPCRequest", "eth_call"]:
