@@ -904,8 +904,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             if self.should_retry(e):
                 await self.bisect_and_retry(e)
             elif len(self.calls) == 1:
-                multicall = next(iter(self.calls))
-                await multicall
+                await self._exec_single_call()
             else:
                 await self.spoof_response(e)
 
@@ -1206,10 +1205,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
         if not self.calls:
             # TODO: figure out why this can happen and prevent it upstream
+            self._done.set()
             return
 
         if self.is_single_multicall:
-            await next(iter(self.calls)).get_response_unbatched()
+            multicall = next(iter(self.calls))
+            await multicall
             self._done.set()
             return
 
