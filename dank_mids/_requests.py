@@ -904,7 +904,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             if self.should_retry(e):
                 await self.bisect_and_retry(e)
             elif len(self.calls) == 1:
-                await next(iter(self.calls)).get_response_unbatched()
+                multicall = next(iter(self.calls))
+                await multicall
             else:
                 await self.spoof_response(e)
 
