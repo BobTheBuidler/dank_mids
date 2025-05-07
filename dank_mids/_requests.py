@@ -792,21 +792,25 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return bool(self.calls)
 
     def __del__(self) -> None:
-        if self.calls and not self._done.is_set():
-            logged = False
-            for call in self.calls:
-                if not call._fut.done() and not call._fut._loop.is_closed():
-                    if logged is False:
-                        error_logger.error("%s was garbage collected before finishing", self)
-                        logged = True
-                    call._fut.set_exception(
-                        GarbageCollectionError(
-                            f"{self} was garbage collected before finishing.",
-                            f"{call} might hang indefinitely if I don't raise this exception, "
-                            "which only exists to help debug an issue inside of dank mids. "
-                            "Please show it to Bob.",
-                        )
+        if len(self.calls) <= 1 or self._done.is_set():
+            # When len == 1, the Multicall will be garbage collected before the eth_call since the call will be executed on its own
+            return
+
+        # The Multicall still has multiple calls that haven't been garbage collected
+        logged = False
+        for call in self.calls:
+            if not call._fut.done() and not call._fut._loop.is_closed():
+                if logged is False:
+                    error_logger.error("%s was garbage collected before finishing", self)
+                    logged = True
+                call._fut.set_exception(
+                    GarbageCollectionError(
+                        f"{self} was garbage collected before finishing.",
+                        f"{call} might hang indefinitely if I don't raise this exception, "
+                        "which only exists to help debug an issue inside of dank mids. "
+                        "Please show it to Bob.",
                     )
+                )
 
     @cached_property
     def block(self) -> BlockId:
