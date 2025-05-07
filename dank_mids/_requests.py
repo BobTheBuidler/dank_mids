@@ -875,7 +875,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             return
 
         elif len(calls) == 1:
-            self._exec_single_call()
+            await self._exec_single_call()
             self._done.set()
             return
 
