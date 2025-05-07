@@ -508,8 +508,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 self.make_request(num_previous_timeouts + 1), name="next attempt task"
             )
             done: Set[Task] = await first_completed(task, next_attempt_task, cancel=True)
-            response = done.pop().result()
-            if not self._fut.done():
+            first_done = done.pop()
+            response = first_done.result()
+            if first_done is not next_attempt_task:
+                # next_attempt_task would have already set the fut result
                 self._fut.set_result(response)
         else:
             self._fut.set_result(response)
