@@ -276,7 +276,7 @@ class DankEth(AsyncEth):
                     if isinstance(to_block, str):
                         to_block = int(to_block, 16)
 
-                    get_chunk = Semaphore(2)(self.trace_filter)
+                    get_chunk = Semaphore(3)(self.trace_filter)
                     summand = max_range_size - 1
                     ranges = [[i, i + summand] for i in range(from_block, to_block, max_range_size)]
                     last_chunk = ranges[-1]
