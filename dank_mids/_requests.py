@@ -729,10 +729,6 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
             _log_warning("unexpected %s in a %s: %s", type(e).__name__, type(self).__name__, e)
         return len(self) > 1
 
-    @set_done
-    async def _exec_single_call(self) -> None:
-        await next(iter(self.calls)).make_request()
-
     def _record_failure(self, e: Exception, data: str) -> None:
         _debugging.failures.record(
             self.controller.chain_id,
@@ -906,7 +902,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
             if self.should_retry(e):
                 await self.bisect_and_retry(e)
-            elif len(self) == 1:
+            elif len(self.calls) == 1:
                 await next(iter(self.calls)).get_response_unbatched()
             else:
                 await self.spoof_response(e)
@@ -1207,7 +1203,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             return
 
         if self.is_single_multicall:
-            await next(iter(self.calls))
+            await next(iter(self.calls)).get_response_unbatched()
             self._done.set()
             return
 
@@ -1466,6 +1462,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             _log_devhint(
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"
             )
+
+    @set_done
+    async def _exec_single_call(self) -> None:
+        await next(iter(self.calls)).make_request()
 
 
 # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
