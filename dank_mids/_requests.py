@@ -818,7 +818,12 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     @cached_property
     def block(self) -> BlockId:
-        return next(iter(self.calls)).block
+        try:
+            return next(iter(self.calls)).block
+        except StopIteration as e:
+            raise EmptyBatch(
+                f"{type(self).__name__} {self.uid} is empty and should not be processed."
+            ) from e.__cause__
 
     @property
     def calldata(self) -> str:
@@ -1126,10 +1131,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
     def data(self) -> bytes:
         try:
             return b"[" + b",".join(call.request.data for call in self) + b"]"
-        except StopIteration as e:
-            raise EmptyBatch(
-                f"batch {self.uid} is empty and should not be processed."
-            ) from e.__cause__
         except TypeError as e0:
             # If we can't encode one of the calls, lets figure out which one and pass some useful info downstream
             for call in self:
