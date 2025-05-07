@@ -868,12 +868,17 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
         # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
         calls = tuple(self.calls)
+        
         if not calls:
             # TODO: figure out how we get into this function without any calls
+            self._done.set()
             return
 
-        if len(calls) == 1:
+        elif len(calls) == 1:
             self._exec_single_call()
+            self._done.set()
+            return
+        
         # elif l < 50: # TODO play with later
         #    return await JSONRPCBatch(self.controller, self.calls)
 
