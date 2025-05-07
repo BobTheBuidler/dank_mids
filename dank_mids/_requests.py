@@ -876,6 +876,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
         elif len(calls) == 1:
             await self._exec_single_call()
+            self._done.set()
             return
 
         # elif l < 50: # TODO play with later
@@ -909,6 +910,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 await self.bisect_and_retry(e)
             elif len(self.calls) == 1:
                 await self._exec_single_call()
+                self._done.set()
             else:
                 await self.spoof_response(e)
 
@@ -1043,7 +1045,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             batch0.start(self, cleanup=False)
             await batch0
 
-    @set_done
     async def _exec_single_call(self) -> None:
         await next(iter(self.calls)).make_request()
 
