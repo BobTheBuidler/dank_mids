@@ -317,12 +317,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 if fut.exception():
                     # we do this because a few RPCRequests can reach this point at the 'same time'
                     # TODO: refactor this so only 1 waiter can await get_response so RuntimeError stops happening
-                    if not (
-                        isinstance(exc := fut.exception(), RuntimeError)
-                        and "already awaited" in str(exc)
-                    ):
-                        # raise it
-                        fut.result()
+                    exc = fut.exception()
+                    if not (isinstance(exc, RuntimeError) and "already awaited" in str(exc)):
+                        raise exc.with_traceback(exc.__traceback__) from exc.__cause__
 
         fut = self._fut
 
