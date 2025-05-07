@@ -384,7 +384,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         if d is not fut:
                             # this means duplicate_task finished first
                             # in case fut is also finished with an exception, we'll mark it as retrieved
-                            fut._Future__log_traceback
+                            fut._Future__log_traceback = False
                             return response
                     # this means the original finished first
                     duplicate._fut.cancel()
