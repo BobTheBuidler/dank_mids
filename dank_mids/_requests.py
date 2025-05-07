@@ -677,7 +677,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     @cached_property
     def _task(self) -> "Task[None]":
         return create_task(
-            self.get_response(), name=f"{type(self).__name__} {self._uid} get_response"
+            self.get_response(), name=f"{type(self).__name__} {self.uid} get_response"
         )
 
     def append(self, call: _Request, skip_check: bool = False) -> None:
