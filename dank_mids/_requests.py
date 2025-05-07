@@ -325,7 +325,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         fut.result()
 
         fut = self._fut
-        
+
         if self._batch is None:
             try:
                 batch_task = create_task(
