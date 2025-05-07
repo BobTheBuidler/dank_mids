@@ -865,16 +865,17 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             raise RuntimeError(f"{self} already awaited", current_task())
 
         self._awaited = True
-        if (l := len(self)) == 1:
-            return await self._exec_single_call()
-        # elif l < 50: # TODO play with later
-        #    return await JSONRPCBatch(self.controller, self.calls)
 
         # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
         calls = tuple(self.calls)
         if not calls:
             # TODO: figure out how we get into this function without any calls
             return
+
+        if len(calls) == 1:
+            self._exec_single_call()
+        # elif l < 50: # TODO play with later
+        #    return await JSONRPCBatch(self.controller, self.calls)
 
         controller = self.controller
         rid = controller.request_uid.next
@@ -1037,6 +1038,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         elif batch0:
             batch0.start(self, cleanup=False)
             await batch0
+
+    @set_done
+    async def _exec_single_call(self) -> None:
+        await next(iter(self.calls)).make_request()
 
     async def _spoof_or_retry(self, response: RawResponse) -> None:
         try:
@@ -1462,10 +1467,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             _log_devhint(
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"
             )
-
-    @set_done
-    async def _exec_single_call(self) -> None:
-        await next(iter(self.calls)).make_request()
 
 
 # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
