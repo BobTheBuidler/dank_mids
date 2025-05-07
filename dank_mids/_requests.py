@@ -14,7 +14,6 @@ from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from itertools import chain, filterfalse, groupby
 from time import time
-from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -650,9 +649,6 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
     _awaited: bool = False
     """A flag indicating whether the batch has been awaited."""
-
-    _traceback: Optional[TracebackType] = None
-    """The traceback of this batch's exception, if one occurred."""
 
     __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
 
