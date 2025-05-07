@@ -310,7 +310,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             await yield_to_loop()
 
         elif current_batch._awaited is False:
-            # NOTE: If the batch was already awaited, we filled a batch. Let's await it now so we can send something to the node.
+            # NOTE: If current_batch is not None, that means we filled a batch. Let's await it now so we can send something to the node.
             await first_completed(current_batch._task, self._fut)
 
         fut = self._fut
