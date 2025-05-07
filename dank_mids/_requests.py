@@ -1117,7 +1117,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         try:
             return b"[" + b",".join(call.request.data for call in self) + b"]"
         except StopIteration as e:
-            raise EmptyBatch(f"batch {self.uid} is empty and should not be processed.") from e.__cause__
+            raise EmptyBatch(
+                f"batch {self.uid} is empty and should not be processed."
+            ) from e.__cause__
         except TypeError as e0:
             # If we can't encode one of the calls, lets figure out which one and pass some useful info downstream
             for call in self:
@@ -1203,7 +1205,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         if not self.calls:
             # TODO: figure out why this can happen and prevent it upstream
             return
-            
+
         if self.is_single_multicall:
             await next(iter(self.calls))
             self._done.set()
@@ -1252,7 +1254,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         except Exception as e:
             if _log_exception(e):
                 self._record_failure(e, self.data)
-                    
+
             stats.log_errd_batch(self)
 
             if self.should_retry(e):
@@ -1291,7 +1293,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             if not calls:
                 # TODO: figure out why this can happen and prevent it elsewhere
                 return [], []
-                
+
             # for the multicalls too
             mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
             response: JSONRPCBatchResponse = await _session.post(
