@@ -324,6 +324,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         # raise it
                         fut.result()
 
+        fut = self._fut
+
         if self._batch is None:
             try:
                 batch_task = create_task(
@@ -347,15 +349,15 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 duplicate_task = create_task(
                     duplicate.get_response(), name="duplicate task get_response"
                 )
-                done, pending = await first_completed(batch_task, self._fut, duplicate_task)
+                done, pending = await first_completed(batch_task, fut, duplicate_task)
                 for d in done:
-                    if d in (batch_task, self._fut):
+                    if d in (batch_task, fut):
                         # we'll get and decode the value below
                         pass
                     else:
+                        fut.cancel()
                         return d.result()
 
-        fut = self._fut
         try:
             if fut.done():
                 response = fut.result()
@@ -379,10 +381,13 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     duplicate_task = create_task(
                         duplicate.get_response(), name="duplicate.get_response"
                     )
-                    for d in await first_completed(fut, duplicate_task, cancel=True):
+                    done_futs = await first_completed(fut, duplicate_task, cancel=True)
+                    for d in done_futs:
                         response = d.result()
                         if d is not fut:
                             # this means duplicate_task finished first
+                            # in case fut is also finished with an exception, we'll mark it as retrieved
+                            fut._Future__log_traceback
                             return response
                     # this means the original finished first
                     duplicate._fut.cancel()
