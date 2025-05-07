@@ -14,6 +14,7 @@ from collections import defaultdict
 from concurrent.futures.process import BrokenProcessPool
 from itertools import chain, filterfalse, groupby
 from time import time
+from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -311,10 +312,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         elif current_batch._awaited is False:
             # NOTE: If the batch was already awaited, we filled a batch. Let's await it now so we can send something to the node.
-            done, _ = await first_completed(current_batch._task, self._fut)
-            for fut in done:
-                # check for exceptions
-                fut.result()
+            await first_completed(current_batch._task, self._fut)
 
         fut = self._fut
 
@@ -652,6 +650,9 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
     _awaited: bool = False
     """A flag indicating whether the batch has been awaited."""
+
+    _traceback: Optional[TracebackType] = None
+    """The traceback of this batch's exception, if one occurred."""
 
     __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
 
