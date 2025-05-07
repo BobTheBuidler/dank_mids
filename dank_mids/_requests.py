@@ -675,7 +675,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         raise NotImplementedError(type(self).__name__)
 
     @cached_property
-    def _task(self) -> Task[None]:
+    def _task(self) -> "Task[None]":
         return create_task(
             self.get_response(), name=f"{type(self).__name__} {self._uid} get_response"
         )
