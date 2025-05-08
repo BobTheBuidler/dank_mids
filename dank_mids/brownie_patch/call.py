@@ -38,9 +38,11 @@ from web3.types import BlockIdentifier
 
 from dank_mids import ENVIRONMENT_VARIABLES, exceptions
 from dank_mids._logging import getLogger
-from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
+
+if TYPE_CHECKING:
+    from dank_mids.brownie_patch.types import ContractMethod
 
 
 ENVS: Final[ModuleType] = ENVIRONMENT_VARIABLES
@@ -164,7 +166,7 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
     return coroutine
 
 
-def _call_no_args(self: ContractMethod) -> Any:
+def _call_no_args(self: "ContractMethod") -> Any:
     """Asynchronously call `self` with no arguments at the latest block."""
     return self.coroutine().__await__()
 
