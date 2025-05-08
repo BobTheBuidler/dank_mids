@@ -5,7 +5,6 @@ from typing import Any, Dict, Optional, Union
 from brownie import Contract
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from dank_mids.brownie_patch.call import _get_coroutine_fn, _skip_proc_pool
-from dank_mids.brownie_patch.types import ContractMethod
 from dank_mids.helpers._helpers import DankWeb3
 
 
@@ -60,10 +59,10 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
 
     for method in call.__dict__["methods"].values():
         if isinstance(method, (ContractCall, ContractTx)):
-            method._skip_decoder_proc_pool = method._address in _skip_proc_pool
-            method.coroutine = MethodType(_get_coroutine_fn(w3, len(method.abi["inputs"])), method)
+            method._skip_decoder_proc_pool = method._address in _skip_proc_pool  # type: ignore [union-attr]
+            method.coroutine = MethodType(_get_coroutine_fn(w3, len(method.abi["inputs"])), method)  # type: ignore [union-attr]
     # TODO implement this properly
     # elif isinstance(call, ContractTx):
     # _patch_tx(call, w3)
 
-    call.coroutine = MethodType(coroutine, call)
+    call.coroutine = MethodType(coroutine, call)  # type: ignore [attr-defined]
