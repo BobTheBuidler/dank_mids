@@ -18,7 +18,9 @@ from brownie.typing import AccountsType
 from hexbytes.main import BytesLike
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids.brownie_patch import call
 from dank_mids.brownie_patch._abi import FunctionABI
+
 
 
 _EVMType = TypeVar("_EVMType")
@@ -45,8 +47,6 @@ class _DankMethodMixin(Generic[_EVMType]):
         import dank_mids
 
         self._call = dank_mids.eth._call
-
-        from dank_mids.brownie_patch import call
 
         if ENVS.OPERATION_MODE.application or self._len_inputs:  # type: ignore [attr-defined]
             self._prep_request_data = call.encode
@@ -167,9 +167,6 @@ class _DankMethod(_DankMethodMixin):
         """The NatSpec documentation for the function."""
 
         super().__init__()
-
-        # TODO: refactor this
-        from dank_mids.brownie_patch import call
 
         self._encode_input = call.encode_input
         self._decode_output = call.decode_output
