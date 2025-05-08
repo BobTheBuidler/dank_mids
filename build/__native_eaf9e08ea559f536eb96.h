@@ -287,7 +287,6 @@ typedef struct {
     PyObject *_abi;
     PyObject *_input_sig;
     PyObject *_signature;
-    PyObject *___dict__;
 } dank_mids___brownie_patch____abi___FunctionABIObject;
 
 typedef struct {
