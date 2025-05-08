@@ -3,7 +3,7 @@ from weakref import WeakValueDictionary
 
 from brownie.convert import utils
 
-from dank_mids.brownie_patch._nocompile import _FunctionABI
+from dank_mids.brownie_patch import _nocompile
 from dank_mids.helpers import _helpers
 
 
@@ -26,7 +26,7 @@ _make_hashable: Final = _helpers._make_hashable
 
 
 @final
-class FunctionABI(_FunctionABI):
+class FunctionABI(_nocompile._FunctionABI):
     """
     A class to hold function ABI information.
 
