@@ -287,6 +287,7 @@ typedef struct {
     PyObject *_abi;
     PyObject *_input_sig;
     PyObject *_signature;
+    PyObject *___dict__;
 } dank_mids___brownie_patch____abi___FunctionABIObject;
 
 typedef struct {
@@ -781,6 +782,10 @@ struct export_table_eaf9e08ea559f536eb96 {
     CPyTagged (*CPyDef__uid___UIDGenerator___next)(PyObject *cpy_r_self);
     char (*CPyDef__uid_____top_level__)(void);
     char (*CPyDef_brownie_patch_____top_level__)(void);
+    PyObject **CPyStatic__abi____singletons;
+    PyObject **CPyStatic__abi___build_function_selector;
+    PyObject **CPyStatic__abi___build_function_signature;
+    PyObject **CPyStatic__abi____make_hashable;
     PyTypeObject **CPyType__abi___FunctionABI;
     PyObject *(*CPyDef__abi___FunctionABI)(PyObject *cpy_r_abi);
     char (*CPyDef__abi___FunctionABI_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_abi);
