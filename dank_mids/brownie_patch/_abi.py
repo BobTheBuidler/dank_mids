@@ -54,7 +54,7 @@ class FunctionABI:
 
         self.__dict__: Final[Dict[str, Any]] = {}
         """This __dict__ attr is needed for weakrefs to work."""
-        #self.__weakref__: Optional["ReferenceType[FunctionABI]"] = None
+        # self.__weakref__: Optional["ReferenceType[FunctionABI]"] = None
 
     @staticmethod
     def singleton(**abi: Any) -> "FunctionABI":
