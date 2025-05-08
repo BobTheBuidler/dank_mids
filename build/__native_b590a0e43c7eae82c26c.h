@@ -759,7 +759,6 @@ struct export_table_b590a0e43c7eae82c26c {
     PyObject *(*CPyDef__abi___build_function_signature)(PyObject *cpy_r_abi);
     PyObject *(*CPyDef__abi___build_function_selector)(PyObject *cpy_r_input_signature);
     char (*CPyDef__abi_____top_level__)(void);
-    PyObject **CPyStatic_call___ENVS;
     char *CPyStatic_call___APPLICATION_MODE;
     PyObject **CPyStatic_call___Decimal;
     PyObject **CPyStatic_call___HexBytes;

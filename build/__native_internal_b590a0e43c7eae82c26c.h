@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[820];
+extern PyObject *CPyStatics[818];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -274,7 +274,6 @@ extern PyObject *CPyPy__abi___build_function_signature(PyObject *self, PyObject 
 extern PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_input_signature);
 extern PyObject *CPyPy__abi___build_function_selector(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__abi_____top_level__(void);
-extern PyObject *CPyStatic_call___ENVS;
 extern char CPyStatic_call___APPLICATION_MODE;
 extern PyObject *CPyStatic_call___Decimal;
 extern PyObject *CPyStatic_call___HexBytes;
