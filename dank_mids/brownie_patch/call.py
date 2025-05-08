@@ -360,7 +360,7 @@ def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any
         return [_format_single_but_cache_checksums(type_str, v) for v in values]
 
 
-def _format_single_but_cache_checksums(type_str: str, value: Any) -> HexStr:
+def _format_single_but_cache_checksums(type_str: str, value: Any) -> Any:
     # Apply standard formatting to a single value
     if "uint" in type_str:
         return to_uint(value, type_str)
