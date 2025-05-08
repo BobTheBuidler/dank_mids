@@ -1,6 +1,5 @@
 from asyncio import Task
-from itertools import tee
-from typing import TYPE_CHECKING, Any, Awaitable, Generator, TypeVar, Union, final
+from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, Union, final
 
 from a_sync import create_task
 
@@ -13,15 +12,18 @@ from dank_mids.types import Multicalls, RawResponse
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
 
+
 __T = TypeVar("__T")
 
-MIN_SIZE = 1  # TODO: Play with this
+
+MIN_SIZE: Final = 1  # TODO: Play with this
 """The minimum size for a batch operation."""
 
-CHECK = MIN_SIZE - 1
+CHECK: Final = MIN_SIZE - 1
 """A constant used for checking batch sizes."""
 
-logger = getLogger(__name__)
+
+logger: Final = getLogger(__name__)
 
 
 def _create_named_task(awaitable: Awaitable[__T]) -> "Task[__T]":
@@ -44,10 +46,7 @@ class DankBatch:
         :class:`dank_mids._requests.RPCRequest`: The RPCRequest class used in this batch.
     """
 
-    _awaited: bool = False
-    """A flag indicating whether the batch has been awaited."""
-
-    __slots__ = "controller", "multicalls", "rpc_calls", "__dict__"
+    __slots__ = "controller", "multicalls", "rpc_calls", "_awaited", "_check_len"
 
     def __init__(
         self,
@@ -55,14 +54,19 @@ class DankBatch:
         multicalls: Multicalls,
         rpc_calls: JSONRPCBatch,
     ) -> None:
-        self.controller = controller
+        self.controller: Final = controller
         """The controller managing this batch."""
 
-        self.multicalls = multicalls
+        self.multicalls: Final = multicalls
         """A collection of multicalls to be executed."""
 
-        self.rpc_calls = rpc_calls
+        self.rpc_calls: Final = rpc_calls
         """A list of individual RPC calls or multicalls."""
+
+        self._awaited: bool = False
+        """A flag indicating whether the batch has been awaited."""
+    
+        self._check_len: Final = min(CHECK, controller.batcher.step)
 
     def __repr__(self) -> str:
         return f"<dank_mids.DankBatch object at {hex(id(self))}>"
@@ -102,12 +106,10 @@ class DankBatch:
             Exception: If any of the coroutines in the batch raise an exception,
                        it will be re-raised after all coroutines have been processed.
         """
-        # tee turns 1 iterator into 2
-        batches0, batches1 = tee(self.coroutines, 2)
+        batches = list(self.coroutines)
 
-        tasks = map(_create_named_task, batches0)
         last_failure = None
-        for batch, task in zip(batches1, list(tasks)):
+        for batch, task in zip(batches, [_create_named_task(coro) for coro in batches]):
             try:
                 await task
             except Exception as e:
@@ -140,8 +142,8 @@ class DankBatch:
         # alias since this code runs in tight loops
         batch_append = working_batch.append
 
-        check_len = min(CHECK, self.controller.batcher.step)
         # Go thru the multicalls and add calls to the batch
+        check_len = self._check_len
         for mcall in self.multicalls.values():
             if len(mcall) >= check_len:
                 batch_append(mcall, skip_check=True)
