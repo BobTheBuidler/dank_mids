@@ -132,4 +132,3 @@ def _get_method_object(
     if constant:
         return DankContractCall(address, abi, name, owner, natspec)
     return DankContractTx(address, abi, name, owner, natspec)
-
