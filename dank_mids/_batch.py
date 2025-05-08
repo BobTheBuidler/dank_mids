@@ -5,7 +5,7 @@ from a_sync import create_task
 
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._logging import getLogger
-from dank_mids._requests import _Batch, JSONRPCBatch, Multicall
+from dank_mids._requests import JSONRPCBatch, Multicall
 from dank_mids.helpers._codec import RawResponse
 from dank_mids.helpers._errors import log_internal_error
 from dank_mids.types import Multicalls
