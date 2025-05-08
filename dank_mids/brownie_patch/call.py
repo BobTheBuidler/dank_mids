@@ -4,6 +4,7 @@ from logging import Logger
 from pickle import PicklingError
 from types import MethodType
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Dict,
