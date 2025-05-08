@@ -128,6 +128,7 @@ extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES;
 extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___globals;
 extern CPyModule *CPyModule_dank_mids____mode;
 extern PyObject *CPyStatic__batch___logger;
+extern PyObject *CPyStatic__batch___create_task;
 extern PyTypeObject *CPyType__batch___DankBatch;
 extern PyObject *CPyDef__batch___DankBatch(PyObject *cpy_r_controller, PyObject *cpy_r_multicalls, PyObject *cpy_r_rpc_calls);
 extern PyTypeObject *CPyType__batch____await_DankBatch_env;

@@ -690,6 +690,7 @@ typedef struct {
 
 struct export_table_eaf9e08ea559f536eb96 {
     PyObject **CPyStatic__batch___logger;
+    PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
     PyObject *(*CPyDef__batch___DankBatch)(PyObject *cpy_r_controller, PyObject *cpy_r_multicalls, PyObject *cpy_r_rpc_calls);
     PyTypeObject **CPyType__batch____await_DankBatch_env;
