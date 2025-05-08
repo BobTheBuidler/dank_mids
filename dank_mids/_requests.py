@@ -532,9 +532,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
         def _self_done_callback(selffut):
             if dupefut.done():
                 return
-                
+
             dupefut.remove_done_callback(_dupe_done_callback)
-            
+
             if selffut.cancelled():
                 dupefut.cancel()
             elif (exc := selffut.exception()) is not None:
@@ -545,9 +545,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
         def _dupe_done_callback(dupefut):
             if selffut.done():
                 return
-                
+
             selffut.remove_done_callback(_self_done_callback)
-            
+
             if dupefut.cancelled():
                 selffut.cancel()
             elif (exc := dupefut.exception()) is not None:
