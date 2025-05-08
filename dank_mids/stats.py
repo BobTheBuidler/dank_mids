@@ -20,6 +20,7 @@ import logging
 from asyncio import create_task
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor
+from copy import deepcopy
 from time import time
 from typing import (
     TYPE_CHECKING,
@@ -28,7 +29,9 @@ from typing import (
     DefaultDict,
     Deque,
     Final,
+    Iterable,
     Set,
+    Tuple,
     Type,
     TypeVar,
     final,
@@ -132,7 +135,7 @@ class _StatsLogger(logging.Logger):
 
     # New logging levels
 
-    def stats(self, msg, *args, **kwargs) -> None:
+    def stats(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """
         Log a message with the STATS logging level.
 
@@ -147,7 +150,7 @@ class _StatsLogger(logging.Logger):
         if self.enabled:
             self._log_nocheck(STATS, msg, args, **kwargs)
 
-    def devhint(self, msg, *args, **kwargs) -> None:
+    def devhint(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """
         Log a message with the DEVHINT logging level.
 
@@ -198,11 +201,11 @@ class _StatsLogger(logging.Logger):
             >>> _logger.log_subprocess_stats()
         """
         for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:  # type: ignore [attr-defined]
-            self._log_fn_result(level, _Writer.queue, pool)
+            self._log_fn_result(level, _Writer.queue, pool)  # type: ignore [arg-type]
 
     # Internal helpers
 
-    def _log(self, level: _LogLevel, *args, **kwargs) -> None:
+    def _log(self, level: _LogLevel, msg: str, args: Tuple[Any, ...] = (), **kwargs: Any) -> None:  # type: ignore [override]
         """
         Wrapper around the standard logging method to simplify custom log level checks.
 
@@ -212,9 +215,9 @@ class _StatsLogger(logging.Logger):
             **kwargs: Additional keyword arguments for the logger.
         """
         if self.isEnabledFor(level):
-            return self._log_nocheck(level, *args, **kwargs)
+            return self._log_nocheck(level, msg, *args, **kwargs)
 
-    def _log_nocheck(self, level: _LogLevel, *args, **kwargs) -> None:
+    def _log_nocheck(self, level: _LogLevel, msg: str, *args: Any, **kwargs: Any) -> None:
         """
         Perform logging without checking whether the logger is enabled for the level.
 
@@ -232,7 +235,11 @@ class _StatsLogger(logging.Logger):
             raise ValueError("Both a level and a message are required.") from None
 
     def _log_fn_result(
-        self, level: _LogLevel, callable: Callable[[T], str], *callable_args: T, **logging_kwargs
+        self,
+        level: _LogLevel,
+        callable: Callable[[T], str],
+        *callable_args: T,
+        **logging_kwargs: Any,
     ) -> None:
         """
         Call a function and log its result if the logger is enabled for the level.
@@ -271,7 +278,7 @@ class _StatsLogger(logging.Logger):
             The daemon logs subprocess, brownie and event loop stats every 300 seconds.
         """
         start = time()
-        time_since_notified = 0
+        time_since_notified = 0.0
         while True:
             await yield_to_loop()
             now = time()
@@ -304,9 +311,8 @@ class _StatsLogger(logging.Logger):
         if enabled:
             self._log(
                 DEVHINT,
-                f"ValidationError when decoding response for {method}",
-                ("This *should* not impact your script. If it does, you'll know."),
-                e,
+                "ValidationError when decoding response for %s. This *should* not impact your script. If it does, you'll know.",
+                (method,),
             )
 
     def log_types(self, method: RPCEndpoint, decoded: Any) -> None:
@@ -331,7 +337,7 @@ class _StatsLogger(logging.Logger):
             self._log_list_types(decoded.values())
         collector.types.update(types)
 
-    def _log_list_types(self, values, level: _LogLevel = DEVHINT) -> None:
+    def _log_list_types(self, values: Iterable[Any], level: _LogLevel = DEVHINT) -> None:
         """
         Log the types of items in a list.
 
@@ -373,7 +379,7 @@ class _Collector:
         representing durations. Each deque has a maximum length of 50,000.
         """
 
-        self.types: Set[Type] = set()
+        self.types: Set[Type[Any]] = set()
         """
         A set that stores all the types encountered during data collection.
         This is used for debugging and analysis purposes.
@@ -419,7 +425,7 @@ class _Collector:
         Example:
             >>> active_calls = collector.count_active_brownie_calls
         """
-        return ENVS.BROWNIE_CALL_SEMAPHORE.default_value - ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._value  # type: ignore [attr-defined]
+        return ENVS.BROWNIE_CALL_SEMAPHORE.default_value - ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._value  # type: ignore [attr-defined, no-any-return]
 
     @property
     def count_queued_brownie_calls(self) -> int:
@@ -432,7 +438,7 @@ class _Collector:
         Example:
             >>> queued_calls = collector.count_queued_brownie_calls
         """
-        return len(ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._waiters)  # type: ignore [attr-defined]
+        return len(ENVS.BROWNIE_CALL_SEMAPHORE.semaphore._waiters)  # type: ignore [attr-defined, no-any-return]
 
     @property
     def encoder_queue_len(self) -> int:
@@ -445,7 +451,7 @@ class _Collector:
         Example:
             >>> encoder_length = collector.encoder_queue_len
         """
-        return ENVS.BROWNIE_ENCODER_PROCESSES._queue_count  # type: ignore [attr-defined]
+        return ENVS.BROWNIE_ENCODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
 
     @property
     def decoder_queue_len(self) -> int:
@@ -458,7 +464,7 @@ class _Collector:
         Example:
             >>> decoder_length = collector.decoder_queue_len
         """
-        return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
+        return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
 
     @property
     def mcall_decoder_queue_len(self) -> int:
@@ -471,9 +477,10 @@ class _Collector:
         Example:
             >>> mcall_length = collector.mcall_decoder_queue_len
         """
-        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
+        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
 
 
+@final
 class _Writer:
     """
     Writer is used to turn Collector stats into human readable on a as-needed, JIT basis
@@ -520,6 +527,7 @@ class _Writer:
         return f"{pool} has {pool._queue_count} items in its queue"
 
 
+@final
 class _SentryExporter:
     """
     A class for exporting statistics and metrics from the :obj:`metrics` dict to Sentry.
@@ -534,21 +542,21 @@ class _SentryExporter:
         :mod:`sentry_sdk`: The Sentry SDK for Python.
     """
 
-    metrics = {
+    metrics: Final = {
         "active_eth_calls": "count_active_brownie_calls",
         "queued_eth_calls": "count_queued_brownie_calls",
         "encoder_queue": "encoder_queue_len",
         "decoder_queue": "decoder_queue_len",
         "loop_time": "avg_loop_time",
     }
-    units = {"loop_time": "seconds"}
+    units: Final = {"loop_time": "seconds"}
 
     def push_measurements(self) -> None:
         """
         Push all metrics in `self.metrics` to Sentry.
         """
         if self._exc:
-            raise self._exc
+            raise deepcopy(self._exc).with_traceback(self._exc.__traceback__)
         for tag, attr_name in self.metrics.items():
             attr = getattr(collector, attr_name)
             if callable(attr):
@@ -605,6 +613,8 @@ class _SentryExporter:
         """
     except ImportError as e:
         _exc = e
+        set_tag = None
+        set_measurement = None
 
 
 logger: Final = _StatsLogger(__name__)
