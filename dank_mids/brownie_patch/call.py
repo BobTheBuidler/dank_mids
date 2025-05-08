@@ -2,7 +2,7 @@ import decimal
 from concurrent.futures.process import BrokenProcessPool
 from logging import Logger
 from pickle import PicklingError
-from types import MethodType, ModuleType
+from types import MethodType
 from typing import (
     Any,
     Callable,
