@@ -76,7 +76,7 @@ class FunctionABI(_nocompile._FunctionABI):
 
 
 def get_type_strings(
-    abi_params: List[Dict[str, Any]], 
+    abi_params: List[Dict[str, Any]],
     substitutions: Optional[Dict[str, Any]] = None,
 ) -> List[str]:
     """Converts a list of parameters from an ABI into a list of type strings."""
