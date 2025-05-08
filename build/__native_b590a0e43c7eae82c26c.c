@@ -969,7 +969,7 @@ CPyL4: ;
 CPyL6: ;
     PyObject *cpy_r_r8[2] = {cpy_r_awaitable, cpy_r_r5};
     cpy_r_r9 = (PyObject **)&cpy_r_r8;
-    cpy_r_r10 = CPyStatics[695]; /* ('name',) */
+    cpy_r_r10 = CPyStatics[699]; /* ('name',) */
     cpy_r_r11 = _PyObject_Vectorcall(cpy_r_r6, cpy_r_r9, 1, cpy_r_r10);
     if (unlikely(cpy_r_r11 == NULL)) {
         CPy_AddTraceback("dank_mids\\_batch.py", "_create_named_task", 35, CPyStatic__batch___globals);
@@ -1036,7 +1036,7 @@ char CPyDef__batch___DankBatch_____init__(PyObject *cpy_r_self, PyObject *cpy_r_
         CPy_AddTraceback("dank_mids\\_batch.py", "__init__", 74, CPyStatic__batch___globals);
         goto CPyL8;
     }
-    cpy_r_r4 = CPyStatics[668]; /* 0 */
+    cpy_r_r4 = CPyStatics[670]; /* 0 */
     cpy_r_r5 = PyObject_RichCompare(cpy_r_r3, cpy_r_r4, 0);
     if (unlikely(cpy_r_r5 == NULL)) {
         CPy_AddTraceback("dank_mids\\_batch.py", "__init__", 74, CPyStatic__batch___globals);
@@ -1054,7 +1054,7 @@ char CPyDef__batch___DankBatch_____init__(PyObject *cpy_r_self, PyObject *cpy_r_
     cpy_r_r9 = cpy_r_r3;
     goto CPyL7;
 CPyL6: ;
-    cpy_r_r10 = CPyStatics[668]; /* 0 */
+    cpy_r_r10 = CPyStatics[670]; /* 0 */
     CPy_INCREF(cpy_r_r10);
     cpy_r_r9 = cpy_r_r10;
 CPyL7: ;
@@ -1280,7 +1280,7 @@ CPyL6: ;
     cpy_r_r20 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r21[2] = {cpy_r_self, cpy_r_r20};
     cpy_r_r22 = (PyObject **)&cpy_r_r21;
-    cpy_r_r23 = CPyStatics[696]; /* ('cleanup',) */
+    cpy_r_r23 = CPyStatics[700]; /* ('cleanup',) */
     cpy_r_r24 = _PyObject_Vectorcall(cpy_r_r19, cpy_r_r22, 1, cpy_r_r23);
     CPy_DECREF(cpy_r_r19);
     if (unlikely(cpy_r_r24 == NULL)) {
@@ -3397,7 +3397,7 @@ CPyL32: ;
     cpy_r_r42 = 1 ? Py_True : Py_False;
     PyObject *cpy_r_r43[2] = {cpy_r_r40, cpy_r_r42};
     cpy_r_r44 = (PyObject **)&cpy_r_r43;
-    cpy_r_r45 = CPyStatics[697]; /* ('skip_check',) */
+    cpy_r_r45 = CPyStatics[701]; /* ('skip_check',) */
     cpy_r_r46 = _PyObject_Vectorcall(cpy_r_r41, cpy_r_r44, 1, cpy_r_r45);
     CPy_DECREF(cpy_r_r41);
     if (unlikely(cpy_r_r46 == NULL)) {
@@ -3433,7 +3433,7 @@ CPyL36: ;
     cpy_r_r51 = 1 ? Py_True : Py_False;
     PyObject *cpy_r_r52[2] = {cpy_r_r48, cpy_r_r51};
     cpy_r_r53 = (PyObject **)&cpy_r_r52;
-    cpy_r_r54 = CPyStatics[697]; /* ('skip_check',) */
+    cpy_r_r54 = CPyStatics[701]; /* ('skip_check',) */
     cpy_r_r55 = _PyObject_Vectorcall(cpy_r_r50, cpy_r_r53, 1, cpy_r_r54);
     CPy_DECREF(cpy_r_r50);
     if (unlikely(cpy_r_r55 == NULL)) {
@@ -4426,7 +4426,7 @@ char CPyDef__batch_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[698]; /* ('Task',) */
+    cpy_r_r5 = CPyStatics[702]; /* ('Task',) */
     cpy_r_r6 = CPyStatics[32]; /* 'asyncio' */
     cpy_r_r7 = CPyStatic__batch___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
@@ -4437,7 +4437,7 @@ CPyL3: ;
     CPyModule_asyncio = cpy_r_r8;
     CPy_INCREF(CPyModule_asyncio);
     CPy_DECREF(cpy_r_r8);
-    cpy_r_r9 = CPyStatics[699]; /* ('TYPE_CHECKING', 'Any', 'Awaitable', 'Final', 'Generator',
+    cpy_r_r9 = CPyStatics[703]; /* ('TYPE_CHECKING', 'Any', 'Awaitable', 'Final', 'Generator',
                                    'TypeVar', 'Union', 'final') */
     cpy_r_r10 = CPyStatics[41]; /* 'typing' */
     cpy_r_r11 = CPyStatic__batch___globals;
@@ -4454,13 +4454,13 @@ CPyL3: ;
     cpy_r_r15 = (void *)&cpy_r_r14;
     int64_t cpy_r_r16[1] = {4};
     cpy_r_r17 = (void *)&cpy_r_r16;
-    cpy_r_r18 = CPyStatics[701]; /* (('a_sync', 'a_sync', 'a_sync'),) */
+    cpy_r_r18 = CPyStatics[705]; /* (('a_sync', 'a_sync', 'a_sync'),) */
     cpy_r_r19 = CPyStatic__batch___globals;
     cpy_r_r20 = CPyStatics[43]; /* 'dank_mids\\_batch.py' */
     cpy_r_r21 = CPyStatics[44]; /* '<module>' */
     cpy_r_r22 = CPyImport_ImportMany(cpy_r_r18, cpy_r_r15, cpy_r_r19, cpy_r_r20, cpy_r_r21, cpy_r_r17);
     if (!cpy_r_r22) goto CPyL41;
-    cpy_r_r23 = CPyStatics[702]; /* ('DankMidsInternalError',) */
+    cpy_r_r23 = CPyStatics[706]; /* ('DankMidsInternalError',) */
     cpy_r_r24 = CPyStatics[46]; /* 'dank_mids._exceptions' */
     cpy_r_r25 = CPyStatic__batch___globals;
     cpy_r_r26 = CPyImport_ImportFromMany(cpy_r_r24, cpy_r_r23, cpy_r_r23, cpy_r_r25);
@@ -4471,7 +4471,7 @@ CPyL3: ;
     CPyModule_dank_mids____exceptions = cpy_r_r26;
     CPy_INCREF(CPyModule_dank_mids____exceptions);
     CPy_DECREF(cpy_r_r26);
-    cpy_r_r27 = CPyStatics[703]; /* ('getLogger',) */
+    cpy_r_r27 = CPyStatics[707]; /* ('getLogger',) */
     cpy_r_r28 = CPyStatics[48]; /* 'dank_mids._logging' */
     cpy_r_r29 = CPyStatic__batch___globals;
     cpy_r_r30 = CPyImport_ImportFromMany(cpy_r_r28, cpy_r_r27, cpy_r_r27, cpy_r_r29);
@@ -4482,7 +4482,7 @@ CPyL3: ;
     CPyModule_dank_mids____logging = cpy_r_r30;
     CPy_INCREF(CPyModule_dank_mids____logging);
     CPy_DECREF(cpy_r_r30);
-    cpy_r_r31 = CPyStatics[704]; /* ('JSONRPCBatch', 'Multicall') */
+    cpy_r_r31 = CPyStatics[708]; /* ('JSONRPCBatch', 'Multicall') */
     cpy_r_r32 = CPyStatics[49]; /* 'dank_mids._requests' */
     cpy_r_r33 = CPyStatic__batch___globals;
     cpy_r_r34 = CPyImport_ImportFromMany(cpy_r_r32, cpy_r_r31, cpy_r_r31, cpy_r_r33);
@@ -4493,7 +4493,7 @@ CPyL3: ;
     CPyModule_dank_mids____requests = cpy_r_r34;
     CPy_INCREF(CPyModule_dank_mids____requests);
     CPy_DECREF(cpy_r_r34);
-    cpy_r_r35 = CPyStatics[705]; /* ('RawResponse',) */
+    cpy_r_r35 = CPyStatics[709]; /* ('RawResponse',) */
     cpy_r_r36 = CPyStatics[51]; /* 'dank_mids.helpers._codec' */
     cpy_r_r37 = CPyStatic__batch___globals;
     cpy_r_r38 = CPyImport_ImportFromMany(cpy_r_r36, cpy_r_r35, cpy_r_r35, cpy_r_r37);
@@ -4504,7 +4504,7 @@ CPyL3: ;
     CPyModule_dank_mids___helpers____codec = cpy_r_r38;
     CPy_INCREF(CPyModule_dank_mids___helpers____codec);
     CPy_DECREF(cpy_r_r38);
-    cpy_r_r39 = CPyStatics[706]; /* ('log_internal_error',) */
+    cpy_r_r39 = CPyStatics[710]; /* ('log_internal_error',) */
     cpy_r_r40 = CPyStatics[53]; /* 'dank_mids.helpers._errors' */
     cpy_r_r41 = CPyStatic__batch___globals;
     cpy_r_r42 = CPyImport_ImportFromMany(cpy_r_r40, cpy_r_r39, cpy_r_r39, cpy_r_r41);
@@ -4515,7 +4515,7 @@ CPyL3: ;
     CPyModule_dank_mids___helpers____errors = cpy_r_r42;
     CPy_INCREF(CPyModule_dank_mids___helpers____errors);
     CPy_DECREF(cpy_r_r42);
-    cpy_r_r43 = CPyStatics[707]; /* ('Multicalls',) */
+    cpy_r_r43 = CPyStatics[711]; /* ('Multicalls',) */
     cpy_r_r44 = CPyStatics[55]; /* 'dank_mids.types' */
     cpy_r_r45 = CPyStatic__batch___globals;
     cpy_r_r46 = CPyImport_ImportFromMany(cpy_r_r44, cpy_r_r43, cpy_r_r43, cpy_r_r45);
@@ -4616,7 +4616,7 @@ CPyL3: ;
     }
     cpy_r_r79 = CPyStatic__batch___globals;
     cpy_r_r80 = CPyStatics[58]; /* 'MIN_SIZE' */
-    cpy_r_r81 = CPyStatics[669]; /* 1 */
+    cpy_r_r81 = CPyStatics[671]; /* 1 */
     cpy_r_r82 = CPyDict_SetItem(cpy_r_r79, cpy_r_r80, cpy_r_r81);
     cpy_r_r83 = cpy_r_r82 >= 0;
     if (unlikely(!cpy_r_r83)) {
@@ -4625,7 +4625,7 @@ CPyL3: ;
     }
     cpy_r_r84 = CPyStatic__batch___globals;
     cpy_r_r85 = CPyStatics[59]; /* 'CHECK' */
-    cpy_r_r86 = CPyStatics[668]; /* 0 */
+    cpy_r_r86 = CPyStatics[670]; /* 0 */
     cpy_r_r87 = CPyDict_SetItem(cpy_r_r84, cpy_r_r85, cpy_r_r86);
     cpy_r_r88 = cpy_r_r87 >= 0;
     if (unlikely(!cpy_r_r88)) {
@@ -5010,7 +5010,7 @@ char CPyDef__demo_mode_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[708]; /* ('Any', 'Final', 'final') */
+    cpy_r_r5 = CPyStatics[712]; /* ('Any', 'Final', 'final') */
     cpy_r_r6 = CPyStatics[41]; /* 'typing' */
     cpy_r_r7 = CPyStatic__demo_mode___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
@@ -5021,7 +5021,7 @@ CPyL3: ;
     CPyModule_typing = cpy_r_r8;
     CPy_INCREF(CPyModule_typing);
     CPy_DECREF(cpy_r_r8);
-    cpy_r_r9 = CPyStatics[709]; /* ('ENVIRONMENT_VARIABLES',) */
+    cpy_r_r9 = CPyStatics[713]; /* ('ENVIRONMENT_VARIABLES',) */
     cpy_r_r10 = CPyStatics[71]; /* 'dank_mids' */
     cpy_r_r11 = CPyStatic__demo_mode___globals;
     cpy_r_r12 = CPyImport_ImportFromMany(cpy_r_r10, cpy_r_r9, cpy_r_r9, cpy_r_r11);
@@ -5032,7 +5032,7 @@ CPyL3: ;
     CPyModule_dank_mids = cpy_r_r12;
     CPy_INCREF(CPyModule_dank_mids);
     CPy_DECREF(cpy_r_r12);
-    cpy_r_r13 = CPyStatics[703]; /* ('getLogger',) */
+    cpy_r_r13 = CPyStatics[707]; /* ('getLogger',) */
     cpy_r_r14 = CPyStatics[48]; /* 'dank_mids._logging' */
     cpy_r_r15 = CPyStatic__demo_mode___globals;
     cpy_r_r16 = CPyImport_ImportFromMany(cpy_r_r14, cpy_r_r13, cpy_r_r13, cpy_r_r15);
@@ -5311,7 +5311,7 @@ char CPyDef__envs_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[710]; /* ('Final',) */
+    cpy_r_r5 = CPyStatics[714]; /* ('Final',) */
     cpy_r_r6 = CPyStatics[41]; /* 'typing' */
     cpy_r_r7 = CPyStatic__envs___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
@@ -5327,13 +5327,13 @@ CPyL3: ;
     cpy_r_r11 = (void *)&cpy_r_r10;
     int64_t cpy_r_r12[1] = {3};
     cpy_r_r13 = (void *)&cpy_r_r12;
-    cpy_r_r14 = CPyStatics[701]; /* (('a_sync', 'a_sync', 'a_sync'),) */
+    cpy_r_r14 = CPyStatics[705]; /* (('a_sync', 'a_sync', 'a_sync'),) */
     cpy_r_r15 = CPyStatic__envs___globals;
     cpy_r_r16 = CPyStatics[77]; /* 'dank_mids\\_envs.py' */
     cpy_r_r17 = CPyStatics[44]; /* '<module>' */
     cpy_r_r18 = CPyImport_ImportMany(cpy_r_r14, cpy_r_r11, cpy_r_r15, cpy_r_r16, cpy_r_r17, cpy_r_r13);
     if (!cpy_r_r18) goto CPyL36;
-    cpy_r_r19 = CPyStatics[711]; /* ('EnvVarFactory',) */
+    cpy_r_r19 = CPyStatics[715]; /* ('EnvVarFactory',) */
     cpy_r_r20 = CPyStatics[79]; /* 'typed_envs' */
     cpy_r_r21 = CPyStatic__envs___globals;
     cpy_r_r22 = CPyImport_ImportFromMany(cpy_r_r20, cpy_r_r19, cpy_r_r19, cpy_r_r21);
@@ -5344,7 +5344,7 @@ CPyL3: ;
     CPyModule_typed_envs = cpy_r_r22;
     CPy_INCREF(CPyModule_typed_envs);
     CPy_DECREF(cpy_r_r22);
-    cpy_r_r23 = CPyStatics[712]; /* ('BlockSemaphore',) */
+    cpy_r_r23 = CPyStatics[716]; /* ('BlockSemaphore',) */
     cpy_r_r24 = CPyStatics[81]; /* 'dank_mids.semaphores' */
     cpy_r_r25 = CPyStatic__envs___globals;
     cpy_r_r26 = CPyImport_ImportFromMany(cpy_r_r24, cpy_r_r23, cpy_r_r23, cpy_r_r25);
@@ -7273,12 +7273,12 @@ CPyL8: ;
         goto CPyL50;
     }
     if (!cpy_r_r7) goto CPyL11;
-    cpy_r_r8 = CPyStatics[662]; /* b'\x01' */
+    cpy_r_r8 = CPyStatics[664]; /* b'\x01' */
     CPy_INCREF(cpy_r_r8);
     cpy_r_r9 = cpy_r_r8;
     goto CPyL12;
 CPyL11: ;
-    cpy_r_r10 = CPyStatics[663]; /* b'\x00' */
+    cpy_r_r10 = CPyStatics[665]; /* b'\x00' */
     CPy_INCREF(cpy_r_r10);
     cpy_r_r9 = cpy_r_r10;
 CPyL12: ;
@@ -8137,7 +8137,7 @@ PyObject *CPyDef__eth_utils___remove_0x_prefix(PyObject *cpy_r_value) {
     if (!cpy_r_r1) goto CPyL6;
     cpy_r_r2 = (PyObject *)&_Py_NoneStruct;
     cpy_r_r3 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r4 = CPyStatics[670]; /* 2 */
+    cpy_r_r4 = CPyStatics[672]; /* 2 */
     cpy_r_r5 = PySlice_New(cpy_r_r4, cpy_r_r2, cpy_r_r3);
     if (unlikely(cpy_r_r5 == NULL)) {
         CPy_AddTraceback("dank_mids\\_eth_utils.py", "remove_0x_prefix", 158, CPyStatic__eth_utils___globals);
@@ -8286,13 +8286,13 @@ CPyL3: ;
     cpy_r_r7 = (void *)&cpy_r_r6;
     int64_t cpy_r_r8[1] = {8};
     cpy_r_r9 = (void *)&cpy_r_r8;
-    cpy_r_r10 = CPyStatics[714]; /* (('binascii', 'binascii', 'binascii'),) */
+    cpy_r_r10 = CPyStatics[718]; /* (('binascii', 'binascii', 'binascii'),) */
     cpy_r_r11 = CPyStatic__eth_utils___globals;
     cpy_r_r12 = CPyStatics[137]; /* 'dank_mids\\_eth_utils.py' */
     cpy_r_r13 = CPyStatics[44]; /* '<module>' */
     cpy_r_r14 = CPyImport_ImportMany(cpy_r_r10, cpy_r_r7, cpy_r_r11, cpy_r_r12, cpy_r_r13, cpy_r_r9);
     if (!cpy_r_r14) goto CPyL11;
-    cpy_r_r15 = CPyStatics[715]; /* ('Any', 'AnyStr', 'Final', 'Optional') */
+    cpy_r_r15 = CPyStatics[719]; /* ('Any', 'AnyStr', 'Final', 'Optional') */
     cpy_r_r16 = CPyStatics[41]; /* 'typing' */
     cpy_r_r17 = CPyStatic__eth_utils___globals;
     cpy_r_r18 = CPyImport_ImportFromMany(cpy_r_r16, cpy_r_r15, cpy_r_r15, cpy_r_r17);
@@ -8303,7 +8303,7 @@ CPyL3: ;
     CPyModule_typing = cpy_r_r18;
     CPy_INCREF(CPyModule_typing);
     CPy_DECREF(cpy_r_r18);
-    cpy_r_r19 = CPyStatics[716]; /* ('HexStr',) */
+    cpy_r_r19 = CPyStatics[720]; /* ('HexStr',) */
     cpy_r_r20 = CPyStatics[141]; /* 'eth_typing' */
     cpy_r_r21 = CPyStatic__eth_utils___globals;
     cpy_r_r22 = CPyImport_ImportFromMany(cpy_r_r20, cpy_r_r19, cpy_r_r19, cpy_r_r21);
@@ -9351,7 +9351,7 @@ CPyTagged CPyDef__exceptions___ExceedsMaxBatchSize___limit(PyObject *cpy_r_self)
         goto CPyL10;
     }
     CPy_DECREF(cpy_r_r6);
-    cpy_r_r13 = CPyStatics[669]; /* 1 */
+    cpy_r_r13 = CPyStatics[671]; /* 1 */
     cpy_r_r14 = PyObject_GetItem(cpy_r_r12, cpy_r_r13);
     CPy_DECREF(cpy_r_r12);
     if (unlikely(cpy_r_r14 == NULL)) {
@@ -9535,7 +9535,7 @@ CPyL3: ;
     }
     PyObject *cpy_r_r25[5] = {cpy_r_r16, cpy_r_r18, cpy_r_r20, cpy_r_r22, cpy_r_r24};
     cpy_r_r26 = (PyObject **)&cpy_r_r25;
-    cpy_r_r27 = CPyStatics[717]; /* ('status', 'message', 'headers') */
+    cpy_r_r27 = CPyStatics[721]; /* ('status', 'message', 'headers') */
     cpy_r_r28 = _PyObject_Vectorcall(cpy_r_r14, cpy_r_r26, 2, cpy_r_r27);
     CPy_DECREF(cpy_r_r14);
     if (unlikely(cpy_r_r28 == NULL)) {
@@ -9691,7 +9691,7 @@ CPyL3: ;
     cpy_r_r7 = 1 ? Py_True : Py_False;
     PyObject *cpy_r_r8[2] = {cpy_r_r4, cpy_r_r7};
     cpy_r_r9 = (PyObject **)&cpy_r_r8;
-    cpy_r_r10 = CPyStatics[718]; /* ('exc_info',) */
+    cpy_r_r10 = CPyStatics[722]; /* ('exc_info',) */
     cpy_r_r11 = _PyObject_Vectorcall(cpy_r_r6, cpy_r_r9, 1, cpy_r_r10);
     CPy_DECREF(cpy_r_r6);
     if (unlikely(cpy_r_r11 == NULL)) {
@@ -10493,13 +10493,13 @@ CPyL3: ;
     cpy_r_r8 = (void *)&cpy_r_r7;
     int64_t cpy_r_r9[2] = {1, 2};
     cpy_r_r10 = (void *)&cpy_r_r9;
-    cpy_r_r11 = CPyStatics[721]; /* (('logging', 'logging', 'logging'), ('re', 're', 're')) */
+    cpy_r_r11 = CPyStatics[725]; /* (('logging', 'logging', 'logging'), ('re', 're', 're')) */
     cpy_r_r12 = CPyStatic__exceptions___globals;
     cpy_r_r13 = CPyStatics[176]; /* 'dank_mids\\_exceptions.py' */
     cpy_r_r14 = CPyStatics[44]; /* '<module>' */
     cpy_r_r15 = CPyImport_ImportMany(cpy_r_r11, cpy_r_r8, cpy_r_r12, cpy_r_r13, cpy_r_r14, cpy_r_r10);
     if (!cpy_r_r15) goto CPyL88;
-    cpy_r_r16 = CPyStatics[722]; /* ('TYPE_CHECKING', 'Final', 'List', 'Tuple', 'Union',
+    cpy_r_r16 = CPyStatics[726]; /* ('TYPE_CHECKING', 'Final', 'List', 'Tuple', 'Union',
                                     'final') */
     cpy_r_r17 = CPyStatics[41]; /* 'typing' */
     cpy_r_r18 = CPyStatic__exceptions___globals;
@@ -10511,7 +10511,7 @@ CPyL3: ;
     CPyModule_typing = cpy_r_r19;
     CPy_INCREF(CPyModule_typing);
     CPy_DECREF(cpy_r_r19);
-    cpy_r_r20 = CPyStatics[723]; /* ('ClientResponseError',) */
+    cpy_r_r20 = CPyStatics[727]; /* ('ClientResponseError',) */
     cpy_r_r21 = CPyStatics[180]; /* 'aiohttp.client_exceptions' */
     cpy_r_r22 = CPyStatic__exceptions___globals;
     cpy_r_r23 = CPyImport_ImportFromMany(cpy_r_r21, cpy_r_r20, cpy_r_r20, cpy_r_r22);
@@ -11372,13 +11372,13 @@ CPyL3: ;
     cpy_r_r7 = (void *)&cpy_r_r6;
     int64_t cpy_r_r8[1] = {1};
     cpy_r_r9 = (void *)&cpy_r_r8;
-    cpy_r_r10 = CPyStatics[724]; /* (('logging', 'logging', 'logging'),) */
+    cpy_r_r10 = CPyStatics[728]; /* (('logging', 'logging', 'logging'),) */
     cpy_r_r11 = CPyStatic__logging___globals;
     cpy_r_r12 = CPyStatics[204]; /* 'dank_mids\\_logging.py' */
     cpy_r_r13 = CPyStatics[44]; /* '<module>' */
     cpy_r_r14 = CPyImport_ImportMany(cpy_r_r10, cpy_r_r7, cpy_r_r11, cpy_r_r12, cpy_r_r13, cpy_r_r9);
     if (!cpy_r_r14) goto CPyL16;
-    cpy_r_r15 = CPyStatics[710]; /* ('Final',) */
+    cpy_r_r15 = CPyStatics[714]; /* ('Final',) */
     cpy_r_r16 = CPyStatics[41]; /* 'typing' */
     cpy_r_r17 = CPyStatic__logging___globals;
     cpy_r_r18 = CPyImport_ImportFromMany(cpy_r_r16, cpy_r_r15, cpy_r_r15, cpy_r_r17);
@@ -11410,7 +11410,7 @@ CPyL3: ;
     CPyStatic__logging___CRITICAL = 100;
     cpy_r_r26 = CPyStatic__logging___globals;
     cpy_r_r27 = CPyStatics[205]; /* 'CRITICAL' */
-    cpy_r_r28 = CPyStatics[671]; /* 50 */
+    cpy_r_r28 = CPyStatics[673]; /* 50 */
     cpy_r_r29 = CPyDict_SetItem(cpy_r_r26, cpy_r_r27, cpy_r_r28);
     cpy_r_r30 = cpy_r_r29 >= 0;
     if (unlikely(!cpy_r_r30)) {
@@ -11420,7 +11420,7 @@ CPyL3: ;
     CPyStatic__logging___FATAL = 100;
     cpy_r_r31 = CPyStatic__logging___globals;
     cpy_r_r32 = CPyStatics[206]; /* 'FATAL' */
-    cpy_r_r33 = CPyStatics[671]; /* 50 */
+    cpy_r_r33 = CPyStatics[673]; /* 50 */
     cpy_r_r34 = CPyDict_SetItem(cpy_r_r31, cpy_r_r32, cpy_r_r33);
     cpy_r_r35 = cpy_r_r34 >= 0;
     if (unlikely(!cpy_r_r35)) {
@@ -11430,7 +11430,7 @@ CPyL3: ;
     CPyStatic__logging___ERROR = 80;
     cpy_r_r36 = CPyStatic__logging___globals;
     cpy_r_r37 = CPyStatics[207]; /* 'ERROR' */
-    cpy_r_r38 = CPyStatics[672]; /* 40 */
+    cpy_r_r38 = CPyStatics[674]; /* 40 */
     cpy_r_r39 = CPyDict_SetItem(cpy_r_r36, cpy_r_r37, cpy_r_r38);
     cpy_r_r40 = cpy_r_r39 >= 0;
     if (unlikely(!cpy_r_r40)) {
@@ -11440,7 +11440,7 @@ CPyL3: ;
     CPyStatic__logging___WARN = 60;
     cpy_r_r41 = CPyStatic__logging___globals;
     cpy_r_r42 = CPyStatics[208]; /* 'WARN' */
-    cpy_r_r43 = CPyStatics[673]; /* 30 */
+    cpy_r_r43 = CPyStatics[675]; /* 30 */
     cpy_r_r44 = CPyDict_SetItem(cpy_r_r41, cpy_r_r42, cpy_r_r43);
     cpy_r_r45 = cpy_r_r44 >= 0;
     if (unlikely(!cpy_r_r45)) {
@@ -11450,7 +11450,7 @@ CPyL3: ;
     CPyStatic__logging___WARNING = 60;
     cpy_r_r46 = CPyStatic__logging___globals;
     cpy_r_r47 = CPyStatics[209]; /* 'WARNING' */
-    cpy_r_r48 = CPyStatics[673]; /* 30 */
+    cpy_r_r48 = CPyStatics[675]; /* 30 */
     cpy_r_r49 = CPyDict_SetItem(cpy_r_r46, cpy_r_r47, cpy_r_r48);
     cpy_r_r50 = cpy_r_r49 >= 0;
     if (unlikely(!cpy_r_r50)) {
@@ -11460,7 +11460,7 @@ CPyL3: ;
     CPyStatic__logging___INFO = 40;
     cpy_r_r51 = CPyStatic__logging___globals;
     cpy_r_r52 = CPyStatics[210]; /* 'INFO' */
-    cpy_r_r53 = CPyStatics[674]; /* 20 */
+    cpy_r_r53 = CPyStatics[676]; /* 20 */
     cpy_r_r54 = CPyDict_SetItem(cpy_r_r51, cpy_r_r52, cpy_r_r53);
     cpy_r_r55 = cpy_r_r54 >= 0;
     if (unlikely(!cpy_r_r55)) {
@@ -11470,7 +11470,7 @@ CPyL3: ;
     CPyStatic__logging___DEBUG = 20;
     cpy_r_r56 = CPyStatic__logging___globals;
     cpy_r_r57 = CPyStatics[211]; /* 'DEBUG' */
-    cpy_r_r58 = CPyStatics[675]; /* 10 */
+    cpy_r_r58 = CPyStatics[677]; /* 10 */
     cpy_r_r59 = CPyDict_SetItem(cpy_r_r56, cpy_r_r57, cpy_r_r58);
     cpy_r_r60 = cpy_r_r59 >= 0;
     if (unlikely(!cpy_r_r60)) {
@@ -11480,7 +11480,7 @@ CPyL3: ;
     CPyStatic__logging___NOTSET = 0;
     cpy_r_r61 = CPyStatic__logging___globals;
     cpy_r_r62 = CPyStatics[212]; /* 'NOTSET' */
-    cpy_r_r63 = CPyStatics[668]; /* 0 */
+    cpy_r_r63 = CPyStatics[670]; /* 0 */
     cpy_r_r64 = CPyDict_SetItem(cpy_r_r61, cpy_r_r62, cpy_r_r63);
     cpy_r_r65 = cpy_r_r64 >= 0;
     if (unlikely(!cpy_r_r65)) {
@@ -11787,7 +11787,7 @@ char CPyDef__uid___UIDGenerator_____init__(PyObject *cpy_r_self) {
     }
     PyObject *cpy_r_r4[1] = {cpy_r_r0};
     cpy_r_r5 = (PyObject **)&cpy_r_r4;
-    cpy_r_r6 = CPyStatics[695]; /* ('name',) */
+    cpy_r_r6 = CPyStatics[699]; /* ('name',) */
     cpy_r_r7 = _PyObject_Vectorcall(cpy_r_r3, cpy_r_r5, 0, cpy_r_r6);
     CPy_DECREF(cpy_r_r3);
     if (unlikely(cpy_r_r7 == NULL)) {
@@ -12052,7 +12052,7 @@ char CPyDef__uid_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[725]; /* ('AlertingRLock',) */
+    cpy_r_r5 = CPyStatics[729]; /* ('AlertingRLock',) */
     cpy_r_r6 = CPyStatics[216]; /* 'dank_mids.helpers._lock' */
     cpy_r_r7 = CPyStatic__uid___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
@@ -12300,7 +12300,7 @@ char CPyDef_brownie_patch_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[726]; /* ('suppress',) */
+    cpy_r_r5 = CPyStatics[730]; /* ('suppress',) */
     cpy_r_r6 = CPyStatics[222]; /* 'contextlib' */
     cpy_r_r7 = CPyStatic_brownie_patch___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
@@ -12311,7 +12311,7 @@ CPyL3: ;
     CPyModule_contextlib = cpy_r_r8;
     CPy_INCREF(CPyModule_contextlib);
     CPy_DECREF(cpy_r_r8);
-    cpy_r_r9 = CPyStatics[727]; /* ('AsyncEth',) */
+    cpy_r_r9 = CPyStatics[731]; /* ('AsyncEth',) */
     cpy_r_r10 = CPyStatics[224]; /* 'web3.eth' */
     cpy_r_r11 = CPyStatic_brownie_patch___globals;
     cpy_r_r12 = CPyImport_ImportFromMany(cpy_r_r10, cpy_r_r9, cpy_r_r9, cpy_r_r11);
@@ -12322,7 +12322,7 @@ CPyL3: ;
     CPyModule_web3___eth = cpy_r_r12;
     CPy_INCREF(CPyModule_web3___eth);
     CPy_DECREF(cpy_r_r12);
-    cpy_r_r13 = CPyStatics[728]; /* ('setup_dank_w3_from_sync',) */
+    cpy_r_r13 = CPyStatics[732]; /* ('setup_dank_w3_from_sync',) */
     cpy_r_r14 = CPyStatics[226]; /* 'dank_mids.helpers' */
     cpy_r_r15 = CPyStatic_brownie_patch___globals;
     cpy_r_r16 = CPyImport_ImportFromMany(cpy_r_r14, cpy_r_r13, cpy_r_r13, cpy_r_r15);
@@ -12333,7 +12333,7 @@ CPyL3: ;
     CPyModule_dank_mids___helpers = cpy_r_r16;
     CPy_INCREF(CPyModule_dank_mids___helpers);
     CPy_DECREF(cpy_r_r16);
-    cpy_r_r17 = CPyStatics[729]; /* ('DankContractCall', 'DankContractMethod',
+    cpy_r_r17 = CPyStatics[733]; /* ('DankContractCall', 'DankContractMethod',
                                     'DankContractTx', 'DankOverloadedMethod') */
     cpy_r_r18 = CPyStatics[231]; /* 'dank_mids.brownie_patch.types' */
     cpy_r_r19 = CPyStatic_brownie_patch___globals;
@@ -12376,7 +12376,7 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\__init__.py", "<module>", 13, CPyStatic_brownie_patch___globals);
         goto CPyL56;
     }
-    cpy_r_r35 = CPyStatics[730]; /* ('DankEth',) */
+    cpy_r_r35 = CPyStatics[734]; /* ('DankEth',) */
     cpy_r_r36 = CPyStatics[234]; /* 'dank_mids.eth' */
     cpy_r_r37 = CPyStatic_brownie_patch___globals;
     cpy_r_r38 = CPyImport_ImportFromMany(cpy_r_r36, cpy_r_r35, cpy_r_r35, cpy_r_r37);
@@ -12387,7 +12387,7 @@ CPyL3: ;
     CPyModule_dank_mids___eth = cpy_r_r38;
     CPy_INCREF(CPyModule_dank_mids___eth);
     CPy_DECREF(cpy_r_r38);
-    cpy_r_r39 = CPyStatics[731]; /* ('DankWeb3',) */
+    cpy_r_r39 = CPyStatics[735]; /* ('DankWeb3',) */
     cpy_r_r40 = CPyStatics[236]; /* 'dank_mids.helpers._helpers' */
     cpy_r_r41 = CPyStatic_brownie_patch___globals;
     cpy_r_r42 = CPyImport_ImportFromMany(cpy_r_r40, cpy_r_r39, cpy_r_r39, cpy_r_r41);
@@ -12450,7 +12450,7 @@ CPyL3: ;
         goto CPyL60;
 CPyL17: ;
     cpy_r_r64 = 1;
-    cpy_r_r65 = CPyStatics[732]; /* ('network', 'web3') */
+    cpy_r_r65 = CPyStatics[736]; /* ('network', 'web3') */
     cpy_r_r66 = CPyStatics[241]; /* 'brownie' */
     cpy_r_r67 = CPyStatic_brownie_patch___globals;
     cpy_r_r68 = CPyImport_ImportFromMany(cpy_r_r66, cpy_r_r65, cpy_r_r65, cpy_r_r67);
@@ -12484,7 +12484,7 @@ CPyL17: ;
     }
     cpy_r_r76 = cpy_r_r74;
     if (!cpy_r_r76) goto CPyL43;
-    cpy_r_r77 = CPyStatics[733]; /* ('Contract', 'patch_contract') */
+    cpy_r_r77 = CPyStatics[737]; /* ('Contract', 'patch_contract') */
     cpy_r_r78 = CPyStatics[245]; /* 'dank_mids.brownie_patch.contract' */
     cpy_r_r79 = CPyStatic_brownie_patch___globals;
     cpy_r_r80 = CPyImport_ImportFromMany(cpy_r_r78, cpy_r_r77, cpy_r_r77, cpy_r_r79);
@@ -12965,7 +12965,15 @@ _abi___FunctionABI_set_input_sig(dank_mids___brownie_patch____abi___FunctionABIO
     if (self->_input_sig != NULL) {
         CPy_DECREF(self->_input_sig);
     }
-    PyObject *tmp = value;
+    PyObject *tmp;
+    if (likely(PyUnicode_Check(value)))
+        tmp = value;
+    else {
+        CPy_TypeError("str", value); 
+        tmp = NULL;
+    }
+    if (!tmp)
+        return -1;
     CPy_INCREF(tmp);
     self->_input_sig = tmp;
     return 0;
@@ -12995,12 +13003,23 @@ _abi___FunctionABI_set_signature(dank_mids___brownie_patch____abi___FunctionABIO
     if (self->_signature != NULL) {
         CPy_DECREF(self->_signature);
     }
-    PyObject *tmp = value;
+    PyObject *tmp;
+    if (likely(PyUnicode_Check(value)))
+        tmp = value;
+    else {
+        CPy_TypeError("str", value); 
+        tmp = NULL;
+    }
+    if (!tmp)
+        return -1;
     CPy_INCREF(tmp);
     self->_signature = tmp;
     return 0;
 }
 static PyMethodDef _abimodule_methods[] = {
+    {"get_type_strings", (PyCFunction)CPyPy__abi___get_type_strings, METH_FASTCALL | METH_KEYWORDS, NULL /* docstring */},
+    {"build_function_signature", (PyCFunction)CPyPy__abi___build_function_signature, METH_FASTCALL | METH_KEYWORDS, NULL /* docstring */},
+    {"build_function_selector", (PyCFunction)CPyPy__abi___build_function_selector, METH_FASTCALL | METH_KEYWORDS, NULL /* docstring */},
     {NULL, NULL, 0, NULL}
 };
 
@@ -13039,10 +13058,8 @@ PyObject *CPyInit_dank_mids___brownie_patch____abi(void)
     Py_CLEAR(modname);
     CPy_XDECREF(CPyStatic__abi____singletons);
     CPyStatic__abi____singletons = NULL;
-    CPy_XDECREF(CPyStatic__abi___build_function_selector);
-    CPyStatic__abi___build_function_selector = NULL;
-    CPy_XDECREF(CPyStatic__abi___build_function_signature);
-    CPyStatic__abi___build_function_signature = NULL;
+    CPy_XDECREF(CPyStatic__abi___keccak);
+    CPyStatic__abi___keccak = NULL;
     CPy_XDECREF(CPyStatic__abi____make_hashable);
     CPyStatic__abi____make_hashable = NULL;
     Py_CLEAR(CPyType__abi___FunctionABI);
@@ -13053,15 +13070,9 @@ char CPyDef__abi___FunctionABI_____init__(PyObject *cpy_r_self, PyObject *cpy_r_
     char cpy_r_r0;
     PyObject *cpy_r_r1;
     char cpy_r_r2;
-    PyObject **cpy_r_r4;
-    PyObject *cpy_r_r5;
-    char cpy_r_r6;
-    PyObject *cpy_r_r7;
-    char cpy_r_r8;
-    PyObject **cpy_r_r10;
-    PyObject *cpy_r_r11;
-    char cpy_r_r12;
-    char cpy_r_r13;
+    PyObject *cpy_r_r3;
+    char cpy_r_r4;
+    char cpy_r_r5;
     CPy_INCREF(cpy_r_abi);
     if (((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_abi != NULL) {
         CPy_DECREF(((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_abi);
@@ -13069,65 +13080,41 @@ char CPyDef__abi___FunctionABI_____init__(PyObject *cpy_r_self, PyObject *cpy_r_
     ((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_abi = cpy_r_abi;
     cpy_r_r0 = 1;
     if (unlikely(!cpy_r_r0)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 45, CPyStatic__abi___globals);
-        goto CPyL12;
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 44, CPyStatic__abi___globals);
+        goto CPyL6;
     }
-    cpy_r_r1 = CPyStatic__abi___build_function_signature;
-    if (likely(cpy_r_r1 != NULL)) goto CPyL4;
-    PyErr_SetString(PyExc_NameError, "value for final name \"build_function_signature\" was not set");
-    cpy_r_r2 = 0;
-    if (unlikely(!cpy_r_r2)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 51, CPyStatic__abi___globals);
-        goto CPyL12;
-    }
-    CPy_Unreachable();
-CPyL4: ;
-    PyObject *cpy_r_r3[1] = {cpy_r_abi};
-    cpy_r_r4 = (PyObject **)&cpy_r_r3;
-    cpy_r_r5 = _PyObject_Vectorcall(cpy_r_r1, cpy_r_r4, 1, 0);
-    if (unlikely(cpy_r_r5 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 51, CPyStatic__abi___globals);
-        goto CPyL12;
+    cpy_r_r1 = CPyDef__abi___build_function_signature(cpy_r_abi);
+    if (unlikely(cpy_r_r1 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 50, CPyStatic__abi___globals);
+        goto CPyL6;
     }
     if (((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_input_sig != NULL) {
         CPy_DECREF(((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_input_sig);
     }
-    ((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_input_sig = cpy_r_r5;
-    cpy_r_r6 = 1;
-    if (unlikely(!cpy_r_r6)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 51, CPyStatic__abi___globals);
-        goto CPyL12;
+    ((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_input_sig = cpy_r_r1;
+    cpy_r_r2 = 1;
+    if (unlikely(!cpy_r_r2)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 50, CPyStatic__abi___globals);
+        goto CPyL6;
     }
-    cpy_r_r7 = CPyStatic__abi___build_function_selector;
-    if (likely(cpy_r_r7 != NULL)) goto CPyL9;
-    PyErr_SetString(PyExc_NameError, "value for final name \"build_function_selector\" was not set");
-    cpy_r_r8 = 0;
-    if (unlikely(!cpy_r_r8)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 57, CPyStatic__abi___globals);
-        goto CPyL12;
-    }
-    CPy_Unreachable();
-CPyL9: ;
-    PyObject *cpy_r_r9[1] = {cpy_r_abi};
-    cpy_r_r10 = (PyObject **)&cpy_r_r9;
-    cpy_r_r11 = _PyObject_Vectorcall(cpy_r_r7, cpy_r_r10, 1, 0);
-    if (unlikely(cpy_r_r11 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 57, CPyStatic__abi___globals);
-        goto CPyL12;
+    cpy_r_r3 = CPyDef__abi___build_function_selector(cpy_r_abi);
+    if (unlikely(cpy_r_r3 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 56, CPyStatic__abi___globals);
+        goto CPyL6;
     }
     if (((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_signature != NULL) {
         CPy_DECREF(((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_signature);
     }
-    ((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_signature = cpy_r_r11;
-    cpy_r_r12 = 1;
-    if (unlikely(!cpy_r_r12)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 57, CPyStatic__abi___globals);
-        goto CPyL12;
+    ((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_signature = cpy_r_r3;
+    cpy_r_r4 = 1;
+    if (unlikely(!cpy_r_r4)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 56, CPyStatic__abi___globals);
+        goto CPyL6;
     }
     return 1;
-CPyL12: ;
-    cpy_r_r13 = 2;
-    return cpy_r_r13;
+CPyL6: ;
+    cpy_r_r5 = 2;
+    return cpy_r_r5;
 }
 
 PyObject *CPyPy__abi___FunctionABI_____init__(PyObject *self, PyObject *args, PyObject *kw) {
@@ -13155,7 +13142,7 @@ PyObject *CPyPy__abi___FunctionABI_____init__(PyObject *self, PyObject *args, Py
     return retbox;
 fail: ;
     CPy_DECREF(obj_abi);
-    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 37, CPyStatic__abi___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 36, CPyStatic__abi___globals);
     return NULL;
 }
 
@@ -13211,7 +13198,7 @@ PyObject *CPyDef__abi___FunctionABI___singleton(PyObject *cpy_r_abi) {
     cpy_r_r1 = CPyStatics[247]; /* 'sorted' */
     cpy_r_r2 = CPyObject_GetAttr(cpy_r_r0, cpy_r_r1);
     if (unlikely(cpy_r_r2 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
         goto CPyL37;
     }
     PyObject *cpy_r_r3[1] = {cpy_r_abi};
@@ -13219,20 +13206,20 @@ PyObject *CPyDef__abi___FunctionABI___singleton(PyObject *cpy_r_abi) {
     cpy_r_r5 = _PyObject_Vectorcall(cpy_r_r2, cpy_r_r4, 1, 0);
     CPy_DECREF(cpy_r_r2);
     if (unlikely(cpy_r_r5 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
         goto CPyL37;
     }
     if (likely(PyList_Check(cpy_r_r5)))
         cpy_r_r6 = cpy_r_r5;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals, "list", cpy_r_r5);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals, "list", cpy_r_r5);
         goto CPyL37;
     }
     cpy_r_r7 = (CPyPtr)&((PyVarObject *)cpy_r_r6)->ob_size;
     cpy_r_r8 = *(int64_t *)cpy_r_r7;
     cpy_r_r9 = PyTuple_New(cpy_r_r8);
     if (unlikely(cpy_r_r9 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
         goto CPyL38;
     }
     cpy_r_r10 = 0;
@@ -13246,12 +13233,12 @@ CPyL5: ;
     if (likely(PyUnicode_Check(cpy_r_r15)))
         cpy_r_r16 = cpy_r_r15;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals, "str", cpy_r_r15);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals, "str", cpy_r_r15);
         goto CPyL40;
     }
     cpy_r_r17 = CPyDict_GetItem(cpy_r_abi, cpy_r_r16);
     if (unlikely(cpy_r_r17 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
         goto CPyL41;
     }
     cpy_r_r18 = CPyStatic__abi____make_hashable;
@@ -13263,7 +13250,7 @@ CPyL9: ;
     PyErr_SetString(PyExc_NameError, "value for final name \"_make_hashable\" was not set");
     cpy_r_r19 = 0;
     if (unlikely(!cpy_r_r19)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
         goto CPyL37;
     }
     CPy_Unreachable();
@@ -13272,7 +13259,7 @@ CPyL11: ;
     cpy_r_r21 = (PyObject **)&cpy_r_r20;
     cpy_r_r22 = _PyObject_Vectorcall(cpy_r_r18, cpy_r_r21, 1, 0);
     if (unlikely(cpy_r_r22 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
         goto CPyL43;
     }
     CPy_DECREF(cpy_r_r17);
@@ -13287,7 +13274,7 @@ CPyL11: ;
     PyTuple_SET_ITEM(cpy_r_r24, 1, __tmp31);
     cpy_r_r25 = CPySequenceTuple_SetItemUnsafe(cpy_r_r9, cpy_r_r10, cpy_r_r24);
     if (unlikely(!cpy_r_r25)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
         goto CPyL40;
     }
     cpy_r_r26 = cpy_r_r10 + 2;
@@ -13299,7 +13286,7 @@ CPyL14: ;
     PyErr_SetString(PyExc_NameError, "value for final name \"_singletons\" was not set");
     cpy_r_r28 = 0;
     if (unlikely(!cpy_r_r28)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 73, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 72, CPyStatic__abi___globals);
         goto CPyL21;
     } else
         goto CPyL44;
@@ -13308,7 +13295,7 @@ CPyL17: ;
 CPyL18: ;
     cpy_r_r29 = PyObject_GetItem(cpy_r_r27, cpy_r_r9);
     if (unlikely(cpy_r_r29 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 73, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 72, CPyStatic__abi___globals);
         goto CPyL21;
     }
     if (likely(Py_TYPE(cpy_r_r29) == CPyType__abi___FunctionABI))
@@ -13318,7 +13305,7 @@ CPyL18: ;
         cpy_r_r30 = NULL;
     }
     if (unlikely(cpy_r_r30 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 73, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 72, CPyStatic__abi___globals);
         goto CPyL21;
     } else
         goto CPyL45;
@@ -13330,7 +13317,7 @@ CPyL21: ;
     cpy_r_r33 = CPyStatics[248]; /* 'KeyError' */
     cpy_r_r34 = CPyObject_GetAttr(cpy_r_r32, cpy_r_r33);
     if (unlikely(cpy_r_r34 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 73, CPyStatic__abi___globals);
         goto CPyL46;
     }
     cpy_r_r35 = CPy_ExceptionMatches(cpy_r_r34);
@@ -13339,31 +13326,31 @@ CPyL21: ;
     cpy_r_r36 = (PyObject *)CPyType__abi___FunctionABI;
     cpy_r_r37 = PyDict_New();
     if (unlikely(cpy_r_r37 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
         goto CPyL46;
     }
     cpy_r_r38 = CPyDict_UpdateInDisplay(cpy_r_r37, cpy_r_abi);
     cpy_r_r39 = cpy_r_r38 >= 0;
     if (unlikely(!cpy_r_r39)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
         goto CPyL48;
     }
     cpy_r_r40 = PyTuple_Pack(0);
     if (unlikely(cpy_r_r40 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
         goto CPyL48;
     }
     cpy_r_r41 = PyObject_Call(cpy_r_r36, cpy_r_r40, cpy_r_r37);
     CPy_DecRef(cpy_r_r40);
     CPy_DecRef(cpy_r_r37);
     if (unlikely(cpy_r_r41 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
         goto CPyL46;
     }
     if (likely(Py_TYPE(cpy_r_r41) == CPyType__abi___FunctionABI))
         cpy_r_r42 = cpy_r_r41;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals, "dank_mids.brownie_patch._abi.FunctionABI", cpy_r_r41);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals, "dank_mids.brownie_patch._abi.FunctionABI", cpy_r_r41);
         goto CPyL46;
     }
     CPy_INCREF(cpy_r_r42);
@@ -13376,7 +13363,7 @@ CPyL29: ;
     PyErr_SetString(PyExc_NameError, "value for final name \"_singletons\" was not set");
     cpy_r_r44 = 0;
     if (unlikely(!cpy_r_r44)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
         goto CPyL35;
     } else
         goto CPyL50;
@@ -13388,7 +13375,7 @@ CPyL31: ;
     CPy_DecRef(cpy_r_r42);
     cpy_r_r46 = cpy_r_r45 >= 0;
     if (unlikely(!cpy_r_r46)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
         goto CPyL51;
     }
     CPy_RestoreExcInfo(cpy_r_r31);
@@ -13491,7 +13478,650 @@ PyObject *CPyPy__abi___FunctionABI___singleton(PyObject *self, PyObject *const *
     return retval;
 fail: ;
     CPy_DECREF(obj_abi);
-    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 64, CPyStatic__abi___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 63, CPyStatic__abi___globals);
+    return NULL;
+}
+
+PyObject *CPyDef__abi___get_type_strings(PyObject *cpy_r_abi_params, PyObject *cpy_r_substitutions) {
+    PyObject *cpy_r_r0;
+    PyObject *cpy_r_r1;
+    PyObject *cpy_r_r2;
+    char cpy_r_r3;
+    PyObject *cpy_r_r4;
+    CPyTagged cpy_r_r5;
+    CPyPtr cpy_r_r6;
+    int64_t cpy_r_r7;
+    CPyTagged cpy_r_r8;
+    char cpy_r_r9;
+    PyObject *cpy_r_r10;
+    PyObject *cpy_r_r11;
+    PyObject *cpy_r_r12;
+    PyObject *cpy_r_r13;
+    PyObject *cpy_r_r14;
+    PyObject *cpy_r_type_str;
+    PyObject *cpy_r_r15;
+    char cpy_r_r16;
+    PyObject *cpy_r_r17;
+    PyObject *cpy_r_r18;
+    PyObject *cpy_r_r19;
+    PyObject *cpy_r_r20;
+    PyObject *cpy_r_r21;
+    PyObject *cpy_r_r22;
+    PyObject *cpy_r_r23;
+    PyObject *cpy_r_r24;
+    PyObject *cpy_r_r25;
+    PyObject *cpy_r_r26;
+    PyObject *cpy_r_r27;
+    PyObject *cpy_r_r28;
+    PyObject *cpy_r_r29;
+    PyObject *cpy_r_r30;
+    PyObject *cpy_r_r31;
+    PyObject *cpy_r_r32;
+    PyObject *cpy_r_r33;
+    PyObject *cpy_r_r34;
+    int32_t cpy_r_r35;
+    char cpy_r_r36;
+    PyObject *cpy_r_r37;
+    CPyTagged cpy_r_r38;
+    int64_t cpy_r_r39;
+    CPyTagged cpy_r_r40;
+    PyObject *cpy_r_r41;
+    tuple_T4CIOO cpy_r_r42;
+    CPyTagged cpy_r_r43;
+    char cpy_r_r44;
+    PyObject *cpy_r_r45;
+    PyObject *cpy_r_r46;
+    PyObject *cpy_r_r47;
+    char cpy_r_r48;
+    PyObject *cpy_r_r49;
+    PyObject *cpy_r_r50;
+    PyObject *cpy_r_r51;
+    char cpy_r_r52;
+    char cpy_r_r53;
+    int32_t cpy_r_r54;
+    char cpy_r_r55;
+    CPyTagged cpy_r_r56;
+    PyObject *cpy_r_r57;
+    if (cpy_r_substitutions != NULL) goto CPyL37;
+    cpy_r_r0 = Py_None;
+    CPy_INCREF(cpy_r_r0);
+    cpy_r_substitutions = cpy_r_r0;
+CPyL2: ;
+    cpy_r_r1 = PyList_New(0);
+    if (unlikely(cpy_r_r1 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 83, CPyStatic__abi___globals);
+        goto CPyL38;
+    }
+    cpy_r_r2 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r3 = cpy_r_substitutions == cpy_r_r2;
+    if (cpy_r_r3) {
+        goto CPyL39;
+    } else
+        goto CPyL6;
+CPyL4: ;
+    cpy_r_r4 = PyDict_New();
+    if (unlikely(cpy_r_r4 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 85, CPyStatic__abi___globals);
+        goto CPyL40;
+    }
+    cpy_r_substitutions = cpy_r_r4;
+CPyL6: ;
+    cpy_r_r5 = 0;
+CPyL7: ;
+    cpy_r_r6 = (CPyPtr)&((PyVarObject *)cpy_r_abi_params)->ob_size;
+    cpy_r_r7 = *(int64_t *)cpy_r_r6;
+    cpy_r_r8 = cpy_r_r7 << 1;
+    cpy_r_r9 = (Py_ssize_t)cpy_r_r5 < (Py_ssize_t)cpy_r_r8;
+    if (!cpy_r_r9) goto CPyL41;
+    cpy_r_r10 = CPyList_GetItemUnsafe(cpy_r_abi_params, cpy_r_r5);
+    if (likely(PyDict_Check(cpy_r_r10)))
+        cpy_r_r11 = cpy_r_r10;
+    else {
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 87, CPyStatic__abi___globals, "dict", cpy_r_r10);
+        goto CPyL42;
+    }
+    cpy_r_r12 = CPyStatics[249]; /* 'type' */
+    cpy_r_r13 = CPyDict_GetItem(cpy_r_r11, cpy_r_r12);
+    if (unlikely(cpy_r_r13 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 88, CPyStatic__abi___globals);
+        goto CPyL43;
+    }
+    if (likely(PyUnicode_Check(cpy_r_r13)))
+        cpy_r_r14 = cpy_r_r13;
+    else {
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 88, CPyStatic__abi___globals, "str", cpy_r_r13);
+        goto CPyL43;
+    }
+    cpy_r_type_str = cpy_r_r14;
+    cpy_r_r15 = CPyStatics[250]; /* 'tuple' */
+    cpy_r_r16 = CPyStr_Startswith(cpy_r_type_str, cpy_r_r15);
+    if (cpy_r_r16) {
+        goto CPyL44;
+    } else
+        goto CPyL45;
+CPyL12: ;
+    cpy_r_r17 = CPyStatics[251]; /* 'components' */
+    cpy_r_r18 = CPyDict_GetItem(cpy_r_r11, cpy_r_r17);
+    if (unlikely(cpy_r_r18 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 90, CPyStatic__abi___globals);
+        goto CPyL43;
+    }
+    CPy_INCREF(cpy_r_substitutions);
+    if (likely(cpy_r_substitutions != Py_None))
+        cpy_r_r19 = cpy_r_substitutions;
+    else {
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 90, CPyStatic__abi___globals, "dict", cpy_r_substitutions);
+        goto CPyL46;
+    }
+    if (likely(PyList_Check(cpy_r_r18)))
+        cpy_r_r20 = cpy_r_r18;
+    else {
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 90, CPyStatic__abi___globals, "list", cpy_r_r18);
+        goto CPyL47;
+    }
+    cpy_r_r21 = CPyDef__abi___get_type_strings(cpy_r_r20, cpy_r_r19);
+    CPy_DECREF(cpy_r_r20);
+    CPy_DECREF(cpy_r_r19);
+    if (unlikely(cpy_r_r21 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 90, CPyStatic__abi___globals);
+        goto CPyL43;
+    }
+    cpy_r_r22 = CPyStatics[249]; /* 'type' */
+    cpy_r_r23 = CPyDict_GetItem(cpy_r_r11, cpy_r_r22);
+    CPy_DECREF(cpy_r_r11);
+    if (unlikely(cpy_r_r23 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals);
+        goto CPyL48;
+    }
+    cpy_r_r24 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r25 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r26 = CPyStatics[678]; /* 5 */
+    cpy_r_r27 = PySlice_New(cpy_r_r26, cpy_r_r24, cpy_r_r25);
+    if (unlikely(cpy_r_r27 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals);
+        goto CPyL49;
+    }
+    cpy_r_r28 = PyObject_GetItem(cpy_r_r23, cpy_r_r27);
+    CPy_DECREF(cpy_r_r23);
+    CPy_DECREF(cpy_r_r27);
+    if (unlikely(cpy_r_r28 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals);
+        goto CPyL48;
+    }
+    cpy_r_r29 = CPyStatics[252]; /* '(' */
+    cpy_r_r30 = CPyStatics[253]; /* ',' */
+    cpy_r_r31 = PyUnicode_Join(cpy_r_r30, cpy_r_r21);
+    CPy_DECREF(cpy_r_r21);
+    if (unlikely(cpy_r_r31 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
+        goto CPyL50;
+    }
+    cpy_r_r32 = CPyStatics[254]; /* ')' */
+    cpy_r_r33 = PyObject_Str(cpy_r_r28);
+    CPy_DECREF(cpy_r_r28);
+    if (unlikely(cpy_r_r33 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
+        goto CPyL51;
+    }
+    cpy_r_r34 = CPyStr_Build(4, cpy_r_r29, cpy_r_r31, cpy_r_r32, cpy_r_r33);
+    CPy_DECREF(cpy_r_r31);
+    CPy_DECREF(cpy_r_r33);
+    if (unlikely(cpy_r_r34 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
+        goto CPyL42;
+    }
+    cpy_r_r35 = PyList_Append(cpy_r_r1, cpy_r_r34);
+    CPy_DECREF(cpy_r_r34);
+    cpy_r_r36 = cpy_r_r35 >= 0;
+    if (unlikely(!cpy_r_r36)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
+        goto CPyL42;
+    } else
+        goto CPyL34;
+CPyL23: ;
+    CPy_INCREF(cpy_r_substitutions);
+    if (likely(cpy_r_substitutions != Py_None))
+        cpy_r_r37 = cpy_r_substitutions;
+    else {
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals, "dict", cpy_r_substitutions);
+        goto CPyL52;
+    }
+    cpy_r_r38 = 0;
+    cpy_r_r39 = PyDict_Size(cpy_r_r37);
+    cpy_r_r40 = cpy_r_r39 << 1;
+    cpy_r_r41 = CPyDict_GetItemsIter(cpy_r_r37);
+    if (unlikely(cpy_r_r41 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals);
+        goto CPyL53;
+    }
+CPyL25: ;
+    cpy_r_r42 = CPyDict_NextItem(cpy_r_r41, cpy_r_r38);
+    cpy_r_r43 = cpy_r_r42.f1;
+    cpy_r_r38 = cpy_r_r43;
+    cpy_r_r44 = cpy_r_r42.f0;
+    if (!cpy_r_r44) goto CPyL54;
+    cpy_r_r45 = cpy_r_r42.f2;
+    CPy_INCREF(cpy_r_r45);
+    cpy_r_r46 = cpy_r_r42.f3;
+    CPy_INCREF(cpy_r_r46);
+    CPy_DECREF(cpy_r_r42.f2);
+    CPy_DECREF(cpy_r_r42.f3);
+    if (likely(PyUnicode_Check(cpy_r_r45)))
+        cpy_r_r47 = cpy_r_r45;
+    else {
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals, "str", cpy_r_r45);
+        goto CPyL55;
+    }
+    cpy_r_r48 = CPyStr_Startswith(cpy_r_type_str, cpy_r_r47);
+    if (!cpy_r_r48) goto CPyL56;
+    cpy_r_r49 = CPyStatics[255]; /* 'replace' */
+    cpy_r_r50 = CPyObject_CallMethodObjArgs(cpy_r_type_str, cpy_r_r49, cpy_r_r47, cpy_r_r46, NULL);
+    CPy_DECREF(cpy_r_type_str);
+    CPy_DECREF(cpy_r_r47);
+    CPy_DECREF(cpy_r_r46);
+    if (unlikely(cpy_r_r50 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 96, CPyStatic__abi___globals);
+        goto CPyL57;
+    }
+    if (likely(PyUnicode_Check(cpy_r_r50)))
+        cpy_r_r51 = cpy_r_r50;
+    else {
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 96, CPyStatic__abi___globals, "str", cpy_r_r50);
+        goto CPyL57;
+    }
+    cpy_r_type_str = cpy_r_r51;
+CPyL31: ;
+    cpy_r_r52 = CPyDict_CheckSize(cpy_r_r37, cpy_r_r40);
+    if (unlikely(!cpy_r_r52)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals);
+        goto CPyL58;
+    } else
+        goto CPyL25;
+CPyL32: ;
+    cpy_r_r53 = CPy_NoErrOccured();
+    if (unlikely(!cpy_r_r53)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals);
+        goto CPyL52;
+    }
+    cpy_r_r54 = PyList_Append(cpy_r_r1, cpy_r_type_str);
+    CPy_DECREF(cpy_r_type_str);
+    cpy_r_r55 = cpy_r_r54 >= 0;
+    if (unlikely(!cpy_r_r55)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 97, CPyStatic__abi___globals);
+        goto CPyL42;
+    }
+CPyL34: ;
+    cpy_r_r56 = cpy_r_r5 + 2;
+    cpy_r_r5 = cpy_r_r56;
+    goto CPyL7;
+CPyL35: ;
+    return cpy_r_r1;
+CPyL36: ;
+    cpy_r_r57 = NULL;
+    return cpy_r_r57;
+CPyL37: ;
+    CPy_INCREF(cpy_r_substitutions);
+    goto CPyL2;
+CPyL38: ;
+    CPy_DecRef(cpy_r_substitutions);
+    goto CPyL36;
+CPyL39: ;
+    CPy_DECREF(cpy_r_substitutions);
+    goto CPyL4;
+CPyL40: ;
+    CPy_DecRef(cpy_r_r1);
+    goto CPyL36;
+CPyL41: ;
+    CPy_DECREF(cpy_r_substitutions);
+    goto CPyL35;
+CPyL42: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    goto CPyL36;
+CPyL43: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_r11);
+    goto CPyL36;
+CPyL44: ;
+    CPy_DECREF(cpy_r_type_str);
+    goto CPyL12;
+CPyL45: ;
+    CPy_DECREF(cpy_r_r11);
+    goto CPyL23;
+CPyL46: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_r11);
+    CPy_DecRef(cpy_r_r18);
+    goto CPyL36;
+CPyL47: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_r11);
+    CPy_DecRef(cpy_r_r19);
+    goto CPyL36;
+CPyL48: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_r21);
+    goto CPyL36;
+CPyL49: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_r21);
+    CPy_DecRef(cpy_r_r23);
+    goto CPyL36;
+CPyL50: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_r28);
+    goto CPyL36;
+CPyL51: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_r31);
+    goto CPyL36;
+CPyL52: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_type_str);
+    goto CPyL36;
+CPyL53: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_type_str);
+    CPy_DecRef(cpy_r_r37);
+    goto CPyL36;
+CPyL54: ;
+    CPy_DECREF(cpy_r_r37);
+    CPy_DECREF(cpy_r_r41);
+    CPy_DECREF(cpy_r_r42.f2);
+    CPy_DECREF(cpy_r_r42.f3);
+    goto CPyL32;
+CPyL55: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_type_str);
+    CPy_DecRef(cpy_r_r37);
+    CPy_DecRef(cpy_r_r41);
+    CPy_DecRef(cpy_r_r46);
+    goto CPyL36;
+CPyL56: ;
+    CPy_DECREF(cpy_r_r47);
+    CPy_DECREF(cpy_r_r46);
+    goto CPyL31;
+CPyL57: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_r37);
+    CPy_DecRef(cpy_r_r41);
+    goto CPyL36;
+CPyL58: ;
+    CPy_DecRef(cpy_r_substitutions);
+    CPy_DecRef(cpy_r_r1);
+    CPy_DecRef(cpy_r_type_str);
+    CPy_DecRef(cpy_r_r37);
+    CPy_DecRef(cpy_r_r41);
+    goto CPyL36;
+}
+
+PyObject *CPyPy__abi___get_type_strings(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
+    static const char * const kwlist[] = {"abi_params", "substitutions", 0};
+    static CPyArg_Parser parser = {"O|O:get_type_strings", kwlist, 0};
+    PyObject *obj_abi_params;
+    PyObject *obj_substitutions = NULL;
+    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_abi_params, &obj_substitutions)) {
+        return NULL;
+    }
+    PyObject *arg_abi_params;
+    if (likely(PyList_Check(obj_abi_params)))
+        arg_abi_params = obj_abi_params;
+    else {
+        CPy_TypeError("list", obj_abi_params); 
+        goto fail;
+    }
+    PyObject *arg_substitutions;
+    if (obj_substitutions == NULL) {
+        arg_substitutions = NULL;
+        goto __LL32;
+    }
+    if (PyDict_Check(obj_substitutions))
+        arg_substitutions = obj_substitutions;
+    else {
+        arg_substitutions = NULL;
+    }
+    if (arg_substitutions != NULL) goto __LL32;
+    if (obj_substitutions == Py_None)
+        arg_substitutions = obj_substitutions;
+    else {
+        arg_substitutions = NULL;
+    }
+    if (arg_substitutions != NULL) goto __LL32;
+    CPy_TypeError("dict or None", obj_substitutions); 
+    goto fail;
+__LL32: ;
+    PyObject *retval = CPyDef__abi___get_type_strings(arg_abi_params, arg_substitutions);
+    return retval;
+fail: ;
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 78, CPyStatic__abi___globals);
+    return NULL;
+}
+
+PyObject *CPyDef__abi___build_function_signature(PyObject *cpy_r_abi) {
+    PyObject *cpy_r_r0;
+    PyObject *cpy_r_r1;
+    PyObject *cpy_r_r2;
+    PyObject *cpy_r_r3;
+    PyObject *cpy_r_r4;
+    PyObject *cpy_r_r5;
+    PyObject *cpy_r_r6;
+    PyObject *cpy_r_r7;
+    PyObject *cpy_r_r8;
+    PyObject *cpy_r_r9;
+    PyObject *cpy_r_r10;
+    PyObject *cpy_r_r11;
+    PyObject *cpy_r_r12;
+    PyObject *cpy_r_r13;
+    cpy_r_r0 = CPyStatics[256]; /* 'inputs' */
+    cpy_r_r1 = CPyDict_GetItem(cpy_r_abi, cpy_r_r0);
+    if (unlikely(cpy_r_r1 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 103, CPyStatic__abi___globals);
+        goto CPyL8;
+    }
+    if (likely(PyList_Check(cpy_r_r1)))
+        cpy_r_r2 = cpy_r_r1;
+    else {
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 103, CPyStatic__abi___globals, "list", cpy_r_r1);
+        goto CPyL8;
+    }
+    cpy_r_r3 = NULL;
+    cpy_r_r4 = CPyDef__abi___get_type_strings(cpy_r_r2, cpy_r_r3);
+    CPy_DECREF(cpy_r_r2);
+    if (unlikely(cpy_r_r4 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 103, CPyStatic__abi___globals);
+        goto CPyL8;
+    }
+    cpy_r_r5 = CPyStatics[5]; /* 'name' */
+    cpy_r_r6 = CPyDict_GetItem(cpy_r_abi, cpy_r_r5);
+    if (unlikely(cpy_r_r6 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
+        goto CPyL9;
+    }
+    cpy_r_r7 = PyObject_Str(cpy_r_r6);
+    CPy_DECREF(cpy_r_r6);
+    if (unlikely(cpy_r_r7 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
+        goto CPyL9;
+    }
+    cpy_r_r8 = CPyStatics[252]; /* '(' */
+    cpy_r_r9 = CPyStatics[253]; /* ',' */
+    cpy_r_r10 = PyUnicode_Join(cpy_r_r9, cpy_r_r4);
+    CPy_DECREF(cpy_r_r4);
+    if (unlikely(cpy_r_r10 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
+        goto CPyL10;
+    }
+    cpy_r_r11 = CPyStatics[254]; /* ')' */
+    cpy_r_r12 = CPyStr_Build(4, cpy_r_r7, cpy_r_r8, cpy_r_r10, cpy_r_r11);
+    CPy_DECREF(cpy_r_r7);
+    CPy_DECREF(cpy_r_r10);
+    if (unlikely(cpy_r_r12 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
+        goto CPyL8;
+    }
+    return cpy_r_r12;
+CPyL8: ;
+    cpy_r_r13 = NULL;
+    return cpy_r_r13;
+CPyL9: ;
+    CPy_DecRef(cpy_r_r4);
+    goto CPyL8;
+CPyL10: ;
+    CPy_DecRef(cpy_r_r7);
+    goto CPyL8;
+}
+
+PyObject *CPyPy__abi___build_function_signature(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
+    static const char * const kwlist[] = {"abi", 0};
+    static CPyArg_Parser parser = {"O:build_function_signature", kwlist, 0};
+    PyObject *obj_abi;
+    if (!CPyArg_ParseStackAndKeywordsOneArg(args, nargs, kwnames, &parser, &obj_abi)) {
+        return NULL;
+    }
+    PyObject *arg_abi;
+    if (likely(PyDict_Check(obj_abi)))
+        arg_abi = obj_abi;
+    else {
+        CPy_TypeError("dict", obj_abi); 
+        goto fail;
+    }
+    PyObject *retval = CPyDef__abi___build_function_signature(arg_abi);
+    return retval;
+fail: ;
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 102, CPyStatic__abi___globals);
+    return NULL;
+}
+
+PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_abi) {
+    PyObject *cpy_r_r0;
+    PyObject *cpy_r_r1;
+    PyObject *cpy_r_r2;
+    PyObject *cpy_r_r3;
+    char cpy_r_r4;
+    PyObject **cpy_r_r6;
+    PyObject *cpy_r_r7;
+    PyObject *cpy_r_r8;
+    PyObject *cpy_r_r9;
+    PyObject *cpy_r_r10;
+    PyObject *cpy_r_r11;
+    PyObject *cpy_r_r12;
+    PyObject *cpy_r_r13;
+    PyObject *cpy_r_r14;
+    PyObject *cpy_r_r15;
+    PyObject *cpy_r_r16;
+    PyObject *cpy_r_r17;
+    cpy_r_r0 = CPyDef__abi___build_function_signature(cpy_r_abi);
+    if (unlikely(cpy_r_r0 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 108, CPyStatic__abi___globals);
+        goto CPyL12;
+    }
+    cpy_r_r1 = CPyStatics[133]; /* '0x' */
+    cpy_r_r2 = PyUnicode_AsUTF8String(cpy_r_r0);
+    CPy_DECREF(cpy_r_r0);
+    if (unlikely(cpy_r_r2 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL12;
+    }
+    cpy_r_r3 = CPyStatic__abi___keccak;
+    if (unlikely(cpy_r_r3 == NULL)) {
+        goto CPyL13;
+    } else
+        goto CPyL5;
+CPyL3: ;
+    PyErr_SetString(PyExc_NameError, "value for final name \"keccak\" was not set");
+    cpy_r_r4 = 0;
+    if (unlikely(!cpy_r_r4)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL12;
+    }
+    CPy_Unreachable();
+CPyL5: ;
+    PyObject *cpy_r_r5[1] = {cpy_r_r2};
+    cpy_r_r6 = (PyObject **)&cpy_r_r5;
+    cpy_r_r7 = _PyObject_Vectorcall(cpy_r_r3, cpy_r_r6, 1, 0);
+    if (unlikely(cpy_r_r7 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL14;
+    }
+    CPy_DECREF(cpy_r_r2);
+    cpy_r_r8 = CPyStatics[9]; /* 'hex' */
+    cpy_r_r9 = CPyObject_CallMethodObjArgs(cpy_r_r7, cpy_r_r8, NULL);
+    CPy_DECREF(cpy_r_r7);
+    if (unlikely(cpy_r_r9 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL12;
+    }
+    cpy_r_r10 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r11 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r12 = CPyStatics[679]; /* 8 */
+    cpy_r_r13 = PySlice_New(cpy_r_r10, cpy_r_r12, cpy_r_r11);
+    if (unlikely(cpy_r_r13 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL15;
+    }
+    cpy_r_r14 = PyObject_GetItem(cpy_r_r9, cpy_r_r13);
+    CPy_DECREF(cpy_r_r9);
+    CPy_DECREF(cpy_r_r13);
+    if (unlikely(cpy_r_r14 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL12;
+    }
+    cpy_r_r15 = PyObject_Str(cpy_r_r14);
+    CPy_DECREF(cpy_r_r14);
+    if (unlikely(cpy_r_r15 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL12;
+    }
+    cpy_r_r16 = CPyStr_Build(2, cpy_r_r1, cpy_r_r15);
+    CPy_DECREF(cpy_r_r15);
+    if (unlikely(cpy_r_r16 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL12;
+    }
+    return cpy_r_r16;
+CPyL12: ;
+    cpy_r_r17 = NULL;
+    return cpy_r_r17;
+CPyL13: ;
+    CPy_DecRef(cpy_r_r2);
+    goto CPyL3;
+CPyL14: ;
+    CPy_DecRef(cpy_r_r2);
+    goto CPyL12;
+CPyL15: ;
+    CPy_DecRef(cpy_r_r9);
+    goto CPyL12;
+}
+
+PyObject *CPyPy__abi___build_function_selector(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
+    static const char * const kwlist[] = {"abi", 0};
+    static CPyArg_Parser parser = {"O:build_function_selector", kwlist, 0};
+    PyObject *obj_abi;
+    if (!CPyArg_ParseStackAndKeywordsOneArg(args, nargs, kwnames, &parser, &obj_abi)) {
+        return NULL;
+    }
+    PyObject *arg_abi;
+    if (likely(PyDict_Check(obj_abi)))
+        arg_abi = obj_abi;
+    else {
+        CPy_TypeError("dict", obj_abi); 
+        goto fail;
+    }
+    PyObject *retval = CPyDef__abi___build_function_selector(arg_abi);
+    return retval;
+fail: ;
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 107, CPyStatic__abi___globals);
     return NULL;
 }
 
@@ -13575,31 +14205,22 @@ char CPyDef__abi_____top_level__(void) {
     PyObject *cpy_r_r76;
     PyObject *cpy_r_r77;
     PyObject *cpy_r_r78;
-    int32_t cpy_r_r79;
-    char cpy_r_r80;
-    PyObject *cpy_r_r81;
+    PyObject *cpy_r_r79;
+    PyObject *cpy_r_r80;
+    char cpy_r_r81;
     PyObject *cpy_r_r82;
     PyObject *cpy_r_r83;
     PyObject *cpy_r_r84;
     PyObject *cpy_r_r85;
     PyObject *cpy_r_r86;
     PyObject *cpy_r_r87;
-    PyObject *cpy_r_r88;
-    PyObject *cpy_r_r89;
-    char cpy_r_r90;
+    int32_t cpy_r_r88;
+    char cpy_r_r89;
+    PyObject *cpy_r_r90;
     PyObject *cpy_r_r91;
-    PyObject *cpy_r_r92;
-    PyObject *cpy_r_r93;
-    PyObject *cpy_r_r94;
-    PyObject *cpy_r_r95;
-    PyObject *cpy_r_r96;
-    int32_t cpy_r_r97;
-    char cpy_r_r98;
-    PyObject *cpy_r_r99;
-    PyObject *cpy_r_r100;
-    int32_t cpy_r_r101;
-    char cpy_r_r102;
-    char cpy_r_r103;
+    int32_t cpy_r_r92;
+    char cpy_r_r93;
+    char cpy_r_r94;
     cpy_r_r0 = CPyModule_builtins;
     cpy_r_r1 = (PyObject *)&_Py_NoneStruct;
     cpy_r_r2 = cpy_r_r0 != cpy_r_r1;
@@ -13608,63 +14229,64 @@ char CPyDef__abi_____top_level__(void) {
     cpy_r_r4 = PyImport_Import(cpy_r_r3);
     if (unlikely(cpy_r_r4 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", -1, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     CPyModule_builtins = cpy_r_r4;
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[734]; /* ('Any', 'Dict', 'Final', 'Tuple', 'final') */
+    cpy_r_r5 = CPyStatics[738]; /* ('Any', 'Dict', 'Final', 'List', 'Optional', 'Tuple',
+                                   'final') */
     cpy_r_r6 = CPyStatics[41]; /* 'typing' */
     cpy_r_r7 = CPyStatic__abi___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
     if (unlikely(cpy_r_r8 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 1, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     CPyModule_typing = cpy_r_r8;
     CPy_INCREF(CPyModule_typing);
     CPy_DECREF(cpy_r_r8);
-    cpy_r_r9 = CPyStatics[735]; /* ('WeakValueDictionary',) */
-    cpy_r_r10 = CPyStatics[251]; /* 'weakref' */
+    cpy_r_r9 = CPyStatics[739]; /* ('WeakValueDictionary',) */
+    cpy_r_r10 = CPyStatics[259]; /* 'weakref' */
     cpy_r_r11 = CPyStatic__abi___globals;
     cpy_r_r12 = CPyImport_ImportFromMany(cpy_r_r10, cpy_r_r9, cpy_r_r9, cpy_r_r11);
     if (unlikely(cpy_r_r12 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 2, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     CPyModule_weakref = cpy_r_r12;
     CPy_INCREF(CPyModule_weakref);
     CPy_DECREF(cpy_r_r12);
-    cpy_r_r13 = CPyStatics[736]; /* ('utils',) */
-    cpy_r_r14 = CPyStatics[253]; /* 'brownie.convert' */
+    cpy_r_r13 = CPyStatics[740]; /* ('auto',) */
+    cpy_r_r14 = CPyStatics[261]; /* 'eth_hash' */
     cpy_r_r15 = CPyStatic__abi___globals;
     cpy_r_r16 = CPyImport_ImportFromMany(cpy_r_r14, cpy_r_r13, cpy_r_r13, cpy_r_r15);
     if (unlikely(cpy_r_r16 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 4, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
-    CPyModule_brownie___convert = cpy_r_r16;
-    CPy_INCREF(CPyModule_brownie___convert);
+    CPyModule_eth_hash = cpy_r_r16;
+    CPy_INCREF(CPyModule_eth_hash);
     CPy_DECREF(cpy_r_r16);
-    cpy_r_r17 = CPyStatics[737]; /* ('_nocompile',) */
-    cpy_r_r18 = CPyStatics[255]; /* 'dank_mids.brownie_patch' */
+    cpy_r_r17 = CPyStatics[741]; /* ('_nocompile',) */
+    cpy_r_r18 = CPyStatics[263]; /* 'dank_mids.brownie_patch' */
     cpy_r_r19 = CPyStatic__abi___globals;
     cpy_r_r20 = CPyImport_ImportFromMany(cpy_r_r18, cpy_r_r17, cpy_r_r17, cpy_r_r19);
     if (unlikely(cpy_r_r20 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 6, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     CPyModule_dank_mids___brownie_patch = cpy_r_r20;
     CPy_INCREF(CPyModule_dank_mids___brownie_patch);
     CPy_DECREF(cpy_r_r20);
-    cpy_r_r21 = CPyStatics[738]; /* ('_helpers',) */
+    cpy_r_r21 = CPyStatics[742]; /* ('_helpers',) */
     cpy_r_r22 = CPyStatics[226]; /* 'dank_mids.helpers' */
     cpy_r_r23 = CPyStatic__abi___globals;
     cpy_r_r24 = CPyImport_ImportFromMany(cpy_r_r22, cpy_r_r21, cpy_r_r21, cpy_r_r23);
     if (unlikely(cpy_r_r24 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 7, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     CPyModule_dank_mids___helpers = cpy_r_r24;
     CPy_INCREF(CPyModule_dank_mids___helpers);
@@ -13674,14 +14296,14 @@ CPyL3: ;
     cpy_r_r27 = CPyDict_GetItem(cpy_r_r25, cpy_r_r26);
     if (unlikely(cpy_r_r27 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 10, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     cpy_r_r28 = CPyStatic__abi___globals;
     cpy_r_r29 = CPyStatics[178]; /* 'Tuple' */
     cpy_r_r30 = CPyDict_GetItem(cpy_r_r28, cpy_r_r29);
     if (unlikely(cpy_r_r30 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 10, CPyStatic__abi___globals);
-        goto CPyL36;
+        goto CPyL33;
     }
     cpy_r_r31 = (PyObject *)&PyUnicode_Type;
     cpy_r_r32 = CPyStatic__abi___globals;
@@ -13689,7 +14311,7 @@ CPyL3: ;
     cpy_r_r34 = CPyDict_GetItem(cpy_r_r32, cpy_r_r33);
     if (unlikely(cpy_r_r34 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 10, CPyStatic__abi___globals);
-        goto CPyL37;
+        goto CPyL34;
     }
     CPy_INCREF(cpy_r_r31);
     cpy_r_r35.f0 = cpy_r_r31;
@@ -13697,16 +14319,16 @@ CPyL3: ;
     cpy_r_r36 = PyTuple_New(2);
     if (unlikely(cpy_r_r36 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp32 = cpy_r_r35.f0;
-    PyTuple_SET_ITEM(cpy_r_r36, 0, __tmp32);
-    PyObject *__tmp33 = cpy_r_r35.f1;
-    PyTuple_SET_ITEM(cpy_r_r36, 1, __tmp33);
+    PyObject *__tmp33 = cpy_r_r35.f0;
+    PyTuple_SET_ITEM(cpy_r_r36, 0, __tmp33);
+    PyObject *__tmp34 = cpy_r_r35.f1;
+    PyTuple_SET_ITEM(cpy_r_r36, 1, __tmp34);
     cpy_r_r37 = PyObject_GetItem(cpy_r_r30, cpy_r_r36);
     CPy_DECREF(cpy_r_r30);
     CPy_DECREF(cpy_r_r36);
     if (unlikely(cpy_r_r37 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 10, CPyStatic__abi___globals);
-        goto CPyL36;
+        goto CPyL33;
     }
     cpy_r_r38 = (PyObject *)&_Py_EllipsisObject;
     CPy_INCREF(cpy_r_r38);
@@ -13715,200 +14337,175 @@ CPyL3: ;
     cpy_r_r40 = PyTuple_New(2);
     if (unlikely(cpy_r_r40 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp34 = cpy_r_r39.f0;
-    PyTuple_SET_ITEM(cpy_r_r40, 0, __tmp34);
-    PyObject *__tmp35 = cpy_r_r39.f1;
-    PyTuple_SET_ITEM(cpy_r_r40, 1, __tmp35);
+    PyObject *__tmp35 = cpy_r_r39.f0;
+    PyTuple_SET_ITEM(cpy_r_r40, 0, __tmp35);
+    PyObject *__tmp36 = cpy_r_r39.f1;
+    PyTuple_SET_ITEM(cpy_r_r40, 1, __tmp36);
     cpy_r_r41 = PyObject_GetItem(cpy_r_r27, cpy_r_r40);
     CPy_DECREF(cpy_r_r27);
     CPy_DECREF(cpy_r_r40);
     if (unlikely(cpy_r_r41 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 10, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     cpy_r_r42 = CPyStatic__abi___globals;
-    cpy_r_r43 = CPyStatics[257]; /* 'SingletonKey' */
+    cpy_r_r43 = CPyStatics[265]; /* 'SingletonKey' */
     cpy_r_r44 = CPyDict_SetItem(cpy_r_r42, cpy_r_r43, cpy_r_r41);
     CPy_DECREF(cpy_r_r41);
     cpy_r_r45 = cpy_r_r44 >= 0;
     if (unlikely(!cpy_r_r45)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 10, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     cpy_r_r46 = CPyStatic__abi___globals;
-    cpy_r_r47 = CPyStatics[250]; /* 'WeakValueDictionary' */
+    cpy_r_r47 = CPyStatics[258]; /* 'WeakValueDictionary' */
     cpy_r_r48 = CPyDict_GetItem(cpy_r_r46, cpy_r_r47);
     if (unlikely(cpy_r_r48 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 12, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     cpy_r_r49 = _PyObject_Vectorcall(cpy_r_r48, 0, 0, 0);
     CPy_DECREF(cpy_r_r48);
     if (unlikely(cpy_r_r49 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 12, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     CPyStatic__abi____singletons = cpy_r_r49;
     CPy_INCREF(CPyStatic__abi____singletons);
     cpy_r_r50 = CPyStatic__abi___globals;
-    cpy_r_r51 = CPyStatics[258]; /* '_singletons' */
+    cpy_r_r51 = CPyStatics[266]; /* '_singletons' */
     cpy_r_r52 = CPyDict_SetItem(cpy_r_r50, cpy_r_r51, cpy_r_r49);
     CPy_DECREF(cpy_r_r49);
     cpy_r_r53 = cpy_r_r52 >= 0;
     if (unlikely(!cpy_r_r53)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 12, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     cpy_r_r54 = CPyStatic__abi___globals;
-    cpy_r_r55 = CPyStatics[252]; /* 'utils' */
+    cpy_r_r55 = CPyStatics[260]; /* 'auto' */
     cpy_r_r56 = CPyDict_GetItem(cpy_r_r54, cpy_r_r55);
     if (unlikely(cpy_r_r56 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 15, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
-    cpy_r_r57 = CPyStatics[259]; /* 'build_function_selector' */
+    cpy_r_r57 = CPyStatics[267]; /* 'keccak' */
     cpy_r_r58 = CPyObject_GetAttr(cpy_r_r56, cpy_r_r57);
     CPy_DECREF(cpy_r_r56);
     if (unlikely(cpy_r_r58 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 15, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
-    CPyStatic__abi___build_function_selector = cpy_r_r58;
-    CPy_INCREF(CPyStatic__abi___build_function_selector);
+    CPyStatic__abi___keccak = cpy_r_r58;
+    CPy_INCREF(CPyStatic__abi___keccak);
     cpy_r_r59 = CPyStatic__abi___globals;
-    cpy_r_r60 = CPyStatics[259]; /* 'build_function_selector' */
+    cpy_r_r60 = CPyStatics[267]; /* 'keccak' */
     cpy_r_r61 = CPyDict_SetItem(cpy_r_r59, cpy_r_r60, cpy_r_r58);
     CPy_DECREF(cpy_r_r58);
     cpy_r_r62 = cpy_r_r61 >= 0;
     if (unlikely(!cpy_r_r62)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 15, CPyStatic__abi___globals);
-        goto CPyL35;
+        goto CPyL32;
     }
     cpy_r_r63 = CPyStatic__abi___globals;
-    cpy_r_r64 = CPyStatics[252]; /* 'utils' */
+    cpy_r_r64 = CPyStatics[264]; /* '_helpers' */
     cpy_r_r65 = CPyDict_GetItem(cpy_r_r63, cpy_r_r64);
     if (unlikely(cpy_r_r65 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 16, CPyStatic__abi___globals);
-        goto CPyL35;
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 17, CPyStatic__abi___globals);
+        goto CPyL32;
     }
-    cpy_r_r66 = CPyStatics[260]; /* 'build_function_signature' */
+    cpy_r_r66 = CPyStatics[268]; /* '_make_hashable' */
     cpy_r_r67 = CPyObject_GetAttr(cpy_r_r65, cpy_r_r66);
     CPy_DECREF(cpy_r_r65);
     if (unlikely(cpy_r_r67 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 16, CPyStatic__abi___globals);
-        goto CPyL35;
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 17, CPyStatic__abi___globals);
+        goto CPyL32;
     }
-    CPyStatic__abi___build_function_signature = cpy_r_r67;
-    CPy_INCREF(CPyStatic__abi___build_function_signature);
+    CPyStatic__abi____make_hashable = cpy_r_r67;
+    CPy_INCREF(CPyStatic__abi____make_hashable);
     cpy_r_r68 = CPyStatic__abi___globals;
-    cpy_r_r69 = CPyStatics[260]; /* 'build_function_signature' */
+    cpy_r_r69 = CPyStatics[268]; /* '_make_hashable' */
     cpy_r_r70 = CPyDict_SetItem(cpy_r_r68, cpy_r_r69, cpy_r_r67);
     CPy_DECREF(cpy_r_r67);
     cpy_r_r71 = cpy_r_r70 >= 0;
     if (unlikely(!cpy_r_r71)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 16, CPyStatic__abi___globals);
-        goto CPyL35;
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 17, CPyStatic__abi___globals);
+        goto CPyL32;
     }
     cpy_r_r72 = CPyStatic__abi___globals;
-    cpy_r_r73 = CPyStatics[256]; /* '_helpers' */
+    cpy_r_r73 = CPyStatics[262]; /* '_nocompile' */
     cpy_r_r74 = CPyDict_GetItem(cpy_r_r72, cpy_r_r73);
     if (unlikely(cpy_r_r74 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 18, CPyStatic__abi___globals);
-        goto CPyL35;
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 28, CPyStatic__abi___globals);
+        goto CPyL32;
     }
-    cpy_r_r75 = CPyStatics[261]; /* '_make_hashable' */
+    cpy_r_r75 = CPyStatics[269]; /* '_FunctionABI' */
     cpy_r_r76 = CPyObject_GetAttr(cpy_r_r74, cpy_r_r75);
     CPy_DECREF(cpy_r_r74);
     if (unlikely(cpy_r_r76 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 18, CPyStatic__abi___globals);
-        goto CPyL35;
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 28, CPyStatic__abi___globals);
+        goto CPyL32;
     }
-    CPyStatic__abi____make_hashable = cpy_r_r76;
-    CPy_INCREF(CPyStatic__abi____make_hashable);
-    cpy_r_r77 = CPyStatic__abi___globals;
-    cpy_r_r78 = CPyStatics[261]; /* '_make_hashable' */
-    cpy_r_r79 = CPyDict_SetItem(cpy_r_r77, cpy_r_r78, cpy_r_r76);
+    cpy_r_r77 = PyTuple_Pack(1, cpy_r_r76);
     CPy_DECREF(cpy_r_r76);
-    cpy_r_r80 = cpy_r_r79 >= 0;
-    if (unlikely(!cpy_r_r80)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 18, CPyStatic__abi___globals);
-        goto CPyL35;
+    if (unlikely(cpy_r_r77 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 28, CPyStatic__abi___globals);
+        goto CPyL32;
     }
-    cpy_r_r81 = CPyStatic__abi___globals;
-    cpy_r_r82 = CPyStatics[254]; /* '_nocompile' */
-    cpy_r_r83 = CPyDict_GetItem(cpy_r_r81, cpy_r_r82);
-    if (unlikely(cpy_r_r83 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 29, CPyStatic__abi___globals);
-        goto CPyL35;
+    cpy_r_r78 = CPyStatics[270]; /* 'dank_mids.brownie_patch._abi' */
+    cpy_r_r79 = (PyObject *)CPyType__abi___FunctionABI_template;
+    cpy_r_r80 = CPyType_FromTemplate(cpy_r_r79, cpy_r_r77, cpy_r_r78);
+    CPy_DECREF(cpy_r_r77);
+    if (unlikely(cpy_r_r80 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 28, CPyStatic__abi___globals);
+        goto CPyL32;
     }
-    cpy_r_r84 = CPyStatics[262]; /* '_FunctionABI' */
-    cpy_r_r85 = CPyObject_GetAttr(cpy_r_r83, cpy_r_r84);
-    CPy_DECREF(cpy_r_r83);
-    if (unlikely(cpy_r_r85 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 29, CPyStatic__abi___globals);
-        goto CPyL35;
-    }
-    cpy_r_r86 = PyTuple_Pack(1, cpy_r_r85);
-    CPy_DECREF(cpy_r_r85);
-    if (unlikely(cpy_r_r86 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 29, CPyStatic__abi___globals);
-        goto CPyL35;
-    }
-    cpy_r_r87 = CPyStatics[263]; /* 'dank_mids.brownie_patch._abi' */
-    cpy_r_r88 = (PyObject *)CPyType__abi___FunctionABI_template;
-    cpy_r_r89 = CPyType_FromTemplate(cpy_r_r88, cpy_r_r86, cpy_r_r87);
-    CPy_DECREF(cpy_r_r86);
-    if (unlikely(cpy_r_r89 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 29, CPyStatic__abi___globals);
-        goto CPyL35;
-    }
-    cpy_r_r90 = CPyDef__abi___FunctionABI_trait_vtable_setup();
-    if (unlikely(cpy_r_r90 == 2)) {
+    cpy_r_r81 = CPyDef__abi___FunctionABI_trait_vtable_setup();
+    if (unlikely(cpy_r_r81 == 2)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", -1, CPyStatic__abi___globals);
-        goto CPyL38;
-    }
-    cpy_r_r91 = CPyStatics[63]; /* '__mypyc_attrs__' */
-    cpy_r_r92 = CPyStatics[264]; /* 'abi' */
-    cpy_r_r93 = CPyStatics[265]; /* 'input_sig' */
-    cpy_r_r94 = CPyStatics[266]; /* 'signature' */
-    cpy_r_r95 = CPyStatics[183]; /* '__dict__' */
-    cpy_r_r96 = PyTuple_Pack(4, cpy_r_r92, cpy_r_r93, cpy_r_r94, cpy_r_r95);
-    if (unlikely(cpy_r_r96 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 29, CPyStatic__abi___globals);
-        goto CPyL38;
-    }
-    cpy_r_r97 = PyObject_SetAttr(cpy_r_r89, cpy_r_r91, cpy_r_r96);
-    CPy_DECREF(cpy_r_r96);
-    cpy_r_r98 = cpy_r_r97 >= 0;
-    if (unlikely(!cpy_r_r98)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 29, CPyStatic__abi___globals);
-        goto CPyL38;
-    }
-    CPyType__abi___FunctionABI = (PyTypeObject *)cpy_r_r89;
-    CPy_INCREF(CPyType__abi___FunctionABI);
-    cpy_r_r99 = CPyStatic__abi___globals;
-    cpy_r_r100 = CPyStatics[267]; /* 'FunctionABI' */
-    cpy_r_r101 = CPyDict_SetItem(cpy_r_r99, cpy_r_r100, cpy_r_r89);
-    CPy_DECREF(cpy_r_r89);
-    cpy_r_r102 = cpy_r_r101 >= 0;
-    if (unlikely(!cpy_r_r102)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 29, CPyStatic__abi___globals);
         goto CPyL35;
+    }
+    cpy_r_r82 = CPyStatics[63]; /* '__mypyc_attrs__' */
+    cpy_r_r83 = CPyStatics[271]; /* 'abi' */
+    cpy_r_r84 = CPyStatics[272]; /* 'input_sig' */
+    cpy_r_r85 = CPyStatics[273]; /* 'signature' */
+    cpy_r_r86 = CPyStatics[183]; /* '__dict__' */
+    cpy_r_r87 = PyTuple_Pack(4, cpy_r_r83, cpy_r_r84, cpy_r_r85, cpy_r_r86);
+    if (unlikely(cpy_r_r87 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 28, CPyStatic__abi___globals);
+        goto CPyL35;
+    }
+    cpy_r_r88 = PyObject_SetAttr(cpy_r_r80, cpy_r_r82, cpy_r_r87);
+    CPy_DECREF(cpy_r_r87);
+    cpy_r_r89 = cpy_r_r88 >= 0;
+    if (unlikely(!cpy_r_r89)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 28, CPyStatic__abi___globals);
+        goto CPyL35;
+    }
+    CPyType__abi___FunctionABI = (PyTypeObject *)cpy_r_r80;
+    CPy_INCREF(CPyType__abi___FunctionABI);
+    cpy_r_r90 = CPyStatic__abi___globals;
+    cpy_r_r91 = CPyStatics[274]; /* 'FunctionABI' */
+    cpy_r_r92 = CPyDict_SetItem(cpy_r_r90, cpy_r_r91, cpy_r_r80);
+    CPy_DECREF(cpy_r_r80);
+    cpy_r_r93 = cpy_r_r92 >= 0;
+    if (unlikely(!cpy_r_r93)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "<module>", 28, CPyStatic__abi___globals);
+        goto CPyL32;
     }
     return 1;
-CPyL35: ;
-    cpy_r_r103 = 2;
-    return cpy_r_r103;
-CPyL36: ;
+CPyL32: ;
+    cpy_r_r94 = 2;
+    return cpy_r_r94;
+CPyL33: ;
     CPy_DecRef(cpy_r_r27);
-    goto CPyL35;
-CPyL37: ;
+    goto CPyL32;
+CPyL34: ;
     CPy_DecRef(cpy_r_r27);
     CPy_DecRef(cpy_r_r30);
-    goto CPyL35;
-CPyL38: ;
-    CPy_DecRef(cpy_r_r89);
-    goto CPyL35;
+    goto CPyL32;
+CPyL35: ;
+    CPy_DecRef(cpy_r_r80);
+    goto CPyL32;
 }
 
 static PyObject *CPyDunder___get__call_____mypyc_lambda__0_obj(PyObject *self, PyObject *instance, PyObject *owner) {
@@ -15740,32 +16337,32 @@ PyObject *CPyDef_call_____mypyc_lambda__0_obj_____call__(PyObject *cpy_r___mypyc
     }
     CPy_Unreachable();
 CPyL3: ;
-    cpy_r_r2 = CPyStatics[268]; /* 'BROWNIE_ENCODER_PROCESSES' */
+    cpy_r_r2 = CPyStatics[275]; /* 'BROWNIE_ENCODER_PROCESSES' */
     cpy_r_r3 = CPyObject_GetAttr(cpy_r_r0, cpy_r_r2);
     if (unlikely(cpy_r_r3 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<lambda>", 79, CPyStatic_call___globals);
         goto CPyL14;
     }
     cpy_r_r4 = CPyStatic_call___globals;
-    cpy_r_r5 = CPyStatics[269]; /* '__encode_input' */
+    cpy_r_r5 = CPyStatics[276]; /* '__encode_input' */
     cpy_r_r6 = CPyDict_GetItem(cpy_r_r4, cpy_r_r5);
     if (unlikely(cpy_r_r6 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<lambda>", 79, CPyStatic_call___globals);
         goto CPyL15;
     }
-    cpy_r_r7 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r7 = CPyStatics[271]; /* 'abi' */
     cpy_r_r8 = CPyObject_GetAttr(cpy_r_self, cpy_r_r7);
     if (unlikely(cpy_r_r8 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<lambda>", 79, CPyStatic_call___globals);
         goto CPyL16;
     }
-    cpy_r_r9 = CPyStatics[266]; /* 'signature' */
+    cpy_r_r9 = CPyStatics[273]; /* 'signature' */
     cpy_r_r10 = CPyObject_GetAttr(cpy_r_self, cpy_r_r9);
     if (unlikely(cpy_r_r10 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<lambda>", 79, CPyStatic_call___globals);
         goto CPyL17;
     }
-    cpy_r_r11 = CPyStatics[270]; /* 'run' */
+    cpy_r_r11 = CPyStatics[277]; /* 'run' */
     cpy_r_r12 = CPyObject_GetAttr(cpy_r_r3, cpy_r_r11);
     CPy_DECREF(cpy_r_r3);
     if (unlikely(cpy_r_r12 == NULL)) {
@@ -15935,26 +16532,26 @@ PyObject *CPyDef_call_____mypyc_lambda__1_obj_____call__(PyObject *cpy_r___mypyc
     }
     CPy_Unreachable();
 CPyL3: ;
-    cpy_r_r2 = CPyStatics[271]; /* 'BROWNIE_DECODER_PROCESSES' */
+    cpy_r_r2 = CPyStatics[278]; /* 'BROWNIE_DECODER_PROCESSES' */
     cpy_r_r3 = CPyObject_GetAttr(cpy_r_r0, cpy_r_r2);
     if (unlikely(cpy_r_r3 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<lambda>", 98, CPyStatic_call___globals);
         goto CPyL8;
     }
     cpy_r_r4 = CPyStatic_call___globals;
-    cpy_r_r5 = CPyStatics[272]; /* '__decode_output' */
+    cpy_r_r5 = CPyStatics[279]; /* '__decode_output' */
     cpy_r_r6 = CPyDict_GetItem(cpy_r_r4, cpy_r_r5);
     if (unlikely(cpy_r_r6 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<lambda>", 98, CPyStatic_call___globals);
         goto CPyL9;
     }
-    cpy_r_r7 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r7 = CPyStatics[271]; /* 'abi' */
     cpy_r_r8 = CPyObject_GetAttr(cpy_r_self, cpy_r_r7);
     if (unlikely(cpy_r_r8 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<lambda>", 98, CPyStatic_call___globals);
         goto CPyL10;
     }
-    cpy_r_r9 = CPyStatics[270]; /* 'run' */
+    cpy_r_r9 = CPyStatics[277]; /* 'run' */
     cpy_r_r10 = CPyObject_CallMethodObjArgs(cpy_r_r3, cpy_r_r9, cpy_r_r6, cpy_r_data, cpy_r_r8, NULL);
     CPy_DECREF(cpy_r_r3);
     CPy_DECREF(cpy_r_r6);
@@ -16046,14 +16643,14 @@ char CPyDef_call____patch_call(PyObject *cpy_r_call, PyObject *cpy_r_w3) {
     int32_t cpy_r_r44;
     char cpy_r_r45;
     char cpy_r_r46;
-    cpy_r_r0 = CPyStatics[273]; /* '_address' */
+    cpy_r_r0 = CPyStatics[280]; /* '_address' */
     cpy_r_r1 = CPyObject_GetAttr(cpy_r_call, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_patch_call", 132, CPyStatic_call___globals);
         goto CPyL18;
     }
     cpy_r_r2 = CPyStatic_call___globals;
-    cpy_r_r3 = CPyStatics[274]; /* '_skip_proc_pool' */
+    cpy_r_r3 = CPyStatics[281]; /* '_skip_proc_pool' */
     cpy_r_r4 = CPyDict_GetItem(cpy_r_r2, cpy_r_r3);
     if (unlikely(cpy_r_r4 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_patch_call", 132, CPyStatic_call___globals);
@@ -16074,7 +16671,7 @@ char CPyDef_call____patch_call(PyObject *cpy_r_call, PyObject *cpy_r_w3) {
         goto CPyL18;
     }
     cpy_r_r8 = cpy_r_r6;
-    cpy_r_r9 = CPyStatics[275]; /* '_skip_decoder_proc_pool' */
+    cpy_r_r9 = CPyStatics[282]; /* '_skip_decoder_proc_pool' */
     cpy_r_r10 = cpy_r_r8 ? Py_True : Py_False;
     cpy_r_r11 = PyObject_SetAttr(cpy_r_call, cpy_r_r9, cpy_r_r10);
     cpy_r_r12 = cpy_r_r11 >= 0;
@@ -16082,13 +16679,13 @@ char CPyDef_call____patch_call(PyObject *cpy_r_call, PyObject *cpy_r_w3) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_patch_call", 132, CPyStatic_call___globals);
         goto CPyL18;
     }
-    cpy_r_r13 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r13 = CPyStatics[271]; /* 'abi' */
     cpy_r_r14 = CPyObject_GetAttr(cpy_r_call, cpy_r_r13);
     if (unlikely(cpy_r_r14 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_patch_call", 133, CPyStatic_call___globals);
         goto CPyL18;
     }
-    cpy_r_r15 = CPyStatics[276]; /* 'inputs' */
+    cpy_r_r15 = CPyStatics[256]; /* 'inputs' */
     cpy_r_r16 = PyObject_GetItem(cpy_r_r14, cpy_r_r15);
     CPy_DECREF(cpy_r_r14);
     if (unlikely(cpy_r_r16 == NULL)) {
@@ -16102,7 +16699,7 @@ char CPyDef_call____patch_call(PyObject *cpy_r_call, PyObject *cpy_r_w3) {
         goto CPyL18;
     }
     cpy_r_r18 = CPyStatic_call___globals;
-    cpy_r_r19 = CPyStatics[277]; /* '_get_coroutine_fn' */
+    cpy_r_r19 = CPyStatics[283]; /* '_get_coroutine_fn' */
     cpy_r_r20 = CPyDict_GetItem(cpy_r_r18, cpy_r_r19);
     if (unlikely(cpy_r_r20 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_patch_call", 133, CPyStatic_call___globals);
@@ -16119,7 +16716,7 @@ char CPyDef_call____patch_call(PyObject *cpy_r_call, PyObject *cpy_r_w3) {
     }
     CPy_DECREF(cpy_r_r21);
     cpy_r_r25 = CPyStatic_call___globals;
-    cpy_r_r26 = CPyStatics[278]; /* 'MethodType' */
+    cpy_r_r26 = CPyStatics[284]; /* 'MethodType' */
     cpy_r_r27 = CPyDict_GetItem(cpy_r_r25, cpy_r_r26);
     if (unlikely(cpy_r_r27 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_patch_call", 133, CPyStatic_call___globals);
@@ -16134,7 +16731,7 @@ char CPyDef_call____patch_call(PyObject *cpy_r_call, PyObject *cpy_r_w3) {
         goto CPyL22;
     }
     CPy_DECREF(cpy_r_r24);
-    cpy_r_r31 = CPyStatics[279]; /* 'coroutine' */
+    cpy_r_r31 = CPyStatics[285]; /* 'coroutine' */
     cpy_r_r32 = PyObject_SetAttr(cpy_r_call, cpy_r_r31, cpy_r_r30);
     CPy_DECREF(cpy_r_r30);
     cpy_r_r33 = cpy_r_r32 >= 0;
@@ -16143,14 +16740,14 @@ char CPyDef_call____patch_call(PyObject *cpy_r_call, PyObject *cpy_r_w3) {
         goto CPyL18;
     }
     cpy_r_r34 = CPyStatic_call___globals;
-    cpy_r_r35 = CPyStatics[280]; /* '_call_no_args' */
+    cpy_r_r35 = CPyStatics[286]; /* '_call_no_args' */
     cpy_r_r36 = CPyDict_GetItem(cpy_r_r34, cpy_r_r35);
     if (unlikely(cpy_r_r36 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_patch_call", 134, CPyStatic_call___globals);
         goto CPyL18;
     }
     cpy_r_r37 = CPyStatic_call___globals;
-    cpy_r_r38 = CPyStatics[278]; /* 'MethodType' */
+    cpy_r_r38 = CPyStatics[284]; /* 'MethodType' */
     cpy_r_r39 = CPyDict_GetItem(cpy_r_r37, cpy_r_r38);
     if (unlikely(cpy_r_r39 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_patch_call", 134, CPyStatic_call___globals);
@@ -16697,15 +17294,15 @@ PyObject *CPyDef_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_help
     cpy_r_r9 = cpy_r_r8;
     cpy_r_r10 = NULL;
     cpy_r_r11 = cpy_r_r10;
-    tuple_T3OOO __tmp36 = { NULL, NULL, NULL };
-    cpy_r_r12 = __tmp36;
+    tuple_T3OOO __tmp37 = { NULL, NULL, NULL };
+    cpy_r_r12 = __tmp37;
     cpy_r_r13 = cpy_r_r12;
     cpy_r_r14 = NULL;
     cpy_r_r15 = cpy_r_r14;
     cpy_r_r16 = NULL;
     cpy_r_r17 = cpy_r_r16;
-    tuple_T3OOO __tmp37 = { NULL, NULL, NULL };
-    cpy_r_r18 = __tmp37;
+    tuple_T3OOO __tmp38 = { NULL, NULL, NULL };
+    cpy_r_r18 = __tmp38;
     cpy_r_r19 = cpy_r_r18;
     cpy_r_r20 = NULL;
     cpy_r_r21 = cpy_r_r20;
@@ -16770,7 +17367,7 @@ CPyL7: ;
     } else
         goto CPyL14;
 CPyL10: ;
-    cpy_r_r34 = CPyStatics[281]; /* 'Cannot use state override with `coroutine`.' */
+    cpy_r_r34 = CPyStatics[287]; /* 'Cannot use state override with `coroutine`.' */
     cpy_r_r35 = CPyModule_builtins;
     cpy_r_r36 = CPyStatics[182]; /* 'ValueError' */
     cpy_r_r37 = CPyObject_GetAttr(cpy_r_r35, cpy_r_r36);
@@ -16808,7 +17405,7 @@ CPyL15: ;
     }
     CPy_Unreachable();
 CPyL17: ;
-    cpy_r_r43 = CPyStatics[282]; /* 'BROWNIE_ENCODER_SEMAPHORE' */
+    cpy_r_r43 = CPyStatics[288]; /* 'BROWNIE_ENCODER_SEMAPHORE' */
     cpy_r_r44 = CPyObject_GetAttr(cpy_r_r41, cpy_r_r43);
     if (unlikely(cpy_r_r44 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 153, CPyStatic_call___globals);
@@ -16829,7 +17426,7 @@ CPyL19: ;
         goto CPyL493;
     }
     cpy_r_r47 = PyObject_Type(cpy_r_r46);
-    cpy_r_r48 = CPyStatics[283]; /* '__aexit__' */
+    cpy_r_r48 = CPyStatics[289]; /* '__aexit__' */
     cpy_r_r49 = CPyObject_GetAttr(cpy_r_r47, cpy_r_r48);
     if (unlikely(cpy_r_r49 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 153, CPyStatic_call___globals);
@@ -16844,7 +17441,7 @@ CPyL19: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", -1, CPyStatic_call___globals);
         goto CPyL498;
     }
-    cpy_r_r51 = CPyStatics[284]; /* '__aenter__' */
+    cpy_r_r51 = CPyStatics[290]; /* '__aenter__' */
     cpy_r_r52 = CPyObject_GetAttr(cpy_r_r47, cpy_r_r51);
     CPy_DECREF(cpy_r_r47);
     if (unlikely(cpy_r_r52 == NULL)) {
@@ -17106,7 +17703,7 @@ CPyL64: ;
     CPy_INCREF(cpy_r_r85);
 CPyL65: ;
     cpy_r_r86 = CPyStatic_call___globals;
-    cpy_r_r87 = CPyStatics[285]; /* 'encode_input' */
+    cpy_r_r87 = CPyStatics[291]; /* 'encode_input' */
     cpy_r_r88 = CPyDict_GetItem(cpy_r_r86, cpy_r_r87);
     if (unlikely(cpy_r_r88 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 154, CPyStatic_call___globals);
@@ -17376,7 +17973,7 @@ CPyL108: ;
 CPyL109: ;
     CPy_Unreachable();
 CPyL110: ;
-    cpy_r_r126 = CPyStatics[286]; /* 'BROWNIE_CALL_SEMAPHORE' */
+    cpy_r_r126 = CPyStatics[292]; /* 'BROWNIE_CALL_SEMAPHORE' */
     cpy_r_r127 = CPyObject_GetAttr(cpy_r_r124, cpy_r_r126);
     if (unlikely(cpy_r_r127 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 155, CPyStatic_call___globals);
@@ -17397,7 +17994,7 @@ CPyL112: ;
         goto CPyL526;
     }
     cpy_r_r130 = PyObject_Type(cpy_r_r129);
-    cpy_r_r131 = CPyStatics[283]; /* '__aexit__' */
+    cpy_r_r131 = CPyStatics[289]; /* '__aexit__' */
     cpy_r_r132 = CPyObject_GetAttr(cpy_r_r130, cpy_r_r131);
     if (unlikely(cpy_r_r132 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 155, CPyStatic_call___globals);
@@ -17412,7 +18009,7 @@ CPyL112: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", -1, CPyStatic_call___globals);
         goto CPyL543;
     }
-    cpy_r_r134 = CPyStatics[284]; /* '__aenter__' */
+    cpy_r_r134 = CPyStatics[290]; /* '__aenter__' */
     cpy_r_r135 = CPyObject_GetAttr(cpy_r_r130, cpy_r_r134);
     CPy_DECREF(cpy_r_r130);
     if (unlikely(cpy_r_r135 == NULL)) {
@@ -17663,7 +18260,7 @@ CPyL155: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 156, CPyStatic_call___globals);
         goto CPyL561;
     }
-    cpy_r_r168 = CPyStatics[287]; /* 'to' */
+    cpy_r_r168 = CPyStatics[293]; /* 'to' */
     cpy_r_r169 = ((dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_envObject *)cpy_r_r22)->_self;
     if (unlikely(cpy_r_r169 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\call.py", "coroutine", "coroutine__get_coroutine_fn_env", "self", 156, CPyStatic_call___globals);
@@ -17671,7 +18268,7 @@ CPyL155: ;
     }
     CPy_INCREF(cpy_r_r169);
 CPyL157: ;
-    cpy_r_r170 = CPyStatics[273]; /* '_address' */
+    cpy_r_r170 = CPyStatics[280]; /* '_address' */
     cpy_r_r171 = CPyObject_GetAttr(cpy_r_r169, cpy_r_r170);
     CPy_DECREF(cpy_r_r169);
     if (unlikely(cpy_r_r171 == NULL)) {
@@ -17700,7 +18297,7 @@ CPyL159: ;
     }
     CPy_INCREF(cpy_r_r175);
 CPyL161: ;
-    cpy_r_r176 = CPyStatics[288]; /* 'call' */
+    cpy_r_r176 = CPyStatics[294]; /* 'call' */
     cpy_r_r177 = CPyObject_CallMethodObjArgs(cpy_r_r167, cpy_r_r176, cpy_r_r174, cpy_r_r175, NULL);
     CPy_DECREF(cpy_r_r167);
     CPy_DECREF(cpy_r_r174);
@@ -18208,8 +18805,8 @@ CPyL245: ;
 CPyL246: ;
     CPy_Unreachable();
 CPyL247: ;
-    tuple_T3OOO __tmp38 = { NULL, NULL, NULL };
-    cpy_r_r245 = __tmp38;
+    tuple_T3OOO __tmp39 = { NULL, NULL, NULL };
+    cpy_r_r245 = __tmp39;
     cpy_r_r13 = cpy_r_r245;
     goto CPyL249;
 CPyL248: ;
@@ -18774,8 +19371,8 @@ CPyL346: ;
 CPyL347: ;
     CPy_Unreachable();
 CPyL348: ;
-    tuple_T3OOO __tmp39 = { NULL, NULL, NULL };
-    cpy_r_r322 = __tmp39;
+    tuple_T3OOO __tmp40 = { NULL, NULL, NULL };
+    cpy_r_r322 = __tmp40;
     cpy_r_r19 = cpy_r_r322;
     goto CPyL350;
 CPyL349: ;
@@ -19294,7 +19891,7 @@ CPyL440: ;
         goto CPyL456;
     }
     cpy_r_r388 = CPyStatic_call___globals;
-    cpy_r_r389 = CPyStatics[289]; /* 'InsufficientDataBytes' */
+    cpy_r_r389 = CPyStatics[295]; /* 'InsufficientDataBytes' */
     cpy_r_r390 = CPyDict_GetItem(cpy_r_r388, cpy_r_r389);
     if (unlikely(cpy_r_r390 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 159, CPyStatic_call___globals);
@@ -19340,7 +19937,7 @@ CPyL447: ;
     }
     CPy_INCREF(cpy_r_r397);
 CPyL448: ;
-    cpy_r_r398 = CPyStatics[273]; /* '_address' */
+    cpy_r_r398 = CPyStatics[280]; /* '_address' */
     cpy_r_r399 = CPyObject_GetAttr(cpy_r_r397, cpy_r_r398);
     CPy_DecRef(cpy_r_r397);
     if (unlikely(cpy_r_r399 == NULL)) {
@@ -19355,7 +19952,7 @@ CPyL448: ;
     CPy_INCREF(cpy_r_r400);
 CPyL450: ;
     cpy_r_r401 = CPyStatic_call___globals;
-    cpy_r_r402 = CPyStatics[289]; /* 'InsufficientDataBytes' */
+    cpy_r_r402 = CPyStatics[295]; /* 'InsufficientDataBytes' */
     cpy_r_r403 = CPyDict_GetItem(cpy_r_r401, cpy_r_r402);
     if (unlikely(cpy_r_r403 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 160, CPyStatic_call___globals);
@@ -19481,7 +20078,7 @@ CPyL469: ;
         goto CPyL677;
     }
     CPy_DECREF(cpy_r_r419);
-    cpy_r_r423 = CPyStatics[675]; /* 10 */
+    cpy_r_r423 = CPyStatics[677]; /* 10 */
     cpy_r_r424 = CPyNumber_Power(cpy_r_r423, cpy_r_r422);
     CPy_DECREF(cpy_r_r422);
     if (unlikely(cpy_r_r424 == NULL)) {
@@ -21100,10 +21697,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp40 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp40);
-    PyObject *__tmp41 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp41);
+    PyObject *__tmp41 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp41);
+    PyObject *__tmp42 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp42);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -21378,59 +21975,59 @@ PyObject *CPyPy_call___coroutine__get_coroutine_fn_obj_____call__(PyObject *self
     PyObject *arg_block_identifier;
     if (obj_block_identifier == NULL) {
         arg_block_identifier = NULL;
-        goto __LL42;
+        goto __LL43;
     }
     arg_block_identifier = obj_block_identifier;
-    if (arg_block_identifier != NULL) goto __LL42;
+    if (arg_block_identifier != NULL) goto __LL43;
     if (obj_block_identifier == Py_None)
         arg_block_identifier = obj_block_identifier;
     else {
         arg_block_identifier = NULL;
     }
-    if (arg_block_identifier != NULL) goto __LL42;
+    if (arg_block_identifier != NULL) goto __LL43;
     CPy_TypeError("object or None", obj_block_identifier); 
     goto fail;
-__LL42: ;
+__LL43: ;
     PyObject *arg_decimals;
     if (obj_decimals == NULL) {
         arg_decimals = NULL;
-        goto __LL43;
+        goto __LL44;
     }
     if (PyLong_Check(obj_decimals))
         arg_decimals = obj_decimals;
     else {
         arg_decimals = NULL;
     }
-    if (arg_decimals != NULL) goto __LL43;
+    if (arg_decimals != NULL) goto __LL44;
     if (obj_decimals == Py_None)
         arg_decimals = obj_decimals;
     else {
         arg_decimals = NULL;
     }
-    if (arg_decimals != NULL) goto __LL43;
+    if (arg_decimals != NULL) goto __LL44;
     CPy_TypeError("int or None", obj_decimals); 
     goto fail;
-__LL43: ;
+__LL44: ;
     PyObject *arg_override;
     if (obj_override == NULL) {
         arg_override = NULL;
-        goto __LL44;
+        goto __LL45;
     }
     if (PyDict_Check(obj_override))
         arg_override = obj_override;
     else {
         arg_override = NULL;
     }
-    if (arg_override != NULL) goto __LL44;
+    if (arg_override != NULL) goto __LL45;
     if (obj_override == Py_None)
         arg_override = obj_override;
     else {
         arg_override = NULL;
     }
-    if (arg_override != NULL) goto __LL44;
+    if (arg_override != NULL) goto __LL45;
     CPy_TypeError("dict or None", obj_override); 
     goto fail;
-__LL44: ;
+__LL45: ;
     PyObject *retval = CPyDef_call___coroutine__get_coroutine_fn_obj_____call__(arg___mypyc_self__, arg_self, arg_args, arg_block_identifier, arg_decimals, arg_override);
     CPy_DECREF(obj_args);
     return retval;
@@ -21537,7 +22134,7 @@ CPyL12: ;
         goto CPyL15;
 CPyL13: ;
     cpy_r_r10 = CPyStatic_call___globals;
-    cpy_r_r11 = CPyStatics[290]; /* '_request_data_no_args' */
+    cpy_r_r11 = CPyStatics[296]; /* '_request_data_no_args' */
     cpy_r_r12 = CPyDict_GetItem(cpy_r_r10, cpy_r_r11);
     if (unlikely(cpy_r_r12 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_get_coroutine_fn", 142, CPyStatic_call___globals);
@@ -21614,7 +22211,7 @@ PyObject *CPyDef_call____call_no_args(PyObject *cpy_r_self) {
     PyObject *cpy_r_r2;
     PyObject *cpy_r_r3;
     PyObject *cpy_r_r4;
-    cpy_r_r0 = CPyStatics[279]; /* 'coroutine' */
+    cpy_r_r0 = CPyStatics[285]; /* 'coroutine' */
     cpy_r_r1 = CPyObject_CallMethodObjArgs(cpy_r_self, cpy_r_r0, NULL);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_call_no_args", 169, CPyStatic_call___globals);
@@ -22058,7 +22655,7 @@ CPyL22: ;
     }
     CPy_INCREF(cpy_r_r26);
 CPyL23: ;
-    cpy_r_r27 = CPyStatics[291]; /* '__contains__' */
+    cpy_r_r27 = CPyStatics[297]; /* '__contains__' */
     cpy_r_r28 = PyObject_HasAttr(cpy_r_r26, cpy_r_r27);
     CPy_DECREF(cpy_r_r26);
     if (!cpy_r_r28) goto CPyL25;
@@ -22093,7 +22690,7 @@ CPyL28: ;
     }
     CPy_INCREF(cpy_r_r32);
 CPyL29: ;
-    cpy_r_r33 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r33 = CPyStatics[271]; /* 'abi' */
     cpy_r_r34 = CPyObject_GetAttr(cpy_r_r32, cpy_r_r33);
     CPy_DECREF(cpy_r_r32);
     if (unlikely(cpy_r_r34 == NULL)) {
@@ -22107,7 +22704,7 @@ CPyL29: ;
     }
     CPy_INCREF(cpy_r_r35);
 CPyL31: ;
-    cpy_r_r36 = CPyStatics[266]; /* 'signature' */
+    cpy_r_r36 = CPyStatics[273]; /* 'signature' */
     cpy_r_r37 = CPyObject_GetAttr(cpy_r_r35, cpy_r_r36);
     CPy_DECREF(cpy_r_r35);
     if (unlikely(cpy_r_r37 == NULL)) {
@@ -22122,7 +22719,7 @@ CPyL31: ;
     CPy_INCREF(cpy_r_r38);
 CPyL33: ;
     cpy_r_r39 = CPyStatic_call___globals;
-    cpy_r_r40 = CPyStatics[269]; /* '__encode_input' */
+    cpy_r_r40 = CPyStatics[276]; /* '__encode_input' */
     cpy_r_r41 = CPyDict_GetItem(cpy_r_r39, cpy_r_r40);
     if (unlikely(cpy_r_r41 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 176, CPyStatic_call___globals);
@@ -22464,10 +23061,10 @@ CPyL84: ;
     cpy_r_r95 = PyTuple_New(2);
     if (unlikely(cpy_r_r95 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp45 = cpy_r_r94.f0;
-    PyTuple_SET_ITEM(cpy_r_r95, 0, __tmp45);
-    PyObject *__tmp46 = cpy_r_r94.f1;
-    PyTuple_SET_ITEM(cpy_r_r95, 1, __tmp46);
+    PyObject *__tmp46 = cpy_r_r94.f0;
+    PyTuple_SET_ITEM(cpy_r_r95, 0, __tmp46);
+    PyObject *__tmp47 = cpy_r_r94.f1;
+    PyTuple_SET_ITEM(cpy_r_r95, 1, __tmp47);
     cpy_r_r96 = CPy_ExceptionMatches(cpy_r_r95);
     CPy_DecRef(cpy_r_r95);
     if (!cpy_r_r96) goto CPyL100;
@@ -22478,7 +23075,7 @@ CPyL84: ;
     }
     CPy_INCREF(cpy_r_r97);
 CPyL89: ;
-    cpy_r_r98 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r98 = CPyStatics[271]; /* 'abi' */
     cpy_r_r99 = CPyObject_GetAttr(cpy_r_r97, cpy_r_r98);
     CPy_DecRef(cpy_r_r97);
     if (unlikely(cpy_r_r99 == NULL)) {
@@ -22492,7 +23089,7 @@ CPyL89: ;
     }
     CPy_INCREF(cpy_r_r100);
 CPyL91: ;
-    cpy_r_r101 = CPyStatics[266]; /* 'signature' */
+    cpy_r_r101 = CPyStatics[273]; /* 'signature' */
     cpy_r_r102 = CPyObject_GetAttr(cpy_r_r100, cpy_r_r101);
     CPy_DecRef(cpy_r_r100);
     if (unlikely(cpy_r_r102 == NULL)) {
@@ -22507,7 +23104,7 @@ CPyL91: ;
     CPy_INCREF(cpy_r_r103);
 CPyL93: ;
     cpy_r_r104 = CPyStatic_call___globals;
-    cpy_r_r105 = CPyStatics[269]; /* '__encode_input' */
+    cpy_r_r105 = CPyStatics[276]; /* '__encode_input' */
     cpy_r_r106 = CPyDict_GetItem(cpy_r_r104, cpy_r_r105);
     if (unlikely(cpy_r_r106 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 182, CPyStatic_call___globals);
@@ -22562,7 +23159,7 @@ CPyL96: ;
         goto CPyL164;
 CPyL100: ;
     cpy_r_r116 = CPyStatic_call___globals;
-    cpy_r_r117 = CPyStatics[292]; /* 'BrokenProcessPool' */
+    cpy_r_r117 = CPyStatics[298]; /* 'BrokenProcessPool' */
     cpy_r_r118 = CPyDict_GetItem(cpy_r_r116, cpy_r_r117);
     if (unlikely(cpy_r_r118 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 184, CPyStatic_call___globals);
@@ -22583,7 +23180,7 @@ CPyL100: ;
 CPyL104: ;
     CPy_Unreachable();
 CPyL105: ;
-    cpy_r_r122 = CPyStatics[293]; /* 'Oh fuck, you broke the %s while decoding %s with abi %s' */
+    cpy_r_r122 = CPyStatics[299]; /* 'Oh fuck, you broke the %s while decoding %s with abi %s' */
     cpy_r_r123 = CPyStatic_call___ENVS;
     if (likely(cpy_r_r123 != NULL)) goto CPyL108;
     PyErr_SetString(PyExc_NameError, "value for final name \"ENVS\" was not set");
@@ -22596,7 +23193,7 @@ CPyL105: ;
 CPyL107: ;
     CPy_Unreachable();
 CPyL108: ;
-    cpy_r_r125 = CPyStatics[268]; /* 'BROWNIE_ENCODER_PROCESSES' */
+    cpy_r_r125 = CPyStatics[275]; /* 'BROWNIE_ENCODER_PROCESSES' */
     cpy_r_r126 = CPyObject_GetAttr(cpy_r_r123, cpy_r_r125);
     if (unlikely(cpy_r_r126 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 185, CPyStatic_call___globals);
@@ -22616,14 +23213,14 @@ CPyL110: ;
     }
     CPy_INCREF(cpy_r_r128);
 CPyL111: ;
-    cpy_r_r129 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r129 = CPyStatics[271]; /* 'abi' */
     cpy_r_r130 = CPyObject_GetAttr(cpy_r_r128, cpy_r_r129);
     CPy_DecRef(cpy_r_r128);
     if (unlikely(cpy_r_r130 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 185, CPyStatic_call___globals);
         goto CPyL265;
     }
-    cpy_r_r131 = CPyStatics[294]; /* 'critical' */
+    cpy_r_r131 = CPyStatics[300]; /* 'critical' */
     cpy_r_r132 = CPyObject_CallMethodObjArgs(cpy_r_r120, cpy_r_r131, cpy_r_r122, cpy_r_r126, cpy_r_r127, cpy_r_r130, NULL);
     CPy_DecRef(cpy_r_r126);
     CPy_DecRef(cpy_r_r127);
@@ -22646,13 +23243,13 @@ CPyL113: ;
 CPyL115: ;
     CPy_Unreachable();
 CPyL116: ;
-    cpy_r_r135 = CPyStatics[268]; /* 'BROWNIE_ENCODER_PROCESSES' */
+    cpy_r_r135 = CPyStatics[275]; /* 'BROWNIE_ENCODER_PROCESSES' */
     cpy_r_r136 = CPyObject_GetAttr(cpy_r_r133, cpy_r_r135);
     if (unlikely(cpy_r_r136 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 187, CPyStatic_call___globals);
         goto CPyL166;
     }
-    cpy_r_r137 = CPyStatics[295]; /* '_max_workers' */
+    cpy_r_r137 = CPyStatics[301]; /* '_max_workers' */
     cpy_r_r138 = CPyObject_GetAttr(cpy_r_r136, cpy_r_r137);
     CPy_DecRef(cpy_r_r136);
     if (unlikely(cpy_r_r138 == NULL)) {
@@ -22660,7 +23257,7 @@ CPyL116: ;
         goto CPyL166;
     }
     cpy_r_r139 = CPyStatic_call___globals;
-    cpy_r_r140 = CPyStatics[296]; /* 'AsyncProcessPoolExecutor' */
+    cpy_r_r140 = CPyStatics[302]; /* 'AsyncProcessPoolExecutor' */
     cpy_r_r141 = CPyDict_GetItem(cpy_r_r139, cpy_r_r140);
     if (unlikely(cpy_r_r141 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 187, CPyStatic_call___globals);
@@ -22691,7 +23288,7 @@ CPyL121: ;
 CPyL122: ;
     CPy_Unreachable();
 CPyL123: ;
-    cpy_r_r147 = CPyStatics[268]; /* 'BROWNIE_ENCODER_PROCESSES' */
+    cpy_r_r147 = CPyStatics[275]; /* 'BROWNIE_ENCODER_PROCESSES' */
     cpy_r_r148 = PyObject_SetAttr(cpy_r_r145, cpy_r_r147, cpy_r_r144);
     CPy_DecRef(cpy_r_r144);
     cpy_r_r149 = cpy_r_r148 >= 0;
@@ -22716,7 +23313,7 @@ CPyL125: ;
     }
     CPy_INCREF(cpy_r_r152);
 CPyL127: ;
-    cpy_r_r153 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r153 = CPyStatics[271]; /* 'abi' */
     cpy_r_r154 = CPyObject_GetAttr(cpy_r_r152, cpy_r_r153);
     CPy_DecRef(cpy_r_r152);
     if (unlikely(cpy_r_r154 == NULL)) {
@@ -22730,7 +23327,7 @@ CPyL127: ;
     }
     CPy_INCREF(cpy_r_r155);
 CPyL129: ;
-    cpy_r_r156 = CPyStatics[266]; /* 'signature' */
+    cpy_r_r156 = CPyStatics[273]; /* 'signature' */
     cpy_r_r157 = CPyObject_GetAttr(cpy_r_r155, cpy_r_r156);
     CPy_DecRef(cpy_r_r155);
     if (unlikely(cpy_r_r157 == NULL)) {
@@ -22745,7 +23342,7 @@ CPyL129: ;
     CPy_INCREF(cpy_r_r158);
 CPyL131: ;
     cpy_r_r159 = CPyStatic_call___globals;
-    cpy_r_r160 = CPyStatics[269]; /* '__encode_input' */
+    cpy_r_r160 = CPyStatics[276]; /* '__encode_input' */
     cpy_r_r161 = CPyDict_GetItem(cpy_r_r159, cpy_r_r160);
     if (unlikely(cpy_r_r161 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 188, CPyStatic_call___globals);
@@ -22798,7 +23395,7 @@ CPyL138: ;
     }
     CPy_INCREF(cpy_r_r171);
 CPyL139: ;
-    cpy_r_r172 = CPyStatics[266]; /* 'signature' */
+    cpy_r_r172 = CPyStatics[273]; /* 'signature' */
     cpy_r_r173 = CPyObject_GetAttr(cpy_r_r171, cpy_r_r172);
     CPy_DecRef(cpy_r_r171);
     if (unlikely(cpy_r_r173 == NULL)) {
@@ -22819,7 +23416,7 @@ CPyL141: ;
         goto CPyL164;
 CPyL142: ;
     cpy_r_r175 = CPyStatic_call___globals;
-    cpy_r_r176 = CPyStatics[297]; /* 'PicklingError' */
+    cpy_r_r176 = CPyStatics[303]; /* 'PicklingError' */
     cpy_r_r177 = CPyDict_GetItem(cpy_r_r175, cpy_r_r176);
     if (unlikely(cpy_r_r177 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 189, CPyStatic_call___globals);
@@ -22845,7 +23442,7 @@ CPyL145: ;
     }
     CPy_INCREF(cpy_r_r181);
 CPyL147: ;
-    cpy_r_r182 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r182 = CPyStatics[271]; /* 'abi' */
     cpy_r_r183 = CPyObject_GetAttr(cpy_r_r181, cpy_r_r182);
     CPy_DecRef(cpy_r_r181);
     if (unlikely(cpy_r_r183 == NULL)) {
@@ -22859,7 +23456,7 @@ CPyL147: ;
     }
     CPy_INCREF(cpy_r_r184);
 CPyL149: ;
-    cpy_r_r185 = CPyStatics[266]; /* 'signature' */
+    cpy_r_r185 = CPyStatics[273]; /* 'signature' */
     cpy_r_r186 = CPyObject_GetAttr(cpy_r_r184, cpy_r_r185);
     CPy_DecRef(cpy_r_r184);
     if (unlikely(cpy_r_r186 == NULL)) {
@@ -22874,7 +23471,7 @@ CPyL149: ;
     CPy_INCREF(cpy_r_r187);
 CPyL151: ;
     cpy_r_r188 = CPyStatic_call___globals;
-    cpy_r_r189 = CPyStatics[269]; /* '__encode_input' */
+    cpy_r_r189 = CPyStatics[276]; /* '__encode_input' */
     cpy_r_r190 = CPyDict_GetItem(cpy_r_r188, cpy_r_r189);
     if (unlikely(cpy_r_r190 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 190, CPyStatic_call___globals);
@@ -22927,7 +23524,7 @@ CPyL158: ;
     }
     CPy_INCREF(cpy_r_r200);
 CPyL159: ;
-    cpy_r_r201 = CPyStatics[266]; /* 'signature' */
+    cpy_r_r201 = CPyStatics[273]; /* 'signature' */
     cpy_r_r202 = CPyObject_GetAttr(cpy_r_r200, cpy_r_r201);
     CPy_DecRef(cpy_r_r200);
     if (unlikely(cpy_r_r202 == NULL)) {
@@ -23098,7 +23695,7 @@ CPyL184: ;
     }
     CPy_INCREF(cpy_r_r227);
 CPyL185: ;
-    cpy_r_r228 = CPyStatics[298]; /* '_name' */
+    cpy_r_r228 = CPyStatics[304]; /* '_name' */
     cpy_r_r229 = CPyObject_GetAttr(cpy_r_r227, cpy_r_r228);
     CPy_DECREF(cpy_r_r227);
     if (unlikely(cpy_r_r229 == NULL)) {
@@ -23130,7 +23727,7 @@ CPyL185: ;
     }
     CPy_INCREF(cpy_r_r233);
 CPyL190: ;
-    cpy_r_r234 = CPyStatics[299]; /* ' ' */
+    cpy_r_r234 = CPyStatics[305]; /* ' ' */
     cpy_r_r235 = CPyStr_Split(cpy_r_r233, cpy_r_r234, 2);
     CPy_DECREF(cpy_r_r233);
     if (unlikely(cpy_r_r235 == NULL)) {
@@ -23160,7 +23757,7 @@ CPyL190: ;
     } else
         goto CPyL197;
 CPyL194: ;
-    cpy_r_r239 = CPyStatics[300]; /* ': ' */
+    cpy_r_r239 = CPyStatics[306]; /* ': ' */
     cpy_r_r240 = ((dank_mids___brownie_patch___call___encode_input_envObject *)cpy_r_r2)->_exc_str;
     if (unlikely(cpy_r_r240 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\call.py", "encode_input", "encode_input_env", "exc_str", 199, CPyStatic_call___globals);
@@ -23193,7 +23790,7 @@ CPyL197: ;
 CPyL198: ;
     cpy_r_r244 = PyObject_Type(cpy_r_r243);
     CPy_DECREF(cpy_r_r243);
-    cpy_r_r245 = CPyStatics[301]; /* "Contract('" */
+    cpy_r_r245 = CPyStatics[307]; /* "Contract('" */
     cpy_r_r246 = ((dank_mids___brownie_patch___call___encode_input_envObject *)cpy_r_r2)->_call;
     if (unlikely(cpy_r_r246 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\call.py", "encode_input", "encode_input_env", "call", 200, CPyStatic_call___globals);
@@ -23201,7 +23798,7 @@ CPyL198: ;
     }
     CPy_INCREF(cpy_r_r246);
 CPyL199: ;
-    cpy_r_r247 = CPyStatics[273]; /* '_address' */
+    cpy_r_r247 = CPyStatics[280]; /* '_address' */
     cpy_r_r248 = CPyObject_GetAttr(cpy_r_r246, cpy_r_r247);
     CPy_DECREF(cpy_r_r246);
     if (unlikely(cpy_r_r248 == NULL)) {
@@ -23214,7 +23811,7 @@ CPyL199: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 200, CPyStatic_call___globals);
         goto CPyL290;
     }
-    cpy_r_r250 = CPyStatics[302]; /* "')." */
+    cpy_r_r250 = CPyStatics[308]; /* "')." */
     cpy_r_r251 = ((dank_mids___brownie_patch___call___encode_input_envObject *)cpy_r_r2)->_call;
     if (unlikely(cpy_r_r251 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\call.py", "encode_input", "encode_input_env", "call", 200, CPyStatic_call___globals);
@@ -23222,7 +23819,7 @@ CPyL199: ;
     }
     CPy_INCREF(cpy_r_r251);
 CPyL202: ;
-    cpy_r_r252 = CPyStatics[298]; /* '_name' */
+    cpy_r_r252 = CPyStatics[304]; /* '_name' */
     cpy_r_r253 = CPyObject_GetAttr(cpy_r_r251, cpy_r_r252);
     CPy_DECREF(cpy_r_r251);
     if (unlikely(cpy_r_r253 == NULL)) {
@@ -23235,7 +23832,7 @@ CPyL202: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 200, CPyStatic_call___globals);
         goto CPyL291;
     }
-    cpy_r_r255 = CPyStatics[300]; /* ': ' */
+    cpy_r_r255 = CPyStatics[306]; /* ': ' */
     cpy_r_r256 = ((dank_mids___brownie_patch___call___encode_input_envObject *)cpy_r_r2)->_exc_str;
     if (unlikely(cpy_r_r256 == NULL)) {
         PyErr_SetString(PyExc_AttributeError, "attribute 'exc_str' of 'encode_input_env' undefined");
@@ -23846,10 +24443,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp47 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp47);
-    PyObject *__tmp48 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp48);
+    PyObject *__tmp48 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp48);
+    PyObject *__tmp49 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp49);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -24315,7 +24912,7 @@ CPyL5: ;
     }
     CPy_INCREF(cpy_r_r8);
 CPyL6: ;
-    cpy_r_r9 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r9 = CPyStatics[271]; /* 'abi' */
     cpy_r_r10 = CPyObject_GetAttr(cpy_r_r8, cpy_r_r9);
     CPy_DECREF(cpy_r_r8);
     if (unlikely(cpy_r_r10 == NULL)) {
@@ -24349,7 +24946,7 @@ CPyL8: ;
     }
     CPy_INCREF(cpy_r_r14);
 CPyL11: ;
-    cpy_r_r15 = CPyStatics[275]; /* '_skip_decoder_proc_pool' */
+    cpy_r_r15 = CPyStatics[282]; /* '_skip_decoder_proc_pool' */
     cpy_r_r16 = CPyObject_GetAttr(cpy_r_r14, cpy_r_r15);
     CPy_DECREF(cpy_r_r14);
     if (unlikely(cpy_r_r16 == NULL)) {
@@ -24365,7 +24962,7 @@ CPyL11: ;
     }
     cpy_r_r19 = cpy_r_r17;
     if (cpy_r_r19) goto CPyL213;
-    cpy_r_r20 = CPyStatics[664]; /* b'Unexpected error' */
+    cpy_r_r20 = CPyStatics[666]; /* b'Unexpected error' */
     cpy_r_r21 = ((dank_mids___brownie_patch___call___decode_output_envObject *)cpy_r_r4)->_data;
     if (unlikely(cpy_r_r21 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\call.py", "decode_output", "decode_output_env", "data", 207, CPyStatic_call___globals);
@@ -24400,7 +24997,7 @@ CPyL18: ;
     }
     CPy_INCREF(cpy_r_r26);
 CPyL19: ;
-    cpy_r_r27 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r27 = CPyStatics[271]; /* 'abi' */
     cpy_r_r28 = CPyObject_GetAttr(cpy_r_r26, cpy_r_r27);
     CPy_DECREF(cpy_r_r26);
     if (unlikely(cpy_r_r28 == NULL)) {
@@ -24684,7 +25281,7 @@ CPyL65: ;
         goto CPyL100;
     }
     cpy_r_r66 = CPyStatic_call___globals;
-    cpy_r_r67 = CPyStatics[292]; /* 'BrokenProcessPool' */
+    cpy_r_r67 = CPyStatics[298]; /* 'BrokenProcessPool' */
     cpy_r_r68 = CPyDict_GetItem(cpy_r_r66, cpy_r_r67);
     if (unlikely(cpy_r_r68 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 214, CPyStatic_call___globals);
@@ -24705,7 +25302,7 @@ CPyL65: ;
 CPyL70: ;
     CPy_Unreachable();
 CPyL71: ;
-    cpy_r_r72 = CPyStatics[293]; /* 'Oh fuck, you broke the %s while decoding %s with abi %s' */
+    cpy_r_r72 = CPyStatics[299]; /* 'Oh fuck, you broke the %s while decoding %s with abi %s' */
     cpy_r_r73 = CPyStatic_call___ENVS;
     if (likely(cpy_r_r73 != NULL)) goto CPyL74;
     PyErr_SetString(PyExc_NameError, "value for final name \"ENVS\" was not set");
@@ -24718,7 +25315,7 @@ CPyL71: ;
 CPyL73: ;
     CPy_Unreachable();
 CPyL74: ;
-    cpy_r_r75 = CPyStatics[271]; /* 'BROWNIE_DECODER_PROCESSES' */
+    cpy_r_r75 = CPyStatics[278]; /* 'BROWNIE_DECODER_PROCESSES' */
     cpy_r_r76 = CPyObject_GetAttr(cpy_r_r73, cpy_r_r75);
     if (unlikely(cpy_r_r76 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 216, CPyStatic_call___globals);
@@ -24738,14 +25335,14 @@ CPyL76: ;
     }
     CPy_INCREF(cpy_r_r78);
 CPyL77: ;
-    cpy_r_r79 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r79 = CPyStatics[271]; /* 'abi' */
     cpy_r_r80 = CPyObject_GetAttr(cpy_r_r78, cpy_r_r79);
     CPy_DecRef(cpy_r_r78);
     if (unlikely(cpy_r_r80 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 216, CPyStatic_call___globals);
         goto CPyL235;
     }
-    cpy_r_r81 = CPyStatics[294]; /* 'critical' */
+    cpy_r_r81 = CPyStatics[300]; /* 'critical' */
     cpy_r_r82 = CPyObject_CallMethodObjArgs(cpy_r_r70, cpy_r_r81, cpy_r_r72, cpy_r_r76, cpy_r_r77, cpy_r_r80, NULL);
     CPy_DecRef(cpy_r_r76);
     CPy_DecRef(cpy_r_r77);
@@ -24768,13 +25365,13 @@ CPyL79: ;
 CPyL81: ;
     CPy_Unreachable();
 CPyL82: ;
-    cpy_r_r85 = CPyStatics[271]; /* 'BROWNIE_DECODER_PROCESSES' */
+    cpy_r_r85 = CPyStatics[278]; /* 'BROWNIE_DECODER_PROCESSES' */
     cpy_r_r86 = CPyObject_GetAttr(cpy_r_r83, cpy_r_r85);
     if (unlikely(cpy_r_r86 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 217, CPyStatic_call___globals);
         goto CPyL100;
     }
-    cpy_r_r87 = CPyStatics[295]; /* '_max_workers' */
+    cpy_r_r87 = CPyStatics[301]; /* '_max_workers' */
     cpy_r_r88 = CPyObject_GetAttr(cpy_r_r86, cpy_r_r87);
     CPy_DecRef(cpy_r_r86);
     if (unlikely(cpy_r_r88 == NULL)) {
@@ -24782,7 +25379,7 @@ CPyL82: ;
         goto CPyL100;
     }
     cpy_r_r89 = CPyStatic_call___globals;
-    cpy_r_r90 = CPyStatics[296]; /* 'AsyncProcessPoolExecutor' */
+    cpy_r_r90 = CPyStatics[302]; /* 'AsyncProcessPoolExecutor' */
     cpy_r_r91 = CPyDict_GetItem(cpy_r_r89, cpy_r_r90);
     if (unlikely(cpy_r_r91 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 217, CPyStatic_call___globals);
@@ -24813,7 +25410,7 @@ CPyL87: ;
 CPyL88: ;
     CPy_Unreachable();
 CPyL89: ;
-    cpy_r_r97 = CPyStatics[271]; /* 'BROWNIE_DECODER_PROCESSES' */
+    cpy_r_r97 = CPyStatics[278]; /* 'BROWNIE_DECODER_PROCESSES' */
     cpy_r_r98 = PyObject_SetAttr(cpy_r_r95, cpy_r_r97, cpy_r_r94);
     CPy_DecRef(cpy_r_r94);
     cpy_r_r99 = cpy_r_r98 >= 0;
@@ -24835,7 +25432,7 @@ CPyL91: ;
     }
     CPy_INCREF(cpy_r_r101);
 CPyL92: ;
-    cpy_r_r102 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r102 = CPyStatics[271]; /* 'abi' */
     cpy_r_r103 = CPyObject_GetAttr(cpy_r_r101, cpy_r_r102);
     CPy_DecRef(cpy_r_r101);
     if (unlikely(cpy_r_r103 == NULL)) {
@@ -24987,7 +25584,7 @@ CPyL114: ;
         goto CPyL248;
     }
     cpy_r_r122 = CPyStatic_call___globals;
-    cpy_r_r123 = CPyStatics[289]; /* 'InsufficientDataBytes' */
+    cpy_r_r123 = CPyStatics[295]; /* 'InsufficientDataBytes' */
     cpy_r_r124 = CPyDict_GetItem(cpy_r_r122, cpy_r_r123);
     if (unlikely(cpy_r_r124 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 223, CPyStatic_call___globals);
@@ -25038,7 +25635,7 @@ CPyL121: ;
     }
     CPy_INCREF(cpy_r_r132);
 CPyL122: ;
-    cpy_r_r133 = CPyStatics[273]; /* '_address' */
+    cpy_r_r133 = CPyStatics[280]; /* '_address' */
     cpy_r_r134 = CPyObject_GetAttr(cpy_r_r132, cpy_r_r133);
     CPy_DecRef(cpy_r_r132);
     if (unlikely(cpy_r_r134 == NULL)) {
@@ -25149,7 +25746,7 @@ CPyL138: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 229, CPyStatic_call___globals);
         goto CPyL248;
     }
-    cpy_r_r157 = CPyStatics[303]; /* " object has no attribute '_skip_decoder_proc_pool'" */
+    cpy_r_r157 = CPyStatics[309]; /* " object has no attribute '_skip_decoder_proc_pool'" */
     cpy_r_r158 = CPyStr_Endswith(cpy_r_r156, cpy_r_r157);
     CPy_DecRef(cpy_r_r156);
     if (cpy_r_r158) {
@@ -25181,7 +25778,7 @@ CPyL143: ;
 CPyL144: ;
     CPy_Unreachable();
 CPyL145: ;
-    cpy_r_r161 = CPyStatics[304]; /* 'DEBUG ME BRO: %s' */
+    cpy_r_r161 = CPyStatics[310]; /* 'DEBUG ME BRO: %s' */
     cpy_r_r162 = ((dank_mids___brownie_patch___call___decode_output_envObject *)cpy_r_r4)->_e;
     if (unlikely(cpy_r_r162 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\call.py", "decode_output", "decode_output_env", "e", 231, CPyStatic_call___globals);
@@ -25189,7 +25786,7 @@ CPyL145: ;
     }
     CPy_INCREF(cpy_r_r162);
 CPyL146: ;
-    cpy_r_r163 = CPyStatics[305]; /* 'debug' */
+    cpy_r_r163 = CPyStatics[311]; /* 'debug' */
     cpy_r_r164 = CPyObject_CallMethodObjArgs(cpy_r_r159, cpy_r_r163, cpy_r_r161, cpy_r_r162, NULL);
     CPy_DecRef(cpy_r_r162);
     if (unlikely(cpy_r_r164 == NULL)) {
@@ -25205,7 +25802,7 @@ CPyL147: ;
     }
     CPy_INCREF(cpy_r_r165);
 CPyL148: ;
-    cpy_r_r166 = CPyStatics[273]; /* '_address' */
+    cpy_r_r166 = CPyStatics[280]; /* '_address' */
     cpy_r_r167 = CPyObject_GetAttr(cpy_r_r165, cpy_r_r166);
     CPy_DecRef(cpy_r_r165);
     if (unlikely(cpy_r_r167 == NULL)) {
@@ -25213,7 +25810,7 @@ CPyL148: ;
         goto CPyL248;
     }
     cpy_r_r168 = CPyStatic_call___globals;
-    cpy_r_r169 = CPyStatics[274]; /* '_skip_proc_pool' */
+    cpy_r_r169 = CPyStatics[281]; /* '_skip_proc_pool' */
     cpy_r_r170 = CPyDict_GetItem(cpy_r_r168, cpy_r_r169);
     if (unlikely(cpy_r_r170 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 232, CPyStatic_call___globals);
@@ -25241,7 +25838,7 @@ CPyL148: ;
     }
     CPy_INCREF(cpy_r_r175);
 CPyL153: ;
-    cpy_r_r176 = CPyStatics[275]; /* '_skip_decoder_proc_pool' */
+    cpy_r_r176 = CPyStatics[282]; /* '_skip_decoder_proc_pool' */
     cpy_r_r177 = cpy_r_r174 ? Py_True : Py_False;
     cpy_r_r178 = PyObject_SetAttr(cpy_r_r175, cpy_r_r176, cpy_r_r177);
     CPy_DecRef(cpy_r_r175);
@@ -26066,10 +26663,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp49 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp49);
-    PyObject *__tmp50 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp50);
+    PyObject *__tmp50 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp50);
+    PyObject *__tmp51 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp51);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -26301,7 +26898,7 @@ CPyL5: ;
     }
     CPy_INCREF(cpy_r_r4);
 CPyL6: ;
-    cpy_r_r5 = CPyStatics[266]; /* 'signature' */
+    cpy_r_r5 = CPyStatics[273]; /* 'signature' */
     cpy_r_r6 = CPyObject_GetAttr(cpy_r_r4, cpy_r_r5);
     CPy_DECREF(cpy_r_r4);
     if (unlikely(cpy_r_r6 == NULL)) {
@@ -26575,10 +27172,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp51 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp51);
-    PyObject *__tmp52 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp52);
+    PyObject *__tmp52 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp52);
+    PyObject *__tmp53 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp53);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -26774,14 +27371,14 @@ PyObject *CPyDef_call_____encode_input(PyObject *cpy_r_abi, PyObject *cpy_r_sign
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__encode_input", 251, CPyStatic_call___globals);
         goto CPyL14;
     }
-    cpy_r_r1 = CPyStatics[276]; /* 'inputs' */
+    cpy_r_r1 = CPyStatics[256]; /* 'inputs' */
     cpy_r_r2 = CPyDict_GetItem(cpy_r_abi, cpy_r_r1);
     if (unlikely(cpy_r_r2 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__encode_input", 252, CPyStatic_call___globals);
         goto CPyL22;
     }
     cpy_r_r3 = CPyStatic_call___globals;
-    cpy_r_r4 = CPyStatics[306]; /* 'get_type_strings' */
+    cpy_r_r4 = CPyStatics[312]; /* 'get_type_strings' */
     cpy_r_r5 = CPyDict_GetItem(cpy_r_r3, cpy_r_r4);
     if (unlikely(cpy_r_r5 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__encode_input", 252, CPyStatic_call___globals);
@@ -26972,14 +27569,14 @@ PyObject *CPyDef_call_____decode_output(PyObject *cpy_r_hexstr, PyObject *cpy_r_
     PyObject *cpy_r_r33;
     char cpy_r_r34;
     PyObject *cpy_r_r35;
-    cpy_r_r0 = CPyStatics[307]; /* 'outputs' */
+    cpy_r_r0 = CPyStatics[313]; /* 'outputs' */
     cpy_r_r1 = CPyDict_GetItem(cpy_r_abi, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__decode_output", 273, CPyStatic_call___globals);
         goto CPyL20;
     }
     cpy_r_r2 = CPyStatic_call___globals;
-    cpy_r_r3 = CPyStatics[306]; /* 'get_type_strings' */
+    cpy_r_r3 = CPyStatics[312]; /* 'get_type_strings' */
     cpy_r_r4 = CPyDict_GetItem(cpy_r_r2, cpy_r_r3);
     if (unlikely(cpy_r_r4 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__decode_output", 273, CPyStatic_call___globals);
@@ -27063,23 +27660,23 @@ CPyL11: ;
     cpy_r_r23 = cpy_r_r22 << 1;
     cpy_r_r24 = cpy_r_r23 == 2;
     if (!cpy_r_r24) goto CPyL18;
-    PyObject *__tmp53;
+    PyObject *__tmp54;
     if (unlikely(!(PyTuple_Check(cpy_r_result) && PyTuple_GET_SIZE(cpy_r_result) == 1))) {
-        __tmp53 = NULL;
-        goto __LL54;
+        __tmp54 = NULL;
+        goto __LL55;
     }
-    __tmp53 = PyTuple_GET_ITEM(cpy_r_result, 0);
-    if (__tmp53 == NULL) goto __LL54;
-    __tmp53 = cpy_r_result;
-__LL54: ;
-    if (unlikely(__tmp53 == NULL)) {
+    __tmp54 = PyTuple_GET_ITEM(cpy_r_result, 0);
+    if (__tmp54 == NULL) goto __LL55;
+    __tmp54 = cpy_r_result;
+__LL55: ;
+    if (unlikely(__tmp54 == NULL)) {
         CPy_TypeError("tuple[object]", cpy_r_result); cpy_r_r25 = (tuple_T1O) { NULL };
     } else {
-        PyObject *__tmp55 = PyTuple_GET_ITEM(cpy_r_result, 0);
-        CPy_INCREF(__tmp55);
-        PyObject *__tmp56;
-        __tmp56 = __tmp55;
-        cpy_r_r25.f0 = __tmp56;
+        PyObject *__tmp56 = PyTuple_GET_ITEM(cpy_r_result, 0);
+        CPy_INCREF(__tmp56);
+        PyObject *__tmp57;
+        __tmp57 = __tmp56;
+        cpy_r_r25.f0 = __tmp57;
     }
     CPy_DECREF(cpy_r_result);
     if (unlikely(cpy_r_r25.f0 == NULL)) {
@@ -27325,7 +27922,7 @@ CPyL4: ;
     }
     cpy_r_r5 = (PyObject *)&_Py_NoneStruct;
     cpy_r_r6 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r7 = CPyStatics[676]; /* 4 */
+    cpy_r_r7 = CPyStatics[680]; /* 4 */
     cpy_r_r8 = PySlice_New(cpy_r_r5, cpy_r_r7, cpy_r_r6);
     if (unlikely(cpy_r_r8 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 283, CPyStatic_call___globals);
@@ -27345,7 +27942,7 @@ CPyL4: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 283, CPyStatic_call___globals);
         goto CPyL78;
     }
-    cpy_r_r12 = CPyStatics[308]; /* '0x08c379a0' */
+    cpy_r_r12 = CPyStatics[314]; /* '0x08c379a0' */
     cpy_r_r13 = PyObject_RichCompare(cpy_r_r11, cpy_r_r12, 2);
     if (unlikely(cpy_r_r13 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 284, CPyStatic_call___globals);
@@ -27365,13 +27962,13 @@ CPyL4: ;
         goto CPyL29;
 CPyL11: ;
     cpy_r_r17 = CPyStatic_call___globals;
-    cpy_r_r18 = CPyStatics[309]; /* 'eth_abi' */
+    cpy_r_r18 = CPyStatics[315]; /* 'eth_abi' */
     cpy_r_r19 = CPyDict_GetItem(cpy_r_r17, cpy_r_r18);
     if (unlikely(cpy_r_r19 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 285, CPyStatic_call___globals);
         goto CPyL78;
     }
-    cpy_r_r20 = CPyStatics[310]; /* 'string' */
+    cpy_r_r20 = CPyStatics[316]; /* 'string' */
     cpy_r_r21 = PyList_New(1);
     if (unlikely(cpy_r_r21 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 285, CPyStatic_call___globals);
@@ -27404,7 +28001,7 @@ CPyL16: ;
     }
     cpy_r_r29 = (PyObject *)&_Py_NoneStruct;
     cpy_r_r30 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r31 = CPyStatics[676]; /* 4 */
+    cpy_r_r31 = CPyStatics[680]; /* 4 */
     cpy_r_r32 = PySlice_New(cpy_r_r31, cpy_r_r29, cpy_r_r30);
     if (unlikely(cpy_r_r32 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 285, CPyStatic_call___globals);
@@ -27417,7 +28014,7 @@ CPyL16: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 285, CPyStatic_call___globals);
         goto CPyL100;
     }
-    cpy_r_r34 = CPyStatics[311]; /* 'decode_abi' */
+    cpy_r_r34 = CPyStatics[317]; /* 'decode_abi' */
     cpy_r_r35 = CPyObject_CallMethodObjArgs(cpy_r_r19, cpy_r_r34, cpy_r_r21, cpy_r_r33, NULL);
     CPy_DECREF(cpy_r_r19);
     CPy_DECREF(cpy_r_r21);
@@ -27426,7 +28023,7 @@ CPyL16: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 285, CPyStatic_call___globals);
         goto CPyL78;
     }
-    cpy_r_r36 = CPyStatics[668]; /* 0 */
+    cpy_r_r36 = CPyStatics[670]; /* 0 */
     cpy_r_r37 = PyObject_GetItem(cpy_r_r35, cpy_r_r36);
     CPy_DECREF(cpy_r_r35);
     if (unlikely(cpy_r_r37 == NULL)) {
@@ -27434,7 +28031,7 @@ CPyL16: ;
         goto CPyL78;
     }
     cpy_r_revert_str = cpy_r_r37;
-    cpy_r_r38 = CPyStatics[312]; /* 'Call reverted: ' */
+    cpy_r_r38 = CPyStatics[318]; /* 'Call reverted: ' */
     cpy_r_r39 = PyObject_Str(cpy_r_revert_str);
     CPy_DECREF(cpy_r_revert_str);
     if (unlikely(cpy_r_r39 == NULL)) {
@@ -27477,7 +28074,7 @@ CPyL26: ;
     }
     CPy_Unreachable();
 CPyL29: ;
-    cpy_r_r46 = CPyStatics[313]; /* '0x4e487b71' */
+    cpy_r_r46 = CPyStatics[319]; /* '0x4e487b71' */
     cpy_r_r47 = PyObject_RichCompare(cpy_r_r11, cpy_r_r46, 2);
     if (unlikely(cpy_r_r47 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 287, CPyStatic_call___globals);
@@ -27515,7 +28112,7 @@ CPyL35: ;
     }
     cpy_r_r56 = (PyObject *)&_Py_NoneStruct;
     cpy_r_r57 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r58 = CPyStatics[676]; /* 4 */
+    cpy_r_r58 = CPyStatics[680]; /* 4 */
     cpy_r_r59 = PySlice_New(cpy_r_r58, cpy_r_r56, cpy_r_r57);
     if (unlikely(cpy_r_r59 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 288, CPyStatic_call___globals);
@@ -27536,7 +28133,7 @@ CPyL35: ;
         goto CPyL78;
     }
     cpy_r_r63 = (PyObject *)&PyLong_Type;
-    cpy_r_r64 = CPyStatics[677]; /* 16 */
+    cpy_r_r64 = CPyStatics[681]; /* 16 */
     PyObject *cpy_r_r65[2] = {cpy_r_r62, cpy_r_r64};
     cpy_r_r66 = (PyObject **)&cpy_r_r65;
     cpy_r_r67 = _PyObject_Vectorcall(cpy_r_r63, cpy_r_r66, 2, 0);
@@ -27556,7 +28153,7 @@ CPyL35: ;
         goto CPyL78;
     }
     cpy_r_r69 = CPyStatic_call___globals;
-    cpy_r_r70 = CPyStatics[314]; /* 'SOLIDITY_ERROR_CODES' */
+    cpy_r_r70 = CPyStatics[320]; /* 'SOLIDITY_ERROR_CODES' */
     cpy_r_r71 = CPyDict_GetItem(cpy_r_r69, cpy_r_r70);
     if (unlikely(cpy_r_r71 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 289, CPyStatic_call___globals);
@@ -27575,7 +28172,7 @@ CPyL35: ;
     cpy_r_r75 = cpy_r_r73;
     if (!cpy_r_r75) goto CPyL47;
     cpy_r_r76 = CPyStatic_call___globals;
-    cpy_r_r77 = CPyStatics[314]; /* 'SOLIDITY_ERROR_CODES' */
+    cpy_r_r77 = CPyStatics[320]; /* 'SOLIDITY_ERROR_CODES' */
     cpy_r_r78 = CPyDict_GetItem(cpy_r_r76, cpy_r_r77);
     if (unlikely(cpy_r_r78 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 290, CPyStatic_call___globals);
@@ -27592,14 +28189,14 @@ CPyL35: ;
     cpy_r_revert_str = cpy_r_r80;
     goto CPyL50;
 CPyL47: ;
-    cpy_r_r81 = CPyStatics[315]; /* 'Panic (error code: ' */
+    cpy_r_r81 = CPyStatics[321]; /* 'Panic (error code: ' */
     cpy_r_r82 = CPyTagged_Str(cpy_r_r68);
     CPyTagged_DECREF(cpy_r_r68);
     if (unlikely(cpy_r_r82 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 292, CPyStatic_call___globals);
         goto CPyL78;
     }
-    cpy_r_r83 = CPyStatics[316]; /* ')' */
+    cpy_r_r83 = CPyStatics[254]; /* ')' */
     cpy_r_r84 = CPyStr_Build(3, cpy_r_r81, cpy_r_r82, cpy_r_r83);
     CPy_DECREF(cpy_r_r82);
     if (unlikely(cpy_r_r84 == NULL)) {
@@ -27608,7 +28205,7 @@ CPyL47: ;
     }
     cpy_r_revert_str = cpy_r_r84;
 CPyL50: ;
-    cpy_r_r85 = CPyStatics[312]; /* 'Call reverted: ' */
+    cpy_r_r85 = CPyStatics[318]; /* 'Call reverted: ' */
     cpy_r_r86 = PyObject_Str(cpy_r_revert_str);
     CPy_DECREF(cpy_r_revert_str);
     if (unlikely(cpy_r_r86 == NULL)) {
@@ -27651,7 +28248,7 @@ CPyL55: ;
     }
     CPy_Unreachable();
 CPyL58: ;
-    cpy_r_r93 = CPyStatics[317]; /* '0xc1b84b2f' */
+    cpy_r_r93 = CPyStatics[322]; /* '0xc1b84b2f' */
     cpy_r_r94 = PyObject_RichCompare(cpy_r_r11, cpy_r_r93, 2);
     CPy_DECREF(cpy_r_r11);
     if (unlikely(cpy_r_r94 == NULL)) {
@@ -27667,7 +28264,7 @@ CPyL58: ;
     }
     cpy_r_r97 = cpy_r_r95;
     if (!cpy_r_r97) goto CPyL67;
-    cpy_r_r98 = CPyStatics[318]; /* 'Call reverted: execution reverted' */
+    cpy_r_r98 = CPyStatics[323]; /* 'Call reverted: execution reverted' */
     cpy_r_r99 = CPyStatic_call___Revert;
     if (likely(cpy_r_r99 != NULL)) goto CPyL64;
     PyErr_SetString(PyExc_NameError, "value for final name \"Revert\" was not set");
@@ -27693,7 +28290,7 @@ CPyL64: ;
     }
     CPy_Unreachable();
 CPyL67: ;
-    cpy_r_r104 = CPyStatics[307]; /* 'outputs' */
+    cpy_r_r104 = CPyStatics[313]; /* 'outputs' */
     cpy_r_r105 = CPyDict_GetItem(cpy_r_abi, cpy_r_r104);
     if (unlikely(cpy_r_r105 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 296, CPyStatic_call___globals);
@@ -27716,7 +28313,7 @@ CPyL67: ;
     }
     cpy_r_r111 = cpy_r_r109;
     if (cpy_r_r111) goto CPyL93;
-    cpy_r_r112 = CPyStatics[319]; /* 'No data was returned - the call likely reverted' */
+    cpy_r_r112 = CPyStatics[324]; /* 'No data was returned - the call likely reverted' */
     cpy_r_r113 = CPyStatic_call___Revert;
     if (likely(cpy_r_r113 != NULL)) goto CPyL75;
     PyErr_SetString(PyExc_NameError, "value for final name \"Revert\" was not set");
@@ -27755,7 +28352,7 @@ CPyL78: ;
     if (!cpy_r_r122) goto CPyL89;
     cpy_r_r123 = CPy_GetExcValue();
     cpy_r_r124 = CPyStatic_call___globals;
-    cpy_r_r125 = CPyStatics[320]; /* 'VirtualMachineError' */
+    cpy_r_r125 = CPyStatics[325]; /* 'VirtualMachineError' */
     cpy_r_r126 = CPyDict_GetItem(cpy_r_r124, cpy_r_r125);
     if (unlikely(cpy_r_r126 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "__validate_output", 300, CPyStatic_call___globals);
@@ -27974,7 +28571,7 @@ PyObject *CPyDef_call___format_input_but_cache_checksums(PyObject *cpy_r_abi, Py
     cpy_r_r1 = cpy_r_r0 != 0;
     CPyTagged_DECREF(cpy_r_r0);
     if (!cpy_r_r1) goto CPyL12;
-    cpy_r_r2 = CPyStatics[276]; /* 'inputs' */
+    cpy_r_r2 = CPyStatics[256]; /* 'inputs' */
     cpy_r_r3 = CPyDict_GetItem(cpy_r_abi, cpy_r_r2);
     if (unlikely(cpy_r_r3 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "format_input_but_cache_checksums", 310, CPyStatic_call___globals);
@@ -28001,7 +28598,7 @@ PyObject *CPyDef_call___format_input_but_cache_checksums(PyObject *cpy_r_abi, Py
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "format_input_but_cache_checksums", 311, CPyStatic_call___globals);
         goto CPyL33;
     }
-    cpy_r_r9 = CPyStatics[321]; /* ' requires no arguments' */
+    cpy_r_r9 = CPyStatics[326]; /* ' requires no arguments' */
     cpy_r_r10 = CPyStr_Build(2, cpy_r_r8, cpy_r_r9);
     CPy_DECREF(cpy_r_r8);
     if (unlikely(cpy_r_r10 == NULL)) {
@@ -28032,7 +28629,7 @@ PyObject *CPyDef_call___format_input_but_cache_checksums(PyObject *cpy_r_abi, Py
     }
     CPy_Unreachable();
 CPyL12: ;
-    cpy_r_r17 = CPyStatics[276]; /* 'inputs' */
+    cpy_r_r17 = CPyStatics[256]; /* 'inputs' */
     cpy_r_r18 = CPyDict_GetItem(cpy_r_abi, cpy_r_r17);
     if (unlikely(cpy_r_r18 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "format_input_but_cache_checksums", 312, CPyStatic_call___globals);
@@ -28093,7 +28690,7 @@ CPyL20: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "format_input_but_cache_checksums", 316, CPyStatic_call___globals);
         goto CPyL37;
     }
-    cpy_r_r35 = CPyStatics[299]; /* ' ' */
+    cpy_r_r35 = CPyStatics[305]; /* ' ' */
     cpy_r_r36 = PyObject_Str(cpy_r_r30);
     CPy_DecRef(cpy_r_r30);
     if (unlikely(cpy_r_r36 == NULL)) {
@@ -28200,16 +28797,16 @@ PyObject *CPyPy_call___format_input_but_cache_checksums(PyObject *self, PyObject
     else {
         arg_inputs = NULL;
     }
-    if (arg_inputs != NULL) goto __LL57;
+    if (arg_inputs != NULL) goto __LL58;
     if (PyTuple_Check(obj_inputs))
         arg_inputs = obj_inputs;
     else {
         arg_inputs = NULL;
     }
-    if (arg_inputs != NULL) goto __LL57;
+    if (arg_inputs != NULL) goto __LL58;
     CPy_TypeError("union[list, tuple]", obj_inputs); 
     goto fail;
-__LL57: ;
+__LL58: ;
     PyObject *retval = CPyDef_call___format_input_but_cache_checksums(arg_abi, arg_inputs);
     return retval;
 fail: ;
@@ -28232,7 +28829,7 @@ PyObject *CPyDef_call___format_output_but_cache_checksums(PyObject *cpy_r_abi, P
     PyObject **cpy_r_r13;
     PyObject *cpy_r_r14;
     PyObject *cpy_r_r15;
-    cpy_r_r0 = CPyStatics[307]; /* 'outputs' */
+    cpy_r_r0 = CPyStatics[313]; /* 'outputs' */
     cpy_r_r1 = CPyDict_GetItem(cpy_r_abi, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "format_output_but_cache_checksums", 323, CPyStatic_call___globals);
@@ -28266,7 +28863,7 @@ CPyL4: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "format_output_but_cache_checksums", 324, CPyStatic_call___globals);
         goto CPyL12;
     }
-    cpy_r_r8 = CPyStatics[307]; /* 'outputs' */
+    cpy_r_r8 = CPyStatics[313]; /* 'outputs' */
     cpy_r_r9 = CPyDict_GetItem(cpy_r_abi, cpy_r_r8);
     if (unlikely(cpy_r_r9 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "format_output_but_cache_checksums", 325, CPyStatic_call___globals);
@@ -28339,16 +28936,16 @@ PyObject *CPyPy_call___format_output_but_cache_checksums(PyObject *self, PyObjec
     else {
         arg_outputs = NULL;
     }
-    if (arg_outputs != NULL) goto __LL58;
+    if (arg_outputs != NULL) goto __LL59;
     if (PyTuple_Check(obj_outputs))
         arg_outputs = obj_outputs;
     else {
         arg_outputs = NULL;
     }
-    if (arg_outputs != NULL) goto __LL58;
+    if (arg_outputs != NULL) goto __LL59;
     CPy_TypeError("union[list, tuple]", obj_outputs); 
     goto fail;
-__LL58: ;
+__LL59: ;
     PyObject *retval = CPyDef_call___format_output_but_cache_checksums(arg_abi, arg_outputs);
     return retval;
 fail: ;
@@ -28462,7 +29059,7 @@ CPyL8: ;
     if (cpy_r_r10 == NULL) goto CPyL51;
     cpy_r_r11 = PyIter_Next(cpy_r_r9);
     if (cpy_r_r11 == NULL) goto CPyL52;
-    cpy_r_r12 = CPyStatics[322]; /* 'is_array' */
+    cpy_r_r12 = CPyStatics[327]; /* 'is_array' */
     cpy_r_r13 = CPyObject_GetAttr(cpy_r_r10, cpy_r_r12);
     if (unlikely(cpy_r_r13 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_format_tuple_but_cache_checksums", 339, CPyStatic_call___globals);
@@ -28483,16 +29080,16 @@ CPyL8: ;
     else {
         cpy_r_r17 = NULL;
     }
-    if (cpy_r_r17 != NULL) goto __LL59;
+    if (cpy_r_r17 != NULL) goto __LL60;
     if (PyTuple_Check(cpy_r_r11))
         cpy_r_r17 = cpy_r_r11;
     else {
         cpy_r_r17 = NULL;
     }
-    if (cpy_r_r17 != NULL) goto __LL59;
+    if (cpy_r_r17 != NULL) goto __LL60;
     CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\call.py", "_format_tuple_but_cache_checksums", 340, CPyStatic_call___globals, "union[list, tuple]", cpy_r_r11);
     goto CPyL53;
-__LL59: ;
+__LL60: ;
     cpy_r_r18 = CPyDef_call____format_array_but_cache_checksums(cpy_r_r10, cpy_r_r17);
     CPy_DECREF(cpy_r_r10);
     CPy_DECREF(cpy_r_r17);
@@ -28533,7 +29130,7 @@ CPyL20: ;
     }
     cpy_r_r25 = cpy_r_r23;
     if (!cpy_r_r25) goto CPyL26;
-    cpy_r_r26 = CPyStatics[323]; /* 'components' */
+    cpy_r_r26 = CPyStatics[251]; /* 'components' */
     cpy_r_r27 = CPyObject_GetAttr(cpy_r_r10, cpy_r_r26);
     CPy_DECREF(cpy_r_r10);
     if (unlikely(cpy_r_r27 == NULL)) {
@@ -28546,16 +29143,16 @@ CPyL20: ;
     else {
         cpy_r_r28 = NULL;
     }
-    if (cpy_r_r28 != NULL) goto __LL60;
+    if (cpy_r_r28 != NULL) goto __LL61;
     if (PyTuple_Check(cpy_r_r11))
         cpy_r_r28 = cpy_r_r11;
     else {
         cpy_r_r28 = NULL;
     }
-    if (cpy_r_r28 != NULL) goto __LL60;
+    if (cpy_r_r28 != NULL) goto __LL61;
     CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\call.py", "_format_tuple_but_cache_checksums", 342, CPyStatic_call___globals, "union[list, tuple]", cpy_r_r11);
     goto CPyL58;
-__LL60: ;
+__LL61: ;
     cpy_r_r29 = CPyDef_call____format_tuple_but_cache_checksums(cpy_r_r27, cpy_r_r28);
     CPy_DECREF(cpy_r_r27);
     CPy_DECREF(cpy_r_r28);
@@ -28572,7 +29169,7 @@ __LL60: ;
     } else
         goto CPyL59;
 CPyL26: ;
-    cpy_r_r32 = CPyStatics[324]; /* 'to_type_str' */
+    cpy_r_r32 = CPyStatics[328]; /* 'to_type_str' */
     cpy_r_r33 = CPyObject_CallMethodObjArgs(cpy_r_r10, cpy_r_r32, NULL);
     CPy_DECREF(cpy_r_r10);
     if (unlikely(cpy_r_r33 == NULL)) {
@@ -28613,14 +29210,14 @@ CPyL30: ;
     if (!cpy_r_r42) goto CPyL62;
     cpy_r_r43 = CPy_GetExcValue();
     cpy_r_r44 = PyObject_Type(cpy_r_r43);
-    cpy_r_r45 = CPyStatics[325]; /* "'" */
+    cpy_r_r45 = CPyStatics[329]; /* "'" */
     cpy_r_r46 = PyObject_Str(cpy_r_r11);
     CPy_DecRef(cpy_r_r11);
     if (unlikely(cpy_r_r46 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_format_tuple_but_cache_checksums", 346, CPyStatic_call___globals);
         goto CPyL63;
     }
-    cpy_r_r47 = CPyStatics[326]; /* "' - " */
+    cpy_r_r47 = CPyStatics[330]; /* "' - " */
     cpy_r_r48 = PyObject_Str(cpy_r_r43);
     CPy_DecRef(cpy_r_r43);
     if (unlikely(cpy_r_r48 == NULL)) {
@@ -28792,16 +29389,16 @@ PyObject *CPyPy_call____format_tuple_but_cache_checksums(PyObject *self, PyObjec
     else {
         arg_values = NULL;
     }
-    if (arg_values != NULL) goto __LL61;
+    if (arg_values != NULL) goto __LL62;
     if (PyTuple_Check(obj_values))
         arg_values = obj_values;
     else {
         arg_values = NULL;
     }
-    if (arg_values != NULL) goto __LL61;
+    if (arg_values != NULL) goto __LL62;
     CPy_TypeError("union[list, tuple]", obj_values); 
     goto fail;
-__LL61: ;
+__LL62: ;
     PyObject *retval = CPyDef_call____format_tuple_but_cache_checksums(arg_abi_types, arg_values);
     return retval;
 fail: ;
@@ -28869,13 +29466,13 @@ PyObject *CPyDef_call____format_array_but_cache_checksums(PyObject *cpy_r_abi_ty
     char cpy_r_r57;
     char cpy_r_r58;
     PyObject *cpy_r_r59;
-    cpy_r_r0 = CPyStatics[327]; /* 'arrlist' */
+    cpy_r_r0 = CPyStatics[331]; /* 'arrlist' */
     cpy_r_r1 = CPyObject_GetAttr(cpy_r_abi_type, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_format_array_but_cache_checksums", 351, CPyStatic_call___globals);
         goto CPyL48;
     }
-    cpy_r_r2 = CPyStatics[678]; /* -1 */
+    cpy_r_r2 = CPyStatics[682]; /* -1 */
     cpy_r_r3 = PyObject_GetItem(cpy_r_r1, cpy_r_r2);
     CPy_DECREF(cpy_r_r1);
     if (unlikely(cpy_r_r3 == NULL)) {
@@ -28891,20 +29488,20 @@ PyObject *CPyDef_call____format_array_but_cache_checksums(PyObject *cpy_r_abi_ty
     cpy_r_r5 = cpy_r_r4 != 0;
     CPyTagged_DECREF(cpy_r_r4);
     if (!cpy_r_r5) goto CPyL8;
-    cpy_r_r6 = CPyStatics[327]; /* 'arrlist' */
+    cpy_r_r6 = CPyStatics[331]; /* 'arrlist' */
     cpy_r_r7 = CPyObject_GetAttr(cpy_r_abi_type, cpy_r_r6);
     if (unlikely(cpy_r_r7 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_format_array_but_cache_checksums", 351, CPyStatic_call___globals);
         goto CPyL48;
     }
-    cpy_r_r8 = CPyStatics[678]; /* -1 */
+    cpy_r_r8 = CPyStatics[682]; /* -1 */
     cpy_r_r9 = PyObject_GetItem(cpy_r_r7, cpy_r_r8);
     CPy_DECREF(cpy_r_r7);
     if (unlikely(cpy_r_r9 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_format_array_but_cache_checksums", 351, CPyStatic_call___globals);
         goto CPyL48;
     }
-    cpy_r_r10 = CPyStatics[668]; /* 0 */
+    cpy_r_r10 = CPyStatics[670]; /* 0 */
     cpy_r_r11 = PyObject_GetItem(cpy_r_r9, cpy_r_r10);
     CPy_DECREF(cpy_r_r9);
     if (unlikely(cpy_r_r11 == NULL)) {
@@ -28942,13 +29539,13 @@ CPyL12: ;
         goto CPyL51;
 CPyL13: ;
     CPy_DECREF(cpy_r_r12);
-    cpy_r_r19 = CPyStatics[328]; /* 'item_type' */
+    cpy_r_r19 = CPyStatics[332]; /* 'item_type' */
     cpy_r_r20 = CPyObject_GetAttr(cpy_r_abi_type, cpy_r_r19);
     if (unlikely(cpy_r_r20 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_format_array_but_cache_checksums", 352, CPyStatic_call___globals);
         goto CPyL48;
     }
-    cpy_r_r21 = CPyStatics[322]; /* 'is_array' */
+    cpy_r_r21 = CPyStatics[327]; /* 'is_array' */
     cpy_r_r22 = CPyObject_GetAttr(cpy_r_r20, cpy_r_r21);
     if (unlikely(cpy_r_r22 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_format_array_but_cache_checksums", 353, CPyStatic_call___globals);
@@ -28981,16 +29578,16 @@ CPyL19: ;
     else {
         cpy_r_r29 = NULL;
     }
-    if (cpy_r_r29 != NULL) goto __LL62;
+    if (cpy_r_r29 != NULL) goto __LL63;
     if (PyTuple_Check(cpy_r_r28))
         cpy_r_r29 = cpy_r_r28;
     else {
         cpy_r_r29 = NULL;
     }
-    if (cpy_r_r29 != NULL) goto __LL62;
+    if (cpy_r_r29 != NULL) goto __LL63;
     CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\call.py", "_format_array_but_cache_checksums", 354, CPyStatic_call___globals, "union[list, tuple]", cpy_r_r28);
     goto CPyL55;
-__LL62: ;
+__LL63: ;
     cpy_r_r30 = CPyDef_call____format_array_but_cache_checksums(cpy_r_r20, cpy_r_r29);
     CPy_DECREF(cpy_r_r29);
     if (unlikely(cpy_r_r30 == NULL)) {
@@ -29035,7 +29632,7 @@ CPyL28: ;
     }
     cpy_r_r38 = cpy_r_r36;
     if (!cpy_r_r38) goto CPyL39;
-    cpy_r_r39 = CPyStatics[323]; /* 'components' */
+    cpy_r_r39 = CPyStatics[251]; /* 'components' */
     cpy_r_r40 = CPyObject_GetAttr(cpy_r_r20, cpy_r_r39);
     CPy_DECREF(cpy_r_r20);
     if (unlikely(cpy_r_r40 == NULL)) {
@@ -29060,16 +29657,16 @@ CPyL33: ;
     else {
         cpy_r_r44 = NULL;
     }
-    if (cpy_r_r44 != NULL) goto __LL63;
+    if (cpy_r_r44 != NULL) goto __LL64;
     if (PyTuple_Check(cpy_r_r43))
         cpy_r_r44 = cpy_r_r43;
     else {
         cpy_r_r44 = NULL;
     }
-    if (cpy_r_r44 != NULL) goto __LL63;
+    if (cpy_r_r44 != NULL) goto __LL64;
     CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\call.py", "_format_array_but_cache_checksums", 357, CPyStatic_call___globals, "union[list, tuple]", cpy_r_r43);
     goto CPyL61;
-__LL63: ;
+__LL64: ;
     cpy_r_r45 = CPyDef_call____format_tuple_but_cache_checksums(cpy_r_r40, cpy_r_r44);
     CPy_DECREF(cpy_r_r44);
     if (unlikely(cpy_r_r45 == NULL)) {
@@ -29092,7 +29689,7 @@ CPyL37: ;
     }
     return cpy_r_r41;
 CPyL39: ;
-    cpy_r_r49 = CPyStatics[324]; /* 'to_type_str' */
+    cpy_r_r49 = CPyStatics[328]; /* 'to_type_str' */
     cpy_r_r50 = CPyObject_CallMethodObjArgs(cpy_r_r20, cpy_r_r49, NULL);
     CPy_DECREF(cpy_r_r20);
     if (unlikely(cpy_r_r50 == NULL)) {
@@ -29228,16 +29825,16 @@ PyObject *CPyPy_call____format_array_but_cache_checksums(PyObject *self, PyObjec
     else {
         arg_values = NULL;
     }
-    if (arg_values != NULL) goto __LL64;
+    if (arg_values != NULL) goto __LL65;
     if (PyTuple_Check(obj_values))
         arg_values = obj_values;
     else {
         arg_values = NULL;
     }
-    if (arg_values != NULL) goto __LL64;
+    if (arg_values != NULL) goto __LL65;
     CPy_TypeError("union[list, tuple]", obj_values); 
     goto fail;
-__LL64: ;
+__LL65: ;
     PyObject *retval = CPyDef_call____format_array_but_cache_checksums(arg_abi_type, arg_values);
     return retval;
 fail: ;
@@ -29333,7 +29930,7 @@ PyObject *CPyDef_call____format_single_but_cache_checksums(PyObject *cpy_r_type_
     PyObject **cpy_r_r92;
     PyObject *cpy_r_r93;
     PyObject *cpy_r_r94;
-    cpy_r_r0 = CPyStatics[329]; /* 'uint' */
+    cpy_r_r0 = CPyStatics[333]; /* 'uint' */
     cpy_r_r1 = PySequence_Contains(cpy_r_type_str, cpy_r_r0);
     cpy_r_r2 = cpy_r_r1 >= 0;
     if (unlikely(!cpy_r_r2)) {
@@ -29361,7 +29958,7 @@ CPyL5: ;
     }
     return cpy_r_r8;
 CPyL7: ;
-    cpy_r_r9 = CPyStatics[330]; /* 'int' */
+    cpy_r_r9 = CPyStatics[334]; /* 'int' */
     cpy_r_r10 = PySequence_Contains(cpy_r_type_str, cpy_r_r9);
     cpy_r_r11 = cpy_r_r10 >= 0;
     if (unlikely(!cpy_r_r11)) {
@@ -29389,7 +29986,7 @@ CPyL12: ;
     }
     return cpy_r_r17;
 CPyL14: ;
-    cpy_r_r18 = CPyStatics[331]; /* 'fixed168x10' */
+    cpy_r_r18 = CPyStatics[335]; /* 'fixed168x10' */
     cpy_r_r19 = PyUnicode_Compare(cpy_r_type_str, cpy_r_r18);
     cpy_r_r20 = cpy_r_r19 == -1;
     if (!cpy_r_r20) goto CPyL17;
@@ -29423,7 +30020,7 @@ CPyL21: ;
     }
     return cpy_r_r29;
 CPyL23: ;
-    cpy_r_r30 = CPyStatics[332]; /* 'bool' */
+    cpy_r_r30 = CPyStatics[336]; /* 'bool' */
     cpy_r_r31 = PyUnicode_Compare(cpy_r_type_str, cpy_r_r30);
     cpy_r_r32 = cpy_r_r31 == -1;
     if (!cpy_r_r32) goto CPyL26;
@@ -29457,7 +30054,7 @@ CPyL30: ;
     }
     return cpy_r_r41;
 CPyL32: ;
-    cpy_r_r42 = CPyStatics[333]; /* 'address' */
+    cpy_r_r42 = CPyStatics[337]; /* 'address' */
     cpy_r_r43 = PyUnicode_Compare(cpy_r_type_str, cpy_r_r42);
     cpy_r_r44 = cpy_r_r43 == -1;
     if (!cpy_r_r44) goto CPyL35;
@@ -29495,16 +30092,16 @@ CPyL35: ;
     cpy_r_r57 = PyTuple_New(5);
     if (unlikely(cpy_r_r57 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp65 = cpy_r_r56.f0;
-    PyTuple_SET_ITEM(cpy_r_r57, 0, __tmp65);
-    PyObject *__tmp66 = cpy_r_r56.f1;
-    PyTuple_SET_ITEM(cpy_r_r57, 1, __tmp66);
-    PyObject *__tmp67 = cpy_r_r56.f2;
-    PyTuple_SET_ITEM(cpy_r_r57, 2, __tmp67);
-    PyObject *__tmp68 = cpy_r_r56.f3;
-    PyTuple_SET_ITEM(cpy_r_r57, 3, __tmp68);
-    PyObject *__tmp69 = cpy_r_r56.f4;
-    PyTuple_SET_ITEM(cpy_r_r57, 4, __tmp69);
+    PyObject *__tmp66 = cpy_r_r56.f0;
+    PyTuple_SET_ITEM(cpy_r_r57, 0, __tmp66);
+    PyObject *__tmp67 = cpy_r_r56.f1;
+    PyTuple_SET_ITEM(cpy_r_r57, 1, __tmp67);
+    PyObject *__tmp68 = cpy_r_r56.f2;
+    PyTuple_SET_ITEM(cpy_r_r57, 2, __tmp68);
+    PyObject *__tmp69 = cpy_r_r56.f3;
+    PyTuple_SET_ITEM(cpy_r_r57, 3, __tmp69);
+    PyObject *__tmp70 = cpy_r_r56.f4;
+    PyTuple_SET_ITEM(cpy_r_r57, 4, __tmp70);
     cpy_r_r58 = PyObject_IsInstance(cpy_r_value, cpy_r_r57);
     CPy_DECREF(cpy_r_r57);
     cpy_r_r59 = cpy_r_r58 >= 0;
@@ -29549,7 +30146,7 @@ CPyL45: ;
     CPy_DECREF(cpy_r_r61);
     return cpy_r_r67;
 CPyL47: ;
-    cpy_r_r68 = CPyStatics[334]; /* 'byte' */
+    cpy_r_r68 = CPyStatics[338]; /* 'byte' */
     cpy_r_r69 = PySequence_Contains(cpy_r_type_str, cpy_r_r68);
     cpy_r_r70 = cpy_r_r69 >= 0;
     if (unlikely(!cpy_r_r70)) {
@@ -29577,7 +30174,7 @@ CPyL52: ;
     }
     return cpy_r_r76;
 CPyL54: ;
-    cpy_r_r77 = CPyStatics[310]; /* 'string' */
+    cpy_r_r77 = CPyStatics[316]; /* 'string' */
     cpy_r_r78 = PySequence_Contains(cpy_r_type_str, cpy_r_r77);
     cpy_r_r79 = cpy_r_r78 >= 0;
     if (unlikely(!cpy_r_r79)) {
@@ -29605,7 +30202,7 @@ CPyL59: ;
     }
     return cpy_r_r85;
 CPyL61: ;
-    cpy_r_r86 = CPyStatics[335]; /* 'Unknown type: ' */
+    cpy_r_r86 = CPyStatics[339]; /* 'Unknown type: ' */
     cpy_r_r87 = CPyStr_Build(2, cpy_r_r86, cpy_r_type_str);
     if (unlikely(cpy_r_r87 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_format_single_but_cache_checksums", 382, CPyStatic_call___globals);
@@ -30288,14 +30885,14 @@ CPyL3: ;
     cpy_r_r7 = (void *)&cpy_r_r6;
     int64_t cpy_r_r8[1] = {1};
     cpy_r_r9 = (void *)&cpy_r_r8;
-    cpy_r_r10 = CPyStatics[740]; /* (('decimal', 'decimal', 'decimal'),) */
+    cpy_r_r10 = CPyStatics[744]; /* (('decimal', 'decimal', 'decimal'),) */
     cpy_r_r11 = CPyStatic_call___globals;
-    cpy_r_r12 = CPyStatics[337]; /* 'dank_mids\\brownie_patch\\call.py' */
+    cpy_r_r12 = CPyStatics[341]; /* 'dank_mids\\brownie_patch\\call.py' */
     cpy_r_r13 = CPyStatics[44]; /* '<module>' */
     cpy_r_r14 = CPyImport_ImportMany(cpy_r_r10, cpy_r_r7, cpy_r_r11, cpy_r_r12, cpy_r_r13, cpy_r_r9);
     if (!cpy_r_r14) goto CPyL222;
-    cpy_r_r15 = CPyStatics[741]; /* ('BrokenProcessPool',) */
-    cpy_r_r16 = CPyStatics[338]; /* 'concurrent.futures.process' */
+    cpy_r_r15 = CPyStatics[745]; /* ('BrokenProcessPool',) */
+    cpy_r_r16 = CPyStatics[342]; /* 'concurrent.futures.process' */
     cpy_r_r17 = CPyStatic_call___globals;
     cpy_r_r18 = CPyImport_ImportFromMany(cpy_r_r16, cpy_r_r15, cpy_r_r15, cpy_r_r17);
     if (unlikely(cpy_r_r18 == NULL)) {
@@ -30305,7 +30902,7 @@ CPyL3: ;
     CPyModule_concurrent___futures___process = cpy_r_r18;
     CPy_INCREF(CPyModule_concurrent___futures___process);
     CPy_DECREF(cpy_r_r18);
-    cpy_r_r19 = CPyStatics[742]; /* ('Logger',) */
+    cpy_r_r19 = CPyStatics[746]; /* ('Logger',) */
     cpy_r_r20 = CPyStatics[174]; /* 'logging' */
     cpy_r_r21 = CPyStatic_call___globals;
     cpy_r_r22 = CPyImport_ImportFromMany(cpy_r_r20, cpy_r_r19, cpy_r_r19, cpy_r_r21);
@@ -30316,8 +30913,8 @@ CPyL3: ;
     CPyModule_logging = cpy_r_r22;
     CPy_INCREF(CPyModule_logging);
     CPy_DECREF(cpy_r_r22);
-    cpy_r_r23 = CPyStatics[743]; /* ('PicklingError',) */
-    cpy_r_r24 = CPyStatics[340]; /* 'pickle' */
+    cpy_r_r23 = CPyStatics[747]; /* ('PicklingError',) */
+    cpy_r_r24 = CPyStatics[344]; /* 'pickle' */
     cpy_r_r25 = CPyStatic_call___globals;
     cpy_r_r26 = CPyImport_ImportFromMany(cpy_r_r24, cpy_r_r23, cpy_r_r23, cpy_r_r25);
     if (unlikely(cpy_r_r26 == NULL)) {
@@ -30327,8 +30924,8 @@ CPyL3: ;
     CPyModule_pickle = cpy_r_r26;
     CPy_INCREF(CPyModule_pickle);
     CPy_DECREF(cpy_r_r26);
-    cpy_r_r27 = CPyStatics[744]; /* ('MethodType', 'ModuleType') */
-    cpy_r_r28 = CPyStatics[342]; /* 'types' */
+    cpy_r_r27 = CPyStatics[748]; /* ('MethodType', 'ModuleType') */
+    cpy_r_r28 = CPyStatics[346]; /* 'types' */
     cpy_r_r29 = CPyStatic_call___globals;
     cpy_r_r30 = CPyImport_ImportFromMany(cpy_r_r28, cpy_r_r27, cpy_r_r27, cpy_r_r29);
     if (unlikely(cpy_r_r30 == NULL)) {
@@ -30338,7 +30935,7 @@ CPyL3: ;
     CPyModule_types = cpy_r_r30;
     CPy_INCREF(CPyModule_types);
     CPy_DECREF(cpy_r_r30);
-    cpy_r_r31 = CPyStatics[745]; /* ('Any', 'Callable', 'Dict', 'Final', 'List', 'NewType',
+    cpy_r_r31 = CPyStatics[749]; /* ('Any', 'Callable', 'Dict', 'Final', 'List', 'NewType',
                                     'Optional', 'Sequence', 'Tuple', 'TypeVar', 'Union') */
     cpy_r_r32 = CPyStatics[41]; /* 'typing' */
     cpy_r_r33 = CPyStatic_call___globals;
@@ -30359,17 +30956,17 @@ CPyL3: ;
     cpy_r_r41 = (void *)&cpy_r_r40;
     int64_t cpy_r_r42[5] = {20, 21, 22, 23, 24};
     cpy_r_r43 = (void *)&cpy_r_r42;
-    cpy_r_r44 = CPyStatics[751]; /* (('brownie.convert.datatypes', 'brownie', 'brownie'),
+    cpy_r_r44 = CPyStatics[755]; /* (('brownie.convert.datatypes', 'brownie', 'brownie'),
                                     ('brownie.convert.normalize', 'brownie', 'brownie'),
                                     ('brownie.network.contract', 'brownie', 'brownie'),
                                     ('eth_abi', 'eth_abi', 'eth_abi'),
                                     ('hexbytes', 'hexbytes', 'hexbytes')) */
     cpy_r_r45 = CPyStatic_call___globals;
-    cpy_r_r46 = CPyStatics[337]; /* 'dank_mids\\brownie_patch\\call.py' */
+    cpy_r_r46 = CPyStatics[341]; /* 'dank_mids\\brownie_patch\\call.py' */
     cpy_r_r47 = CPyStatics[44]; /* '<module>' */
     cpy_r_r48 = CPyImport_ImportMany(cpy_r_r44, cpy_r_r41, cpy_r_r45, cpy_r_r46, cpy_r_r47, cpy_r_r43);
     if (!cpy_r_r48) goto CPyL222;
-    cpy_r_r49 = CPyStatics[752]; /* ('AsyncProcessPoolExecutor',) */
+    cpy_r_r49 = CPyStatics[756]; /* ('AsyncProcessPoolExecutor',) */
     cpy_r_r50 = CPyStatics[42]; /* 'a_sync' */
     cpy_r_r51 = CPyStatic_call___globals;
     cpy_r_r52 = CPyImport_ImportFromMany(cpy_r_r50, cpy_r_r49, cpy_r_r49, cpy_r_r51);
@@ -30380,7 +30977,7 @@ CPyL3: ;
     CPyModule_a_sync = cpy_r_r52;
     CPy_INCREF(CPyModule_a_sync);
     CPy_DECREF(cpy_r_r52);
-    cpy_r_r53 = CPyStatics[753]; /* ('chain',) */
+    cpy_r_r53 = CPyStatics[757]; /* ('chain',) */
     cpy_r_r54 = CPyStatics[241]; /* 'brownie' */
     cpy_r_r55 = CPyStatic_call___globals;
     cpy_r_r56 = CPyImport_ImportFromMany(cpy_r_r54, cpy_r_r53, cpy_r_r53, cpy_r_r55);
@@ -30391,8 +30988,8 @@ CPyL3: ;
     CPyModule_brownie = cpy_r_r56;
     CPy_INCREF(CPyModule_brownie);
     CPy_DECREF(cpy_r_r56);
-    cpy_r_r57 = CPyStatics[754]; /* ('ABIType',) */
-    cpy_r_r58 = CPyStatics[347]; /* 'brownie.convert.normalize' */
+    cpy_r_r57 = CPyStatics[758]; /* ('ABIType',) */
+    cpy_r_r58 = CPyStatics[351]; /* 'brownie.convert.normalize' */
     cpy_r_r59 = CPyStatic_call___globals;
     cpy_r_r60 = CPyImport_ImportFromMany(cpy_r_r58, cpy_r_r57, cpy_r_r57, cpy_r_r59);
     if (unlikely(cpy_r_r60 == NULL)) {
@@ -30402,8 +30999,8 @@ CPyL3: ;
     CPyModule_brownie___convert___normalize = cpy_r_r60;
     CPy_INCREF(CPyModule_brownie___convert___normalize);
     CPy_DECREF(cpy_r_r60);
-    cpy_r_r61 = CPyStatics[755]; /* ('get_type_strings',) */
-    cpy_r_r62 = CPyStatics[352]; /* 'brownie.convert.utils' */
+    cpy_r_r61 = CPyStatics[759]; /* ('get_type_strings',) */
+    cpy_r_r62 = CPyStatics[356]; /* 'brownie.convert.utils' */
     cpy_r_r63 = CPyStatic_call___globals;
     cpy_r_r64 = CPyImport_ImportFromMany(cpy_r_r62, cpy_r_r61, cpy_r_r61, cpy_r_r63);
     if (unlikely(cpy_r_r64 == NULL)) {
@@ -30413,8 +31010,8 @@ CPyL3: ;
     CPyModule_brownie___convert___utils = cpy_r_r64;
     CPy_INCREF(CPyModule_brownie___convert___utils);
     CPy_DECREF(cpy_r_r64);
-    cpy_r_r65 = CPyStatics[756]; /* ('VirtualMachineError',) */
-    cpy_r_r66 = CPyStatics[353]; /* 'brownie.exceptions' */
+    cpy_r_r65 = CPyStatics[760]; /* ('VirtualMachineError',) */
+    cpy_r_r66 = CPyStatics[357]; /* 'brownie.exceptions' */
     cpy_r_r67 = CPyStatic_call___globals;
     cpy_r_r68 = CPyImport_ImportFromMany(cpy_r_r66, cpy_r_r65, cpy_r_r65, cpy_r_r67);
     if (unlikely(cpy_r_r68 == NULL)) {
@@ -30424,8 +31021,8 @@ CPyL3: ;
     CPyModule_brownie___exceptions = cpy_r_r68;
     CPy_INCREF(CPyModule_brownie___exceptions);
     CPy_DECREF(cpy_r_r68);
-    cpy_r_r69 = CPyStatics[757]; /* ('ContractCall',) */
-    cpy_r_r70 = CPyStatics[348]; /* 'brownie.network.contract' */
+    cpy_r_r69 = CPyStatics[761]; /* ('ContractCall',) */
+    cpy_r_r70 = CPyStatics[352]; /* 'brownie.network.contract' */
     cpy_r_r71 = CPyStatic_call___globals;
     cpy_r_r72 = CPyImport_ImportFromMany(cpy_r_r70, cpy_r_r69, cpy_r_r69, cpy_r_r71);
     if (unlikely(cpy_r_r72 == NULL)) {
@@ -30435,8 +31032,8 @@ CPyL3: ;
     CPyModule_brownie___network___contract = cpy_r_r72;
     CPy_INCREF(CPyModule_brownie___network___contract);
     CPy_DECREF(cpy_r_r72);
-    cpy_r_r73 = CPyStatics[758]; /* ('SOLIDITY_ERROR_CODES',) */
-    cpy_r_r74 = CPyStatics[355]; /* 'brownie.project.compiler.solidity' */
+    cpy_r_r73 = CPyStatics[762]; /* ('SOLIDITY_ERROR_CODES',) */
+    cpy_r_r74 = CPyStatics[359]; /* 'brownie.project.compiler.solidity' */
     cpy_r_r75 = CPyStatic_call___globals;
     cpy_r_r76 = CPyImport_ImportFromMany(cpy_r_r74, cpy_r_r73, cpy_r_r73, cpy_r_r75);
     if (unlikely(cpy_r_r76 == NULL)) {
@@ -30446,8 +31043,8 @@ CPyL3: ;
     CPyModule_brownie___project___compiler___solidity = cpy_r_r76;
     CPy_INCREF(CPyModule_brownie___project___compiler___solidity);
     CPy_DECREF(cpy_r_r76);
-    cpy_r_r77 = CPyStatics[759]; /* ('InsufficientDataBytes',) */
-    cpy_r_r78 = CPyStatics[356]; /* 'eth_abi.exceptions' */
+    cpy_r_r77 = CPyStatics[763]; /* ('InsufficientDataBytes',) */
+    cpy_r_r78 = CPyStatics[360]; /* 'eth_abi.exceptions' */
     cpy_r_r79 = CPyStatic_call___globals;
     cpy_r_r80 = CPyImport_ImportFromMany(cpy_r_r78, cpy_r_r77, cpy_r_r77, cpy_r_r79);
     if (unlikely(cpy_r_r80 == NULL)) {
@@ -30457,7 +31054,7 @@ CPyL3: ;
     CPyModule_eth_abi___exceptions = cpy_r_r80;
     CPy_INCREF(CPyModule_eth_abi___exceptions);
     CPy_DECREF(cpy_r_r80);
-    cpy_r_r81 = CPyStatics[716]; /* ('HexStr',) */
+    cpy_r_r81 = CPyStatics[720]; /* ('HexStr',) */
     cpy_r_r82 = CPyStatics[141]; /* 'eth_typing' */
     cpy_r_r83 = CPyStatic_call___globals;
     cpy_r_r84 = CPyImport_ImportFromMany(cpy_r_r82, cpy_r_r81, cpy_r_r81, cpy_r_r83);
@@ -30468,8 +31065,8 @@ CPyL3: ;
     CPyModule_eth_typing = cpy_r_r84;
     CPy_INCREF(CPyModule_eth_typing);
     CPy_DECREF(cpy_r_r84);
-    cpy_r_r85 = CPyStatics[760]; /* ('Address',) */
-    cpy_r_r86 = CPyStatics[358]; /* 'evmspec.data' */
+    cpy_r_r85 = CPyStatics[764]; /* ('Address',) */
+    cpy_r_r86 = CPyStatics[362]; /* 'evmspec.data' */
     cpy_r_r87 = CPyStatic_call___globals;
     cpy_r_r88 = CPyImport_ImportFromMany(cpy_r_r86, cpy_r_r85, cpy_r_r85, cpy_r_r87);
     if (unlikely(cpy_r_r88 == NULL)) {
@@ -30479,8 +31076,8 @@ CPyL3: ;
     CPyModule_evmspec___data = cpy_r_r88;
     CPy_INCREF(CPyModule_evmspec___data);
     CPy_DECREF(cpy_r_r88);
-    cpy_r_r89 = CPyStatics[761]; /* ('BytesLike',) */
-    cpy_r_r90 = CPyStatics[360]; /* 'hexbytes.main' */
+    cpy_r_r89 = CPyStatics[765]; /* ('BytesLike',) */
+    cpy_r_r90 = CPyStatics[364]; /* 'hexbytes.main' */
     cpy_r_r91 = CPyStatic_call___globals;
     cpy_r_r92 = CPyImport_ImportFromMany(cpy_r_r90, cpy_r_r89, cpy_r_r89, cpy_r_r91);
     if (unlikely(cpy_r_r92 == NULL)) {
@@ -30490,8 +31087,8 @@ CPyL3: ;
     CPyModule_hexbytes___main = cpy_r_r92;
     CPy_INCREF(CPyModule_hexbytes___main);
     CPy_DECREF(cpy_r_r92);
-    cpy_r_r93 = CPyStatics[762]; /* ('MULTICALL2_ADDRESSES',) */
-    cpy_r_r94 = CPyStatics[362]; /* 'multicall.constants' */
+    cpy_r_r93 = CPyStatics[766]; /* ('MULTICALL2_ADDRESSES',) */
+    cpy_r_r94 = CPyStatics[366]; /* 'multicall.constants' */
     cpy_r_r95 = CPyStatic_call___globals;
     cpy_r_r96 = CPyImport_ImportFromMany(cpy_r_r94, cpy_r_r93, cpy_r_r93, cpy_r_r95);
     if (unlikely(cpy_r_r96 == NULL)) {
@@ -30501,8 +31098,8 @@ CPyL3: ;
     CPyModule_multicall___constants = cpy_r_r96;
     CPy_INCREF(CPyModule_multicall___constants);
     CPy_DECREF(cpy_r_r96);
-    cpy_r_r97 = CPyStatics[763]; /* ('BlockIdentifier',) */
-    cpy_r_r98 = CPyStatics[364]; /* 'web3.types' */
+    cpy_r_r97 = CPyStatics[767]; /* ('BlockIdentifier',) */
+    cpy_r_r98 = CPyStatics[368]; /* 'web3.types' */
     cpy_r_r99 = CPyStatic_call___globals;
     cpy_r_r100 = CPyImport_ImportFromMany(cpy_r_r98, cpy_r_r97, cpy_r_r97, cpy_r_r99);
     if (unlikely(cpy_r_r100 == NULL)) {
@@ -30512,7 +31109,7 @@ CPyL3: ;
     CPyModule_web3___types = cpy_r_r100;
     CPy_INCREF(CPyModule_web3___types);
     CPy_DECREF(cpy_r_r100);
-    cpy_r_r101 = CPyStatics[764]; /* ('ENVIRONMENT_VARIABLES', 'exceptions') */
+    cpy_r_r101 = CPyStatics[768]; /* ('ENVIRONMENT_VARIABLES', 'exceptions') */
     cpy_r_r102 = CPyStatics[71]; /* 'dank_mids' */
     cpy_r_r103 = CPyStatic_call___globals;
     cpy_r_r104 = CPyImport_ImportFromMany(cpy_r_r102, cpy_r_r101, cpy_r_r101, cpy_r_r103);
@@ -30523,7 +31120,7 @@ CPyL3: ;
     CPyModule_dank_mids = cpy_r_r104;
     CPy_INCREF(CPyModule_dank_mids);
     CPy_DECREF(cpy_r_r104);
-    cpy_r_r105 = CPyStatics[703]; /* ('getLogger',) */
+    cpy_r_r105 = CPyStatics[707]; /* ('getLogger',) */
     cpy_r_r106 = CPyStatics[48]; /* 'dank_mids._logging' */
     cpy_r_r107 = CPyStatic_call___globals;
     cpy_r_r108 = CPyImport_ImportFromMany(cpy_r_r106, cpy_r_r105, cpy_r_r105, cpy_r_r107);
@@ -30534,7 +31131,7 @@ CPyL3: ;
     CPyModule_dank_mids____logging = cpy_r_r108;
     CPy_INCREF(CPyModule_dank_mids____logging);
     CPy_DECREF(cpy_r_r108);
-    cpy_r_r109 = CPyStatics[765]; /* ('ContractMethod',) */
+    cpy_r_r109 = CPyStatics[769]; /* ('ContractMethod',) */
     cpy_r_r110 = CPyStatics[231]; /* 'dank_mids.brownie_patch.types' */
     cpy_r_r111 = CPyStatic_call___globals;
     cpy_r_r112 = CPyImport_ImportFromMany(cpy_r_r110, cpy_r_r109, cpy_r_r109, cpy_r_r111);
@@ -30545,8 +31142,8 @@ CPyL3: ;
     CPyModule_dank_mids___brownie_patch___types = cpy_r_r112;
     CPy_INCREF(CPyModule_dank_mids___brownie_patch___types);
     CPy_DECREF(cpy_r_r112);
-    cpy_r_r113 = CPyStatics[766]; /* ('lru_cache_lite_nonull',) */
-    cpy_r_r114 = CPyStatics[368]; /* 'dank_mids.helpers.lru_cache' */
+    cpy_r_r113 = CPyStatics[770]; /* ('lru_cache_lite_nonull',) */
+    cpy_r_r114 = CPyStatics[372]; /* 'dank_mids.helpers.lru_cache' */
     cpy_r_r115 = CPyStatic_call___globals;
     cpy_r_r116 = CPyImport_ImportFromMany(cpy_r_r114, cpy_r_r113, cpy_r_r113, cpy_r_r115);
     if (unlikely(cpy_r_r116 == NULL)) {
@@ -30556,7 +31153,7 @@ CPyL3: ;
     CPyModule_dank_mids___helpers___lru_cache = cpy_r_r116;
     CPy_INCREF(CPyModule_dank_mids___helpers___lru_cache);
     CPy_DECREF(cpy_r_r116);
-    cpy_r_r117 = CPyStatics[731]; /* ('DankWeb3',) */
+    cpy_r_r117 = CPyStatics[735]; /* ('DankWeb3',) */
     cpy_r_r118 = CPyStatics[236]; /* 'dank_mids.helpers._helpers' */
     cpy_r_r119 = CPyStatic_call___globals;
     cpy_r_r120 = CPyImport_ImportFromMany(cpy_r_r118, cpy_r_r117, cpy_r_r117, cpy_r_r119);
@@ -30577,7 +31174,7 @@ CPyL3: ;
     CPyStatic_call___ENVS = cpy_r_r123;
     CPy_INCREF(CPyStatic_call___ENVS);
     cpy_r_r124 = CPyStatic_call___globals;
-    cpy_r_r125 = CPyStatics[369]; /* 'ENVS' */
+    cpy_r_r125 = CPyStatics[373]; /* 'ENVS' */
     cpy_r_r126 = CPyDict_SetItem(cpy_r_r124, cpy_r_r125, cpy_r_r123);
     CPy_DECREF(cpy_r_r123);
     cpy_r_r127 = cpy_r_r126 >= 0;
@@ -30595,13 +31192,13 @@ CPyL3: ;
     }
     CPy_Unreachable();
 CPyL33: ;
-    cpy_r_r130 = CPyStatics[370]; /* 'OPERATION_MODE' */
+    cpy_r_r130 = CPyStatics[374]; /* 'OPERATION_MODE' */
     cpy_r_r131 = CPyObject_GetAttr(cpy_r_r128, cpy_r_r130);
     if (unlikely(cpy_r_r131 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 47, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r132 = CPyStatics[371]; /* 'application' */
+    cpy_r_r132 = CPyStatics[375]; /* 'application' */
     cpy_r_r133 = CPyObject_GetAttr(cpy_r_r131, cpy_r_r132);
     CPy_DECREF(cpy_r_r131);
     if (unlikely(cpy_r_r133 == NULL)) {
@@ -30618,7 +31215,7 @@ CPyL33: ;
     }
     CPyStatic_call___APPLICATION_MODE = cpy_r_r134;
     cpy_r_r135 = CPyStatic_call___globals;
-    cpy_r_r136 = CPyStatics[372]; /* 'APPLICATION_MODE' */
+    cpy_r_r136 = CPyStatics[376]; /* 'APPLICATION_MODE' */
     cpy_r_r137 = CPyDict_SetItem(cpy_r_r135, cpy_r_r136, cpy_r_r133);
     CPy_DECREF(cpy_r_r133);
     cpy_r_r138 = cpy_r_r137 >= 0;
@@ -30626,7 +31223,7 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 47, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r139 = CPyStatics[373]; /* '_T' */
+    cpy_r_r139 = CPyStatics[377]; /* '_T' */
     cpy_r_r140 = CPyStatic_call___globals;
     cpy_r_r141 = CPyStatics[38]; /* 'TypeVar' */
     cpy_r_r142 = CPyDict_GetItem(cpy_r_r140, cpy_r_r141);
@@ -30643,7 +31240,7 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r146 = CPyStatic_call___globals;
-    cpy_r_r147 = CPyStatics[373]; /* '_T' */
+    cpy_r_r147 = CPyStatics[377]; /* '_T' */
     cpy_r_r148 = CPyDict_SetItem(cpy_r_r146, cpy_r_r147, cpy_r_r145);
     CPy_DECREF(cpy_r_r145);
     cpy_r_r149 = cpy_r_r148 >= 0;
@@ -30651,10 +31248,10 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 50, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r150 = CPyStatics[374]; /* 'TypeStr' */
+    cpy_r_r150 = CPyStatics[378]; /* 'TypeStr' */
     cpy_r_r151 = (PyObject *)&PyUnicode_Type;
     cpy_r_r152 = CPyStatic_call___globals;
-    cpy_r_r153 = CPyStatics[344]; /* 'NewType' */
+    cpy_r_r153 = CPyStatics[348]; /* 'NewType' */
     cpy_r_r154 = CPyDict_GetItem(cpy_r_r152, cpy_r_r153);
     if (unlikely(cpy_r_r154 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 51, CPyStatic_call___globals);
@@ -30669,7 +31266,7 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r158 = CPyStatic_call___globals;
-    cpy_r_r159 = CPyStatics[374]; /* 'TypeStr' */
+    cpy_r_r159 = CPyStatics[378]; /* 'TypeStr' */
     cpy_r_r160 = CPyDict_SetItem(cpy_r_r158, cpy_r_r159, cpy_r_r157);
     CPy_DECREF(cpy_r_r157);
     cpy_r_r161 = cpy_r_r160 >= 0;
@@ -30685,7 +31282,7 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r165 = CPyStatic_call___globals;
-    cpy_r_r166 = CPyStatics[374]; /* 'TypeStr' */
+    cpy_r_r166 = CPyStatics[378]; /* 'TypeStr' */
     cpy_r_r167 = CPyDict_GetItem(cpy_r_r165, cpy_r_r166);
     if (unlikely(cpy_r_r167 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 52, CPyStatic_call___globals);
@@ -30699,7 +31296,7 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r169 = CPyStatic_call___globals;
-    cpy_r_r170 = CPyStatics[375]; /* 'TypeStrs' */
+    cpy_r_r170 = CPyStatics[379]; /* 'TypeStrs' */
     cpy_r_r171 = CPyDict_SetItem(cpy_r_r169, cpy_r_r170, cpy_r_r168);
     CPy_DECREF(cpy_r_r168);
     cpy_r_r172 = cpy_r_r171 >= 0;
@@ -30722,7 +31319,7 @@ CPyL33: ;
         goto CPyL225;
     }
     cpy_r_r179 = CPyStatic_call___globals;
-    cpy_r_r180 = CPyStatics[373]; /* '_T' */
+    cpy_r_r180 = CPyStatics[377]; /* '_T' */
     cpy_r_r181 = CPyDict_GetItem(cpy_r_r179, cpy_r_r180);
     if (unlikely(cpy_r_r181 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 53, CPyStatic_call___globals);
@@ -30743,7 +31340,7 @@ CPyL33: ;
         goto CPyL227;
     }
     cpy_r_r186 = CPyStatic_call___globals;
-    cpy_r_r187 = CPyStatics[373]; /* '_T' */
+    cpy_r_r187 = CPyStatics[377]; /* '_T' */
     cpy_r_r188 = CPyDict_GetItem(cpy_r_r186, cpy_r_r187);
     if (unlikely(cpy_r_r188 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 53, CPyStatic_call___globals);
@@ -30756,10 +31353,10 @@ CPyL33: ;
     cpy_r_r191 = PyTuple_New(2);
     if (unlikely(cpy_r_r191 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp70 = cpy_r_r190.f0;
-    PyTuple_SET_ITEM(cpy_r_r191, 0, __tmp70);
-    PyObject *__tmp71 = cpy_r_r190.f1;
-    PyTuple_SET_ITEM(cpy_r_r191, 1, __tmp71);
+    PyObject *__tmp71 = cpy_r_r190.f0;
+    PyTuple_SET_ITEM(cpy_r_r191, 0, __tmp71);
+    PyObject *__tmp72 = cpy_r_r190.f1;
+    PyTuple_SET_ITEM(cpy_r_r191, 1, __tmp72);
     cpy_r_r192 = PyObject_GetItem(cpy_r_r185, cpy_r_r191);
     CPy_DECREF(cpy_r_r185);
     CPy_DECREF(cpy_r_r191);
@@ -30772,10 +31369,10 @@ CPyL33: ;
     cpy_r_r194 = PyTuple_New(2);
     if (unlikely(cpy_r_r194 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp72 = cpy_r_r193.f0;
-    PyTuple_SET_ITEM(cpy_r_r194, 0, __tmp72);
-    PyObject *__tmp73 = cpy_r_r193.f1;
-    PyTuple_SET_ITEM(cpy_r_r194, 1, __tmp73);
+    PyObject *__tmp73 = cpy_r_r193.f0;
+    PyTuple_SET_ITEM(cpy_r_r194, 0, __tmp73);
+    PyObject *__tmp74 = cpy_r_r193.f1;
+    PyTuple_SET_ITEM(cpy_r_r194, 1, __tmp74);
     cpy_r_r195 = PyObject_GetItem(cpy_r_r175, cpy_r_r194);
     CPy_DECREF(cpy_r_r175);
     CPy_DECREF(cpy_r_r194);
@@ -30784,7 +31381,7 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r196 = CPyStatic_call___globals;
-    cpy_r_r197 = CPyStatics[376]; /* 'ListOrTuple' */
+    cpy_r_r197 = CPyStatics[380]; /* 'ListOrTuple' */
     cpy_r_r198 = CPyDict_SetItem(cpy_r_r196, cpy_r_r197, cpy_r_r195);
     CPy_DECREF(cpy_r_r195);
     cpy_r_r199 = cpy_r_r198 >= 0;
@@ -30792,9 +31389,9 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 53, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r200 = CPyStatics[377]; /* 'AbiDict' */
+    cpy_r_r200 = CPyStatics[381]; /* 'AbiDict' */
     cpy_r_r201 = CPyStatic_call___globals;
-    cpy_r_r202 = CPyStatics[249]; /* 'Dict' */
+    cpy_r_r202 = CPyStatics[257]; /* 'Dict' */
     cpy_r_r203 = CPyDict_GetItem(cpy_r_r201, cpy_r_r202);
     if (unlikely(cpy_r_r203 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 54, CPyStatic_call___globals);
@@ -30814,10 +31411,10 @@ CPyL33: ;
     cpy_r_r209 = PyTuple_New(2);
     if (unlikely(cpy_r_r209 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp74 = cpy_r_r208.f0;
-    PyTuple_SET_ITEM(cpy_r_r209, 0, __tmp74);
-    PyObject *__tmp75 = cpy_r_r208.f1;
-    PyTuple_SET_ITEM(cpy_r_r209, 1, __tmp75);
+    PyObject *__tmp75 = cpy_r_r208.f0;
+    PyTuple_SET_ITEM(cpy_r_r209, 0, __tmp75);
+    PyObject *__tmp76 = cpy_r_r208.f1;
+    PyTuple_SET_ITEM(cpy_r_r209, 1, __tmp76);
     cpy_r_r210 = PyObject_GetItem(cpy_r_r203, cpy_r_r209);
     CPy_DECREF(cpy_r_r203);
     CPy_DECREF(cpy_r_r209);
@@ -30826,7 +31423,7 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r211 = CPyStatic_call___globals;
-    cpy_r_r212 = CPyStatics[344]; /* 'NewType' */
+    cpy_r_r212 = CPyStatics[348]; /* 'NewType' */
     cpy_r_r213 = CPyDict_GetItem(cpy_r_r211, cpy_r_r212);
     if (unlikely(cpy_r_r213 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 54, CPyStatic_call___globals);
@@ -30842,7 +31439,7 @@ CPyL33: ;
     }
     CPy_DECREF(cpy_r_r210);
     cpy_r_r217 = CPyStatic_call___globals;
-    cpy_r_r218 = CPyStatics[377]; /* 'AbiDict' */
+    cpy_r_r218 = CPyStatics[381]; /* 'AbiDict' */
     cpy_r_r219 = CPyDict_SetItem(cpy_r_r217, cpy_r_r218, cpy_r_r216);
     CPy_DECREF(cpy_r_r216);
     cpy_r_r220 = cpy_r_r219 >= 0;
@@ -30851,7 +31448,7 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r221 = CPyModule_decimal;
-    cpy_r_r222 = CPyStatics[378]; /* 'Decimal' */
+    cpy_r_r222 = CPyStatics[382]; /* 'Decimal' */
     cpy_r_r223 = CPyObject_GetAttr(cpy_r_r221, cpy_r_r222);
     if (unlikely(cpy_r_r223 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 58, CPyStatic_call___globals);
@@ -30860,7 +31457,7 @@ CPyL33: ;
     CPyStatic_call___Decimal = cpy_r_r223;
     CPy_INCREF(CPyStatic_call___Decimal);
     cpy_r_r224 = CPyStatic_call___globals;
-    cpy_r_r225 = CPyStatics[378]; /* 'Decimal' */
+    cpy_r_r225 = CPyStatics[382]; /* 'Decimal' */
     cpy_r_r226 = CPyDict_SetItem(cpy_r_r224, cpy_r_r225, cpy_r_r223);
     CPy_DECREF(cpy_r_r223);
     cpy_r_r227 = cpy_r_r226 >= 0;
@@ -30869,13 +31466,13 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r228 = CPyStatic_call___globals;
-    cpy_r_r229 = CPyStatics[349]; /* 'hexbytes' */
+    cpy_r_r229 = CPyStatics[353]; /* 'hexbytes' */
     cpy_r_r230 = CPyDict_GetItem(cpy_r_r228, cpy_r_r229);
     if (unlikely(cpy_r_r230 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 59, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r231 = CPyStatics[379]; /* 'HexBytes' */
+    cpy_r_r231 = CPyStatics[383]; /* 'HexBytes' */
     cpy_r_r232 = CPyObject_GetAttr(cpy_r_r230, cpy_r_r231);
     CPy_DECREF(cpy_r_r230);
     if (unlikely(cpy_r_r232 == NULL)) {
@@ -30885,7 +31482,7 @@ CPyL33: ;
     CPyStatic_call___HexBytes = cpy_r_r232;
     CPy_INCREF(CPyStatic_call___HexBytes);
     cpy_r_r233 = CPyStatic_call___globals;
-    cpy_r_r234 = CPyStatics[379]; /* 'HexBytes' */
+    cpy_r_r234 = CPyStatics[383]; /* 'HexBytes' */
     cpy_r_r235 = CPyDict_SetItem(cpy_r_r233, cpy_r_r234, cpy_r_r232);
     CPy_DECREF(cpy_r_r232);
     cpy_r_r236 = cpy_r_r235 >= 0;
@@ -30907,7 +31504,7 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 60, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r242 = CPyStatics[380]; /* 'contract' */
+    cpy_r_r242 = CPyStatics[384]; /* 'contract' */
     cpy_r_r243 = CPyObject_GetAttr(cpy_r_r241, cpy_r_r242);
     CPy_DECREF(cpy_r_r241);
     if (unlikely(cpy_r_r243 == NULL)) {
@@ -30939,21 +31536,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 61, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r253 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r253 = CPyStatics[385]; /* 'convert' */
     cpy_r_r254 = CPyObject_GetAttr(cpy_r_r252, cpy_r_r253);
     CPy_DECREF(cpy_r_r252);
     if (unlikely(cpy_r_r254 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 61, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r255 = CPyStatics[382]; /* 'datatypes' */
+    cpy_r_r255 = CPyStatics[386]; /* 'datatypes' */
     cpy_r_r256 = CPyObject_GetAttr(cpy_r_r254, cpy_r_r255);
     CPy_DECREF(cpy_r_r254);
     if (unlikely(cpy_r_r256 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 61, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r257 = CPyStatics[383]; /* 'ReturnValue' */
+    cpy_r_r257 = CPyStatics[387]; /* 'ReturnValue' */
     cpy_r_r258 = CPyObject_GetAttr(cpy_r_r256, cpy_r_r257);
     CPy_DECREF(cpy_r_r256);
     if (unlikely(cpy_r_r258 == NULL)) {
@@ -30963,7 +31560,7 @@ CPyL33: ;
     CPyStatic_call___ReturnValue = cpy_r_r258;
     CPy_INCREF(CPyStatic_call___ReturnValue);
     cpy_r_r259 = CPyStatic_call___globals;
-    cpy_r_r260 = CPyStatics[383]; /* 'ReturnValue' */
+    cpy_r_r260 = CPyStatics[387]; /* 'ReturnValue' */
     cpy_r_r261 = CPyDict_SetItem(cpy_r_r259, cpy_r_r260, cpy_r_r258);
     CPy_DECREF(cpy_r_r258);
     cpy_r_r262 = cpy_r_r261 >= 0;
@@ -30978,21 +31575,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 62, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r266 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r266 = CPyStatics[385]; /* 'convert' */
     cpy_r_r267 = CPyObject_GetAttr(cpy_r_r265, cpy_r_r266);
     CPy_DECREF(cpy_r_r265);
     if (unlikely(cpy_r_r267 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 62, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r268 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r268 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r269 = CPyObject_GetAttr(cpy_r_r267, cpy_r_r268);
     CPy_DECREF(cpy_r_r267);
     if (unlikely(cpy_r_r269 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 62, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r270 = CPyStatics[385]; /* 'HexString' */
+    cpy_r_r270 = CPyStatics[389]; /* 'HexString' */
     cpy_r_r271 = CPyObject_GetAttr(cpy_r_r269, cpy_r_r270);
     CPy_DECREF(cpy_r_r269);
     if (unlikely(cpy_r_r271 == NULL)) {
@@ -31002,7 +31599,7 @@ CPyL33: ;
     CPyStatic_call___HexString = cpy_r_r271;
     CPy_INCREF(CPyStatic_call___HexString);
     cpy_r_r272 = CPyStatic_call___globals;
-    cpy_r_r273 = CPyStatics[385]; /* 'HexString' */
+    cpy_r_r273 = CPyStatics[389]; /* 'HexString' */
     cpy_r_r274 = CPyDict_SetItem(cpy_r_r272, cpy_r_r273, cpy_r_r271);
     CPy_DECREF(cpy_r_r271);
     cpy_r_r275 = cpy_r_r274 >= 0;
@@ -31017,21 +31614,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 63, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r279 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r279 = CPyStatics[385]; /* 'convert' */
     cpy_r_r280 = CPyObject_GetAttr(cpy_r_r278, cpy_r_r279);
     CPy_DECREF(cpy_r_r278);
     if (unlikely(cpy_r_r280 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 63, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r281 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r281 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r282 = CPyObject_GetAttr(cpy_r_r280, cpy_r_r281);
     CPy_DECREF(cpy_r_r280);
     if (unlikely(cpy_r_r282 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 63, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r283 = CPyStatics[386]; /* 'TupleType' */
+    cpy_r_r283 = CPyStatics[390]; /* 'TupleType' */
     cpy_r_r284 = CPyObject_GetAttr(cpy_r_r282, cpy_r_r283);
     CPy_DECREF(cpy_r_r282);
     if (unlikely(cpy_r_r284 == NULL)) {
@@ -31041,7 +31638,7 @@ CPyL33: ;
     CPyStatic_call___TupleType = cpy_r_r284;
     CPy_INCREF(CPyStatic_call___TupleType);
     cpy_r_r285 = CPyStatic_call___globals;
-    cpy_r_r286 = CPyStatics[386]; /* 'TupleType' */
+    cpy_r_r286 = CPyStatics[390]; /* 'TupleType' */
     cpy_r_r287 = CPyDict_SetItem(cpy_r_r285, cpy_r_r286, cpy_r_r284);
     CPy_DECREF(cpy_r_r284);
     cpy_r_r288 = cpy_r_r287 >= 0;
@@ -31050,13 +31647,13 @@ CPyL33: ;
         goto CPyL222;
     }
     cpy_r_r289 = CPyStatic_call___globals;
-    cpy_r_r290 = CPyStatics[365]; /* 'exceptions' */
+    cpy_r_r290 = CPyStatics[369]; /* 'exceptions' */
     cpy_r_r291 = CPyDict_GetItem(cpy_r_r289, cpy_r_r290);
     if (unlikely(cpy_r_r291 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 65, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r292 = CPyStatics[387]; /* 'Revert' */
+    cpy_r_r292 = CPyStatics[391]; /* 'Revert' */
     cpy_r_r293 = CPyObject_GetAttr(cpy_r_r291, cpy_r_r292);
     CPy_DECREF(cpy_r_r291);
     if (unlikely(cpy_r_r293 == NULL)) {
@@ -31066,7 +31663,7 @@ CPyL33: ;
     CPyStatic_call___Revert = cpy_r_r293;
     CPy_INCREF(CPyStatic_call___Revert);
     cpy_r_r294 = CPyStatic_call___globals;
-    cpy_r_r295 = CPyStatics[387]; /* 'Revert' */
+    cpy_r_r295 = CPyStatics[391]; /* 'Revert' */
     cpy_r_r296 = CPyDict_SetItem(cpy_r_r294, cpy_r_r295, cpy_r_r293);
     CPy_DECREF(cpy_r_r293);
     cpy_r_r297 = cpy_r_r296 >= 0;
@@ -31081,21 +31678,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 67, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r301 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r301 = CPyStatics[385]; /* 'convert' */
     cpy_r_r302 = CPyObject_GetAttr(cpy_r_r300, cpy_r_r301);
     CPy_DECREF(cpy_r_r300);
     if (unlikely(cpy_r_r302 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 67, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r303 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r303 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r304 = CPyObject_GetAttr(cpy_r_r302, cpy_r_r303);
     CPy_DECREF(cpy_r_r302);
     if (unlikely(cpy_r_r304 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 67, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r305 = CPyStatics[388]; /* 'to_bool' */
+    cpy_r_r305 = CPyStatics[392]; /* 'to_bool' */
     cpy_r_r306 = CPyObject_GetAttr(cpy_r_r304, cpy_r_r305);
     CPy_DECREF(cpy_r_r304);
     if (unlikely(cpy_r_r306 == NULL)) {
@@ -31105,7 +31702,7 @@ CPyL33: ;
     CPyStatic_call___to_bool = cpy_r_r306;
     CPy_INCREF(CPyStatic_call___to_bool);
     cpy_r_r307 = CPyStatic_call___globals;
-    cpy_r_r308 = CPyStatics[388]; /* 'to_bool' */
+    cpy_r_r308 = CPyStatics[392]; /* 'to_bool' */
     cpy_r_r309 = CPyDict_SetItem(cpy_r_r307, cpy_r_r308, cpy_r_r306);
     CPy_DECREF(cpy_r_r306);
     cpy_r_r310 = cpy_r_r309 >= 0;
@@ -31120,21 +31717,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 68, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r314 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r314 = CPyStatics[385]; /* 'convert' */
     cpy_r_r315 = CPyObject_GetAttr(cpy_r_r313, cpy_r_r314);
     CPy_DECREF(cpy_r_r313);
     if (unlikely(cpy_r_r315 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 68, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r316 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r316 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r317 = CPyObject_GetAttr(cpy_r_r315, cpy_r_r316);
     CPy_DECREF(cpy_r_r315);
     if (unlikely(cpy_r_r317 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 68, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r318 = CPyStatics[389]; /* 'to_decimal' */
+    cpy_r_r318 = CPyStatics[393]; /* 'to_decimal' */
     cpy_r_r319 = CPyObject_GetAttr(cpy_r_r317, cpy_r_r318);
     CPy_DECREF(cpy_r_r317);
     if (unlikely(cpy_r_r319 == NULL)) {
@@ -31144,7 +31741,7 @@ CPyL33: ;
     CPyStatic_call___to_decimal = cpy_r_r319;
     CPy_INCREF(CPyStatic_call___to_decimal);
     cpy_r_r320 = CPyStatic_call___globals;
-    cpy_r_r321 = CPyStatics[389]; /* 'to_decimal' */
+    cpy_r_r321 = CPyStatics[393]; /* 'to_decimal' */
     cpy_r_r322 = CPyDict_SetItem(cpy_r_r320, cpy_r_r321, cpy_r_r319);
     CPy_DECREF(cpy_r_r319);
     cpy_r_r323 = cpy_r_r322 >= 0;
@@ -31159,21 +31756,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 69, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r327 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r327 = CPyStatics[385]; /* 'convert' */
     cpy_r_r328 = CPyObject_GetAttr(cpy_r_r326, cpy_r_r327);
     CPy_DECREF(cpy_r_r326);
     if (unlikely(cpy_r_r328 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 69, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r329 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r329 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r330 = CPyObject_GetAttr(cpy_r_r328, cpy_r_r329);
     CPy_DECREF(cpy_r_r328);
     if (unlikely(cpy_r_r330 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 69, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r331 = CPyStatics[390]; /* 'to_int' */
+    cpy_r_r331 = CPyStatics[394]; /* 'to_int' */
     cpy_r_r332 = CPyObject_GetAttr(cpy_r_r330, cpy_r_r331);
     CPy_DECREF(cpy_r_r330);
     if (unlikely(cpy_r_r332 == NULL)) {
@@ -31183,7 +31780,7 @@ CPyL33: ;
     CPyStatic_call___to_int = cpy_r_r332;
     CPy_INCREF(CPyStatic_call___to_int);
     cpy_r_r333 = CPyStatic_call___globals;
-    cpy_r_r334 = CPyStatics[390]; /* 'to_int' */
+    cpy_r_r334 = CPyStatics[394]; /* 'to_int' */
     cpy_r_r335 = CPyDict_SetItem(cpy_r_r333, cpy_r_r334, cpy_r_r332);
     CPy_DECREF(cpy_r_r332);
     cpy_r_r336 = cpy_r_r335 >= 0;
@@ -31198,21 +31795,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 70, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r340 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r340 = CPyStatics[385]; /* 'convert' */
     cpy_r_r341 = CPyObject_GetAttr(cpy_r_r339, cpy_r_r340);
     CPy_DECREF(cpy_r_r339);
     if (unlikely(cpy_r_r341 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 70, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r342 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r342 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r343 = CPyObject_GetAttr(cpy_r_r341, cpy_r_r342);
     CPy_DECREF(cpy_r_r341);
     if (unlikely(cpy_r_r343 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 70, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r344 = CPyStatics[391]; /* 'to_string' */
+    cpy_r_r344 = CPyStatics[395]; /* 'to_string' */
     cpy_r_r345 = CPyObject_GetAttr(cpy_r_r343, cpy_r_r344);
     CPy_DECREF(cpy_r_r343);
     if (unlikely(cpy_r_r345 == NULL)) {
@@ -31222,7 +31819,7 @@ CPyL33: ;
     CPyStatic_call___to_string = cpy_r_r345;
     CPy_INCREF(CPyStatic_call___to_string);
     cpy_r_r346 = CPyStatic_call___globals;
-    cpy_r_r347 = CPyStatics[391]; /* 'to_string' */
+    cpy_r_r347 = CPyStatics[395]; /* 'to_string' */
     cpy_r_r348 = CPyDict_SetItem(cpy_r_r346, cpy_r_r347, cpy_r_r345);
     CPy_DECREF(cpy_r_r345);
     cpy_r_r349 = cpy_r_r348 >= 0;
@@ -31237,21 +31834,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 71, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r353 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r353 = CPyStatics[385]; /* 'convert' */
     cpy_r_r354 = CPyObject_GetAttr(cpy_r_r352, cpy_r_r353);
     CPy_DECREF(cpy_r_r352);
     if (unlikely(cpy_r_r354 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 71, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r355 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r355 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r356 = CPyObject_GetAttr(cpy_r_r354, cpy_r_r355);
     CPy_DECREF(cpy_r_r354);
     if (unlikely(cpy_r_r356 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 71, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r357 = CPyStatics[392]; /* 'to_uint' */
+    cpy_r_r357 = CPyStatics[396]; /* 'to_uint' */
     cpy_r_r358 = CPyObject_GetAttr(cpy_r_r356, cpy_r_r357);
     CPy_DECREF(cpy_r_r356);
     if (unlikely(cpy_r_r358 == NULL)) {
@@ -31261,7 +31858,7 @@ CPyL33: ;
     CPyStatic_call___to_uint = cpy_r_r358;
     CPy_INCREF(CPyStatic_call___to_uint);
     cpy_r_r359 = CPyStatic_call___globals;
-    cpy_r_r360 = CPyStatics[392]; /* 'to_uint' */
+    cpy_r_r360 = CPyStatics[396]; /* 'to_uint' */
     cpy_r_r361 = CPyDict_SetItem(cpy_r_r359, cpy_r_r360, cpy_r_r358);
     CPy_DECREF(cpy_r_r358);
     cpy_r_r362 = cpy_r_r361 >= 0;
@@ -31276,21 +31873,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 72, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r366 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r366 = CPyStatics[385]; /* 'convert' */
     cpy_r_r367 = CPyObject_GetAttr(cpy_r_r365, cpy_r_r366);
     CPy_DECREF(cpy_r_r365);
     if (unlikely(cpy_r_r367 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 72, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r368 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r368 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r369 = CPyObject_GetAttr(cpy_r_r367, cpy_r_r368);
     CPy_DECREF(cpy_r_r367);
     if (unlikely(cpy_r_r369 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 72, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r370 = CPyStatics[393]; /* '_check_array' */
+    cpy_r_r370 = CPyStatics[397]; /* '_check_array' */
     cpy_r_r371 = CPyObject_GetAttr(cpy_r_r369, cpy_r_r370);
     CPy_DECREF(cpy_r_r369);
     if (unlikely(cpy_r_r371 == NULL)) {
@@ -31300,7 +31897,7 @@ CPyL33: ;
     CPyStatic_call____check_array = cpy_r_r371;
     CPy_INCREF(CPyStatic_call____check_array);
     cpy_r_r372 = CPyStatic_call___globals;
-    cpy_r_r373 = CPyStatics[393]; /* '_check_array' */
+    cpy_r_r373 = CPyStatics[397]; /* '_check_array' */
     cpy_r_r374 = CPyDict_SetItem(cpy_r_r372, cpy_r_r373, cpy_r_r371);
     CPy_DECREF(cpy_r_r371);
     cpy_r_r375 = cpy_r_r374 >= 0;
@@ -31315,21 +31912,21 @@ CPyL33: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 73, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r379 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r379 = CPyStatics[385]; /* 'convert' */
     cpy_r_r380 = CPyObject_GetAttr(cpy_r_r378, cpy_r_r379);
     CPy_DECREF(cpy_r_r378);
     if (unlikely(cpy_r_r380 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 73, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r381 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r381 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r382 = CPyObject_GetAttr(cpy_r_r380, cpy_r_r381);
     CPy_DECREF(cpy_r_r380);
     if (unlikely(cpy_r_r382 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 73, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r383 = CPyStatics[394]; /* '_get_abi_types' */
+    cpy_r_r383 = CPyStatics[398]; /* '_get_abi_types' */
     cpy_r_r384 = CPyObject_GetAttr(cpy_r_r382, cpy_r_r383);
     CPy_DECREF(cpy_r_r382);
     if (unlikely(cpy_r_r384 == NULL)) {
@@ -31339,7 +31936,7 @@ CPyL33: ;
     CPyStatic_call____get_abi_types = cpy_r_r384;
     CPy_INCREF(CPyStatic_call____get_abi_types);
     cpy_r_r385 = CPyStatic_call___globals;
-    cpy_r_r386 = CPyStatics[394]; /* '_get_abi_types' */
+    cpy_r_r386 = CPyStatics[398]; /* '_get_abi_types' */
     cpy_r_r387 = CPyDict_SetItem(cpy_r_r385, cpy_r_r386, cpy_r_r384);
     CPy_DECREF(cpy_r_r384);
     cpy_r_r388 = cpy_r_r387 >= 0;
@@ -31417,7 +32014,7 @@ CPyL130: ;
     CPyStatic_call___decode = cpy_r_r407;
     CPy_INCREF(CPyStatic_call___decode);
     cpy_r_r408 = CPyStatic_call___globals;
-    cpy_r_r409 = CPyStatics[395]; /* 'decode' */
+    cpy_r_r409 = CPyStatics[399]; /* 'decode' */
     cpy_r_r410 = CPyDict_SetItem(cpy_r_r408, cpy_r_r409, cpy_r_r407);
     CPy_DECREF(cpy_r_r407);
     cpy_r_r411 = cpy_r_r410 >= 0;
@@ -31426,13 +32023,13 @@ CPyL130: ;
         goto CPyL222;
     }
     cpy_r_r412 = CPyStatic_call___globals;
-    cpy_r_r413 = CPyStatics[357]; /* 'Address' */
+    cpy_r_r413 = CPyStatics[361]; /* 'Address' */
     cpy_r_r414 = CPyDict_GetItem(cpy_r_r412, cpy_r_r413);
     if (unlikely(cpy_r_r414 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 119, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r415 = CPyStatics[396]; /* 'checksum' */
+    cpy_r_r415 = CPyStatics[400]; /* 'checksum' */
     cpy_r_r416 = CPyObject_GetAttr(cpy_r_r414, cpy_r_r415);
     CPy_DECREF(cpy_r_r414);
     if (unlikely(cpy_r_r416 == NULL)) {
@@ -31442,7 +32039,7 @@ CPyL130: ;
     CPyStatic_call___to_checksum_address = cpy_r_r416;
     CPy_INCREF(CPyStatic_call___to_checksum_address);
     cpy_r_r417 = CPyStatic_call___globals;
-    cpy_r_r418 = CPyStatics[397]; /* 'to_checksum_address' */
+    cpy_r_r418 = CPyStatics[401]; /* 'to_checksum_address' */
     cpy_r_r419 = CPyDict_SetItem(cpy_r_r417, cpy_r_r418, cpy_r_r416);
     CPy_DECREF(cpy_r_r416);
     cpy_r_r420 = cpy_r_r419 >= 0;
@@ -31451,14 +32048,14 @@ CPyL130: ;
         goto CPyL222;
     }
     cpy_r_r421 = CPyStatic_call___globals;
-    cpy_r_r422 = CPyStatics[277]; /* '_get_coroutine_fn' */
+    cpy_r_r422 = CPyStatics[283]; /* '_get_coroutine_fn' */
     cpy_r_r423 = CPyDict_GetItem(cpy_r_r421, cpy_r_r422);
     if (unlikely(cpy_r_r423 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 137, CPyStatic_call___globals);
         goto CPyL222;
     }
     cpy_r_r424 = CPyStatic_call___globals;
-    cpy_r_r425 = CPyStatics[367]; /* 'lru_cache_lite_nonull' */
+    cpy_r_r425 = CPyStatics[371]; /* 'lru_cache_lite_nonull' */
     cpy_r_r426 = CPyDict_GetItem(cpy_r_r424, cpy_r_r425);
     if (unlikely(cpy_r_r426 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 137, CPyStatic_call___globals);
@@ -31474,7 +32071,7 @@ CPyL130: ;
     }
     CPy_DECREF(cpy_r_r423);
     cpy_r_r430 = CPyStatic_call___globals;
-    cpy_r_r431 = CPyStatics[277]; /* '_get_coroutine_fn' */
+    cpy_r_r431 = CPyStatics[283]; /* '_get_coroutine_fn' */
     cpy_r_r432 = CPyDict_SetItem(cpy_r_r430, cpy_r_r431, cpy_r_r429);
     CPy_DECREF(cpy_r_r429);
     cpy_r_r433 = cpy_r_r432 >= 0;
@@ -31483,7 +32080,7 @@ CPyL130: ;
         goto CPyL222;
     }
     cpy_r_r434 = CPyStatic_call___globals;
-    cpy_r_r435 = CPyStatics[309]; /* 'eth_abi' */
+    cpy_r_r435 = CPyStatics[315]; /* 'eth_abi' */
     cpy_r_r436 = CPyDict_GetItem(cpy_r_r434, cpy_r_r435);
     if (unlikely(cpy_r_r436 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 242, CPyStatic_call___globals);
@@ -31494,7 +32091,7 @@ CPyL130: ;
     CPy_DECREF(cpy_r_r436);
     if (!cpy_r_r438) goto CPyL148;
     cpy_r_r439 = CPyStatic_call___globals;
-    cpy_r_r440 = CPyStatics[309]; /* 'eth_abi' */
+    cpy_r_r440 = CPyStatics[315]; /* 'eth_abi' */
     cpy_r_r441 = CPyDict_GetItem(cpy_r_r439, cpy_r_r440);
     if (unlikely(cpy_r_r441 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 242, CPyStatic_call___globals);
@@ -31511,13 +32108,13 @@ CPyL130: ;
     goto CPyL151;
 CPyL148: ;
     cpy_r_r445 = CPyStatic_call___globals;
-    cpy_r_r446 = CPyStatics[309]; /* 'eth_abi' */
+    cpy_r_r446 = CPyStatics[315]; /* 'eth_abi' */
     cpy_r_r447 = CPyDict_GetItem(cpy_r_r445, cpy_r_r446);
     if (unlikely(cpy_r_r447 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 242, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r448 = CPyStatics[398]; /* 'encode_abi' */
+    cpy_r_r448 = CPyStatics[402]; /* 'encode_abi' */
     cpy_r_r449 = CPyObject_GetAttr(cpy_r_r447, cpy_r_r448);
     CPy_DECREF(cpy_r_r447);
     if (unlikely(cpy_r_r449 == NULL)) {
@@ -31529,7 +32126,7 @@ CPyL151: ;
     CPyStatic_call_____eth_abi_encode = cpy_r_r444;
     CPy_INCREF(CPyStatic_call_____eth_abi_encode);
     cpy_r_r450 = CPyStatic_call___globals;
-    cpy_r_r451 = CPyStatics[399]; /* '__eth_abi_encode' */
+    cpy_r_r451 = CPyStatics[403]; /* '__eth_abi_encode' */
     cpy_r_r452 = CPyDict_SetItem(cpy_r_r450, cpy_r_r451, cpy_r_r444);
     CPy_DECREF(cpy_r_r444);
     cpy_r_r453 = cpy_r_r452 >= 0;
@@ -31538,24 +32135,24 @@ CPyL151: ;
         goto CPyL222;
     }
     cpy_r_r454 = CPyStatic_call___globals;
-    cpy_r_r455 = CPyStatics[309]; /* 'eth_abi' */
+    cpy_r_r455 = CPyStatics[315]; /* 'eth_abi' */
     cpy_r_r456 = CPyDict_GetItem(cpy_r_r454, cpy_r_r455);
     if (unlikely(cpy_r_r456 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 245, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r457 = CPyStatics[395]; /* 'decode' */
+    cpy_r_r457 = CPyStatics[399]; /* 'decode' */
     cpy_r_r458 = PyObject_HasAttr(cpy_r_r456, cpy_r_r457);
     CPy_DECREF(cpy_r_r456);
     if (!cpy_r_r458) goto CPyL157;
     cpy_r_r459 = CPyStatic_call___globals;
-    cpy_r_r460 = CPyStatics[309]; /* 'eth_abi' */
+    cpy_r_r460 = CPyStatics[315]; /* 'eth_abi' */
     cpy_r_r461 = CPyDict_GetItem(cpy_r_r459, cpy_r_r460);
     if (unlikely(cpy_r_r461 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 245, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r462 = CPyStatics[395]; /* 'decode' */
+    cpy_r_r462 = CPyStatics[399]; /* 'decode' */
     cpy_r_r463 = CPyObject_GetAttr(cpy_r_r461, cpy_r_r462);
     CPy_DECREF(cpy_r_r461);
     if (unlikely(cpy_r_r463 == NULL)) {
@@ -31566,13 +32163,13 @@ CPyL151: ;
     goto CPyL160;
 CPyL157: ;
     cpy_r_r465 = CPyStatic_call___globals;
-    cpy_r_r466 = CPyStatics[309]; /* 'eth_abi' */
+    cpy_r_r466 = CPyStatics[315]; /* 'eth_abi' */
     cpy_r_r467 = CPyDict_GetItem(cpy_r_r465, cpy_r_r466);
     if (unlikely(cpy_r_r467 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 245, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r468 = CPyStatics[311]; /* 'decode_abi' */
+    cpy_r_r468 = CPyStatics[317]; /* 'decode_abi' */
     cpy_r_r469 = CPyObject_GetAttr(cpy_r_r467, cpy_r_r468);
     CPy_DECREF(cpy_r_r467);
     if (unlikely(cpy_r_r469 == NULL)) {
@@ -31584,7 +32181,7 @@ CPyL160: ;
     CPyStatic_call_____eth_abi_decode = cpy_r_r464;
     CPy_INCREF(CPyStatic_call_____eth_abi_decode);
     cpy_r_r470 = CPyStatic_call___globals;
-    cpy_r_r471 = CPyStatics[400]; /* '__eth_abi_decode' */
+    cpy_r_r471 = CPyStatics[404]; /* '__eth_abi_decode' */
     cpy_r_r472 = CPyDict_SetItem(cpy_r_r470, cpy_r_r471, cpy_r_r464);
     CPy_DECREF(cpy_r_r464);
     cpy_r_r473 = cpy_r_r472 >= 0;
@@ -31592,7 +32189,7 @@ CPyL160: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 245, CPyStatic_call___globals);
         goto CPyL222;
     }
-    cpy_r_r474 = CPyStatics[401]; /* '0xcA11bde05977b3631167028862bE2a173976CA11' */
+    cpy_r_r474 = CPyStatics[405]; /* '0xcA11bde05977b3631167028862bE2a173976CA11' */
     cpy_r_r475 = PySet_New(NULL);
     if (unlikely(cpy_r_r475 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 258, CPyStatic_call___globals);
@@ -31605,7 +32202,7 @@ CPyL160: ;
         goto CPyL234;
     }
     cpy_r_r478 = CPyStatic_call___globals;
-    cpy_r_r479 = CPyStatics[274]; /* '_skip_proc_pool' */
+    cpy_r_r479 = CPyStatics[281]; /* '_skip_proc_pool' */
     cpy_r_r480 = CPyDict_SetItem(cpy_r_r478, cpy_r_r479, cpy_r_r475);
     CPy_DECREF(cpy_r_r475);
     cpy_r_r481 = cpy_r_r480 >= 0;
@@ -31616,13 +32213,13 @@ CPyL160: ;
 CPyL164: ;
     if (!1) goto CPyL182;
     cpy_r_r482 = CPyStatic_call___globals;
-    cpy_r_r483 = CPyStatics[350]; /* 'chain' */
+    cpy_r_r483 = CPyStatics[354]; /* 'chain' */
     cpy_r_r484 = CPyDict_GetItem(cpy_r_r482, cpy_r_r483);
     if (unlikely(cpy_r_r484 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 262, CPyStatic_call___globals);
         goto CPyL168;
     }
-    cpy_r_r485 = CPyStatics[402]; /* 'id' */
+    cpy_r_r485 = CPyStatics[406]; /* 'id' */
     cpy_r_r486 = CPyObject_GetAttr(cpy_r_r484, cpy_r_r485);
     CPy_DECREF(cpy_r_r484);
     if (unlikely(cpy_r_r486 == NULL)) {
@@ -31630,7 +32227,7 @@ CPyL164: ;
         goto CPyL168;
     }
     cpy_r_r487 = CPyStatic_call___globals;
-    cpy_r_r488 = CPyStatics[403]; /* 'chainid' */
+    cpy_r_r488 = CPyStatics[407]; /* 'chainid' */
     cpy_r_r489 = CPyDict_SetItem(cpy_r_r487, cpy_r_r488, cpy_r_r486);
     CPy_DECREF(cpy_r_r486);
     cpy_r_r490 = cpy_r_r489 >= 0;
@@ -31651,7 +32248,7 @@ CPyL168: ;
     CPy_DecRef(cpy_r_r494);
     if (!cpy_r_r495) goto CPyL177;
     cpy_r_r496 = CPyStatic_call___globals;
-    cpy_r_r497 = CPyStatics[404]; /* 'e' */
+    cpy_r_r497 = CPyStatics[408]; /* 'e' */
     cpy_r_r498 = CPy_GetExcValue();
     cpy_r_r499 = CPyDict_SetItem(cpy_r_r496, cpy_r_r497, cpy_r_r498);
     CPy_DecRef(cpy_r_r498);
@@ -31660,9 +32257,9 @@ CPyL168: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 264, CPyStatic_call___globals);
         goto CPyL180;
     }
-    cpy_r_r501 = CPyStatics[405]; /* '429' */
+    cpy_r_r501 = CPyStatics[409]; /* '429' */
     cpy_r_r502 = CPyStatic_call___globals;
-    cpy_r_r503 = CPyStatics[404]; /* 'e' */
+    cpy_r_r503 = CPyStatics[408]; /* 'e' */
     cpy_r_r504 = CPyDict_GetItem(cpy_r_r502, cpy_r_r503);
     if (unlikely(cpy_r_r504 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 265, CPyStatic_call___globals);
@@ -31715,20 +32312,20 @@ CPyL180: ;
     CPy_Unreachable();
 CPyL182: ;
     cpy_r_r511 = CPyStatic_call___globals;
-    cpy_r_r512 = CPyStatics[361]; /* 'MULTICALL2_ADDRESSES' */
+    cpy_r_r512 = CPyStatics[365]; /* 'MULTICALL2_ADDRESSES' */
     cpy_r_r513 = CPyDict_GetItem(cpy_r_r511, cpy_r_r512);
     if (unlikely(cpy_r_r513 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 267, CPyStatic_call___globals);
         goto CPyL222;
     }
     cpy_r_r514 = CPyStatic_call___globals;
-    cpy_r_r515 = CPyStatics[403]; /* 'chainid' */
+    cpy_r_r515 = CPyStatics[407]; /* 'chainid' */
     cpy_r_r516 = CPyDict_GetItem(cpy_r_r514, cpy_r_r515);
     if (unlikely(cpy_r_r516 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 267, CPyStatic_call___globals);
         goto CPyL237;
     }
-    cpy_r_r517 = CPyStatics[406]; /* 'get' */
+    cpy_r_r517 = CPyStatics[410]; /* 'get' */
     cpy_r_r518 = Py_None;
     cpy_r_r519 = CPyObject_CallMethodObjArgs(cpy_r_r513, cpy_r_r517, cpy_r_r516, cpy_r_r518, NULL);
     CPy_DECREF(cpy_r_r513);
@@ -31738,7 +32335,7 @@ CPyL182: ;
         goto CPyL222;
     }
     cpy_r_r520 = CPyStatic_call___globals;
-    cpy_r_r521 = CPyStatics[407]; /* 'multicall2' */
+    cpy_r_r521 = CPyStatics[411]; /* 'multicall2' */
     cpy_r_r522 = CPyDict_SetItem(cpy_r_r520, cpy_r_r521, cpy_r_r519);
     cpy_r_r523 = cpy_r_r522 >= 0;
     if (unlikely(!cpy_r_r523)) {
@@ -31755,7 +32352,7 @@ CPyL182: ;
     cpy_r_r526 = cpy_r_r524;
     if (!cpy_r_r526) goto CPyL196;
     cpy_r_r527 = CPyStatic_call___globals;
-    cpy_r_r528 = CPyStatics[274]; /* '_skip_proc_pool' */
+    cpy_r_r528 = CPyStatics[281]; /* '_skip_proc_pool' */
     cpy_r_r529 = CPyDict_GetItem(cpy_r_r527, cpy_r_r528);
     if (unlikely(cpy_r_r529 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 268, CPyStatic_call___globals);
@@ -31768,7 +32365,7 @@ CPyL182: ;
         goto CPyL222;
     }
     cpy_r_r531 = CPyStatic_call___globals;
-    cpy_r_r532 = CPyStatics[407]; /* 'multicall2' */
+    cpy_r_r532 = CPyStatics[411]; /* 'multicall2' */
     cpy_r_r533 = CPyDict_GetItem(cpy_r_r531, cpy_r_r532);
     if (unlikely(cpy_r_r533 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 268, CPyStatic_call___globals);
@@ -31806,7 +32403,7 @@ CPyL194: ;
     }
 CPyL196: ;
     cpy_r_r541 = CPyStatic_call___globals;
-    cpy_r_r542 = CPyStatics[408]; /* 'format_input_but_cache_checksums' */
+    cpy_r_r542 = CPyStatics[412]; /* 'format_input_but_cache_checksums' */
     cpy_r_r543 = CPyDict_GetItem(cpy_r_r541, cpy_r_r542);
     if (unlikely(cpy_r_r543 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 328, CPyStatic_call___globals);
@@ -31826,14 +32423,14 @@ CPyL196: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 328, CPyStatic_call___globals);
         goto CPyL242;
     }
-    cpy_r_r549 = CPyStatics[380]; /* 'contract' */
+    cpy_r_r549 = CPyStatics[384]; /* 'contract' */
     cpy_r_r550 = CPyObject_GetAttr(cpy_r_r548, cpy_r_r549);
     CPy_DECREF(cpy_r_r548);
     if (unlikely(cpy_r_r550 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 328, CPyStatic_call___globals);
         goto CPyL242;
     }
-    cpy_r_r551 = CPyStatics[409]; /* 'format_input' */
+    cpy_r_r551 = CPyStatics[413]; /* 'format_input' */
     cpy_r_r552 = PyObject_SetAttr(cpy_r_r550, cpy_r_r551, cpy_r_r543);
     CPy_DECREF(cpy_r_r550);
     CPy_DECREF(cpy_r_r543);
@@ -31843,7 +32440,7 @@ CPyL196: ;
         goto CPyL222;
     }
     cpy_r_r554 = CPyStatic_call___globals;
-    cpy_r_r555 = CPyStatics[410]; /* 'format_output_but_cache_checksums' */
+    cpy_r_r555 = CPyStatics[414]; /* 'format_output_but_cache_checksums' */
     cpy_r_r556 = CPyDict_GetItem(cpy_r_r554, cpy_r_r555);
     if (unlikely(cpy_r_r556 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 329, CPyStatic_call___globals);
@@ -31863,14 +32460,14 @@ CPyL196: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 329, CPyStatic_call___globals);
         goto CPyL243;
     }
-    cpy_r_r562 = CPyStatics[380]; /* 'contract' */
+    cpy_r_r562 = CPyStatics[384]; /* 'contract' */
     cpy_r_r563 = CPyObject_GetAttr(cpy_r_r561, cpy_r_r562);
     CPy_DECREF(cpy_r_r561);
     if (unlikely(cpy_r_r563 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 329, CPyStatic_call___globals);
         goto CPyL243;
     }
-    cpy_r_r564 = CPyStatics[411]; /* 'format_output' */
+    cpy_r_r564 = CPyStatics[415]; /* 'format_output' */
     cpy_r_r565 = PyObject_SetAttr(cpy_r_r563, cpy_r_r564, cpy_r_r556);
     CPy_DECREF(cpy_r_r563);
     CPy_DECREF(cpy_r_r556);
@@ -31880,7 +32477,7 @@ CPyL196: ;
         goto CPyL222;
     }
     cpy_r_r567 = CPyStatic_call___globals;
-    cpy_r_r568 = CPyStatics[412]; /* '_format_array_but_cache_checksums' */
+    cpy_r_r568 = CPyStatics[416]; /* '_format_array_but_cache_checksums' */
     cpy_r_r569 = CPyDict_GetItem(cpy_r_r567, cpy_r_r568);
     if (unlikely(cpy_r_r569 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 386, CPyStatic_call___globals);
@@ -31893,21 +32490,21 @@ CPyL196: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 386, CPyStatic_call___globals);
         goto CPyL244;
     }
-    cpy_r_r573 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r573 = CPyStatics[385]; /* 'convert' */
     cpy_r_r574 = CPyObject_GetAttr(cpy_r_r572, cpy_r_r573);
     CPy_DECREF(cpy_r_r572);
     if (unlikely(cpy_r_r574 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 386, CPyStatic_call___globals);
         goto CPyL244;
     }
-    cpy_r_r575 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r575 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r576 = CPyObject_GetAttr(cpy_r_r574, cpy_r_r575);
     CPy_DECREF(cpy_r_r574);
     if (unlikely(cpy_r_r576 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 386, CPyStatic_call___globals);
         goto CPyL244;
     }
-    cpy_r_r577 = CPyStatics[413]; /* '_format_array' */
+    cpy_r_r577 = CPyStatics[417]; /* '_format_array' */
     cpy_r_r578 = PyObject_SetAttr(cpy_r_r576, cpy_r_r577, cpy_r_r569);
     CPy_DECREF(cpy_r_r576);
     CPy_DECREF(cpy_r_r569);
@@ -31917,7 +32514,7 @@ CPyL196: ;
         goto CPyL222;
     }
     cpy_r_r580 = CPyStatic_call___globals;
-    cpy_r_r581 = CPyStatics[414]; /* '_format_single_but_cache_checksums' */
+    cpy_r_r581 = CPyStatics[418]; /* '_format_single_but_cache_checksums' */
     cpy_r_r582 = CPyDict_GetItem(cpy_r_r580, cpy_r_r581);
     if (unlikely(cpy_r_r582 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 387, CPyStatic_call___globals);
@@ -31930,21 +32527,21 @@ CPyL196: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 387, CPyStatic_call___globals);
         goto CPyL245;
     }
-    cpy_r_r586 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r586 = CPyStatics[385]; /* 'convert' */
     cpy_r_r587 = CPyObject_GetAttr(cpy_r_r585, cpy_r_r586);
     CPy_DECREF(cpy_r_r585);
     if (unlikely(cpy_r_r587 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 387, CPyStatic_call___globals);
         goto CPyL245;
     }
-    cpy_r_r588 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r588 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r589 = CPyObject_GetAttr(cpy_r_r587, cpy_r_r588);
     CPy_DECREF(cpy_r_r587);
     if (unlikely(cpy_r_r589 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 387, CPyStatic_call___globals);
         goto CPyL245;
     }
-    cpy_r_r590 = CPyStatics[415]; /* '_format_single' */
+    cpy_r_r590 = CPyStatics[419]; /* '_format_single' */
     cpy_r_r591 = PyObject_SetAttr(cpy_r_r589, cpy_r_r590, cpy_r_r582);
     CPy_DECREF(cpy_r_r589);
     CPy_DECREF(cpy_r_r582);
@@ -31954,7 +32551,7 @@ CPyL196: ;
         goto CPyL222;
     }
     cpy_r_r593 = CPyStatic_call___globals;
-    cpy_r_r594 = CPyStatics[416]; /* '_format_tuple_but_cache_checksums' */
+    cpy_r_r594 = CPyStatics[420]; /* '_format_tuple_but_cache_checksums' */
     cpy_r_r595 = CPyDict_GetItem(cpy_r_r593, cpy_r_r594);
     if (unlikely(cpy_r_r595 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 388, CPyStatic_call___globals);
@@ -31967,21 +32564,21 @@ CPyL196: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 388, CPyStatic_call___globals);
         goto CPyL246;
     }
-    cpy_r_r599 = CPyStatics[381]; /* 'convert' */
+    cpy_r_r599 = CPyStatics[385]; /* 'convert' */
     cpy_r_r600 = CPyObject_GetAttr(cpy_r_r598, cpy_r_r599);
     CPy_DECREF(cpy_r_r598);
     if (unlikely(cpy_r_r600 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 388, CPyStatic_call___globals);
         goto CPyL246;
     }
-    cpy_r_r601 = CPyStatics[384]; /* 'normalize' */
+    cpy_r_r601 = CPyStatics[388]; /* 'normalize' */
     cpy_r_r602 = CPyObject_GetAttr(cpy_r_r600, cpy_r_r601);
     CPy_DECREF(cpy_r_r600);
     if (unlikely(cpy_r_r602 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", 388, CPyStatic_call___globals);
         goto CPyL246;
     }
-    cpy_r_r603 = CPyStatics[417]; /* '_format_tuple' */
+    cpy_r_r603 = CPyStatics[421]; /* '_format_tuple' */
     cpy_r_r604 = PyObject_SetAttr(cpy_r_r602, cpy_r_r603, cpy_r_r595);
     CPy_DECREF(cpy_r_r602);
     CPy_DECREF(cpy_r_r595);
@@ -32942,7 +33539,7 @@ CPyL7: ;
     }
     CPy_INCREF(cpy_r_r8);
 CPyL8: ;
-    cpy_r_r9 = CPyStatics[418]; /* '_get_fn_from_args' */
+    cpy_r_r9 = CPyStatics[422]; /* '_get_fn_from_args' */
     cpy_r_r10 = CPyObject_CallMethodObjArgs(cpy_r_r7, cpy_r_r9, cpy_r_r8, NULL);
     CPy_DECREF(cpy_r_r7);
     CPy_DECREF(cpy_r_r8);
@@ -33015,7 +33612,7 @@ CPyL15: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 47, CPyStatic_overloaded___globals);
         goto CPyL160;
     }
-    cpy_r_r23 = CPyStatics[419]; /* "Contract has more than one function '." */
+    cpy_r_r23 = CPyStatics[423]; /* "Contract has more than one function '." */
     cpy_r_r24 = ((dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject *)cpy_r_r4)->_call;
     if (unlikely(cpy_r_r24 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "_patch_overloaded_method_env", "call", 49, CPyStatic_overloaded___globals);
@@ -33023,7 +33620,7 @@ CPyL15: ;
     }
     CPy_INCREF(cpy_r_r24);
 CPyL18: ;
-    cpy_r_r25 = CPyStatics[298]; /* '_name' */
+    cpy_r_r25 = CPyStatics[304]; /* '_name' */
     cpy_r_r26 = CPyObject_GetAttr(cpy_r_r24, cpy_r_r25);
     CPy_DecRef(cpy_r_r24);
     if (unlikely(cpy_r_r26 == NULL)) {
@@ -33042,7 +33639,7 @@ CPyL18: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 49, CPyStatic_overloaded___globals);
         goto CPyL160;
     }
-    cpy_r_r29 = CPyStatics[420]; /* ('You must explicitly declare which function you are '
+    cpy_r_r29 = CPyStatics[424]; /* ('You must explicitly declare which function you are '
                                     'calling, e.g. .') */
     cpy_r_r30 = ((dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject *)cpy_r_r4)->_call;
     if (unlikely(cpy_r_r30 == NULL)) {
@@ -33056,7 +33653,7 @@ CPyL18: ;
         goto CPyL162;
     }
 CPyL22: ;
-    cpy_r_r31 = CPyStatics[298]; /* '_name' */
+    cpy_r_r31 = CPyStatics[304]; /* '_name' */
     cpy_r_r32 = CPyObject_GetAttr(cpy_r_r30, cpy_r_r31);
     CPy_DecRef(cpy_r_r30);
     if (unlikely(cpy_r_r32 == NULL)) {
@@ -33101,10 +33698,10 @@ CPyL27: ;
     cpy_r_r39 = PyTuple_New(2);
     if (unlikely(cpy_r_r39 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp76 = cpy_r_r38.f0;
-    PyTuple_SET_ITEM(cpy_r_r39, 0, __tmp76);
-    PyObject *__tmp77 = cpy_r_r38.f1;
-    PyTuple_SET_ITEM(cpy_r_r39, 1, __tmp77);
+    PyObject *__tmp77 = cpy_r_r38.f0;
+    PyTuple_SET_ITEM(cpy_r_r39, 0, __tmp77);
+    PyObject *__tmp78 = cpy_r_r38.f1;
+    PyTuple_SET_ITEM(cpy_r_r39, 1, __tmp78);
     cpy_r_r40 = PyObject_GetIter(cpy_r_r39);
     CPy_DecRef(cpy_r_r39);
     if (unlikely(cpy_r_r40 == NULL)) {
@@ -33198,8 +33795,8 @@ CPyL40: ;
     }
     CPy_INCREF(cpy_r_r54);
 CPyL42: ;
-    cpy_r_r55 = CPyStatics[421]; /* '(*args)' */
-    cpy_r_r56 = CPyStatics[422]; /* 'find' */
+    cpy_r_r55 = CPyStatics[425]; /* '(*args)' */
+    cpy_r_r56 = CPyStatics[426]; /* 'find' */
     cpy_r_r57 = CPyObject_CallMethodObjArgs(cpy_r_r54, cpy_r_r56, cpy_r_r55, NULL);
     CPy_DecRef(cpy_r_r54);
     if (unlikely(cpy_r_r57 == NULL)) {
@@ -33252,7 +33849,7 @@ CPyL47: ;
         CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals, "str", cpy_r_r62);
         goto CPyL62;
     }
-    cpy_r_r64 = CPyStatics[423]; /* '.coroutine' */
+    cpy_r_r64 = CPyStatics[427]; /* '.coroutine' */
     cpy_r_r65 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_exc_str;
     if (unlikely(cpy_r_r65 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 54, CPyStatic_overloaded___globals);
@@ -33351,7 +33948,7 @@ CPyL63: ;
     if (!cpy_r_r77) goto CPyL152;
     CPy_Unreachable();
 CPyL65: ;
-    cpy_r_r78 = CPyStatics[424]; /* 'block_identifier' */
+    cpy_r_r78 = CPyStatics[428]; /* 'block_identifier' */
     cpy_r_r79 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_block_identifier;
     if (unlikely(cpy_r_r79 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "block_identifier", 57, CPyStatic_overloaded___globals);
@@ -33359,7 +33956,7 @@ CPyL65: ;
     }
     CPy_INCREF(cpy_r_r79);
 CPyL66: ;
-    cpy_r_r80 = CPyStatics[425]; /* 'decimals' */
+    cpy_r_r80 = CPyStatics[429]; /* 'decimals' */
     cpy_r_r81 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_decimals;
     if (unlikely(cpy_r_r81 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "decimals", 57, CPyStatic_overloaded___globals);
@@ -33367,7 +33964,7 @@ CPyL66: ;
     }
     CPy_INCREF(cpy_r_r81);
 CPyL67: ;
-    cpy_r_r82 = CPyStatics[426]; /* 'override' */
+    cpy_r_r82 = CPyStatics[430]; /* 'override' */
     cpy_r_r83 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_override;
     if (unlikely(cpy_r_r83 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "override", 57, CPyStatic_overloaded___globals);
@@ -33502,34 +34099,34 @@ CPyL81: ;
     else {
         cpy_r_r106 = NULL;
     }
-    if (cpy_r_r106 != NULL) goto __LL78;
+    if (cpy_r_r106 != NULL) goto __LL79;
     if (PyUnicode_Check(cpy_r_r104))
         cpy_r_r106 = cpy_r_r104;
     else {
         cpy_r_r106 = NULL;
     }
-    if (cpy_r_r106 != NULL) goto __LL78;
+    if (cpy_r_r106 != NULL) goto __LL79;
     if (PyBytes_Check(cpy_r_r104) || PyByteArray_Check(cpy_r_r104))
         cpy_r_r106 = cpy_r_r104;
     else {
         cpy_r_r106 = NULL;
     }
-    if (cpy_r_r106 != NULL) goto __LL78;
+    if (cpy_r_r106 != NULL) goto __LL79;
     if (cpy_r_r104 == Py_None)
         cpy_r_r106 = cpy_r_r104;
     else {
         cpy_r_r106 = NULL;
     }
-    if (cpy_r_r106 != NULL) goto __LL78;
+    if (cpy_r_r106 != NULL) goto __LL79;
     if (PyDict_Check(cpy_r_r104))
         cpy_r_r106 = cpy_r_r104;
     else {
         cpy_r_r106 = NULL;
     }
-    if (cpy_r_r106 != NULL) goto __LL78;
+    if (cpy_r_r106 != NULL) goto __LL79;
     CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals, "union[int, str, bytes, None, dict]", cpy_r_r104);
     goto CPyL180;
-__LL78: ;
+__LL79: ;
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_k != NULL) {
         CPy_DECREF(((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_k);
     }
@@ -33578,28 +34175,28 @@ CPyL91: ;
     else {
         cpy_r_r114 = NULL;
     }
-    if (cpy_r_r114 != NULL) goto __LL79;
+    if (cpy_r_r114 != NULL) goto __LL80;
     if (PyUnicode_Check(cpy_r_r113))
         cpy_r_r114 = cpy_r_r113;
     else {
         cpy_r_r114 = NULL;
     }
-    if (cpy_r_r114 != NULL) goto __LL79;
+    if (cpy_r_r114 != NULL) goto __LL80;
     if (PyBytes_Check(cpy_r_r113) || PyByteArray_Check(cpy_r_r113))
         cpy_r_r114 = cpy_r_r113;
     else {
         cpy_r_r114 = NULL;
     }
-    if (cpy_r_r114 != NULL) goto __LL79;
+    if (cpy_r_r114 != NULL) goto __LL80;
     if (PyDict_Check(cpy_r_r113))
         cpy_r_r114 = cpy_r_r113;
     else {
         cpy_r_r114 = NULL;
     }
-    if (cpy_r_r114 != NULL) goto __LL79;
+    if (cpy_r_r114 != NULL) goto __LL80;
     CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals, "union[int, str, bytes, dict]", cpy_r_r113);
     goto CPyL182;
-__LL79: ;
+__LL80: ;
     cpy_r_r115 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__3;
     if (unlikely(cpy_r_r115 == NULL)) {
         CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__3", -1, CPyStatic_overloaded___globals);
@@ -33680,7 +34277,7 @@ CPyL102: ;
     }
     CPy_INCREF(cpy_r_r126);
 CPyL103: ;
-    cpy_r_r127 = CPyStatics[279]; /* 'coroutine' */
+    cpy_r_r127 = CPyStatics[285]; /* 'coroutine' */
     cpy_r_r128 = CPyObject_GetAttr(cpy_r_r124, cpy_r_r127);
     CPy_DECREF(cpy_r_r124);
     if (unlikely(cpy_r_r128 == NULL)) {
@@ -34410,10 +35007,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp80 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp80);
-    PyObject *__tmp81 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp81);
+    PyObject *__tmp81 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp81);
+    PyObject *__tmp82 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp82);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -34688,75 +35285,75 @@ PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_obj_____call__(P
     PyObject *arg_block_identifier;
     if (obj_block_identifier == NULL) {
         arg_block_identifier = NULL;
-        goto __LL82;
+        goto __LL83;
     }
     if (PyLong_Check(obj_block_identifier))
         arg_block_identifier = obj_block_identifier;
     else {
         arg_block_identifier = NULL;
     }
-    if (arg_block_identifier != NULL) goto __LL82;
+    if (arg_block_identifier != NULL) goto __LL83;
     if (PyUnicode_Check(obj_block_identifier))
         arg_block_identifier = obj_block_identifier;
     else {
         arg_block_identifier = NULL;
     }
-    if (arg_block_identifier != NULL) goto __LL82;
+    if (arg_block_identifier != NULL) goto __LL83;
     if (PyBytes_Check(obj_block_identifier) || PyByteArray_Check(obj_block_identifier))
         arg_block_identifier = obj_block_identifier;
     else {
         arg_block_identifier = NULL;
     }
-    if (arg_block_identifier != NULL) goto __LL82;
+    if (arg_block_identifier != NULL) goto __LL83;
     if (obj_block_identifier == Py_None)
         arg_block_identifier = obj_block_identifier;
     else {
         arg_block_identifier = NULL;
     }
-    if (arg_block_identifier != NULL) goto __LL82;
+    if (arg_block_identifier != NULL) goto __LL83;
     CPy_TypeError("union[int, str, bytes, None]", obj_block_identifier); 
     goto fail;
-__LL82: ;
+__LL83: ;
     PyObject *arg_decimals;
     if (obj_decimals == NULL) {
         arg_decimals = NULL;
-        goto __LL83;
+        goto __LL84;
     }
     if (PyLong_Check(obj_decimals))
         arg_decimals = obj_decimals;
     else {
         arg_decimals = NULL;
     }
-    if (arg_decimals != NULL) goto __LL83;
+    if (arg_decimals != NULL) goto __LL84;
     if (obj_decimals == Py_None)
         arg_decimals = obj_decimals;
     else {
         arg_decimals = NULL;
     }
-    if (arg_decimals != NULL) goto __LL83;
+    if (arg_decimals != NULL) goto __LL84;
     CPy_TypeError("int or None", obj_decimals); 
     goto fail;
-__LL83: ;
+__LL84: ;
     PyObject *arg_override;
     if (obj_override == NULL) {
         arg_override = NULL;
-        goto __LL84;
+        goto __LL85;
     }
     if (PyDict_Check(obj_override))
         arg_override = obj_override;
     else {
         arg_override = NULL;
     }
-    if (arg_override != NULL) goto __LL84;
+    if (arg_override != NULL) goto __LL85;
     if (obj_override == Py_None)
         arg_override = obj_override;
     else {
         arg_override = NULL;
     }
-    if (arg_override != NULL) goto __LL84;
+    if (arg_override != NULL) goto __LL85;
     CPy_TypeError("dict or None", obj_override); 
     goto fail;
-__LL84: ;
+__LL85: ;
     PyObject *retval = CPyDef_overloaded___coroutine__patch_overloaded_method_obj_____call__(arg___mypyc_self__, arg_self, arg_args, arg_block_identifier, arg_decimals, arg_override);
     CPy_DECREF(obj_args);
     return retval;
@@ -34885,7 +35482,7 @@ char CPyDef_overloaded____patch_overloaded_method(PyObject *cpy_r_call, PyObject
     CPy_INCREF(cpy_r_r4);
 CPyL5: ;
     cpy_r_r5 = CPyStatic_overloaded___globals;
-    cpy_r_r6 = CPyStatics[427]; /* 'wraps' */
+    cpy_r_r6 = CPyStatics[431]; /* 'wraps' */
     cpy_r_r7 = CPyDict_GetItem(cpy_r_r5, cpy_r_r6);
     if (unlikely(cpy_r_r7 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 23, CPyStatic_overloaded___globals);
@@ -34911,7 +35508,7 @@ CPyL5: ;
     CPy_DECREF(cpy_r_r2);
     CPy_INCREF(cpy_r_r13);
     cpy_r_r14 = CPyStatic_overloaded___globals;
-    cpy_r_r15 = CPyStatics[279]; /* 'coroutine' */
+    cpy_r_r15 = CPyStatics[285]; /* 'coroutine' */
     cpy_r_r16 = CPyDict_SetItem(cpy_r_r14, cpy_r_r15, cpy_r_r13);
     CPy_DECREF(cpy_r_r13);
     cpy_r_r17 = cpy_r_r16 >= 0;
@@ -34933,14 +35530,14 @@ CPyL10: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
-    cpy_r_r21 = CPyStatics[428]; /* 'methods' */
+    cpy_r_r21 = CPyStatics[432]; /* 'methods' */
     cpy_r_r22 = PyObject_GetItem(cpy_r_r20, cpy_r_r21);
     CPy_DECREF(cpy_r_r20);
     if (unlikely(cpy_r_r22 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
-    cpy_r_r23 = CPyStatics[429]; /* 'values' */
+    cpy_r_r23 = CPyStatics[433]; /* 'values' */
     cpy_r_r24 = CPyObject_CallMethodObjArgs(cpy_r_r22, cpy_r_r23, NULL);
     CPy_DECREF(cpy_r_r22);
     if (unlikely(cpy_r_r24 == NULL)) {
@@ -34957,14 +35554,14 @@ CPyL14: ;
     cpy_r_r26 = PyIter_Next(cpy_r_r25);
     if (cpy_r_r26 == NULL) goto CPyL44;
     cpy_r_r27 = CPyStatic_overloaded___globals;
-    cpy_r_r28 = CPyStatics[354]; /* 'ContractCall' */
+    cpy_r_r28 = CPyStatics[358]; /* 'ContractCall' */
     cpy_r_r29 = CPyDict_GetItem(cpy_r_r27, cpy_r_r28);
     if (unlikely(cpy_r_r29 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
         goto CPyL45;
     }
     cpy_r_r30 = CPyStatic_overloaded___globals;
-    cpy_r_r31 = CPyStatics[430]; /* 'ContractTx' */
+    cpy_r_r31 = CPyStatics[434]; /* 'ContractTx' */
     cpy_r_r32 = CPyDict_GetItem(cpy_r_r30, cpy_r_r31);
     if (unlikely(cpy_r_r32 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
@@ -34975,10 +35572,10 @@ CPyL14: ;
     cpy_r_r34 = PyTuple_New(2);
     if (unlikely(cpy_r_r34 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp85 = cpy_r_r33.f0;
-    PyTuple_SET_ITEM(cpy_r_r34, 0, __tmp85);
-    PyObject *__tmp86 = cpy_r_r33.f1;
-    PyTuple_SET_ITEM(cpy_r_r34, 1, __tmp86);
+    PyObject *__tmp86 = cpy_r_r33.f0;
+    PyTuple_SET_ITEM(cpy_r_r34, 0, __tmp86);
+    PyObject *__tmp87 = cpy_r_r33.f1;
+    PyTuple_SET_ITEM(cpy_r_r34, 1, __tmp87);
     cpy_r_r35 = PyObject_IsInstance(cpy_r_r26, cpy_r_r34);
     CPy_DECREF(cpy_r_r34);
     cpy_r_r36 = cpy_r_r35 >= 0;
@@ -34988,14 +35585,14 @@ CPyL14: ;
     }
     cpy_r_r37 = cpy_r_r35;
     if (!cpy_r_r37) goto CPyL47;
-    cpy_r_r38 = CPyStatics[273]; /* '_address' */
+    cpy_r_r38 = CPyStatics[280]; /* '_address' */
     cpy_r_r39 = CPyObject_GetAttr(cpy_r_r26, cpy_r_r38);
     if (unlikely(cpy_r_r39 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL45;
     }
     cpy_r_r40 = CPyStatic_overloaded___globals;
-    cpy_r_r41 = CPyStatics[274]; /* '_skip_proc_pool' */
+    cpy_r_r41 = CPyStatics[281]; /* '_skip_proc_pool' */
     cpy_r_r42 = CPyDict_GetItem(cpy_r_r40, cpy_r_r41);
     if (unlikely(cpy_r_r42 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
@@ -35016,7 +35613,7 @@ CPyL14: ;
         goto CPyL45;
     }
     cpy_r_r46 = cpy_r_r44;
-    cpy_r_r47 = CPyStatics[275]; /* '_skip_decoder_proc_pool' */
+    cpy_r_r47 = CPyStatics[282]; /* '_skip_decoder_proc_pool' */
     cpy_r_r48 = cpy_r_r46 ? Py_True : Py_False;
     cpy_r_r49 = PyObject_SetAttr(cpy_r_r26, cpy_r_r47, cpy_r_r48);
     cpy_r_r50 = cpy_r_r49 >= 0;
@@ -35024,13 +35621,13 @@ CPyL14: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL45;
     }
-    cpy_r_r51 = CPyStatics[264]; /* 'abi' */
+    cpy_r_r51 = CPyStatics[271]; /* 'abi' */
     cpy_r_r52 = CPyObject_GetAttr(cpy_r_r26, cpy_r_r51);
     if (unlikely(cpy_r_r52 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
         goto CPyL45;
     }
-    cpy_r_r53 = CPyStatics[276]; /* 'inputs' */
+    cpy_r_r53 = CPyStatics[256]; /* 'inputs' */
     cpy_r_r54 = PyObject_GetItem(cpy_r_r52, cpy_r_r53);
     CPy_DECREF(cpy_r_r52);
     if (unlikely(cpy_r_r54 == NULL)) {
@@ -35044,7 +35641,7 @@ CPyL14: ;
         goto CPyL45;
     }
     cpy_r_r56 = CPyStatic_overloaded___globals;
-    cpy_r_r57 = CPyStatics[277]; /* '_get_coroutine_fn' */
+    cpy_r_r57 = CPyStatics[283]; /* '_get_coroutine_fn' */
     cpy_r_r58 = CPyDict_GetItem(cpy_r_r56, cpy_r_r57);
     if (unlikely(cpy_r_r58 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
@@ -35061,7 +35658,7 @@ CPyL14: ;
     }
     CPy_DECREF(cpy_r_r59);
     cpy_r_r63 = CPyStatic_overloaded___globals;
-    cpy_r_r64 = CPyStatics[278]; /* 'MethodType' */
+    cpy_r_r64 = CPyStatics[284]; /* 'MethodType' */
     cpy_r_r65 = CPyDict_GetItem(cpy_r_r63, cpy_r_r64);
     if (unlikely(cpy_r_r65 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
@@ -35076,7 +35673,7 @@ CPyL14: ;
         goto CPyL51;
     }
     CPy_DECREF(cpy_r_r62);
-    cpy_r_r69 = CPyStatics[279]; /* 'coroutine' */
+    cpy_r_r69 = CPyStatics[285]; /* 'coroutine' */
     cpy_r_r70 = PyObject_SetAttr(cpy_r_r26, cpy_r_r69, cpy_r_r68);
     CPy_DECREF(cpy_r_r26);
     CPy_DECREF(cpy_r_r68);
@@ -35100,7 +35697,7 @@ CPyL32: ;
     CPy_INCREF(cpy_r_r73);
 CPyL34: ;
     cpy_r_r74 = CPyStatic_overloaded___globals;
-    cpy_r_r75 = CPyStatics[278]; /* 'MethodType' */
+    cpy_r_r75 = CPyStatics[284]; /* 'MethodType' */
     cpy_r_r76 = CPyDict_GetItem(cpy_r_r74, cpy_r_r75);
     if (unlikely(cpy_r_r76 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 69, CPyStatic_overloaded___globals);
@@ -35128,7 +35725,7 @@ CPyL34: ;
         goto CPyL54;
     }
 CPyL37: ;
-    cpy_r_r81 = CPyStatics[279]; /* 'coroutine' */
+    cpy_r_r81 = CPyStatics[285]; /* 'coroutine' */
     cpy_r_r82 = PyObject_SetAttr(cpy_r_r80, cpy_r_r81, cpy_r_r79);
     CPy_DECREF(cpy_r_r80);
     CPy_DECREF(cpy_r_r79);
@@ -35294,8 +35891,8 @@ char CPyDef_overloaded_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[767]; /* ('wraps',) */
-    cpy_r_r6 = CPyStatics[431]; /* 'functools' */
+    cpy_r_r5 = CPyStatics[771]; /* ('wraps',) */
+    cpy_r_r6 = CPyStatics[435]; /* 'functools' */
     cpy_r_r7 = CPyStatic_overloaded___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
     if (unlikely(cpy_r_r8 == NULL)) {
@@ -35305,8 +35902,8 @@ CPyL3: ;
     CPyModule_functools = cpy_r_r8;
     CPy_INCREF(CPyModule_functools);
     CPy_DECREF(cpy_r_r8);
-    cpy_r_r9 = CPyStatics[768]; /* ('MethodType',) */
-    cpy_r_r10 = CPyStatics[342]; /* 'types' */
+    cpy_r_r9 = CPyStatics[772]; /* ('MethodType',) */
+    cpy_r_r10 = CPyStatics[346]; /* 'types' */
     cpy_r_r11 = CPyStatic_overloaded___globals;
     cpy_r_r12 = CPyImport_ImportFromMany(cpy_r_r10, cpy_r_r9, cpy_r_r9, cpy_r_r11);
     if (unlikely(cpy_r_r12 == NULL)) {
@@ -35316,7 +35913,7 @@ CPyL3: ;
     CPyModule_types = cpy_r_r12;
     CPy_INCREF(CPyModule_types);
     CPy_DECREF(cpy_r_r12);
-    cpy_r_r13 = CPyStatics[769]; /* ('Any', 'Dict', 'Optional', 'Union') */
+    cpy_r_r13 = CPyStatics[773]; /* ('Any', 'Dict', 'Optional', 'Union') */
     cpy_r_r14 = CPyStatics[41]; /* 'typing' */
     cpy_r_r15 = CPyStatic_overloaded___globals;
     cpy_r_r16 = CPyImport_ImportFromMany(cpy_r_r14, cpy_r_r13, cpy_r_r13, cpy_r_r15);
@@ -35327,7 +35924,7 @@ CPyL3: ;
     CPyModule_typing = cpy_r_r16;
     CPy_INCREF(CPyModule_typing);
     CPy_DECREF(cpy_r_r16);
-    cpy_r_r17 = CPyStatics[770]; /* ('Contract',) */
+    cpy_r_r17 = CPyStatics[774]; /* ('Contract',) */
     cpy_r_r18 = CPyStatics[241]; /* 'brownie' */
     cpy_r_r19 = CPyStatic_overloaded___globals;
     cpy_r_r20 = CPyImport_ImportFromMany(cpy_r_r18, cpy_r_r17, cpy_r_r17, cpy_r_r19);
@@ -35338,8 +35935,8 @@ CPyL3: ;
     CPyModule_brownie = cpy_r_r20;
     CPy_INCREF(CPyModule_brownie);
     CPy_DECREF(cpy_r_r20);
-    cpy_r_r21 = CPyStatics[771]; /* ('ContractCall', 'ContractTx', 'OverloadedMethod') */
-    cpy_r_r22 = CPyStatics[348]; /* 'brownie.network.contract' */
+    cpy_r_r21 = CPyStatics[775]; /* ('ContractCall', 'ContractTx', 'OverloadedMethod') */
+    cpy_r_r22 = CPyStatics[352]; /* 'brownie.network.contract' */
     cpy_r_r23 = CPyStatic_overloaded___globals;
     cpy_r_r24 = CPyImport_ImportFromMany(cpy_r_r22, cpy_r_r21, cpy_r_r21, cpy_r_r23);
     if (unlikely(cpy_r_r24 == NULL)) {
@@ -35349,8 +35946,8 @@ CPyL3: ;
     CPyModule_brownie___network___contract = cpy_r_r24;
     CPy_INCREF(CPyModule_brownie___network___contract);
     CPy_DECREF(cpy_r_r24);
-    cpy_r_r25 = CPyStatics[772]; /* ('_get_coroutine_fn', '_skip_proc_pool') */
-    cpy_r_r26 = CPyStatics[433]; /* 'dank_mids.brownie_patch.call' */
+    cpy_r_r25 = CPyStatics[776]; /* ('_get_coroutine_fn', '_skip_proc_pool') */
+    cpy_r_r26 = CPyStatics[437]; /* 'dank_mids.brownie_patch.call' */
     cpy_r_r27 = CPyStatic_overloaded___globals;
     cpy_r_r28 = CPyImport_ImportFromMany(cpy_r_r26, cpy_r_r25, cpy_r_r25, cpy_r_r27);
     if (unlikely(cpy_r_r28 == NULL)) {
@@ -35360,7 +35957,7 @@ CPyL3: ;
     CPyModule_dank_mids___brownie_patch___call = cpy_r_r28;
     CPy_INCREF(CPyModule_dank_mids___brownie_patch___call);
     CPy_DECREF(cpy_r_r28);
-    cpy_r_r29 = CPyStatics[765]; /* ('ContractMethod',) */
+    cpy_r_r29 = CPyStatics[769]; /* ('ContractMethod',) */
     cpy_r_r30 = CPyStatics[231]; /* 'dank_mids.brownie_patch.types' */
     cpy_r_r31 = CPyStatic_overloaded___globals;
     cpy_r_r32 = CPyImport_ImportFromMany(cpy_r_r30, cpy_r_r29, cpy_r_r29, cpy_r_r31);
@@ -35371,7 +35968,7 @@ CPyL3: ;
     CPyModule_dank_mids___brownie_patch___types = cpy_r_r32;
     CPy_INCREF(CPyModule_dank_mids___brownie_patch___types);
     CPy_DECREF(cpy_r_r32);
-    cpy_r_r33 = CPyStatics[731]; /* ('DankWeb3',) */
+    cpy_r_r33 = CPyStatics[735]; /* ('DankWeb3',) */
     cpy_r_r34 = CPyStatics[236]; /* 'dank_mids.helpers._helpers' */
     cpy_r_r35 = CPyStatic_overloaded___globals;
     cpy_r_r36 = CPyImport_ImportFromMany(cpy_r_r34, cpy_r_r33, cpy_r_r33, cpy_r_r35);
@@ -36166,7 +36763,7 @@ CPyL6: ;
     }
     CPy_INCREF(cpy_r_r7);
 CPyL7: ;
-    cpy_r_r8 = CPyStatics[418]; /* '_get_fn_from_args' */
+    cpy_r_r8 = CPyStatics[422]; /* '_get_fn_from_args' */
     cpy_r_r9 = CPyObject_CallMethodObjArgs(cpy_r_r6, cpy_r_r8, cpy_r_r7, NULL);
     CPy_DECREF(cpy_r_r6);
     CPy_DECREF(cpy_r_r7);
@@ -36179,16 +36776,16 @@ CPyL7: ;
     else {
         cpy_r_r10 = NULL;
     }
-    if (cpy_r_r10 != NULL) goto __LL87;
+    if (cpy_r_r10 != NULL) goto __LL88;
     if (Py_TYPE(cpy_r_r9) == CPyType_types___DankContractTx)
         cpy_r_r10 = cpy_r_r9;
     else {
         cpy_r_r10 = NULL;
     }
-    if (cpy_r_r10 != NULL) goto __LL87;
+    if (cpy_r_r10 != NULL) goto __LL88;
     CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\types.py", "coroutine", 74, CPyStatic_types___globals, "union[dank_mids.brownie_patch.types.DankContractCall, dank_mids.brownie_patch.types.DankContractTx]", cpy_r_r9);
     goto CPyL65;
-__LL87: ;
+__LL88: ;
     if (((dank_mids___brownie_patch___types___coroutine_DankOverloadedMethod_envObject *)cpy_r_r2)->_call != NULL) {
         CPy_DECREF(((dank_mids___brownie_patch___types___coroutine_DankOverloadedMethod_envObject *)cpy_r_r2)->_call);
     }
@@ -36233,7 +36830,7 @@ CPyL14: ;
     }
     CPy_INCREF(cpy_r_r16);
 CPyL15: ;
-    cpy_r_r17 = CPyStatics[279]; /* 'coroutine' */
+    cpy_r_r17 = CPyStatics[285]; /* 'coroutine' */
     cpy_r_r18 = CPyObject_GetAttr(cpy_r_r12, cpy_r_r17);
     CPy_DECREF(cpy_r_r12);
     if (unlikely(cpy_r_r18 == NULL)) {
@@ -36253,9 +36850,9 @@ CPyL15: ;
     } else
         goto CPyL75;
 CPyL18: ;
-    cpy_r_r21 = CPyStatics[424]; /* 'block_identifier' */
-    cpy_r_r22 = CPyStatics[425]; /* 'decimals' */
-    cpy_r_r23 = CPyStatics[426]; /* 'override' */
+    cpy_r_r21 = CPyStatics[428]; /* 'block_identifier' */
+    cpy_r_r22 = CPyStatics[429]; /* 'decimals' */
+    cpy_r_r23 = CPyStatics[430]; /* 'override' */
     cpy_r_r24 = PyList_AsTuple(cpy_r_r19);
     CPy_DECREF(cpy_r_r19);
     if (unlikely(cpy_r_r24 == NULL)) {
@@ -36863,10 +37460,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp88 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp88);
-    PyObject *__tmp89 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp89);
+    PyObject *__tmp89 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp89);
+    PyObject *__tmp90 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp90);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -37126,63 +37723,63 @@ PyObject *CPyPy_types___DankOverloadedMethod___coroutine(PyObject *self, PyObjec
     PyObject *arg_block_identifier;
     if (obj_block_identifier == NULL) {
         arg_block_identifier = NULL;
-        goto __LL90;
+        goto __LL91;
     }
     if (PyLong_Check(obj_block_identifier))
         arg_block_identifier = obj_block_identifier;
     else {
         arg_block_identifier = NULL;
     }
-    if (arg_block_identifier != NULL) goto __LL90;
+    if (arg_block_identifier != NULL) goto __LL91;
     if (obj_block_identifier == Py_None)
         arg_block_identifier = obj_block_identifier;
     else {
         arg_block_identifier = NULL;
     }
-    if (arg_block_identifier != NULL) goto __LL90;
+    if (arg_block_identifier != NULL) goto __LL91;
     CPy_TypeError("int or None", obj_block_identifier); 
     goto fail;
-__LL90: ;
+__LL91: ;
     PyObject *arg_decimals;
     if (obj_decimals == NULL) {
         arg_decimals = NULL;
-        goto __LL91;
+        goto __LL92;
     }
     if (PyLong_Check(obj_decimals))
         arg_decimals = obj_decimals;
     else {
         arg_decimals = NULL;
     }
-    if (arg_decimals != NULL) goto __LL91;
+    if (arg_decimals != NULL) goto __LL92;
     if (obj_decimals == Py_None)
         arg_decimals = obj_decimals;
     else {
         arg_decimals = NULL;
     }
-    if (arg_decimals != NULL) goto __LL91;
+    if (arg_decimals != NULL) goto __LL92;
     CPy_TypeError("int or None", obj_decimals); 
     goto fail;
-__LL91: ;
+__LL92: ;
     PyObject *arg_override;
     if (obj_override == NULL) {
         arg_override = NULL;
-        goto __LL92;
+        goto __LL93;
     }
     if (PyDict_Check(obj_override))
         arg_override = obj_override;
     else {
         arg_override = NULL;
     }
-    if (arg_override != NULL) goto __LL92;
+    if (arg_override != NULL) goto __LL93;
     if (obj_override == Py_None)
         arg_override = obj_override;
     else {
         arg_override = NULL;
     }
-    if (arg_override != NULL) goto __LL92;
+    if (arg_override != NULL) goto __LL93;
     CPy_TypeError("dict or None", obj_override); 
     goto fail;
-__LL92: ;
+__LL93: ;
     PyObject *retval = CPyDef_types___DankOverloadedMethod___coroutine(arg_self, arg_args, arg_block_identifier, arg_decimals, arg_override);
     CPy_DECREF(obj_args);
     return retval;
@@ -37225,19 +37822,19 @@ char CPyDef_types___DankOverloadedMethod____add_fn(PyObject *cpy_r_self, PyObjec
     PyObject *cpy_r_r29;
     PyObject *cpy_r_r30;
     char cpy_r_r31;
-    cpy_r_r0 = CPyStatics[273]; /* '_address' */
+    cpy_r_r0 = CPyStatics[280]; /* '_address' */
     cpy_r_r1 = CPyObject_GetAttr(cpy_r_self, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_add_fn", 90, CPyStatic_types___globals);
         goto CPyL20;
     }
-    cpy_r_r2 = CPyStatics[298]; /* '_name' */
+    cpy_r_r2 = CPyStatics[304]; /* '_name' */
     cpy_r_r3 = CPyObject_GetAttr(cpy_r_self, cpy_r_r2);
     if (unlikely(cpy_r_r3 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_add_fn", 90, CPyStatic_types___globals);
         goto CPyL21;
     }
-    cpy_r_r4 = CPyStatics[434]; /* '_owner' */
+    cpy_r_r4 = CPyStatics[438]; /* '_owner' */
     cpy_r_r5 = CPyObject_GetAttr(cpy_r_self, cpy_r_r4);
     if (unlikely(cpy_r_r5 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_add_fn", 90, CPyStatic_types___globals);
@@ -37268,7 +37865,7 @@ char CPyDef_types___DankOverloadedMethod____add_fn(PyObject *cpy_r_self, PyObjec
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_add_fn", 91, CPyStatic_types___globals);
         goto CPyL25;
     }
-    cpy_r_r10 = CPyStatics[276]; /* 'inputs' */
+    cpy_r_r10 = CPyStatics[256]; /* 'inputs' */
     cpy_r_r11 = CPyDict_GetItem(cpy_r_abi, cpy_r_r10);
     if (unlikely(cpy_r_r11 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_add_fn", 91, CPyStatic_types___globals);
@@ -37283,16 +37880,16 @@ char CPyDef_types___DankOverloadedMethod____add_fn(PyObject *cpy_r_self, PyObjec
 CPyL9: ;
     cpy_r_r13 = PyIter_Next(cpy_r_r12);
     if (cpy_r_r13 == NULL) goto CPyL27;
-    cpy_r_r14 = CPyStatics[435]; /* 'type' */
+    cpy_r_r14 = CPyStatics[249]; /* 'type' */
     cpy_r_r15 = PyObject_GetItem(cpy_r_r13, cpy_r_r14);
     CPy_DECREF(cpy_r_r13);
     if (unlikely(cpy_r_r15 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_add_fn", 91, CPyStatic_types___globals);
         goto CPyL28;
     }
-    cpy_r_r16 = CPyStatics[436]; /* '256' */
+    cpy_r_r16 = CPyStatics[439]; /* '256' */
     cpy_r_r17 = CPyStatics[129]; /* '' */
-    cpy_r_r18 = CPyStatics[437]; /* 'replace' */
+    cpy_r_r18 = CPyStatics[255]; /* 'replace' */
     cpy_r_r19 = CPyObject_CallMethodObjArgs(cpy_r_r15, cpy_r_r18, cpy_r_r16, cpy_r_r17, NULL);
     CPy_DECREF(cpy_r_r15);
     if (unlikely(cpy_r_r19 == NULL)) {
@@ -37335,13 +37932,13 @@ CPyL16: ;
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_add_fn", 92, CPyStatic_types___globals);
         goto CPyL20;
     }
-    cpy_r_r27 = CPyStatics[438]; /* 'natspec' */
+    cpy_r_r27 = CPyStatics[440]; /* 'natspec' */
     cpy_r_r28 = CPyObject_GetAttr(cpy_r_self, cpy_r_r27);
     if (unlikely(cpy_r_r28 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_add_fn", 93, CPyStatic_types___globals);
         goto CPyL20;
     }
-    cpy_r_r29 = CPyStatics[439]; /* 'update' */
+    cpy_r_r29 = CPyStatics[441]; /* 'update' */
     cpy_r_r30 = CPyObject_CallMethodObjArgs(cpy_r_r28, cpy_r_r29, cpy_r_natspec, NULL);
     CPy_DECREF(cpy_r_r28);
     if (unlikely(cpy_r_r30 == NULL)) {
@@ -37465,7 +38062,7 @@ PyObject *CPyDef_types____get_method_object(PyObject *cpy_r_address, PyObject *c
     PyObject *cpy_r_r25;
     PyObject *cpy_r_r26;
     PyObject *cpy_r_r27;
-    cpy_r_r0 = CPyStatics[440]; /* 'constant' */
+    cpy_r_r0 = CPyStatics[442]; /* 'constant' */
     cpy_r_r1 = PyDict_Contains(cpy_r_abi, cpy_r_r0);
     cpy_r_r2 = cpy_r_r1 >= 0;
     if (unlikely(!cpy_r_r2)) {
@@ -37474,7 +38071,7 @@ PyObject *CPyDef_types____get_method_object(PyObject *cpy_r_address, PyObject *c
     }
     cpy_r_r3 = cpy_r_r1;
     if (!cpy_r_r3) goto CPyL4;
-    cpy_r_r4 = CPyStatics[440]; /* 'constant' */
+    cpy_r_r4 = CPyStatics[442]; /* 'constant' */
     cpy_r_r5 = CPyDict_GetItem(cpy_r_abi, cpy_r_r4);
     if (unlikely(cpy_r_r5 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_get_method_object", 126, CPyStatic_types___globals);
@@ -37483,13 +38080,13 @@ PyObject *CPyDef_types____get_method_object(PyObject *cpy_r_address, PyObject *c
     cpy_r_constant = cpy_r_r5;
     goto CPyL14;
 CPyL4: ;
-    cpy_r_r6 = CPyStatics[441]; /* 'stateMutability' */
+    cpy_r_r6 = CPyStatics[443]; /* 'stateMutability' */
     cpy_r_r7 = CPyDict_GetItem(cpy_r_abi, cpy_r_r6);
     if (unlikely(cpy_r_r7 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_get_method_object", 128, CPyStatic_types___globals);
         goto CPyL24;
     }
-    cpy_r_r8 = CPyStatics[442]; /* 'view' */
+    cpy_r_r8 = CPyStatics[444]; /* 'view' */
     cpy_r_r9 = PyObject_RichCompare(cpy_r_r7, cpy_r_r8, 2);
     CPy_DECREF(cpy_r_r7);
     if (unlikely(cpy_r_r9 == NULL)) {
@@ -37509,13 +38106,13 @@ CPyL4: ;
     cpy_r_r11 = cpy_r_r10;
     goto CPyL13;
 CPyL9: ;
-    cpy_r_r12 = CPyStatics[441]; /* 'stateMutability' */
+    cpy_r_r12 = CPyStatics[443]; /* 'stateMutability' */
     cpy_r_r13 = CPyDict_GetItem(cpy_r_abi, cpy_r_r12);
     if (unlikely(cpy_r_r13 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "_get_method_object", 128, CPyStatic_types___globals);
         goto CPyL24;
     }
-    cpy_r_r14 = CPyStatics[443]; /* 'pure' */
+    cpy_r_r14 = CPyStatics[445]; /* 'pure' */
     cpy_r_r15 = PyObject_RichCompare(cpy_r_r13, cpy_r_r14, 2);
     CPy_DECREF(cpy_r_r13);
     if (unlikely(cpy_r_r15 == NULL)) {
@@ -37628,16 +38225,16 @@ PyObject *CPyPy_types____get_method_object(PyObject *self, PyObject *const *args
     }
     PyObject *arg_owner;
     arg_owner = obj_owner;
-    if (arg_owner != NULL) goto __LL93;
+    if (arg_owner != NULL) goto __LL94;
     if (obj_owner == Py_None)
         arg_owner = obj_owner;
     else {
         arg_owner = NULL;
     }
-    if (arg_owner != NULL) goto __LL93;
+    if (arg_owner != NULL) goto __LL94;
     CPy_TypeError("object or None", obj_owner); 
     goto fail;
-__LL93: ;
+__LL94: ;
     PyObject *arg_natspec;
     if (likely(PyDict_Check(obj_natspec)))
         arg_natspec = obj_natspec;
@@ -37808,7 +38405,7 @@ char CPyDef_types_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[773]; /* ('Any', 'Dict', 'Optional', 'Tuple', 'TypeVar', 'Union',
+    cpy_r_r5 = CPyStatics[777]; /* ('Any', 'Dict', 'Optional', 'Tuple', 'TypeVar', 'Union',
                                    'final') */
     cpy_r_r6 = CPyStatics[41]; /* 'typing' */
     cpy_r_r7 = CPyStatic_types___globals;
@@ -37820,8 +38417,8 @@ CPyL3: ;
     CPyModule_typing = cpy_r_r8;
     CPy_INCREF(CPyModule_typing);
     CPy_DECREF(cpy_r_r8);
-    cpy_r_r9 = CPyStatics[771]; /* ('ContractCall', 'ContractTx', 'OverloadedMethod') */
-    cpy_r_r10 = CPyStatics[348]; /* 'brownie.network.contract' */
+    cpy_r_r9 = CPyStatics[775]; /* ('ContractCall', 'ContractTx', 'OverloadedMethod') */
+    cpy_r_r10 = CPyStatics[352]; /* 'brownie.network.contract' */
     cpy_r_r11 = CPyStatic_types___globals;
     cpy_r_r12 = CPyImport_ImportFromMany(cpy_r_r10, cpy_r_r9, cpy_r_r9, cpy_r_r11);
     if (unlikely(cpy_r_r12 == NULL)) {
@@ -37831,8 +38428,8 @@ CPyL3: ;
     CPyModule_brownie___network___contract = cpy_r_r12;
     CPy_INCREF(CPyModule_brownie___network___contract);
     CPy_DECREF(cpy_r_r12);
-    cpy_r_r13 = CPyStatics[774]; /* ('AccountsType',) */
-    cpy_r_r14 = CPyStatics[445]; /* 'brownie.typing' */
+    cpy_r_r13 = CPyStatics[778]; /* ('AccountsType',) */
+    cpy_r_r14 = CPyStatics[447]; /* 'brownie.typing' */
     cpy_r_r15 = CPyStatic_types___globals;
     cpy_r_r16 = CPyImport_ImportFromMany(cpy_r_r14, cpy_r_r13, cpy_r_r13, cpy_r_r15);
     if (unlikely(cpy_r_r16 == NULL)) {
@@ -37842,8 +38439,8 @@ CPyL3: ;
     CPyModule_brownie___typing = cpy_r_r16;
     CPy_INCREF(CPyModule_brownie___typing);
     CPy_DECREF(cpy_r_r16);
-    cpy_r_r17 = CPyStatics[775]; /* ('_DankMethod', '_DankMethodMixin', '_EVMType') */
-    cpy_r_r18 = CPyStatics[449]; /* 'dank_mids.brownie_patch._method' */
+    cpy_r_r17 = CPyStatics[779]; /* ('_DankMethod', '_DankMethodMixin', '_EVMType') */
+    cpy_r_r18 = CPyStatics[451]; /* 'dank_mids.brownie_patch._method' */
     cpy_r_r19 = CPyStatic_types___globals;
     cpy_r_r20 = CPyImport_ImportFromMany(cpy_r_r18, cpy_r_r17, cpy_r_r17, cpy_r_r19);
     if (unlikely(cpy_r_r20 == NULL)) {
@@ -37853,7 +38450,7 @@ CPyL3: ;
     CPyModule_dank_mids___brownie_patch____method = cpy_r_r20;
     CPy_INCREF(CPyModule_dank_mids___brownie_patch____method);
     CPy_DECREF(cpy_r_r20);
-    cpy_r_r21 = CPyStatics[373]; /* '_T' */
+    cpy_r_r21 = CPyStatics[377]; /* '_T' */
     cpy_r_r22 = CPyStatic_types___globals;
     cpy_r_r23 = CPyStatics[38]; /* 'TypeVar' */
     cpy_r_r24 = CPyDict_GetItem(cpy_r_r22, cpy_r_r23);
@@ -37870,7 +38467,7 @@ CPyL3: ;
         goto CPyL49;
     }
     cpy_r_r28 = CPyStatic_types___globals;
-    cpy_r_r29 = CPyStatics[373]; /* '_T' */
+    cpy_r_r29 = CPyStatics[377]; /* '_T' */
     cpy_r_r30 = CPyDict_SetItem(cpy_r_r28, cpy_r_r29, cpy_r_r27);
     CPy_DECREF(cpy_r_r27);
     cpy_r_r31 = cpy_r_r30 >= 0;
@@ -37886,21 +38483,21 @@ CPyL3: ;
         goto CPyL49;
     }
     cpy_r_r35 = CPyStatic_types___globals;
-    cpy_r_r36 = CPyStatics[354]; /* 'ContractCall' */
+    cpy_r_r36 = CPyStatics[358]; /* 'ContractCall' */
     cpy_r_r37 = CPyDict_GetItem(cpy_r_r35, cpy_r_r36);
     if (unlikely(cpy_r_r37 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 11, CPyStatic_types___globals);
         goto CPyL50;
     }
     cpy_r_r38 = CPyStatic_types___globals;
-    cpy_r_r39 = CPyStatics[430]; /* 'ContractTx' */
+    cpy_r_r39 = CPyStatics[434]; /* 'ContractTx' */
     cpy_r_r40 = CPyDict_GetItem(cpy_r_r38, cpy_r_r39);
     if (unlikely(cpy_r_r40 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 11, CPyStatic_types___globals);
         goto CPyL51;
     }
     cpy_r_r41 = CPyStatic_types___globals;
-    cpy_r_r42 = CPyStatics[432]; /* 'OverloadedMethod' */
+    cpy_r_r42 = CPyStatics[436]; /* 'OverloadedMethod' */
     cpy_r_r43 = CPyDict_GetItem(cpy_r_r41, cpy_r_r42);
     if (unlikely(cpy_r_r43 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 11, CPyStatic_types___globals);
@@ -37912,12 +38509,12 @@ CPyL3: ;
     cpy_r_r45 = PyTuple_New(3);
     if (unlikely(cpy_r_r45 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp94 = cpy_r_r44.f0;
-    PyTuple_SET_ITEM(cpy_r_r45, 0, __tmp94);
-    PyObject *__tmp95 = cpy_r_r44.f1;
-    PyTuple_SET_ITEM(cpy_r_r45, 1, __tmp95);
-    PyObject *__tmp96 = cpy_r_r44.f2;
-    PyTuple_SET_ITEM(cpy_r_r45, 2, __tmp96);
+    PyObject *__tmp95 = cpy_r_r44.f0;
+    PyTuple_SET_ITEM(cpy_r_r45, 0, __tmp95);
+    PyObject *__tmp96 = cpy_r_r44.f1;
+    PyTuple_SET_ITEM(cpy_r_r45, 1, __tmp96);
+    PyObject *__tmp97 = cpy_r_r44.f2;
+    PyTuple_SET_ITEM(cpy_r_r45, 2, __tmp97);
     cpy_r_r46 = PyObject_GetItem(cpy_r_r34, cpy_r_r45);
     CPy_DECREF(cpy_r_r34);
     CPy_DECREF(cpy_r_r45);
@@ -37926,7 +38523,7 @@ CPyL3: ;
         goto CPyL49;
     }
     cpy_r_r47 = CPyStatic_types___globals;
-    cpy_r_r48 = CPyStatics[366]; /* 'ContractMethod' */
+    cpy_r_r48 = CPyStatics[370]; /* 'ContractMethod' */
     cpy_r_r49 = CPyDict_SetItem(cpy_r_r47, cpy_r_r48, cpy_r_r46);
     CPy_DECREF(cpy_r_r46);
     cpy_r_r50 = cpy_r_r49 >= 0;
@@ -37935,14 +38532,14 @@ CPyL3: ;
         goto CPyL49;
     }
     cpy_r_r51 = CPyStatic_types___globals;
-    cpy_r_r52 = CPyStatics[446]; /* '_DankMethod' */
+    cpy_r_r52 = CPyStatics[448]; /* '_DankMethod' */
     cpy_r_r53 = CPyDict_GetItem(cpy_r_r51, cpy_r_r52);
     if (unlikely(cpy_r_r53 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 16, CPyStatic_types___globals);
         goto CPyL49;
     }
     cpy_r_r54 = CPyStatic_types___globals;
-    cpy_r_r55 = CPyStatics[354]; /* 'ContractCall' */
+    cpy_r_r55 = CPyStatics[358]; /* 'ContractCall' */
     cpy_r_r56 = CPyDict_GetItem(cpy_r_r54, cpy_r_r55);
     if (unlikely(cpy_r_r56 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 16, CPyStatic_types___globals);
@@ -37994,14 +38591,14 @@ CPyL3: ;
         goto CPyL49;
     }
     cpy_r_r71 = CPyStatic_types___globals;
-    cpy_r_r72 = CPyStatics[446]; /* '_DankMethod' */
+    cpy_r_r72 = CPyStatics[448]; /* '_DankMethod' */
     cpy_r_r73 = CPyDict_GetItem(cpy_r_r71, cpy_r_r72);
     if (unlikely(cpy_r_r73 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 28, CPyStatic_types___globals);
         goto CPyL49;
     }
     cpy_r_r74 = CPyStatic_types___globals;
-    cpy_r_r75 = CPyStatics[430]; /* 'ContractTx' */
+    cpy_r_r75 = CPyStatics[434]; /* 'ContractTx' */
     cpy_r_r76 = CPyDict_GetItem(cpy_r_r74, cpy_r_r75);
     if (unlikely(cpy_r_r76 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 28, CPyStatic_types___globals);
@@ -38068,10 +38665,10 @@ CPyL3: ;
     cpy_r_r97 = PyTuple_New(2);
     if (unlikely(cpy_r_r97 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp97 = cpy_r_r96.f0;
-    PyTuple_SET_ITEM(cpy_r_r97, 0, __tmp97);
-    PyObject *__tmp98 = cpy_r_r96.f1;
-    PyTuple_SET_ITEM(cpy_r_r97, 1, __tmp98);
+    PyObject *__tmp98 = cpy_r_r96.f0;
+    PyTuple_SET_ITEM(cpy_r_r97, 0, __tmp98);
+    PyObject *__tmp99 = cpy_r_r96.f1;
+    PyTuple_SET_ITEM(cpy_r_r97, 1, __tmp99);
     cpy_r_r98 = PyObject_GetItem(cpy_r_r93, cpy_r_r97);
     CPy_DECREF(cpy_r_r93);
     CPy_DECREF(cpy_r_r97);
@@ -38080,7 +38677,7 @@ CPyL3: ;
         goto CPyL49;
     }
     cpy_r_r99 = CPyStatic_types___globals;
-    cpy_r_r100 = CPyStatics[450]; /* '_NonOverloaded' */
+    cpy_r_r100 = CPyStatics[452]; /* '_NonOverloaded' */
     cpy_r_r101 = CPyDict_SetItem(cpy_r_r99, cpy_r_r100, cpy_r_r98);
     CPy_DECREF(cpy_r_r98);
     cpy_r_r102 = cpy_r_r101 >= 0;
@@ -38089,21 +38686,21 @@ CPyL3: ;
         goto CPyL49;
     }
     cpy_r_r103 = CPyStatic_types___globals;
-    cpy_r_r104 = CPyStatics[432]; /* 'OverloadedMethod' */
+    cpy_r_r104 = CPyStatics[436]; /* 'OverloadedMethod' */
     cpy_r_r105 = CPyDict_GetItem(cpy_r_r103, cpy_r_r104);
     if (unlikely(cpy_r_r105 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 44, CPyStatic_types___globals);
         goto CPyL49;
     }
     cpy_r_r106 = CPyStatic_types___globals;
-    cpy_r_r107 = CPyStatics[447]; /* '_DankMethodMixin' */
+    cpy_r_r107 = CPyStatics[449]; /* '_DankMethodMixin' */
     cpy_r_r108 = CPyDict_GetItem(cpy_r_r106, cpy_r_r107);
     if (unlikely(cpy_r_r108 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 44, CPyStatic_types___globals);
         goto CPyL57;
     }
     cpy_r_r109 = CPyStatic_types___globals;
-    cpy_r_r110 = CPyStatics[373]; /* '_T' */
+    cpy_r_r110 = CPyStatics[377]; /* '_T' */
     cpy_r_r111 = CPyDict_GetItem(cpy_r_r109, cpy_r_r110);
     if (unlikely(cpy_r_r111 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "<module>", 44, CPyStatic_types___globals);
@@ -38137,7 +38734,7 @@ CPyL3: ;
         goto CPyL59;
     }
     cpy_r_r118 = CPyStatics[63]; /* '__mypyc_attrs__' */
-    cpy_r_r119 = CPyStatics[428]; /* 'methods' */
+    cpy_r_r119 = CPyStatics[432]; /* 'methods' */
     cpy_r_r120 = CPyStatics[183]; /* '__dict__' */
     cpy_r_r121 = PyTuple_Pack(2, cpy_r_r119, cpy_r_r120);
     if (unlikely(cpy_r_r121 == NULL)) {
@@ -38181,12 +38778,12 @@ CPyL3: ;
     cpy_r_r135 = PyTuple_New(3);
     if (unlikely(cpy_r_r135 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp99 = cpy_r_r134.f0;
-    PyTuple_SET_ITEM(cpy_r_r135, 0, __tmp99);
-    PyObject *__tmp100 = cpy_r_r134.f1;
-    PyTuple_SET_ITEM(cpy_r_r135, 1, __tmp100);
-    PyObject *__tmp101 = cpy_r_r134.f2;
-    PyTuple_SET_ITEM(cpy_r_r135, 2, __tmp101);
+    PyObject *__tmp100 = cpy_r_r134.f0;
+    PyTuple_SET_ITEM(cpy_r_r135, 0, __tmp100);
+    PyObject *__tmp101 = cpy_r_r134.f1;
+    PyTuple_SET_ITEM(cpy_r_r135, 1, __tmp101);
+    PyObject *__tmp102 = cpy_r_r134.f2;
+    PyTuple_SET_ITEM(cpy_r_r135, 2, __tmp102);
     cpy_r_r136 = PyObject_GetItem(cpy_r_r130, cpy_r_r135);
     CPy_DECREF(cpy_r_r130);
     CPy_DECREF(cpy_r_r135);
@@ -38656,7 +39253,7 @@ PyObject *CPyDef__codec___RawResponse___decode(PyObject *cpy_r_self, char cpy_r_
     cpy_r_partial = 0;
 CPyL2: ;
     cpy_r_r0 = CPyStatic__codec___globals;
-    cpy_r_r1 = CPyStatics[451]; /* 'better_decode' */
+    cpy_r_r1 = CPyStatics[453]; /* 'better_decode' */
     cpy_r_r2 = CPyDict_GetItem(cpy_r_r0, cpy_r_r1);
     if (unlikely(cpy_r_r2 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "decode", 96, CPyStatic__codec___globals);
@@ -38676,7 +39273,7 @@ CPyL5: ;
     CPy_INCREF(cpy_r_r6);
     if (!cpy_r_partial) goto CPyL8;
     cpy_r_r7 = CPyStatic__codec___globals;
-    cpy_r_r8 = CPyStatics[452]; /* 'PartialResponse' */
+    cpy_r_r8 = CPyStatics[454]; /* 'PartialResponse' */
     cpy_r_r9 = CPyDict_GetItem(cpy_r_r7, cpy_r_r8);
     if (unlikely(cpy_r_r9 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "decode", 98, CPyStatic__codec___globals);
@@ -38686,7 +39283,7 @@ CPyL5: ;
     goto CPyL10;
 CPyL8: ;
     cpy_r_r11 = CPyStatic__codec___globals;
-    cpy_r_r12 = CPyStatics[453]; /* 'Response' */
+    cpy_r_r12 = CPyStatics[455]; /* 'Response' */
     cpy_r_r13 = CPyDict_GetItem(cpy_r_r11, cpy_r_r12);
     if (unlikely(cpy_r_r13 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "decode", 98, CPyStatic__codec___globals);
@@ -38695,7 +39292,7 @@ CPyL8: ;
     cpy_r_r10 = cpy_r_r13;
 CPyL10: ;
     cpy_r_r14 = CPyStatic__codec___globals;
-    cpy_r_r15 = CPyStatics[451]; /* 'better_decode' */
+    cpy_r_r15 = CPyStatics[453]; /* 'better_decode' */
     cpy_r_r16 = CPyDict_GetItem(cpy_r_r14, cpy_r_r15);
     if (unlikely(cpy_r_r16 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "decode", 98, CPyStatic__codec___globals);
@@ -38703,7 +39300,7 @@ CPyL10: ;
     }
     PyObject *cpy_r_r17[2] = {cpy_r_r6, cpy_r_r10};
     cpy_r_r18 = (PyObject **)&cpy_r_r17;
-    cpy_r_r19 = CPyStatics[776]; /* ('type',) */
+    cpy_r_r19 = CPyStatics[780]; /* ('type',) */
     cpy_r_r20 = _PyObject_Vectorcall(cpy_r_r16, cpy_r_r18, 1, cpy_r_r19);
     CPy_DECREF(cpy_r_r16);
     if (unlikely(cpy_r_r20 == NULL)) {
@@ -38957,7 +39554,7 @@ PyObject *CPyDef__codec___decode_jsonrpc_batch(PyObject *cpy_r_data) {
     PyObject *cpy_r_r23;
     PyObject *cpy_r_r24;
     cpy_r_r0 = CPyStatic__codec___globals;
-    cpy_r_r1 = CPyStatics[454]; /* '_decode_batch' */
+    cpy_r_r1 = CPyStatics[456]; /* '_decode_batch' */
     cpy_r_r2 = CPyDict_GetItem(cpy_r_r0, cpy_r_r1);
     if (unlikely(cpy_r_r2 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "decode_jsonrpc_batch", 130, CPyStatic__codec___globals);
@@ -38974,7 +39571,7 @@ PyObject *CPyDef__codec___decode_jsonrpc_batch(PyObject *cpy_r_data) {
     }
 CPyL3: ;
     cpy_r_r6 = CPyStatic__codec___globals;
-    cpy_r_r7 = CPyStatics[454]; /* '_decode_batch' */
+    cpy_r_r7 = CPyStatics[456]; /* '_decode_batch' */
     cpy_r_r8 = CPyDict_GetItem(cpy_r_r6, cpy_r_r7);
     if (unlikely(cpy_r_r8 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "decode_jsonrpc_batch", 133, CPyStatic__codec___globals);
@@ -39208,7 +39805,7 @@ CPyL7: ;
     cpy_r_e = cpy_r_r18;
     CPy_DecRef(cpy_r_e);
     cpy_r_r19 = CPyStatic__codec___globals;
-    cpy_r_r20 = CPyStatics[455]; /* 'Mapping' */
+    cpy_r_r20 = CPyStatics[457]; /* 'Mapping' */
     cpy_r_r21 = CPyDict_GetItem(cpy_r_r19, cpy_r_r20);
     if (unlikely(cpy_r_r21 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "_encode_hook", 156, CPyStatic__codec___globals);
@@ -39230,7 +39827,7 @@ CPyL7: ;
     }
     CPy_INCREF(cpy_r_obj);
     cpy_r_r26 = cpy_r_obj;
-    cpy_r_r27 = CPyStatics[456]; /* 'items' */
+    cpy_r_r27 = CPyStatics[458]; /* 'items' */
     cpy_r_r28 = CPyObject_CallMethodObjArgs(cpy_r_r26, cpy_r_r27, NULL);
     CPy_DecRef(cpy_r_r26);
     if (unlikely(cpy_r_r28 == NULL)) {
@@ -39246,30 +39843,30 @@ CPyL7: ;
 CPyL16: ;
     cpy_r_r30 = PyIter_Next(cpy_r_r29);
     if (cpy_r_r30 == NULL) goto CPyL56;
-    PyObject *__tmp102;
+    PyObject *__tmp103;
     if (unlikely(!(PyTuple_Check(cpy_r_r30) && PyTuple_GET_SIZE(cpy_r_r30) == 2))) {
-        __tmp102 = NULL;
-        goto __LL103;
+        __tmp103 = NULL;
+        goto __LL104;
     }
-    __tmp102 = PyTuple_GET_ITEM(cpy_r_r30, 0);
-    if (__tmp102 == NULL) goto __LL103;
-    __tmp102 = PyTuple_GET_ITEM(cpy_r_r30, 1);
-    if (__tmp102 == NULL) goto __LL103;
-    __tmp102 = cpy_r_r30;
-__LL103: ;
-    if (unlikely(__tmp102 == NULL)) {
+    __tmp103 = PyTuple_GET_ITEM(cpy_r_r30, 0);
+    if (__tmp103 == NULL) goto __LL104;
+    __tmp103 = PyTuple_GET_ITEM(cpy_r_r30, 1);
+    if (__tmp103 == NULL) goto __LL104;
+    __tmp103 = cpy_r_r30;
+__LL104: ;
+    if (unlikely(__tmp103 == NULL)) {
         CPy_TypeError("tuple[object, object]", cpy_r_r30); cpy_r_r31 = (tuple_T2OO) { NULL, NULL };
     } else {
-        PyObject *__tmp104 = PyTuple_GET_ITEM(cpy_r_r30, 0);
-        CPy_INCREF(__tmp104);
-        PyObject *__tmp105;
-        __tmp105 = __tmp104;
-        cpy_r_r31.f0 = __tmp105;
-        PyObject *__tmp106 = PyTuple_GET_ITEM(cpy_r_r30, 1);
-        CPy_INCREF(__tmp106);
-        PyObject *__tmp107;
-        __tmp107 = __tmp106;
-        cpy_r_r31.f1 = __tmp107;
+        PyObject *__tmp105 = PyTuple_GET_ITEM(cpy_r_r30, 0);
+        CPy_INCREF(__tmp105);
+        PyObject *__tmp106;
+        __tmp106 = __tmp105;
+        cpy_r_r31.f0 = __tmp106;
+        PyObject *__tmp107 = PyTuple_GET_ITEM(cpy_r_r30, 1);
+        CPy_INCREF(__tmp107);
+        PyObject *__tmp108;
+        __tmp108 = __tmp107;
+        cpy_r_r31.f1 = __tmp108;
     }
     CPy_DecRef(cpy_r_r30);
     if (unlikely(cpy_r_r31.f0 == NULL)) {
@@ -39578,18 +40175,18 @@ PyObject *CPyPy__codec____encode_hook(PyObject *self, PyObject *const *args, siz
     else {
         arg_obj = NULL;
     }
-    if (arg_obj != NULL) goto __LL108;
+    if (arg_obj != NULL) goto __LL109;
     arg_obj = obj_obj;
-    if (arg_obj != NULL) goto __LL108;
+    if (arg_obj != NULL) goto __LL109;
     if (PyBytes_Check(obj_obj) || PyByteArray_Check(obj_obj))
         arg_obj = obj_obj;
     else {
         arg_obj = NULL;
     }
-    if (arg_obj != NULL) goto __LL108;
+    if (arg_obj != NULL) goto __LL109;
     CPy_TypeError("union[int, object, bytes]", obj_obj); 
     goto fail;
-__LL108: ;
+__LL109: ;
     PyObject *retval = CPyDef__codec____encode_hook(arg_obj);
     return retval;
 fail: ;
@@ -39684,12 +40281,12 @@ PyObject *CPyPy__codec____rudimentary_encode_dict_value(PyObject *self, PyObject
     else {
         arg_value = NULL;
     }
-    if (arg_value != NULL) goto __LL109;
+    if (arg_value != NULL) goto __LL110;
     arg_value = obj_value;
-    if (arg_value != NULL) goto __LL109;
+    if (arg_value != NULL) goto __LL110;
     CPy_TypeError("union[int, object]", obj_value); 
     goto fail;
-__LL109: ;
+__LL110: ;
     PyObject *retval = CPyDef__codec____rudimentary_encode_dict_value(arg_value);
     return retval;
 fail: ;
@@ -39928,30 +40525,30 @@ tuple_T2OI CPyDef__codec_____encode_elements_new(PyObject *cpy_r_values) {
 CPyL2: ;
     cpy_r_r2 = PyIter_Next(cpy_r_r1);
     if (cpy_r_r2 == NULL) goto CPyL46;
-    PyObject *__tmp110;
+    PyObject *__tmp111;
     if (unlikely(!(PyTuple_Check(cpy_r_r2) && PyTuple_GET_SIZE(cpy_r_r2) == 2))) {
-        __tmp110 = NULL;
-        goto __LL111;
+        __tmp111 = NULL;
+        goto __LL112;
     }
-    __tmp110 = PyTuple_GET_ITEM(cpy_r_r2, 0);
-    if (__tmp110 == NULL) goto __LL111;
-    __tmp110 = PyTuple_GET_ITEM(cpy_r_r2, 1);
-    if (__tmp110 == NULL) goto __LL111;
-    __tmp110 = cpy_r_r2;
-__LL111: ;
-    if (unlikely(__tmp110 == NULL)) {
+    __tmp111 = PyTuple_GET_ITEM(cpy_r_r2, 0);
+    if (__tmp111 == NULL) goto __LL112;
+    __tmp111 = PyTuple_GET_ITEM(cpy_r_r2, 1);
+    if (__tmp111 == NULL) goto __LL112;
+    __tmp111 = cpy_r_r2;
+__LL112: ;
+    if (unlikely(__tmp111 == NULL)) {
         CPy_TypeError("tuple[object, object]", cpy_r_r2); cpy_r_r3 = (tuple_T2OO) { NULL, NULL };
     } else {
-        PyObject *__tmp112 = PyTuple_GET_ITEM(cpy_r_r2, 0);
-        CPy_INCREF(__tmp112);
-        PyObject *__tmp113;
-        __tmp113 = __tmp112;
-        cpy_r_r3.f0 = __tmp113;
-        PyObject *__tmp114 = PyTuple_GET_ITEM(cpy_r_r2, 1);
-        CPy_INCREF(__tmp114);
-        PyObject *__tmp115;
-        __tmp115 = __tmp114;
-        cpy_r_r3.f1 = __tmp115;
+        PyObject *__tmp113 = PyTuple_GET_ITEM(cpy_r_r2, 0);
+        CPy_INCREF(__tmp113);
+        PyObject *__tmp114;
+        __tmp114 = __tmp113;
+        cpy_r_r3.f0 = __tmp114;
+        PyObject *__tmp115 = PyTuple_GET_ITEM(cpy_r_r2, 1);
+        CPy_INCREF(__tmp115);
+        PyObject *__tmp116;
+        __tmp116 = __tmp115;
+        cpy_r_r3.f1 = __tmp116;
     }
     CPy_DECREF(cpy_r_r2);
     if (unlikely(cpy_r_r3.f0 == NULL)) {
@@ -39975,10 +40572,10 @@ CPyL7: ;
     cpy_r_r6 = PyTuple_New(2);
     if (unlikely(cpy_r_r6 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp116 = cpy_r_r3.f0;
-    PyTuple_SET_ITEM(cpy_r_r6, 0, __tmp116);
-    PyObject *__tmp117 = cpy_r_r3.f1;
-    PyTuple_SET_ITEM(cpy_r_r6, 1, __tmp117);
+    PyObject *__tmp117 = cpy_r_r3.f0;
+    PyTuple_SET_ITEM(cpy_r_r6, 0, __tmp117);
+    PyObject *__tmp118 = cpy_r_r3.f1;
+    PyTuple_SET_ITEM(cpy_r_r6, 1, __tmp118);
     PyObject *cpy_r_r7[1] = {cpy_r_r6};
     cpy_r_r8 = (PyObject **)&cpy_r_r7;
     cpy_r_r9 = _PyObject_Vectorcall(cpy_r_r4, cpy_r_r8, 1, 0);
@@ -40094,8 +40691,8 @@ CPyL26: ;
     cpy_r_r41 = PyTuple_New(1);
     if (unlikely(cpy_r_r41 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp118 = CPyTagged_StealAsObject(cpy_r_r17.f0);
-    PyTuple_SET_ITEM(cpy_r_r41, 0, __tmp118);
+    PyObject *__tmp119 = CPyTagged_StealAsObject(cpy_r_r17.f0);
+    PyTuple_SET_ITEM(cpy_r_r41, 0, __tmp119);
     PyObject *cpy_r_r42[2] = {cpy_r_r41, cpy_r_r38};
     cpy_r_r43 = (PyObject **)&cpy_r_r42;
     cpy_r_r44 = _PyObject_Vectorcall(cpy_r_r39, cpy_r_r43, 2, 0);
@@ -40174,7 +40771,7 @@ CPyL36: ;
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "__encode_elements_new", 218, CPyStatic__codec___globals);
         goto CPyL65;
     }
-    cpy_r_r60 = CPyStatics[665]; /* b'' */
+    cpy_r_r60 = CPyStatics[667]; /* b'' */
     cpy_r_r61 = CPyStatic__codec___chain;
     if (unlikely(cpy_r_r61 == NULL)) {
         goto CPyL66;
@@ -40208,8 +40805,8 @@ CPyL41: ;
     cpy_r_r67.f1 = cpy_r_count;
     return cpy_r_r67;
 CPyL44: ;
-    tuple_T2OI __tmp119 = { NULL, CPY_INT_TAG };
-    cpy_r_r68 = __tmp119;
+    tuple_T2OI __tmp120 = { NULL, CPY_INT_TAG };
+    cpy_r_r68 = __tmp120;
     return cpy_r_r68;
 CPyL45: ;
     CPy_DecRef(cpy_r_r0);
@@ -40362,10 +40959,10 @@ PyObject *CPyPy__codec_____encode_elements_new(PyObject *self, PyObject *const *
     PyObject *retbox = PyTuple_New(2);
     if (unlikely(retbox == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp120 = retval.f0;
-    PyTuple_SET_ITEM(retbox, 0, __tmp120);
-    PyObject *__tmp121 = CPyTagged_StealAsObject(retval.f1);
-    PyTuple_SET_ITEM(retbox, 1, __tmp121);
+    PyObject *__tmp121 = retval.f0;
+    PyTuple_SET_ITEM(retbox, 0, __tmp121);
+    PyObject *__tmp122 = CPyTagged_StealAsObject(retval.f1);
+    PyTuple_SET_ITEM(retbox, 1, __tmp122);
     return retbox;
 fail: ;
     CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "__encode_elements_new", 213, CPyStatic__codec___globals);
@@ -40401,11 +40998,11 @@ CPyL3: ;
     cpy_r_r3 = PyTuple_New(2);
     if (unlikely(cpy_r_r3 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp122 = cpy_r_r0.f0 ? Py_True : Py_False;
-    CPy_INCREF(__tmp122);
-    PyTuple_SET_ITEM(cpy_r_r3, 0, __tmp122);
-    PyObject *__tmp123 = cpy_r_r0.f1;
-    PyTuple_SET_ITEM(cpy_r_r3, 1, __tmp123);
+    PyObject *__tmp123 = cpy_r_r0.f0 ? Py_True : Py_False;
+    CPy_INCREF(__tmp123);
+    PyTuple_SET_ITEM(cpy_r_r3, 0, __tmp123);
+    PyObject *__tmp124 = cpy_r_r0.f1;
+    PyTuple_SET_ITEM(cpy_r_r3, 1, __tmp124);
     PyObject *cpy_r_r4[1] = {cpy_r_r3};
     cpy_r_r5 = (PyObject **)&cpy_r_r4;
     cpy_r_r6 = _PyObject_Vectorcall(cpy_r_r1, cpy_r_r5, 1, 0);
@@ -40508,8 +41105,8 @@ PyObject *CPyDef__codec___mcall_decode(PyObject *cpy_r_data) {
     char cpy_r_r59;
     CPyTagged cpy_r_r60;
     PyObject *cpy_r_r61;
-    cpy_r_r0 = CPyStatics[457]; /* 'eth_call' */
-    cpy_r_r1 = CPyStatics[458]; /* 'decode_result' */
+    cpy_r_r0 = CPyStatics[459]; /* 'eth_call' */
+    cpy_r_r1 = CPyStatics[460]; /* 'decode_result' */
     cpy_r_r2 = CPyObject_CallMethodObjArgs(cpy_r_data, cpy_r_r1, cpy_r_r0, NULL);
     if (unlikely(cpy_r_r2 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "mcall_decode", 241, CPyStatic__codec___globals);
@@ -40559,60 +41156,60 @@ CPyL9: ;
         goto CPyL47;
     }
     CPy_DECREF(cpy_r_r7);
-    PyObject *__tmp124;
+    PyObject *__tmp125;
     if (unlikely(!(PyTuple_Check(cpy_r_r12) && PyTuple_GET_SIZE(cpy_r_r12) == 3))) {
-        __tmp124 = NULL;
-        goto __LL125;
+        __tmp125 = NULL;
+        goto __LL126;
     }
     if (likely(PyLong_Check(PyTuple_GET_ITEM(cpy_r_r12, 0))))
-        __tmp124 = PyTuple_GET_ITEM(cpy_r_r12, 0);
+        __tmp125 = PyTuple_GET_ITEM(cpy_r_r12, 0);
     else {
-        __tmp124 = NULL;
+        __tmp125 = NULL;
     }
-    if (__tmp124 == NULL) goto __LL125;
+    if (__tmp125 == NULL) goto __LL126;
     if (likely(PyLong_Check(PyTuple_GET_ITEM(cpy_r_r12, 1))))
-        __tmp124 = PyTuple_GET_ITEM(cpy_r_r12, 1);
+        __tmp125 = PyTuple_GET_ITEM(cpy_r_r12, 1);
     else {
-        __tmp124 = NULL;
+        __tmp125 = NULL;
     }
-    if (__tmp124 == NULL) goto __LL125;
+    if (__tmp125 == NULL) goto __LL126;
     if (likely(PyTuple_Check(PyTuple_GET_ITEM(cpy_r_r12, 2))))
-        __tmp124 = PyTuple_GET_ITEM(cpy_r_r12, 2);
+        __tmp125 = PyTuple_GET_ITEM(cpy_r_r12, 2);
     else {
-        __tmp124 = NULL;
+        __tmp125 = NULL;
     }
-    if (__tmp124 == NULL) goto __LL125;
-    __tmp124 = cpy_r_r12;
-__LL125: ;
-    if (unlikely(__tmp124 == NULL)) {
+    if (__tmp125 == NULL) goto __LL126;
+    __tmp125 = cpy_r_r12;
+__LL126: ;
+    if (unlikely(__tmp125 == NULL)) {
         CPy_TypeError("tuple[int, int, tuple]", cpy_r_r12); cpy_r_r13 = (tuple_T3IIO) { CPY_INT_TAG, CPY_INT_TAG, NULL };
     } else {
-        PyObject *__tmp126 = PyTuple_GET_ITEM(cpy_r_r12, 0);
-        CPyTagged __tmp127;
-        if (likely(PyLong_Check(__tmp126)))
-            __tmp127 = CPyTagged_FromObject(__tmp126);
+        PyObject *__tmp127 = PyTuple_GET_ITEM(cpy_r_r12, 0);
+        CPyTagged __tmp128;
+        if (likely(PyLong_Check(__tmp127)))
+            __tmp128 = CPyTagged_FromObject(__tmp127);
         else {
-            CPy_TypeError("int", __tmp126); __tmp127 = CPY_INT_TAG;
+            CPy_TypeError("int", __tmp127); __tmp128 = CPY_INT_TAG;
         }
-        cpy_r_r13.f0 = __tmp127;
-        PyObject *__tmp128 = PyTuple_GET_ITEM(cpy_r_r12, 1);
-        CPyTagged __tmp129;
-        if (likely(PyLong_Check(__tmp128)))
-            __tmp129 = CPyTagged_FromObject(__tmp128);
+        cpy_r_r13.f0 = __tmp128;
+        PyObject *__tmp129 = PyTuple_GET_ITEM(cpy_r_r12, 1);
+        CPyTagged __tmp130;
+        if (likely(PyLong_Check(__tmp129)))
+            __tmp130 = CPyTagged_FromObject(__tmp129);
         else {
-            CPy_TypeError("int", __tmp128); __tmp129 = CPY_INT_TAG;
+            CPy_TypeError("int", __tmp129); __tmp130 = CPY_INT_TAG;
         }
-        cpy_r_r13.f1 = __tmp129;
-        PyObject *__tmp130 = PyTuple_GET_ITEM(cpy_r_r12, 2);
-        CPy_INCREF(__tmp130);
-        PyObject * __tmp131;
-        if (likely(PyTuple_Check(__tmp130)))
-            __tmp131 = __tmp130;
+        cpy_r_r13.f1 = __tmp130;
+        PyObject *__tmp131 = PyTuple_GET_ITEM(cpy_r_r12, 2);
+        CPy_INCREF(__tmp131);
+        PyObject * __tmp132;
+        if (likely(PyTuple_Check(__tmp131)))
+            __tmp132 = __tmp131;
         else {
-            CPy_TypeError("tuple", __tmp130); 
-            __tmp131 = NULL;
+            CPy_TypeError("tuple", __tmp131); 
+            __tmp132 = NULL;
         }
-        cpy_r_r13.f2 = __tmp131;
+        cpy_r_r13.f2 = __tmp132;
     }
     CPy_DECREF(cpy_r_r12);
     if (unlikely(cpy_r_r13.f0 == CPY_INT_TAG)) {
@@ -40639,7 +41236,7 @@ CPyL12: ;
     if (!cpy_r_r19) goto CPyL31;
     cpy_r_r20 = CPy_GetExcValue();
     cpy_r_r21 = CPyStatic__codec___globals;
-    cpy_r_r22 = CPyStatics[452]; /* 'PartialResponse' */
+    cpy_r_r22 = CPyStatics[454]; /* 'PartialResponse' */
     cpy_r_r23 = CPyDict_GetItem(cpy_r_r21, cpy_r_r22);
     if (unlikely(cpy_r_r23 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "mcall_decode", 243, CPyStatic__codec___globals);
@@ -40668,7 +41265,7 @@ CPyL17: ;
         goto CPyL48;
     }
     cpy_r_r30 = CPyStatic__codec___globals;
-    cpy_r_r31 = CPyStatics[452]; /* 'PartialResponse' */
+    cpy_r_r31 = CPyStatics[454]; /* 'PartialResponse' */
     cpy_r_r32 = CPyDict_GetItem(cpy_r_r30, cpy_r_r31);
     if (unlikely(cpy_r_r32 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "mcall_decode", 246, CPyStatic__codec___globals);
@@ -40683,7 +41280,7 @@ CPyL17: ;
     }
     cpy_r_r35 = cpy_r_r33;
     if (!cpy_r_r35) goto CPyL24;
-    cpy_r_r36 = CPyStatics[458]; /* 'decode_result' */
+    cpy_r_r36 = CPyStatics[460]; /* 'decode_result' */
     cpy_r_r37 = CPyObject_CallMethodObjArgs(cpy_r_data, cpy_r_r36, NULL);
     if (unlikely(cpy_r_r37 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "mcall_decode", 246, CPyStatic__codec___globals);
@@ -40770,45 +41367,45 @@ CPyL37: ;
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "mcall_decode", 249, CPyStatic__codec___globals);
         goto CPyL57;
     }
-    PyObject *__tmp132;
+    PyObject *__tmp133;
     if (unlikely(!(PyTuple_Check(cpy_r_r56) && PyTuple_GET_SIZE(cpy_r_r56) == 2))) {
-        __tmp132 = NULL;
-        goto __LL133;
+        __tmp133 = NULL;
+        goto __LL134;
     }
     if (likely(PyBool_Check(PyTuple_GET_ITEM(cpy_r_r56, 0))))
-        __tmp132 = PyTuple_GET_ITEM(cpy_r_r56, 0);
+        __tmp133 = PyTuple_GET_ITEM(cpy_r_r56, 0);
     else {
-        __tmp132 = NULL;
+        __tmp133 = NULL;
     }
-    if (__tmp132 == NULL) goto __LL133;
+    if (__tmp133 == NULL) goto __LL134;
     if (likely(PyBytes_Check(PyTuple_GET_ITEM(cpy_r_r56, 1)) || PyByteArray_Check(PyTuple_GET_ITEM(cpy_r_r56, 1))))
-        __tmp132 = PyTuple_GET_ITEM(cpy_r_r56, 1);
+        __tmp133 = PyTuple_GET_ITEM(cpy_r_r56, 1);
     else {
-        __tmp132 = NULL;
+        __tmp133 = NULL;
     }
-    if (__tmp132 == NULL) goto __LL133;
-    __tmp132 = cpy_r_r56;
-__LL133: ;
-    if (unlikely(__tmp132 == NULL)) {
+    if (__tmp133 == NULL) goto __LL134;
+    __tmp133 = cpy_r_r56;
+__LL134: ;
+    if (unlikely(__tmp133 == NULL)) {
         CPy_TypeError("tuple[bool, bytes]", cpy_r_r56); cpy_r_r57 = (tuple_T2CO) { 2, NULL };
     } else {
-        PyObject *__tmp134 = PyTuple_GET_ITEM(cpy_r_r56, 0);
-        char __tmp135;
-        if (unlikely(!PyBool_Check(__tmp134))) {
-            CPy_TypeError("bool", __tmp134); __tmp135 = 2;
+        PyObject *__tmp135 = PyTuple_GET_ITEM(cpy_r_r56, 0);
+        char __tmp136;
+        if (unlikely(!PyBool_Check(__tmp135))) {
+            CPy_TypeError("bool", __tmp135); __tmp136 = 2;
         } else
-            __tmp135 = __tmp134 == Py_True;
-        cpy_r_r57.f0 = __tmp135;
-        PyObject *__tmp136 = PyTuple_GET_ITEM(cpy_r_r56, 1);
-        CPy_INCREF(__tmp136);
-        PyObject *__tmp137;
-        if (likely(PyBytes_Check(__tmp136) || PyByteArray_Check(__tmp136)))
-            __tmp137 = __tmp136;
+            __tmp136 = __tmp135 == Py_True;
+        cpy_r_r57.f0 = __tmp136;
+        PyObject *__tmp137 = PyTuple_GET_ITEM(cpy_r_r56, 1);
+        CPy_INCREF(__tmp137);
+        PyObject *__tmp138;
+        if (likely(PyBytes_Check(__tmp137) || PyByteArray_Check(__tmp137)))
+            __tmp138 = __tmp137;
         else {
-            CPy_TypeError("bytes", __tmp136); 
-            __tmp137 = NULL;
+            CPy_TypeError("bytes", __tmp137); 
+            __tmp138 = NULL;
         }
-        cpy_r_r57.f1 = __tmp137;
+        cpy_r_r57.f1 = __tmp138;
     }
     CPy_DECREF(cpy_r_r56);
     if (unlikely(cpy_r_r57.f0 == 2)) {
@@ -40905,7 +41502,7 @@ char CPyDef__codec_____import_from_types(void) {
     PyObject *cpy_r_r2;
     PyObject *cpy_r_r3;
     char cpy_r_r4;
-    cpy_r_r0 = CPyStatics[777]; /* ('PartialResponse', 'Request', 'Response', 'better_decode') */
+    cpy_r_r0 = CPyStatics[781]; /* ('PartialResponse', 'Request', 'Response', 'better_decode') */
     cpy_r_r1 = CPyStatics[55]; /* 'dank_mids.types' */
     cpy_r_r2 = CPyStatic__codec___globals;
     cpy_r_r3 = CPyImport_ImportFromMany(cpy_r_r1, cpy_r_r0, cpy_r_r0, cpy_r_r2);
@@ -40976,7 +41573,7 @@ char CPyDef__codec_____make_decode_batch(void) {
     int32_t cpy_r_r33;
     char cpy_r_r34;
     char cpy_r_r35;
-    cpy_r_r0 = CPyStatics[778]; /* ('PartialResponse',) */
+    cpy_r_r0 = CPyStatics[782]; /* ('PartialResponse',) */
     cpy_r_r1 = CPyStatics[55]; /* 'dank_mids.types' */
     cpy_r_r2 = CPyStatic__codec___globals;
     cpy_r_r3 = CPyImport_ImportFromMany(cpy_r_r1, cpy_r_r0, cpy_r_r0, cpy_r_r2);
@@ -41002,13 +41599,13 @@ char CPyDef__codec_____make_decode_batch(void) {
         goto CPyL14;
     }
     cpy_r_r10 = CPyStatic__codec___globals;
-    cpy_r_r11 = CPyStatics[460]; /* 'msgspec' */
+    cpy_r_r11 = CPyStatics[462]; /* 'msgspec' */
     cpy_r_r12 = CPyDict_GetItem(cpy_r_r10, cpy_r_r11);
     if (unlikely(cpy_r_r12 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "__make_decode_batch", 262, CPyStatic__codec___globals);
         goto CPyL15;
     }
-    cpy_r_r13 = CPyStatics[461]; /* 'Raw' */
+    cpy_r_r13 = CPyStatics[463]; /* 'Raw' */
     cpy_r_r14 = CPyObject_GetAttr(cpy_r_r12, cpy_r_r13);
     CPy_DECREF(cpy_r_r12);
     if (unlikely(cpy_r_r14 == NULL)) {
@@ -41023,7 +41620,7 @@ char CPyDef__codec_____make_decode_batch(void) {
         goto CPyL14;
     }
     cpy_r_r16 = CPyStatic__codec___globals;
-    cpy_r_r17 = CPyStatics[452]; /* 'PartialResponse' */
+    cpy_r_r17 = CPyStatics[454]; /* 'PartialResponse' */
     cpy_r_r18 = CPyDict_GetItem(cpy_r_r16, cpy_r_r17);
     if (unlikely(cpy_r_r18 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "__make_decode_batch", 262, CPyStatic__codec___globals);
@@ -41034,10 +41631,10 @@ char CPyDef__codec_____make_decode_batch(void) {
     cpy_r_r20 = PyTuple_New(2);
     if (unlikely(cpy_r_r20 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp138 = cpy_r_r19.f0;
-    PyTuple_SET_ITEM(cpy_r_r20, 0, __tmp138);
-    PyObject *__tmp139 = cpy_r_r19.f1;
-    PyTuple_SET_ITEM(cpy_r_r20, 1, __tmp139);
+    PyObject *__tmp139 = cpy_r_r19.f0;
+    PyTuple_SET_ITEM(cpy_r_r20, 0, __tmp139);
+    PyObject *__tmp140 = cpy_r_r19.f1;
+    PyTuple_SET_ITEM(cpy_r_r20, 1, __tmp140);
     cpy_r_r21 = PyObject_GetItem(cpy_r_r6, cpy_r_r20);
     CPy_DECREF(cpy_r_r6);
     CPy_DECREF(cpy_r_r20);
@@ -41046,7 +41643,7 @@ char CPyDef__codec_____make_decode_batch(void) {
         goto CPyL13;
     }
     cpy_r_r22 = CPyStatic__codec___globals;
-    cpy_r_r23 = CPyStatics[462]; /* 'Decoder' */
+    cpy_r_r23 = CPyStatics[464]; /* 'Decoder' */
     cpy_r_r24 = CPyDict_GetItem(cpy_r_r22, cpy_r_r23);
     if (unlikely(cpy_r_r24 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "__make_decode_batch", 262, CPyStatic__codec___globals);
@@ -41054,7 +41651,7 @@ char CPyDef__codec_____make_decode_batch(void) {
     }
     PyObject *cpy_r_r25[1] = {cpy_r_r21};
     cpy_r_r26 = (PyObject **)&cpy_r_r25;
-    cpy_r_r27 = CPyStatics[776]; /* ('type',) */
+    cpy_r_r27 = CPyStatics[780]; /* ('type',) */
     cpy_r_r28 = _PyObject_Vectorcall(cpy_r_r24, cpy_r_r26, 0, cpy_r_r27);
     CPy_DECREF(cpy_r_r24);
     if (unlikely(cpy_r_r28 == NULL)) {
@@ -41062,7 +41659,7 @@ char CPyDef__codec_____make_decode_batch(void) {
         goto CPyL17;
     }
     CPy_DECREF(cpy_r_r21);
-    cpy_r_r29 = CPyStatics[395]; /* 'decode' */
+    cpy_r_r29 = CPyStatics[399]; /* 'decode' */
     cpy_r_r30 = CPyObject_GetAttr(cpy_r_r28, cpy_r_r29);
     CPy_DECREF(cpy_r_r28);
     if (unlikely(cpy_r_r30 == NULL)) {
@@ -41070,7 +41667,7 @@ char CPyDef__codec_____make_decode_batch(void) {
         goto CPyL13;
     }
     cpy_r_r31 = CPyStatic__codec___globals;
-    cpy_r_r32 = CPyStatics[454]; /* '_decode_batch' */
+    cpy_r_r32 = CPyStatics[456]; /* '_decode_batch' */
     cpy_r_r33 = CPyDict_SetItem(cpy_r_r31, cpy_r_r32, cpy_r_r30);
     CPy_DECREF(cpy_r_r30);
     cpy_r_r34 = cpy_r_r33 >= 0;
@@ -41629,13 +42226,13 @@ CPyL3: ;
     cpy_r_r7 = (void *)&cpy_r_r6;
     int64_t cpy_r_r8[1] = {1};
     cpy_r_r9 = (void *)&cpy_r_r8;
-    cpy_r_r10 = CPyStatics[780]; /* (('itertools', 'itertools', 'itertools'),) */
+    cpy_r_r10 = CPyStatics[784]; /* (('itertools', 'itertools', 'itertools'),) */
     cpy_r_r11 = CPyStatic__codec___globals;
-    cpy_r_r12 = CPyStatics[464]; /* 'dank_mids\\helpers\\_codec.py' */
+    cpy_r_r12 = CPyStatics[466]; /* 'dank_mids\\helpers\\_codec.py' */
     cpy_r_r13 = CPyStatics[44]; /* '<module>' */
     cpy_r_r14 = CPyImport_ImportMany(cpy_r_r10, cpy_r_r7, cpy_r_r11, cpy_r_r12, cpy_r_r13, cpy_r_r9);
     if (!cpy_r_r14) goto CPyL172;
-    cpy_r_r15 = CPyStatics[781]; /* ('TYPE_CHECKING', 'Any', 'AnyStr', 'Callable', 'Dict',
+    cpy_r_r15 = CPyStatics[785]; /* ('TYPE_CHECKING', 'Any', 'AnyStr', 'Callable', 'Dict',
                                     'Final', 'Iterable', 'List', 'Literal', 'Mapping',
                                     'Optional', 'Union', 'Tuple', 'Type', 'TypeVar', 'final',
                                     'overload') */
@@ -41655,15 +42252,15 @@ CPyL3: ;
     cpy_r_r22 = (void *)&cpy_r_r21;
     int64_t cpy_r_r23[2] = {22, 23};
     cpy_r_r24 = (void *)&cpy_r_r23;
-    cpy_r_r25 = CPyStatics[783]; /* (('hexbytes', 'hexbytes', 'hexbytes'),
+    cpy_r_r25 = CPyStatics[787]; /* (('hexbytes', 'hexbytes', 'hexbytes'),
                                     ('msgspec', 'msgspec', 'msgspec')) */
     cpy_r_r26 = CPyStatic__codec___globals;
-    cpy_r_r27 = CPyStatics[464]; /* 'dank_mids\\helpers\\_codec.py' */
+    cpy_r_r27 = CPyStatics[466]; /* 'dank_mids\\helpers\\_codec.py' */
     cpy_r_r28 = CPyStatics[44]; /* '<module>' */
     cpy_r_r29 = CPyImport_ImportMany(cpy_r_r25, cpy_r_r22, cpy_r_r26, cpy_r_r27, cpy_r_r28, cpy_r_r24);
     if (!cpy_r_r29) goto CPyL172;
-    cpy_r_r30 = CPyStatics[784]; /* ('decoding', 'encoding') */
-    cpy_r_r31 = CPyStatics[309]; /* 'eth_abi' */
+    cpy_r_r30 = CPyStatics[788]; /* ('decoding', 'encoding') */
+    cpy_r_r31 = CPyStatics[315]; /* 'eth_abi' */
     cpy_r_r32 = CPyStatic__codec___globals;
     cpy_r_r33 = CPyImport_ImportFromMany(cpy_r_r31, cpy_r_r30, cpy_r_r30, cpy_r_r32);
     if (unlikely(cpy_r_r33 == NULL)) {
@@ -41673,8 +42270,8 @@ CPyL3: ;
     CPyModule_eth_abi = cpy_r_r33;
     CPy_INCREF(CPyModule_eth_abi);
     CPy_DECREF(cpy_r_r33);
-    cpy_r_r34 = CPyStatics[785]; /* ('default_codec',) */
-    cpy_r_r35 = CPyStatics[471]; /* 'eth_abi.abi' */
+    cpy_r_r34 = CPyStatics[789]; /* ('default_codec',) */
+    cpy_r_r35 = CPyStatics[473]; /* 'eth_abi.abi' */
     cpy_r_r36 = CPyStatic__codec___globals;
     cpy_r_r37 = CPyImport_ImportFromMany(cpy_r_r35, cpy_r_r34, cpy_r_r34, cpy_r_r36);
     if (unlikely(cpy_r_r37 == NULL)) {
@@ -41684,8 +42281,8 @@ CPyL3: ;
     CPyModule_eth_abi___abi = cpy_r_r37;
     CPy_INCREF(CPyModule_eth_abi___abi);
     CPy_DECREF(cpy_r_r37);
-    cpy_r_r38 = CPyStatics[786]; /* ('DynamicArrayEncoder', 'TupleEncoder') */
-    cpy_r_r39 = CPyStatics[474]; /* 'eth_abi.encoding' */
+    cpy_r_r38 = CPyStatics[790]; /* ('DynamicArrayEncoder', 'TupleEncoder') */
+    cpy_r_r39 = CPyStatics[476]; /* 'eth_abi.encoding' */
     cpy_r_r40 = CPyStatic__codec___globals;
     cpy_r_r41 = CPyImport_ImportFromMany(cpy_r_r39, cpy_r_r38, cpy_r_r38, cpy_r_r40);
     if (unlikely(cpy_r_r41 == NULL)) {
@@ -41695,7 +42292,7 @@ CPyL3: ;
     CPyModule_eth_abi___encoding = cpy_r_r41;
     CPy_INCREF(CPyModule_eth_abi___encoding);
     CPy_DECREF(cpy_r_r41);
-    cpy_r_r42 = CPyStatics[787]; /* ('ChecksumAddress', 'HexStr') */
+    cpy_r_r42 = CPyStatics[791]; /* ('ChecksumAddress', 'HexStr') */
     cpy_r_r43 = CPyStatics[141]; /* 'eth_typing' */
     cpy_r_r44 = CPyStatic__codec___globals;
     cpy_r_r45 = CPyImport_ImportFromMany(cpy_r_r43, cpy_r_r42, cpy_r_r42, cpy_r_r44);
@@ -41706,8 +42303,8 @@ CPyL3: ;
     CPyModule_eth_typing = cpy_r_r45;
     CPy_INCREF(CPyModule_eth_typing);
     CPy_DECREF(cpy_r_r45);
-    cpy_r_r46 = CPyStatics[788]; /* ('Decoder', 'Encoder') */
-    cpy_r_r47 = CPyStatics[477]; /* 'msgspec.json' */
+    cpy_r_r46 = CPyStatics[792]; /* ('Decoder', 'Encoder') */
+    cpy_r_r47 = CPyStatics[479]; /* 'msgspec.json' */
     cpy_r_r48 = CPyStatic__codec___globals;
     cpy_r_r49 = CPyImport_ImportFromMany(cpy_r_r47, cpy_r_r46, cpy_r_r46, cpy_r_r48);
     if (unlikely(cpy_r_r49 == NULL)) {
@@ -41718,7 +42315,7 @@ CPyL3: ;
     CPy_INCREF(CPyModule_msgspec___json);
     CPy_DECREF(cpy_r_r49);
     cpy_r_r50 = CPyStatic__codec___globals;
-    cpy_r_r51 = CPyStatics[452]; /* 'PartialResponse' */
+    cpy_r_r51 = CPyStatics[454]; /* 'PartialResponse' */
     cpy_r_r52 = Py_None;
     cpy_r_r53 = CPyDict_SetItem(cpy_r_r50, cpy_r_r51, cpy_r_r52);
     cpy_r_r54 = cpy_r_r53 >= 0;
@@ -41727,7 +42324,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r55 = CPyStatic__codec___globals;
-    cpy_r_r56 = CPyStatics[459]; /* 'Request' */
+    cpy_r_r56 = CPyStatics[461]; /* 'Request' */
     cpy_r_r57 = Py_None;
     cpy_r_r58 = CPyDict_SetItem(cpy_r_r55, cpy_r_r56, cpy_r_r57);
     cpy_r_r59 = cpy_r_r58 >= 0;
@@ -41736,7 +42333,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r60 = CPyStatic__codec___globals;
-    cpy_r_r61 = CPyStatics[453]; /* 'Response' */
+    cpy_r_r61 = CPyStatics[455]; /* 'Response' */
     cpy_r_r62 = Py_None;
     cpy_r_r63 = CPyDict_SetItem(cpy_r_r60, cpy_r_r61, cpy_r_r62);
     cpy_r_r64 = cpy_r_r63 >= 0;
@@ -41745,7 +42342,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r65 = CPyStatic__codec___globals;
-    cpy_r_r66 = CPyStatics[451]; /* 'better_decode' */
+    cpy_r_r66 = CPyStatics[453]; /* 'better_decode' */
     cpy_r_r67 = Py_None;
     cpy_r_r68 = CPyDict_SetItem(cpy_r_r65, cpy_r_r66, cpy_r_r67);
     cpy_r_r69 = cpy_r_r68 >= 0;
@@ -41786,7 +42383,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r84 = CPyStatic__codec___globals;
-    cpy_r_r85 = CPyStatics[475]; /* 'ChecksumAddress' */
+    cpy_r_r85 = CPyStatics[477]; /* 'ChecksumAddress' */
     cpy_r_r86 = CPyDict_GetItem(cpy_r_r84, cpy_r_r85);
     if (unlikely(cpy_r_r86 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 44, CPyStatic__codec___globals);
@@ -41804,10 +42401,10 @@ CPyL3: ;
     cpy_r_r91 = PyTuple_New(2);
     if (unlikely(cpy_r_r91 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp140 = cpy_r_r90.f0;
-    PyTuple_SET_ITEM(cpy_r_r91, 0, __tmp140);
-    PyObject *__tmp141 = cpy_r_r90.f1;
-    PyTuple_SET_ITEM(cpy_r_r91, 1, __tmp141);
+    PyObject *__tmp141 = cpy_r_r90.f0;
+    PyTuple_SET_ITEM(cpy_r_r91, 0, __tmp141);
+    PyObject *__tmp142 = cpy_r_r90.f1;
+    PyTuple_SET_ITEM(cpy_r_r91, 1, __tmp142);
     cpy_r_r92 = PyObject_GetItem(cpy_r_r83, cpy_r_r91);
     CPy_DECREF(cpy_r_r83);
     CPy_DECREF(cpy_r_r91);
@@ -41816,7 +42413,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r93 = CPyStatic__codec___globals;
-    cpy_r_r94 = CPyStatics[478]; /* 'StrEncodable' */
+    cpy_r_r94 = CPyStatics[480]; /* 'StrEncodable' */
     cpy_r_r95 = CPyDict_SetItem(cpy_r_r93, cpy_r_r94, cpy_r_r92);
     CPy_DECREF(cpy_r_r92);
     cpy_r_r96 = cpy_r_r95 >= 0;
@@ -41833,20 +42430,20 @@ CPyL3: ;
     }
     cpy_r_r100 = (PyObject *)&PyLong_Type;
     cpy_r_r101 = CPyStatic__codec___globals;
-    cpy_r_r102 = CPyStatics[478]; /* 'StrEncodable' */
+    cpy_r_r102 = CPyStatics[480]; /* 'StrEncodable' */
     cpy_r_r103 = CPyDict_GetItem(cpy_r_r101, cpy_r_r102);
     if (unlikely(cpy_r_r103 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 45, CPyStatic__codec___globals);
         goto CPyL175;
     }
     cpy_r_r104 = CPyStatic__codec___globals;
-    cpy_r_r105 = CPyStatics[349]; /* 'hexbytes' */
+    cpy_r_r105 = CPyStatics[353]; /* 'hexbytes' */
     cpy_r_r106 = CPyDict_GetItem(cpy_r_r104, cpy_r_r105);
     if (unlikely(cpy_r_r106 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 45, CPyStatic__codec___globals);
         goto CPyL176;
     }
-    cpy_r_r107 = CPyStatics[379]; /* 'HexBytes' */
+    cpy_r_r107 = CPyStatics[383]; /* 'HexBytes' */
     cpy_r_r108 = CPyObject_GetAttr(cpy_r_r106, cpy_r_r107);
     CPy_DECREF(cpy_r_r106);
     if (unlikely(cpy_r_r108 == NULL)) {
@@ -41863,14 +42460,14 @@ CPyL3: ;
     cpy_r_r111 = PyTuple_New(4);
     if (unlikely(cpy_r_r111 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp142 = cpy_r_r110.f0;
-    PyTuple_SET_ITEM(cpy_r_r111, 0, __tmp142);
-    PyObject *__tmp143 = cpy_r_r110.f1;
-    PyTuple_SET_ITEM(cpy_r_r111, 1, __tmp143);
-    PyObject *__tmp144 = cpy_r_r110.f2;
-    PyTuple_SET_ITEM(cpy_r_r111, 2, __tmp144);
-    PyObject *__tmp145 = cpy_r_r110.f3;
-    PyTuple_SET_ITEM(cpy_r_r111, 3, __tmp145);
+    PyObject *__tmp143 = cpy_r_r110.f0;
+    PyTuple_SET_ITEM(cpy_r_r111, 0, __tmp143);
+    PyObject *__tmp144 = cpy_r_r110.f1;
+    PyTuple_SET_ITEM(cpy_r_r111, 1, __tmp144);
+    PyObject *__tmp145 = cpy_r_r110.f2;
+    PyTuple_SET_ITEM(cpy_r_r111, 2, __tmp145);
+    PyObject *__tmp146 = cpy_r_r110.f3;
+    PyTuple_SET_ITEM(cpy_r_r111, 3, __tmp146);
     cpy_r_r112 = PyObject_GetItem(cpy_r_r99, cpy_r_r111);
     CPy_DECREF(cpy_r_r99);
     CPy_DECREF(cpy_r_r111);
@@ -41879,7 +42476,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r113 = CPyStatic__codec___globals;
-    cpy_r_r114 = CPyStatics[479]; /* 'Encodable' */
+    cpy_r_r114 = CPyStatics[481]; /* 'Encodable' */
     cpy_r_r115 = CPyDict_SetItem(cpy_r_r113, cpy_r_r114, cpy_r_r112);
     CPy_DECREF(cpy_r_r112);
     cpy_r_r116 = cpy_r_r115 >= 0;
@@ -41923,7 +42520,7 @@ CPyL3: ;
         goto CPyL178;
     }
     cpy_r_r130 = CPyStatic__codec___globals;
-    cpy_r_r131 = CPyStatics[249]; /* 'Dict' */
+    cpy_r_r131 = CPyStatics[257]; /* 'Dict' */
     cpy_r_r132 = CPyDict_GetItem(cpy_r_r130, cpy_r_r131);
     if (unlikely(cpy_r_r132 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 47, CPyStatic__codec___globals);
@@ -41943,10 +42540,10 @@ CPyL3: ;
     cpy_r_r138 = PyTuple_New(2);
     if (unlikely(cpy_r_r138 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp146 = cpy_r_r137.f0;
-    PyTuple_SET_ITEM(cpy_r_r138, 0, __tmp146);
-    PyObject *__tmp147 = cpy_r_r137.f1;
-    PyTuple_SET_ITEM(cpy_r_r138, 1, __tmp147);
+    PyObject *__tmp147 = cpy_r_r137.f0;
+    PyTuple_SET_ITEM(cpy_r_r138, 0, __tmp147);
+    PyObject *__tmp148 = cpy_r_r137.f1;
+    PyTuple_SET_ITEM(cpy_r_r138, 1, __tmp148);
     cpy_r_r139 = PyObject_GetItem(cpy_r_r132, cpy_r_r138);
     CPy_DECREF(cpy_r_r132);
     CPy_DECREF(cpy_r_r138);
@@ -41960,12 +42557,12 @@ CPyL3: ;
     cpy_r_r141 = PyTuple_New(3);
     if (unlikely(cpy_r_r141 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp148 = cpy_r_r140.f0;
-    PyTuple_SET_ITEM(cpy_r_r141, 0, __tmp148);
-    PyObject *__tmp149 = cpy_r_r140.f1;
-    PyTuple_SET_ITEM(cpy_r_r141, 1, __tmp149);
-    PyObject *__tmp150 = cpy_r_r140.f2;
-    PyTuple_SET_ITEM(cpy_r_r141, 2, __tmp150);
+    PyObject *__tmp149 = cpy_r_r140.f0;
+    PyTuple_SET_ITEM(cpy_r_r141, 0, __tmp149);
+    PyObject *__tmp150 = cpy_r_r140.f1;
+    PyTuple_SET_ITEM(cpy_r_r141, 1, __tmp150);
+    PyObject *__tmp151 = cpy_r_r140.f2;
+    PyTuple_SET_ITEM(cpy_r_r141, 2, __tmp151);
     cpy_r_r142 = PyObject_GetItem(cpy_r_r119, cpy_r_r141);
     CPy_DECREF(cpy_r_r119);
     CPy_DECREF(cpy_r_r141);
@@ -41974,7 +42571,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r143 = CPyStatic__codec___globals;
-    cpy_r_r144 = CPyStatics[480]; /* 'RpcThing' */
+    cpy_r_r144 = CPyStatics[482]; /* 'RpcThing' */
     cpy_r_r145 = CPyDict_SetItem(cpy_r_r143, cpy_r_r144, cpy_r_r142);
     CPy_DECREF(cpy_r_r142);
     cpy_r_r146 = cpy_r_r145 >= 0;
@@ -41990,20 +42587,20 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r150 = CPyStatic__codec___globals;
-    cpy_r_r151 = CPyStatics[475]; /* 'ChecksumAddress' */
+    cpy_r_r151 = CPyStatics[477]; /* 'ChecksumAddress' */
     cpy_r_r152 = CPyDict_GetItem(cpy_r_r150, cpy_r_r151);
     if (unlikely(cpy_r_r152 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 50, CPyStatic__codec___globals);
         goto CPyL182;
     }
     cpy_r_r153 = CPyStatic__codec___globals;
-    cpy_r_r154 = CPyStatics[349]; /* 'hexbytes' */
+    cpy_r_r154 = CPyStatics[353]; /* 'hexbytes' */
     cpy_r_r155 = CPyDict_GetItem(cpy_r_r153, cpy_r_r154);
     if (unlikely(cpy_r_r155 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 50, CPyStatic__codec___globals);
         goto CPyL183;
     }
-    cpy_r_r156 = CPyStatics[379]; /* 'HexBytes' */
+    cpy_r_r156 = CPyStatics[383]; /* 'HexBytes' */
     cpy_r_r157 = CPyObject_GetAttr(cpy_r_r155, cpy_r_r156);
     CPy_DECREF(cpy_r_r155);
     if (unlikely(cpy_r_r157 == NULL)) {
@@ -42015,10 +42612,10 @@ CPyL3: ;
     cpy_r_r159 = PyTuple_New(2);
     if (unlikely(cpy_r_r159 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp151 = cpy_r_r158.f0;
-    PyTuple_SET_ITEM(cpy_r_r159, 0, __tmp151);
-    PyObject *__tmp152 = cpy_r_r158.f1;
-    PyTuple_SET_ITEM(cpy_r_r159, 1, __tmp152);
+    PyObject *__tmp152 = cpy_r_r158.f0;
+    PyTuple_SET_ITEM(cpy_r_r159, 0, __tmp152);
+    PyObject *__tmp153 = cpy_r_r158.f1;
+    PyTuple_SET_ITEM(cpy_r_r159, 1, __tmp153);
     cpy_r_r160 = PyObject_GetItem(cpy_r_r149, cpy_r_r159);
     CPy_DECREF(cpy_r_r149);
     CPy_DECREF(cpy_r_r159);
@@ -42027,7 +42624,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r161 = CPyStatic__codec___globals;
-    cpy_r_r162 = CPyStatics[481]; /* 'MulticallChunk' */
+    cpy_r_r162 = CPyStatics[483]; /* 'MulticallChunk' */
     cpy_r_r163 = CPyDict_SetItem(cpy_r_r161, cpy_r_r162, cpy_r_r160);
     CPy_DECREF(cpy_r_r160);
     cpy_r_r164 = cpy_r_r163 >= 0;
@@ -42036,7 +42633,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r165 = CPyStatic__codec___globals;
-    cpy_r_r166 = CPyStatics[343]; /* 'Callable' */
+    cpy_r_r166 = CPyStatics[347]; /* 'Callable' */
     cpy_r_r167 = CPyDict_GetItem(cpy_r_r165, cpy_r_r166);
     if (unlikely(cpy_r_r167 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 51, CPyStatic__codec___globals);
@@ -42051,14 +42648,14 @@ CPyL3: ;
     }
     cpy_r_r171 = (PyObject *)&PyBool_Type;
     cpy_r_r172 = CPyStatic__codec___globals;
-    cpy_r_r173 = CPyStatics[465]; /* 'Iterable' */
+    cpy_r_r173 = CPyStatics[467]; /* 'Iterable' */
     cpy_r_r174 = CPyDict_GetItem(cpy_r_r172, cpy_r_r173);
     if (unlikely(cpy_r_r174 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 51, CPyStatic__codec___globals);
         goto CPyL185;
     }
     cpy_r_r175 = CPyStatic__codec___globals;
-    cpy_r_r176 = CPyStatics[481]; /* 'MulticallChunk' */
+    cpy_r_r176 = CPyStatics[483]; /* 'MulticallChunk' */
     cpy_r_r177 = CPyDict_GetItem(cpy_r_r175, cpy_r_r176);
     if (unlikely(cpy_r_r177 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 51, CPyStatic__codec___globals);
@@ -42077,10 +42674,10 @@ CPyL3: ;
     cpy_r_r180 = PyTuple_New(2);
     if (unlikely(cpy_r_r180 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp153 = cpy_r_r179.f0;
-    PyTuple_SET_ITEM(cpy_r_r180, 0, __tmp153);
-    PyObject *__tmp154 = cpy_r_r179.f1;
-    PyTuple_SET_ITEM(cpy_r_r180, 1, __tmp154);
+    PyObject *__tmp154 = cpy_r_r179.f0;
+    PyTuple_SET_ITEM(cpy_r_r180, 0, __tmp154);
+    PyObject *__tmp155 = cpy_r_r179.f1;
+    PyTuple_SET_ITEM(cpy_r_r180, 1, __tmp155);
     cpy_r_r181 = PyObject_GetItem(cpy_r_r170, cpy_r_r180);
     CPy_DECREF(cpy_r_r170);
     CPy_DECREF(cpy_r_r180);
@@ -42103,10 +42700,10 @@ CPyL3: ;
     cpy_r_r187 = PyTuple_New(2);
     if (unlikely(cpy_r_r187 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp155 = cpy_r_r186.f0;
-    PyTuple_SET_ITEM(cpy_r_r187, 0, __tmp155);
-    PyObject *__tmp156 = cpy_r_r186.f1;
-    PyTuple_SET_ITEM(cpy_r_r187, 1, __tmp156);
+    PyObject *__tmp156 = cpy_r_r186.f0;
+    PyTuple_SET_ITEM(cpy_r_r187, 0, __tmp156);
+    PyObject *__tmp157 = cpy_r_r186.f1;
+    PyTuple_SET_ITEM(cpy_r_r187, 1, __tmp157);
     cpy_r_r188 = PyObject_GetItem(cpy_r_r167, cpy_r_r187);
     CPy_DECREF(cpy_r_r167);
     CPy_DECREF(cpy_r_r187);
@@ -42115,7 +42712,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r189 = CPyStatic__codec___globals;
-    cpy_r_r190 = CPyStatics[482]; /* 'MulticallEncoder' */
+    cpy_r_r190 = CPyStatics[484]; /* 'MulticallEncoder' */
     cpy_r_r191 = CPyDict_SetItem(cpy_r_r189, cpy_r_r190, cpy_r_r188);
     CPy_DECREF(cpy_r_r188);
     cpy_r_r192 = cpy_r_r191 >= 0;
@@ -42146,7 +42743,7 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 53, CPyStatic__codec___globals);
         goto CPyL189;
     }
-    cpy_r_r204 = CPyStatics[483]; /* 'Success' */
+    cpy_r_r204 = CPyStatics[485]; /* 'Success' */
     cpy_r_r205 = (PyObject *)&PyBytes_Type;
     CPy_INCREF(cpy_r_r204);
     CPy_INCREF(cpy_r_r205);
@@ -42155,10 +42752,10 @@ CPyL3: ;
     cpy_r_r207 = PyTuple_New(2);
     if (unlikely(cpy_r_r207 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp157 = cpy_r_r206.f0;
-    PyTuple_SET_ITEM(cpy_r_r207, 0, __tmp157);
-    PyObject *__tmp158 = cpy_r_r206.f1;
-    PyTuple_SET_ITEM(cpy_r_r207, 1, __tmp158);
+    PyObject *__tmp158 = cpy_r_r206.f0;
+    PyTuple_SET_ITEM(cpy_r_r207, 0, __tmp158);
+    PyObject *__tmp159 = cpy_r_r206.f1;
+    PyTuple_SET_ITEM(cpy_r_r207, 1, __tmp159);
     cpy_r_r208 = PyObject_GetItem(cpy_r_r203, cpy_r_r207);
     CPy_DECREF(cpy_r_r203);
     CPy_DECREF(cpy_r_r207);
@@ -42173,10 +42770,10 @@ CPyL3: ;
     cpy_r_r211 = PyTuple_New(2);
     if (unlikely(cpy_r_r211 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp159 = cpy_r_r210.f0;
-    PyTuple_SET_ITEM(cpy_r_r211, 0, __tmp159);
-    PyObject *__tmp160 = cpy_r_r210.f1;
-    PyTuple_SET_ITEM(cpy_r_r211, 1, __tmp160);
+    PyObject *__tmp160 = cpy_r_r210.f0;
+    PyTuple_SET_ITEM(cpy_r_r211, 0, __tmp160);
+    PyObject *__tmp161 = cpy_r_r210.f1;
+    PyTuple_SET_ITEM(cpy_r_r211, 1, __tmp161);
     cpy_r_r212 = PyObject_GetItem(cpy_r_r200, cpy_r_r211);
     CPy_DECREF(cpy_r_r200);
     CPy_DECREF(cpy_r_r211);
@@ -42192,12 +42789,12 @@ CPyL3: ;
     cpy_r_r214 = PyTuple_New(3);
     if (unlikely(cpy_r_r214 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp161 = cpy_r_r213.f0;
-    PyTuple_SET_ITEM(cpy_r_r214, 0, __tmp161);
-    PyObject *__tmp162 = cpy_r_r213.f1;
-    PyTuple_SET_ITEM(cpy_r_r214, 1, __tmp162);
-    PyObject *__tmp163 = cpy_r_r213.f2;
-    PyTuple_SET_ITEM(cpy_r_r214, 2, __tmp163);
+    PyObject *__tmp162 = cpy_r_r213.f0;
+    PyTuple_SET_ITEM(cpy_r_r214, 0, __tmp162);
+    PyObject *__tmp163 = cpy_r_r213.f1;
+    PyTuple_SET_ITEM(cpy_r_r214, 1, __tmp163);
+    PyObject *__tmp164 = cpy_r_r213.f2;
+    PyTuple_SET_ITEM(cpy_r_r214, 2, __tmp164);
     cpy_r_r215 = PyObject_GetItem(cpy_r_r195, cpy_r_r214);
     CPy_DECREF(cpy_r_r195);
     CPy_DECREF(cpy_r_r214);
@@ -42206,7 +42803,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r216 = CPyStatic__codec___globals;
-    cpy_r_r217 = CPyStatics[484]; /* 'DecodedMulticall' */
+    cpy_r_r217 = CPyStatics[486]; /* 'DecodedMulticall' */
     cpy_r_r218 = CPyDict_SetItem(cpy_r_r216, cpy_r_r217, cpy_r_r215);
     CPy_DECREF(cpy_r_r215);
     cpy_r_r219 = cpy_r_r218 >= 0;
@@ -42215,7 +42812,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r220 = CPyStatic__codec___globals;
-    cpy_r_r221 = CPyStatics[343]; /* 'Callable' */
+    cpy_r_r221 = CPyStatics[347]; /* 'Callable' */
     cpy_r_r222 = CPyDict_GetItem(cpy_r_r220, cpy_r_r221);
     if (unlikely(cpy_r_r222 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 54, CPyStatic__codec___globals);
@@ -42223,7 +42820,7 @@ CPyL3: ;
     }
     cpy_r_r223 = (PyObject *)&_Py_EllipsisObject;
     cpy_r_r224 = CPyStatic__codec___globals;
-    cpy_r_r225 = CPyStatics[484]; /* 'DecodedMulticall' */
+    cpy_r_r225 = CPyStatics[486]; /* 'DecodedMulticall' */
     cpy_r_r226 = CPyDict_GetItem(cpy_r_r224, cpy_r_r225);
     if (unlikely(cpy_r_r226 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 54, CPyStatic__codec___globals);
@@ -42235,10 +42832,10 @@ CPyL3: ;
     cpy_r_r228 = PyTuple_New(2);
     if (unlikely(cpy_r_r228 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp164 = cpy_r_r227.f0;
-    PyTuple_SET_ITEM(cpy_r_r228, 0, __tmp164);
-    PyObject *__tmp165 = cpy_r_r227.f1;
-    PyTuple_SET_ITEM(cpy_r_r228, 1, __tmp165);
+    PyObject *__tmp165 = cpy_r_r227.f0;
+    PyTuple_SET_ITEM(cpy_r_r228, 0, __tmp165);
+    PyObject *__tmp166 = cpy_r_r227.f1;
+    PyTuple_SET_ITEM(cpy_r_r228, 1, __tmp166);
     cpy_r_r229 = PyObject_GetItem(cpy_r_r222, cpy_r_r228);
     CPy_DECREF(cpy_r_r222);
     CPy_DECREF(cpy_r_r228);
@@ -42247,7 +42844,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r230 = CPyStatic__codec___globals;
-    cpy_r_r231 = CPyStatics[485]; /* 'MulticallDecoder' */
+    cpy_r_r231 = CPyStatics[487]; /* 'MulticallDecoder' */
     cpy_r_r232 = CPyDict_SetItem(cpy_r_r230, cpy_r_r231, cpy_r_r229);
     CPy_DECREF(cpy_r_r229);
     cpy_r_r233 = cpy_r_r232 >= 0;
@@ -42262,7 +42859,7 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 57, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r237 = CPyStatics[486]; /* 'types.Request' */
+    cpy_r_r237 = CPyStatics[488]; /* 'types.Request' */
     cpy_r_r238 = PyObject_GetItem(cpy_r_r236, cpy_r_r237);
     CPy_DECREF(cpy_r_r236);
     if (unlikely(cpy_r_r238 == NULL)) {
@@ -42270,7 +42867,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r239 = CPyStatic__codec___globals;
-    cpy_r_r240 = CPyStatics[487]; /* 'JSONRPCBatchRequest' */
+    cpy_r_r240 = CPyStatics[489]; /* 'JSONRPCBatchRequest' */
     cpy_r_r241 = CPyDict_SetItem(cpy_r_r239, cpy_r_r240, cpy_r_r238);
     CPy_DECREF(cpy_r_r238);
     cpy_r_r242 = cpy_r_r241 >= 0;
@@ -42299,17 +42896,17 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 59, CPyStatic__codec___globals);
         goto CPyL191;
     }
-    cpy_r_r251 = CPyStatics[488]; /* 'types.PartialResponse' */
+    cpy_r_r251 = CPyStatics[490]; /* 'types.PartialResponse' */
     CPy_INCREF(cpy_r_r251);
     cpy_r_r252.f0 = cpy_r_r250;
     cpy_r_r252.f1 = cpy_r_r251;
     cpy_r_r253 = PyTuple_New(2);
     if (unlikely(cpy_r_r253 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp166 = cpy_r_r252.f0;
-    PyTuple_SET_ITEM(cpy_r_r253, 0, __tmp166);
-    PyObject *__tmp167 = cpy_r_r252.f1;
-    PyTuple_SET_ITEM(cpy_r_r253, 1, __tmp167);
+    PyObject *__tmp167 = cpy_r_r252.f0;
+    PyTuple_SET_ITEM(cpy_r_r253, 0, __tmp167);
+    PyObject *__tmp168 = cpy_r_r252.f1;
+    PyTuple_SET_ITEM(cpy_r_r253, 1, __tmp168);
     cpy_r_r254 = PyObject_GetItem(cpy_r_r245, cpy_r_r253);
     CPy_DECREF(cpy_r_r245);
     CPy_DECREF(cpy_r_r253);
@@ -42318,7 +42915,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r255 = CPyStatic__codec___globals;
-    cpy_r_r256 = CPyStatics[489]; /* 'JSONRPCBatchResponse' */
+    cpy_r_r256 = CPyStatics[491]; /* 'JSONRPCBatchResponse' */
     cpy_r_r257 = CPyDict_SetItem(cpy_r_r255, cpy_r_r256, cpy_r_r254);
     CPy_DECREF(cpy_r_r254);
     cpy_r_r258 = cpy_r_r257 >= 0;
@@ -42327,7 +42924,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r259 = CPyStatic__codec___globals;
-    cpy_r_r260 = CPyStatics[343]; /* 'Callable' */
+    cpy_r_r260 = CPyStatics[347]; /* 'Callable' */
     cpy_r_r261 = CPyDict_GetItem(cpy_r_r259, cpy_r_r260);
     if (unlikely(cpy_r_r261 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 60, CPyStatic__codec___globals);
@@ -42349,10 +42946,10 @@ CPyL3: ;
     cpy_r_r268 = PyTuple_New(2);
     if (unlikely(cpy_r_r268 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp168 = cpy_r_r267.f0;
-    PyTuple_SET_ITEM(cpy_r_r268, 0, __tmp168);
-    PyObject *__tmp169 = cpy_r_r267.f1;
-    PyTuple_SET_ITEM(cpy_r_r268, 1, __tmp169);
+    PyObject *__tmp169 = cpy_r_r267.f0;
+    PyTuple_SET_ITEM(cpy_r_r268, 0, __tmp169);
+    PyObject *__tmp170 = cpy_r_r267.f1;
+    PyTuple_SET_ITEM(cpy_r_r268, 1, __tmp170);
     cpy_r_r269 = PyObject_GetItem(cpy_r_r264, cpy_r_r268);
     CPy_DECREF(cpy_r_r264);
     CPy_DECREF(cpy_r_r268);
@@ -42383,13 +42980,13 @@ CPyL3: ;
         goto CPyL195;
     }
     cpy_r_r279 = CPyStatic__codec___globals;
-    cpy_r_r280 = CPyStatics[460]; /* 'msgspec' */
+    cpy_r_r280 = CPyStatics[462]; /* 'msgspec' */
     cpy_r_r281 = CPyDict_GetItem(cpy_r_r279, cpy_r_r280);
     if (unlikely(cpy_r_r281 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 60, CPyStatic__codec___globals);
         goto CPyL196;
     }
-    cpy_r_r282 = CPyStatics[461]; /* 'Raw' */
+    cpy_r_r282 = CPyStatics[463]; /* 'Raw' */
     cpy_r_r283 = CPyObject_GetAttr(cpy_r_r281, cpy_r_r282);
     CPy_DECREF(cpy_r_r281);
     if (unlikely(cpy_r_r283 == NULL)) {
@@ -42403,17 +43000,17 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 60, CPyStatic__codec___globals);
         goto CPyL195;
     }
-    cpy_r_r285 = CPyStatics[488]; /* 'types.PartialResponse' */
+    cpy_r_r285 = CPyStatics[490]; /* 'types.PartialResponse' */
     CPy_INCREF(cpy_r_r285);
     cpy_r_r286.f0 = cpy_r_r284;
     cpy_r_r286.f1 = cpy_r_r285;
     cpy_r_r287 = PyTuple_New(2);
     if (unlikely(cpy_r_r287 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp170 = cpy_r_r286.f0;
-    PyTuple_SET_ITEM(cpy_r_r287, 0, __tmp170);
-    PyObject *__tmp171 = cpy_r_r286.f1;
-    PyTuple_SET_ITEM(cpy_r_r287, 1, __tmp171);
+    PyObject *__tmp171 = cpy_r_r286.f0;
+    PyTuple_SET_ITEM(cpy_r_r287, 0, __tmp171);
+    PyObject *__tmp172 = cpy_r_r286.f1;
+    PyTuple_SET_ITEM(cpy_r_r287, 1, __tmp172);
     cpy_r_r288 = PyObject_GetItem(cpy_r_r275, cpy_r_r287);
     CPy_DECREF(cpy_r_r275);
     CPy_DECREF(cpy_r_r287);
@@ -42426,10 +43023,10 @@ CPyL3: ;
     cpy_r_r290 = PyTuple_New(2);
     if (unlikely(cpy_r_r290 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp172 = cpy_r_r289.f0;
-    PyTuple_SET_ITEM(cpy_r_r290, 0, __tmp172);
-    PyObject *__tmp173 = cpy_r_r289.f1;
-    PyTuple_SET_ITEM(cpy_r_r290, 1, __tmp173);
+    PyObject *__tmp173 = cpy_r_r289.f0;
+    PyTuple_SET_ITEM(cpy_r_r290, 0, __tmp173);
+    PyObject *__tmp174 = cpy_r_r289.f1;
+    PyTuple_SET_ITEM(cpy_r_r290, 1, __tmp174);
     cpy_r_r291 = PyObject_GetItem(cpy_r_r261, cpy_r_r290);
     CPy_DECREF(cpy_r_r261);
     CPy_DECREF(cpy_r_r290);
@@ -42438,7 +43035,7 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r292 = CPyStatic__codec___globals;
-    cpy_r_r293 = CPyStatics[490]; /* 'BatchDecoder' */
+    cpy_r_r293 = CPyStatics[492]; /* 'BatchDecoder' */
     cpy_r_r294 = CPyDict_SetItem(cpy_r_r292, cpy_r_r293, cpy_r_r291);
     CPy_DECREF(cpy_r_r291);
     cpy_r_r295 = cpy_r_r294 >= 0;
@@ -42447,13 +43044,13 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r296 = CPyStatic__codec___globals;
-    cpy_r_r297 = CPyStatics[349]; /* 'hexbytes' */
+    cpy_r_r297 = CPyStatics[353]; /* 'hexbytes' */
     cpy_r_r298 = CPyDict_GetItem(cpy_r_r296, cpy_r_r297);
     if (unlikely(cpy_r_r298 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 63, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r299 = CPyStatics[379]; /* 'HexBytes' */
+    cpy_r_r299 = CPyStatics[383]; /* 'HexBytes' */
     cpy_r_r300 = CPyObject_GetAttr(cpy_r_r298, cpy_r_r299);
     CPy_DECREF(cpy_r_r298);
     if (unlikely(cpy_r_r300 == NULL)) {
@@ -42463,7 +43060,7 @@ CPyL3: ;
     CPyStatic__codec___HexBytes = cpy_r_r300;
     CPy_INCREF(CPyStatic__codec___HexBytes);
     cpy_r_r301 = CPyStatic__codec___globals;
-    cpy_r_r302 = CPyStatics[379]; /* 'HexBytes' */
+    cpy_r_r302 = CPyStatics[383]; /* 'HexBytes' */
     cpy_r_r303 = CPyDict_SetItem(cpy_r_r301, cpy_r_r302, cpy_r_r300);
     CPy_DECREF(cpy_r_r300);
     cpy_r_r304 = cpy_r_r303 >= 0;
@@ -42472,13 +43069,13 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r305 = CPyStatic__codec___globals;
-    cpy_r_r306 = CPyStatics[460]; /* 'msgspec' */
+    cpy_r_r306 = CPyStatics[462]; /* 'msgspec' */
     cpy_r_r307 = CPyDict_GetItem(cpy_r_r305, cpy_r_r306);
     if (unlikely(cpy_r_r307 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 64, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r308 = CPyStatics[461]; /* 'Raw' */
+    cpy_r_r308 = CPyStatics[463]; /* 'Raw' */
     cpy_r_r309 = CPyObject_GetAttr(cpy_r_r307, cpy_r_r308);
     CPy_DECREF(cpy_r_r307);
     if (unlikely(cpy_r_r309 == NULL)) {
@@ -42488,7 +43085,7 @@ CPyL3: ;
     CPyStatic__codec___Raw = cpy_r_r309;
     CPy_INCREF(CPyStatic__codec___Raw);
     cpy_r_r310 = CPyStatic__codec___globals;
-    cpy_r_r311 = CPyStatics[461]; /* 'Raw' */
+    cpy_r_r311 = CPyStatics[463]; /* 'Raw' */
     cpy_r_r312 = CPyDict_SetItem(cpy_r_r310, cpy_r_r311, cpy_r_r309);
     CPy_DECREF(cpy_r_r309);
     cpy_r_r313 = cpy_r_r312 >= 0;
@@ -42497,13 +43094,13 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r314 = CPyStatic__codec___globals;
-    cpy_r_r315 = CPyStatics[469]; /* 'decoding' */
+    cpy_r_r315 = CPyStatics[471]; /* 'decoding' */
     cpy_r_r316 = CPyDict_GetItem(cpy_r_r314, cpy_r_r315);
     if (unlikely(cpy_r_r316 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 65, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r317 = CPyStatics[491]; /* 'ContextFramesBytesIO' */
+    cpy_r_r317 = CPyStatics[493]; /* 'ContextFramesBytesIO' */
     cpy_r_r318 = CPyObject_GetAttr(cpy_r_r316, cpy_r_r317);
     CPy_DECREF(cpy_r_r316);
     if (unlikely(cpy_r_r318 == NULL)) {
@@ -42513,7 +43110,7 @@ CPyL3: ;
     CPyStatic__codec___ContextFramesBytesIO = cpy_r_r318;
     CPy_INCREF(CPyStatic__codec___ContextFramesBytesIO);
     cpy_r_r319 = CPyStatic__codec___globals;
-    cpy_r_r320 = CPyStatics[491]; /* 'ContextFramesBytesIO' */
+    cpy_r_r320 = CPyStatics[493]; /* 'ContextFramesBytesIO' */
     cpy_r_r321 = CPyDict_SetItem(cpy_r_r319, cpy_r_r320, cpy_r_r318);
     CPy_DECREF(cpy_r_r318);
     cpy_r_r322 = cpy_r_r321 >= 0;
@@ -42522,13 +43119,13 @@ CPyL3: ;
         goto CPyL172;
     }
     cpy_r_r323 = CPyStatic__codec___globals;
-    cpy_r_r324 = CPyStatics[460]; /* 'msgspec' */
+    cpy_r_r324 = CPyStatics[462]; /* 'msgspec' */
     cpy_r_r325 = CPyDict_GetItem(cpy_r_r323, cpy_r_r324);
     if (unlikely(cpy_r_r325 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 66, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r326 = CPyStatics[492]; /* 'DecodeError' */
+    cpy_r_r326 = CPyStatics[494]; /* 'DecodeError' */
     cpy_r_r327 = CPyObject_GetAttr(cpy_r_r325, cpy_r_r326);
     CPy_DECREF(cpy_r_r325);
     if (unlikely(cpy_r_r327 == NULL)) {
@@ -42538,7 +43135,7 @@ CPyL3: ;
     CPyStatic__codec___DecodeError = cpy_r_r327;
     CPy_INCREF(CPyStatic__codec___DecodeError);
     cpy_r_r328 = CPyStatic__codec___globals;
-    cpy_r_r329 = CPyStatics[492]; /* 'DecodeError' */
+    cpy_r_r329 = CPyStatics[494]; /* 'DecodeError' */
     cpy_r_r330 = CPyDict_SetItem(cpy_r_r328, cpy_r_r329, cpy_r_r327);
     CPy_DECREF(cpy_r_r327);
     cpy_r_r331 = cpy_r_r330 >= 0;
@@ -42553,7 +43150,7 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 68, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r335 = CPyStatics[493]; /* 'encode_uint_256' */
+    cpy_r_r335 = CPyStatics[495]; /* 'encode_uint_256' */
     cpy_r_r336 = CPyObject_GetAttr(cpy_r_r334, cpy_r_r335);
     CPy_DECREF(cpy_r_r334);
     if (unlikely(cpy_r_r336 == NULL)) {
@@ -42563,7 +43160,7 @@ CPyL3: ;
     CPyStatic__codec___encode_uint_256 = cpy_r_r336;
     CPy_INCREF(CPyStatic__codec___encode_uint_256);
     cpy_r_r337 = CPyStatic__codec___globals;
-    cpy_r_r338 = CPyStatics[493]; /* 'encode_uint_256' */
+    cpy_r_r338 = CPyStatics[495]; /* 'encode_uint_256' */
     cpy_r_r339 = CPyDict_SetItem(cpy_r_r337, cpy_r_r338, cpy_r_r336);
     CPy_DECREF(cpy_r_r336);
     cpy_r_r340 = cpy_r_r339 >= 0;
@@ -42573,7 +43170,7 @@ CPyL3: ;
     }
     cpy_r_r341 = (PyObject *)&PyUnicode_Type;
     cpy_r_r342 = CPyStatic__codec___globals;
-    cpy_r_r343 = CPyStatics[462]; /* 'Decoder' */
+    cpy_r_r343 = CPyStatics[464]; /* 'Decoder' */
     cpy_r_r344 = CPyDict_GetItem(cpy_r_r342, cpy_r_r343);
     if (unlikely(cpy_r_r344 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 69, CPyStatic__codec___globals);
@@ -42581,14 +43178,14 @@ CPyL3: ;
     }
     PyObject *cpy_r_r345[1] = {cpy_r_r341};
     cpy_r_r346 = (PyObject **)&cpy_r_r345;
-    cpy_r_r347 = CPyStatics[776]; /* ('type',) */
+    cpy_r_r347 = CPyStatics[780]; /* ('type',) */
     cpy_r_r348 = _PyObject_Vectorcall(cpy_r_r344, cpy_r_r346, 0, cpy_r_r347);
     CPy_DECREF(cpy_r_r344);
     if (unlikely(cpy_r_r348 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 69, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r349 = CPyStatics[395]; /* 'decode' */
+    cpy_r_r349 = CPyStatics[399]; /* 'decode' */
     cpy_r_r350 = CPyObject_GetAttr(cpy_r_r348, cpy_r_r349);
     CPy_DECREF(cpy_r_r348);
     if (unlikely(cpy_r_r350 == NULL)) {
@@ -42598,7 +43195,7 @@ CPyL3: ;
     CPyStatic__codec___decode_string = cpy_r_r350;
     CPy_INCREF(CPyStatic__codec___decode_string);
     cpy_r_r351 = CPyStatic__codec___globals;
-    cpy_r_r352 = CPyStatics[494]; /* 'decode_string' */
+    cpy_r_r352 = CPyStatics[496]; /* 'decode_string' */
     cpy_r_r353 = CPyDict_SetItem(cpy_r_r351, cpy_r_r352, cpy_r_r350);
     CPy_DECREF(cpy_r_r350);
     cpy_r_r354 = cpy_r_r353 >= 0;
@@ -42617,7 +43214,7 @@ CPyL3: ;
     CPy_Unreachable();
 CPyL108: ;
     cpy_r_r357 = CPyStatic__codec___globals;
-    cpy_r_r358 = CPyStatics[462]; /* 'Decoder' */
+    cpy_r_r358 = CPyStatics[464]; /* 'Decoder' */
     cpy_r_r359 = CPyDict_GetItem(cpy_r_r357, cpy_r_r358);
     if (unlikely(cpy_r_r359 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 70, CPyStatic__codec___globals);
@@ -42625,14 +43222,14 @@ CPyL108: ;
     }
     PyObject *cpy_r_r360[1] = {cpy_r_r355};
     cpy_r_r361 = (PyObject **)&cpy_r_r360;
-    cpy_r_r362 = CPyStatics[776]; /* ('type',) */
+    cpy_r_r362 = CPyStatics[780]; /* ('type',) */
     cpy_r_r363 = _PyObject_Vectorcall(cpy_r_r359, cpy_r_r361, 0, cpy_r_r362);
     CPy_DECREF(cpy_r_r359);
     if (unlikely(cpy_r_r363 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 70, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r364 = CPyStatics[395]; /* 'decode' */
+    cpy_r_r364 = CPyStatics[399]; /* 'decode' */
     cpy_r_r365 = CPyObject_GetAttr(cpy_r_r363, cpy_r_r364);
     CPy_DECREF(cpy_r_r363);
     if (unlikely(cpy_r_r365 == NULL)) {
@@ -42642,7 +43239,7 @@ CPyL108: ;
     CPyStatic__codec____decode_raw = cpy_r_r365;
     CPy_INCREF(CPyStatic__codec____decode_raw);
     cpy_r_r366 = CPyStatic__codec___globals;
-    cpy_r_r367 = CPyStatics[495]; /* '_decode_raw' */
+    cpy_r_r367 = CPyStatics[497]; /* '_decode_raw' */
     cpy_r_r368 = CPyDict_SetItem(cpy_r_r366, cpy_r_r367, cpy_r_r365);
     CPy_DECREF(cpy_r_r365);
     cpy_r_r369 = cpy_r_r368 >= 0;
@@ -42651,7 +43248,7 @@ CPyL108: ;
         goto CPyL172;
     }
     cpy_r_r370 = CPyStatic__codec___globals;
-    cpy_r_r371 = CPyStatics[454]; /* '_decode_batch' */
+    cpy_r_r371 = CPyStatics[456]; /* '_decode_batch' */
     cpy_r_r372 = Py_None;
     cpy_r_r373 = CPyDict_SetItem(cpy_r_r370, cpy_r_r371, cpy_r_r372);
     cpy_r_r374 = cpy_r_r373 >= 0;
@@ -42660,7 +43257,7 @@ CPyL108: ;
         goto CPyL172;
     }
     cpy_r_r375 = CPyModule_itertools;
-    cpy_r_r376 = CPyStatics[496]; /* 'accumulate' */
+    cpy_r_r376 = CPyStatics[498]; /* 'accumulate' */
     cpy_r_r377 = CPyObject_GetAttr(cpy_r_r375, cpy_r_r376);
     if (unlikely(cpy_r_r377 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 74, CPyStatic__codec___globals);
@@ -42669,7 +43266,7 @@ CPyL108: ;
     CPyStatic__codec___accumulate = cpy_r_r377;
     CPy_INCREF(CPyStatic__codec___accumulate);
     cpy_r_r378 = CPyStatic__codec___globals;
-    cpy_r_r379 = CPyStatics[496]; /* 'accumulate' */
+    cpy_r_r379 = CPyStatics[498]; /* 'accumulate' */
     cpy_r_r380 = CPyDict_SetItem(cpy_r_r378, cpy_r_r379, cpy_r_r377);
     CPy_DECREF(cpy_r_r377);
     cpy_r_r381 = cpy_r_r380 >= 0;
@@ -42678,7 +43275,7 @@ CPyL108: ;
         goto CPyL172;
     }
     cpy_r_r382 = CPyModule_itertools;
-    cpy_r_r383 = CPyStatics[350]; /* 'chain' */
+    cpy_r_r383 = CPyStatics[354]; /* 'chain' */
     cpy_r_r384 = CPyObject_GetAttr(cpy_r_r382, cpy_r_r383);
     if (unlikely(cpy_r_r384 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 75, CPyStatic__codec___globals);
@@ -42687,7 +43284,7 @@ CPyL108: ;
     CPyStatic__codec___chain = cpy_r_r384;
     CPy_INCREF(CPyStatic__codec___chain);
     cpy_r_r385 = CPyStatic__codec___globals;
-    cpy_r_r386 = CPyStatics[350]; /* 'chain' */
+    cpy_r_r386 = CPyStatics[354]; /* 'chain' */
     cpy_r_r387 = CPyDict_SetItem(cpy_r_r385, cpy_r_r386, cpy_r_r384);
     CPy_DECREF(cpy_r_r384);
     cpy_r_r388 = cpy_r_r387 >= 0;
@@ -42709,7 +43306,7 @@ CPyL108: ;
         goto CPyL197;
     }
     cpy_r_r394 = CPyStatics[63]; /* '__mypyc_attrs__' */
-    cpy_r_r395 = CPyStatics[497]; /* '_raw' */
+    cpy_r_r395 = CPyStatics[499]; /* '_raw' */
     cpy_r_r396 = PyTuple_Pack(1, cpy_r_r395);
     if (unlikely(cpy_r_r396 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 79, CPyStatic__codec___globals);
@@ -42734,14 +43331,14 @@ CPyL108: ;
         goto CPyL172;
     }
     cpy_r_r403 = CPyStatic__codec___globals;
-    cpy_r_r404 = CPyStatics[498]; /* '_encode_hook' */
+    cpy_r_r404 = CPyStatics[500]; /* '_encode_hook' */
     cpy_r_r405 = CPyDict_GetItem(cpy_r_r403, cpy_r_r404);
     if (unlikely(cpy_r_r405 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 179, CPyStatic__codec___globals);
         goto CPyL172;
     }
     cpy_r_r406 = CPyStatic__codec___globals;
-    cpy_r_r407 = CPyStatics[476]; /* 'Encoder' */
+    cpy_r_r407 = CPyStatics[478]; /* 'Encoder' */
     cpy_r_r408 = CPyDict_GetItem(cpy_r_r406, cpy_r_r407);
     if (unlikely(cpy_r_r408 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 179, CPyStatic__codec___globals);
@@ -42749,7 +43346,7 @@ CPyL108: ;
     }
     PyObject *cpy_r_r409[1] = {cpy_r_r405};
     cpy_r_r410 = (PyObject **)&cpy_r_r409;
-    cpy_r_r411 = CPyStatics[789]; /* ('enc_hook',) */
+    cpy_r_r411 = CPyStatics[793]; /* ('enc_hook',) */
     cpy_r_r412 = _PyObject_Vectorcall(cpy_r_r408, cpy_r_r410, 0, cpy_r_r411);
     CPy_DECREF(cpy_r_r408);
     if (unlikely(cpy_r_r412 == NULL)) {
@@ -42776,21 +43373,21 @@ CPyL108: ;
         goto CPyL172;
     }
     cpy_r_r419 = CPyStatic__codec___globals;
-    cpy_r_r420 = CPyStatics[470]; /* 'default_codec' */
+    cpy_r_r420 = CPyStatics[472]; /* 'default_codec' */
     cpy_r_r421 = CPyDict_GetItem(cpy_r_r419, cpy_r_r420);
     if (unlikely(cpy_r_r421 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 198, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r422 = CPyStatics[500]; /* '_registry' */
+    cpy_r_r422 = CPyStatics[502]; /* '_registry' */
     cpy_r_r423 = CPyObject_GetAttr(cpy_r_r421, cpy_r_r422);
     CPy_DECREF(cpy_r_r421);
     if (unlikely(cpy_r_r423 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 198, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r424 = CPyStatics[501]; /* '(bool,(address,bytes)[])' */
-    cpy_r_r425 = CPyStatics[502]; /* 'get_encoder' */
+    cpy_r_r424 = CPyStatics[503]; /* '(bool,(address,bytes)[])' */
+    cpy_r_r425 = CPyStatics[504]; /* 'get_encoder' */
     cpy_r_r426 = CPyObject_CallMethodObjArgs(cpy_r_r423, cpy_r_r425, cpy_r_r424, NULL);
     CPy_DECREF(cpy_r_r423);
     if (unlikely(cpy_r_r426 == NULL)) {
@@ -42800,7 +43397,7 @@ CPyL108: ;
     CPyStatic__codec____mcall_encoder = cpy_r_r426;
     CPy_INCREF(CPyStatic__codec____mcall_encoder);
     cpy_r_r427 = CPyStatic__codec___globals;
-    cpy_r_r428 = CPyStatics[503]; /* '_mcall_encoder' */
+    cpy_r_r428 = CPyStatics[505]; /* '_mcall_encoder' */
     cpy_r_r429 = CPyDict_SetItem(cpy_r_r427, cpy_r_r428, cpy_r_r426);
     CPy_DECREF(cpy_r_r426);
     cpy_r_r430 = cpy_r_r429 >= 0;
@@ -42818,13 +43415,13 @@ CPyL108: ;
     }
     CPy_Unreachable();
 CPyL134: ;
-    cpy_r_r433 = CPyStatics[504]; /* 'encoders' */
+    cpy_r_r433 = CPyStatics[506]; /* 'encoders' */
     cpy_r_r434 = CPyObject_GetAttr(cpy_r_r431, cpy_r_r433);
     if (unlikely(cpy_r_r434 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 201, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r435 = CPyStatics[678]; /* -1 */
+    cpy_r_r435 = CPyStatics[682]; /* -1 */
     cpy_r_r436 = PyObject_GetItem(cpy_r_r434, cpy_r_r435);
     CPy_DECREF(cpy_r_r434);
     if (unlikely(cpy_r_r436 == NULL)) {
@@ -42834,7 +43431,7 @@ CPyL134: ;
     CPyStatic__codec____array_encoder = cpy_r_r436;
     CPy_INCREF(CPyStatic__codec____array_encoder);
     cpy_r_r437 = CPyStatic__codec___globals;
-    cpy_r_r438 = CPyStatics[505]; /* '_array_encoder' */
+    cpy_r_r438 = CPyStatics[507]; /* '_array_encoder' */
     cpy_r_r439 = CPyDict_SetItem(cpy_r_r437, cpy_r_r438, cpy_r_r436);
     CPy_DECREF(cpy_r_r436);
     cpy_r_r440 = cpy_r_r439 >= 0;
@@ -42852,7 +43449,7 @@ CPyL134: ;
     }
     CPy_Unreachable();
 CPyL140: ;
-    cpy_r_r443 = CPyStatics[506]; /* 'item_encoder' */
+    cpy_r_r443 = CPyStatics[508]; /* 'item_encoder' */
     cpy_r_r444 = CPyObject_GetAttr(cpy_r_r441, cpy_r_r443);
     if (unlikely(cpy_r_r444 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 202, CPyStatic__codec___globals);
@@ -42861,7 +43458,7 @@ CPyL140: ;
     CPyStatic__codec____item_encoder = cpy_r_r444;
     CPy_INCREF(CPyStatic__codec____item_encoder);
     cpy_r_r445 = CPyStatic__codec___globals;
-    cpy_r_r446 = CPyStatics[507]; /* '_item_encoder' */
+    cpy_r_r446 = CPyStatics[509]; /* '_item_encoder' */
     cpy_r_r447 = CPyDict_SetItem(cpy_r_r445, cpy_r_r446, cpy_r_r444);
     CPy_DECREF(cpy_r_r444);
     cpy_r_r448 = cpy_r_r447 >= 0;
@@ -42888,7 +43485,7 @@ CPyL144: ;
     }
     CPy_Unreachable();
 CPyL146: ;
-    cpy_r_r452 = CPyStatics[508]; /* 'validate_value' */
+    cpy_r_r452 = CPyStatics[510]; /* 'validate_value' */
     cpy_r_r453 = PyObject_SetAttr(cpy_r_r450, cpy_r_r452, cpy_r_r449);
     cpy_r_r454 = cpy_r_r453 >= 0;
     if (unlikely(!cpy_r_r454)) {
@@ -42909,7 +43506,7 @@ CPyL148: ;
     }
     CPy_Unreachable();
 CPyL150: ;
-    cpy_r_r457 = CPyStatics[508]; /* 'validate_value' */
+    cpy_r_r457 = CPyStatics[510]; /* 'validate_value' */
     cpy_r_r458 = PyObject_SetAttr(cpy_r_r455, cpy_r_r457, cpy_r_r449);
     cpy_r_r459 = cpy_r_r458 >= 0;
     if (unlikely(!cpy_r_r459)) {
@@ -42930,7 +43527,7 @@ CPyL152: ;
     }
     CPy_Unreachable();
 CPyL154: ;
-    cpy_r_r462 = CPyStatics[508]; /* 'validate_value' */
+    cpy_r_r462 = CPyStatics[510]; /* 'validate_value' */
     cpy_r_r463 = PyObject_SetAttr(cpy_r_r460, cpy_r_r462, cpy_r_r449);
     CPy_DECREF(cpy_r_r449);
     cpy_r_r464 = cpy_r_r463 >= 0;
@@ -42939,7 +43536,7 @@ CPyL154: ;
         goto CPyL172;
     }
     cpy_r_r465 = CPyStatic__codec___globals;
-    cpy_r_r466 = CPyStatics[509]; /* '__encode_new' */
+    cpy_r_r466 = CPyStatics[511]; /* '__encode_new' */
     cpy_r_r467 = CPyDict_GetItem(cpy_r_r465, cpy_r_r466);
     if (unlikely(cpy_r_r467 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 222, CPyStatic__codec___globals);
@@ -42968,7 +43565,7 @@ CPyL159: ;
         goto CPyL172;
     }
     cpy_r_r473 = CPyStatic__codec___globals;
-    cpy_r_r474 = CPyStatics[510]; /* '__encode_elements_new' */
+    cpy_r_r474 = CPyStatics[512]; /* '__encode_elements_new' */
     cpy_r_r475 = CPyDict_GetItem(cpy_r_r473, cpy_r_r474);
     if (unlikely(cpy_r_r475 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 223, CPyStatic__codec___globals);
@@ -42988,7 +43585,7 @@ CPyL162: ;
     }
     CPy_Unreachable();
 CPyL164: ;
-    cpy_r_r478 = CPyStatics[511]; /* 'encode_elements' */
+    cpy_r_r478 = CPyStatics[513]; /* 'encode_elements' */
     cpy_r_r479 = PyObject_SetAttr(cpy_r_r476, cpy_r_r478, cpy_r_r475);
     CPy_DECREF(cpy_r_r475);
     cpy_r_r480 = cpy_r_r479 >= 0;
@@ -42997,28 +43594,28 @@ CPyL164: ;
         goto CPyL172;
     }
     cpy_r_r481 = CPyStatic__codec___globals;
-    cpy_r_r482 = CPyStatics[470]; /* 'default_codec' */
+    cpy_r_r482 = CPyStatics[472]; /* 'default_codec' */
     cpy_r_r483 = CPyDict_GetItem(cpy_r_r481, cpy_r_r482);
     if (unlikely(cpy_r_r483 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 226, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r484 = CPyStatics[500]; /* '_registry' */
+    cpy_r_r484 = CPyStatics[502]; /* '_registry' */
     cpy_r_r485 = CPyObject_GetAttr(cpy_r_r483, cpy_r_r484);
     CPy_DECREF(cpy_r_r483);
     if (unlikely(cpy_r_r485 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 226, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r486 = CPyStatics[512]; /* '(uint256,uint256,(bool,bytes)[])' */
-    cpy_r_r487 = CPyStatics[513]; /* 'get_decoder' */
+    cpy_r_r486 = CPyStatics[514]; /* '(uint256,uint256,(bool,bytes)[])' */
+    cpy_r_r487 = CPyStatics[515]; /* 'get_decoder' */
     cpy_r_r488 = CPyObject_CallMethodObjArgs(cpy_r_r485, cpy_r_r487, cpy_r_r486, NULL);
     CPy_DECREF(cpy_r_r485);
     if (unlikely(cpy_r_r488 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_codec.py", "<module>", 226, CPyStatic__codec___globals);
         goto CPyL172;
     }
-    cpy_r_r489 = CPyStatics[395]; /* 'decode' */
+    cpy_r_r489 = CPyStatics[399]; /* 'decode' */
     cpy_r_r490 = CPyObject_GetAttr(cpy_r_r488, cpy_r_r489);
     CPy_DECREF(cpy_r_r488);
     if (unlikely(cpy_r_r490 == NULL)) {
@@ -43028,7 +43625,7 @@ CPyL164: ;
     CPyStatic__codec____mcall_decoder = cpy_r_r490;
     CPy_INCREF(CPyStatic__codec____mcall_decoder);
     cpy_r_r491 = CPyStatic__codec___globals;
-    cpy_r_r492 = CPyStatics[514]; /* '_mcall_decoder' */
+    cpy_r_r492 = CPyStatics[516]; /* '_mcall_decoder' */
     cpy_r_r493 = CPyDict_SetItem(cpy_r_r491, cpy_r_r492, cpy_r_r490);
     CPy_DECREF(cpy_r_r490);
     cpy_r_r494 = cpy_r_r493 >= 0;
@@ -43038,7 +43635,7 @@ CPyL164: ;
     }
     cpy_r_r495 = (PyObject *)&PyBool_Type;
     cpy_r_r496 = CPyStatic__codec___globals;
-    cpy_r_r497 = CPyStatics[483]; /* 'Success' */
+    cpy_r_r497 = CPyStatics[485]; /* 'Success' */
     cpy_r_r498 = CPyDict_SetItem(cpy_r_r496, cpy_r_r497, cpy_r_r495);
     cpy_r_r499 = cpy_r_r498 >= 0;
     if (unlikely(!cpy_r_r499)) {
@@ -43488,7 +44085,7 @@ CPyL10: ;
     if (!cpy_r_r9) goto CPyL19;
     CPy_Unreachable();
 CPyL12: ;
-    cpy_r_r10 = CPyStatics[515]; /* ("That's not good, there was an exception in a %s "
+    cpy_r_r10 = CPyStatics[517]; /* ("That's not good, there was an exception in a %s "
                                     '(len=%s). These are supposed to be handled.\n'
                                     'Exc: %s\n'
                                     '%s contents: %s\n'
@@ -43537,7 +44134,7 @@ CPyL12: ;
         cpy_r_batch_objs, cpy_r_r25
     };
     cpy_r_r27 = (PyObject **)&cpy_r_r26;
-    cpy_r_r28 = CPyStatics[718]; /* ('exc_info',) */
+    cpy_r_r28 = CPyStatics[722]; /* ('exc_info',) */
     cpy_r_r29 = _PyObject_Vectorcall(cpy_r_r23, cpy_r_r27, 6, cpy_r_r28);
     CPy_DECREF(cpy_r_r23);
     if (unlikely(cpy_r_r29 == NULL)) {
@@ -43689,7 +44286,7 @@ CPyL3: ;
         CPy_TypeErrorTraceback("dank_mids\\helpers\\_errors.py", "needs_full_request_spec", 78, CPyStatic__errors___globals, "str", cpy_r_r11);
         goto CPyL24;
     }
-    cpy_r_r13 = CPyStatics[516]; /* 'invalid request' */
+    cpy_r_r13 = CPyStatics[518]; /* 'invalid request' */
     cpy_r_r14 = PyUnicode_Compare(cpy_r_r12, cpy_r_r13);
     CPy_DECREF(cpy_r_r12);
     cpy_r_r15 = cpy_r_r14 == -1;
@@ -43740,7 +44337,7 @@ CPyL13: ;
         CPy_TypeErrorTraceback("dank_mids\\helpers\\_errors.py", "needs_full_request_spec", 78, CPyStatic__errors___globals, "str", cpy_r_r27);
         goto CPyL24;
     }
-    cpy_r_r29 = CPyStatics[517]; /* 'parse error' */
+    cpy_r_r29 = CPyStatics[519]; /* 'parse error' */
     cpy_r_r30 = PyUnicode_Compare(cpy_r_r28, cpy_r_r29);
     CPy_DECREF(cpy_r_r28);
     cpy_r_r31 = cpy_r_r30 == -1;
@@ -43837,7 +44434,7 @@ char CPyDef__errors___is_call_revert(PyObject *cpy_r_e) {
         CPy_TypeErrorTraceback("dank_mids\\helpers\\_errors.py", "is_call_revert", 94, CPyStatic__errors___globals, "str", cpy_r_r6);
         goto CPyL14;
     }
-    cpy_r_r8 = CPyStatics[291]; /* '__contains__' */
+    cpy_r_r8 = CPyStatics[297]; /* '__contains__' */
     cpy_r_r9 = CPyObject_GetAttr(cpy_r_r7, cpy_r_r8);
     CPy_DECREF(cpy_r_r7);
     if (unlikely(cpy_r_r9 == NULL)) {
@@ -43859,7 +44456,7 @@ CPyL6: ;
     CPy_Unreachable();
 CPyL8: ;
     cpy_r_r12 = CPyModule_builtins;
-    cpy_r_r13 = CPyStatics[518]; /* 'map' */
+    cpy_r_r13 = CPyStatics[520]; /* 'map' */
     cpy_r_r14 = CPyObject_GetAttr(cpy_r_r12, cpy_r_r13);
     if (unlikely(cpy_r_r14 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "is_call_revert", 94, CPyStatic__errors___globals);
@@ -43875,7 +44472,7 @@ CPyL8: ;
     }
     CPy_DECREF(cpy_r_r9);
     cpy_r_r18 = CPyModule_builtins;
-    cpy_r_r19 = CPyStatics[519]; /* 'any' */
+    cpy_r_r19 = CPyStatics[521]; /* 'any' */
     cpy_r_r20 = CPyObject_GetAttr(cpy_r_r18, cpy_r_r19);
     if (unlikely(cpy_r_r20 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "is_call_revert", 94, CPyStatic__errors___globals);
@@ -43947,7 +44544,7 @@ char CPyDef__errors___log_request_type_switch(void) {
     PyObject **cpy_r_r4;
     PyObject *cpy_r_r5;
     char cpy_r_r6;
-    cpy_r_r0 = CPyStatics[520]; /* ('your node says the partial request was invalid but its '
+    cpy_r_r0 = CPyStatics[522]; /* ('your node says the partial request was invalid but its '
                                    'okay, we can use the full jsonrpc spec instead') */
     cpy_r_r1 = CPyStatic__errors___error_logger_debug;
     if (likely(cpy_r_r1 != NULL)) goto CPyL3;
@@ -44140,7 +44737,7 @@ char CPyDef__errors_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[742]; /* ('Logger',) */
+    cpy_r_r5 = CPyStatics[746]; /* ('Logger',) */
     cpy_r_r6 = CPyStatics[174]; /* 'logging' */
     cpy_r_r7 = CPyStatic__errors___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
@@ -44151,7 +44748,7 @@ CPyL3: ;
     CPyModule_logging = cpy_r_r8;
     CPy_INCREF(CPyModule_logging);
     CPy_DECREF(cpy_r_r8);
-    cpy_r_r9 = CPyStatics[790]; /* ('TYPE_CHECKING', 'Any', 'Final') */
+    cpy_r_r9 = CPyStatics[794]; /* ('TYPE_CHECKING', 'Any', 'Final') */
     cpy_r_r10 = CPyStatics[41]; /* 'typing' */
     cpy_r_r11 = CPyStatic__errors___globals;
     cpy_r_r12 = CPyImport_ImportFromMany(cpy_r_r10, cpy_r_r9, cpy_r_r9, cpy_r_r11);
@@ -44162,7 +44759,7 @@ CPyL3: ;
     CPyModule_typing = cpy_r_r12;
     CPy_INCREF(CPyModule_typing);
     CPy_DECREF(cpy_r_r12);
-    cpy_r_r13 = CPyStatics[791]; /* ('BadResponse',) */
+    cpy_r_r13 = CPyStatics[795]; /* ('BadResponse',) */
     cpy_r_r14 = CPyStatics[46]; /* 'dank_mids._exceptions' */
     cpy_r_r15 = CPyStatic__errors___globals;
     cpy_r_r16 = CPyImport_ImportFromMany(cpy_r_r14, cpy_r_r13, cpy_r_r13, cpy_r_r15);
@@ -44173,7 +44770,7 @@ CPyL3: ;
     CPyModule_dank_mids____exceptions = cpy_r_r16;
     CPy_INCREF(CPyModule_dank_mids____exceptions);
     CPy_DECREF(cpy_r_r16);
-    cpy_r_r17 = CPyStatics[792]; /* ('DEBUG', 'getLogger') */
+    cpy_r_r17 = CPyStatics[796]; /* ('DEBUG', 'getLogger') */
     cpy_r_r18 = CPyStatics[48]; /* 'dank_mids._logging' */
     cpy_r_r19 = CPyStatic__errors___globals;
     cpy_r_r20 = CPyImport_ImportFromMany(cpy_r_r18, cpy_r_r17, cpy_r_r17, cpy_r_r19);
@@ -44184,7 +44781,7 @@ CPyL3: ;
     CPyModule_dank_mids____logging = cpy_r_r20;
     CPy_INCREF(CPyModule_dank_mids____logging);
     CPy_DECREF(cpy_r_r20);
-    cpy_r_r21 = CPyStatics[778]; /* ('PartialResponse',) */
+    cpy_r_r21 = CPyStatics[782]; /* ('PartialResponse',) */
     cpy_r_r22 = CPyStatics[55]; /* 'dank_mids.types' */
     cpy_r_r23 = CPyStatic__errors___globals;
     cpy_r_r24 = CPyImport_ImportFromMany(cpy_r_r22, cpy_r_r21, cpy_r_r21, cpy_r_r23);
@@ -44195,7 +44792,7 @@ CPyL3: ;
     CPyModule_dank_mids___types = cpy_r_r24;
     CPy_INCREF(CPyModule_dank_mids___types);
     CPy_DECREF(cpy_r_r24);
-    cpy_r_r25 = CPyStatics[521]; /* 'dank_mids.errors' */
+    cpy_r_r25 = CPyStatics[523]; /* 'dank_mids.errors' */
     cpy_r_r26 = CPyStatic__logging___getLogger;
     if (likely(cpy_r_r26 != NULL)) goto CPyL12;
     PyErr_SetString(PyExc_NameError, "value for final name \"getLogger\" was not set");
@@ -44216,7 +44813,7 @@ CPyL12: ;
     CPyStatic__errors___error_logger = cpy_r_r30;
     CPy_INCREF(CPyStatic__errors___error_logger);
     cpy_r_r31 = CPyStatic__errors___globals;
-    cpy_r_r32 = CPyStatics[522]; /* 'error_logger' */
+    cpy_r_r32 = CPyStatics[524]; /* 'error_logger' */
     cpy_r_r33 = CPyDict_SetItem(cpy_r_r31, cpy_r_r32, cpy_r_r30);
     CPy_DECREF(cpy_r_r30);
     cpy_r_r34 = cpy_r_r33 >= 0;
@@ -44234,7 +44831,7 @@ CPyL12: ;
     }
     CPy_Unreachable();
 CPyL17: ;
-    cpy_r_r37 = CPyStatics[305]; /* 'debug' */
+    cpy_r_r37 = CPyStatics[311]; /* 'debug' */
     cpy_r_r38 = CPyObject_GetAttr(cpy_r_r35, cpy_r_r37);
     if (unlikely(cpy_r_r38 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 13, CPyStatic__errors___globals);
@@ -44243,7 +44840,7 @@ CPyL17: ;
     CPyStatic__errors___error_logger_debug = cpy_r_r38;
     CPy_INCREF(CPyStatic__errors___error_logger_debug);
     cpy_r_r39 = CPyStatic__errors___globals;
-    cpy_r_r40 = CPyStatics[523]; /* 'error_logger_debug' */
+    cpy_r_r40 = CPyStatics[525]; /* 'error_logger_debug' */
     cpy_r_r41 = CPyDict_SetItem(cpy_r_r39, cpy_r_r40, cpy_r_r38);
     CPy_DECREF(cpy_r_r38);
     cpy_r_r42 = cpy_r_r41 >= 0;
@@ -44261,7 +44858,7 @@ CPyL17: ;
     }
     CPy_Unreachable();
 CPyL22: ;
-    cpy_r_r45 = CPyStatics[524]; /* '_log' */
+    cpy_r_r45 = CPyStatics[526]; /* '_log' */
     cpy_r_r46 = CPyObject_GetAttr(cpy_r_r43, cpy_r_r45);
     if (unlikely(cpy_r_r46 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 14, CPyStatic__errors___globals);
@@ -44270,7 +44867,7 @@ CPyL22: ;
     CPyStatic__errors___error_logger_log = cpy_r_r46;
     CPy_INCREF(CPyStatic__errors___error_logger_log);
     cpy_r_r47 = CPyStatic__errors___globals;
-    cpy_r_r48 = CPyStatics[525]; /* 'error_logger_log' */
+    cpy_r_r48 = CPyStatics[527]; /* 'error_logger_log' */
     cpy_r_r49 = CPyDict_SetItem(cpy_r_r47, cpy_r_r48, cpy_r_r46);
     CPy_DECREF(cpy_r_r46);
     cpy_r_r50 = cpy_r_r49 >= 0;
@@ -44288,8 +44885,8 @@ CPyL22: ;
     }
     CPy_Unreachable();
 CPyL27: ;
-    cpy_r_r53 = CPyStatics[526]; /* 'reverts' */
-    cpy_r_r54 = CPyStatics[527]; /* 'getChild' */
+    cpy_r_r53 = CPyStatics[528]; /* 'reverts' */
+    cpy_r_r54 = CPyStatics[529]; /* 'getChild' */
     cpy_r_r55 = CPyObject_CallMethodObjArgs(cpy_r_r51, cpy_r_r54, cpy_r_r53, NULL);
     if (unlikely(cpy_r_r55 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 21, CPyStatic__errors___globals);
@@ -44298,7 +44895,7 @@ CPyL27: ;
     CPyStatic__errors___revert_logger = cpy_r_r55;
     CPy_INCREF(CPyStatic__errors___revert_logger);
     cpy_r_r56 = CPyStatic__errors___globals;
-    cpy_r_r57 = CPyStatics[528]; /* 'revert_logger' */
+    cpy_r_r57 = CPyStatics[530]; /* 'revert_logger' */
     cpy_r_r58 = CPyDict_SetItem(cpy_r_r56, cpy_r_r57, cpy_r_r55);
     CPy_DECREF(cpy_r_r55);
     cpy_r_r59 = cpy_r_r58 >= 0;
@@ -44316,7 +44913,7 @@ CPyL27: ;
     }
     CPy_Unreachable();
 CPyL32: ;
-    cpy_r_r62 = CPyStatics[524]; /* '_log' */
+    cpy_r_r62 = CPyStatics[526]; /* '_log' */
     cpy_r_r63 = CPyObject_GetAttr(cpy_r_r60, cpy_r_r62);
     if (unlikely(cpy_r_r63 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 22, CPyStatic__errors___globals);
@@ -44325,7 +44922,7 @@ CPyL32: ;
     CPyStatic__errors___revert_logger_log = cpy_r_r63;
     CPy_INCREF(CPyStatic__errors___revert_logger_log);
     cpy_r_r64 = CPyStatic__errors___globals;
-    cpy_r_r65 = CPyStatics[529]; /* 'revert_logger_log' */
+    cpy_r_r65 = CPyStatics[531]; /* 'revert_logger_log' */
     cpy_r_r66 = CPyDict_SetItem(cpy_r_r64, cpy_r_r65, cpy_r_r63);
     CPy_DECREF(cpy_r_r63);
     cpy_r_r67 = cpy_r_r66 >= 0;
@@ -44343,8 +44940,8 @@ CPyL32: ;
     }
     CPy_Unreachable();
 CPyL37: ;
-    cpy_r_r70 = CPyStatics[530]; /* 'timeouts' */
-    cpy_r_r71 = CPyStatics[527]; /* 'getChild' */
+    cpy_r_r70 = CPyStatics[532]; /* 'timeouts' */
+    cpy_r_r71 = CPyStatics[529]; /* 'getChild' */
     cpy_r_r72 = CPyObject_CallMethodObjArgs(cpy_r_r68, cpy_r_r71, cpy_r_r70, NULL);
     if (unlikely(cpy_r_r72 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 29, CPyStatic__errors___globals);
@@ -44353,7 +44950,7 @@ CPyL37: ;
     CPyStatic__errors___timeout_logger = cpy_r_r72;
     CPy_INCREF(CPyStatic__errors___timeout_logger);
     cpy_r_r73 = CPyStatic__errors___globals;
-    cpy_r_r74 = CPyStatics[531]; /* 'timeout_logger' */
+    cpy_r_r74 = CPyStatics[533]; /* 'timeout_logger' */
     cpy_r_r75 = CPyDict_SetItem(cpy_r_r73, cpy_r_r74, cpy_r_r72);
     CPy_DECREF(cpy_r_r72);
     cpy_r_r76 = cpy_r_r75 >= 0;
@@ -44371,7 +44968,7 @@ CPyL37: ;
     }
     CPy_Unreachable();
 CPyL42: ;
-    cpy_r_r79 = CPyStatics[305]; /* 'debug' */
+    cpy_r_r79 = CPyStatics[311]; /* 'debug' */
     cpy_r_r80 = CPyObject_GetAttr(cpy_r_r77, cpy_r_r79);
     if (unlikely(cpy_r_r80 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 30, CPyStatic__errors___globals);
@@ -44380,7 +44977,7 @@ CPyL42: ;
     CPyStatic__errors___timeout_logger_debug = cpy_r_r80;
     CPy_INCREF(CPyStatic__errors___timeout_logger_debug);
     cpy_r_r81 = CPyStatic__errors___globals;
-    cpy_r_r82 = CPyStatics[532]; /* 'timeout_logger_debug' */
+    cpy_r_r82 = CPyStatics[534]; /* 'timeout_logger_debug' */
     cpy_r_r83 = CPyDict_SetItem(cpy_r_r81, cpy_r_r82, cpy_r_r80);
     CPy_DECREF(cpy_r_r80);
     cpy_r_r84 = cpy_r_r83 >= 0;
@@ -44407,7 +45004,7 @@ CPyL47: ;
     CPyStatic__errors___timeout_logger_warning = cpy_r_r88;
     CPy_INCREF(CPyStatic__errors___timeout_logger_warning);
     cpy_r_r89 = CPyStatic__errors___globals;
-    cpy_r_r90 = CPyStatics[533]; /* 'timeout_logger_warning' */
+    cpy_r_r90 = CPyStatics[535]; /* 'timeout_logger_warning' */
     cpy_r_r91 = CPyDict_SetItem(cpy_r_r89, cpy_r_r90, cpy_r_r88);
     CPy_DECREF(cpy_r_r88);
     cpy_r_r92 = cpy_r_r91 >= 0;
@@ -44425,8 +45022,8 @@ CPyL47: ;
     }
     CPy_Unreachable();
 CPyL52: ;
-    cpy_r_r95 = CPyStatics[534]; /* 'gas' */
-    cpy_r_r96 = CPyStatics[527]; /* 'getChild' */
+    cpy_r_r95 = CPyStatics[536]; /* 'gas' */
+    cpy_r_r96 = CPyStatics[529]; /* 'getChild' */
     cpy_r_r97 = CPyObject_CallMethodObjArgs(cpy_r_r93, cpy_r_r96, cpy_r_r95, NULL);
     if (unlikely(cpy_r_r97 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 34, CPyStatic__errors___globals);
@@ -44435,7 +45032,7 @@ CPyL52: ;
     CPyStatic__errors___gas_logger = cpy_r_r97;
     CPy_INCREF(CPyStatic__errors___gas_logger);
     cpy_r_r98 = CPyStatic__errors___globals;
-    cpy_r_r99 = CPyStatics[535]; /* 'gas_logger' */
+    cpy_r_r99 = CPyStatics[537]; /* 'gas_logger' */
     cpy_r_r100 = CPyDict_SetItem(cpy_r_r98, cpy_r_r99, cpy_r_r97);
     CPy_DECREF(cpy_r_r97);
     cpy_r_r101 = cpy_r_r100 >= 0;
@@ -44453,7 +45050,7 @@ CPyL52: ;
     }
     CPy_Unreachable();
 CPyL57: ;
-    cpy_r_r104 = CPyStatics[305]; /* 'debug' */
+    cpy_r_r104 = CPyStatics[311]; /* 'debug' */
     cpy_r_r105 = CPyObject_GetAttr(cpy_r_r102, cpy_r_r104);
     if (unlikely(cpy_r_r105 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 35, CPyStatic__errors___globals);
@@ -44462,7 +45059,7 @@ CPyL57: ;
     CPyStatic__errors___gas_logger_debug = cpy_r_r105;
     CPy_INCREF(CPyStatic__errors___gas_logger_debug);
     cpy_r_r106 = CPyStatic__errors___globals;
-    cpy_r_r107 = CPyStatics[536]; /* 'gas_logger_debug' */
+    cpy_r_r107 = CPyStatics[538]; /* 'gas_logger_debug' */
     cpy_r_r108 = CPyDict_SetItem(cpy_r_r106, cpy_r_r107, cpy_r_r105);
     CPy_DECREF(cpy_r_r105);
     cpy_r_r109 = cpy_r_r108 >= 0;
@@ -44470,11 +45067,11 @@ CPyL57: ;
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 35, CPyStatic__errors___globals);
         goto CPyL67;
     }
-    cpy_r_r110 = CPyStatics[537]; /* 'invalid opcode' */
-    cpy_r_r111 = CPyStatics[538]; /* 'missing trie node' */
-    cpy_r_r112 = CPyStatics[539]; /* 'resource not found' */
-    cpy_r_r113 = CPyStatics[540]; /* 'invalid ether transfer' */
-    cpy_r_r114 = CPyStatics[541]; /* 'error processing call revert' */
+    cpy_r_r110 = CPyStatics[539]; /* 'invalid opcode' */
+    cpy_r_r111 = CPyStatics[540]; /* 'missing trie node' */
+    cpy_r_r112 = CPyStatics[541]; /* 'resource not found' */
+    cpy_r_r113 = CPyStatics[542]; /* 'invalid ether transfer' */
+    cpy_r_r114 = CPyStatics[543]; /* 'error processing call revert' */
     cpy_r_r115 = PySet_New(NULL);
     if (unlikely(cpy_r_r115 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_errors.py", "<module>", 37, CPyStatic__errors___globals);
@@ -44513,7 +45110,7 @@ CPyL57: ;
     CPyStatic__errors___INDIVIDUAL_CALL_REVERT_STRINGS = cpy_r_r115;
     CPy_INCREF(CPyStatic__errors___INDIVIDUAL_CALL_REVERT_STRINGS);
     cpy_r_r126 = CPyStatic__errors___globals;
-    cpy_r_r127 = CPyStatics[542]; /* 'INDIVIDUAL_CALL_REVERT_STRINGS' */
+    cpy_r_r127 = CPyStatics[544]; /* 'INDIVIDUAL_CALL_REVERT_STRINGS' */
     cpy_r_r128 = CPyDict_SetItem(cpy_r_r126, cpy_r_r127, cpy_r_r115);
     CPy_DECREF(cpy_r_r115);
     cpy_r_r129 = cpy_r_r128 >= 0;
@@ -45503,7 +46100,7 @@ CPyL23: ;
 CPyL25: ;
     PyObject *cpy_r_r30[3] = {cpy_r_r25, cpy_r_r26, cpy_r_r27};
     cpy_r_r31 = (PyObject **)&cpy_r_r30;
-    cpy_r_r32 = CPyStatics[793]; /* ('loop', 'name') */
+    cpy_r_r32 = CPyStatics[797]; /* ('loop', 'name') */
     cpy_r_r33 = _PyObject_Vectorcall(cpy_r_r28, cpy_r_r31, 1, cpy_r_r32);
     if (unlikely(cpy_r_r33 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "gatherish", 44, CPyStatic__gather___globals);
@@ -47294,10 +47891,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp174 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp174);
-    PyObject *__tmp175 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp175);
+    PyObject *__tmp175 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp175);
+    PyObject *__tmp176 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp176);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -47485,23 +48082,23 @@ PyObject *CPyPy__gather___gatherish(PyObject *self, PyObject *const *args, size_
     PyObject *arg_name;
     if (obj_name == NULL) {
         arg_name = NULL;
-        goto __LL176;
+        goto __LL177;
     }
     if (PyUnicode_Check(obj_name))
         arg_name = obj_name;
     else {
         arg_name = NULL;
     }
-    if (arg_name != NULL) goto __LL176;
+    if (arg_name != NULL) goto __LL177;
     if (obj_name == Py_None)
         arg_name = obj_name;
     else {
         arg_name = NULL;
     }
-    if (arg_name != NULL) goto __LL176;
+    if (arg_name != NULL) goto __LL177;
     CPy_TypeError("str or None", obj_name); 
     goto fail;
-__LL176: ;
+__LL177: ;
     PyObject *retval = CPyDef__gather___gatherish(arg_coros, arg_name);
     return retval;
 fail: ;
@@ -47660,7 +48257,7 @@ CPyL7: ;
     }
     CPy_INCREF(cpy_r_r9);
 CPyL8: ;
-    cpy_r_r10 = CPyStatics[544]; /* 'FIRST_COMPLETED' */
+    cpy_r_r10 = CPyStatics[546]; /* 'FIRST_COMPLETED' */
     cpy_r_r11 = CPyStatic__gather___wait;
     if (unlikely(cpy_r_r11 == NULL)) {
         goto CPyL120;
@@ -47677,7 +48274,7 @@ CPyL9: ;
 CPyL11: ;
     PyObject *cpy_r_r13[2] = {cpy_r_r9, cpy_r_r10};
     cpy_r_r14 = (PyObject **)&cpy_r_r13;
-    cpy_r_r15 = CPyStatics[794]; /* ('return_when',) */
+    cpy_r_r15 = CPyStatics[798]; /* ('return_when',) */
     cpy_r_r16 = _PyObject_Vectorcall(cpy_r_r11, cpy_r_r14, 1, cpy_r_r15);
     if (unlikely(cpy_r_r16 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "first_completed", 78, CPyStatic__gather___globals);
@@ -47876,48 +48473,48 @@ CPyL45: ;
     }
     cpy_r_r22 = cpy_r_r40;
 CPyL47: ;
-    PyObject *__tmp177;
+    PyObject *__tmp178;
     if (unlikely(!(PyTuple_Check(cpy_r_r22) && PyTuple_GET_SIZE(cpy_r_r22) == 2))) {
-        __tmp177 = NULL;
-        goto __LL178;
+        __tmp178 = NULL;
+        goto __LL179;
     }
     if (likely(PySet_Check(PyTuple_GET_ITEM(cpy_r_r22, 0))))
-        __tmp177 = PyTuple_GET_ITEM(cpy_r_r22, 0);
+        __tmp178 = PyTuple_GET_ITEM(cpy_r_r22, 0);
     else {
-        __tmp177 = NULL;
+        __tmp178 = NULL;
     }
-    if (__tmp177 == NULL) goto __LL178;
+    if (__tmp178 == NULL) goto __LL179;
     if (likely(PySet_Check(PyTuple_GET_ITEM(cpy_r_r22, 1))))
-        __tmp177 = PyTuple_GET_ITEM(cpy_r_r22, 1);
+        __tmp178 = PyTuple_GET_ITEM(cpy_r_r22, 1);
     else {
-        __tmp177 = NULL;
+        __tmp178 = NULL;
     }
-    if (__tmp177 == NULL) goto __LL178;
-    __tmp177 = cpy_r_r22;
-__LL178: ;
-    if (unlikely(__tmp177 == NULL)) {
+    if (__tmp178 == NULL) goto __LL179;
+    __tmp178 = cpy_r_r22;
+__LL179: ;
+    if (unlikely(__tmp178 == NULL)) {
         CPy_TypeError("tuple[set, set]", cpy_r_r22); cpy_r_r41 = (tuple_T2OO) { NULL, NULL };
     } else {
-        PyObject *__tmp179 = PyTuple_GET_ITEM(cpy_r_r22, 0);
-        CPy_INCREF(__tmp179);
-        PyObject *__tmp180;
-        if (likely(PySet_Check(__tmp179)))
-            __tmp180 = __tmp179;
+        PyObject *__tmp180 = PyTuple_GET_ITEM(cpy_r_r22, 0);
+        CPy_INCREF(__tmp180);
+        PyObject *__tmp181;
+        if (likely(PySet_Check(__tmp180)))
+            __tmp181 = __tmp180;
         else {
-            CPy_TypeError("set", __tmp179); 
-            __tmp180 = NULL;
+            CPy_TypeError("set", __tmp180); 
+            __tmp181 = NULL;
         }
-        cpy_r_r41.f0 = __tmp180;
-        PyObject *__tmp181 = PyTuple_GET_ITEM(cpy_r_r22, 1);
-        CPy_INCREF(__tmp181);
-        PyObject *__tmp182;
-        if (likely(PySet_Check(__tmp181)))
-            __tmp182 = __tmp181;
+        cpy_r_r41.f0 = __tmp181;
+        PyObject *__tmp182 = PyTuple_GET_ITEM(cpy_r_r22, 1);
+        CPy_INCREF(__tmp182);
+        PyObject *__tmp183;
+        if (likely(PySet_Check(__tmp182)))
+            __tmp183 = __tmp182;
         else {
-            CPy_TypeError("set", __tmp181); 
-            __tmp182 = NULL;
+            CPy_TypeError("set", __tmp182); 
+            __tmp183 = NULL;
         }
-        cpy_r_r41.f1 = __tmp182;
+        cpy_r_r41.f1 = __tmp183;
     }
     CPy_DECREF(cpy_r_r22);
     if (unlikely(cpy_r_r41.f0 == NULL)) {
@@ -47927,10 +48524,10 @@ __LL178: ;
     cpy_r_r42 = PyTuple_New(2);
     if (unlikely(cpy_r_r42 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp183 = cpy_r_r41.f0;
-    PyTuple_SET_ITEM(cpy_r_r42, 0, __tmp183);
-    PyObject *__tmp184 = cpy_r_r41.f1;
-    PyTuple_SET_ITEM(cpy_r_r42, 1, __tmp184);
+    PyObject *__tmp184 = cpy_r_r41.f0;
+    PyTuple_SET_ITEM(cpy_r_r42, 0, __tmp184);
+    PyObject *__tmp185 = cpy_r_r41.f1;
+    PyTuple_SET_ITEM(cpy_r_r42, 1, __tmp185);
     if (((dank_mids___helpers____gather___first_completed_envObject *)cpy_r_r4)->___mypyc_next_label__ != CPY_INT_TAG) {
         CPyTagged_DECREF(((dank_mids___helpers____gather___first_completed_envObject *)cpy_r_r4)->___mypyc_next_label__);
     }
@@ -47953,7 +48550,7 @@ CPyL51: ;
     }
     CPy_INCREF(cpy_r_r44);
 CPyL52: ;
-    cpy_r_r45 = CPyStatics[544]; /* 'FIRST_COMPLETED' */
+    cpy_r_r45 = CPyStatics[546]; /* 'FIRST_COMPLETED' */
     cpy_r_r46 = CPyStatic__gather___wait;
     if (unlikely(cpy_r_r46 == NULL)) {
         goto CPyL136;
@@ -47970,7 +48567,7 @@ CPyL53: ;
 CPyL55: ;
     PyObject *cpy_r_r48[2] = {cpy_r_r44, cpy_r_r45};
     cpy_r_r49 = (PyObject **)&cpy_r_r48;
-    cpy_r_r50 = CPyStatics[794]; /* ('return_when',) */
+    cpy_r_r50 = CPyStatics[798]; /* ('return_when',) */
     cpy_r_r51 = _PyObject_Vectorcall(cpy_r_r46, cpy_r_r49, 1, cpy_r_r50);
     if (unlikely(cpy_r_r51 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "first_completed", 79, CPyStatic__gather___globals);
@@ -48169,48 +48766,48 @@ CPyL89: ;
     }
     cpy_r_r57 = cpy_r_r75;
 CPyL91: ;
-    PyObject *__tmp185;
+    PyObject *__tmp186;
     if (unlikely(!(PyTuple_Check(cpy_r_r57) && PyTuple_GET_SIZE(cpy_r_r57) == 2))) {
-        __tmp185 = NULL;
-        goto __LL186;
+        __tmp186 = NULL;
+        goto __LL187;
     }
     if (likely(PySet_Check(PyTuple_GET_ITEM(cpy_r_r57, 0))))
-        __tmp185 = PyTuple_GET_ITEM(cpy_r_r57, 0);
+        __tmp186 = PyTuple_GET_ITEM(cpy_r_r57, 0);
     else {
-        __tmp185 = NULL;
+        __tmp186 = NULL;
     }
-    if (__tmp185 == NULL) goto __LL186;
+    if (__tmp186 == NULL) goto __LL187;
     if (likely(PySet_Check(PyTuple_GET_ITEM(cpy_r_r57, 1))))
-        __tmp185 = PyTuple_GET_ITEM(cpy_r_r57, 1);
+        __tmp186 = PyTuple_GET_ITEM(cpy_r_r57, 1);
     else {
-        __tmp185 = NULL;
+        __tmp186 = NULL;
     }
-    if (__tmp185 == NULL) goto __LL186;
-    __tmp185 = cpy_r_r57;
-__LL186: ;
-    if (unlikely(__tmp185 == NULL)) {
+    if (__tmp186 == NULL) goto __LL187;
+    __tmp186 = cpy_r_r57;
+__LL187: ;
+    if (unlikely(__tmp186 == NULL)) {
         CPy_TypeError("tuple[set, set]", cpy_r_r57); cpy_r_r76 = (tuple_T2OO) { NULL, NULL };
     } else {
-        PyObject *__tmp187 = PyTuple_GET_ITEM(cpy_r_r57, 0);
-        CPy_INCREF(__tmp187);
-        PyObject *__tmp188;
-        if (likely(PySet_Check(__tmp187)))
-            __tmp188 = __tmp187;
+        PyObject *__tmp188 = PyTuple_GET_ITEM(cpy_r_r57, 0);
+        CPy_INCREF(__tmp188);
+        PyObject *__tmp189;
+        if (likely(PySet_Check(__tmp188)))
+            __tmp189 = __tmp188;
         else {
-            CPy_TypeError("set", __tmp187); 
-            __tmp188 = NULL;
+            CPy_TypeError("set", __tmp188); 
+            __tmp189 = NULL;
         }
-        cpy_r_r76.f0 = __tmp188;
-        PyObject *__tmp189 = PyTuple_GET_ITEM(cpy_r_r57, 1);
-        CPy_INCREF(__tmp189);
-        PyObject *__tmp190;
-        if (likely(PySet_Check(__tmp189)))
-            __tmp190 = __tmp189;
+        cpy_r_r76.f0 = __tmp189;
+        PyObject *__tmp190 = PyTuple_GET_ITEM(cpy_r_r57, 1);
+        CPy_INCREF(__tmp190);
+        PyObject *__tmp191;
+        if (likely(PySet_Check(__tmp190)))
+            __tmp191 = __tmp190;
         else {
-            CPy_TypeError("set", __tmp189); 
-            __tmp190 = NULL;
+            CPy_TypeError("set", __tmp190); 
+            __tmp191 = NULL;
         }
-        cpy_r_r76.f1 = __tmp190;
+        cpy_r_r76.f1 = __tmp191;
     }
     CPy_DECREF(cpy_r_r57);
     if (unlikely(cpy_r_r76.f0 == NULL)) {
@@ -48296,7 +48893,7 @@ CPyL99: ;
     }
     CPy_INCREF(cpy_r_r90);
 CPyL102: ;
-    cpy_r_r91 = CPyStatics[546]; /* 'cancel' */
+    cpy_r_r91 = CPyStatics[548]; /* 'cancel' */
     cpy_r_r92 = CPyObject_CallMethodObjArgs(cpy_r_r90, cpy_r_r91, NULL);
     CPy_DECREF(cpy_r_r90);
     if (unlikely(cpy_r_r92 == NULL)) {
@@ -48743,10 +49340,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp191 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp191);
-    PyObject *__tmp192 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp192);
+    PyObject *__tmp192 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp192);
+    PyObject *__tmp193 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp193);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -49037,13 +49634,13 @@ CPyL3: ;
     cpy_r_r7 = (void *)&cpy_r_r6;
     int64_t cpy_r_r8[1] = {1};
     cpy_r_r9 = (void *)&cpy_r_r8;
-    cpy_r_r10 = CPyStatics[796]; /* (('asyncio', 'asyncio', 'asyncio'),) */
+    cpy_r_r10 = CPyStatics[800]; /* (('asyncio', 'asyncio', 'asyncio'),) */
     cpy_r_r11 = CPyStatic__gather___globals;
-    cpy_r_r12 = CPyStatics[547]; /* 'dank_mids\\helpers\\_gather.py' */
+    cpy_r_r12 = CPyStatics[549]; /* 'dank_mids\\helpers\\_gather.py' */
     cpy_r_r13 = CPyStatics[44]; /* '<module>' */
     cpy_r_r14 = CPyImport_ImportMany(cpy_r_r10, cpy_r_r7, cpy_r_r11, cpy_r_r12, cpy_r_r13, cpy_r_r9);
     if (!cpy_r_r14) goto CPyL26;
-    cpy_r_r15 = CPyStatics[797]; /* ('Coroutine', 'Final', 'Iterable', 'Literal', 'Optional',
+    cpy_r_r15 = CPyStatics[801]; /* ('Coroutine', 'Final', 'Iterable', 'Literal', 'Optional',
                                     'Set', 'Tuple', 'TypeVar', 'Union', 'overload') */
     cpy_r_r16 = CPyStatics[41]; /* 'typing' */
     cpy_r_r17 = CPyStatic__gather___globals;
@@ -49060,9 +49657,9 @@ CPyL3: ;
     cpy_r_r21 = (void *)&cpy_r_r20;
     int64_t cpy_r_r22[1] = {15};
     cpy_r_r23 = (void *)&cpy_r_r22;
-    cpy_r_r24 = CPyStatics[799]; /* (('a_sync.asyncio', 'a_sync', 'a_sync'),) */
+    cpy_r_r24 = CPyStatics[803]; /* (('a_sync.asyncio', 'a_sync', 'a_sync'),) */
     cpy_r_r25 = CPyStatic__gather___globals;
-    cpy_r_r26 = CPyStatics[547]; /* 'dank_mids\\helpers\\_gather.py' */
+    cpy_r_r26 = CPyStatics[549]; /* 'dank_mids\\helpers\\_gather.py' */
     cpy_r_r27 = CPyStatics[44]; /* '<module>' */
     cpy_r_r28 = CPyImport_ImportMany(cpy_r_r24, cpy_r_r21, cpy_r_r25, cpy_r_r26, cpy_r_r27, cpy_r_r23);
     if (!cpy_r_r28) goto CPyL26;
@@ -49092,13 +49689,13 @@ CPyL3: ;
         goto CPyL26;
     }
     cpy_r_r40 = CPyStatic__gather___globals;
-    cpy_r_r41 = CPyStatics[549]; /* 'Set' */
+    cpy_r_r41 = CPyStatics[551]; /* 'Set' */
     cpy_r_r42 = CPyDict_GetItem(cpy_r_r40, cpy_r_r41);
     if (unlikely(cpy_r_r42 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "<module>", 20, CPyStatic__gather___globals);
         goto CPyL26;
     }
-    cpy_r_r43 = CPyStatics[551]; /* 'asyncio.Future[__T]' */
+    cpy_r_r43 = CPyStatics[553]; /* 'asyncio.Future[__T]' */
     cpy_r_r44 = PyObject_GetItem(cpy_r_r42, cpy_r_r43);
     CPy_DECREF(cpy_r_r42);
     if (unlikely(cpy_r_r44 == NULL)) {
@@ -49106,7 +49703,7 @@ CPyL3: ;
         goto CPyL26;
     }
     cpy_r_r45 = CPyStatic__gather___globals;
-    cpy_r_r46 = CPyStatics[552]; /* 'FinishedTasks' */
+    cpy_r_r46 = CPyStatics[554]; /* 'FinishedTasks' */
     cpy_r_r47 = CPyDict_SetItem(cpy_r_r45, cpy_r_r46, cpy_r_r44);
     CPy_DECREF(cpy_r_r44);
     cpy_r_r48 = cpy_r_r47 >= 0;
@@ -49115,13 +49712,13 @@ CPyL3: ;
         goto CPyL26;
     }
     cpy_r_r49 = CPyStatic__gather___globals;
-    cpy_r_r50 = CPyStatics[549]; /* 'Set' */
+    cpy_r_r50 = CPyStatics[551]; /* 'Set' */
     cpy_r_r51 = CPyDict_GetItem(cpy_r_r49, cpy_r_r50);
     if (unlikely(cpy_r_r51 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "<module>", 21, CPyStatic__gather___globals);
         goto CPyL26;
     }
-    cpy_r_r52 = CPyStatics[551]; /* 'asyncio.Future[__T]' */
+    cpy_r_r52 = CPyStatics[553]; /* 'asyncio.Future[__T]' */
     cpy_r_r53 = PyObject_GetItem(cpy_r_r51, cpy_r_r52);
     CPy_DECREF(cpy_r_r51);
     if (unlikely(cpy_r_r53 == NULL)) {
@@ -49129,7 +49726,7 @@ CPyL3: ;
         goto CPyL26;
     }
     cpy_r_r54 = CPyStatic__gather___globals;
-    cpy_r_r55 = CPyStatics[553]; /* 'PendingTasks' */
+    cpy_r_r55 = CPyStatics[555]; /* 'PendingTasks' */
     cpy_r_r56 = CPyDict_SetItem(cpy_r_r54, cpy_r_r55, cpy_r_r53);
     CPy_DECREF(cpy_r_r53);
     cpy_r_r57 = cpy_r_r56 >= 0;
@@ -49156,7 +49753,7 @@ CPyL3: ;
         goto CPyL26;
     }
     cpy_r_r65 = CPyModule_asyncio;
-    cpy_r_r66 = CPyStatics[554]; /* 'get_running_loop' */
+    cpy_r_r66 = CPyStatics[556]; /* 'get_running_loop' */
     cpy_r_r67 = CPyObject_GetAttr(cpy_r_r65, cpy_r_r66);
     if (unlikely(cpy_r_r67 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "<module>", 26, CPyStatic__gather___globals);
@@ -49165,7 +49762,7 @@ CPyL3: ;
     CPyStatic__gather___get_running_loop = cpy_r_r67;
     CPy_INCREF(CPyStatic__gather___get_running_loop);
     cpy_r_r68 = CPyStatic__gather___globals;
-    cpy_r_r69 = CPyStatics[554]; /* 'get_running_loop' */
+    cpy_r_r69 = CPyStatics[556]; /* 'get_running_loop' */
     cpy_r_r70 = CPyDict_SetItem(cpy_r_r68, cpy_r_r69, cpy_r_r67);
     CPy_DECREF(cpy_r_r67);
     cpy_r_r71 = cpy_r_r70 >= 0;
@@ -49174,7 +49771,7 @@ CPyL3: ;
         goto CPyL26;
     }
     cpy_r_r72 = CPyModule_asyncio;
-    cpy_r_r73 = CPyStatics[555]; /* 'wait' */
+    cpy_r_r73 = CPyStatics[557]; /* 'wait' */
     cpy_r_r74 = CPyObject_GetAttr(cpy_r_r72, cpy_r_r73);
     if (unlikely(cpy_r_r74 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "<module>", 27, CPyStatic__gather___globals);
@@ -49183,7 +49780,7 @@ CPyL3: ;
     CPyStatic__gather___wait = cpy_r_r74;
     CPy_INCREF(CPyStatic__gather___wait);
     cpy_r_r75 = CPyStatic__gather___globals;
-    cpy_r_r76 = CPyStatics[555]; /* 'wait' */
+    cpy_r_r76 = CPyStatics[557]; /* 'wait' */
     cpy_r_r77 = CPyDict_SetItem(cpy_r_r75, cpy_r_r76, cpy_r_r74);
     CPy_DECREF(cpy_r_r74);
     cpy_r_r78 = cpy_r_r77 >= 0;
@@ -49205,7 +49802,7 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "<module>", 30, CPyStatic__gather___globals);
         goto CPyL26;
     }
-    cpy_r_r84 = CPyStatics[556]; /* 'sleep0' */
+    cpy_r_r84 = CPyStatics[558]; /* 'sleep0' */
     cpy_r_r85 = CPyObject_GetAttr(cpy_r_r83, cpy_r_r84);
     CPy_DECREF(cpy_r_r83);
     if (unlikely(cpy_r_r85 == NULL)) {
@@ -49215,7 +49812,7 @@ CPyL3: ;
     CPyStatic__gather___yield_to_loop = cpy_r_r85;
     CPy_INCREF(CPyStatic__gather___yield_to_loop);
     cpy_r_r86 = CPyStatic__gather___globals;
-    cpy_r_r87 = CPyStatics[557]; /* 'yield_to_loop' */
+    cpy_r_r87 = CPyStatics[559]; /* 'yield_to_loop' */
     cpy_r_r88 = CPyDict_SetItem(cpy_r_r86, cpy_r_r87, cpy_r_r85);
     CPy_DECREF(cpy_r_r85);
     cpy_r_r89 = cpy_r_r88 >= 0;
@@ -49823,19 +50420,19 @@ PyObject *CPyPy__weaklist___WeakList_____init__(PyObject *self, PyObject *args, 
     PyObject *arg_data;
     if (obj_data == NULL) {
         arg_data = NULL;
-        goto __LL193;
+        goto __LL194;
     }
     arg_data = obj_data;
-    if (arg_data != NULL) goto __LL193;
+    if (arg_data != NULL) goto __LL194;
     if (obj_data == Py_None)
         arg_data = obj_data;
     else {
         arg_data = NULL;
     }
-    if (arg_data != NULL) goto __LL193;
+    if (arg_data != NULL) goto __LL194;
     CPy_TypeError("object or None", obj_data); 
     goto fail;
-__LL193: ;
+__LL194: ;
     char retval = CPyDef__weaklist___WeakList_____init__(arg_self, arg_data);
     if (retval == 2) {
         return NULL;
@@ -49881,8 +50478,8 @@ PyObject *CPyDef__weaklist___WeakList_____repr__(PyObject *cpy_r_self) {
         CPy_TypeErrorTraceback("dank_mids\\helpers\\_weaklist.py", "__repr__", 24, CPyStatic__weaklist___globals, "str", cpy_r_r2);
         goto CPyL8;
     }
-    cpy_r_r4 = CPyStatics[558]; /* '([' */
-    cpy_r_r5 = CPyStatics[559]; /* ', ' */
+    cpy_r_r4 = CPyStatics[560]; /* '([' */
+    cpy_r_r5 = CPyStatics[561]; /* ', ' */
     cpy_r_r6 = CPyModule_builtins;
     cpy_r_r7 = CPyStatics[122]; /* 'repr' */
     cpy_r_r8 = CPyObject_GetAttr(cpy_r_r6, cpy_r_r7);
@@ -49891,7 +50488,7 @@ PyObject *CPyDef__weaklist___WeakList_____repr__(PyObject *cpy_r_self) {
         goto CPyL9;
     }
     cpy_r_r9 = CPyModule_builtins;
-    cpy_r_r10 = CPyStatics[518]; /* 'map' */
+    cpy_r_r10 = CPyStatics[520]; /* 'map' */
     cpy_r_r11 = CPyObject_GetAttr(cpy_r_r9, cpy_r_r10);
     if (unlikely(cpy_r_r11 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "__repr__", 24, CPyStatic__weaklist___globals);
@@ -49912,7 +50509,7 @@ PyObject *CPyDef__weaklist___WeakList_____repr__(PyObject *cpy_r_self) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "__repr__", 24, CPyStatic__weaklist___globals);
         goto CPyL9;
     }
-    cpy_r_r16 = CPyStatics[560]; /* '])' */
+    cpy_r_r16 = CPyStatics[562]; /* '])' */
     cpy_r_r17 = CPyStr_Build(4, cpy_r_r3, cpy_r_r4, cpy_r_r15, cpy_r_r16);
     CPy_DECREF(cpy_r_r3);
     CPy_DECREF(cpy_r_r15);
@@ -50737,10 +51334,10 @@ CPyL3: ;
     cpy_r_r11 = PyTuple_New(2);
     if (unlikely(cpy_r_r11 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp194 = cpy_r_r10.f0;
-    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp194);
-    PyObject *__tmp195 = cpy_r_r10.f1;
-    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp195);
+    PyObject *__tmp195 = cpy_r_r10.f0;
+    PyTuple_SET_ITEM(cpy_r_r11, 0, __tmp195);
+    PyObject *__tmp196 = cpy_r_r10.f1;
+    PyTuple_SET_ITEM(cpy_r_r11, 1, __tmp196);
     cpy_r_r12 = CPy_ExceptionMatches(cpy_r_r11);
     CPy_DECREF(cpy_r_r11);
     if (!cpy_r_r12) goto CPyL13;
@@ -50898,7 +51495,7 @@ char CPyDef__weaklist___WeakList___append(PyObject *cpy_r_self, PyObject *cpy_r_
     int32_t cpy_r_r10;
     char cpy_r_r11;
     char cpy_r_r12;
-    cpy_r_r0 = CPyStatics[561]; /* '_gc_callback' */
+    cpy_r_r0 = CPyStatics[563]; /* '_gc_callback' */
     cpy_r_r1 = CPyObject_GetAttr(cpy_r_self, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "append", 45, CPyStatic__weaklist___globals);
@@ -51007,7 +51604,7 @@ char CPyDef__weaklist___WeakList___extend(PyObject *cpy_r_self, PyObject *cpy_r_
     int32_t cpy_r_r17;
     char cpy_r_r18;
     char cpy_r_r19;
-    cpy_r_r0 = CPyStatics[561]; /* '_gc_callback' */
+    cpy_r_r0 = CPyStatics[563]; /* '_gc_callback' */
     cpy_r_r1 = CPyObject_GetAttr(cpy_r_self, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 48, CPyStatic__weaklist___globals);
@@ -51061,10 +51658,10 @@ CPyL8: ;
     cpy_r_r13 = PyTuple_New(2);
     if (unlikely(cpy_r_r13 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp196 = CPyTagged_StealAsObject(cpy_r_r12.f0);
-    PyTuple_SET_ITEM(cpy_r_r13, 0, __tmp196);
-    PyObject *__tmp197 = cpy_r_r12.f1;
-    PyTuple_SET_ITEM(cpy_r_r13, 1, __tmp197);
+    PyObject *__tmp197 = CPyTagged_StealAsObject(cpy_r_r12.f0);
+    PyTuple_SET_ITEM(cpy_r_r13, 0, __tmp197);
+    PyObject *__tmp198 = cpy_r_r12.f1;
+    PyTuple_SET_ITEM(cpy_r_r13, 1, __tmp198);
     cpy_r_r14 = PyList_Append(cpy_r_r3, cpy_r_r13);
     CPy_DECREF(cpy_r_r13);
     cpy_r_r15 = cpy_r_r14 >= 0;
@@ -51220,7 +51817,7 @@ CPyL1: ;
     } else
         goto CPyL9;
 CPyL5: ;
-    cpy_r_r9 = CPyStatics[562]; /* 'list.remove(x): x not in list' */
+    cpy_r_r9 = CPyStatics[564]; /* 'list.remove(x): x not in list' */
     cpy_r_r10 = CPyModule_builtins;
     cpy_r_r11 = CPyStatics[182]; /* 'ValueError' */
     cpy_r_r12 = CPyObject_GetAttr(cpy_r_r10, cpy_r_r11);
@@ -51320,7 +51917,7 @@ char CPyDef__weaklist___WeakList____gc_callback(PyObject *cpy_r_self, PyObject *
     CPy_INCREF(cpy_r_r0);
 CPyL1: ;
     cpy_r_r1 = CPyTagged_Id(cpy_r_item);
-    cpy_r_r2 = CPyStatics[563]; /* 'pop' */
+    cpy_r_r2 = CPyStatics[565]; /* 'pop' */
     cpy_r_r3 = CPyTagged_StealAsObject(cpy_r_r1);
     cpy_r_r4 = Py_None;
     cpy_r_r5 = CPyObject_CallMethodObjArgs(cpy_r_r0, cpy_r_r2, cpy_r_r3, cpy_r_r4, NULL);
@@ -51479,13 +52076,13 @@ CPyL3: ;
     cpy_r_r7 = (void *)&cpy_r_r6;
     int64_t cpy_r_r8[1] = {1};
     cpy_r_r9 = (void *)&cpy_r_r8;
-    cpy_r_r10 = CPyStatics[801]; /* (('weakref', 'weakref', 'weakref'),) */
+    cpy_r_r10 = CPyStatics[805]; /* (('weakref', 'weakref', 'weakref'),) */
     cpy_r_r11 = CPyStatic__weaklist___globals;
-    cpy_r_r12 = CPyStatics[564]; /* 'dank_mids\\helpers\\_weaklist.py' */
+    cpy_r_r12 = CPyStatics[566]; /* 'dank_mids\\helpers\\_weaklist.py' */
     cpy_r_r13 = CPyStatics[44]; /* '<module>' */
     cpy_r_r14 = CPyImport_ImportMany(cpy_r_r10, cpy_r_r7, cpy_r_r11, cpy_r_r12, cpy_r_r13, cpy_r_r9);
     if (!cpy_r_r14) goto CPyL30;
-    cpy_r_r15 = CPyStatics[802]; /* ('Any', 'Callable', 'Dict', 'Final', 'Generic',
+    cpy_r_r15 = CPyStatics[806]; /* ('Any', 'Callable', 'Dict', 'Final', 'Generic',
                                     'Iterable', 'Iterator', 'Optional', 'TypeVar', 'final') */
     cpy_r_r16 = CPyStatics[41]; /* 'typing' */
     cpy_r_r17 = CPyStatic__weaklist___globals;
@@ -51497,7 +52094,7 @@ CPyL3: ;
     CPyModule_typing = cpy_r_r18;
     CPy_INCREF(CPyModule_typing);
     CPy_DECREF(cpy_r_r18);
-    cpy_r_r19 = CPyStatics[373]; /* '_T' */
+    cpy_r_r19 = CPyStatics[377]; /* '_T' */
     cpy_r_r20 = CPyStatic__weaklist___globals;
     cpy_r_r21 = CPyStatics[38]; /* 'TypeVar' */
     cpy_r_r22 = CPyDict_GetItem(cpy_r_r20, cpy_r_r21);
@@ -51514,7 +52111,7 @@ CPyL3: ;
         goto CPyL30;
     }
     cpy_r_r26 = CPyStatic__weaklist___globals;
-    cpy_r_r27 = CPyStatics[373]; /* '_T' */
+    cpy_r_r27 = CPyStatics[377]; /* '_T' */
     cpy_r_r28 = CPyDict_SetItem(cpy_r_r26, cpy_r_r27, cpy_r_r25);
     CPy_DECREF(cpy_r_r25);
     cpy_r_r29 = cpy_r_r28 >= 0;
@@ -51523,14 +52120,14 @@ CPyL3: ;
         goto CPyL30;
     }
     cpy_r_r30 = CPyModule_weakref;
-    cpy_r_r31 = CPyStatics[567]; /* 'ReferenceType' */
+    cpy_r_r31 = CPyStatics[569]; /* 'ReferenceType' */
     cpy_r_r32 = CPyObject_GetAttr(cpy_r_r30, cpy_r_r31);
     if (unlikely(cpy_r_r32 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 7, CPyStatic__weaklist___globals);
         goto CPyL30;
     }
     cpy_r_r33 = CPyStatic__weaklist___globals;
-    cpy_r_r34 = CPyStatics[568]; /* 'Ref' */
+    cpy_r_r34 = CPyStatics[570]; /* 'Ref' */
     cpy_r_r35 = CPyDict_SetItem(cpy_r_r33, cpy_r_r34, cpy_r_r32);
     CPy_DECREF(cpy_r_r32);
     cpy_r_r36 = cpy_r_r35 >= 0;
@@ -51539,7 +52136,7 @@ CPyL3: ;
         goto CPyL30;
     }
     cpy_r_r37 = CPyStatic__weaklist___globals;
-    cpy_r_r38 = CPyStatics[343]; /* 'Callable' */
+    cpy_r_r38 = CPyStatics[347]; /* 'Callable' */
     cpy_r_r39 = CPyDict_GetItem(cpy_r_r37, cpy_r_r38);
     if (unlikely(cpy_r_r39 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 8, CPyStatic__weaklist___globals);
@@ -51567,10 +52164,10 @@ CPyL3: ;
     cpy_r_r48 = PyTuple_New(2);
     if (unlikely(cpy_r_r48 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp198 = cpy_r_r47.f0;
-    PyTuple_SET_ITEM(cpy_r_r48, 0, __tmp198);
-    PyObject *__tmp199 = cpy_r_r47.f1;
-    PyTuple_SET_ITEM(cpy_r_r48, 1, __tmp199);
+    PyObject *__tmp199 = cpy_r_r47.f0;
+    PyTuple_SET_ITEM(cpy_r_r48, 0, __tmp199);
+    PyObject *__tmp200 = cpy_r_r47.f1;
+    PyTuple_SET_ITEM(cpy_r_r48, 1, __tmp200);
     cpy_r_r49 = PyObject_GetItem(cpy_r_r39, cpy_r_r48);
     CPy_DECREF(cpy_r_r39);
     CPy_DECREF(cpy_r_r48);
@@ -51579,7 +52176,7 @@ CPyL3: ;
         goto CPyL30;
     }
     cpy_r_r50 = CPyStatic__weaklist___globals;
-    cpy_r_r51 = CPyStatics[569]; /* 'GCCallback' */
+    cpy_r_r51 = CPyStatics[571]; /* 'GCCallback' */
     cpy_r_r52 = CPyDict_SetItem(cpy_r_r50, cpy_r_r51, cpy_r_r49);
     CPy_DECREF(cpy_r_r49);
     cpy_r_r53 = cpy_r_r52 >= 0;
@@ -51588,7 +52185,7 @@ CPyL3: ;
         goto CPyL30;
     }
     cpy_r_r54 = CPyModule_weakref;
-    cpy_r_r55 = CPyStatics[570]; /* 'ref' */
+    cpy_r_r55 = CPyStatics[572]; /* 'ref' */
     cpy_r_r56 = CPyObject_GetAttr(cpy_r_r54, cpy_r_r55);
     if (unlikely(cpy_r_r56 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 10, CPyStatic__weaklist___globals);
@@ -51597,7 +52194,7 @@ CPyL3: ;
     CPyStatic__weaklist___ref = cpy_r_r56;
     CPy_INCREF(CPyStatic__weaklist___ref);
     cpy_r_r57 = CPyStatic__weaklist___globals;
-    cpy_r_r58 = CPyStatics[570]; /* 'ref' */
+    cpy_r_r58 = CPyStatics[572]; /* 'ref' */
     cpy_r_r59 = CPyDict_SetItem(cpy_r_r57, cpy_r_r58, cpy_r_r56);
     CPy_DECREF(cpy_r_r56);
     cpy_r_r60 = cpy_r_r59 >= 0;
@@ -51606,13 +52203,13 @@ CPyL3: ;
         goto CPyL30;
     }
     cpy_r_r61 = CPyModule_weakref;
-    cpy_r_r62 = CPyStatics[570]; /* 'ref' */
+    cpy_r_r62 = CPyStatics[572]; /* 'ref' */
     cpy_r_r63 = CPyObject_GetAttr(cpy_r_r61, cpy_r_r62);
     if (unlikely(cpy_r_r63 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 11, CPyStatic__weaklist___globals);
         goto CPyL30;
     }
-    cpy_r_r64 = CPyStatics[571]; /* '__call__' */
+    cpy_r_r64 = CPyStatics[573]; /* '__call__' */
     cpy_r_r65 = CPyObject_GetAttr(cpy_r_r63, cpy_r_r64);
     CPy_DECREF(cpy_r_r63);
     if (unlikely(cpy_r_r65 == NULL)) {
@@ -51622,7 +52219,7 @@ CPyL3: ;
     CPyStatic__weaklist____call_ref = cpy_r_r65;
     CPy_INCREF(CPyStatic__weaklist____call_ref);
     cpy_r_r66 = CPyStatic__weaklist___globals;
-    cpy_r_r67 = CPyStatics[572]; /* '_call_ref' */
+    cpy_r_r67 = CPyStatics[574]; /* '_call_ref' */
     cpy_r_r68 = CPyDict_SetItem(cpy_r_r66, cpy_r_r67, cpy_r_r65);
     CPy_DECREF(cpy_r_r65);
     cpy_r_r69 = cpy_r_r68 >= 0;
@@ -51631,14 +52228,14 @@ CPyL3: ;
         goto CPyL30;
     }
     cpy_r_r70 = CPyStatic__weaklist___globals;
-    cpy_r_r71 = CPyStatics[565]; /* 'Generic' */
+    cpy_r_r71 = CPyStatics[567]; /* 'Generic' */
     cpy_r_r72 = CPyDict_GetItem(cpy_r_r70, cpy_r_r71);
     if (unlikely(cpy_r_r72 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 15, CPyStatic__weaklist___globals);
         goto CPyL30;
     }
     cpy_r_r73 = CPyStatic__weaklist___globals;
-    cpy_r_r74 = CPyStatics[373]; /* '_T' */
+    cpy_r_r74 = CPyStatics[377]; /* '_T' */
     cpy_r_r75 = CPyDict_GetItem(cpy_r_r73, cpy_r_r74);
     if (unlikely(cpy_r_r75 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 15, CPyStatic__weaklist___globals);
@@ -51657,7 +52254,7 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 15, CPyStatic__weaklist___globals);
         goto CPyL30;
     }
-    cpy_r_r78 = CPyStatics[573]; /* 'dank_mids.helpers._weaklist' */
+    cpy_r_r78 = CPyStatics[575]; /* 'dank_mids.helpers._weaklist' */
     cpy_r_r79 = (PyObject *)CPyType__weaklist___WeakList_template;
     cpy_r_r80 = CPyType_FromTemplate(cpy_r_r79, cpy_r_r77, cpy_r_r78);
     CPy_DECREF(cpy_r_r77);
@@ -51671,7 +52268,7 @@ CPyL3: ;
         goto CPyL34;
     }
     cpy_r_r82 = CPyStatics[63]; /* '__mypyc_attrs__' */
-    cpy_r_r83 = CPyStatics[574]; /* '_refs' */
+    cpy_r_r83 = CPyStatics[576]; /* '_refs' */
     cpy_r_r84 = CPyStatics[183]; /* '__dict__' */
     cpy_r_r85 = PyTuple_Pack(2, cpy_r_r83, cpy_r_r84);
     if (unlikely(cpy_r_r85 == NULL)) {
@@ -51688,7 +52285,7 @@ CPyL3: ;
     CPyType__weaklist___WeakList = (PyTypeObject *)cpy_r_r80;
     CPy_INCREF(CPyType__weaklist___WeakList);
     cpy_r_r88 = CPyStatic__weaklist___globals;
-    cpy_r_r89 = CPyStatics[575]; /* 'WeakList' */
+    cpy_r_r89 = CPyStatics[577]; /* 'WeakList' */
     cpy_r_r90 = CPyDict_SetItem(cpy_r_r88, cpy_r_r89, cpy_r_r80);
     CPy_DECREF(cpy_r_r80);
     cpy_r_r91 = cpy_r_r90 >= 0;
@@ -52012,7 +52609,7 @@ char CPyDef_constants_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[803]; /* ('Dict', 'Final') */
+    cpy_r_r5 = CPyStatics[807]; /* ('Dict', 'Final') */
     cpy_r_r6 = CPyStatics[41]; /* 'typing' */
     cpy_r_r7 = CPyStatic_constants___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
@@ -52028,13 +52625,13 @@ CPyL3: ;
     cpy_r_r11 = (void *)&cpy_r_r10;
     int64_t cpy_r_r12[1] = {4};
     cpy_r_r13 = (void *)&cpy_r_r12;
-    cpy_r_r14 = CPyStatics[805]; /* (('multicall.constants', 'multicall', 'multicall'),) */
+    cpy_r_r14 = CPyStatics[809]; /* (('multicall.constants', 'multicall', 'multicall'),) */
     cpy_r_r15 = CPyStatic_constants___globals;
-    cpy_r_r16 = CPyStatics[577]; /* 'dank_mids\\constants.py' */
+    cpy_r_r16 = CPyStatics[579]; /* 'dank_mids\\constants.py' */
     cpy_r_r17 = CPyStatics[44]; /* '<module>' */
     cpy_r_r18 = CPyImport_ImportMany(cpy_r_r14, cpy_r_r11, cpy_r_r15, cpy_r_r16, cpy_r_r17, cpy_r_r13);
     if (!cpy_r_r18) goto CPyL80;
-    cpy_r_r19 = CPyStatics[806]; /* ('BlockNumber',) */
+    cpy_r_r19 = CPyStatics[810]; /* ('BlockNumber',) */
     cpy_r_r20 = CPyStatics[141]; /* 'eth_typing' */
     cpy_r_r21 = CPyStatic_constants___globals;
     cpy_r_r22 = CPyImport_ImportFromMany(cpy_r_r20, cpy_r_r19, cpy_r_r19, cpy_r_r21);
@@ -52045,8 +52642,8 @@ CPyL3: ;
     CPyModule_eth_typing = cpy_r_r22;
     CPy_INCREF(CPyModule_eth_typing);
     CPy_DECREF(cpy_r_r22);
-    cpy_r_r23 = CPyStatics[807]; /* ('Network',) */
-    cpy_r_r24 = CPyStatics[362]; /* 'multicall.constants' */
+    cpy_r_r23 = CPyStatics[811]; /* ('Network',) */
+    cpy_r_r24 = CPyStatics[366]; /* 'multicall.constants' */
     cpy_r_r25 = CPyStatic_constants___globals;
     cpy_r_r26 = CPyImport_ImportFromMany(cpy_r_r24, cpy_r_r23, cpy_r_r23, cpy_r_r25);
     if (unlikely(cpy_r_r26 == NULL)) {
@@ -52056,10 +52653,10 @@ CPyL3: ;
     CPyModule_multicall___constants = cpy_r_r26;
     CPy_INCREF(CPyModule_multicall___constants);
     CPy_DECREF(cpy_r_r26);
-    cpy_r_r27 = CPyStatics[580]; /* 'payload too large' */
-    cpy_r_r28 = CPyStatics[581]; /* 'content length too large' */
-    cpy_r_r29 = CPyStatics[582]; /* 'request entity too large' */
-    cpy_r_r30 = CPyStatics[583]; /* 'batch limit exceeded' */
+    cpy_r_r27 = CPyStatics[582]; /* 'payload too large' */
+    cpy_r_r28 = CPyStatics[583]; /* 'content length too large' */
+    cpy_r_r29 = CPyStatics[584]; /* 'request entity too large' */
+    cpy_r_r30 = CPyStatics[585]; /* 'batch limit exceeded' */
     cpy_r_r31 = PySet_New(NULL);
     if (unlikely(cpy_r_r31 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 8, CPyStatic_constants___globals);
@@ -52092,7 +52689,7 @@ CPyL3: ;
     CPyStatic_constants___TOO_MUCH_DATA_ERRS = cpy_r_r31;
     CPy_INCREF(CPyStatic_constants___TOO_MUCH_DATA_ERRS);
     cpy_r_r40 = CPyStatic_constants___globals;
-    cpy_r_r41 = CPyStatics[584]; /* 'TOO_MUCH_DATA_ERRS' */
+    cpy_r_r41 = CPyStatics[586]; /* 'TOO_MUCH_DATA_ERRS' */
     cpy_r_r42 = CPyDict_SetItem(cpy_r_r40, cpy_r_r41, cpy_r_r31);
     CPy_DECREF(cpy_r_r31);
     cpy_r_r43 = cpy_r_r42 >= 0;
@@ -52100,12 +52697,12 @@ CPyL3: ;
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 8, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r44 = CPyStatics[585]; /* 'connection reset by peer' */
-    cpy_r_r45 = CPyStatics[586]; /* 'server disconnected' */
-    cpy_r_r46 = CPyStatics[587]; /* 'execution aborted (timeout =' */
-    cpy_r_r47 = CPyStatics[583]; /* 'batch limit exceeded' */
-    cpy_r_r48 = CPyStatics[588]; /* 'request timed out' */
-    cpy_r_r49 = CPyStatics[589]; /* 'evm timeout' */
+    cpy_r_r44 = CPyStatics[587]; /* 'connection reset by peer' */
+    cpy_r_r45 = CPyStatics[588]; /* 'server disconnected' */
+    cpy_r_r46 = CPyStatics[589]; /* 'execution aborted (timeout =' */
+    cpy_r_r47 = CPyStatics[585]; /* 'batch limit exceeded' */
+    cpy_r_r48 = CPyStatics[590]; /* 'request timed out' */
+    cpy_r_r49 = CPyStatics[591]; /* 'evm timeout' */
     cpy_r_r50 = PySet_New(NULL);
     if (unlikely(cpy_r_r50 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 19, CPyStatic_constants___globals);
@@ -52150,7 +52747,7 @@ CPyL3: ;
     CPyStatic_constants___RETRY_ERRS = cpy_r_r50;
     CPy_INCREF(CPyStatic_constants___RETRY_ERRS);
     cpy_r_r63 = CPyStatic_constants___globals;
-    cpy_r_r64 = CPyStatics[590]; /* 'RETRY_ERRS' */
+    cpy_r_r64 = CPyStatics[592]; /* 'RETRY_ERRS' */
     cpy_r_r65 = CPyDict_SetItem(cpy_r_r63, cpy_r_r64, cpy_r_r50);
     CPy_DECREF(cpy_r_r50);
     cpy_r_r66 = cpy_r_r65 >= 0;
@@ -52159,20 +52756,20 @@ CPyL3: ;
         goto CPyL80;
     }
     cpy_r_r67 = CPyStatic_constants___globals;
-    cpy_r_r68 = CPyStatics[576]; /* 'multicall' */
+    cpy_r_r68 = CPyStatics[578]; /* 'multicall' */
     cpy_r_r69 = CPyDict_GetItem(cpy_r_r67, cpy_r_r68);
     if (unlikely(cpy_r_r69 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 32, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r70 = CPyStatics[591]; /* 'constants' */
+    cpy_r_r70 = CPyStatics[593]; /* 'constants' */
     cpy_r_r71 = CPyObject_GetAttr(cpy_r_r69, cpy_r_r70);
     CPy_DECREF(cpy_r_r69);
     if (unlikely(cpy_r_r71 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 32, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r72 = CPyStatics[592]; /* 'GAS_LIMIT' */
+    cpy_r_r72 = CPyStatics[594]; /* 'GAS_LIMIT' */
     cpy_r_r73 = CPyObject_GetAttr(cpy_r_r71, cpy_r_r72);
     CPy_DECREF(cpy_r_r71);
     if (unlikely(cpy_r_r73 == NULL)) {
@@ -52182,7 +52779,7 @@ CPyL3: ;
     CPyStatic_constants___GAS_LIMIT = cpy_r_r73;
     CPy_INCREF(CPyStatic_constants___GAS_LIMIT);
     cpy_r_r74 = CPyStatic_constants___globals;
-    cpy_r_r75 = CPyStatics[592]; /* 'GAS_LIMIT' */
+    cpy_r_r75 = CPyStatics[594]; /* 'GAS_LIMIT' */
     cpy_r_r76 = CPyDict_SetItem(cpy_r_r74, cpy_r_r75, cpy_r_r73);
     CPy_DECREF(cpy_r_r73);
     cpy_r_r77 = cpy_r_r76 >= 0;
@@ -52191,20 +52788,20 @@ CPyL3: ;
         goto CPyL80;
     }
     cpy_r_r78 = CPyStatic_constants___globals;
-    cpy_r_r79 = CPyStatics[576]; /* 'multicall' */
+    cpy_r_r79 = CPyStatics[578]; /* 'multicall' */
     cpy_r_r80 = CPyDict_GetItem(cpy_r_r78, cpy_r_r79);
     if (unlikely(cpy_r_r80 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 38, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r81 = CPyStatics[591]; /* 'constants' */
+    cpy_r_r81 = CPyStatics[593]; /* 'constants' */
     cpy_r_r82 = CPyObject_GetAttr(cpy_r_r80, cpy_r_r81);
     CPy_DECREF(cpy_r_r80);
     if (unlikely(cpy_r_r82 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 38, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r83 = CPyStatics[593]; /* 'MULTICALL2_BYTECODE' */
+    cpy_r_r83 = CPyStatics[595]; /* 'MULTICALL2_BYTECODE' */
     cpy_r_r84 = CPyObject_GetAttr(cpy_r_r82, cpy_r_r83);
     CPy_DECREF(cpy_r_r82);
     if (unlikely(cpy_r_r84 == NULL)) {
@@ -52214,7 +52811,7 @@ CPyL3: ;
     CPyStatic_constants___MULTICALL2_OVERRIDE_CODE = cpy_r_r84;
     CPy_INCREF(CPyStatic_constants___MULTICALL2_OVERRIDE_CODE);
     cpy_r_r85 = CPyStatic_constants___globals;
-    cpy_r_r86 = CPyStatics[594]; /* 'MULTICALL2_OVERRIDE_CODE' */
+    cpy_r_r86 = CPyStatics[596]; /* 'MULTICALL2_OVERRIDE_CODE' */
     cpy_r_r87 = CPyDict_SetItem(cpy_r_r85, cpy_r_r86, cpy_r_r84);
     CPy_DECREF(cpy_r_r84);
     cpy_r_r88 = cpy_r_r87 >= 0;
@@ -52223,20 +52820,20 @@ CPyL3: ;
         goto CPyL80;
     }
     cpy_r_r89 = CPyStatic_constants___globals;
-    cpy_r_r90 = CPyStatics[576]; /* 'multicall' */
+    cpy_r_r90 = CPyStatics[578]; /* 'multicall' */
     cpy_r_r91 = CPyDict_GetItem(cpy_r_r89, cpy_r_r90);
     if (unlikely(cpy_r_r91 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 45, CPyStatic_constants___globals);
         goto CPyL33;
     }
-    cpy_r_r92 = CPyStatics[591]; /* 'constants' */
+    cpy_r_r92 = CPyStatics[593]; /* 'constants' */
     cpy_r_r93 = CPyObject_GetAttr(cpy_r_r91, cpy_r_r92);
     CPy_DECREF(cpy_r_r91);
     if (unlikely(cpy_r_r93 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 45, CPyStatic_constants___globals);
         goto CPyL33;
     }
-    cpy_r_r94 = CPyStatics[595]; /* 'MULTICALL3_BYTECODE' */
+    cpy_r_r94 = CPyStatics[597]; /* 'MULTICALL3_BYTECODE' */
     cpy_r_r95 = CPyObject_GetAttr(cpy_r_r93, cpy_r_r94);
     CPy_DECREF(cpy_r_r93);
     if (unlikely(cpy_r_r95 == NULL)) {
@@ -52244,7 +52841,7 @@ CPyL3: ;
         goto CPyL33;
     }
     cpy_r_r96 = CPyStatic_constants___globals;
-    cpy_r_r97 = CPyStatics[596]; /* '__MULTICALL3_OVERRIDE_CODE' */
+    cpy_r_r97 = CPyStatics[598]; /* '__MULTICALL3_OVERRIDE_CODE' */
     cpy_r_r98 = CPyDict_SetItem(cpy_r_r96, cpy_r_r97, cpy_r_r95);
     CPy_DECREF(cpy_r_r95);
     cpy_r_r99 = cpy_r_r98 >= 0;
@@ -52265,20 +52862,20 @@ CPyL33: ;
     CPy_DecRef(cpy_r_r103);
     if (!cpy_r_r104) goto CPyL39;
     cpy_r_r105 = CPyStatic_constants___globals;
-    cpy_r_r106 = CPyStatics[576]; /* 'multicall' */
+    cpy_r_r106 = CPyStatics[578]; /* 'multicall' */
     cpy_r_r107 = CPyDict_GetItem(cpy_r_r105, cpy_r_r106);
     if (unlikely(cpy_r_r107 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 51, CPyStatic_constants___globals);
         goto CPyL42;
     }
-    cpy_r_r108 = CPyStatics[591]; /* 'constants' */
+    cpy_r_r108 = CPyStatics[593]; /* 'constants' */
     cpy_r_r109 = CPyObject_GetAttr(cpy_r_r107, cpy_r_r108);
     CPy_DecRef(cpy_r_r107);
     if (unlikely(cpy_r_r109 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 51, CPyStatic_constants___globals);
         goto CPyL42;
     }
-    cpy_r_r110 = CPyStatics[593]; /* 'MULTICALL2_BYTECODE' */
+    cpy_r_r110 = CPyStatics[595]; /* 'MULTICALL2_BYTECODE' */
     cpy_r_r111 = CPyObject_GetAttr(cpy_r_r109, cpy_r_r110);
     CPy_DecRef(cpy_r_r109);
     if (unlikely(cpy_r_r111 == NULL)) {
@@ -52286,7 +52883,7 @@ CPyL33: ;
         goto CPyL42;
     }
     cpy_r_r112 = CPyStatic_constants___globals;
-    cpy_r_r113 = CPyStatics[596]; /* '__MULTICALL3_OVERRIDE_CODE' */
+    cpy_r_r113 = CPyStatics[598]; /* '__MULTICALL3_OVERRIDE_CODE' */
     cpy_r_r114 = CPyDict_SetItem(cpy_r_r112, cpy_r_r113, cpy_r_r111);
     CPy_DecRef(cpy_r_r111);
     cpy_r_r115 = cpy_r_r114 >= 0;
@@ -52318,8 +52915,8 @@ CPyL42: ;
     if (!cpy_r_r116) goto CPyL45;
     CPy_Unreachable();
 CPyL44: ;
-    tuple_T3OOO __tmp200 = { NULL, NULL, NULL };
-    cpy_r_r117 = __tmp200;
+    tuple_T3OOO __tmp201 = { NULL, NULL, NULL };
+    cpy_r_r117 = __tmp201;
     cpy_r_r118 = cpy_r_r117;
     goto CPyL46;
 CPyL45: ;
@@ -52327,7 +52924,7 @@ CPyL45: ;
     cpy_r_r118 = cpy_r_r119;
 CPyL46: ;
     cpy_r_r120 = CPyStatic_constants___globals;
-    cpy_r_r121 = CPyStatics[596]; /* '__MULTICALL3_OVERRIDE_CODE' */
+    cpy_r_r121 = CPyStatics[598]; /* '__MULTICALL3_OVERRIDE_CODE' */
     cpy_r_r122 = CPyDict_GetItem(cpy_r_r120, cpy_r_r121);
     if (unlikely(cpy_r_r122 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 53, CPyStatic_constants___globals);
@@ -52336,7 +52933,7 @@ CPyL46: ;
     CPyStatic_constants___MULTICALL3_OVERRIDE_CODE = cpy_r_r122;
     CPy_INCREF(CPyStatic_constants___MULTICALL3_OVERRIDE_CODE);
     cpy_r_r123 = CPyStatic_constants___globals;
-    cpy_r_r124 = CPyStatics[597]; /* 'MULTICALL3_OVERRIDE_CODE' */
+    cpy_r_r124 = CPyStatics[599]; /* 'MULTICALL3_OVERRIDE_CODE' */
     cpy_r_r125 = CPyDict_SetItem(cpy_r_r123, cpy_r_r124, cpy_r_r122);
     CPy_DECREF(cpy_r_r122);
     cpy_r_r126 = cpy_r_r125 >= 0;
@@ -52364,13 +52961,13 @@ CPyL53: ;
     CPy_Unreachable();
 CPyL55: ;
     cpy_r_r128 = CPyStatic_constants___globals;
-    cpy_r_r129 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r129 = CPyStatics[581]; /* 'Network' */
     cpy_r_r130 = CPyDict_GetItem(cpy_r_r128, cpy_r_r129);
     if (unlikely(cpy_r_r130 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 56, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r131 = CPyStatics[598]; /* 'Mainnet' */
+    cpy_r_r131 = CPyStatics[600]; /* 'Mainnet' */
     cpy_r_r132 = CPyObject_GetAttr(cpy_r_r130, cpy_r_r131);
     CPy_DECREF(cpy_r_r130);
     if (unlikely(cpy_r_r132 == NULL)) {
@@ -52378,13 +52975,13 @@ CPyL55: ;
         goto CPyL80;
     }
     cpy_r_r133 = CPyStatic_constants___globals;
-    cpy_r_r134 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r134 = CPyStatics[581]; /* 'Network' */
     cpy_r_r135 = CPyDict_GetItem(cpy_r_r133, cpy_r_r134);
     if (unlikely(cpy_r_r135 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 57, CPyStatic_constants___globals);
         goto CPyL85;
     }
-    cpy_r_r136 = CPyStatics[599]; /* 'Fantom' */
+    cpy_r_r136 = CPyStatics[601]; /* 'Fantom' */
     cpy_r_r137 = CPyObject_GetAttr(cpy_r_r135, cpy_r_r136);
     CPy_DECREF(cpy_r_r135);
     if (unlikely(cpy_r_r137 == NULL)) {
@@ -52392,13 +52989,13 @@ CPyL55: ;
         goto CPyL85;
     }
     cpy_r_r138 = CPyStatic_constants___globals;
-    cpy_r_r139 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r139 = CPyStatics[581]; /* 'Network' */
     cpy_r_r140 = CPyDict_GetItem(cpy_r_r138, cpy_r_r139);
     if (unlikely(cpy_r_r140 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 58, CPyStatic_constants___globals);
         goto CPyL86;
     }
-    cpy_r_r141 = CPyStatics[600]; /* 'Arbitrum' */
+    cpy_r_r141 = CPyStatics[602]; /* 'Arbitrum' */
     cpy_r_r142 = CPyObject_GetAttr(cpy_r_r140, cpy_r_r141);
     CPy_DECREF(cpy_r_r140);
     if (unlikely(cpy_r_r142 == NULL)) {
@@ -52406,23 +53003,23 @@ CPyL55: ;
         goto CPyL86;
     }
     cpy_r_r143 = CPyStatic_constants___globals;
-    cpy_r_r144 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r144 = CPyStatics[581]; /* 'Network' */
     cpy_r_r145 = CPyDict_GetItem(cpy_r_r143, cpy_r_r144);
     if (unlikely(cpy_r_r145 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 59, CPyStatic_constants___globals);
         goto CPyL87;
     }
-    cpy_r_r146 = CPyStatics[601]; /* 'Optimism' */
+    cpy_r_r146 = CPyStatics[603]; /* 'Optimism' */
     cpy_r_r147 = CPyObject_GetAttr(cpy_r_r145, cpy_r_r146);
     CPy_DECREF(cpy_r_r145);
     if (unlikely(cpy_r_r147 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 59, CPyStatic_constants___globals);
         goto CPyL87;
     }
-    cpy_r_r148 = CPyStatics[679]; /* 12336033 */
-    cpy_r_r149 = CPyStatics[680]; /* 16572242 */
-    cpy_r_r150 = CPyStatics[681]; /* 821923 */
-    cpy_r_r151 = CPyStatics[682]; /* 722566 */
+    cpy_r_r148 = CPyStatics[683]; /* 12336033 */
+    cpy_r_r149 = CPyStatics[684]; /* 16572242 */
+    cpy_r_r150 = CPyStatics[685]; /* 821923 */
+    cpy_r_r151 = CPyStatics[686]; /* 722566 */
     cpy_r_r152 = CPyDict_Build(4, cpy_r_r132, cpy_r_r148, cpy_r_r137, cpy_r_r149, cpy_r_r142, cpy_r_r150, cpy_r_r147, cpy_r_r151);
     CPy_DECREF(cpy_r_r132);
     CPy_DECREF(cpy_r_r137);
@@ -52435,7 +53032,7 @@ CPyL55: ;
     CPyStatic_constants___MULTICALL2_DEPLOY_BLOCKS = cpy_r_r152;
     CPy_INCREF(CPyStatic_constants___MULTICALL2_DEPLOY_BLOCKS);
     cpy_r_r153 = CPyStatic_constants___globals;
-    cpy_r_r154 = CPyStatics[602]; /* 'MULTICALL2_DEPLOY_BLOCKS' */
+    cpy_r_r154 = CPyStatics[604]; /* 'MULTICALL2_DEPLOY_BLOCKS' */
     cpy_r_r155 = CPyDict_SetItem(cpy_r_r153, cpy_r_r154, cpy_r_r152);
     CPy_DECREF(cpy_r_r152);
     cpy_r_r156 = cpy_r_r155 >= 0;
@@ -52444,13 +53041,13 @@ CPyL55: ;
         goto CPyL80;
     }
     cpy_r_r157 = CPyStatic_constants___globals;
-    cpy_r_r158 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r158 = CPyStatics[581]; /* 'Network' */
     cpy_r_r159 = CPyDict_GetItem(cpy_r_r157, cpy_r_r158);
     if (unlikely(cpy_r_r159 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 64, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r160 = CPyStatics[598]; /* 'Mainnet' */
+    cpy_r_r160 = CPyStatics[600]; /* 'Mainnet' */
     cpy_r_r161 = CPyObject_GetAttr(cpy_r_r159, cpy_r_r160);
     CPy_DECREF(cpy_r_r159);
     if (unlikely(cpy_r_r161 == NULL)) {
@@ -52458,13 +53055,13 @@ CPyL55: ;
         goto CPyL80;
     }
     cpy_r_r162 = CPyStatic_constants___globals;
-    cpy_r_r163 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r163 = CPyStatics[581]; /* 'Network' */
     cpy_r_r164 = CPyDict_GetItem(cpy_r_r162, cpy_r_r163);
     if (unlikely(cpy_r_r164 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 65, CPyStatic_constants___globals);
         goto CPyL88;
     }
-    cpy_r_r165 = CPyStatics[599]; /* 'Fantom' */
+    cpy_r_r165 = CPyStatics[601]; /* 'Fantom' */
     cpy_r_r166 = CPyObject_GetAttr(cpy_r_r164, cpy_r_r165);
     CPy_DECREF(cpy_r_r164);
     if (unlikely(cpy_r_r166 == NULL)) {
@@ -52472,13 +53069,13 @@ CPyL55: ;
         goto CPyL88;
     }
     cpy_r_r167 = CPyStatic_constants___globals;
-    cpy_r_r168 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r168 = CPyStatics[581]; /* 'Network' */
     cpy_r_r169 = CPyDict_GetItem(cpy_r_r167, cpy_r_r168);
     if (unlikely(cpy_r_r169 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 66, CPyStatic_constants___globals);
         goto CPyL89;
     }
-    cpy_r_r170 = CPyStatics[600]; /* 'Arbitrum' */
+    cpy_r_r170 = CPyStatics[602]; /* 'Arbitrum' */
     cpy_r_r171 = CPyObject_GetAttr(cpy_r_r169, cpy_r_r170);
     CPy_DECREF(cpy_r_r169);
     if (unlikely(cpy_r_r171 == NULL)) {
@@ -52486,13 +53083,13 @@ CPyL55: ;
         goto CPyL89;
     }
     cpy_r_r172 = CPyStatic_constants___globals;
-    cpy_r_r173 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r173 = CPyStatics[581]; /* 'Network' */
     cpy_r_r174 = CPyDict_GetItem(cpy_r_r172, cpy_r_r173);
     if (unlikely(cpy_r_r174 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 67, CPyStatic_constants___globals);
         goto CPyL90;
     }
-    cpy_r_r175 = CPyStatics[601]; /* 'Optimism' */
+    cpy_r_r175 = CPyStatics[603]; /* 'Optimism' */
     cpy_r_r176 = CPyObject_GetAttr(cpy_r_r174, cpy_r_r175);
     CPy_DECREF(cpy_r_r174);
     if (unlikely(cpy_r_r176 == NULL)) {
@@ -52500,24 +53097,24 @@ CPyL55: ;
         goto CPyL90;
     }
     cpy_r_r177 = CPyStatic_constants___globals;
-    cpy_r_r178 = CPyStatics[579]; /* 'Network' */
+    cpy_r_r178 = CPyStatics[581]; /* 'Network' */
     cpy_r_r179 = CPyDict_GetItem(cpy_r_r177, cpy_r_r178);
     if (unlikely(cpy_r_r179 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 68, CPyStatic_constants___globals);
         goto CPyL91;
     }
-    cpy_r_r180 = CPyStatics[603]; /* 'Base' */
+    cpy_r_r180 = CPyStatics[605]; /* 'Base' */
     cpy_r_r181 = CPyObject_GetAttr(cpy_r_r179, cpy_r_r180);
     CPy_DECREF(cpy_r_r179);
     if (unlikely(cpy_r_r181 == NULL)) {
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 68, CPyStatic_constants___globals);
         goto CPyL91;
     }
-    cpy_r_r182 = CPyStatics[683]; /* 14353601 */
-    cpy_r_r183 = CPyStatics[684]; /* 33001987 */
-    cpy_r_r184 = CPyStatics[685]; /* 7654707 */
-    cpy_r_r185 = CPyStatics[686]; /* 4286263 */
-    cpy_r_r186 = CPyStatics[687]; /* 5022 */
+    cpy_r_r182 = CPyStatics[687]; /* 14353601 */
+    cpy_r_r183 = CPyStatics[688]; /* 33001987 */
+    cpy_r_r184 = CPyStatics[689]; /* 7654707 */
+    cpy_r_r185 = CPyStatics[690]; /* 4286263 */
+    cpy_r_r186 = CPyStatics[691]; /* 5022 */
     cpy_r_r187 = CPyDict_Build(5, cpy_r_r161, cpy_r_r182, cpy_r_r166, cpy_r_r183, cpy_r_r171, cpy_r_r184, cpy_r_r176, cpy_r_r185, cpy_r_r181, cpy_r_r186);
     CPy_DECREF(cpy_r_r161);
     CPy_DECREF(cpy_r_r166);
@@ -52531,7 +53128,7 @@ CPyL55: ;
     CPyStatic_constants___MULTICALL3_DEPLOY_BLOCKS = cpy_r_r187;
     CPy_INCREF(CPyStatic_constants___MULTICALL3_DEPLOY_BLOCKS);
     cpy_r_r188 = CPyStatic_constants___globals;
-    cpy_r_r189 = CPyStatics[604]; /* 'MULTICALL3_DEPLOY_BLOCKS' */
+    cpy_r_r189 = CPyStatics[606]; /* 'MULTICALL3_DEPLOY_BLOCKS' */
     cpy_r_r190 = CPyDict_SetItem(cpy_r_r188, cpy_r_r189, cpy_r_r187);
     CPy_DECREF(cpy_r_r187);
     cpy_r_r191 = cpy_r_r190 >= 0;
@@ -52539,16 +53136,16 @@ CPyL55: ;
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 63, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r192 = CPyStatics[605]; /* '0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000094e6f206163636573730000000000000000000000000000000000000000000000' */
-    cpy_r_r193 = CPyStatics[606]; /* '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000e6d696e7420697320706175736564000000000000000000000000000000000000' */
-    cpy_r_r194 = CPyStatics[607]; /* '0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016496e76616c6964206574686572207472616e7366657200000000000000000000' */
-    cpy_r_r195 = CPyStatics[608]; /* '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000e4e4f4e5f454d5054595f44415441000000000000000000000000000000000000' */
-    cpy_r_r196 = CPyStatics[609]; /* '0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000246d73672e736967206973206e6f742061737369676e656420746f207375626d6f64756c6500000000000000000000000000000000000000000000000000000000' */
-    cpy_r_r197 = CPyStatics[610]; /* '0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000346f6e6c792077726170706564206e617469766520636f6e747261637420636f756c642073656e64206e617469766520746f6b656e000000000000000000000000' */
-    cpy_r_r198 = CPyStatics[611]; /* '0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000013434f4e54524f4c4c45525f52454a454354454400000000000000000000000000' */
-    cpy_r_r199 = CPyStatics[612]; /* '0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000204469616d6f6e643a2046756e6374696f6e20646f6573206e6f74206578697374' */
-    cpy_r_r200 = CPyStatics[613]; /* '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a66756e6374696f6e2073686f756c6420626520616c6c6f776564000000000000' */
-    cpy_r_r201 = CPyStatics[614]; /* '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001846756e6374696f6e20646f6573206e6f742065786973742e0000000000000000' */
+    cpy_r_r192 = CPyStatics[607]; /* '0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000094e6f206163636573730000000000000000000000000000000000000000000000' */
+    cpy_r_r193 = CPyStatics[608]; /* '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000e6d696e7420697320706175736564000000000000000000000000000000000000' */
+    cpy_r_r194 = CPyStatics[609]; /* '0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016496e76616c6964206574686572207472616e7366657200000000000000000000' */
+    cpy_r_r195 = CPyStatics[610]; /* '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000e4e4f4e5f454d5054595f44415441000000000000000000000000000000000000' */
+    cpy_r_r196 = CPyStatics[611]; /* '0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000246d73672e736967206973206e6f742061737369676e656420746f207375626d6f64756c6500000000000000000000000000000000000000000000000000000000' */
+    cpy_r_r197 = CPyStatics[612]; /* '0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000346f6e6c792077726170706564206e617469766520636f6e747261637420636f756c642073656e64206e617469766520746f6b656e000000000000000000000000' */
+    cpy_r_r198 = CPyStatics[613]; /* '0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000013434f4e54524f4c4c45525f52454a454354454400000000000000000000000000' */
+    cpy_r_r199 = CPyStatics[614]; /* '0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000204469616d6f6e643a2046756e6374696f6e20646f6573206e6f74206578697374' */
+    cpy_r_r200 = CPyStatics[615]; /* '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a66756e6374696f6e2073686f756c6420626520616c6c6f776564000000000000' */
+    cpy_r_r201 = CPyStatics[616]; /* '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001846756e6374696f6e20646f6573206e6f742065786973742e0000000000000000' */
     CPy_INCREF(cpy_r_r192);
     CPy_INCREF(cpy_r_r193);
     CPy_INCREF(cpy_r_r194);
@@ -52581,30 +53178,30 @@ CPyL55: ;
     CPy_INCREF(CPyStatic_constants___BAD_HEXES.f8);
     CPy_INCREF(CPyStatic_constants___BAD_HEXES.f9);
     cpy_r_r203 = CPyStatic_constants___globals;
-    cpy_r_r204 = CPyStatics[615]; /* 'BAD_HEXES' */
+    cpy_r_r204 = CPyStatics[617]; /* 'BAD_HEXES' */
     cpy_r_r205 = PyTuple_New(10);
     if (unlikely(cpy_r_r205 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp201 = cpy_r_r202.f0;
-    PyTuple_SET_ITEM(cpy_r_r205, 0, __tmp201);
-    PyObject *__tmp202 = cpy_r_r202.f1;
-    PyTuple_SET_ITEM(cpy_r_r205, 1, __tmp202);
-    PyObject *__tmp203 = cpy_r_r202.f2;
-    PyTuple_SET_ITEM(cpy_r_r205, 2, __tmp203);
-    PyObject *__tmp204 = cpy_r_r202.f3;
-    PyTuple_SET_ITEM(cpy_r_r205, 3, __tmp204);
-    PyObject *__tmp205 = cpy_r_r202.f4;
-    PyTuple_SET_ITEM(cpy_r_r205, 4, __tmp205);
-    PyObject *__tmp206 = cpy_r_r202.f5;
-    PyTuple_SET_ITEM(cpy_r_r205, 5, __tmp206);
-    PyObject *__tmp207 = cpy_r_r202.f6;
-    PyTuple_SET_ITEM(cpy_r_r205, 6, __tmp207);
-    PyObject *__tmp208 = cpy_r_r202.f7;
-    PyTuple_SET_ITEM(cpy_r_r205, 7, __tmp208);
-    PyObject *__tmp209 = cpy_r_r202.f8;
-    PyTuple_SET_ITEM(cpy_r_r205, 8, __tmp209);
-    PyObject *__tmp210 = cpy_r_r202.f9;
-    PyTuple_SET_ITEM(cpy_r_r205, 9, __tmp210);
+    PyObject *__tmp202 = cpy_r_r202.f0;
+    PyTuple_SET_ITEM(cpy_r_r205, 0, __tmp202);
+    PyObject *__tmp203 = cpy_r_r202.f1;
+    PyTuple_SET_ITEM(cpy_r_r205, 1, __tmp203);
+    PyObject *__tmp204 = cpy_r_r202.f2;
+    PyTuple_SET_ITEM(cpy_r_r205, 2, __tmp204);
+    PyObject *__tmp205 = cpy_r_r202.f3;
+    PyTuple_SET_ITEM(cpy_r_r205, 3, __tmp205);
+    PyObject *__tmp206 = cpy_r_r202.f4;
+    PyTuple_SET_ITEM(cpy_r_r205, 4, __tmp206);
+    PyObject *__tmp207 = cpy_r_r202.f5;
+    PyTuple_SET_ITEM(cpy_r_r205, 5, __tmp207);
+    PyObject *__tmp208 = cpy_r_r202.f6;
+    PyTuple_SET_ITEM(cpy_r_r205, 6, __tmp208);
+    PyObject *__tmp209 = cpy_r_r202.f7;
+    PyTuple_SET_ITEM(cpy_r_r205, 7, __tmp209);
+    PyObject *__tmp210 = cpy_r_r202.f8;
+    PyTuple_SET_ITEM(cpy_r_r205, 8, __tmp210);
+    PyObject *__tmp211 = cpy_r_r202.f9;
+    PyTuple_SET_ITEM(cpy_r_r205, 9, __tmp211);
     cpy_r_r206 = CPyDict_SetItem(cpy_r_r203, cpy_r_r204, cpy_r_r205);
     CPy_DECREF(cpy_r_r205);
     cpy_r_r207 = cpy_r_r206 >= 0;
@@ -52612,8 +53209,8 @@ CPyL55: ;
         CPy_AddTraceback("dank_mids\\constants.py", "<module>", 75, CPyStatic_constants___globals);
         goto CPyL80;
     }
-    cpy_r_r208 = CPyStatics[666]; /* b'\x08\xc3y\xa0' */
-    cpy_r_r209 = CPyStatics[667]; /* b'4e487b71' */
+    cpy_r_r208 = CPyStatics[668]; /* b'\x08\xc3y\xa0' */
+    cpy_r_r209 = CPyStatics[669]; /* b'4e487b71' */
     CPy_INCREF(cpy_r_r208);
     CPy_INCREF(cpy_r_r209);
     cpy_r_r210.f0 = cpy_r_r208;
@@ -52622,14 +53219,14 @@ CPyL55: ;
     CPy_INCREF(CPyStatic_constants___REVERT_SELECTORS.f0);
     CPy_INCREF(CPyStatic_constants___REVERT_SELECTORS.f1);
     cpy_r_r211 = CPyStatic_constants___globals;
-    cpy_r_r212 = CPyStatics[616]; /* 'REVERT_SELECTORS' */
+    cpy_r_r212 = CPyStatics[618]; /* 'REVERT_SELECTORS' */
     cpy_r_r213 = PyTuple_New(2);
     if (unlikely(cpy_r_r213 == NULL))
         CPyError_OutOfMemory();
-    PyObject *__tmp211 = cpy_r_r210.f0;
-    PyTuple_SET_ITEM(cpy_r_r213, 0, __tmp211);
-    PyObject *__tmp212 = cpy_r_r210.f1;
-    PyTuple_SET_ITEM(cpy_r_r213, 1, __tmp212);
+    PyObject *__tmp212 = cpy_r_r210.f0;
+    PyTuple_SET_ITEM(cpy_r_r213, 0, __tmp212);
+    PyObject *__tmp213 = cpy_r_r210.f1;
+    PyTuple_SET_ITEM(cpy_r_r213, 1, __tmp213);
     cpy_r_r214 = CPyDict_SetItem(cpy_r_r211, cpy_r_r212, cpy_r_r213);
     CPy_DECREF(cpy_r_r213);
     cpy_r_r215 = cpy_r_r214 >= 0;
@@ -53405,7 +54002,7 @@ char CPyDef_ENVIRONMENT_VARIABLES_____top_level__(void) {
     CPy_INCREF(CPyModule_builtins);
     CPy_DECREF(cpy_r_r4);
 CPyL3: ;
-    cpy_r_r5 = CPyStatics[808]; /* ('StreamHandler',) */
+    cpy_r_r5 = CPyStatics[812]; /* ('StreamHandler',) */
     cpy_r_r6 = CPyStatics[174]; /* 'logging' */
     cpy_r_r7 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
@@ -53416,7 +54013,7 @@ CPyL3: ;
     CPyModule_logging = cpy_r_r8;
     CPy_INCREF(CPyModule_logging);
     CPy_DECREF(cpy_r_r8);
-    cpy_r_r9 = CPyStatics[803]; /* ('Dict', 'Final') */
+    cpy_r_r9 = CPyStatics[807]; /* ('Dict', 'Final') */
     cpy_r_r10 = CPyStatics[41]; /* 'typing' */
     cpy_r_r11 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r12 = CPyImport_ImportFromMany(cpy_r_r10, cpy_r_r9, cpy_r_r9, cpy_r_r11);
@@ -53433,14 +54030,14 @@ CPyL3: ;
     cpy_r_r16 = (void *)&cpy_r_r15;
     int64_t cpy_r_r17[2] = {5, 6};
     cpy_r_r18 = (void *)&cpy_r_r17;
-    cpy_r_r19 = CPyStatics[810]; /* (('a_sync', 'a_sync', 'a_sync'),
+    cpy_r_r19 = CPyStatics[814]; /* (('a_sync', 'a_sync', 'a_sync'),
                                     ('typed_envs', 'typed_envs', 'typed_envs')) */
     cpy_r_r20 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r21 = CPyStatics[618]; /* 'dank_mids\\ENVIRONMENT_VARIABLES.py' */
+    cpy_r_r21 = CPyStatics[620]; /* 'dank_mids\\ENVIRONMENT_VARIABLES.py' */
     cpy_r_r22 = CPyStatics[44]; /* '<module>' */
     cpy_r_r23 = CPyImport_ImportMany(cpy_r_r19, cpy_r_r16, cpy_r_r20, cpy_r_r21, cpy_r_r22, cpy_r_r18);
     if (!cpy_r_r23) goto CPyL333;
-    cpy_r_r24 = CPyStatics[752]; /* ('AsyncProcessPoolExecutor',) */
+    cpy_r_r24 = CPyStatics[756]; /* ('AsyncProcessPoolExecutor',) */
     cpy_r_r25 = CPyStatics[42]; /* 'a_sync' */
     cpy_r_r26 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r27 = CPyImport_ImportFromMany(cpy_r_r25, cpy_r_r24, cpy_r_r24, cpy_r_r26);
@@ -53451,7 +54048,7 @@ CPyL3: ;
     CPyModule_a_sync = cpy_r_r27;
     CPy_INCREF(CPyModule_a_sync);
     CPy_DECREF(cpy_r_r27);
-    cpy_r_r28 = CPyStatics[811]; /* ('_envs',) */
+    cpy_r_r28 = CPyStatics[815]; /* ('_envs',) */
     cpy_r_r29 = CPyStatics[71]; /* 'dank_mids' */
     cpy_r_r30 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r31 = CPyImport_ImportFromMany(cpy_r_r29, cpy_r_r28, cpy_r_r28, cpy_r_r30);
@@ -53462,7 +54059,7 @@ CPyL3: ;
     CPyModule_dank_mids = cpy_r_r31;
     CPy_INCREF(CPyModule_dank_mids);
     CPy_DECREF(cpy_r_r31);
-    cpy_r_r32 = CPyStatics[812]; /* ('INFO', 'getLogger') */
+    cpy_r_r32 = CPyStatics[816]; /* ('INFO', 'getLogger') */
     cpy_r_r33 = CPyStatics[48]; /* 'dank_mids._logging' */
     cpy_r_r34 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r35 = CPyImport_ImportFromMany(cpy_r_r33, cpy_r_r32, cpy_r_r32, cpy_r_r34);
@@ -53473,8 +54070,8 @@ CPyL3: ;
     CPyModule_dank_mids____logging = cpy_r_r35;
     CPy_INCREF(CPyModule_dank_mids____logging);
     CPy_DECREF(cpy_r_r35);
-    cpy_r_r36 = CPyStatics[813]; /* ('OperationMode',) */
-    cpy_r_r37 = CPyStatics[621]; /* 'dank_mids._mode' */
+    cpy_r_r36 = CPyStatics[817]; /* ('OperationMode',) */
+    cpy_r_r37 = CPyStatics[623]; /* 'dank_mids._mode' */
     cpy_r_r38 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r39 = CPyImport_ImportFromMany(cpy_r_r37, cpy_r_r36, cpy_r_r36, cpy_r_r38);
     if (unlikely(cpy_r_r39 == NULL)) {
@@ -53484,7 +54081,7 @@ CPyL3: ;
     CPyModule_dank_mids____mode = cpy_r_r39;
     CPy_INCREF(CPyModule_dank_mids____mode);
     CPy_DECREF(cpy_r_r39);
-    cpy_r_r40 = CPyStatics[712]; /* ('BlockSemaphore',) */
+    cpy_r_r40 = CPyStatics[716]; /* ('BlockSemaphore',) */
     cpy_r_r41 = CPyStatics[81]; /* 'dank_mids.semaphores' */
     cpy_r_r42 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r43 = CPyImport_ImportFromMany(cpy_r_r41, cpy_r_r40, cpy_r_r40, cpy_r_r42);
@@ -53495,7 +54092,7 @@ CPyL3: ;
     CPyModule_dank_mids___semaphores = cpy_r_r43;
     CPy_INCREF(CPyModule_dank_mids___semaphores);
     CPy_DECREF(cpy_r_r43);
-    cpy_r_r44 = CPyStatics[622]; /* 'dank_mids.envs' */
+    cpy_r_r44 = CPyStatics[624]; /* 'dank_mids.envs' */
     cpy_r_r45 = CPyStatic__logging___getLogger;
     if (likely(cpy_r_r45 != NULL)) goto CPyL14;
     PyErr_SetString(PyExc_NameError, "value for final name \"getLogger\" was not set");
@@ -53538,7 +54135,7 @@ CPyL14: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 17, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r59 = CPyStatics[623]; /* 'disabled' */
+    cpy_r_r59 = CPyStatics[625]; /* 'disabled' */
     cpy_r_r60 = CPyObject_GetAttr(cpy_r_r58, cpy_r_r59);
     CPy_DECREF(cpy_r_r58);
     if (unlikely(cpy_r_r60 == NULL)) {
@@ -53564,7 +54161,7 @@ CPyL14: ;
     }
     CPy_Unreachable();
 CPyL24: ;
-    cpy_r_r66 = CPyStatics[624]; /* 'hasHandlers' */
+    cpy_r_r66 = CPyStatics[626]; /* 'hasHandlers' */
     cpy_r_r67 = CPyObject_CallMethodObjArgs(cpy_r_r64, cpy_r_r66, NULL);
     if (unlikely(cpy_r_r67 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 18, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53591,7 +54188,7 @@ CPyL24: ;
     CPy_Unreachable();
 CPyL30: ;
     cpy_r_r71 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r72 = CPyStatics[617]; /* 'StreamHandler' */
+    cpy_r_r72 = CPyStatics[619]; /* 'StreamHandler' */
     cpy_r_r73 = CPyDict_GetItem(cpy_r_r71, cpy_r_r72);
     if (unlikely(cpy_r_r73 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 19, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53603,7 +54200,7 @@ CPyL30: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 19, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r75 = CPyStatics[625]; /* 'addHandler' */
+    cpy_r_r75 = CPyStatics[627]; /* 'addHandler' */
     cpy_r_r76 = CPyObject_CallMethodObjArgs(cpy_r_r69, cpy_r_r75, cpy_r_r74, NULL);
     CPy_DECREF(cpy_r_r74);
     if (unlikely(cpy_r_r76 == NULL)) {
@@ -53632,7 +54229,7 @@ CPyL36: ;
     }
     CPy_Unreachable();
 CPyL39: ;
-    cpy_r_r81 = CPyStatics[626]; /* 'isEnabledFor' */
+    cpy_r_r81 = CPyStatics[628]; /* 'isEnabledFor' */
     CPyTagged_INCREF(cpy_r_r79);
     cpy_r_r82 = CPyTagged_StealAsObject(cpy_r_r79);
     cpy_r_r83 = CPyObject_CallMethodObjArgs(cpy_r_r77, cpy_r_r81, cpy_r_r82, NULL);
@@ -53671,7 +54268,7 @@ CPyL45: ;
     }
     CPy_Unreachable();
 CPyL48: ;
-    cpy_r_r89 = CPyStatics[627]; /* 'setLevel' */
+    cpy_r_r89 = CPyStatics[629]; /* 'setLevel' */
     CPyTagged_INCREF(cpy_r_r87);
     cpy_r_r90 = CPyTagged_StealAsObject(cpy_r_r87);
     cpy_r_r91 = CPyObject_CallMethodObjArgs(cpy_r_r85, cpy_r_r89, cpy_r_r90, NULL);
@@ -53692,9 +54289,9 @@ CPyL49: ;
     }
     CPy_Unreachable();
 CPyL52: ;
-    cpy_r_r94 = CPyStatics[628]; /* ('For your information, you can tweak your configuration '
+    cpy_r_r94 = CPyStatics[630]; /* ('For your information, you can tweak your configuration '
                                     'for optimal performance using any of the envs below:') */
-    cpy_r_r95 = CPyStatics[629]; /* 'info' */
+    cpy_r_r95 = CPyStatics[631]; /* 'info' */
     cpy_r_r96 = CPyObject_CallMethodObjArgs(cpy_r_r92, cpy_r_r95, cpy_r_r94, NULL);
     if (unlikely(cpy_r_r96 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 22, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53702,15 +54299,15 @@ CPyL52: ;
     } else
         goto CPyL336;
 CPyL53: ;
-    cpy_r_r97 = CPyStatics[370]; /* 'OPERATION_MODE' */
+    cpy_r_r97 = CPyStatics[374]; /* 'OPERATION_MODE' */
     cpy_r_r98 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r99 = CPyStatics[620]; /* 'OperationMode' */
+    cpy_r_r99 = CPyStatics[622]; /* 'OperationMode' */
     cpy_r_r100 = CPyDict_GetItem(cpy_r_r98, cpy_r_r99);
     if (unlikely(cpy_r_r100 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 35, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r101 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r101 = CPyStatics[632]; /* 'infura' */
     cpy_r_r102 = CPyStatic__envs___create_env;
     if (unlikely(cpy_r_r102 == NULL)) {
         goto CPyL337;
@@ -53728,7 +54325,7 @@ CPyL57: ;
     cpy_r_r104 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r105[4] = {cpy_r_r97, cpy_r_r100, cpy_r_r101, cpy_r_r104};
     cpy_r_r106 = (PyObject **)&cpy_r_r105;
-    cpy_r_r107 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r107 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r108 = _PyObject_Vectorcall(cpy_r_r102, cpy_r_r106, 2, cpy_r_r107);
     if (unlikely(cpy_r_r108 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 34, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53738,7 +54335,7 @@ CPyL57: ;
     CPyStatic_ENVIRONMENT_VARIABLES___OPERATION_MODE = cpy_r_r108;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___OPERATION_MODE);
     cpy_r_r109 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r110 = CPyStatics[370]; /* 'OPERATION_MODE' */
+    cpy_r_r110 = CPyStatics[374]; /* 'OPERATION_MODE' */
     cpy_r_r111 = CPyDict_SetItem(cpy_r_r109, cpy_r_r110, cpy_r_r108);
     CPy_DECREF(cpy_r_r108);
     cpy_r_r112 = cpy_r_r111 >= 0;
@@ -53746,7 +54343,7 @@ CPyL57: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 34, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r113 = CPyStatics[633]; /* 'MAX_MULTICALL_SIZE' */
+    cpy_r_r113 = CPyStatics[635]; /* 'MAX_MULTICALL_SIZE' */
     cpy_r_r114 = (PyObject *)&PyLong_Type;
     cpy_r_r115 = CPyStatic__envs___create_env;
     if (likely(cpy_r_r115 != NULL)) goto CPyL62;
@@ -53758,10 +54355,10 @@ CPyL57: ;
     }
     CPy_Unreachable();
 CPyL62: ;
-    cpy_r_r117 = CPyStatics[688]; /* 10000 */
+    cpy_r_r117 = CPyStatics[692]; /* 10000 */
     PyObject *cpy_r_r118[3] = {cpy_r_r113, cpy_r_r114, cpy_r_r117};
     cpy_r_r119 = (PyObject **)&cpy_r_r118;
-    cpy_r_r120 = CPyStatics[815]; /* ('default',) */
+    cpy_r_r120 = CPyStatics[819]; /* ('default',) */
     cpy_r_r121 = _PyObject_Vectorcall(cpy_r_r115, cpy_r_r119, 2, cpy_r_r120);
     if (unlikely(cpy_r_r121 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 39, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53770,7 +54367,7 @@ CPyL62: ;
     CPyStatic_ENVIRONMENT_VARIABLES___MAX_MULTICALL_SIZE = cpy_r_r121;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___MAX_MULTICALL_SIZE);
     cpy_r_r122 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r123 = CPyStatics[633]; /* 'MAX_MULTICALL_SIZE' */
+    cpy_r_r123 = CPyStatics[635]; /* 'MAX_MULTICALL_SIZE' */
     cpy_r_r124 = CPyDict_SetItem(cpy_r_r122, cpy_r_r123, cpy_r_r121);
     CPy_DECREF(cpy_r_r121);
     cpy_r_r125 = cpy_r_r124 >= 0;
@@ -53778,7 +54375,7 @@ CPyL62: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 39, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r126 = CPyStatics[634]; /* 'MAX_JSONRPC_BATCH_SIZE' */
+    cpy_r_r126 = CPyStatics[636]; /* 'MAX_JSONRPC_BATCH_SIZE' */
     cpy_r_r127 = (PyObject *)&PyLong_Type;
     cpy_r_r128 = CPyStatic__envs___create_env;
     if (likely(cpy_r_r128 != NULL)) goto CPyL67;
@@ -53790,10 +54387,10 @@ CPyL62: ;
     }
     CPy_Unreachable();
 CPyL67: ;
-    cpy_r_r130 = CPyStatics[689]; /* 500 */
+    cpy_r_r130 = CPyStatics[693]; /* 500 */
     PyObject *cpy_r_r131[3] = {cpy_r_r126, cpy_r_r127, cpy_r_r130};
     cpy_r_r132 = (PyObject **)&cpy_r_r131;
-    cpy_r_r133 = CPyStatics[815]; /* ('default',) */
+    cpy_r_r133 = CPyStatics[819]; /* ('default',) */
     cpy_r_r134 = _PyObject_Vectorcall(cpy_r_r128, cpy_r_r132, 2, cpy_r_r133);
     if (unlikely(cpy_r_r134 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 41, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53802,7 +54399,7 @@ CPyL67: ;
     CPyStatic_ENVIRONMENT_VARIABLES___MAX_JSONRPC_BATCH_SIZE = cpy_r_r134;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___MAX_JSONRPC_BATCH_SIZE);
     cpy_r_r135 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r136 = CPyStatics[634]; /* 'MAX_JSONRPC_BATCH_SIZE' */
+    cpy_r_r136 = CPyStatics[636]; /* 'MAX_JSONRPC_BATCH_SIZE' */
     cpy_r_r137 = CPyDict_SetItem(cpy_r_r135, cpy_r_r136, cpy_r_r134);
     CPy_DECREF(cpy_r_r134);
     cpy_r_r138 = cpy_r_r137 >= 0;
@@ -53810,7 +54407,7 @@ CPyL67: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 41, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r139 = CPyStatics[635]; /* 'REQUESTS_PER_SECOND' */
+    cpy_r_r139 = CPyStatics[637]; /* 'REQUESTS_PER_SECOND' */
     cpy_r_r140 = (PyObject *)&PyLong_Type;
     cpy_r_r141 = CPyStatic__envs___create_env;
     if (likely(cpy_r_r141 != NULL)) goto CPyL72;
@@ -53822,10 +54419,10 @@ CPyL67: ;
     }
     CPy_Unreachable();
 CPyL72: ;
-    cpy_r_r143 = CPyStatics[671]; /* 50 */
+    cpy_r_r143 = CPyStatics[673]; /* 50 */
     PyObject *cpy_r_r144[3] = {cpy_r_r139, cpy_r_r140, cpy_r_r143};
     cpy_r_r145 = (PyObject **)&cpy_r_r144;
-    cpy_r_r146 = CPyStatics[815]; /* ('default',) */
+    cpy_r_r146 = CPyStatics[819]; /* ('default',) */
     cpy_r_r147 = _PyObject_Vectorcall(cpy_r_r141, cpy_r_r145, 2, cpy_r_r146);
     if (unlikely(cpy_r_r147 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 43, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53834,7 +54431,7 @@ CPyL72: ;
     CPyStatic_ENVIRONMENT_VARIABLES___REQUESTS_PER_SECOND = cpy_r_r147;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___REQUESTS_PER_SECOND);
     cpy_r_r148 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r149 = CPyStatics[635]; /* 'REQUESTS_PER_SECOND' */
+    cpy_r_r149 = CPyStatics[637]; /* 'REQUESTS_PER_SECOND' */
     cpy_r_r150 = CPyDict_SetItem(cpy_r_r148, cpy_r_r149, cpy_r_r147);
     CPy_DECREF(cpy_r_r147);
     cpy_r_r151 = cpy_r_r150 >= 0;
@@ -53842,7 +54439,7 @@ CPyL72: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 43, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r152 = CPyStatics[636]; /* 'MIN_REQUESTS_PER_SECOND' */
+    cpy_r_r152 = CPyStatics[638]; /* 'MIN_REQUESTS_PER_SECOND' */
     cpy_r_r153 = (PyObject *)&PyLong_Type;
     cpy_r_r154 = CPyStatic__envs___create_env;
     if (likely(cpy_r_r154 != NULL)) goto CPyL77;
@@ -53854,10 +54451,10 @@ CPyL72: ;
     }
     CPy_Unreachable();
 CPyL77: ;
-    cpy_r_r156 = CPyStatics[675]; /* 10 */
+    cpy_r_r156 = CPyStatics[677]; /* 10 */
     PyObject *cpy_r_r157[3] = {cpy_r_r152, cpy_r_r153, cpy_r_r156};
     cpy_r_r158 = (PyObject **)&cpy_r_r157;
-    cpy_r_r159 = CPyStatics[815]; /* ('default',) */
+    cpy_r_r159 = CPyStatics[819]; /* ('default',) */
     cpy_r_r160 = _PyObject_Vectorcall(cpy_r_r154, cpy_r_r158, 2, cpy_r_r159);
     if (unlikely(cpy_r_r160 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 45, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53866,7 +54463,7 @@ CPyL77: ;
     CPyStatic_ENVIRONMENT_VARIABLES___MIN_REQUESTS_PER_SECOND = cpy_r_r160;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___MIN_REQUESTS_PER_SECOND);
     cpy_r_r161 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r162 = CPyStatics[636]; /* 'MIN_REQUESTS_PER_SECOND' */
+    cpy_r_r162 = CPyStatics[638]; /* 'MIN_REQUESTS_PER_SECOND' */
     cpy_r_r163 = CPyDict_SetItem(cpy_r_r161, cpy_r_r162, cpy_r_r160);
     CPy_DECREF(cpy_r_r160);
     cpy_r_r164 = cpy_r_r163 >= 0;
@@ -53884,7 +54481,7 @@ CPyL77: ;
     }
     CPy_Unreachable();
 CPyL82: ;
-    cpy_r_r167 = CPyStatics[637]; /* 'DEMO_MODE' */
+    cpy_r_r167 = CPyStatics[639]; /* 'DEMO_MODE' */
     cpy_r_r168 = (PyObject *)&PyBool_Type;
     cpy_r_r169 = CPyStatics[87]; /* 'create_env' */
     cpy_r_r170 = CPyObject_GetAttr(cpy_r_r165, cpy_r_r169);
@@ -53896,7 +54493,7 @@ CPyL82: ;
     cpy_r_r172 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r173[4] = {cpy_r_r167, cpy_r_r168, cpy_r_r171, cpy_r_r172};
     cpy_r_r174 = (PyObject **)&cpy_r_r173;
-    cpy_r_r175 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r175 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r176 = _PyObject_Vectorcall(cpy_r_r170, cpy_r_r174, 2, cpy_r_r175);
     CPy_DECREF(cpy_r_r170);
     if (unlikely(cpy_r_r176 == NULL)) {
@@ -53906,7 +54503,7 @@ CPyL82: ;
     CPyStatic_ENVIRONMENT_VARIABLES___demo_mode = cpy_r_r176;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___demo_mode);
     cpy_r_r177 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r178 = CPyStatics[638]; /* 'demo_mode' */
+    cpy_r_r178 = CPyStatics[640]; /* 'demo_mode' */
     cpy_r_r179 = CPyDict_SetItem(cpy_r_r177, cpy_r_r178, cpy_r_r176);
     CPy_DECREF(cpy_r_r176);
     cpy_r_r180 = cpy_r_r179 >= 0;
@@ -53914,7 +54511,7 @@ CPyL82: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 48, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r181 = CPyStatics[637]; /* 'DEMO_MODE' */
+    cpy_r_r181 = CPyStatics[639]; /* 'DEMO_MODE' */
     cpy_r_r182 = (PyObject *)&PyBool_Type;
     cpy_r_r183 = CPyStatic_ENVIRONMENT_VARIABLES___demo_mode;
     if (likely(cpy_r_r183 != NULL)) goto CPyL88;
@@ -53947,7 +54544,7 @@ CPyL92: ;
     cpy_r_r191 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r192[4] = {cpy_r_r181, cpy_r_r182, cpy_r_r190, cpy_r_r191};
     cpy_r_r193 = (PyObject **)&cpy_r_r192;
-    cpy_r_r194 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r194 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r195 = _PyObject_Vectorcall(cpy_r_r188, cpy_r_r193, 2, cpy_r_r194);
     if (unlikely(cpy_r_r195 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 51, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -53956,7 +54553,7 @@ CPyL92: ;
     CPyStatic_ENVIRONMENT_VARIABLES___DEMO_MODE = cpy_r_r195;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___DEMO_MODE);
     cpy_r_r196 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r197 = CPyStatics[637]; /* 'DEMO_MODE' */
+    cpy_r_r197 = CPyStatics[639]; /* 'DEMO_MODE' */
     cpy_r_r198 = CPyDict_SetItem(cpy_r_r196, cpy_r_r197, cpy_r_r195);
     CPy_DECREF(cpy_r_r195);
     cpy_r_r199 = cpy_r_r198 >= 0;
@@ -53974,7 +54571,7 @@ CPyL92: ;
     }
     CPy_Unreachable();
 CPyL97: ;
-    cpy_r_r202 = CPyStatics[639]; /* 'GANACHE_FORK' */
+    cpy_r_r202 = CPyStatics[641]; /* 'GANACHE_FORK' */
     cpy_r_r203 = (PyObject *)&PyBool_Type;
     cpy_r_r204 = CPyStatics[87]; /* 'create_env' */
     cpy_r_r205 = CPyObject_GetAttr(cpy_r_r200, cpy_r_r204);
@@ -53986,7 +54583,7 @@ CPyL97: ;
     cpy_r_r207 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r208[4] = {cpy_r_r202, cpy_r_r203, cpy_r_r206, cpy_r_r207};
     cpy_r_r209 = (PyObject **)&cpy_r_r208;
-    cpy_r_r210 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r210 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r211 = _PyObject_Vectorcall(cpy_r_r205, cpy_r_r209, 2, cpy_r_r210);
     CPy_DECREF(cpy_r_r205);
     if (unlikely(cpy_r_r211 == NULL)) {
@@ -53996,7 +54593,7 @@ CPyL97: ;
     CPyStatic_ENVIRONMENT_VARIABLES___ganache_fork = cpy_r_r211;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___ganache_fork);
     cpy_r_r212 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r213 = CPyStatics[640]; /* 'ganache_fork' */
+    cpy_r_r213 = CPyStatics[642]; /* 'ganache_fork' */
     cpy_r_r214 = CPyDict_SetItem(cpy_r_r212, cpy_r_r213, cpy_r_r211);
     CPy_DECREF(cpy_r_r211);
     cpy_r_r215 = cpy_r_r214 >= 0;
@@ -54004,7 +54601,7 @@ CPyL97: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 54, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r216 = CPyStatics[639]; /* 'GANACHE_FORK' */
+    cpy_r_r216 = CPyStatics[641]; /* 'GANACHE_FORK' */
     cpy_r_r217 = (PyObject *)&PyBool_Type;
     cpy_r_r218 = CPyStatic_ENVIRONMENT_VARIABLES___ganache_fork;
     if (likely(cpy_r_r218 != NULL)) goto CPyL103;
@@ -54036,7 +54633,7 @@ CPyL107: ;
     cpy_r_r225 = cpy_r_r222 ? Py_True : Py_False;
     PyObject *cpy_r_r226[3] = {cpy_r_r216, cpy_r_r217, cpy_r_r225};
     cpy_r_r227 = (PyObject **)&cpy_r_r226;
-    cpy_r_r228 = CPyStatics[815]; /* ('default',) */
+    cpy_r_r228 = CPyStatics[819]; /* ('default',) */
     cpy_r_r229 = _PyObject_Vectorcall(cpy_r_r223, cpy_r_r227, 2, cpy_r_r228);
     if (unlikely(cpy_r_r229 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 57, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54045,7 +54642,7 @@ CPyL107: ;
     CPyStatic_ENVIRONMENT_VARIABLES___GANACHE_FORK = cpy_r_r229;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___GANACHE_FORK);
     cpy_r_r230 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r231 = CPyStatics[639]; /* 'GANACHE_FORK' */
+    cpy_r_r231 = CPyStatics[641]; /* 'GANACHE_FORK' */
     cpy_r_r232 = CPyDict_SetItem(cpy_r_r230, cpy_r_r231, cpy_r_r229);
     CPy_DECREF(cpy_r_r229);
     cpy_r_r233 = cpy_r_r232 >= 0;
@@ -54053,7 +54650,7 @@ CPyL107: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 57, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r234 = CPyStatics[641]; /* 'AIOHTTP_TIMEOUT' */
+    cpy_r_r234 = CPyStatics[643]; /* 'AIOHTTP_TIMEOUT' */
     cpy_r_r235 = (PyObject *)&PyLong_Type;
     cpy_r_r236 = CPyStatic__envs___create_env;
     if (likely(cpy_r_r236 != NULL)) goto CPyL112;
@@ -54065,10 +54662,10 @@ CPyL107: ;
     }
     CPy_Unreachable();
 CPyL112: ;
-    cpy_r_r238 = CPyStatics[690]; /* 1200 */
+    cpy_r_r238 = CPyStatics[694]; /* 1200 */
     PyObject *cpy_r_r239[3] = {cpy_r_r234, cpy_r_r235, cpy_r_r238};
     cpy_r_r240 = (PyObject **)&cpy_r_r239;
-    cpy_r_r241 = CPyStatics[815]; /* ('default',) */
+    cpy_r_r241 = CPyStatics[819]; /* ('default',) */
     cpy_r_r242 = _PyObject_Vectorcall(cpy_r_r236, cpy_r_r240, 2, cpy_r_r241);
     if (unlikely(cpy_r_r242 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 61, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54077,7 +54674,7 @@ CPyL112: ;
     CPyStatic_ENVIRONMENT_VARIABLES___AIOHTTP_TIMEOUT = cpy_r_r242;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___AIOHTTP_TIMEOUT);
     cpy_r_r243 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r244 = CPyStatics[641]; /* 'AIOHTTP_TIMEOUT' */
+    cpy_r_r244 = CPyStatics[643]; /* 'AIOHTTP_TIMEOUT' */
     cpy_r_r245 = CPyDict_SetItem(cpy_r_r243, cpy_r_r244, cpy_r_r242);
     CPy_DECREF(cpy_r_r242);
     cpy_r_r246 = cpy_r_r245 >= 0;
@@ -54095,7 +54692,7 @@ CPyL112: ;
     }
     CPy_Unreachable();
 CPyL117: ;
-    cpy_r_r249 = CPyStatics[286]; /* 'BROWNIE_CALL_SEMAPHORE' */
+    cpy_r_r249 = CPyStatics[292]; /* 'BROWNIE_CALL_SEMAPHORE' */
     cpy_r_r250 = (PyObject *)&PyLong_Type;
     cpy_r_r251 = CPyStatics[87]; /* 'create_env' */
     cpy_r_r252 = CPyObject_GetAttr(cpy_r_r247, cpy_r_r251);
@@ -54103,11 +54700,11 @@ CPyL117: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 67, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r253 = CPyStatics[691]; /* 100000 */
+    cpy_r_r253 = CPyStatics[695]; /* 100000 */
     cpy_r_r254 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r255[4] = {cpy_r_r249, cpy_r_r250, cpy_r_r253, cpy_r_r254};
     cpy_r_r256 = (PyObject **)&cpy_r_r255;
-    cpy_r_r257 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r257 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r258 = _PyObject_Vectorcall(cpy_r_r252, cpy_r_r256, 2, cpy_r_r257);
     CPy_DECREF(cpy_r_r252);
     if (unlikely(cpy_r_r258 == NULL)) {
@@ -54117,7 +54714,7 @@ CPyL117: ;
     CPyStatic_ENVIRONMENT_VARIABLES___brownie_semaphore = cpy_r_r258;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___brownie_semaphore);
     cpy_r_r259 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r260 = CPyStatics[642]; /* 'brownie_semaphore' */
+    cpy_r_r260 = CPyStatics[644]; /* 'brownie_semaphore' */
     cpy_r_r261 = CPyDict_SetItem(cpy_r_r259, cpy_r_r260, cpy_r_r258);
     CPy_DECREF(cpy_r_r258);
     cpy_r_r262 = cpy_r_r261 >= 0;
@@ -54125,7 +54722,7 @@ CPyL117: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 67, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r263 = CPyStatics[286]; /* 'BROWNIE_CALL_SEMAPHORE' */
+    cpy_r_r263 = CPyStatics[292]; /* 'BROWNIE_CALL_SEMAPHORE' */
     cpy_r_r264 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r265 = CPyStatics[80]; /* 'BlockSemaphore' */
     cpy_r_r266 = CPyDict_GetItem(cpy_r_r264, cpy_r_r265);
@@ -54161,7 +54758,7 @@ CPyL125: ;
     }
     CPy_Unreachable();
 CPyL127: ;
-    cpy_r_r271 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r271 = CPyStatics[632]; /* 'infura' */
     cpy_r_r272 = CPyObject_GetAttr(cpy_r_r269, cpy_r_r271);
     if (unlikely(cpy_r_r272 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 74, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54192,7 +54789,7 @@ CPyL132: ;
     cpy_r_r278 = cpy_r_r275 ? Py_True : Py_False;
     PyObject *cpy_r_r279[4] = {cpy_r_r263, cpy_r_r266, cpy_r_r267, cpy_r_r278};
     cpy_r_r280 = (PyObject **)&cpy_r_r279;
-    cpy_r_r281 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r281 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r282 = _PyObject_Vectorcall(cpy_r_r276, cpy_r_r280, 2, cpy_r_r281);
     if (unlikely(cpy_r_r282 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 70, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54202,7 +54799,7 @@ CPyL132: ;
     CPyStatic_ENVIRONMENT_VARIABLES___BROWNIE_CALL_SEMAPHORE = cpy_r_r282;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___BROWNIE_CALL_SEMAPHORE);
     cpy_r_r283 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r284 = CPyStatics[286]; /* 'BROWNIE_CALL_SEMAPHORE' */
+    cpy_r_r284 = CPyStatics[292]; /* 'BROWNIE_CALL_SEMAPHORE' */
     cpy_r_r285 = CPyDict_SetItem(cpy_r_r283, cpy_r_r284, cpy_r_r282);
     CPy_DECREF(cpy_r_r282);
     cpy_r_r286 = cpy_r_r285 >= 0;
@@ -54210,7 +54807,7 @@ CPyL132: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 70, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r287 = CPyStatics[282]; /* 'BROWNIE_ENCODER_SEMAPHORE' */
+    cpy_r_r287 = CPyStatics[288]; /* 'BROWNIE_ENCODER_SEMAPHORE' */
     cpy_r_r288 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r289 = CPyStatics[80]; /* 'BlockSemaphore' */
     cpy_r_r290 = CPyDict_GetItem(cpy_r_r288, cpy_r_r289);
@@ -54232,13 +54829,13 @@ CPyL136: ;
     }
     CPy_Unreachable();
 CPyL138: ;
-    cpy_r_r293 = CPyStatics[643]; /* '_default_value' */
+    cpy_r_r293 = CPyStatics[645]; /* '_default_value' */
     cpy_r_r294 = CPyObject_GetAttr(cpy_r_r291, cpy_r_r293);
     if (unlikely(cpy_r_r294 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 86, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL344;
     }
-    cpy_r_r295 = CPyStatics[670]; /* 2 */
+    cpy_r_r295 = CPyStatics[672]; /* 2 */
     cpy_r_r296 = PyNumber_Multiply(cpy_r_r294, cpy_r_r295);
     CPy_DECREF(cpy_r_r294);
     if (unlikely(cpy_r_r296 == NULL)) {
@@ -54259,7 +54856,7 @@ CPyL141: ;
     }
     CPy_Unreachable();
 CPyL143: ;
-    cpy_r_r299 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r299 = CPyStatics[632]; /* 'infura' */
     cpy_r_r300 = CPyObject_GetAttr(cpy_r_r297, cpy_r_r299);
     if (unlikely(cpy_r_r300 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 87, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54290,7 +54887,7 @@ CPyL148: ;
     cpy_r_r306 = cpy_r_r303 ? Py_True : Py_False;
     PyObject *cpy_r_r307[4] = {cpy_r_r287, cpy_r_r290, cpy_r_r296, cpy_r_r306};
     cpy_r_r308 = (PyObject **)&cpy_r_r307;
-    cpy_r_r309 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r309 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r310 = _PyObject_Vectorcall(cpy_r_r304, cpy_r_r308, 2, cpy_r_r309);
     if (unlikely(cpy_r_r310 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 83, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54301,7 +54898,7 @@ CPyL148: ;
     CPyStatic_ENVIRONMENT_VARIABLES___BROWNIE_ENCODER_SEMAPHORE = cpy_r_r310;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___BROWNIE_ENCODER_SEMAPHORE);
     cpy_r_r311 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r312 = CPyStatics[282]; /* 'BROWNIE_ENCODER_SEMAPHORE' */
+    cpy_r_r312 = CPyStatics[288]; /* 'BROWNIE_ENCODER_SEMAPHORE' */
     cpy_r_r313 = CPyDict_SetItem(cpy_r_r311, cpy_r_r312, cpy_r_r310);
     CPy_DECREF(cpy_r_r310);
     cpy_r_r314 = cpy_r_r313 >= 0;
@@ -54309,9 +54906,9 @@ CPyL148: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 83, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r315 = CPyStatics[268]; /* 'BROWNIE_ENCODER_PROCESSES' */
+    cpy_r_r315 = CPyStatics[275]; /* 'BROWNIE_ENCODER_PROCESSES' */
     cpy_r_r316 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r317 = CPyStatics[296]; /* 'AsyncProcessPoolExecutor' */
+    cpy_r_r317 = CPyStatics[302]; /* 'AsyncProcessPoolExecutor' */
     cpy_r_r318 = CPyDict_GetItem(cpy_r_r316, cpy_r_r317);
     if (unlikely(cpy_r_r318 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 101, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54331,7 +54928,7 @@ CPyL152: ;
     }
     CPy_Unreachable();
 CPyL154: ;
-    cpy_r_r321 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r321 = CPyStatics[632]; /* 'infura' */
     cpy_r_r322 = CPyObject_GetAttr(cpy_r_r319, cpy_r_r321);
     if (unlikely(cpy_r_r322 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 102, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54365,7 +54962,7 @@ CPyL160: ;
     }
     CPy_Unreachable();
 CPyL162: ;
-    cpy_r_r329 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r329 = CPyStatics[632]; /* 'infura' */
     cpy_r_r330 = CPyObject_GetAttr(cpy_r_r327, cpy_r_r329);
     if (unlikely(cpy_r_r330 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 103, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54397,7 +54994,7 @@ CPyL167: ;
     cpy_r_r337 = cpy_r_r333 ? Py_True : Py_False;
     PyObject *cpy_r_r338[4] = {cpy_r_r315, cpy_r_r318, cpy_r_r336, cpy_r_r337};
     cpy_r_r339 = (PyObject **)&cpy_r_r338;
-    cpy_r_r340 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r340 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r341 = _PyObject_Vectorcall(cpy_r_r334, cpy_r_r339, 2, cpy_r_r340);
     if (unlikely(cpy_r_r341 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 99, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54406,7 +55003,7 @@ CPyL167: ;
     CPy_DECREF(cpy_r_r318);
     CPy_DECREF(cpy_r_r336);
     cpy_r_r342 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r343 = CPyStatics[268]; /* 'BROWNIE_ENCODER_PROCESSES' */
+    cpy_r_r343 = CPyStatics[275]; /* 'BROWNIE_ENCODER_PROCESSES' */
     cpy_r_r344 = CPyDict_SetItem(cpy_r_r342, cpy_r_r343, cpy_r_r341);
     CPy_DECREF(cpy_r_r341);
     cpy_r_r345 = cpy_r_r344 >= 0;
@@ -54414,9 +55011,9 @@ CPyL167: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 99, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r346 = CPyStatics[271]; /* 'BROWNIE_DECODER_PROCESSES' */
+    cpy_r_r346 = CPyStatics[278]; /* 'BROWNIE_DECODER_PROCESSES' */
     cpy_r_r347 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r348 = CPyStatics[296]; /* 'AsyncProcessPoolExecutor' */
+    cpy_r_r348 = CPyStatics[302]; /* 'AsyncProcessPoolExecutor' */
     cpy_r_r349 = CPyDict_GetItem(cpy_r_r347, cpy_r_r348);
     if (unlikely(cpy_r_r349 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 114, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54436,7 +55033,7 @@ CPyL171: ;
     }
     CPy_Unreachable();
 CPyL173: ;
-    cpy_r_r352 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r352 = CPyStatics[632]; /* 'infura' */
     cpy_r_r353 = CPyObject_GetAttr(cpy_r_r350, cpy_r_r352);
     if (unlikely(cpy_r_r353 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 115, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54470,7 +55067,7 @@ CPyL179: ;
     }
     CPy_Unreachable();
 CPyL181: ;
-    cpy_r_r360 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r360 = CPyStatics[632]; /* 'infura' */
     cpy_r_r361 = CPyObject_GetAttr(cpy_r_r358, cpy_r_r360);
     if (unlikely(cpy_r_r361 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 116, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54502,7 +55099,7 @@ CPyL186: ;
     cpy_r_r368 = cpy_r_r364 ? Py_True : Py_False;
     PyObject *cpy_r_r369[4] = {cpy_r_r346, cpy_r_r349, cpy_r_r367, cpy_r_r368};
     cpy_r_r370 = (PyObject **)&cpy_r_r369;
-    cpy_r_r371 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r371 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r372 = _PyObject_Vectorcall(cpy_r_r365, cpy_r_r370, 2, cpy_r_r371);
     if (unlikely(cpy_r_r372 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 112, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54511,7 +55108,7 @@ CPyL186: ;
     CPy_DECREF(cpy_r_r349);
     CPy_DECREF(cpy_r_r367);
     cpy_r_r373 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r374 = CPyStatics[271]; /* 'BROWNIE_DECODER_PROCESSES' */
+    cpy_r_r374 = CPyStatics[278]; /* 'BROWNIE_DECODER_PROCESSES' */
     cpy_r_r375 = CPyDict_SetItem(cpy_r_r373, cpy_r_r374, cpy_r_r372);
     CPy_DECREF(cpy_r_r372);
     cpy_r_r376 = cpy_r_r375 >= 0;
@@ -54519,9 +55116,9 @@ CPyL186: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 112, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r377 = CPyStatics[644]; /* 'MULTICALL_DECODER_PROCESSES' */
+    cpy_r_r377 = CPyStatics[646]; /* 'MULTICALL_DECODER_PROCESSES' */
     cpy_r_r378 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r379 = CPyStatics[296]; /* 'AsyncProcessPoolExecutor' */
+    cpy_r_r379 = CPyStatics[302]; /* 'AsyncProcessPoolExecutor' */
     cpy_r_r380 = CPyDict_GetItem(cpy_r_r378, cpy_r_r379);
     if (unlikely(cpy_r_r380 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 127, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54541,7 +55138,7 @@ CPyL190: ;
     }
     CPy_Unreachable();
 CPyL192: ;
-    cpy_r_r383 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r383 = CPyStatics[632]; /* 'infura' */
     cpy_r_r384 = CPyObject_GetAttr(cpy_r_r381, cpy_r_r383);
     if (unlikely(cpy_r_r384 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 128, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54575,7 +55172,7 @@ CPyL198: ;
     }
     CPy_Unreachable();
 CPyL200: ;
-    cpy_r_r391 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r391 = CPyStatics[632]; /* 'infura' */
     cpy_r_r392 = CPyObject_GetAttr(cpy_r_r389, cpy_r_r391);
     if (unlikely(cpy_r_r392 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 129, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54607,7 +55204,7 @@ CPyL205: ;
     cpy_r_r399 = cpy_r_r395 ? Py_True : Py_False;
     PyObject *cpy_r_r400[4] = {cpy_r_r377, cpy_r_r380, cpy_r_r398, cpy_r_r399};
     cpy_r_r401 = (PyObject **)&cpy_r_r400;
-    cpy_r_r402 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r402 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r403 = _PyObject_Vectorcall(cpy_r_r396, cpy_r_r401, 2, cpy_r_r402);
     if (unlikely(cpy_r_r403 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 125, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54616,7 +55213,7 @@ CPyL205: ;
     CPy_DECREF(cpy_r_r380);
     CPy_DECREF(cpy_r_r398);
     cpy_r_r404 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r405 = CPyStatics[644]; /* 'MULTICALL_DECODER_PROCESSES' */
+    cpy_r_r405 = CPyStatics[646]; /* 'MULTICALL_DECODER_PROCESSES' */
     cpy_r_r406 = CPyDict_SetItem(cpy_r_r404, cpy_r_r405, cpy_r_r403);
     CPy_DECREF(cpy_r_r403);
     cpy_r_r407 = cpy_r_r406 >= 0;
@@ -54624,7 +55221,7 @@ CPyL205: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 125, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r408 = CPyStatics[645]; /* 'COLLECTION_FACTOR' */
+    cpy_r_r408 = CPyStatics[647]; /* 'COLLECTION_FACTOR' */
     cpy_r_r409 = (PyObject *)&PyLong_Type;
     cpy_r_r410 = CPyStatic_ENVIRONMENT_VARIABLES___OPERATION_MODE;
     if (likely(cpy_r_r410 != NULL)) goto CPyL210;
@@ -54636,7 +55233,7 @@ CPyL205: ;
     }
     CPy_Unreachable();
 CPyL210: ;
-    cpy_r_r412 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r412 = CPyStatics[632]; /* 'infura' */
     cpy_r_r413 = CPyObject_GetAttr(cpy_r_r410, cpy_r_r412);
     if (unlikely(cpy_r_r413 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 141, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54670,7 +55267,7 @@ CPyL216: ;
     }
     CPy_Unreachable();
 CPyL218: ;
-    cpy_r_r420 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r420 = CPyStatics[632]; /* 'infura' */
     cpy_r_r421 = CPyObject_GetAttr(cpy_r_r418, cpy_r_r420);
     if (unlikely(cpy_r_r421 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 142, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54702,7 +55299,7 @@ CPyL223: ;
     cpy_r_r428 = cpy_r_r424 ? Py_True : Py_False;
     PyObject *cpy_r_r429[4] = {cpy_r_r408, cpy_r_r409, cpy_r_r427, cpy_r_r428};
     cpy_r_r430 = (PyObject **)&cpy_r_r429;
-    cpy_r_r431 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r431 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r432 = _PyObject_Vectorcall(cpy_r_r425, cpy_r_r430, 2, cpy_r_r431);
     if (unlikely(cpy_r_r432 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 138, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54712,7 +55309,7 @@ CPyL223: ;
     CPyStatic_ENVIRONMENT_VARIABLES___COLLECTION_FACTOR = cpy_r_r432;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___COLLECTION_FACTOR);
     cpy_r_r433 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r434 = CPyStatics[645]; /* 'COLLECTION_FACTOR' */
+    cpy_r_r434 = CPyStatics[647]; /* 'COLLECTION_FACTOR' */
     cpy_r_r435 = CPyDict_SetItem(cpy_r_r433, cpy_r_r434, cpy_r_r432);
     CPy_DECREF(cpy_r_r432);
     cpy_r_r436 = cpy_r_r435 >= 0;
@@ -54720,7 +55317,7 @@ CPyL223: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 138, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r437 = CPyStatics[646]; /* 'USE_FULL_REQUEST' */
+    cpy_r_r437 = CPyStatics[648]; /* 'USE_FULL_REQUEST' */
     cpy_r_r438 = (PyObject *)&PyBool_Type;
     cpy_r_r439 = CPyStatic__envs___create_env;
     if (likely(cpy_r_r439 != NULL)) goto CPyL228;
@@ -54736,7 +55333,7 @@ CPyL228: ;
     cpy_r_r442 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r443[4] = {cpy_r_r437, cpy_r_r438, cpy_r_r441, cpy_r_r442};
     cpy_r_r444 = (PyObject **)&cpy_r_r443;
-    cpy_r_r445 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r445 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r446 = _PyObject_Vectorcall(cpy_r_r439, cpy_r_r444, 2, cpy_r_r445);
     if (unlikely(cpy_r_r446 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 148, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54745,7 +55342,7 @@ CPyL228: ;
     CPyStatic_ENVIRONMENT_VARIABLES___USE_FULL_REQUEST = cpy_r_r446;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___USE_FULL_REQUEST);
     cpy_r_r447 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r448 = CPyStatics[646]; /* 'USE_FULL_REQUEST' */
+    cpy_r_r448 = CPyStatics[648]; /* 'USE_FULL_REQUEST' */
     cpy_r_r449 = CPyDict_SetItem(cpy_r_r447, cpy_r_r448, cpy_r_r446);
     CPy_DECREF(cpy_r_r446);
     cpy_r_r450 = cpy_r_r449 >= 0;
@@ -54769,7 +55366,7 @@ CPyL233: ;
     cpy_r_r456 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r457[4] = {cpy_r_r451, cpy_r_r452, cpy_r_r455, cpy_r_r456};
     cpy_r_r458 = (PyObject **)&cpy_r_r457;
-    cpy_r_r459 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r459 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r460 = _PyObject_Vectorcall(cpy_r_r453, cpy_r_r458, 2, cpy_r_r459);
     if (unlikely(cpy_r_r460 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 151, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54786,7 +55383,7 @@ CPyL233: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 151, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r465 = CPyStatics[647]; /* 'EXPORT_STATS' */
+    cpy_r_r465 = CPyStatics[649]; /* 'EXPORT_STATS' */
     cpy_r_r466 = (PyObject *)&PyBool_Type;
     cpy_r_r467 = CPyStatic__envs___create_env;
     if (likely(cpy_r_r467 != NULL)) goto CPyL238;
@@ -54802,7 +55399,7 @@ CPyL238: ;
     cpy_r_r470 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r471[4] = {cpy_r_r465, cpy_r_r466, cpy_r_r469, cpy_r_r470};
     cpy_r_r472 = (PyObject **)&cpy_r_r471;
-    cpy_r_r473 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r473 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r474 = _PyObject_Vectorcall(cpy_r_r467, cpy_r_r472, 2, cpy_r_r473);
     if (unlikely(cpy_r_r474 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 154, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54811,7 +55408,7 @@ CPyL238: ;
     CPyStatic_ENVIRONMENT_VARIABLES___EXPORT_STATS = cpy_r_r474;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___EXPORT_STATS);
     cpy_r_r475 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r476 = CPyStatics[647]; /* 'EXPORT_STATS' */
+    cpy_r_r476 = CPyStatics[649]; /* 'EXPORT_STATS' */
     cpy_r_r477 = CPyDict_SetItem(cpy_r_r475, cpy_r_r476, cpy_r_r474);
     CPy_DECREF(cpy_r_r474);
     cpy_r_r478 = cpy_r_r477 >= 0;
@@ -54819,7 +55416,7 @@ CPyL238: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 154, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r479 = CPyStatics[648]; /* 'COLLECT_STATS' */
+    cpy_r_r479 = CPyStatics[650]; /* 'COLLECT_STATS' */
     cpy_r_r480 = (PyObject *)&PyBool_Type;
     cpy_r_r481 = CPyStatic_ENVIRONMENT_VARIABLES___EXPORT_STATS;
     if (likely(cpy_r_r481 != NULL)) goto CPyL243;
@@ -54861,7 +55458,7 @@ CPyL250: ;
     cpy_r_r490 = cpy_r_r487 ? Py_True : Py_False;
     PyObject *cpy_r_r491[4] = {cpy_r_r479, cpy_r_r480, cpy_r_r481, cpy_r_r490};
     cpy_r_r492 = (PyObject **)&cpy_r_r491;
-    cpy_r_r493 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r493 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r494 = _PyObject_Vectorcall(cpy_r_r488, cpy_r_r492, 2, cpy_r_r493);
     if (unlikely(cpy_r_r494 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 156, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54870,7 +55467,7 @@ CPyL250: ;
     CPyStatic_ENVIRONMENT_VARIABLES___COLLECT_STATS = cpy_r_r494;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___COLLECT_STATS);
     cpy_r_r495 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r496 = CPyStatics[648]; /* 'COLLECT_STATS' */
+    cpy_r_r496 = CPyStatics[650]; /* 'COLLECT_STATS' */
     cpy_r_r497 = CPyDict_SetItem(cpy_r_r495, cpy_r_r496, cpy_r_r494);
     CPy_DECREF(cpy_r_r494);
     cpy_r_r498 = cpy_r_r497 >= 0;
@@ -54878,7 +55475,7 @@ CPyL250: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 156, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r499 = CPyStatics[649]; /* 'STUCK_CALL_TIMEOUT' */
+    cpy_r_r499 = CPyStatics[651]; /* 'STUCK_CALL_TIMEOUT' */
     cpy_r_r500 = (PyObject *)&PyLong_Type;
     cpy_r_r501 = CPyStatic__envs___create_env;
     if (likely(cpy_r_r501 != NULL)) goto CPyL255;
@@ -54890,10 +55487,10 @@ CPyL250: ;
     }
     CPy_Unreachable();
 CPyL255: ;
-    cpy_r_r503 = CPyStatics[692]; /* 120 */
+    cpy_r_r503 = CPyStatics[696]; /* 120 */
     PyObject *cpy_r_r504[3] = {cpy_r_r499, cpy_r_r500, cpy_r_r503};
     cpy_r_r505 = (PyObject **)&cpy_r_r504;
-    cpy_r_r506 = CPyStatics[815]; /* ('default',) */
+    cpy_r_r506 = CPyStatics[819]; /* ('default',) */
     cpy_r_r507 = _PyObject_Vectorcall(cpy_r_r501, cpy_r_r505, 2, cpy_r_r506);
     if (unlikely(cpy_r_r507 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 161, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54902,7 +55499,7 @@ CPyL255: ;
     CPyStatic_ENVIRONMENT_VARIABLES___STUCK_CALL_TIMEOUT = cpy_r_r507;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___STUCK_CALL_TIMEOUT);
     cpy_r_r508 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r509 = CPyStatics[649]; /* 'STUCK_CALL_TIMEOUT' */
+    cpy_r_r509 = CPyStatics[651]; /* 'STUCK_CALL_TIMEOUT' */
     cpy_r_r510 = CPyDict_SetItem(cpy_r_r508, cpy_r_r509, cpy_r_r507);
     CPy_DECREF(cpy_r_r507);
     cpy_r_r511 = cpy_r_r510 >= 0;
@@ -54910,8 +55507,8 @@ CPyL255: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 161, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r512 = CPyStatics[457]; /* 'eth_call' */
-    cpy_r_r513 = CPyStatics[650]; /* 'ETH_CALL_SEMAPHORE' */
+    cpy_r_r512 = CPyStatics[459]; /* 'eth_call' */
+    cpy_r_r513 = CPyStatics[652]; /* 'ETH_CALL_SEMAPHORE' */
     cpy_r_r514 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r515 = CPyStatics[80]; /* 'BlockSemaphore' */
     cpy_r_r516 = CPyDict_GetItem(cpy_r_r514, cpy_r_r515);
@@ -54956,7 +55553,7 @@ CPyL265: ;
     cpy_r_r523 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r524[4] = {cpy_r_r513, cpy_r_r516, cpy_r_r520, cpy_r_r523};
     cpy_r_r525 = (PyObject **)&cpy_r_r524;
-    cpy_r_r526 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r526 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r527 = _PyObject_Vectorcall(cpy_r_r521, cpy_r_r525, 2, cpy_r_r526);
     if (unlikely(cpy_r_r527 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 165, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -54964,8 +55561,8 @@ CPyL265: ;
     }
     CPy_DECREF(cpy_r_r516);
     CPy_DECREF(cpy_r_r520);
-    cpy_r_r528 = CPyStatics[651]; /* 'eth_getBlock' */
-    cpy_r_r529 = CPyStatics[652]; /* 'ETH_GETBLOCK_SEMAPHORE' */
+    cpy_r_r528 = CPyStatics[653]; /* 'eth_getBlock' */
+    cpy_r_r529 = CPyStatics[654]; /* 'ETH_GETBLOCK_SEMAPHORE' */
     cpy_r_r530 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r531 = CPyStatics[42]; /* 'a_sync' */
     cpy_r_r532 = CPyDict_GetItem(cpy_r_r530, cpy_r_r531);
@@ -54994,19 +55591,19 @@ CPyL269: ;
     }
     CPy_Unreachable();
 CPyL271: ;
-    cpy_r_r537 = CPyStatics[693]; /* 1000 */
+    cpy_r_r537 = CPyStatics[697]; /* 1000 */
     cpy_r_r538 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r539[4] = {cpy_r_r529, cpy_r_r534, cpy_r_r537, cpy_r_r538};
     cpy_r_r540 = (PyObject **)&cpy_r_r539;
-    cpy_r_r541 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r541 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r542 = _PyObject_Vectorcall(cpy_r_r535, cpy_r_r540, 2, cpy_r_r541);
     if (unlikely(cpy_r_r542 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 171, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL376;
     }
     CPy_DECREF(cpy_r_r534);
-    cpy_r_r543 = CPyStatics[653]; /* 'eth_getCode' */
-    cpy_r_r544 = CPyStatics[654]; /* 'ETH_GETCODE_SEMAPHORE' */
+    cpy_r_r543 = CPyStatics[655]; /* 'eth_getCode' */
+    cpy_r_r544 = CPyStatics[656]; /* 'ETH_GETCODE_SEMAPHORE' */
     cpy_r_r545 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r546 = CPyStatics[42]; /* 'a_sync' */
     cpy_r_r547 = CPyDict_GetItem(cpy_r_r545, cpy_r_r546);
@@ -55035,11 +55632,11 @@ CPyL275: ;
     }
     CPy_Unreachable();
 CPyL277: ;
-    cpy_r_r552 = CPyStatics[694]; /* 5000 */
+    cpy_r_r552 = CPyStatics[698]; /* 5000 */
     cpy_r_r553 = 0 ? Py_True : Py_False;
     PyObject *cpy_r_r554[4] = {cpy_r_r544, cpy_r_r549, cpy_r_r552, cpy_r_r553};
     cpy_r_r555 = (PyObject **)&cpy_r_r554;
-    cpy_r_r556 = CPyStatics[814]; /* ('default', 'verbose') */
+    cpy_r_r556 = CPyStatics[818]; /* ('default', 'verbose') */
     cpy_r_r557 = _PyObject_Vectorcall(cpy_r_r550, cpy_r_r555, 2, cpy_r_r556);
     if (unlikely(cpy_r_r557 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 177, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -55057,7 +55654,7 @@ CPyL277: ;
     CPyStatic_ENVIRONMENT_VARIABLES___method_semaphores = cpy_r_r558;
     CPy_INCREF(CPyStatic_ENVIRONMENT_VARIABLES___method_semaphores);
     cpy_r_r559 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r560 = CPyStatics[655]; /* 'method_semaphores' */
+    cpy_r_r560 = CPyStatics[657]; /* 'method_semaphores' */
     cpy_r_r561 = CPyDict_SetItem(cpy_r_r559, cpy_r_r560, cpy_r_r558);
     CPy_DECREF(cpy_r_r558);
     cpy_r_r562 = cpy_r_r561 >= 0;
@@ -55079,7 +55676,7 @@ CPyL277: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 185, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r568 = CPyStatics[623]; /* 'disabled' */
+    cpy_r_r568 = CPyStatics[625]; /* 'disabled' */
     cpy_r_r569 = CPyObject_GetAttr(cpy_r_r567, cpy_r_r568);
     CPy_DECREF(cpy_r_r567);
     if (unlikely(cpy_r_r569 == NULL)) {
@@ -55105,9 +55702,9 @@ CPyL277: ;
     }
     CPy_Unreachable();
 CPyL288: ;
-    cpy_r_r575 = CPyStatics[656]; /* ('More details can be found in '
+    cpy_r_r575 = CPyStatics[658]; /* ('More details can be found in '
                                      'dank_mids/ENVIRONMENT_VARIABLES.py') */
-    cpy_r_r576 = CPyStatics[629]; /* 'info' */
+    cpy_r_r576 = CPyStatics[631]; /* 'info' */
     cpy_r_r577 = CPyObject_CallMethodObjArgs(cpy_r_r573, cpy_r_r576, cpy_r_r575, NULL);
     if (unlikely(cpy_r_r577 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 186, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -55125,9 +55722,9 @@ CPyL289: ;
     }
     CPy_Unreachable();
 CPyL292: ;
-    cpy_r_r580 = CPyStatics[657]; /* ('NOTE: You can disable these logs by setting the '
+    cpy_r_r580 = CPyStatics[659]; /* ('NOTE: You can disable these logs by setting the '
                                      '`TYPEDENVS_SHUTUP` env var to any value.') */
-    cpy_r_r581 = CPyStatics[629]; /* 'info' */
+    cpy_r_r581 = CPyStatics[631]; /* 'info' */
     cpy_r_r582 = CPyObject_CallMethodObjArgs(cpy_r_r578, cpy_r_r581, cpy_r_r580, NULL);
     if (unlikely(cpy_r_r582 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 187, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -55145,7 +55742,7 @@ CPyL293: ;
     }
     CPy_Unreachable();
 CPyL296: ;
-    cpy_r_r585 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r585 = CPyStatics[632]; /* 'infura' */
     cpy_r_r586 = CPyObject_GetAttr(cpy_r_r583, cpy_r_r585);
     if (unlikely(cpy_r_r586 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 195, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -55170,7 +55767,7 @@ CPyL296: ;
     }
     CPy_Unreachable();
 CPyL302: ;
-    cpy_r_r592 = CPyStatics[658]; /* ("Unless you know what you're doing, dank mids should "
+    cpy_r_r592 = CPyStatics[660]; /* ("Unless you know what you're doing, dank mids should "
                                      'be run in infura mode for now') */
     cpy_r_r593 = CPyStatics[160]; /* 'warning' */
     cpy_r_r594 = CPyObject_CallMethodObjArgs(cpy_r_r590, cpy_r_r593, cpy_r_r592, NULL);
@@ -55190,7 +55787,7 @@ CPyL303: ;
     }
     CPy_Unreachable();
 CPyL306: ;
-    cpy_r_r597 = CPyStatics[630]; /* 'infura' */
+    cpy_r_r597 = CPyStatics[632]; /* 'infura' */
     cpy_r_r598 = CPyObject_GetAttr(cpy_r_r595, cpy_r_r597);
     if (unlikely(cpy_r_r598 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 200, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -55206,21 +55803,21 @@ CPyL306: ;
     cpy_r_r601 = cpy_r_r599;
     if (!cpy_r_r601) goto CPyL332;
     cpy_r_r602 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r603 = CPyStatics[644]; /* 'MULTICALL_DECODER_PROCESSES' */
+    cpy_r_r603 = CPyStatics[646]; /* 'MULTICALL_DECODER_PROCESSES' */
     cpy_r_r604 = CPyDict_GetItem(cpy_r_r602, cpy_r_r603);
     if (unlikely(cpy_r_r604 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 202, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
     cpy_r_r605 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r606 = CPyStatics[271]; /* 'BROWNIE_DECODER_PROCESSES' */
+    cpy_r_r606 = CPyStatics[278]; /* 'BROWNIE_DECODER_PROCESSES' */
     cpy_r_r607 = CPyDict_GetItem(cpy_r_r605, cpy_r_r606);
     if (unlikely(cpy_r_r607 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 203, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL383;
     }
     cpy_r_r608 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r609 = CPyStatics[268]; /* 'BROWNIE_ENCODER_PROCESSES' */
+    cpy_r_r609 = CPyStatics[275]; /* 'BROWNIE_ENCODER_PROCESSES' */
     cpy_r_r610 = CPyDict_GetItem(cpy_r_r608, cpy_r_r609);
     if (unlikely(cpy_r_r610 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 204, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -55262,7 +55859,7 @@ CPyL317: ;
     cpy_r_r619 = PyIter_Next(cpy_r_r618);
     if (cpy_r_r619 == NULL) goto CPyL389;
     cpy_r_r620 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r621 = CPyStatics[659]; /* 'process_pool' */
+    cpy_r_r621 = CPyStatics[661]; /* 'process_pool' */
     cpy_r_r622 = CPyDict_SetItem(cpy_r_r620, cpy_r_r621, cpy_r_r619);
     CPy_DECREF(cpy_r_r619);
     cpy_r_r623 = cpy_r_r622 >= 0;
@@ -55271,13 +55868,13 @@ CPyL317: ;
         goto CPyL390;
     }
     cpy_r_r624 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r625 = CPyStatics[659]; /* 'process_pool' */
+    cpy_r_r625 = CPyStatics[661]; /* 'process_pool' */
     cpy_r_r626 = CPyDict_GetItem(cpy_r_r624, cpy_r_r625);
     if (unlikely(cpy_r_r626 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 206, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL390;
     }
-    cpy_r_r627 = CPyStatics[295]; /* '_max_workers' */
+    cpy_r_r627 = CPyStatics[301]; /* '_max_workers' */
     cpy_r_r628 = CPyObject_GetAttr(cpy_r_r626, cpy_r_r627);
     CPy_DECREF(cpy_r_r626);
     if (unlikely(cpy_r_r628 == NULL)) {
@@ -55297,9 +55894,9 @@ CPyL317: ;
     } else
         goto CPyL317;
 CPyL323: ;
-    cpy_r_r632 = CPyStatics[660]; /* 'You cannot set env var ' */
+    cpy_r_r632 = CPyStatics[662]; /* 'You cannot set env var ' */
     cpy_r_r633 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
-    cpy_r_r634 = CPyStatics[659]; /* 'process_pool' */
+    cpy_r_r634 = CPyStatics[661]; /* 'process_pool' */
     cpy_r_r635 = CPyDict_GetItem(cpy_r_r633, cpy_r_r634);
     if (unlikely(cpy_r_r635 == NULL)) {
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 208, CPyStatic_ENVIRONMENT_VARIABLES___globals);
@@ -55318,7 +55915,7 @@ CPyL323: ;
         CPy_AddTraceback("dank_mids\\ENVIRONMENT_VARIABLES.py", "<module>", 208, CPyStatic_ENVIRONMENT_VARIABLES___globals);
         goto CPyL333;
     }
-    cpy_r_r639 = CPyStatics[661]; /* ' while running dank in infura mode.' */
+    cpy_r_r639 = CPyStatics[663]; /* ' while running dank in infura mode.' */
     cpy_r_r640 = CPyStr_Build(3, cpy_r_r632, cpy_r_r638, cpy_r_r639);
     CPy_DECREF(cpy_r_r638);
     if (unlikely(cpy_r_r640 == NULL)) {
@@ -55636,7 +56233,7 @@ int CPyGlobalsInit(void)
     CPyModule_builtins = Py_None;
     CPyModule_typing = Py_None;
     CPyModule_weakref = Py_None;
-    CPyModule_brownie___convert = Py_None;
+    CPyModule_eth_hash = Py_None;
     CPyModule_dank_mids___brownie_patch = Py_None;
     CPyModule_dank_mids___helpers = Py_None;
     CPyModule_dank_mids___brownie_patch___call = Py_None;
@@ -55734,7 +56331,7 @@ int CPyGlobalsInit(void)
     return 0;
 }
 
-PyObject *CPyStatics[816];
+PyObject *CPyStatics[820];
 const char * const CPyLit_Str[] = {
     "\005\b__name__\016 via DankBatch\004name\abatcher\004step",
     "\003\037<dank_mids.DankBatch object at \003hex\001>",
@@ -55790,14 +56387,14 @@ const char * const CPyLit_Str[] = {
     "\005\035dank_mids.brownie_patch.types\a__all__\aDankEth\rdank_mids.eth\bDankWeb3",
     "\005\032dank_mids.helpers._helpers\tdank_web3\bdank_eth\vImportError\anetwork",
     "\004\abrownie\fis_connected\bContract\016patch_contract",
-    "\005 dank_mids.brownie_patch.contract\003eth\006sorted\bKeyError\004Dict",
-    "\005\023WeakValueDictionary\aweakref\005utils\017brownie.convert\n_nocompile",
-    "\004\027dank_mids.brownie_patch\b_helpers\fSingletonKey\v_singletons",
-    "\003\027build_function_selector\030build_function_signature\016_make_hashable",
-    "\005\f_FunctionABI\034dank_mids.brownie_patch._abi\003abi\tinput_sig\tsignature",
-    "\004\vFunctionABI\031BROWNIE_ENCODER_PROCESSES\016__encode_input\003run",
+    "\006 dank_mids.brownie_patch.contract\003eth\006sorted\bKeyError\004type\005tuple",
+    "\n\ncomponents\001(\001,\001)\areplace\006inputs\004Dict\023WeakValueDictionary\aweakref\004auto",
+    "\005\beth_hash\n_nocompile\027dank_mids.brownie_patch\b_helpers\fSingletonKey",
+    "\004\v_singletons\006keccak\016_make_hashable\f_FunctionABI",
+    "\005\034dank_mids.brownie_patch._abi\003abi\tinput_sig\tsignature\vFunctionABI",
+    "\003\031BROWNIE_ENCODER_PROCESSES\016__encode_input\003run",
     "\004\031BROWNIE_DECODER_PROCESSES\017__decode_output\b_address\017_skip_proc_pool",
-    "\005\027_skip_decoder_proc_pool\006inputs\021_get_coroutine_fn\nMethodType\tcoroutine",
+    "\004\027_skip_decoder_proc_pool\021_get_coroutine_fn\nMethodType\tcoroutine",
     "\002\r_call_no_args+Cannot use state override with `coroutine`.",
     "\004\031BROWNIE_ENCODER_SEMAPHORE\t__aexit__\n__aenter__\fencode_input",
     "\004\026BROWNIE_CALL_SEMAPHORE\002to\004call\025InsufficientDataBytes",
@@ -55807,12 +56404,12 @@ const char * const CPyLit_Str[] = {
     "\003\nContract(\'\003\').2 object has no attribute \'_skip_decoder_proc_pool\'",
     "\006\020DEBUG ME BRO: %s\005debug\020get_type_strings\aoutputs\n0x08c379a0\aeth_abi",
     "\005\006string\ndecode_abi\017Call reverted: \n0x4e487b71\024SOLIDITY_ERROR_CODES",
-    "\004\023Panic (error code: \001)\n0xc1b84b2f!Call reverted: execution reverted",
+    "\003\023Panic (error code: \n0xc1b84b2f!Call reverted: execution reverted",
     "\002/No data was returned - the call likely reverted\023VirtualMachineError",
-    "\a\026 requires no arguments\bis_array\ncomponents\vto_type_str\001\'\004\' - \aarrlist",
-    "\b\titem_type\004uint\003int\vfixed168x10\004bool\aaddress\004byte\016Unknown type: ",
-    "\003\adecimal\037dank_mids\\brownie_patch\\call.py\032concurrent.futures.process",
-    "\a\006Logger\006pickle\nModuleType\005types\bCallable\aNewType\bSequence",
+    "\a\026 requires no arguments\bis_array\vto_type_str\001\'\004\' - \aarrlist\titem_type",
+    "\b\004uint\003int\vfixed168x10\004bool\aaddress\004byte\016Unknown type: \adecimal",
+    "\003\037dank_mids\\brownie_patch\\call.py\032concurrent.futures.process\006Logger",
+    "\006\006pickle\nModuleType\005types\bCallable\aNewType\bSequence",
     "\002\031brownie.convert.datatypes\031brownie.convert.normalize",
     "\005\030brownie.network.contract\bhexbytes\005chain\aABIType\025brownie.convert.utils",
     "\003\022brownie.exceptions\fContractCall!brownie.project.compiler.solidity",
@@ -55835,9 +56432,9 @@ const char * const CPyLit_Str[] = {
     "\001BYou must explicitly declare which function you are calling, e.g. .",
     "\a\a(*args)\004find\n.coroutine\020block_identifier\bdecimals\boverride\005wraps",
     "\005\amethods\006values\nContractTx\tfunctools\020OverloadedMethod",
-    "\a\034dank_mids.brownie_patch.call\006_owner\004type\003256\areplace\anatspec\006update",
-    "\006\bconstant\017stateMutability\004view\004pure\fAccountsType\016brownie.typing",
-    "\004\v_DankMethod\020_DankMethodMixin\b_EVMType\037dank_mids.brownie_patch._method",
+    "\006\034dank_mids.brownie_patch.call\006_owner\003256\anatspec\006update\bconstant",
+    "\006\017stateMutability\004view\004pure\fAccountsType\016brownie.typing\v_DankMethod",
+    "\003\020_DankMethodMixin\b_EVMType\037dank_mids.brownie_patch._method",
     "\005\016_NonOverloaded\rbetter_decode\017PartialResponse\bResponse\r_decode_batch",
     "\b\aMapping\005items\beth_call\rdecode_result\aRequest\amsgspec\003Raw\aDecoder",
     "\006\titertools\033dank_mids\\helpers\\_codec.py\bIterable\aLiteral\004Type\boverload",
@@ -55910,37 +56507,37 @@ const char * const CPyLit_Bytes[] = {
     "",
 };
 const char * const CPyLit_Int[] = {
-    "\0220\0001\0002\00050\00040\00030\00020\00010\0004\00016\000-1\00012336033\00016572242\000821923\000722566\00014353601\00033001987\0007654707",
-    "\t4286263\0005022\00010000\000500\0001200\000100000\000120\0001000\0005000",
+    "\0230\0001\0002\00050\00040\00030\00020\00010\0005\0008\0004\00016\000-1\00012336033\00016572242\000821923\000722566\00014353601\00033001987",
+    "\n7654707\0004286263\0005022\00010000\000500\0001200\000100000\000120\0001000\0005000",
     "",
 };
 const double CPyLit_Float[] = {0};
 const double CPyLit_Complex[] = {0};
 const int CPyLit_Tuple[] = {
     121, 1, 5, 1, 14, 1, 21, 1, 31, 8, 33, 34, 35, 36, 37, 38, 39, 40,
-    3, 42, 42, 42, 1, 700, 1, 45, 1, 47, 2, 24, 28, 1, 50, 1, 52, 1, 54,
-    3, 34, 36, 40, 1, 70, 1, 36, 1, 78, 1, 80, 3, 136, 136, 136, 1, 713,
+    3, 42, 42, 42, 1, 704, 1, 45, 1, 47, 2, 24, 28, 1, 50, 1, 52, 1, 54,
+    3, 34, 36, 40, 1, 70, 1, 36, 1, 78, 1, 80, 3, 136, 136, 136, 1, 717,
     4, 34, 138, 36, 139, 1, 140, 3, 157, 149, 158, 1, 161, 3, 174, 174,
-    174, 3, 175, 175, 175, 2, 719, 720, 6, 33, 36, 177, 178, 39, 40, 1,
-    179, 1, 719, 1, 213, 1, 221, 1, 223, 1, 225, 4, 227, 228, 229, 230, 1,
-    233, 1, 235, 2, 240, 95, 2, 243, 244, 5, 34, 249, 36, 178, 40, 1, 250,
-    1, 252, 1, 254, 1, 256, 3, 336, 336, 336, 1, 739, 1, 292, 1, 339, 1,
-    297, 2, 278, 341, 11, 34, 343, 249, 36, 177, 344, 139, 345, 178, 38,
-    39, 3, 346, 241, 241, 3, 347, 241, 241, 3, 348, 241, 241, 3, 309, 309,
-    309, 3, 349, 349, 349, 5, 746, 747, 748, 749, 750, 1, 296, 1, 350, 1,
-    351, 1, 306, 1, 320, 1, 354, 1, 314, 1, 289, 1, 357, 1, 359, 1, 361,
-    1, 363, 2, 70, 365, 1, 366, 1, 367, 1, 427, 1, 278, 4, 34, 249, 139,
-    39, 1, 243, 3, 354, 430, 432, 2, 277, 274, 7, 34, 249, 139, 178, 38,
-    39, 40, 1, 444, 3, 446, 447, 448, 1, 435, 4, 452, 459, 453, 451, 1,
-    452, 3, 463, 463, 463, 1, 779, 17, 33, 34, 138, 343, 249, 36, 465,
-    177, 466, 455, 139, 39, 178, 467, 38, 40, 468, 3, 460, 460, 460, 2,
-    750, 782, 2, 469, 106, 1, 470, 2, 472, 473, 2, 475, 140, 2, 462, 476,
-    1, 499, 3, 33, 34, 36, 1, 184, 2, 211, 47, 2, 543, 5, 1, 545, 3, 32,
-    32, 32, 1, 795, 10, 548, 36, 465, 466, 139, 549, 178, 38, 39, 468, 3,
-    550, 42, 42, 1, 798, 3, 251, 251, 251, 1, 800, 10, 34, 343, 249, 36,
-    565, 465, 566, 139, 38, 40, 2, 249, 36, 3, 362, 576, 576, 1, 804, 1,
-    578, 1, 579, 1, 617, 3, 79, 79, 79, 2, 700, 809, 1, 619, 2, 210, 47,
-    1, 620, 2, 631, 632, 1, 631
+    174, 3, 175, 175, 175, 2, 723, 724, 6, 33, 36, 177, 178, 39, 40, 1,
+    179, 1, 723, 1, 213, 1, 221, 1, 223, 1, 225, 4, 227, 228, 229, 230, 1,
+    233, 1, 235, 2, 240, 95, 2, 243, 244, 7, 34, 257, 36, 177, 139, 178,
+    40, 1, 258, 1, 260, 1, 262, 1, 264, 3, 340, 340, 340, 1, 743, 1, 298,
+    1, 343, 1, 303, 2, 284, 345, 11, 34, 347, 257, 36, 177, 348, 139, 349,
+    178, 38, 39, 3, 350, 241, 241, 3, 351, 241, 241, 3, 352, 241, 241, 3,
+    315, 315, 315, 3, 353, 353, 353, 5, 750, 751, 752, 753, 754, 1, 302,
+    1, 354, 1, 355, 1, 312, 1, 325, 1, 358, 1, 320, 1, 295, 1, 361, 1,
+    363, 1, 365, 1, 367, 2, 70, 369, 1, 370, 1, 371, 1, 431, 1, 284, 4,
+    34, 257, 139, 39, 1, 243, 3, 358, 434, 436, 2, 283, 281, 7, 34, 257,
+    139, 178, 38, 39, 40, 1, 446, 3, 448, 449, 450, 1, 249, 4, 454, 461,
+    455, 453, 1, 454, 3, 465, 465, 465, 1, 783, 17, 33, 34, 138, 347, 257,
+    36, 467, 177, 468, 457, 139, 39, 178, 469, 38, 40, 470, 3, 462, 462,
+    462, 2, 754, 786, 2, 471, 106, 1, 472, 2, 474, 475, 2, 477, 140, 2,
+    464, 478, 1, 501, 3, 33, 34, 36, 1, 184, 2, 211, 47, 2, 545, 5, 1,
+    547, 3, 32, 32, 32, 1, 799, 10, 550, 36, 467, 468, 139, 551, 178, 38,
+    39, 470, 3, 552, 42, 42, 1, 802, 3, 259, 259, 259, 1, 804, 10, 34,
+    347, 257, 36, 567, 467, 568, 139, 38, 40, 2, 257, 36, 3, 366, 578,
+    578, 1, 808, 1, 580, 1, 581, 1, 619, 3, 79, 79, 79, 2, 704, 813, 1,
+    621, 2, 210, 47, 1, 622, 2, 633, 634, 1, 633
 };
 const int CPyLit_FrozenSet[] = {0};
 CPyModule *CPyModule_dank_mids____batch_internal = NULL;
@@ -56007,7 +56604,7 @@ CPyModule *CPyModule_dank_mids___brownie_patch____abi_internal = NULL;
 CPyModule *CPyModule_dank_mids___brownie_patch____abi;
 PyObject *CPyStatic__abi___globals;
 CPyModule *CPyModule_weakref;
-CPyModule *CPyModule_brownie___convert;
+CPyModule *CPyModule_eth_hash;
 CPyModule *CPyModule_dank_mids___brownie_patch___call_internal = NULL;
 CPyModule *CPyModule_dank_mids___brownie_patch___call;
 PyObject *CPyStatic_call___globals;
@@ -56188,8 +56785,7 @@ PyObject *CPyPy__uid___UIDGenerator___next(PyObject *self, PyObject *const *args
 char CPyDef__uid_____top_level__(void);
 char CPyDef_brownie_patch_____top_level__(void);
 PyObject *CPyStatic__abi____singletons = NULL;
-PyObject *CPyStatic__abi___build_function_selector = NULL;
-PyObject *CPyStatic__abi___build_function_signature = NULL;
+PyObject *CPyStatic__abi___keccak = NULL;
 PyObject *CPyStatic__abi____make_hashable = NULL;
 PyTypeObject *CPyType__abi___FunctionABI;
 PyObject *CPyDef__abi___FunctionABI(PyObject *cpy_r_abi);
@@ -56197,6 +56793,12 @@ char CPyDef__abi___FunctionABI_____init__(PyObject *cpy_r_self, PyObject *cpy_r_
 PyObject *CPyPy__abi___FunctionABI_____init__(PyObject *self, PyObject *args, PyObject *kw);
 PyObject *CPyDef__abi___FunctionABI___singleton(PyObject *cpy_r_abi);
 PyObject *CPyPy__abi___FunctionABI___singleton(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+PyObject *CPyDef__abi___get_type_strings(PyObject *cpy_r_abi_params, PyObject *cpy_r_substitutions);
+PyObject *CPyPy__abi___get_type_strings(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+PyObject *CPyDef__abi___build_function_signature(PyObject *cpy_r_abi);
+PyObject *CPyPy__abi___build_function_signature(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_abi);
+PyObject *CPyPy__abi___build_function_selector(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 char CPyDef__abi_____top_level__(void);
 PyObject *CPyStatic_call___ENVS = NULL;
 char CPyStatic_call___APPLICATION_MODE = 2;
@@ -56685,13 +57287,15 @@ static struct export_table_b590a0e43c7eae82c26c exports = {
     &CPyDef__uid_____top_level__,
     &CPyDef_brownie_patch_____top_level__,
     &CPyStatic__abi____singletons,
-    &CPyStatic__abi___build_function_selector,
-    &CPyStatic__abi___build_function_signature,
+    &CPyStatic__abi___keccak,
     &CPyStatic__abi____make_hashable,
     &CPyType__abi___FunctionABI,
     &CPyDef__abi___FunctionABI,
     &CPyDef__abi___FunctionABI_____init__,
     &CPyDef__abi___FunctionABI___singleton,
+    &CPyDef__abi___get_type_strings,
+    &CPyDef__abi___build_function_signature,
+    &CPyDef__abi___build_function_selector,
     &CPyDef__abi_____top_level__,
     &CPyStatic_call___ENVS,
     &CPyStatic_call___APPLICATION_MODE,

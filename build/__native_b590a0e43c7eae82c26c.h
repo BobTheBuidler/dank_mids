@@ -40,6 +40,16 @@ typedef struct tuple_T6OOOOOO {
 } tuple_T6OOOOOO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T4CIOO
+#define MYPYC_DECLARED_tuple_T4CIOO
+typedef struct tuple_T4CIOO {
+    char f0;
+    CPyTagged f1;
+    PyObject *f2;
+    PyObject *f3;
+} tuple_T4CIOO;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T1O
 #define MYPYC_DECLARED_tuple_T1O
 typedef struct tuple_T1O {
@@ -56,16 +66,6 @@ typedef struct tuple_T5OOOOO {
     PyObject *f3;
     PyObject *f4;
 } tuple_T5OOOOO;
-#endif
-
-#ifndef MYPYC_DECLARED_tuple_T4CIOO
-#define MYPYC_DECLARED_tuple_T4CIOO
-typedef struct tuple_T4CIOO {
-    char f0;
-    CPyTagged f1;
-    PyObject *f2;
-    PyObject *f3;
-} tuple_T4CIOO;
 #endif
 
 #ifndef MYPYC_DECLARED_tuple_T2OI
@@ -749,13 +749,15 @@ struct export_table_b590a0e43c7eae82c26c {
     char (*CPyDef__uid_____top_level__)(void);
     char (*CPyDef_brownie_patch_____top_level__)(void);
     PyObject **CPyStatic__abi____singletons;
-    PyObject **CPyStatic__abi___build_function_selector;
-    PyObject **CPyStatic__abi___build_function_signature;
+    PyObject **CPyStatic__abi___keccak;
     PyObject **CPyStatic__abi____make_hashable;
     PyTypeObject **CPyType__abi___FunctionABI;
     PyObject *(*CPyDef__abi___FunctionABI)(PyObject *cpy_r_abi);
     char (*CPyDef__abi___FunctionABI_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_abi);
     PyObject *(*CPyDef__abi___FunctionABI___singleton)(PyObject *cpy_r_abi);
+    PyObject *(*CPyDef__abi___get_type_strings)(PyObject *cpy_r_abi_params, PyObject *cpy_r_substitutions);
+    PyObject *(*CPyDef__abi___build_function_signature)(PyObject *cpy_r_abi);
+    PyObject *(*CPyDef__abi___build_function_selector)(PyObject *cpy_r_abi);
     char (*CPyDef__abi_____top_level__)(void);
     PyObject **CPyStatic_call___ENVS;
     char *CPyStatic_call___APPLICATION_MODE;

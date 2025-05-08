@@ -1,7 +1,7 @@
-from typing import Any, Dict, Final, Tuple, final
+from typing import Any, Dict, Final, List, Optional, Tuple, final
 from weakref import WeakValueDictionary
 
-from brownie.convert import utils
+from eth_hash import auto
 
 from dank_mids.brownie_patch import _nocompile
 from dank_mids.helpers import _helpers
@@ -12,8 +12,7 @@ SingletonKey = Tuple[Tuple[str, Any], ...]
 _singletons: Final["WeakValueDictionary[SingletonKey, FunctionABI]"] = WeakValueDictionary()
 
 
-build_function_selector: Final = utils.build_function_selector
-build_function_signature: Final = utils.build_function_signature
+keccak: Final = auto.keccak
 
 _make_hashable: Final = _helpers._make_hashable
 
@@ -74,3 +73,37 @@ class FunctionABI(_nocompile._FunctionABI):
         except KeyError:
             singleton = _singletons[key] = FunctionABI(**abi)
             return singleton
+
+
+def get_type_strings(
+    abi_params: List[Dict[str, Any]],
+    substitutions: Optional[Dict[str, Any]] = None,
+) -> List[str]:
+    """Converts a list of parameters from an ABI into a list of type strings."""
+    types_list = []
+    if substitutions is None:
+        substitutions = {}
+
+    for i in abi_params:
+        type_str: str = i["type"]
+        if type_str.startswith("tuple"):
+            params = get_type_strings(i["components"], substitutions)
+            array_size = i["type"][5:]
+            types_list.append(f"({','.join(params)}){array_size}")
+        else:
+            for orig, sub in substitutions.items():
+                if type_str.startswith(orig):
+                    type_str = type_str.replace(orig, sub)
+            types_list.append(type_str)
+
+    return types_list
+
+
+def build_function_signature(abi: Dict[str, Any]) -> str:
+    types_list = get_type_strings(abi["inputs"])
+    return f"{abi['name']}({','.join(types_list)})"
+
+
+def build_function_selector(abi: Dict[str, Any]) -> str:
+    sig = build_function_signature(abi)
+    return f"0x{keccak(sig.encode()).hex()[:8]}"

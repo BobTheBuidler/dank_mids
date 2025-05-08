@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[816];
+extern PyObject *CPyStatics[820];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -78,7 +78,7 @@ extern CPyModule *CPyModule_dank_mids___brownie_patch____abi_internal;
 extern CPyModule *CPyModule_dank_mids___brownie_patch____abi;
 extern PyObject *CPyStatic__abi___globals;
 extern CPyModule *CPyModule_weakref;
-extern CPyModule *CPyModule_brownie___convert;
+extern CPyModule *CPyModule_eth_hash;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___call_internal;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___call;
 extern PyObject *CPyStatic_call___globals;
@@ -259,8 +259,7 @@ extern PyObject *CPyPy__uid___UIDGenerator___next(PyObject *self, PyObject *cons
 extern char CPyDef__uid_____top_level__(void);
 extern char CPyDef_brownie_patch_____top_level__(void);
 extern PyObject *CPyStatic__abi____singletons;
-extern PyObject *CPyStatic__abi___build_function_selector;
-extern PyObject *CPyStatic__abi___build_function_signature;
+extern PyObject *CPyStatic__abi___keccak;
 extern PyObject *CPyStatic__abi____make_hashable;
 extern PyTypeObject *CPyType__abi___FunctionABI;
 extern PyObject *CPyDef__abi___FunctionABI(PyObject *cpy_r_abi);
@@ -268,6 +267,12 @@ extern char CPyDef__abi___FunctionABI_____init__(PyObject *cpy_r_self, PyObject 
 extern PyObject *CPyPy__abi___FunctionABI_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern PyObject *CPyDef__abi___FunctionABI___singleton(PyObject *cpy_r_abi);
 extern PyObject *CPyPy__abi___FunctionABI___singleton(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__abi___get_type_strings(PyObject *cpy_r_abi_params, PyObject *cpy_r_substitutions);
+extern PyObject *CPyPy__abi___get_type_strings(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__abi___build_function_signature(PyObject *cpy_r_abi);
+extern PyObject *CPyPy__abi___build_function_signature(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_abi);
+extern PyObject *CPyPy__abi___build_function_selector(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__abi_____top_level__(void);
 extern PyObject *CPyStatic_call___ENVS;
 extern char CPyStatic_call___APPLICATION_MODE;
