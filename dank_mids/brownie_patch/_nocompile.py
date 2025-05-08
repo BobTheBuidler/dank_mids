@@ -4,5 +4,5 @@
 # https://github.com/python/mypy/blob/501a07b45af8e44eda665e53526fc590dc5a014e/mypyc/codegen/emitclass.py#L285
 # TODO: fix the above
 
-class _FunctionABI:
-   ...
+
+class _FunctionABI: ...
