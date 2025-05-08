@@ -757,7 +757,7 @@ struct export_table_b590a0e43c7eae82c26c {
     PyObject *(*CPyDef__abi___FunctionABI___singleton)(PyObject *cpy_r_abi);
     PyObject *(*CPyDef__abi___get_type_strings)(PyObject *cpy_r_abi_params, PyObject *cpy_r_substitutions);
     PyObject *(*CPyDef__abi___build_function_signature)(PyObject *cpy_r_abi);
-    PyObject *(*CPyDef__abi___build_function_selector)(PyObject *cpy_r_abi);
+    PyObject *(*CPyDef__abi___build_function_selector)(PyObject *cpy_r_input_signature);
     char (*CPyDef__abi_____top_level__)(void);
     PyObject **CPyStatic_call___ENVS;
     char *CPyStatic_call___APPLICATION_MODE;

@@ -47,13 +47,14 @@ class FunctionABI(_nocompile._FunctionABI):
         This contains all the information about the function's interface.
         """
 
-        self.input_sig: Final = build_function_signature(abi)
+        input_sig = build_function_signature(abi)
+        self.input_sig: Final = input_sig
         """
         The input signature of the function.
         This is a string representation of the function's parameters and their types.
         """
 
-        self.signature: Final = build_function_selector(abi)
+        self.signature: Final = build_function_selector(input_sig)
         """
         The function selector (4-byte signature) of the function.
         This is used in Ethereum transactions to identify which function to call.
@@ -104,6 +105,5 @@ def build_function_signature(abi: Dict[str, Any]) -> str:
     return f"{abi['name']}({','.join(types_list)})"
 
 
-def build_function_selector(abi: Dict[str, Any]) -> str:
-    sig = build_function_signature(abi)
-    return f"0x{keccak(sig.encode()).hex()[:8]}"
+def build_function_selector(input_signature: str) -> str:
+    return f"0x{keccak(input_signature.encode()).hex()[:8]}"

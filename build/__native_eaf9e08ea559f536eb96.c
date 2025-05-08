@@ -13177,18 +13177,20 @@ char CPyDef__abi___FunctionABI_____init__(PyObject *cpy_r_self, PyObject *cpy_r_
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 50, CPyStatic__abi___globals);
         goto CPyL6;
     }
+    CPy_INCREF(cpy_r_r1);
     if (((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_input_sig != NULL) {
         CPy_DECREF(((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_input_sig);
     }
     ((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_input_sig = cpy_r_r1;
     cpy_r_r2 = 1;
     if (unlikely(!cpy_r_r2)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 50, CPyStatic__abi___globals);
-        goto CPyL6;
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 51, CPyStatic__abi___globals);
+        goto CPyL7;
     }
-    cpy_r_r3 = CPyDef__abi___build_function_selector(cpy_r_abi);
+    cpy_r_r3 = CPyDef__abi___build_function_selector(cpy_r_r1);
+    CPy_DECREF(cpy_r_r1);
     if (unlikely(cpy_r_r3 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 56, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 57, CPyStatic__abi___globals);
         goto CPyL6;
     }
     if (((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_signature != NULL) {
@@ -13197,13 +13199,16 @@ char CPyDef__abi___FunctionABI_____init__(PyObject *cpy_r_self, PyObject *cpy_r_
     ((dank_mids___brownie_patch____abi___FunctionABIObject *)cpy_r_self)->_signature = cpy_r_r3;
     cpy_r_r4 = 1;
     if (unlikely(!cpy_r_r4)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 56, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "__init__", 57, CPyStatic__abi___globals);
         goto CPyL6;
     }
     return 1;
 CPyL6: ;
     cpy_r_r5 = 2;
     return cpy_r_r5;
+CPyL7: ;
+    CPy_DecRef(cpy_r_r1);
+    goto CPyL6;
 }
 
 PyObject *CPyPy__abi___FunctionABI_____init__(PyObject *self, PyObject *args, PyObject *kw) {
@@ -13292,7 +13297,7 @@ PyObject *CPyDef__abi___FunctionABI___singleton(PyObject *cpy_r_abi) {
     cpy_r_r1 = CPyStatics[247]; /* 'sorted' */
     cpy_r_r2 = CPyObject_GetAttr(cpy_r_r0, cpy_r_r1);
     if (unlikely(cpy_r_r2 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
         goto CPyL37;
     }
     PyObject *cpy_r_r3[1] = {cpy_r_abi};
@@ -13300,20 +13305,20 @@ PyObject *CPyDef__abi___FunctionABI___singleton(PyObject *cpy_r_abi) {
     cpy_r_r5 = _PyObject_Vectorcall(cpy_r_r2, cpy_r_r4, 1, 0);
     CPy_DECREF(cpy_r_r2);
     if (unlikely(cpy_r_r5 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
         goto CPyL37;
     }
     if (likely(PyList_Check(cpy_r_r5)))
         cpy_r_r6 = cpy_r_r5;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals, "list", cpy_r_r5);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals, "list", cpy_r_r5);
         goto CPyL37;
     }
     cpy_r_r7 = (CPyPtr)&((PyVarObject *)cpy_r_r6)->ob_size;
     cpy_r_r8 = *(int64_t *)cpy_r_r7;
     cpy_r_r9 = PyTuple_New(cpy_r_r8);
     if (unlikely(cpy_r_r9 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
         goto CPyL38;
     }
     cpy_r_r10 = 0;
@@ -13333,12 +13338,12 @@ CPyL5: ;
     if (likely(PyUnicode_Check(cpy_r_r20)))
         cpy_r_r21 = cpy_r_r20;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals, "str", cpy_r_r20);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals, "str", cpy_r_r20);
         goto CPyL40;
     }
     cpy_r_r22 = CPyDict_GetItem(cpy_r_abi, cpy_r_r21);
     if (unlikely(cpy_r_r22 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
         goto CPyL41;
     }
     cpy_r_r23 = CPyStatic__abi____make_hashable;
@@ -13350,7 +13355,7 @@ CPyL9: ;
     PyErr_SetString(PyExc_NameError, "value for final name \"_make_hashable\" was not set");
     cpy_r_r24 = 0;
     if (unlikely(!cpy_r_r24)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
         goto CPyL37;
     }
     CPy_Unreachable();
@@ -13359,7 +13364,7 @@ CPyL11: ;
     cpy_r_r26 = (PyObject **)&cpy_r_r25;
     cpy_r_r27 = _PyObject_Vectorcall(cpy_r_r23, cpy_r_r26, 1, 0);
     if (unlikely(cpy_r_r27 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
         goto CPyL43;
     }
     CPy_DECREF(cpy_r_r22);
@@ -13374,7 +13379,7 @@ CPyL11: ;
     PyTuple_SET_ITEM(cpy_r_r29, 1, __tmp31);
     cpy_r_r30 = CPySequenceTuple_SetItemUnsafe(cpy_r_r9, cpy_r_r10, cpy_r_r29);
     if (unlikely(!cpy_r_r30)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 70, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 71, CPyStatic__abi___globals);
         goto CPyL40;
     }
     cpy_r_r31 = cpy_r_r10 + 2;
@@ -13386,7 +13391,7 @@ CPyL14: ;
     PyErr_SetString(PyExc_NameError, "value for final name \"_singletons\" was not set");
     cpy_r_r33 = 0;
     if (unlikely(!cpy_r_r33)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 72, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 73, CPyStatic__abi___globals);
         goto CPyL21;
     } else
         goto CPyL44;
@@ -13395,7 +13400,7 @@ CPyL17: ;
 CPyL18: ;
     cpy_r_r34 = PyObject_GetItem(cpy_r_r32, cpy_r_r9);
     if (unlikely(cpy_r_r34 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 72, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 73, CPyStatic__abi___globals);
         goto CPyL21;
     }
     if (likely(Py_TYPE(cpy_r_r34) == CPyType__abi___FunctionABI))
@@ -13405,7 +13410,7 @@ CPyL18: ;
         cpy_r_r35 = NULL;
     }
     if (unlikely(cpy_r_r35 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 72, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 73, CPyStatic__abi___globals);
         goto CPyL21;
     } else
         goto CPyL45;
@@ -13417,7 +13422,7 @@ CPyL21: ;
     cpy_r_r38 = CPyStatics[248]; /* 'KeyError' */
     cpy_r_r39 = CPyObject_GetAttr(cpy_r_r37, cpy_r_r38);
     if (unlikely(cpy_r_r39 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 73, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
         goto CPyL46;
     }
     cpy_r_r40 = CPy_ExceptionMatches(cpy_r_r39);
@@ -13426,31 +13431,31 @@ CPyL21: ;
     cpy_r_r41 = (PyObject *)CPyType__abi___FunctionABI;
     cpy_r_r42 = PyDict_New();
     if (unlikely(cpy_r_r42 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
         goto CPyL46;
     }
     cpy_r_r43 = CPyDict_UpdateInDisplay(cpy_r_r42, cpy_r_abi);
     cpy_r_r44 = cpy_r_r43 >= 0;
     if (unlikely(!cpy_r_r44)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
         goto CPyL48;
     }
     cpy_r_r45 = PyTuple_Pack(0);
     if (unlikely(cpy_r_r45 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
         goto CPyL48;
     }
     cpy_r_r46 = PyObject_Call(cpy_r_r41, cpy_r_r45, cpy_r_r42);
     CPy_DecRef(cpy_r_r45);
     CPy_DecRef(cpy_r_r42);
     if (unlikely(cpy_r_r46 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
         goto CPyL46;
     }
     if (likely(Py_TYPE(cpy_r_r46) == CPyType__abi___FunctionABI))
         cpy_r_r47 = cpy_r_r46;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals, "dank_mids.brownie_patch._abi.FunctionABI", cpy_r_r46);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals, "dank_mids.brownie_patch._abi.FunctionABI", cpy_r_r46);
         goto CPyL46;
     }
     CPy_INCREF(cpy_r_r47);
@@ -13463,7 +13468,7 @@ CPyL29: ;
     PyErr_SetString(PyExc_NameError, "value for final name \"_singletons\" was not set");
     cpy_r_r49 = 0;
     if (unlikely(!cpy_r_r49)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
         goto CPyL35;
     } else
         goto CPyL50;
@@ -13475,7 +13480,7 @@ CPyL31: ;
     CPy_DecRef(cpy_r_r47);
     cpy_r_r51 = cpy_r_r50 >= 0;
     if (unlikely(!cpy_r_r51)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 74, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 75, CPyStatic__abi___globals);
         goto CPyL51;
     }
     CPy_RestoreExcInfo(cpy_r_r36);
@@ -13578,7 +13583,7 @@ PyObject *CPyPy__abi___FunctionABI___singleton(PyObject *self, PyObject *const *
     return retval;
 fail: ;
     CPy_DECREF(obj_abi);
-    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 63, CPyStatic__abi___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "singleton", 64, CPyStatic__abi___globals);
     return NULL;
 }
 
@@ -13655,7 +13660,7 @@ PyObject *CPyDef__abi___get_type_strings(PyObject *cpy_r_abi_params, PyObject *c
 CPyL2: ;
     cpy_r_r1 = PyList_New(0);
     if (unlikely(cpy_r_r1 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 83, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 84, CPyStatic__abi___globals);
         goto CPyL38;
     }
     cpy_r_r2 = (PyObject *)&_Py_NoneStruct;
@@ -13667,7 +13672,7 @@ CPyL2: ;
 CPyL4: ;
     cpy_r_r4 = PyDict_New();
     if (unlikely(cpy_r_r4 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 85, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 86, CPyStatic__abi___globals);
         goto CPyL40;
     }
     cpy_r_substitutions = cpy_r_r4;
@@ -13689,19 +13694,19 @@ CPyL7: ;
     if (likely(PyDict_Check(cpy_r_r15)))
         cpy_r_r16 = cpy_r_r15;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 87, CPyStatic__abi___globals, "dict", cpy_r_r15);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 88, CPyStatic__abi___globals, "dict", cpy_r_r15);
         goto CPyL42;
     }
     cpy_r_r17 = CPyStatics[249]; /* 'type' */
     cpy_r_r18 = CPyDict_GetItem(cpy_r_r16, cpy_r_r17);
     if (unlikely(cpy_r_r18 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 88, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 89, CPyStatic__abi___globals);
         goto CPyL43;
     }
     if (likely(PyUnicode_Check(cpy_r_r18)))
         cpy_r_r19 = cpy_r_r18;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 88, CPyStatic__abi___globals, "str", cpy_r_r18);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 89, CPyStatic__abi___globals, "str", cpy_r_r18);
         goto CPyL43;
     }
     cpy_r_type_str = cpy_r_r19;
@@ -13715,34 +13720,34 @@ CPyL12: ;
     cpy_r_r22 = CPyStatics[251]; /* 'components' */
     cpy_r_r23 = CPyDict_GetItem(cpy_r_r16, cpy_r_r22);
     if (unlikely(cpy_r_r23 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 90, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals);
         goto CPyL43;
     }
     CPy_INCREF(cpy_r_substitutions);
     if (likely(cpy_r_substitutions != Py_None))
         cpy_r_r24 = cpy_r_substitutions;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 90, CPyStatic__abi___globals, "dict", cpy_r_substitutions);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals, "dict", cpy_r_substitutions);
         goto CPyL46;
     }
     if (likely(PyList_Check(cpy_r_r23)))
         cpy_r_r25 = cpy_r_r23;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 90, CPyStatic__abi___globals, "list", cpy_r_r23);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals, "list", cpy_r_r23);
         goto CPyL47;
     }
     cpy_r_r26 = CPyDef__abi___get_type_strings(cpy_r_r25, cpy_r_r24);
     CPy_DECREF(cpy_r_r25);
     CPy_DECREF(cpy_r_r24);
     if (unlikely(cpy_r_r26 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 90, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals);
         goto CPyL43;
     }
     cpy_r_r27 = CPyStatics[249]; /* 'type' */
     cpy_r_r28 = CPyDict_GetItem(cpy_r_r16, cpy_r_r27);
     CPy_DECREF(cpy_r_r16);
     if (unlikely(cpy_r_r28 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
         goto CPyL48;
     }
     cpy_r_r29 = (PyObject *)&_Py_NoneStruct;
@@ -13750,14 +13755,14 @@ CPyL12: ;
     cpy_r_r31 = CPyStatics[685]; /* 5 */
     cpy_r_r32 = PySlice_New(cpy_r_r31, cpy_r_r29, cpy_r_r30);
     if (unlikely(cpy_r_r32 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
         goto CPyL49;
     }
     cpy_r_r33 = PyObject_GetItem(cpy_r_r28, cpy_r_r32);
     CPy_DECREF(cpy_r_r28);
     CPy_DECREF(cpy_r_r32);
     if (unlikely(cpy_r_r33 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 91, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
         goto CPyL48;
     }
     cpy_r_r34 = CPyStatics[252]; /* '(' */
@@ -13765,28 +13770,28 @@ CPyL12: ;
     cpy_r_r36 = PyUnicode_Join(cpy_r_r35, cpy_r_r26);
     CPy_DECREF(cpy_r_r26);
     if (unlikely(cpy_r_r36 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 93, CPyStatic__abi___globals);
         goto CPyL50;
     }
     cpy_r_r37 = CPyStatics[254]; /* ')' */
     cpy_r_r38 = PyObject_Str(cpy_r_r33);
     CPy_DECREF(cpy_r_r33);
     if (unlikely(cpy_r_r38 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 93, CPyStatic__abi___globals);
         goto CPyL51;
     }
     cpy_r_r39 = CPyStr_Build(4, cpy_r_r34, cpy_r_r36, cpy_r_r37, cpy_r_r38);
     CPy_DECREF(cpy_r_r36);
     CPy_DECREF(cpy_r_r38);
     if (unlikely(cpy_r_r39 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 93, CPyStatic__abi___globals);
         goto CPyL42;
     }
     cpy_r_r40 = PyList_Append(cpy_r_r1, cpy_r_r39);
     CPy_DECREF(cpy_r_r39);
     cpy_r_r41 = cpy_r_r40 >= 0;
     if (unlikely(!cpy_r_r41)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 92, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 93, CPyStatic__abi___globals);
         goto CPyL42;
     } else
         goto CPyL34;
@@ -13795,7 +13800,7 @@ CPyL23: ;
     if (likely(cpy_r_substitutions != Py_None))
         cpy_r_r42 = cpy_r_substitutions;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals, "dict", cpy_r_substitutions);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 95, CPyStatic__abi___globals, "dict", cpy_r_substitutions);
         goto CPyL52;
     }
     cpy_r_r43 = 0;
@@ -13803,7 +13808,7 @@ CPyL23: ;
     cpy_r_r45 = cpy_r_r44 << 1;
     cpy_r_r46 = CPyDict_GetItemsIter(cpy_r_r42);
     if (unlikely(cpy_r_r46 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 95, CPyStatic__abi___globals);
         goto CPyL53;
     }
 CPyL25: ;
@@ -13821,7 +13826,7 @@ CPyL25: ;
     if (likely(PyUnicode_Check(cpy_r_r50)))
         cpy_r_r52 = cpy_r_r50;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals, "str", cpy_r_r50);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 95, CPyStatic__abi___globals, "str", cpy_r_r50);
         goto CPyL55;
     }
     cpy_r_r53 = CPyStr_Startswith(cpy_r_type_str, cpy_r_r52);
@@ -13831,7 +13836,7 @@ CPyL25: ;
     cpy_r_r56 = (PyObject **)&cpy_r_r55;
     cpy_r_r57 = PyObject_VectorcallMethod(cpy_r_r54, cpy_r_r56, 9223372036854775811ULL, 0);
     if (unlikely(cpy_r_r57 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 96, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 97, CPyStatic__abi___globals);
         goto CPyL57;
     }
     CPy_DECREF(cpy_r_type_str);
@@ -13840,28 +13845,28 @@ CPyL25: ;
     if (likely(PyUnicode_Check(cpy_r_r57)))
         cpy_r_r58 = cpy_r_r57;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 96, CPyStatic__abi___globals, "str", cpy_r_r57);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 97, CPyStatic__abi___globals, "str", cpy_r_r57);
         goto CPyL58;
     }
     cpy_r_type_str = cpy_r_r58;
 CPyL31: ;
     cpy_r_r59 = CPyDict_CheckSize(cpy_r_r42, cpy_r_r45);
     if (unlikely(!cpy_r_r59)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 95, CPyStatic__abi___globals);
         goto CPyL59;
     } else
         goto CPyL25;
 CPyL32: ;
     cpy_r_r60 = CPy_NoErrOccurred();
     if (unlikely(!cpy_r_r60)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 94, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 95, CPyStatic__abi___globals);
         goto CPyL52;
     }
     cpy_r_r61 = PyList_Append(cpy_r_r1, cpy_r_type_str);
     CPy_DECREF(cpy_r_type_str);
     cpy_r_r62 = cpy_r_r61 >= 0;
     if (unlikely(!cpy_r_r62)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 97, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 98, CPyStatic__abi___globals);
         goto CPyL42;
     }
 CPyL34: ;
@@ -14027,7 +14032,7 @@ __LL32: ;
     PyObject *retval = CPyDef__abi___get_type_strings(arg_abi_params, arg_substitutions);
     return retval;
 fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 78, CPyStatic__abi___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "get_type_strings", 79, CPyStatic__abi___globals);
     return NULL;
 }
 
@@ -14049,32 +14054,32 @@ PyObject *CPyDef__abi___build_function_signature(PyObject *cpy_r_abi) {
     cpy_r_r0 = CPyStatics[256]; /* 'inputs' */
     cpy_r_r1 = CPyDict_GetItem(cpy_r_abi, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 103, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
         goto CPyL8;
     }
     if (likely(PyList_Check(cpy_r_r1)))
         cpy_r_r2 = cpy_r_r1;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 103, CPyStatic__abi___globals, "list", cpy_r_r1);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals, "list", cpy_r_r1);
         goto CPyL8;
     }
     cpy_r_r3 = NULL;
     cpy_r_r4 = CPyDef__abi___get_type_strings(cpy_r_r2, cpy_r_r3);
     CPy_DECREF(cpy_r_r2);
     if (unlikely(cpy_r_r4 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 103, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
         goto CPyL8;
     }
     cpy_r_r5 = CPyStatics[5]; /* 'name' */
     cpy_r_r6 = CPyDict_GetItem(cpy_r_abi, cpy_r_r5);
     if (unlikely(cpy_r_r6 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 105, CPyStatic__abi___globals);
         goto CPyL9;
     }
     cpy_r_r7 = PyObject_Str(cpy_r_r6);
     CPy_DECREF(cpy_r_r6);
     if (unlikely(cpy_r_r7 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 105, CPyStatic__abi___globals);
         goto CPyL9;
     }
     cpy_r_r8 = CPyStatics[252]; /* '(' */
@@ -14082,7 +14087,7 @@ PyObject *CPyDef__abi___build_function_signature(PyObject *cpy_r_abi) {
     cpy_r_r10 = PyUnicode_Join(cpy_r_r9, cpy_r_r4);
     CPy_DECREF(cpy_r_r4);
     if (unlikely(cpy_r_r10 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 105, CPyStatic__abi___globals);
         goto CPyL10;
     }
     cpy_r_r11 = CPyStatics[254]; /* ')' */
@@ -14090,7 +14095,7 @@ PyObject *CPyDef__abi___build_function_signature(PyObject *cpy_r_abi) {
     CPy_DECREF(cpy_r_r7);
     CPy_DECREF(cpy_r_r10);
     if (unlikely(cpy_r_r12 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 104, CPyStatic__abi___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 105, CPyStatic__abi___globals);
         goto CPyL8;
     }
     return cpy_r_r12;
@@ -14122,20 +14127,20 @@ PyObject *CPyPy__abi___build_function_signature(PyObject *self, PyObject *const 
     PyObject *retval = CPyDef__abi___build_function_signature(arg_abi);
     return retval;
 fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 102, CPyStatic__abi___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_signature", 103, CPyStatic__abi___globals);
     return NULL;
 }
 
-PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_abi) {
+PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_input_signature) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
     PyObject *cpy_r_r2;
-    PyObject *cpy_r_r3;
-    char cpy_r_r4;
-    PyObject **cpy_r_r6;
+    char cpy_r_r3;
+    PyObject **cpy_r_r5;
+    PyObject *cpy_r_r6;
     PyObject *cpy_r_r7;
-    PyObject *cpy_r_r8;
-    PyObject **cpy_r_r10;
+    PyObject **cpy_r_r9;
+    PyObject *cpy_r_r10;
     PyObject *cpy_r_r11;
     PyObject *cpy_r_r12;
     PyObject *cpy_r_r13;
@@ -14144,113 +14149,106 @@ PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_abi) {
     PyObject *cpy_r_r16;
     PyObject *cpy_r_r17;
     PyObject *cpy_r_r18;
-    PyObject *cpy_r_r19;
-    cpy_r_r0 = CPyDef__abi___build_function_signature(cpy_r_abi);
-    if (unlikely(cpy_r_r0 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 108, CPyStatic__abi___globals);
-        goto CPyL12;
+    cpy_r_r0 = CPyStatics[133]; /* '0x' */
+    cpy_r_r1 = PyUnicode_AsUTF8String(cpy_r_input_signature);
+    if (unlikely(cpy_r_r1 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL11;
     }
-    cpy_r_r1 = CPyStatics[133]; /* '0x' */
-    cpy_r_r2 = PyUnicode_AsUTF8String(cpy_r_r0);
-    CPy_DECREF(cpy_r_r0);
+    cpy_r_r2 = CPyStatic__abi___keccak;
     if (unlikely(cpy_r_r2 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
         goto CPyL12;
-    }
-    cpy_r_r3 = CPyStatic__abi___keccak;
-    if (unlikely(cpy_r_r3 == NULL)) {
-        goto CPyL13;
     } else
-        goto CPyL5;
-CPyL3: ;
+        goto CPyL4;
+CPyL2: ;
     PyErr_SetString(PyExc_NameError, "value for final name \"keccak\" was not set");
-    cpy_r_r4 = 0;
-    if (unlikely(!cpy_r_r4)) {
+    cpy_r_r3 = 0;
+    if (unlikely(!cpy_r_r3)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPy_Unreachable();
-CPyL5: ;
-    PyObject *cpy_r_r5[1] = {cpy_r_r2};
-    cpy_r_r6 = (PyObject **)&cpy_r_r5;
-    cpy_r_r7 = _PyObject_Vectorcall(cpy_r_r3, cpy_r_r6, 1, 0);
-    if (unlikely(cpy_r_r7 == NULL)) {
+CPyL4: ;
+    PyObject *cpy_r_r4[1] = {cpy_r_r1};
+    cpy_r_r5 = (PyObject **)&cpy_r_r4;
+    cpy_r_r6 = _PyObject_Vectorcall(cpy_r_r2, cpy_r_r5, 1, 0);
+    if (unlikely(cpy_r_r6 == NULL)) {
+        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
+        goto CPyL13;
+    }
+    CPy_DECREF(cpy_r_r1);
+    cpy_r_r7 = CPyStatics[9]; /* 'hex' */
+    PyObject *cpy_r_r8[1] = {cpy_r_r6};
+    cpy_r_r9 = (PyObject **)&cpy_r_r8;
+    cpy_r_r10 = PyObject_VectorcallMethod(cpy_r_r7, cpy_r_r9, 9223372036854775809ULL, 0);
+    if (unlikely(cpy_r_r10 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
         goto CPyL14;
     }
-    CPy_DECREF(cpy_r_r2);
-    cpy_r_r8 = CPyStatics[9]; /* 'hex' */
-    PyObject *cpy_r_r9[1] = {cpy_r_r7};
-    cpy_r_r10 = (PyObject **)&cpy_r_r9;
-    cpy_r_r11 = PyObject_VectorcallMethod(cpy_r_r8, cpy_r_r10, 9223372036854775809ULL, 0);
-    if (unlikely(cpy_r_r11 == NULL)) {
+    CPy_DECREF(cpy_r_r6);
+    cpy_r_r11 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r12 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r13 = CPyStatics[686]; /* 8 */
+    cpy_r_r14 = PySlice_New(cpy_r_r11, cpy_r_r13, cpy_r_r12);
+    if (unlikely(cpy_r_r14 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
         goto CPyL15;
     }
-    CPy_DECREF(cpy_r_r7);
-    cpy_r_r12 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r13 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r14 = CPyStatics[686]; /* 8 */
-    cpy_r_r15 = PySlice_New(cpy_r_r12, cpy_r_r14, cpy_r_r13);
+    cpy_r_r15 = PyObject_GetItem(cpy_r_r10, cpy_r_r14);
+    CPy_DECREF(cpy_r_r10);
+    CPy_DECREF(cpy_r_r14);
     if (unlikely(cpy_r_r15 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
-        goto CPyL16;
+        goto CPyL11;
     }
-    cpy_r_r16 = PyObject_GetItem(cpy_r_r11, cpy_r_r15);
-    CPy_DECREF(cpy_r_r11);
+    cpy_r_r16 = PyObject_Str(cpy_r_r15);
     CPy_DECREF(cpy_r_r15);
     if (unlikely(cpy_r_r16 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
-    cpy_r_r17 = PyObject_Str(cpy_r_r16);
+    cpy_r_r17 = CPyStr_Build(2, cpy_r_r0, cpy_r_r16);
     CPy_DECREF(cpy_r_r16);
     if (unlikely(cpy_r_r17 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
-    cpy_r_r18 = CPyStr_Build(2, cpy_r_r1, cpy_r_r17);
-    CPy_DECREF(cpy_r_r17);
-    if (unlikely(cpy_r_r18 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 109, CPyStatic__abi___globals);
-        goto CPyL12;
-    }
+    return cpy_r_r17;
+CPyL11: ;
+    cpy_r_r18 = NULL;
     return cpy_r_r18;
 CPyL12: ;
-    cpy_r_r19 = NULL;
-    return cpy_r_r19;
+    CPy_DecRef(cpy_r_r1);
+    goto CPyL2;
 CPyL13: ;
-    CPy_DecRef(cpy_r_r2);
-    goto CPyL3;
+    CPy_DecRef(cpy_r_r1);
+    goto CPyL11;
 CPyL14: ;
-    CPy_DecRef(cpy_r_r2);
-    goto CPyL12;
+    CPy_DecRef(cpy_r_r6);
+    goto CPyL11;
 CPyL15: ;
-    CPy_DecRef(cpy_r_r7);
-    goto CPyL12;
-CPyL16: ;
-    CPy_DecRef(cpy_r_r11);
-    goto CPyL12;
+    CPy_DecRef(cpy_r_r10);
+    goto CPyL11;
 }
 
 PyObject *CPyPy__abi___build_function_selector(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    static const char * const kwlist[] = {"abi", 0};
+    static const char * const kwlist[] = {"input_signature", 0};
     static CPyArg_Parser parser = {"O:build_function_selector", kwlist, 0};
-    PyObject *obj_abi;
-    if (!CPyArg_ParseStackAndKeywordsOneArg(args, nargs, kwnames, &parser, &obj_abi)) {
+    PyObject *obj_input_signature;
+    if (!CPyArg_ParseStackAndKeywordsOneArg(args, nargs, kwnames, &parser, &obj_input_signature)) {
         return NULL;
     }
-    PyObject *arg_abi;
-    if (likely(PyDict_Check(obj_abi)))
-        arg_abi = obj_abi;
+    PyObject *arg_input_signature;
+    if (likely(PyUnicode_Check(obj_input_signature)))
+        arg_input_signature = obj_input_signature;
     else {
-        CPy_TypeError("dict", obj_abi); 
+        CPy_TypeError("str", obj_input_signature); 
         goto fail;
     }
-    PyObject *retval = CPyDef__abi___build_function_selector(arg_abi);
+    PyObject *retval = CPyDef__abi___build_function_selector(arg_input_signature);
     return retval;
 fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 107, CPyStatic__abi___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\_abi.py", "build_function_selector", 108, CPyStatic__abi___globals);
     return NULL;
 }
 
@@ -33678,21 +33676,21 @@ PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_g
     cpy_r_r1 = cpy_r_r0;
     cpy_r_r2 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_genObject *)cpy_r___mypyc_self__)->___mypyc_env__;
     if (unlikely(cpy_r_r2 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_gen", "__mypyc_env__", 24, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_gen", "__mypyc_env__", 23, CPyStatic_overloaded___globals);
         goto CPyL153;
     }
     CPy_INCREF(cpy_r_r2);
 CPyL1: ;
     cpy_r_r3 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_next_label__;
     if (unlikely(cpy_r_r3 == CPY_INT_TAG)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_next_label__", 24, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_next_label__", 23, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     CPyTagged_INCREF(cpy_r_r3);
 CPyL2: ;
     cpy_r_r4 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_env__;
     if (unlikely(cpy_r_r4 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_env__", 24, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_env__", 23, CPyStatic_overloaded___globals);
         goto CPyL155;
     }
     CPy_INCREF(cpy_r_r4);
@@ -33707,21 +33705,21 @@ CPyL3: ;
 CPyL4: ;
     CPyErr_SetObjectAndTraceback(cpy_r_type, cpy_r_value, cpy_r_traceback);
     if (unlikely(!0)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL152;
     }
     CPy_Unreachable();
 CPyL6: ;
     cpy_r_r7 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_self;
     if (unlikely(cpy_r_r7 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "self", 45, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "self", 44, CPyStatic_overloaded___globals);
         goto CPyL157;
     }
     CPy_INCREF(cpy_r_r7);
 CPyL7: ;
     cpy_r_r8 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_args;
     if (unlikely(cpy_r_r8 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "args", 45, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "args", 44, CPyStatic_overloaded___globals);
         goto CPyL158;
     }
     CPy_INCREF(cpy_r_r8);
@@ -33731,7 +33729,7 @@ CPyL8: ;
     cpy_r_r11 = (PyObject **)&cpy_r_r10;
     cpy_r_r12 = PyObject_VectorcallMethod(cpy_r_r9, cpy_r_r11, 9223372036854775810ULL, 0);
     if (unlikely(cpy_r_r12 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 45, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 44, CPyStatic_overloaded___globals);
         goto CPyL159;
     }
     CPy_DECREF(cpy_r_r7);
@@ -33742,7 +33740,7 @@ CPyL8: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_fn = cpy_r_r12;
     cpy_r_r13 = 1;
     if (unlikely(!cpy_r_r13)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 45, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 44, CPyStatic_overloaded___globals);
         goto CPyL157;
     } else
         goto CPyL160;
@@ -33763,7 +33761,7 @@ CPyL10: ;
     cpy_r_r17 = CPyStatics[182]; /* 'ValueError' */
     cpy_r_r18 = CPyObject_GetAttr(cpy_r_r16, cpy_r_r17);
     if (unlikely(cpy_r_r18 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 46, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 45, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     cpy_r_r19 = CPy_ExceptionMatches(cpy_r_r18);
@@ -33776,12 +33774,12 @@ CPyL10: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_e = cpy_r_r20;
     cpy_r_r21 = 1;
     if (unlikely(!cpy_r_r21)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 46, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 45, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     cpy_r_r22 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_e;
     if (unlikely(cpy_r_r22 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "e", 47, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "e", 46, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     CPy_INCREF(cpy_r_r22);
@@ -33789,7 +33787,7 @@ CPyL15: ;
     cpy_r_r23 = PyObject_Str(cpy_r_r22);
     CPy_DecRef(cpy_r_r22);
     if (unlikely(cpy_r_r23 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 47, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 46, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_exc_str != NULL) {
@@ -33798,13 +33796,13 @@ CPyL15: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_exc_str = cpy_r_r23;
     cpy_r_r24 = 1;
     if (unlikely(!cpy_r_r24)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 47, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 46, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     cpy_r_r25 = CPyStatics[423]; /* "Contract has more than one function '." */
     cpy_r_r26 = ((dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject *)cpy_r_r4)->_call;
     if (unlikely(cpy_r_r26 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "_patch_overloaded_method_env", "call", 49, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "_patch_overloaded_method_env", "call", 48, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     CPy_INCREF(cpy_r_r26);
@@ -33813,19 +33811,19 @@ CPyL18: ;
     cpy_r_r28 = CPyObject_GetAttr(cpy_r_r26, cpy_r_r27);
     CPy_DecRef(cpy_r_r26);
     if (unlikely(cpy_r_r28 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 49, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 48, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     cpy_r_r29 = PyObject_Str(cpy_r_r28);
     CPy_DecRef(cpy_r_r28);
     if (unlikely(cpy_r_r29 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 49, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 48, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     cpy_r_r30 = CPyStr_Build(2, cpy_r_r25, cpy_r_r29);
     CPy_DecRef(cpy_r_r29);
     if (unlikely(cpy_r_r30 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 49, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 48, CPyStatic_overloaded___globals);
         goto CPyL161;
     }
     cpy_r_r31 = CPyStatics[424]; /* ('You must explicitly declare which function you are '
@@ -33838,7 +33836,7 @@ CPyL18: ;
     }
     CPy_DecRef(cpy_r_r4);
     if (unlikely(cpy_r_r32 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 50, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 49, CPyStatic_overloaded___globals);
         goto CPyL163;
     }
 CPyL22: ;
@@ -33846,19 +33844,19 @@ CPyL22: ;
     cpy_r_r34 = CPyObject_GetAttr(cpy_r_r32, cpy_r_r33);
     CPy_DecRef(cpy_r_r32);
     if (unlikely(cpy_r_r34 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 50, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 49, CPyStatic_overloaded___globals);
         goto CPyL163;
     }
     cpy_r_r35 = PyObject_Str(cpy_r_r34);
     CPy_DecRef(cpy_r_r34);
     if (unlikely(cpy_r_r35 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 50, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 49, CPyStatic_overloaded___globals);
         goto CPyL163;
     }
     cpy_r_r36 = CPyStr_Build(2, cpy_r_r31, cpy_r_r35);
     CPy_DecRef(cpy_r_r35);
     if (unlikely(cpy_r_r36 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 50, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 49, CPyStatic_overloaded___globals);
         goto CPyL163;
     }
     cpy_r_r37.f0 = cpy_r_r30;
@@ -33870,13 +33868,13 @@ CPyL22: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_match_on = cpy_r_r37;
     cpy_r_r38 = 1;
     if (unlikely(!cpy_r_r38)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 48, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 47, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     cpy_r_r39 = 1;
     cpy_r_r40 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_match_on;
     if (unlikely(cpy_r_r40.f0 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "match_on", 52, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "match_on", 51, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     CPy_INCREF(cpy_r_r40.f0);
@@ -33894,7 +33892,7 @@ CPyL27: ;
     cpy_r_r42 = PyObject_GetIter(cpy_r_r41);
     CPy_DecRef(cpy_r_r41);
     if (unlikely(cpy_r_r42 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 52, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 51, CPyStatic_overloaded___globals);
         goto CPyL164;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__1.f0 != NULL) {
@@ -33919,7 +33917,7 @@ CPyL27: ;
 CPyL30: ;
     cpy_r_r45 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__2;
     if (unlikely(cpy_r_r45 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__2", 52, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__2", 51, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     CPy_INCREF(cpy_r_r45);
@@ -33930,7 +33928,7 @@ CPyL31: ;
     if (likely(PyUnicode_Check(cpy_r_r46)))
         cpy_r_r47 = cpy_r_r46;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 52, CPyStatic_overloaded___globals, "str", cpy_r_r46);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 51, CPyStatic_overloaded___globals, "str", cpy_r_r46);
         goto CPyL62;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_s != NULL) {
@@ -33939,19 +33937,19 @@ CPyL31: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_s = cpy_r_r47;
     cpy_r_r48 = 1;
     if (unlikely(!cpy_r_r48)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 52, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 51, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     cpy_r_r49 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_s;
     if (unlikely(cpy_r_r49 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "s", 52, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "s", 51, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     CPy_INCREF(cpy_r_r49);
 CPyL35: ;
     cpy_r_r50 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_exc_str;
     if (unlikely(cpy_r_r50 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 52, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 51, CPyStatic_overloaded___globals);
         goto CPyL166;
     }
     CPy_INCREF(cpy_r_r50);
@@ -33961,7 +33959,7 @@ CPyL36: ;
     CPy_DecRef(cpy_r_r49);
     cpy_r_r52 = cpy_r_r51 >= 0;
     if (unlikely(!cpy_r_r52)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 52, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 51, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     cpy_r_r53 = cpy_r_r51;
@@ -33972,14 +33970,14 @@ CPyL36: ;
 CPyL39: ;
     cpy_r_r55 = CPy_NoErrOccurred();
     if (unlikely(!cpy_r_r55)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 52, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 51, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
 CPyL40: ;
     if (!cpy_r_r39) goto CPyL58;
     cpy_r_r56 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_exc_str;
     if (unlikely(cpy_r_r56 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 53, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 52, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     CPy_INCREF(cpy_r_r56);
@@ -33990,7 +33988,7 @@ CPyL42: ;
     cpy_r_r60 = (PyObject **)&cpy_r_r59;
     cpy_r_r61 = PyObject_VectorcallMethod(cpy_r_r58, cpy_r_r60, 9223372036854775810ULL, 0);
     if (unlikely(cpy_r_r61 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 52, CPyStatic_overloaded___globals);
         goto CPyL167;
     }
     CPy_DecRef(cpy_r_r56);
@@ -34001,7 +33999,7 @@ CPyL42: ;
     }
     CPy_DecRef(cpy_r_r61);
     if (unlikely(cpy_r_r62 == CPY_INT_TAG)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 52, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_breakpoint != CPY_INT_TAG) {
@@ -34010,19 +34008,19 @@ CPyL42: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_breakpoint = cpy_r_r62;
     cpy_r_r63 = 1;
     if (unlikely(!cpy_r_r63)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 52, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     cpy_r_r64 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_exc_str;
     if (unlikely(cpy_r_r64 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 54, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 53, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     CPy_INCREF(cpy_r_r64);
 CPyL46: ;
     cpy_r_r65 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_breakpoint;
     if (unlikely(cpy_r_r65 == CPY_INT_TAG)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "breakpoint", 54, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "breakpoint", 53, CPyStatic_overloaded___globals);
         goto CPyL168;
     }
     CPyTagged_INCREF(cpy_r_r65);
@@ -34031,26 +34029,26 @@ CPyL47: ;
     CPy_DecRef(cpy_r_r64);
     CPyTagged_DecRef(cpy_r_r65);
     if (unlikely(cpy_r_r66 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     if (likely(PyUnicode_Check(cpy_r_r66)))
         cpy_r_r67 = cpy_r_r66;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals, "str", cpy_r_r66);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals, "str", cpy_r_r66);
         goto CPyL62;
     }
     cpy_r_r68 = CPyStatics[427]; /* '.coroutine' */
     cpy_r_r69 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_exc_str;
     if (unlikely(cpy_r_r69 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 54, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "exc_str", 53, CPyStatic_overloaded___globals);
         goto CPyL169;
     }
     CPy_INCREF(cpy_r_r69);
 CPyL50: ;
     cpy_r_r70 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_breakpoint;
     if (unlikely(cpy_r_r70 == CPY_INT_TAG)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "breakpoint", 54, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "breakpoint", 53, CPyStatic_overloaded___globals);
         goto CPyL170;
     }
     CPyTagged_INCREF(cpy_r_r70);
@@ -34059,27 +34057,27 @@ CPyL51: ;
     CPy_DecRef(cpy_r_r69);
     CPyTagged_DecRef(cpy_r_r70);
     if (unlikely(cpy_r_r71 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
         goto CPyL169;
     }
     if (likely(PyUnicode_Check(cpy_r_r71)))
         cpy_r_r72 = cpy_r_r71;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals, "str", cpy_r_r71);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals, "str", cpy_r_r71);
         goto CPyL169;
     }
     cpy_r_r73 = CPyStr_Build(3, cpy_r_r67, cpy_r_r68, cpy_r_r72);
     CPy_DecRef(cpy_r_r67);
     CPy_DecRef(cpy_r_r72);
     if (unlikely(cpy_r_r73 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
         goto CPyL62;
     }
     cpy_r_r74 = CPyModule_builtins;
     cpy_r_r75 = CPyStatics[182]; /* 'ValueError' */
     cpy_r_r76 = CPyObject_GetAttr(cpy_r_r74, cpy_r_r75);
     if (unlikely(cpy_r_r76 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
         goto CPyL171;
     }
     PyObject *cpy_r_r77[1] = {cpy_r_r73};
@@ -34087,14 +34085,14 @@ CPyL51: ;
     cpy_r_r79 = _PyObject_Vectorcall(cpy_r_r76, cpy_r_r78, 1, 0);
     CPy_DecRef(cpy_r_r76);
     if (unlikely(cpy_r_r79 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
         goto CPyL171;
     }
     CPy_DecRef(cpy_r_r73);
     CPy_Raise(cpy_r_r79);
     CPy_DecRef(cpy_r_r79);
     if (unlikely(!0)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 54, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 53, CPyStatic_overloaded___globals);
         goto CPyL62;
     } else
         goto CPyL172;
@@ -34142,7 +34140,7 @@ CPyL65: ;
     cpy_r_r82 = CPyStatics[428]; /* 'block_identifier' */
     cpy_r_r83 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_block_identifier;
     if (unlikely(cpy_r_r83 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "block_identifier", 57, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "block_identifier", 56, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     CPy_INCREF(cpy_r_r83);
@@ -34150,7 +34148,7 @@ CPyL66: ;
     cpy_r_r84 = CPyStatics[429]; /* 'decimals' */
     cpy_r_r85 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_decimals;
     if (unlikely(cpy_r_r85 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "decimals", 57, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "decimals", 56, CPyStatic_overloaded___globals);
         goto CPyL175;
     }
     CPy_INCREF(cpy_r_r85);
@@ -34158,7 +34156,7 @@ CPyL67: ;
     cpy_r_r86 = CPyStatics[430]; /* 'override' */
     cpy_r_r87 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_override;
     if (unlikely(cpy_r_r87 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "override", 57, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "override", 56, CPyStatic_overloaded___globals);
         goto CPyL176;
     }
     CPy_INCREF(cpy_r_r87);
@@ -34168,7 +34166,7 @@ CPyL68: ;
     CPy_DECREF(cpy_r_r85);
     CPy_DECREF(cpy_r_r87);
     if (unlikely(cpy_r_r88 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 56, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_kwargs != NULL) {
@@ -34177,12 +34175,12 @@ CPyL68: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_kwargs = cpy_r_r88;
     cpy_r_r89 = 1;
     if (unlikely(!cpy_r_r89)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 56, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     cpy_r_r90 = PyDict_New();
     if (unlikely(cpy_r_r90 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__3 != NULL) {
@@ -34196,7 +34194,7 @@ CPyL68: ;
     }
     cpy_r_r92 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_kwargs;
     if (unlikely(cpy_r_r92 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "kwargs", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "kwargs", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     CPy_INCREF(cpy_r_r92);
@@ -34219,7 +34217,7 @@ CPyL73: ;
     }
     cpy_r_r95 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__4;
     if (unlikely(cpy_r_r95 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__4", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__4", 57, CPyStatic_overloaded___globals);
         goto CPyL177;
     }
     CPy_INCREF(cpy_r_r95);
@@ -34236,7 +34234,7 @@ CPyL76: ;
     cpy_r_r99 = CPyDict_GetItemsIter(cpy_r_r92);
     CPy_DECREF(cpy_r_r92);
     if (unlikely(cpy_r_r99 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__7 != NULL) {
@@ -34251,14 +34249,14 @@ CPyL76: ;
 CPyL79: ;
     cpy_r_r101 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__7;
     if (unlikely(cpy_r_r101 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__7", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__7", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     CPy_INCREF(cpy_r_r101);
 CPyL80: ;
     cpy_r_r102 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__5;
     if (unlikely(cpy_r_r102 == CPY_INT_TAG)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__5", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__5", 57, CPyStatic_overloaded___globals);
         goto CPyL178;
     }
 CPyL81: ;
@@ -34268,7 +34266,7 @@ CPyL81: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__5 = cpy_r_r104;
     cpy_r_r105 = 1;
     if (unlikely(!cpy_r_r105)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL179;
     }
     cpy_r_r106 = cpy_r_r103.f0;
@@ -34282,7 +34280,7 @@ CPyL81: ;
     if (likely(PyUnicode_Check(cpy_r_r107)))
         cpy_r_r109 = cpy_r_r107;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals, "str", cpy_r_r107);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals, "str", cpy_r_r107);
         goto CPyL181;
     }
     if (PyLong_Check(cpy_r_r108))
@@ -34315,7 +34313,7 @@ CPyL81: ;
         cpy_r_r110 = NULL;
     }
     if (cpy_r_r110 != NULL) goto __LL79;
-    CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals, "union[int, str, bytes, None, dict]", cpy_r_r108);
+    CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals, "union[int, str, bytes, None, dict]", cpy_r_r108);
     goto CPyL182;
 __LL79: ;
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_k != NULL) {
@@ -34324,7 +34322,7 @@ __LL79: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_k = cpy_r_r109;
     cpy_r_r111 = 1;
     if (unlikely(!cpy_r_r111)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL183;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_v != NULL) {
@@ -34333,12 +34331,12 @@ __LL79: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_v = cpy_r_r110;
     cpy_r_r112 = 1;
     if (unlikely(!cpy_r_r112)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     cpy_r_r113 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_v;
     if (unlikely(cpy_r_r113 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "v", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "v", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     CPy_INCREF(cpy_r_r113);
@@ -34349,14 +34347,14 @@ CPyL88: ;
     if (!cpy_r_r115) goto CPyL94;
     cpy_r_r116 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_k;
     if (unlikely(cpy_r_r116 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "k", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "k", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     CPy_INCREF(cpy_r_r116);
 CPyL90: ;
     cpy_r_r117 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_v;
     if (unlikely(cpy_r_r117 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "v", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "v", 57, CPyStatic_overloaded___globals);
         goto CPyL184;
     }
     CPy_INCREF(cpy_r_r117);
@@ -34385,7 +34383,7 @@ CPyL91: ;
         cpy_r_r118 = NULL;
     }
     if (cpy_r_r118 != NULL) goto __LL80;
-    CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals, "union[int, str, bytes, dict]", cpy_r_r117);
+    CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals, "union[int, str, bytes, dict]", cpy_r_r117);
     goto CPyL184;
 __LL80: ;
     cpy_r_r119 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__3;
@@ -34401,34 +34399,34 @@ CPyL93: ;
     CPy_DECREF(cpy_r_r118);
     cpy_r_r121 = cpy_r_r120 >= 0;
     if (unlikely(!cpy_r_r121)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
 CPyL94: ;
     cpy_r_r122 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__4;
     if (unlikely(cpy_r_r122 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__4", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__4", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     CPy_INCREF(cpy_r_r122);
 CPyL95: ;
     cpy_r_r123 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__6;
     if (unlikely(cpy_r_r123 == CPY_INT_TAG)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__6", 58, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "__mypyc_temp__6", 57, CPyStatic_overloaded___globals);
         goto CPyL186;
     }
 CPyL96: ;
     cpy_r_r124 = CPyDict_CheckSize(cpy_r_r122, cpy_r_r123);
     CPy_DECREF(cpy_r_r122);
     if (unlikely(!cpy_r_r124)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     } else
         goto CPyL79;
 CPyL97: ;
     cpy_r_r125 = CPy_NoErrOccurred();
     if (unlikely(!cpy_r_r125)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     cpy_r_r126 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__3;
@@ -34444,26 +34442,26 @@ CPyL99: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_kwargs = cpy_r_r126;
     cpy_r_r127 = 1;
     if (unlikely(!cpy_r_r127)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 57, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     cpy_r_r128 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_fn;
     if (unlikely(cpy_r_r128 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "fn", 59, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "fn", 58, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     CPy_INCREF(cpy_r_r128);
 CPyL101: ;
     cpy_r_r129 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_args;
     if (unlikely(cpy_r_r129 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "args", 59, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "args", 58, CPyStatic_overloaded___globals);
         goto CPyL187;
     }
     CPy_INCREF(cpy_r_r129);
 CPyL102: ;
     cpy_r_r130 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->_kwargs;
     if (unlikely(cpy_r_r130 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "kwargs", 59, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_env", "kwargs", 58, CPyStatic_overloaded___globals);
         goto CPyL188;
     }
     CPy_INCREF(cpy_r_r130);
@@ -34472,38 +34470,38 @@ CPyL103: ;
     cpy_r_r132 = CPyObject_GetAttr(cpy_r_r128, cpy_r_r131);
     CPy_DECREF(cpy_r_r128);
     if (unlikely(cpy_r_r132 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL189;
     }
     cpy_r_r133 = PyList_New(0);
     if (unlikely(cpy_r_r133 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL190;
     }
     cpy_r_r134 = CPyList_Extend(cpy_r_r133, cpy_r_r129);
     CPy_DECREF(cpy_r_r129);
     if (unlikely(cpy_r_r134 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL191;
     } else
         goto CPyL192;
 CPyL106: ;
     cpy_r_r135 = PyDict_New();
     if (unlikely(cpy_r_r135 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL191;
     }
     cpy_r_r136 = CPyDict_UpdateInDisplay(cpy_r_r135, cpy_r_r130);
     CPy_DECREF(cpy_r_r130);
     cpy_r_r137 = cpy_r_r136 >= 0;
     if (unlikely(!cpy_r_r137)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL193;
     }
     cpy_r_r138 = PyList_AsTuple(cpy_r_r133);
     CPy_DECREF(cpy_r_r133);
     if (unlikely(cpy_r_r138 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL194;
     }
     cpy_r_r139 = PyObject_Call(cpy_r_r132, cpy_r_r138, cpy_r_r135);
@@ -34511,13 +34509,13 @@ CPyL106: ;
     CPy_DECREF(cpy_r_r138);
     CPy_DECREF(cpy_r_r135);
     if (unlikely(cpy_r_r139 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     cpy_r_r140 = CPy_GetCoro(cpy_r_r139);
     CPy_DECREF(cpy_r_r139);
     if (unlikely(cpy_r_r140 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL154;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_temp__8 != NULL) {
@@ -34545,7 +34543,7 @@ CPyL113: ;
 CPyL114: ;
     cpy_r_r144 = CPy_FetchStopIterationValue();
     if (unlikely(cpy_r_r144 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL196;
     }
     cpy_r_r145 = cpy_r_r144;
@@ -34559,7 +34557,7 @@ CPyL117: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r2)->___mypyc_next_label__ = 2;
     cpy_r_r147 = 1;
     if (unlikely(!cpy_r_r147)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL197;
     } else
         goto CPyL198;
@@ -34571,7 +34569,7 @@ CPyL119: ;
     if (!cpy_r_r149) goto CPyL122;
     CPyErr_SetObjectAndTraceback(cpy_r_type, cpy_r_value, cpy_r_traceback);
     if (unlikely(!0)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL123;
     } else
         goto CPyL199;
@@ -34604,7 +34602,7 @@ CPyL125: ;
     cpy_r_r154 = CPy_YieldFromErrorHandle(cpy_r_r153, cpy_r_r152);
     CPy_DecRef(cpy_r_r153);
     if (unlikely(cpy_r_r154 == 2)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL200;
     }
     if (cpy_r_r154) goto CPyL132;
@@ -34701,7 +34699,7 @@ CPyL141: ;
 CPyL143: ;
     cpy_r_r163 = CPy_FetchStopIterationValue();
     if (unlikely(cpy_r_r163 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL196;
     }
     cpy_r_r145 = cpy_r_r163;
@@ -34713,7 +34711,7 @@ CPyL145: ;
     cpy_r_r164 = 1;
     CPy_DECREF(cpy_r_r2);
     if (unlikely(!cpy_r_r164)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 59, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 58, CPyStatic_overloaded___globals);
         goto CPyL207;
     }
     CPyGen_SetStopIterationValue(cpy_r_r145);
@@ -34737,7 +34735,7 @@ CPyL150: ;
     PyErr_SetNone(PyExc_StopIteration);
     cpy_r_r167 = 0;
     if (unlikely(!cpy_r_r167)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL152;
     }
     CPy_Unreachable();
@@ -35004,7 +35002,7 @@ PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_ge
     PyObject *retval = CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
     return retval;
 fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
     return NULL;
 }
 
@@ -35314,7 +35312,7 @@ PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_obj_____call__(
     PyObject *cpy_r_r14;
     cpy_r_r0 = ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject *)cpy_r___mypyc_self__)->___mypyc_env__;
     if (unlikely(cpy_r_r0 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_obj", "__mypyc_env__", 24, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "coroutine", "coroutine__patch_overloaded_method_obj", "__mypyc_env__", 23, CPyStatic_overloaded___globals);
         goto CPyL18;
     }
     CPy_INCREF(cpy_r_r0);
@@ -35336,7 +35334,7 @@ CPyL5: ;
 CPyL7: ;
     cpy_r_r4 = CPyDef_overloaded___coroutine__patch_overloaded_method_env();
     if (unlikely(cpy_r_r4 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL22;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->___mypyc_env__ != NULL) {
@@ -35345,7 +35343,7 @@ CPyL7: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->___mypyc_env__ = cpy_r_r0;
     cpy_r_r5 = 1;
     if (unlikely(!cpy_r_r5)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL23;
     }
     CPy_INCREF(cpy_r_self);
@@ -35355,7 +35353,7 @@ CPyL7: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->_self = cpy_r_self;
     cpy_r_r6 = 1;
     if (unlikely(!cpy_r_r6)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL23;
     }
     CPy_INCREF(cpy_r_args);
@@ -35365,7 +35363,7 @@ CPyL7: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->_args = cpy_r_args;
     cpy_r_r7 = 1;
     if (unlikely(!cpy_r_r7)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL23;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->_block_identifier != NULL) {
@@ -35374,7 +35372,7 @@ CPyL7: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->_block_identifier = cpy_r_block_identifier;
     cpy_r_r8 = 1;
     if (unlikely(!cpy_r_r8)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL24;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->_decimals != NULL) {
@@ -35383,7 +35381,7 @@ CPyL7: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->_decimals = cpy_r_decimals;
     cpy_r_r9 = 1;
     if (unlikely(!cpy_r_r9)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL25;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->_override != NULL) {
@@ -35392,12 +35390,12 @@ CPyL7: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->_override = cpy_r_override;
     cpy_r_r10 = 1;
     if (unlikely(!cpy_r_r10)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL26;
     }
     cpy_r_r11 = CPyDef_overloaded___coroutine__patch_overloaded_method_gen();
     if (unlikely(cpy_r_r11 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL26;
     }
     CPy_INCREF(cpy_r_r4);
@@ -35407,7 +35405,7 @@ CPyL7: ;
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_genObject *)cpy_r_r11)->___mypyc_env__ = cpy_r_r4;
     cpy_r_r12 = 1;
     if (unlikely(!cpy_r_r12)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL27;
     }
     if (((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject *)cpy_r_r4)->___mypyc_next_label__ != CPY_INT_TAG) {
@@ -35417,7 +35415,7 @@ CPyL7: ;
     cpy_r_r13 = 1;
     CPy_DECREF(cpy_r_r4);
     if (unlikely(!cpy_r_r13)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
         goto CPyL28;
     }
     return cpy_r_r11;
@@ -35558,7 +35556,7 @@ __LL85: ;
     return retval;
 fail: ;
     CPy_DECREF(obj_args);
-    CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 24, CPyStatic_overloaded___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
     return NULL;
 }
 
@@ -35646,7 +35644,7 @@ char CPyDef_overloaded____patch_overloaded_method(PyObject *cpy_r_call, PyObject
     char cpy_r_r86;
     cpy_r_r0 = CPyDef_overloaded____patch_overloaded_method_env();
     if (unlikely(cpy_r_r0 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 12, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 11, CPyStatic_overloaded___globals);
         goto CPyL39;
     }
     CPy_INCREF(cpy_r_call);
@@ -35656,12 +35654,12 @@ char CPyDef_overloaded____patch_overloaded_method(PyObject *cpy_r_call, PyObject
     ((dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject *)cpy_r_r0)->_call = cpy_r_call;
     cpy_r_r1 = 1;
     if (unlikely(!cpy_r_r1)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 12, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 11, CPyStatic_overloaded___globals);
         goto CPyL40;
     }
     cpy_r_r2 = CPyDef_overloaded___coroutine__patch_overloaded_method_obj();
     if (unlikely(cpy_r_r2 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 23, CPyStatic_overloaded___globals);
         goto CPyL40;
     }
     CPy_INCREF(cpy_r_r0);
@@ -35671,12 +35669,12 @@ char CPyDef_overloaded____patch_overloaded_method(PyObject *cpy_r_call, PyObject
     ((dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject *)cpy_r_r2)->___mypyc_env__ = cpy_r_r0;
     cpy_r_r3 = 1;
     if (unlikely(!cpy_r_r3)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 23, CPyStatic_overloaded___globals);
         goto CPyL41;
     }
     cpy_r_r4 = ((dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject *)cpy_r_r0)->_call;
     if (unlikely(cpy_r_r4 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", "_patch_overloaded_method_env", "call", 23, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", "_patch_overloaded_method_env", "call", 22, CPyStatic_overloaded___globals);
         goto CPyL41;
     }
     CPy_INCREF(cpy_r_r4);
@@ -35685,7 +35683,7 @@ CPyL5: ;
     cpy_r_r6 = CPyStatics[431]; /* 'wraps' */
     cpy_r_r7 = CPyDict_GetItem(cpy_r_r5, cpy_r_r6);
     if (unlikely(cpy_r_r7 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 23, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 22, CPyStatic_overloaded___globals);
         goto CPyL42;
     }
     PyObject *cpy_r_r8[1] = {cpy_r_r4};
@@ -35693,7 +35691,7 @@ CPyL5: ;
     cpy_r_r10 = _PyObject_Vectorcall(cpy_r_r7, cpy_r_r9, 1, 0);
     CPy_DECREF(cpy_r_r7);
     if (unlikely(cpy_r_r10 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 23, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 22, CPyStatic_overloaded___globals);
         goto CPyL42;
     }
     CPy_DECREF(cpy_r_r4);
@@ -35702,7 +35700,7 @@ CPyL5: ;
     cpy_r_r13 = _PyObject_Vectorcall(cpy_r_r10, cpy_r_r12, 1, 0);
     CPy_DECREF(cpy_r_r10);
     if (unlikely(cpy_r_r13 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 23, CPyStatic_overloaded___globals);
         goto CPyL41;
     }
     CPy_DECREF(cpy_r_r2);
@@ -35713,12 +35711,12 @@ CPyL5: ;
     CPy_DECREF(cpy_r_r13);
     cpy_r_r17 = cpy_r_r16 >= 0;
     if (unlikely(!cpy_r_r17)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 24, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 23, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
     cpy_r_r18 = ((dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject *)cpy_r_r0)->_call;
     if (unlikely(cpy_r_r18 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", "_patch_overloaded_method_env", "call", 61, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", "_patch_overloaded_method_env", "call", 60, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
     CPy_INCREF(cpy_r_r18);
@@ -35727,14 +35725,14 @@ CPyL10: ;
     cpy_r_r20 = CPyObject_GetAttr(cpy_r_r18, cpy_r_r19);
     CPy_DECREF(cpy_r_r18);
     if (unlikely(cpy_r_r20 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 60, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
     cpy_r_r21 = CPyStatics[432]; /* 'methods' */
     cpy_r_r22 = PyObject_GetItem(cpy_r_r20, cpy_r_r21);
     CPy_DECREF(cpy_r_r20);
     if (unlikely(cpy_r_r22 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 60, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
     cpy_r_r23 = CPyStatics[433]; /* 'values' */
@@ -35742,14 +35740,14 @@ CPyL10: ;
     cpy_r_r25 = (PyObject **)&cpy_r_r24;
     cpy_r_r26 = PyObject_VectorcallMethod(cpy_r_r23, cpy_r_r25, 9223372036854775809ULL, 0);
     if (unlikely(cpy_r_r26 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 60, CPyStatic_overloaded___globals);
         goto CPyL44;
     }
     CPy_DECREF(cpy_r_r22);
     cpy_r_r27 = PyObject_GetIter(cpy_r_r26);
     CPy_DECREF(cpy_r_r26);
     if (unlikely(cpy_r_r27 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 60, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
 CPyL14: ;
@@ -35759,14 +35757,14 @@ CPyL14: ;
     cpy_r_r30 = CPyStatics[358]; /* 'ContractCall' */
     cpy_r_r31 = CPyDict_GetItem(cpy_r_r29, cpy_r_r30);
     if (unlikely(cpy_r_r31 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
         goto CPyL46;
     }
     cpy_r_r32 = CPyStatic_overloaded___globals;
     cpy_r_r33 = CPyStatics[434]; /* 'ContractTx' */
     cpy_r_r34 = CPyDict_GetItem(cpy_r_r32, cpy_r_r33);
     if (unlikely(cpy_r_r34 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
         goto CPyL47;
     }
     cpy_r_r35.f0 = cpy_r_r31;
@@ -35782,7 +35780,7 @@ CPyL14: ;
     CPy_DECREF(cpy_r_r36);
     cpy_r_r38 = cpy_r_r37 >= 0;
     if (unlikely(!cpy_r_r38)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
         goto CPyL46;
     }
     cpy_r_r39 = cpy_r_r37;
@@ -35790,20 +35788,20 @@ CPyL14: ;
     cpy_r_r40 = CPyStatics[280]; /* '_address' */
     cpy_r_r41 = CPyObject_GetAttr(cpy_r_r28, cpy_r_r40);
     if (unlikely(cpy_r_r41 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
         goto CPyL46;
     }
     cpy_r_r42 = CPyStatic_overloaded___globals;
     cpy_r_r43 = CPyStatics[281]; /* '_skip_proc_pool' */
     cpy_r_r44 = CPyDict_GetItem(cpy_r_r42, cpy_r_r43);
     if (unlikely(cpy_r_r44 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
         goto CPyL49;
     }
     if (likely(PySet_Check(cpy_r_r44)))
         cpy_r_r45 = cpy_r_r44;
     else {
-        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals, "set", cpy_r_r44);
+        CPy_TypeErrorTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals, "set", cpy_r_r44);
         goto CPyL49;
     }
     cpy_r_r46 = PySet_Contains(cpy_r_r45, cpy_r_r41);
@@ -35811,7 +35809,7 @@ CPyL14: ;
     CPy_DECREF(cpy_r_r41);
     cpy_r_r47 = cpy_r_r46 >= 0;
     if (unlikely(!cpy_r_r47)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
         goto CPyL46;
     }
     cpy_r_r48 = cpy_r_r46;
@@ -35820,33 +35818,33 @@ CPyL14: ;
     cpy_r_r51 = PyObject_SetAttr(cpy_r_r28, cpy_r_r49, cpy_r_r50);
     cpy_r_r52 = cpy_r_r51 >= 0;
     if (unlikely(!cpy_r_r52)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 62, CPyStatic_overloaded___globals);
         goto CPyL46;
     }
     cpy_r_r53 = CPyStatics[271]; /* 'abi' */
     cpy_r_r54 = CPyObject_GetAttr(cpy_r_r28, cpy_r_r53);
     if (unlikely(cpy_r_r54 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL46;
     }
     cpy_r_r55 = CPyStatics[256]; /* 'inputs' */
     cpy_r_r56 = PyObject_GetItem(cpy_r_r54, cpy_r_r55);
     CPy_DECREF(cpy_r_r54);
     if (unlikely(cpy_r_r56 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL46;
     }
     cpy_r_r57 = CPyObject_Size(cpy_r_r56);
     CPy_DECREF(cpy_r_r56);
     if (unlikely(cpy_r_r57 == CPY_INT_TAG)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL46;
     }
     cpy_r_r58 = CPyStatic_overloaded___globals;
     cpy_r_r59 = CPyStatics[283]; /* '_get_coroutine_fn' */
     cpy_r_r60 = CPyDict_GetItem(cpy_r_r58, cpy_r_r59);
     if (unlikely(cpy_r_r60 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL50;
     }
     cpy_r_r61 = CPyTagged_StealAsObject(cpy_r_r57);
@@ -35855,7 +35853,7 @@ CPyL14: ;
     cpy_r_r64 = _PyObject_Vectorcall(cpy_r_r60, cpy_r_r63, 2, 0);
     CPy_DECREF(cpy_r_r60);
     if (unlikely(cpy_r_r64 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL51;
     }
     CPy_DECREF(cpy_r_r61);
@@ -35863,7 +35861,7 @@ CPyL14: ;
     cpy_r_r66 = CPyStatics[284]; /* 'MethodType' */
     cpy_r_r67 = CPyDict_GetItem(cpy_r_r65, cpy_r_r66);
     if (unlikely(cpy_r_r67 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL52;
     }
     PyObject *cpy_r_r68[2] = {cpy_r_r64, cpy_r_r28};
@@ -35871,7 +35869,7 @@ CPyL14: ;
     cpy_r_r70 = _PyObject_Vectorcall(cpy_r_r67, cpy_r_r69, 2, 0);
     CPy_DECREF(cpy_r_r67);
     if (unlikely(cpy_r_r70 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL52;
     }
     CPy_DECREF(cpy_r_r64);
@@ -35881,19 +35879,19 @@ CPyL14: ;
     CPy_DECREF(cpy_r_r70);
     cpy_r_r73 = cpy_r_r72 >= 0;
     if (unlikely(!cpy_r_r73)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 64, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 63, CPyStatic_overloaded___globals);
         goto CPyL53;
     } else
         goto CPyL14;
 CPyL32: ;
     cpy_r_r74 = CPy_NoErrOccurred();
     if (unlikely(!cpy_r_r74)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 61, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 60, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
     cpy_r_r75 = ((dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject *)cpy_r_r0)->_call;
     if (unlikely(cpy_r_r75 == NULL)) {
-        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", "_patch_overloaded_method_env", "call", 69, CPyStatic_overloaded___globals);
+        CPy_AttributeError("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", "_patch_overloaded_method_env", "call", 68, CPyStatic_overloaded___globals);
         goto CPyL43;
     }
     CPy_INCREF(cpy_r_r75);
@@ -35902,7 +35900,7 @@ CPyL34: ;
     cpy_r_r77 = CPyStatics[284]; /* 'MethodType' */
     cpy_r_r78 = CPyDict_GetItem(cpy_r_r76, cpy_r_r77);
     if (unlikely(cpy_r_r78 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 69, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 68, CPyStatic_overloaded___globals);
         goto CPyL54;
     }
     PyObject *cpy_r_r79[2] = {cpy_r_r13, cpy_r_r75};
@@ -35910,7 +35908,7 @@ CPyL34: ;
     cpy_r_r81 = _PyObject_Vectorcall(cpy_r_r78, cpy_r_r80, 2, 0);
     CPy_DECREF(cpy_r_r78);
     if (unlikely(cpy_r_r81 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 69, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 68, CPyStatic_overloaded___globals);
         goto CPyL54;
     }
     CPy_DECREF(cpy_r_r13);
@@ -35923,7 +35921,7 @@ CPyL34: ;
     }
     CPy_DECREF(cpy_r_r0);
     if (unlikely(cpy_r_r82 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 69, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 68, CPyStatic_overloaded___globals);
         goto CPyL55;
     }
 CPyL37: ;
@@ -35933,7 +35931,7 @@ CPyL37: ;
     CPy_DECREF(cpy_r_r81);
     cpy_r_r85 = cpy_r_r84 >= 0;
     if (unlikely(!cpy_r_r85)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 69, CPyStatic_overloaded___globals);
+        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 68, CPyStatic_overloaded___globals);
         goto CPyL39;
     }
     return 1;
@@ -36041,7 +36039,7 @@ PyObject *CPyPy_overloaded____patch_overloaded_method(PyObject *self, PyObject *
     CPy_INCREF(retbox);
     return retbox;
 fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 12, CPyStatic_overloaded___globals);
+    CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "_patch_overloaded_method", 11, CPyStatic_overloaded___globals);
     return NULL;
 }
 
@@ -36079,11 +36077,7 @@ char CPyDef_overloaded_____top_level__(void) {
     PyObject *cpy_r_r30;
     PyObject *cpy_r_r31;
     PyObject *cpy_r_r32;
-    PyObject *cpy_r_r33;
-    PyObject *cpy_r_r34;
-    PyObject *cpy_r_r35;
-    PyObject *cpy_r_r36;
-    char cpy_r_r37;
+    char cpy_r_r33;
     cpy_r_r0 = CPyModule_builtins;
     cpy_r_r1 = (PyObject *)&_Py_NoneStruct;
     cpy_r_r2 = cpy_r_r0 != cpy_r_r1;
@@ -36092,7 +36086,7 @@ char CPyDef_overloaded_____top_level__(void) {
     cpy_r_r4 = PyImport_Import(cpy_r_r3);
     if (unlikely(cpy_r_r4 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", -1, CPyStatic_overloaded___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPyModule_builtins = cpy_r_r4;
     CPy_INCREF(CPyModule_builtins);
@@ -36104,7 +36098,7 @@ CPyL3: ;
     cpy_r_r8 = CPyImport_ImportFromMany(cpy_r_r6, cpy_r_r5, cpy_r_r5, cpy_r_r7);
     if (unlikely(cpy_r_r8 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", 1, CPyStatic_overloaded___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPyModule_functools = cpy_r_r8;
     CPy_INCREF(CPyModule_functools);
@@ -36115,7 +36109,7 @@ CPyL3: ;
     cpy_r_r12 = CPyImport_ImportFromMany(cpy_r_r10, cpy_r_r9, cpy_r_r9, cpy_r_r11);
     if (unlikely(cpy_r_r12 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", 2, CPyStatic_overloaded___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPyModule_types = cpy_r_r12;
     CPy_INCREF(CPyModule_types);
@@ -36126,7 +36120,7 @@ CPyL3: ;
     cpy_r_r16 = CPyImport_ImportFromMany(cpy_r_r14, cpy_r_r13, cpy_r_r13, cpy_r_r15);
     if (unlikely(cpy_r_r16 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", 3, CPyStatic_overloaded___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPyModule_typing = cpy_r_r16;
     CPy_INCREF(CPyModule_typing);
@@ -36137,7 +36131,7 @@ CPyL3: ;
     cpy_r_r20 = CPyImport_ImportFromMany(cpy_r_r18, cpy_r_r17, cpy_r_r17, cpy_r_r19);
     if (unlikely(cpy_r_r20 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", 5, CPyStatic_overloaded___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPyModule_brownie = cpy_r_r20;
     CPy_INCREF(CPyModule_brownie);
@@ -36148,7 +36142,7 @@ CPyL3: ;
     cpy_r_r24 = CPyImport_ImportFromMany(cpy_r_r22, cpy_r_r21, cpy_r_r21, cpy_r_r23);
     if (unlikely(cpy_r_r24 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", 6, CPyStatic_overloaded___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPyModule_brownie___network___contract = cpy_r_r24;
     CPy_INCREF(CPyModule_brownie___network___contract);
@@ -36159,37 +36153,26 @@ CPyL3: ;
     cpy_r_r28 = CPyImport_ImportFromMany(cpy_r_r26, cpy_r_r25, cpy_r_r25, cpy_r_r27);
     if (unlikely(cpy_r_r28 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", 7, CPyStatic_overloaded___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPyModule_dank_mids___brownie_patch___call = cpy_r_r28;
     CPy_INCREF(CPyModule_dank_mids___brownie_patch___call);
     CPy_DECREF(cpy_r_r28);
-    cpy_r_r29 = CPyStatics[776]; /* ('ContractMethod',) */
-    cpy_r_r30 = CPyStatics[231]; /* 'dank_mids.brownie_patch.types' */
+    cpy_r_r29 = CPyStatics[742]; /* ('DankWeb3',) */
+    cpy_r_r30 = CPyStatics[236]; /* 'dank_mids.helpers._helpers' */
     cpy_r_r31 = CPyStatic_overloaded___globals;
     cpy_r_r32 = CPyImport_ImportFromMany(cpy_r_r30, cpy_r_r29, cpy_r_r29, cpy_r_r31);
     if (unlikely(cpy_r_r32 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", 8, CPyStatic_overloaded___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
-    CPyModule_dank_mids___brownie_patch___types = cpy_r_r32;
-    CPy_INCREF(CPyModule_dank_mids___brownie_patch___types);
-    CPy_DECREF(cpy_r_r32);
-    cpy_r_r33 = CPyStatics[742]; /* ('DankWeb3',) */
-    cpy_r_r34 = CPyStatics[236]; /* 'dank_mids.helpers._helpers' */
-    cpy_r_r35 = CPyStatic_overloaded___globals;
-    cpy_r_r36 = CPyImport_ImportFromMany(cpy_r_r34, cpy_r_r33, cpy_r_r33, cpy_r_r35);
-    if (unlikely(cpy_r_r36 == NULL)) {
-        CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "<module>", 9, CPyStatic_overloaded___globals);
-        goto CPyL12;
-    }
-    CPyModule_dank_mids___helpers____helpers = cpy_r_r36;
+    CPyModule_dank_mids___helpers____helpers = cpy_r_r32;
     CPy_INCREF(CPyModule_dank_mids___helpers____helpers);
-    CPy_DECREF(cpy_r_r36);
+    CPy_DECREF(cpy_r_r32);
     return 1;
-CPyL12: ;
-    cpy_r_r37 = 2;
-    return cpy_r_r37;
+CPyL11: ;
+    cpy_r_r33 = 2;
+    return cpy_r_r33;
 }
 
 static PyObject *types___DankContractCall_setup(PyTypeObject *type);
@@ -58058,7 +58041,6 @@ int CPyGlobalsInit(void)
     CPyModule_brownie = Py_None;
     CPyModule_brownie___network___contract = Py_None;
     CPyModule_dank_mids___brownie_patch___call = Py_None;
-    CPyModule_dank_mids___brownie_patch___types = Py_None;
     CPyModule_dank_mids___helpers____helpers = Py_None;
     CPyModule_dank_mids___brownie_patch___types = Py_None;
     CPyModule_builtins = Py_None;
@@ -58591,7 +58573,7 @@ PyObject *CPyDef__abi___get_type_strings(PyObject *cpy_r_abi_params, PyObject *c
 PyObject *CPyPy__abi___get_type_strings(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__abi___build_function_signature(PyObject *cpy_r_abi);
 PyObject *CPyPy__abi___build_function_signature(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_abi);
+PyObject *CPyDef__abi___build_function_selector(PyObject *cpy_r_input_signature);
 PyObject *CPyPy__abi___build_function_selector(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 char CPyDef__abi_____top_level__(void);
 PyObject *CPyStatic_call___ENVS = NULL;
