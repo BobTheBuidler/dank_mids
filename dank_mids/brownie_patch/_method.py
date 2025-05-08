@@ -211,3 +211,4 @@ class _DankMethod(_DankMethodMixin):
             if decimals is None
             else await decode_output_coro / 10 ** Decimal(decimals)
         )
+
