@@ -19,7 +19,7 @@ from hexbytes.main import BytesLike
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.brownie_patch._abi import FunctionABI
-from dank_mids.helpers._helpers import _make_hashable
+
 
 _EVMType = TypeVar("_EVMType")
 
@@ -155,7 +155,7 @@ class _DankMethod(_DankMethodMixin):
         natspec: Optional[Dict] = None,
     ) -> None:
         self._address = address
-        self._abi = get_function_abi(**{key: _make_hashable(abi[key]) for key in sorted(abi)})
+        self._abi = get_function_abi(**abi)
 
         self._name = name
         """The name of the contract method."""
