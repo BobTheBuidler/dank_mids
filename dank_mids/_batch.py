@@ -16,6 +16,8 @@ if TYPE_CHECKING:
 
 __T = TypeVar("__T")
 
+Coro = Union[Multicall, JSONRPCBatch, Awaitable[RawResponse]]
+
 
 MIN_SIZE: Final = 1  # TODO: Play with this
 """The minimum size for a batch operation."""
@@ -124,7 +126,7 @@ class DankBatch:
             await last_failure
 
     @property
-    def coroutines(self) -> Generator[Union[_Batch, Awaitable[RawResponse]], None, None]:  # type: ignore [type-arg]
+    def coroutines(self) -> Generator[Coro, None, None]:  # type: ignore [type-arg]
         """
         Generator that prepares RPC calls and multicalls for batch processing.
 
