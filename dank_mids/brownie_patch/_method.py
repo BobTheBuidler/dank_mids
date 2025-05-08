@@ -22,7 +22,6 @@ from dank_mids.brownie_patch import call
 from dank_mids.brownie_patch._abi import FunctionABI
 
 
-
 _EVMType = TypeVar("_EVMType")
 
 
