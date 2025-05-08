@@ -65,7 +65,7 @@ class DankBatch:
 
         self._awaited: bool = False
         """A flag indicating whether the batch has been awaited."""
-    
+
         self._check_len: Final = min(CHECK, controller.batcher.step)
 
     def __repr__(self) -> str:
