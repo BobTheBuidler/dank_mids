@@ -1,7 +1,7 @@
 from asyncio import Task
 from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, Union, final
 
-from a_sync import create_task
+import a_sync
 
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._logging import getLogger
@@ -27,6 +27,8 @@ CHECK: Final = MIN_SIZE - 1
 
 
 logger: Final = getLogger(__name__)
+
+create_task: Final = a_sync.create_task
 
 
 def _create_named_task(awaitable: Awaitable[__T]) -> "Task[__T]":
