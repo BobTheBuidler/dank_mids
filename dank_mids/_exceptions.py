@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import TYPE_CHECKING, Final, List, Tuple, Union, final
+from typing import TYPE_CHECKING, Final, List, Sequence, Union, final
 
 from aiohttp.client_exceptions import ClientResponseError
 
@@ -122,7 +122,7 @@ class BatchResponseSortError(Exception):
     def __init__(
         self,
         controller: "DankMiddlewareController",
-        calls: Tuple["RPCRequest", ...],
+        calls: Sequence["RPCRequest"],
         response: List["RawResponse"],
     ) -> None:
         self.calls: Final = calls
