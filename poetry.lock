@@ -2172,14 +2172,13 @@ test = ["hypothesis (>=4.43.0)", "mypy (==0.971)", "pytest (>=7.0.0)", "pytest-x
 
 [[package]]
 name = "evmspec"
-version = "0.2.10"
+version = "0.3.2"
 description = "A collection of msgspec.Struct definitions for use with the Ethereum Virtual Machine"
 optional = false
 python-versions = "<3.13,>=3.8"
 groups = ["main"]
 files = [
-    {file = "evmspec-0.2.10-py3-none-any.whl", hash = "sha256:23f8d8650d3922827d3a9b6537d21ad2087f9055ceb1d4e74584389a4e3a8529"},
-    {file = "evmspec-0.2.10.tar.gz", hash = "sha256:d9873e034f9b0f315dcae80ec7076846531f5bf6dc5a467020f17affa67390f5"},
+    {file = "evmspec-0.3.2.tar.gz", hash = "sha256:52f3f99e53731bb9ad847c8086b91756e442a95f000f3c58e8a0e380aff37ae6"},
 ]
 
 [package.dependencies]
@@ -2188,6 +2187,8 @@ cchecksum = ">=0.0.3"
 dictstruct = ">=0.0.1"
 eth-utils = ">=1.10.0"
 hexbytes = "*"
+pysha3 = {version = ">=1.0.0,<2.0.0", markers = "python_version < \"3.9\""}
+safe-pysha3 = {version = ">=1.0.0", markers = "python_version >= \"3.9\""}
 typing_extensions = ">=4.0.0"
 
 [[package]]
@@ -4562,6 +4563,18 @@ files = [
 ]
 
 [[package]]
+name = "safe-pysha3"
+version = "1.0.4"
+description = "SHA-3 (Keccak) for Python 3.9 - 3.11"
+optional = false
+python-versions = "*"
+groups = ["main"]
+markers = "python_version >= \"3.9\""
+files = [
+    {file = "safe-pysha3-1.0.4.tar.gz", hash = "sha256:e429146b1edd198b2ca934a2046a65656c5d31b0ec894bbd6055127f4deaff17"},
+]
+
+[[package]]
 name = "semantic-version"
 version = "2.10.0"
 description = "A library implementing the 'SemVer' scheme."
@@ -5580,4 +5593,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.8,<3.13"
-content-hash = "4abfb9164c7a87df5a48a720a90e742b14b6094ed72f89c4bbe72f1ad3245a70"
+content-hash = "ffdf475ba8ae8b8bcdb8e0295a4796a176ff0d21ef85192876788fff6760be68"
