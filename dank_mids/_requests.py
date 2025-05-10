@@ -342,10 +342,19 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 for d in done:
                     if d in (batch_task, fut):
                         # we'll get and decode the value below
-                        pass
-                    else:
-                        fut.cancel()
+                        continue
+                    elif fut.done():
+                        # if our fut is also done we can just return the result now
                         return d.result()
+                    try:
+                        # but if it isn't, we need to set the result before returning
+                        # so our garbage collection code doesn't trigger
+                        result = d.result()
+                    except Exception as e:
+                        fut.set_exception(e)
+                    else:
+                        fut.set_result(result)
+                        return result
 
         try:
             if fut.done():
