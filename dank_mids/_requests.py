@@ -355,7 +355,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     else:
                         fut.set_result(result)
                         return result
-                        
+
         try:
             if fut.done():
                 response = fut.result()
