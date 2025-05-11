@@ -80,9 +80,12 @@ class DankMiddlewareController:
         self.client_version: str = _get_client_version(self.sync_w3)
         """The client version for the currently connected rpc."""
 
+        using_reth_client = "reth" in self.client_version
+        using_tenderly_client = self.client_version == "Tenderly/1.0"
+
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
         self.request_type = (
-            Request if ENVS.USE_FULL_REQUEST or "reth" in self.client_version else PartialRequest
+            Request if ENVS.USE_FULL_REQUEST or using_reth_client else PartialRequest
         )
         """The Struct class the controller will use to encode requests."""
 
@@ -96,14 +99,16 @@ class DankMiddlewareController:
         self.endpoint: str = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
         """The uri for the connected rpc."""
 
-        self._sort_calls: bool = "tenderly" in self.endpoint or "chainstack" in self.endpoint
+        using_chainstack_rpc = "chainstack" in self.endpoint
+
+        self._sort_calls: bool = using_tenderly_client or using_chainstack_rpc
         """A boolean that indicates whether calls must be sorted by id in order for dank to work with the connected rpc."""
 
-        self._sort_response: bool = "chainstack" in self.endpoint
+        self._sort_response: bool = using_tenderly_client or using_chainstack_rpc
         """A boolean that indicates whether a jsonrpc batch response must be sorted by id in order for dank to work with the connected rpc."""
 
-        if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
-            logger.info("max jsonrpc batch size for tenderly is 10, overriding existing max")
+        if using_tenderly_client and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
+            logger.info("max jsonrpc batch size for Tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
 
         self._instance = sum(map(len, instances.values()))
