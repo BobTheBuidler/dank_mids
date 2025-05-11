@@ -98,7 +98,7 @@ class DankMiddlewareController:
 
         self.endpoint: str = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
         """The uri for the connected rpc."""
-        
+
         using_chainstack_rpc = "chainstack" in self.endpoint
 
         self._sort_calls: bool = using_tenderly_client or using_chainstack_rpc
