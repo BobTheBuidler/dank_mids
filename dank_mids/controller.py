@@ -85,7 +85,9 @@ class DankMiddlewareController:
         using_chainstack_rpc = "chainstack" in self.endpoint
 
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
-        self.request_type = Request if ENVS.USE_FULL_REQUEST or using_reth_client else PartialRequest
+        self.request_type = (
+            Request if ENVS.USE_FULL_REQUEST or using_reth_client else PartialRequest
+        )
         """The Struct class the controller will use to encode requests."""
 
         self._request_type_changed_ts: float = 0.0
