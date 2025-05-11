@@ -168,8 +168,7 @@ class ChainstackRateLimitContext(DictStruct, frozen=True):  # type: ignore [call
         Raises:
             NotImplementedError: If the time string is in an unrecognized format.
         """
-        error: Error = self.response.error
-        decimal_string = error.data.try_again_in
+        decimal_string = self._try_again_in
         if "ms" in decimal_string:
             ms = float(decimal_string[:-2])
             self.logger.warning("rate limited by chainstack, retrying in %sms", ms)
