@@ -2,7 +2,7 @@ from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
 from time import time
-from typing import Any, Callable, DefaultDict, List, Literal, Optional, Set
+from typing import Any, Callable, DefaultDict, Final, List, Literal, Optional, Set, final
 
 import eth_retry
 from cchecksum import to_checksum_address
@@ -34,9 +34,10 @@ logger = getLogger(__name__)
 getLogger("web3.RequestManager").disabled = True
 getLogger("web3.RequestManager").propagate = False
 
-instances: DefaultDict[ChainId, List["DankMiddlewareController"]] = defaultdict(list)
+instances: Final[DefaultDict[ChainId, List["DankMiddlewareController"]]] = defaultdict(list)
 
 
+@final
 class DankMiddlewareController:
     """
     Controller for managing Dank Middleware operations.
@@ -63,21 +64,21 @@ class DankMiddlewareController:
         """
         logger.info("Dank Middleware initializing... Strap on your rocket boots...")
 
-        self._loop = get_running_loop()
+        self._loop: Final = get_running_loop()
 
-        self.w3: Web3 = w3
+        self.w3: Final[Web3] = w3
         """The Web3 instance used to make rpc requests."""
 
         self.max_jsonrpc_batch_size = int(ENVS.MAX_JSONRPC_BATCH_SIZE)  # type: ignore [call-overload]
 
-        self.sync_w3 = _sync_w3_from_async(w3)
+        self.sync_w3: Final = _sync_w3_from_async(w3)
         """A sync Web3 instance connected to the same rpc, used to make calls during init."""
 
         chainid = self.sync_w3.eth.chain_id
-        self.chain_id = chainid
+        self.chain_id: Final = chainid
         """The chainid for the currently connected rpc."""
 
-        self.client_version: str = _get_client_version(self.sync_w3)
+        self.client_version: Final[str] = _get_client_version(self.sync_w3)
         """The client version for the currently connected rpc."""
 
         using_reth_client = "reth" in self.client_version
@@ -94,10 +95,10 @@ class DankMiddlewareController:
         """The time at which the request type was automatically updated by dank's internals. Zero if never updated after init."""
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
-        self.state_override_not_supported: bool = ENVS.GANACHE_FORK or chainid == 100  # type: ignore [assignment]
+        self.state_override_not_supported: Final[bool] = ENVS.GANACHE_FORK or chainid == 100  # type: ignore [assignment]
         """A boolean that indicates whether the connected rpc supports state override functionality."""
 
-        self.endpoint: str = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
+        self.endpoint: Final[str] = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
         """The uri for the connected rpc."""
 
         self._sort_calls: bool = using_tenderly_client or using_chainstack_rpc
@@ -110,17 +111,17 @@ class DankMiddlewareController:
             logger.info("max jsonrpc batch size for Tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
 
-        self._instance = sum(map(len, instances.values()))
+        self._instance: Final = sum(map(len, instances.values()))
         instances[chainid].append(self)  # type: ignore
 
-        self.mc2 = _get_multicall2(chainid)
-        self.mc3 = _get_multicall3(chainid)
+        self.mc2: Final = _get_multicall2(chainid)
+        self.mc3: Final = _get_multicall3(chainid)
         if self.mc2 is None and self.mc3 is None:
             raise NotImplementedError(
                 "Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py"
             )
 
-        self.no_multicall: Set[ChecksumAddress] = set()
+        self.no_multicall: Final[Set[ChecksumAddress]] = set()
         """A set of addresses that have issues when called from the multicall contract. Calls to these contracts will not be batched in multicalls."""
 
         if multicall := MULTICALL_ADDRESSES.get(chainid):
@@ -129,35 +130,35 @@ class DankMiddlewareController:
             self.no_multicall.add(self.mc2.address)
         if self.mc3:
             self.no_multicall.add(self.mc3.address)
-        self._latest_mc = self.mc3 or self.mc2
+        self._latest_mc: Final = self.mc3 or self.mc2
 
-        self.eth_call_semaphores = BlockSemaphore(
+        self.eth_call_semaphores: Final = BlockSemaphore(
             ENVS.method_semaphores["eth_call"]._value, name=f"eth_call {self}"
         )
         """Used for managing concurrency of eth_calls."""
 
         # semaphores soon to be deprecated for smart queue
-        self.method_queues = _MethodQueues(self)
+        self.method_queues: Final = _MethodQueues(self)
         """Queues for different method types."""
 
-        self.batcher: NotSoBrightBatcher = NotSoBrightBatcher()
+        self.batcher: Final[NotSoBrightBatcher] = NotSoBrightBatcher()
         """Batcher for RPC calls."""
 
         self.batcher.step = ENVS.MAX_MULTICALL_SIZE  # type: ignore [attr-defined]
 
-        self.call_uid: UIDGenerator = UIDGenerator()
+        self.call_uid: Final[UIDGenerator] = UIDGenerator()
         """Unique identifier generator for individual calls."""
 
-        self.multicall_uid: UIDGenerator = UIDGenerator()
+        self.multicall_uid: Final[UIDGenerator] = UIDGenerator()
         """Unique identifier generator for multicall operations."""
 
-        self.request_uid: UIDGenerator = UIDGenerator()
+        self.request_uid: Final[UIDGenerator] = UIDGenerator()
         """Unique identifier generator for RPC requests."""
 
-        self.jsonrpc_batch_uid: UIDGenerator = UIDGenerator()
-        self.pools_closed_lock: AlertingRLock = AlertingRLock(name="pools closed")
+        self.jsonrpc_batch_uid: Final[UIDGenerator] = UIDGenerator()
+        self.pools_closed_lock: Final[AlertingRLock] = AlertingRLock(name="pools closed")
 
-        self.pending_eth_calls: DefaultDict[BlockId, Multicall] = defaultdict(
+        self.pending_eth_calls: Final[DefaultDict[BlockId, Multicall]] = defaultdict(
             lambda: Multicall(self)
         )
         """A dictionary of pending :class:`~Multicall` objects by block. The Multicalls hold all pending eth_calls."""
