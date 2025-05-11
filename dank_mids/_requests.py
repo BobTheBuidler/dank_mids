@@ -379,7 +379,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     duplicate_task = create_task(
                         duplicate.get_response(), name="duplicate.get_response"
                     )
+                    dupfut = duplicate_task._fut
                     done_futs = await first_completed(fut, duplicate_task, cancel=True)
+                    # cancel if not finished
+                    duplicate._fut.cancel()
                     for d in done_futs:
                         response = d.result()
                         if d is not fut:
@@ -387,8 +390,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
                             # in case fut is also finished with an exception, we'll mark it as retrieved
                             fut._Future__log_traceback = False
                             return response
-                    # this means the original finished first
-                    duplicate._fut.cancel()
 
         except ClientResponseError as e:
             # TODO think about getting rid of this
