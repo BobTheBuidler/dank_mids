@@ -1423,7 +1423,14 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
                 calls = sorted(calls, key=lambda call: str(call.uid))
 
         if controller._sort_response:
-            response.sort(key=lambda raw: raw.decode().id)
+            try:
+                response.sort(key=lambda raw: raw.decode().id)
+            except TypeError:
+                # '<' not supported between instances of 'int' and 'str'
+                # This happens when a multicall or jsonrpc batch was split in half.
+                # Those bisected batches have a string uid to associate them with
+                # the original.
+                response.sort(key=lambda raw: str(raw.decode().id))
         else:
             for call, raw in zip(calls, response):
                 # TODO: make sure this doesn't ever raise and then delete it

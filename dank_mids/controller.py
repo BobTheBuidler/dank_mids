@@ -83,7 +83,6 @@ class DankMiddlewareController:
 
         using_reth_client = "reth" in self.client_version
         using_tenderly_client = self.client_version == "Tenderly/1.0"
-        using_chainstack_rpc = "chainstack" in self.endpoint
 
         # NOTE: We need this mutable for node types that require the full jsonrpc spec
         self.request_type = (
@@ -100,6 +99,8 @@ class DankMiddlewareController:
 
         self.endpoint: Final[str] = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
         """The uri for the connected rpc."""
+
+        using_chainstack_rpc = "chainstack" in self.endpoint
 
         self._sort_calls: bool = using_tenderly_client or using_chainstack_rpc
         """A boolean that indicates whether calls must be sorted by id in order for dank to work with the connected rpc."""
