@@ -1549,10 +1549,10 @@ def _log_exception(e: Exception) -> bool:
         err not in stre
         for err in chain(dont_need_to_see_errs, constants.RETRY_ERRS, constants.TOO_MUCH_DATA_ERRS)
     ):
-        _log_warning(
+        _log_info(
             "The following exception is being logged for informational purposes and does not indicate failure:"
         )
-        _log_warning(e, exc_info=True)
+        _log_info(e, exc_info=True)
     return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
 
 
