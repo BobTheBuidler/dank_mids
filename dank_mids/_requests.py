@@ -1335,8 +1335,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             )
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
-                _log_warning("Payload too large: %s", self.method_counts)
-                self.adjust_batch_size()
+                if self.adjust_batch_size():
+                    _log_warning("Payload too large: %s", self.method_counts)
             elif "broken pipe" in str(e).lower():
                 _log_warning("This is what broke the pipe: %s", self.method_counts)
             error_logger_debug("caught %s for %s, reraising", e, self)
@@ -1489,7 +1489,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
                     log_internal_error(logger, batch, result)
                 raise result
 
-    def adjust_batch_size(self) -> None:
+    def adjust_batch_size(self) -> bool:
         """
         Adjust the batch size on the controller based on the type of calls in the batch.
 
@@ -1500,13 +1500,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         if self.is_multicalls_only:
             num_calls = self.total_calls
             _log_checking_batch_size("multicall", "calls", num_calls)
-            self.controller.reduce_multicall_size(num_calls)
+            return self.controller.reduce_multicall_size(num_calls)
         else:
             _log_checking_batch_size("json", "requests", len(self))
-            self.controller.reduce_batch_size(len(self))
             _log_devhint(
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"
             )
+            return self.controller.reduce_batch_size(len(self))
 
 
 # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
