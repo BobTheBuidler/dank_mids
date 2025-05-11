@@ -96,10 +96,14 @@ class DankMiddlewareController:
         self.endpoint: str = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
         """The uri for the connected rpc."""
 
-        self._sort_calls: bool = self.client_version == "Tenderly/1.0" or "chainstack" in self.endpoint
+        self._sort_calls: bool = (
+            self.client_version == "Tenderly/1.0" or "chainstack" in self.endpoint
+        )
         """A boolean that indicates whether calls must be sorted by id in order for dank to work with the connected rpc."""
 
-        self._sort_response: bool = self.client_version == "Tenderly/1.0" or "chainstack" in self.endpoint
+        self._sort_response: bool = (
+            self.client_version == "Tenderly/1.0" or "chainstack" in self.endpoint
+        )
         """A boolean that indicates whether a jsonrpc batch response must be sorted by id in order for dank to work with the connected rpc."""
 
         if "tenderly" in self.endpoint and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
