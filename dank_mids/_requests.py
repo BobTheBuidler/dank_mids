@@ -1503,10 +1503,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             return self.controller.reduce_multicall_size(num_calls)
         else:
             _log_checking_batch_size("json", "requests", len(self))
-            _log_devhint(
-                "We still need some better logic for catching these errors and using them to better optimize the batching process"
-            )
-            return self.controller.reduce_batch_size(len(self))
+            try:
+                return self.controller.reduce_batch_size(len(self))
+            finally:
+                _log_devhint(
+                    "We still need some better logic for catching these errors and using them to better optimize the batching process"
+                )
 
 
 # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
