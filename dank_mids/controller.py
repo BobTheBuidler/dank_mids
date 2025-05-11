@@ -325,7 +325,7 @@ class DankMiddlewareController:
             self._pending_eth_calls_clear()
             self.pending_rpc_calls.start()
 
-    def reduce_multicall_size(self, num_calls: int) -> None:
+    def reduce_multicall_size(self, num_calls: int) -> bool:
         """
         Decrease the size of multicall batches in response to failures.
 
@@ -335,9 +335,9 @@ class DankMiddlewareController:
         Args:
             num_calls: The number of calls in the failed multicall operation.
         """
-        self._reduce_chunk_size(num_calls, "multicall")
+        return self._reduce_chunk_size(num_calls, "multicall")
 
-    def reduce_batch_size(self, num_calls: int) -> None:
+    def reduce_batch_size(self, num_calls: int) -> bool:
         """
         Decrease the size of JSON-RPC batches in response to failures.
 
@@ -347,7 +347,7 @@ class DankMiddlewareController:
         Args:
             num_calls: The number of calls in the failed batch operation.
         """
-        self._reduce_chunk_size(num_calls, "batch")
+        return self._reduce_chunk_size(num_calls, "batch")
 
     def _reduce_chunk_size(self, num_calls: int, chunk_name: Literal["multicall", "batch"]) -> None:
         """
@@ -368,16 +368,18 @@ class DankMiddlewareController:
             logger.warning(
                 f"your {chunk_name} batch size is really low, did you have some connection issue earlier? You might want to restart your script. {chunk_name} chunk size will not be further lowered."
             )
-            return
+            return False
         # NOTE: We need the 2nd check because one of the other calls in a batch might have already reduced the chunk size
         if chunk_name == "batch":
-            self.set_batch_size_limit(new_chunk_size)
-            logger.info("The failed batch had %s calls", num_calls)
-            return
+            try:
+                return self.set_batch_size_limit(new_chunk_size)
+            finally:
+                logger.info("The failed batch had %s calls", num_calls)
         elif chunk_name == "multicall":
-            self.set_multicall_size_limit(new_chunk_size)
-            logger.info("The failed multicall had %s calls", num_calls)
-            return
+            try:
+                return self.set_multicall_size_limit(new_chunk_size)
+            finally:
+                logger.info("The failed multicall had %s calls", num_calls)
         raise DankMidsInternalError(ValueError(f"chunk name {chunk_name} is invalid"))
 
     def set_multicall_size_limit(self, new_limit: int) -> None:
@@ -391,12 +393,14 @@ class DankMiddlewareController:
         if new_limit < existing_limit:
             self.batcher.step = new_limit
             logger.warning("multicall size limit reduced from %s to %s", existing_limit, new_limit)
+            return True
         else:
             logger.info(
                 "new multicall size limit %s is not lower than existing limit %s",
                 new_limit,
                 existing_limit,
             )
+            return False
 
     def set_batch_size_limit(self, new_limit: int) -> None:
         """
@@ -411,12 +415,14 @@ class DankMiddlewareController:
             logger.warning(
                 "jsonrpc batch size limit reduced from %s to %s", existing_limit, new_limit
             )
+            return True
         else:
             logger.info(
                 "new jsonrpc batch size limit %s is not lower than existing limit %s",
                 new_limit,
                 existing_limit,
             )
+            return False
 
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(self, block) -> MulticallContract:
