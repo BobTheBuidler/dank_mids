@@ -379,7 +379,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     duplicate_task = create_task(
                         duplicate.get_response(), name="duplicate.get_response"
                     )
-                    dupfut = duplicate_task._fut
                     done_futs = await first_completed(fut, duplicate_task, cancel=True)
                     # cancel if not finished
                     duplicate._fut.cancel()
