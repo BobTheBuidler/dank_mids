@@ -1273,10 +1273,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         # I want to see these asap when working on the lib.
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
             raise e if "invalid argument" in str(e) else DankMidsInternalError(e) from e
-        except EmptyBatch as e:
-            _log_warning(
-                "These EmptyBatch exceptions shouldn't actually happen and this except clause can probably be removed soon."
-            )
+        except EmptyBatch:
+            self._done.set()
         except ExceedsMaxBatchSize as e:
             _log_warning("exceeded max batch size for your node")
             self.controller.set_batch_size_limit(e.limit)
