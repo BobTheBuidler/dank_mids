@@ -29,6 +29,7 @@ jobs:
       - name: Run Mypyc (3.8)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
+          CFLAGS: -DCPy_NOINLINE=
         run: make mypyc-3-8
 
       # Python 3.9
