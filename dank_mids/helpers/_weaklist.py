@@ -27,7 +27,7 @@ class WeakList(Generic[_T]):
         return len(self._refs)
 
     def __bool__(self) -> bool:
-        return bool(self._refs)
+        return any(self)
 
     def __contains__(self, item: _T) -> bool:
         ref = self._refs.get(id(item))

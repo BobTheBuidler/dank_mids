@@ -285,14 +285,16 @@ class RPCRequest(_RequestBase[RPCResponse]):
         return f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}{batch_info}>"
 
     def __del__(self) -> None:
-        if not self._fut.done() and not self._fut._loop.is_closed():
-            logger.error("%s was garbage collected before finishing", self)
-            self._fut.set_exception(
+        fut = self._fut
+        if not fut.done() and not fut._loop.is_closed():
+            fut.set_exception(
                 GarbageCollectionError(
                     f"{self} was garbage collected before finishing.\n"
                     "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
                 )
             )
+            # mark exception as retrieved, if its really relevant to the user it will be raised by their waiter
+            fut.exception()
 
     @property
     def request(self) -> Union[Request, PartialRequest]:
@@ -817,17 +819,25 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return bool(self.calls)
 
     def __del__(self) -> None:
-        if len(self.calls) <= 1 or self._done.is_set():
-            # When len == 1, the Multicall will be garbage collected before the eth_call since the call will be executed on its own
+        calls = list(self.calls)
+        if not calls or self._done.is_set():
             return
 
-        # The Multicall still has multiple calls that haven't been garbage collected
+        # The Multicall still has calls that haven't been garbage collected
+        loop_is_closed = None
         logged = False
-        for call in self.calls:
-            if not call._fut.done() and not call._fut._loop.is_closed():
+        for call in calls:
+            if not call._fut.done():
+                if loop_is_closed is None:
+                    loop_is_closed = call._fut._loop.is_closed()
+
+                if loop_is_closed:
+                    return
+
                 if logged is False:
                     error_logger.error("%s was garbage collected before finishing", self)
                     logged = True
+
                 call._fut.set_exception(
                     GarbageCollectionError(
                         f"{self} was garbage collected before finishing.",

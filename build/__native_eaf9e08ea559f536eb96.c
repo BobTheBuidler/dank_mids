@@ -52221,25 +52221,40 @@ fail: ;
 
 char CPyDef__weaklist___WeakList_____bool__(PyObject *cpy_r_self) {
     PyObject *cpy_r_r0;
-    int64_t cpy_r_r1;
-    CPyTagged cpy_r_r2;
-    char cpy_r_r3;
-    char cpy_r_r4;
-    cpy_r_r0 = ((dank_mids___helpers____weaklist___WeakListObject *)cpy_r_self)->__refs;
-    if (unlikely(cpy_r_r0 == NULL)) {
-        CPy_AttributeError("dank_mids\\helpers\\_weaklist.py", "__bool__", "WeakList", "_refs", 30, CPyStatic__weaklist___globals);
-        goto CPyL2;
+    PyObject *cpy_r_r1;
+    PyObject *cpy_r_r2;
+    PyObject **cpy_r_r4;
+    PyObject *cpy_r_r5;
+    char cpy_r_r6;
+    char cpy_r_r7;
+    cpy_r_r0 = CPyModule_builtins;
+    cpy_r_r1 = CPyStatics[517]; /* 'any' */
+    cpy_r_r2 = CPyObject_GetAttr(cpy_r_r0, cpy_r_r1);
+    if (unlikely(cpy_r_r2 == NULL)) {
+        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "__bool__", 30, CPyStatic__weaklist___globals);
+        goto CPyL4;
     }
-    CPy_INCREF(cpy_r_r0);
-CPyL1: ;
-    cpy_r_r1 = PyDict_Size(cpy_r_r0);
-    CPy_DECREF(cpy_r_r0);
-    cpy_r_r2 = cpy_r_r1 << 1;
-    cpy_r_r3 = cpy_r_r2 != 0;
-    return cpy_r_r3;
-CPyL2: ;
-    cpy_r_r4 = 2;
-    return cpy_r_r4;
+    PyObject *cpy_r_r3[1] = {cpy_r_self};
+    cpy_r_r4 = (PyObject **)&cpy_r_r3;
+    cpy_r_r5 = _PyObject_Vectorcall(cpy_r_r2, cpy_r_r4, 1, 0);
+    CPy_DECREF(cpy_r_r2);
+    if (unlikely(cpy_r_r5 == NULL)) {
+        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "__bool__", 30, CPyStatic__weaklist___globals);
+        goto CPyL4;
+    }
+    if (unlikely(!PyBool_Check(cpy_r_r5))) {
+        CPy_TypeError("bool", cpy_r_r5); cpy_r_r6 = 2;
+    } else
+        cpy_r_r6 = cpy_r_r5 == Py_True;
+    CPy_DECREF(cpy_r_r5);
+    if (unlikely(cpy_r_r6 == 2)) {
+        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "__bool__", 30, CPyStatic__weaklist___globals);
+        goto CPyL4;
+    }
+    return cpy_r_r6;
+CPyL4: ;
+    cpy_r_r7 = 2;
+    return cpy_r_r7;
 }
 
 PyObject *CPyPy__weaklist___WeakList_____bool__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
