@@ -829,7 +829,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         for call in calls:
             if not call._fut.done():
                 if loop_is_closed is None:
-                    loop_is_closed = call._fut._loop.is_closed():
+                    loop_is_closed = call._fut._loop.is_closed()
                 
                 if loop_is_closed:
                     return
