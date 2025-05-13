@@ -830,14 +830,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             if not call._fut.done():
                 if loop_is_closed is None:
                     loop_is_closed = call._fut._loop.is_closed()
-                
+
                 if loop_is_closed:
                     return
-                
+
                 if logged is False:
                     error_logger.error("%s was garbage collected before finishing", self)
                     logged = True
-                    
+
                 call._fut.set_exception(
                     GarbageCollectionError(
                         f"{self} was garbage collected before finishing.",
