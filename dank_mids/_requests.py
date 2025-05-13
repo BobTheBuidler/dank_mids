@@ -819,14 +819,14 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return bool(self.calls)
 
     def __del__(self) -> None:
-        if not self.calls or len(self.calls) == 1 or self._done.is_set():
-            # When len == 1, the Multicall will be garbage collected before the eth_call since the call will be executed on its own
+        calls = list(self.calls)
+        if not calls or self._done.is_set():
             return
 
-        # The Multicall still has multiple calls that haven't been garbage collected
+        # The Multicall still has calls that haven't been garbage collected
         loop_is_closed = None
         logged = False
-        for call in self.calls:
+        for call in calls:
             if not call._fut.done():
                 if loop_is_closed is None:
                     loop_is_closed = call._fut._loop.is_closed():
