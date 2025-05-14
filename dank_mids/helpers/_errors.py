@@ -91,7 +91,14 @@ def is_call_revert(e: BadResponse) -> bool:
     Returns:
         True if the error was caused by an individual call revert, False otherwise.
     """
-    return any(map(f"{e}".lower().__contains__, INDIVIDUAL_CALL_REVERT_STRINGS))
+    
+    if isinstance(e, ExecutionReverted):
+        return True
+    err_lower = f"{e}".lower()
+    for string in INDIVIDUAL_CALL_REVERT_STRINGS:
+        if string in err_lower:
+            return True
+    return False
 
 
 def log_request_type_switch() -> None:
