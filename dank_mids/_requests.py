@@ -1539,7 +1539,7 @@ def _log_exception(e: Exception) -> bool:
         True if the exception should be logged, False otherwise.
     """
     # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
-    if type(e) in (OutOfGas, ExecutionReverted):
+    if isinstance(e, (OutOfGas, ExecutionReverted)):
         return ENVS.DEBUG
 
     # TODO: Better filter what we choose to log here
