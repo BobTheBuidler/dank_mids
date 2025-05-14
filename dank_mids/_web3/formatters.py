@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, TypeVar, Union
 
 from eth_typing import TypeStr
 from eth_utils import to_dict
