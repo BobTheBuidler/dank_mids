@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, Iterator, Sequence, Tuple
+from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
@@ -12,7 +12,7 @@ def map_abi_data(
     normalizers: Sequence[Callable[[TypeStr, Any], Tuple[TypeStr, Any]]],
     types: Sequence[TypeStr],
     data: Sequence[Any],
-) -> Any:
+) -> List[Any]:
     """
     This function will apply normalizers to your data, in the
     context of the relevant types. Each normalizer is in the format:
