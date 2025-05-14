@@ -35,7 +35,9 @@ def abi_request_formatters(
             raise TypeError(f"ABI definitions must be a list or dictionary, got {abi_types!r}")
 
 
-ABI_REQUEST_FORMATTERS: Final[Formatters] = dict(abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS))
+ABI_REQUEST_FORMATTERS: Final[Formatters] = dict(
+    abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
+)
 
 REQUEST_FORMATTER_MAPS: Final = (
     ABI_REQUEST_FORMATTERS,
