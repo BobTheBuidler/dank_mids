@@ -91,7 +91,7 @@ def is_call_revert(e: BadResponse) -> bool:
     Returns:
         True if the error was caused by an individual call revert, False otherwise.
     """
-    
+
     if isinstance(e, ExecutionReverted):
         return True
     err_lower = f"{e}".lower()
