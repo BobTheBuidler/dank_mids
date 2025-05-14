@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, TypeVar, Union
 
 from eth_typing import TypeStr
 from eth_utils import to_dict
@@ -18,7 +18,11 @@ from web3.types import Formatters, RPCEndpoint, RPCResponse
 from dank_mids._web3.abi import get_mapper
 
 
-return_as_is = lambda x: x
+_T = TypeVar("_T")
+
+
+def return_as_is(x: _T) -> _T:
+    return x
 
 
 def abi_request_formatters(
@@ -49,7 +53,7 @@ REQUEST_FORMATTER_MAPS: Final = (
     PYTHONIC_REQUEST_FORMATTERS,
 )
 
-_request_formatters: Formatters = {}
+_request_formatters: Final[Formatters] = {}
 
 
 def get_request_formatters(method_name: RPCEndpoint) -> Callable[..., Any]:
@@ -75,7 +79,7 @@ NullFormatter = Callable[[RPCResponse], Any]
 
 ResponseFormatters = Tuple[SuccessFormatter, ErrorFormatter, NullFormatter]
 
-_response_formatters: Dict[RPCEndpoint, ResponseFormatters] = {}
+_response_formatters: Final[Dict[RPCEndpoint, ResponseFormatters]] = {}
 
 
 def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:
