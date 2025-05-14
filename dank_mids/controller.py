@@ -21,6 +21,7 @@ from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, AlertingRLock
+from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers._codec import decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _make_hashable, _sync_w3_from_async
@@ -201,31 +202,37 @@ class DankMiddlewareController:
 
         await rate_limit_inactive(self.endpoint)
 
-        # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
-        if method == "eth_call":
-            async with self.eth_call_semaphores[params[1]]:
-                # create a strong ref to the call that will be held until the caller completes or is cancelled
-                _logger_debug(f"making {self.request_type.__name__} {method} with params {params}")
-                if params[0]["to"] in self.no_multicall:
-                    return await RPCRequest(self, method, params)
-                return await eth_call(self, params)
-
-        # some methods go thru a SmartProcessingQueue, we check those next
-        queue = self.method_queues[method]
-        _logger_debug(f"making {self.request_type.__name__} {method} with params {params}")
-
-        # no queue, we can make the request normally
-        if queue is None:
-            return await RPCRequest(self, method, params)
-
-        # queue found, queue up the call and await the future
         try:
-            # NOTE: is this a strong enough ref?
-            return await queue(self, method, params)  # type: ignore [return-type]
-        except TypeError as e:
-            if "unhashable type" not in str(e):
-                raise
-        return await queue(self, method, _make_hashable(params))
+            # eth_call go thru a specialized Semaphore and other methods pass thru unblocked
+            if method == "eth_call":
+                async with self.eth_call_semaphores[params[1]]:
+                    # create a strong ref to the call that will be held until the caller completes or is cancelled
+                    _logger_debug(
+                        f"making {self.request_type.__name__} {method} with params {params}"
+                    )
+                    if params[0]["to"] in self.no_multicall:
+                        return await RPCRequest(self, method, params)
+                    return await eth_call(self, params)
+
+            # some methods go thru a SmartProcessingQueue, we check those next
+            queue = self.method_queues[method]
+            _logger_debug(f"making {self.request_type.__name__} {method} with params {params}")
+
+            # no queue, we can make the request normally
+            if queue is None:
+                return await RPCRequest(self, method, params)
+
+            # queue found, queue up the call and await the future
+            try:
+                # NOTE: is this a strong enough ref?
+                return await queue(self, method, params)  # type: ignore [return-type]
+            except TypeError as e:
+                if "unhashable type" not in str(e):
+                    raise
+            return await queue(self, method, _make_hashable(params))
+        except GarbageCollectionError:
+            # this exc shouldn't be exposed to the user so let's try this again
+            return await self(method, params)
 
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)
     async def make_request(
