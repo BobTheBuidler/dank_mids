@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_eaf9e08ea559f536eb96_H
-#define MYPYC_NATIVE_eaf9e08ea559f536eb96_H
+#ifndef MYPYC_NATIVE_33d60d8fd7b41a9c363d_H
+#define MYPYC_NATIVE_33d60d8fd7b41a9c363d_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -280,6 +280,38 @@ typedef struct {
     CPyTagged __value;
     PyObject *__lock;
 } dank_mids____uid___UIDGeneratorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids____web3___formatters_____mypyc_lambda__0_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_normalizers;
+    PyObject *_abis;
+    PyObject *_type;
+    PyObject *_value;
+    PyObject *_traceback;
+    PyObject *_arg;
+    CPyTagged ___mypyc_next_label__;
+    PyObject *___mypyc_temp__0;
+    CPyTagged ___mypyc_temp__1;
+    CPyTagged ___mypyc_temp__2;
+    PyObject *___mypyc_temp__3;
+    PyObject *_method;
+    PyObject *_abi_types;
+    PyObject *_single_dict_formatter;
+} dank_mids____web3___formatters___abi_request_formatters_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_env__;
+} dank_mids____web3___formatters___abi_request_formatters_genObject;
 
 typedef struct {
     PyObject_HEAD
@@ -627,39 +659,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_func;
-    PyObject *_cache;
-    PyObject *_cache_miss;
-    PyObject *_lru_cache_lite_wrap;
-} dank_mids___helpers___lru_cache___lru_cache_lite_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
-    PyObject *_func;
-    PyObject *_cache;
-    PyObject *_lru_cache_lite_wrap;
-} dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *___mypyc_env__;
-} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     PyObject *__refs;
 } dank_mids___helpers____weaklist___WeakListObject;
 
@@ -688,7 +687,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_eaf9e08ea559f536eb96 {
+struct export_table_33d60d8fd7b41a9c363d {
     PyObject **CPyStatic__batch___logger;
     PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
@@ -780,6 +779,26 @@ struct export_table_eaf9e08ea559f536eb96 {
     CPyTagged (*CPyDef__uid___UIDGenerator___latest)(PyObject *cpy_r_self);
     CPyTagged (*CPyDef__uid___UIDGenerator___next)(PyObject *cpy_r_self);
     char (*CPyDef__uid_____top_level__)(void);
+    PyObject **CPyStatic_formatters___ABI_REQUEST_FORMATTERS;
+    tuple_T3OOO *CPyStatic_formatters___REQUEST_FORMATTER_MAPS;
+    PyTypeObject **CPyType_formatters_____mypyc_lambda__0_obj;
+    PyObject *(*CPyDef_formatters_____mypyc_lambda__0_obj)(void);
+    PyTypeObject **CPyType_formatters___abi_request_formatters_env;
+    PyObject *(*CPyDef_formatters___abi_request_formatters_env)(void);
+    PyTypeObject **CPyType_formatters___abi_request_formatters_gen;
+    PyObject *(*CPyDef_formatters___abi_request_formatters_gen)(void);
+    PyObject *(*CPyDef_formatters_____mypyc_lambda__0_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_formatters_____mypyc_lambda__0_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_x);
+    PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____next__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_formatters___abi_request_formatters_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_formatters___abi_request_formatters_gen___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+    PyObject *(*CPyDef_formatters___abi_request_formatters_gen___close)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_formatters___abi_request_formatters)(PyObject *cpy_r_normalizers, PyObject *cpy_r_abis);
+    PyObject *(*CPyDef_formatters___get_request_formatters)(PyObject *cpy_r_method_name);
+    tuple_T3OOO (*CPyDef_formatters____get_response_formatters)(PyObject *cpy_r_method);
+    char (*CPyDef_formatters_____top_level__)(void);
     char (*CPyDef_brownie_patch_____top_level__)(void);
     PyObject **CPyStatic__abi____singletons;
     PyObject **CPyStatic__abi___keccak;
@@ -1006,21 +1025,6 @@ struct export_table_eaf9e08ea559f536eb96 {
     PyObject *(*CPyDef__gather___first_completed_gen_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__gather___first_completed)(PyObject *cpy_r_fs, char cpy_r_cancel);
     char (*CPyDef__gather_____top_level__)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_env;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_env)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_nonull_env;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull_env)(void);
-    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj)(void);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite)(PyObject *cpy_r_func);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull)(PyObject *cpy_r_func);
-    char (*CPyDef_lru_cache_____top_level__)(void);
     PyObject **CPyStatic__weaklist___ref;
     PyObject **CPyStatic__weaklist____call_ref;
     PyTypeObject **CPyType__weaklist___WeakList;

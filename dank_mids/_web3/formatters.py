@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Final, Iterable, List, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, Union
 
 from eth_typing import TypeStr
 from eth_utils import to_dict
@@ -21,11 +21,10 @@ from dank_mids._web3.abi import get_mapper
 return_as_is = lambda x: x
 
 
-@to_dict
 def abi_request_formatters(
     normalizers: Sequence[Callable[[TypeStr, Any], Tuple[TypeStr, Any]]],
     abis: Dict[RPCEndpoint, Union[List[Any], Dict[str, Any]]],
-) -> Iterable[Tuple[RPCEndpoint, Callable[..., Any]]]:
+) -> Iterator[Tuple[RPCEndpoint, Callable[..., Any]]]:
     for method, abi_types in abis.items():
         if isinstance(abi_types, list):
             yield method, get_mapper(tuple(normalizers), tuple(abi_types))
@@ -36,7 +35,9 @@ def abi_request_formatters(
             raise TypeError(f"ABI definitions must be a list or dictionary, got {abi_types!r}")
 
 
-ABI_REQUEST_FORMATTERS: Final[Formatters] = abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
+ABI_REQUEST_FORMATTERS: Final[Formatters] = dict(
+    abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
+)
 
 REQUEST_FORMATTER_MAPS: Final = (
     ABI_REQUEST_FORMATTERS,
@@ -48,14 +49,14 @@ REQUEST_FORMATTER_MAPS: Final = (
     PYTHONIC_REQUEST_FORMATTERS,
 )
 
-_request_formatters: Dict[RPCEndpoint, Callable] = {}
+_request_formatters: Formatters = {}
 
 
 def get_request_formatters(method_name: RPCEndpoint) -> Callable[..., Any]:
     formatters = _request_formatters.get(method_name)
     if formatters is None:
         combined = (formatter_map.get(method_name) for formatter_map in REQUEST_FORMATTER_MAPS)
-        filtered = list(filter(None, combined))
+        filtered = [formatter for formatter in combined if formatter is not None]
         if not filtered:
             formatters = return_as_is
         elif len(filtered) == 1:
@@ -65,7 +66,7 @@ def get_request_formatters(method_name: RPCEndpoint) -> Callable[..., Any]:
             # even compose by itself adds unnecessary overhead if used for only 1 formatter
             formatters = compose(*combined)
         _request_formatters[method_name] = formatters
-    return formatters
+    return formatters  # type: ignore [no-any-return]
 
 
 SuccessFormatter = Callable[[RPCResponse], Any]
