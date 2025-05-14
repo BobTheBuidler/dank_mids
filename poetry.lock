@@ -2172,13 +2172,13 @@ test = ["hypothesis (>=4.43.0)", "mypy (==0.971)", "pytest (>=7.0.0)", "pytest-x
 
 [[package]]
 name = "evmspec"
-version = "0.3.2"
+version = "0.3.4"
 description = "A collection of msgspec.Struct definitions for use with the Ethereum Virtual Machine"
 optional = false
 python-versions = "<3.13,>=3.8"
 groups = ["main"]
 files = [
-    {file = "evmspec-0.3.2.tar.gz", hash = "sha256:52f3f99e53731bb9ad847c8086b91756e442a95f000f3c58e8a0e380aff37ae6"},
+    {file = "evmspec-0.3.4.tar.gz", hash = "sha256:61183f45cb3383f536142ca458a6defb2c7b22506621b55778e54fa564df1dfb"},
 ]
 
 [package.dependencies]
@@ -2186,7 +2186,7 @@ cachetools = ">=4.1.1,<6"
 cchecksum = ">=0.0.3"
 dictstruct = ">=0.0.1"
 eth-utils = ">=1.10.0"
-hexbytes = "*"
+hexbytes = "<1"
 pysha3 = {version = ">=1.0.0,<2.0.0", markers = "python_version < \"3.9\""}
 safe-pysha3 = {version = ">=1.0.0", markers = "python_version >= \"3.9\""}
 typing_extensions = ">=4.0.0"
@@ -5593,4 +5593,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.8,<3.13"
-content-hash = "ffdf475ba8ae8b8bcdb8e0295a4796a176ff0d21ef85192876788fff6760be68"
+content-hash = "e4200c113cda42ec60ae3786be06405e53757d261f0439ad2829d7eb53529719"
