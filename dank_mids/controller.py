@@ -21,6 +21,7 @@ from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator, AlertingRLock
+from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers._codec import decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _make_hashable, _sync_w3_from_async
