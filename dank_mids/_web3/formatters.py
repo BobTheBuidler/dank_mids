@@ -66,7 +66,7 @@ def get_request_formatters(method_name: RPCEndpoint) -> Callable[..., Any]:
             # even compose by itself adds unnecessary overhead if used for only 1 formatter
             formatters = compose(*combined)
         _request_formatters[method_name] = formatters
-    return formatters
+    return formatters  # type: ignore [no-any-return]
 
 
 SuccessFormatter = Callable[[RPCResponse], Any]
