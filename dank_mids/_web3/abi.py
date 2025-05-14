@@ -49,7 +49,7 @@ def strip_abi_types(data):
 def get_mapper(
     normalizers: Tuple[Callable[[TypeStr, Any], Tuple[TypeStr, Any]], ...],
     types: Tuple[TypeStr, ...],
-) -> Tuple[Callable, ...]:
+) -> Callable[..., List[Any]]:
     mapper = _mappers.get((normalizers, types))
     if mapper is None:
         pipeline = (
