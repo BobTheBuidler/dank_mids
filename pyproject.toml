@@ -9,9 +9,9 @@ documentation = "https://BobTheBuidler.github.io/dank_mids"
 license = "MIT"
 readme = "README.md"
 include = [
-    { path = "b590a0e43c7eae82c26c__mypyc.cpython-38-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "b590a0e43c7eae82c26c__mypyc.cpython-38-darwin.so", format = ["sdist", "wheel"] },
-    { path = "b590a0e43c7eae82c26c__mypyc.cp38-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "33d60d8fd7b41a9c363d__mypyc.cpython-38-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "33d60d8fd7b41a9c363d__mypyc.cpython-38-darwin.so", format = ["sdist", "wheel"] },
+    { path = "33d60d8fd7b41a9c363d__mypyc.cp38-win_amd64.pyd", format = ["sdist", "wheel"] },
     { path = "af580648d361b45019b7__mypyc.cpython-39-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
     { path = "af580648d361b45019b7__mypyc.cpython-39-darwin.so", format = ["sdist", "wheel"] },
     { path = "af580648d361b45019b7__mypyc.cp39-win_amd64.pyd", format = ["sdist", "wheel"] },
