@@ -284,12 +284,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-} dank_mids____web3___formatters_____mypyc_lambda__0_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *_normalizers;
     PyObject *_abis;
@@ -781,14 +775,13 @@ struct export_table_33d60d8fd7b41a9c363d {
     char (*CPyDef__uid_____top_level__)(void);
     PyObject **CPyStatic_formatters___ABI_REQUEST_FORMATTERS;
     tuple_T3OOO *CPyStatic_formatters___REQUEST_FORMATTER_MAPS;
-    PyTypeObject **CPyType_formatters_____mypyc_lambda__0_obj;
-    PyObject *(*CPyDef_formatters_____mypyc_lambda__0_obj)(void);
+    PyObject **CPyStatic_formatters____request_formatters;
+    PyObject **CPyStatic_formatters____response_formatters;
     PyTypeObject **CPyType_formatters___abi_request_formatters_env;
     PyObject *(*CPyDef_formatters___abi_request_formatters_env)(void);
     PyTypeObject **CPyType_formatters___abi_request_formatters_gen;
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen)(void);
-    PyObject *(*CPyDef_formatters_____mypyc_lambda__0_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_formatters_____mypyc_lambda__0_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_x);
+    PyObject *(*CPyDef_formatters___return_as_is)(PyObject *cpy_r_x);
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
