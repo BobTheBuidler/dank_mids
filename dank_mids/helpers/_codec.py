@@ -1,4 +1,3 @@
-import itertools
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -21,7 +20,7 @@ from typing import (
 
 import hexbytes
 import msgspec
-from eth_abi import decoding
+from eth_abi import decoding, encoding
 from eth_abi.abi import default_codec
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 from eth_typing import ChecksumAddress, HexStr
@@ -65,12 +64,11 @@ Raw: Final = msgspec.Raw
 ContextFramesBytesIO: Final = decoding.ContextFramesBytesIO
 DecodeError: Final = msgspec.DecodeError
 
+encode_uint_256: Final = encoding.encode_uint_256
 decode_string: Final = Decoder(type=str).decode
 _decode_raw: Final = Decoder(type=Raw).decode
 # due to a forward reference issue we will populate this later
 _decode_batch: Optional[BatchDecoder] = None
-
-accumulate: Final = itertools.accumulate
 
 
 @final
@@ -203,21 +201,21 @@ _item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder
 _mcall_encoder.validate_value = _array_encoder.validate_value = _item_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined, method-assign]
 
 
-def __int_to_big_endian(value: int) -> bytes:
-    return value.to_bytes((value.bit_length() + 7) // 8 or 1, "big")
-
-
 def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
     encoded_elements, num_elements = __encode_elements_new(values)
-    return __int_to_big_endian(num_elements) + encoded_elements  # type: ignore [no-any-return]
+    return encode_uint_256(num_elements) + encoded_elements  # type: ignore [no-any-return]
 
 
 def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]:
     tail_chunks = [_item_encoder(v) for v in values]
     count = len(tail_chunks)
     head_length = 32 * count
-    tail_offsets = [0, *accumulate(len(chunk) for chunk in tail_chunks[:-1])]
-    head_chunks = (__int_to_big_endian(head_length + tail_offset) for tail_offset in tail_offsets)
+    tail_offsets = [0]
+    offset = 0
+    for chunk in tail_chunks[:-1]:
+        offset += len(chunk)
+        tail_offsets.append(offset)
+    head_chunks = (encode_uint_256(head_length + tail_offset) for tail_offset in tail_offsets)
     return b"".join((*head_chunks, *tail_chunks)), count
 
 
