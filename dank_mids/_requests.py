@@ -358,6 +358,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         fut.set_result(result)
                         return result
 
+                # We did not get our result from the duplicate task, if it
+                # ends up with an exception we don't need to know about it
+                duplicate_task._Future__log_traceback = False
+
         try:
             if fut.done():
                 response = fut.result()
