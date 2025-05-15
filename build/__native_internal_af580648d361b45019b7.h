@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[866];
+extern PyObject *CPyStatics[861];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -118,7 +118,6 @@ extern PyObject *CPyStatic_types___globals;
 extern CPyModule *CPyModule_brownie___typing;
 extern CPyModule *CPyModule_dank_mids___brownie_patch____method;
 extern PyObject *CPyStatic__codec___globals;
-extern CPyModule *CPyModule_itertools;
 extern CPyModule *CPyModule_msgspec;
 extern CPyModule *CPyModule_eth_abi___abi;
 extern CPyModule *CPyModule_eth_abi___encoding;
@@ -521,9 +520,9 @@ extern PyObject *CPyStatic__codec___HexBytes;
 extern PyObject *CPyStatic__codec___Raw;
 extern PyObject *CPyStatic__codec___ContextFramesBytesIO;
 extern PyObject *CPyStatic__codec___DecodeError;
+extern PyObject *CPyStatic__codec___encode_uint_256;
 extern PyObject *CPyStatic__codec___decode_string;
 extern PyObject *CPyStatic__codec____decode_raw;
-extern PyObject *CPyStatic__codec___accumulate;
 extern PyObject *CPyStatic__codec___encode;
 extern PyObject *CPyStatic__codec____mcall_encoder;
 extern PyObject *CPyStatic__codec____array_encoder;
@@ -549,8 +548,6 @@ extern PyObject *CPyDef__codec_____mypyc_lambda__0_obj_____get__(PyObject *cpy_r
 extern PyObject *CPyPy__codec_____mypyc_lambda__0_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__codec_____mypyc_lambda__0_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r__);
 extern PyObject *CPyPy__codec_____mypyc_lambda__0_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef__codec_____int_to_big_endian(CPyTagged cpy_r_value);
-extern PyObject *CPyPy__codec_____int_to_big_endian(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__codec_____encode_new(PyObject *cpy_r_values);
 extern PyObject *CPyPy__codec_____encode_new(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern tuple_T2OI CPyDef__codec_____encode_elements_new(PyObject *cpy_r_values);
