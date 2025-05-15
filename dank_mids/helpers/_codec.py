@@ -70,6 +70,9 @@ _decode_raw: Final = Decoder(type=Raw).decode
 # due to a forward reference issue we will populate this later
 _decode_batch: Optional[BatchDecoder] = None
 
+accumulate: Final = itertools.accumulate
+chain: Final = itertools.chain
+
 
 @final
 class RawResponse:
@@ -210,13 +213,9 @@ def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]
     tail_chunks = [_item_encoder(v) for v in values]
     count = len(tail_chunks)
     head_length = 32 * count
-    tail_offsets = [0]
-    offset = 0
-    for chunk in tail_chunks[:-1]:
-        offset += len(chunk)
-        tail_offsets.append(offset)
+    tail_offsets = chain((0,), accumulate((len(chunk) for chunk in tail_chunks[:-1])))
     head_chunks = (encode_uint_256(head_length + tail_offset) for tail_offset in tail_offsets)
-    return b"".join((*head_chunks, *tail_chunks)), count
+    return b"".join(chain(head_chunks, tail_chunks)), count
 
 
 _array_encoder.encode = __encode_new  # type: ignore [method-assign]
