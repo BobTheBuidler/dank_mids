@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple
+from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple, TypeVar
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
