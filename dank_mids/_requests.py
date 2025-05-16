@@ -387,6 +387,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     )
                     done_futs = await first_completed(fut, duplicate_task, cancel=True)
                     # cancel if not finished, suppress exc logging if finished
+                    duplicate_task.cancel()
                     duplicate._fut.cancel()
                     for d in done_futs:
                         response = d.result()
@@ -395,7 +396,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                             # in case fut is also finished with an exception, we'll mark it as retrieved
                             fut._Future__log_traceback = False
                             return response
-
+                    
         except ClientResponseError as e:
             # TODO think about getting rid of this
             raise DankMidsClientResponseError(e, self.request) from e
