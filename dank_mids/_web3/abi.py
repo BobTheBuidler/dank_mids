@@ -119,3 +119,4 @@ def map_collection(func: Callable[..., _T], collection: Any) -> Any:
         return datatype(map(func, collection))
     else:
         return collection
+
