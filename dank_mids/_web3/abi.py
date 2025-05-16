@@ -3,8 +3,9 @@ from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
 from web3._utils.abi import ABITypedData, abi_sub_tree, strip_abi_type
-from web3._utils.formatters import recursive_map
-from web3.types import TValue
+
+
+_T = TypeVar("_T")
 
 
 @curry
@@ -86,3 +87,35 @@ def get_data_tree_map(
         f = _data_tree_maps[func] = typed_data_func
 
     return f
+
+
+def recursive_map(func: Callable[..., _T], data: Any) -> _T:
+    """
+    Apply func to data, and any collection items inside data (using map_collection).
+    Define func so that it only applies to the type of value that you
+    want it to apply to.
+    """
+
+    def recurse(item: Any) -> TReturn:
+        return recursive_map(func, item)
+
+    items_mapped = map_collection(recurse, data)
+    return func(items_mapped)
+
+
+def map_collection(func: Callable[..., _T], collection: Any) -> Any:
+    """
+    Apply func to each element of a collection, or value of a dictionary.
+    If the value is not a collection, return it unmodified
+    """
+    datatype = type(collection)
+    if datatype is map:
+        return map(func, collection)
+    if isinstance(collection, Mapping):
+        return datatype((key, func(val)) for key, val in collection.items())
+    if is_string(collection):
+        return collection
+    elif isinstance(collection, Iterable):
+        return datatype(map(func, collection))
+    else:
+        return collection
