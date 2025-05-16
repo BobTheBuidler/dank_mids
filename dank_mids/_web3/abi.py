@@ -1,10 +1,11 @@
-from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple
+from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple, TypeVar
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
 from web3._utils.abi import ABITypedData, abi_sub_tree, strip_abi_type
-from web3._utils.formatters import recursive_map
-from web3.types import TValue
+
+
+_T = TypeVar("_T")
 
 
 @curry
@@ -57,7 +58,6 @@ def get_mapper(
             # web3.py implementation is `abi_data_tree(types)` but a lambda is faster than a curried func call
             lambda data: map(abi_sub_tree, types, data),
             # 2. Recursively mapping each of the normalizers to the data
-            IteratorProxy,
             *map(get_data_tree_map, normalizers),
             # 3. Stripping the types back out of the tree
             strip_abi_types,
@@ -65,19 +65,6 @@ def get_mapper(
         )
         mapper = _mappers[(normalizers, types)] = compose(*reversed(pipeline))
     return mapper
-
-
-class IteratorProxy(Iterable[TValue]):
-    """Wraps an iterator to return when iterated upon"""
-
-    def __init__(self, iterator: Iterator[TValue]) -> None:
-        self.__wrapped = iterator
-
-    def __iter__(self) -> Iterator[TValue]:
-        try:
-            return self.__dict__.pop("_IteratorProxy__wrapped")
-        except KeyError as e:
-            raise RuntimeError(f"{type(self).__name__} has already been consumed") from e.__cause__
 
 
 _data_tree_maps = {}
@@ -100,3 +87,35 @@ def get_data_tree_map(
         f = _data_tree_maps[func] = typed_data_func
 
     return f
+
+
+def recursive_map(func: Callable[..., _T], data: Any) -> _T:
+    """
+    Apply func to data, and any collection items inside data (using map_collection).
+    Define func so that it only applies to the type of value that you
+    want it to apply to.
+    """
+
+    def recurse(item: Any) -> TReturn:
+        return recursive_map(func, item)
+
+    items_mapped = map_collection(recurse, data)
+    return func(items_mapped)
+
+
+def map_collection(func: Callable[..., _T], collection: Any) -> Any:
+    """
+    Apply func to each element of a collection, or value of a dictionary.
+    If the value is not a collection, return it unmodified
+    """
+    datatype = type(collection)
+    if datatype is map:
+        return map(func, collection)
+    if isinstance(collection, Mapping):
+        return datatype((key, func(val)) for key, val in collection.items())
+    if is_string(collection):
+        return collection
+    elif isinstance(collection, Iterable):
+        return datatype(map(func, collection))
+    else:
+        return collection
