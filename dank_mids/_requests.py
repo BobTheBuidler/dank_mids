@@ -396,7 +396,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                             # in case fut is also finished with an exception, we'll mark it as retrieved
                             fut._Future__log_traceback = False
                             return response
-                    
+
         except ClientResponseError as e:
             # TODO think about getting rid of this
             raise DankMidsClientResponseError(e, self.request) from e
