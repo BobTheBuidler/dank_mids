@@ -74,6 +74,8 @@ class FunctionABI(_nocompile._FunctionABI):
         except KeyError:
             singleton = _singletons[key] = FunctionABI(**abi)
             return singleton
+        except AttributeError as e:
+            raise AttributeError(str(e), key) from e
 
 
 def get_type_strings(
