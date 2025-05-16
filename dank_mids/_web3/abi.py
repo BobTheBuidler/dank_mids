@@ -57,7 +57,6 @@ def get_mapper(
             # web3.py implementation is `abi_data_tree(types)` but a lambda is faster than a curried func call
             lambda data: map(abi_sub_tree, types, data),
             # 2. Recursively mapping each of the normalizers to the data
-            IteratorProxy,
             *map(get_data_tree_map, normalizers),
             # 3. Stripping the types back out of the tree
             strip_abi_types,
@@ -65,19 +64,6 @@ def get_mapper(
         )
         mapper = _mappers[(normalizers, types)] = compose(*reversed(pipeline))
     return mapper
-
-
-class IteratorProxy(Iterable[TValue]):
-    """Wraps an iterator to return when iterated upon"""
-
-    def __init__(self, iterator: Iterator[TValue]) -> None:
-        self.__wrapped = iterator
-
-    def __iter__(self) -> Iterator[TValue]:
-        try:
-            return self.__dict__.pop("_IteratorProxy__wrapped")
-        except KeyError as e:
-            raise RuntimeError(f"{type(self).__name__} has already been consumed") from e.__cause__
 
 
 _data_tree_maps = {}
