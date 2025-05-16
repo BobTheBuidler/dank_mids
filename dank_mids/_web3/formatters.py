@@ -89,3 +89,35 @@ def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:
         NULL_RESULT_FORMATTERS.get(method, return_as_is),
     )
     return formatters
+
+
+def recursive_map(func: Callable[..., _T], data: Any) -> _T:
+    """
+    Apply func to data, and any collection items inside data (using map_collection).
+    Define func so that it only applies to the type of value that you
+    want it to apply to.
+    """
+
+    def recurse(item: Any) -> TReturn:
+        return recursive_map(func, item)
+
+    items_mapped = map_collection(recurse, data)
+    return func(items_mapped)
+
+
+def map_collection(func: Callable[..., _T], collection: Any) -> Any:
+    """
+    Apply func to each element of a collection, or value of a dictionary.
+    If the value is not a collection, return it unmodified
+    """
+    datatype = type(collection)
+    if datatype is map:
+        return map(func, collection)
+    if isinstance(collection, Mapping):
+        return datatype((key, func(val)) for key, val in collection.items())
+    if is_string(collection):
+        return collection
+    elif isinstance(collection, Iterable):
+        return datatype(map(func, collection))
+    else:
+        return collection
