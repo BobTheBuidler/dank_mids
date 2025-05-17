@@ -76,7 +76,7 @@ class _Mapper:
         types: Tuple[TypeStr, ...],
     ):
         # TODO: vendor ABITypedData and cache some stuff from web3py
-        self.normalizers: Final = [get_data_tree_map(n) for n in normalizers]
+        self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
         self.types: Final = types
 
     def __call__(self, data: Any) -> List[Any]:
