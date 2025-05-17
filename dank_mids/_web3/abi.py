@@ -133,7 +133,7 @@ def strip_abi_types(data: Any) -> Any:
         return datatype((key, strip_abi_types(val)) for key, val in data.items())  # type: ignore [call-arg]
     elif not isinstance(data, (bytes, str, bytearray)) and isinstance(data, Iterable):
         return datatype(map(strip_abi_types, data))
-    elif isinstance(elements, ABITypedData):
-        return elements.data
+    elif isinstance(data, ABITypedData):
+        return data.data
     else:
-        return elements
+        return data
