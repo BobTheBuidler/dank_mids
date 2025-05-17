@@ -115,7 +115,7 @@ def map_collection(func: Callable[..., _T], collection: Any) -> Any:
     if isinstance(collection, map):
         return map(func, collection)
     elif isinstance(collection, Mapping):
-        return type(collection)((key, func(val)) for key, val in collection.items())
+        return type(collection)((key, func(val)) for key, val in collection.items())  # type: ignore [call-arg]
     elif not isinstance(collection, (bytes, str, bytearray)) and isinstance(collection, Iterable):
         return type(collection)(map(func, collection))
     else:
