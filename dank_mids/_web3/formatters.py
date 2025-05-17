@@ -12,7 +12,7 @@ from web3._utils.method_formatters import (
     STANDARD_NORMALIZERS,
 )
 from web3._utils.rpc_abi import RPC_ABIS, apply_abi_formatters_to_dict
-from web3.types import Formatters, RPCEndpoint, RPCResponse
+from web3.types import RPCEndpoint, RPCResponse
 
 
 from dank_mids._web3.abi import Formatter, get_formatter
@@ -39,7 +39,7 @@ def abi_request_formatters(
             raise TypeError(f"ABI definitions must be a list or dictionary, got {abi_types!r}")
 
 
-ABI_REQUEST_FORMATTERS: Final[Dict[RPCEndpoint, Formatter]] = dict(
+ABI_REQUEST_FORMATTERS: Final[Formatters]] = dict(
     abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
 )
 
