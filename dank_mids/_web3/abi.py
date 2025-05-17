@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple, TypeVar
+from typing import Any, Callable, Iterable, Iterator, List, Mapping, Sequence, Tuple, TypeVar
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
@@ -7,10 +7,14 @@ from web3._utils.abi import ABITypedData, abi_sub_tree, strip_abi_type
 
 _T = TypeVar("_T")
 
+Normalizer = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
+MapperKey = Tuple[Tuple[Normalizer, ...], Tuple[TypeStr, ...]]
+DataTreeFunc = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
 
-@curry
+
+@curry  # type: ignore [misc]
 def map_abi_data(
-    normalizers: Sequence[Callable[[TypeStr, Any], Tuple[TypeStr, Any]]],
+    normalizers: Sequence[Normalizer],
     types: Sequence[TypeStr],
     data: Sequence[Any],
 ) -> List[Any]:
@@ -39,16 +43,16 @@ def map_abi_data(
     return get_mapper(normalizers, types)(data)
 
 
-_mappers = {}
+_mappers: Final[Dict[MapperKey, Callable[..., List[Any]]]] = {}
 
 
-def strip_abi_types(data):
+def strip_abi_types(data: Any) -> Any:
     return recursive_map(strip_abi_type, data)
 
 
 # web3py builds the pipeline every call, we cache it here instead
 def get_mapper(
-    normalizers: Tuple[Callable[[TypeStr, Any], Tuple[TypeStr, Any]], ...],
+    normalizers: Tuple[Normalizer, ...],
     types: Tuple[TypeStr, ...],
 ) -> Callable[..., List[Any]]:
     mapper = _mappers.get((normalizers, types))
@@ -67,11 +71,11 @@ def get_mapper(
     return mapper
 
 
-_data_tree_maps = {}
+_data_tree_maps: Final[Dict[DataTreeFunc, Callable[[Any], ABITypedData]]] = {}
 
 
 def get_data_tree_map(
-    func: Callable[[TypeStr, Any], Tuple[TypeStr, Any]],
+    func: DataTreeFunc,
 ) -> Callable[[Any], ABITypedData]:
     f = _data_tree_maps.get(func)
     if f is None:
@@ -96,7 +100,7 @@ def recursive_map(func: Callable[..., _T], data: Any) -> _T:
     want it to apply to.
     """
 
-    def recurse(item: Any) -> TReturn:
+    def recurse(item: Any) -> _T:
         return recursive_map(func, item)
 
     items_mapped = map_collection(recurse, data)
@@ -108,14 +112,11 @@ def map_collection(func: Callable[..., _T], collection: Any) -> Any:
     Apply func to each element of a collection, or value of a dictionary.
     If the value is not a collection, return it unmodified
     """
-    datatype = type(collection)
-    if datatype is map:
+    if isinstance(collection, map):
         return map(func, collection)
-    if isinstance(collection, Mapping):
-        return datatype((key, func(val)) for key, val in collection.items())
-    if is_string(collection):
-        return collection
-    elif isinstance(collection, Iterable):
-        return datatype(map(func, collection))
+    elif isinstance(collection, Mapping):
+        return type(collection)((key, func(val)) for key, val in collection.items())
+    elif not isinstance(collection, (bytes, str, bytearray)) and isinstance(collection, Iterable):
+        return type(collection)(map(func, collection))
     else:
         return collection
