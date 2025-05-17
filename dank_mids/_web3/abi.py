@@ -1,3 +1,4 @@
+import typing
 from typing import Any, Callable, Dict, Final, Iterable, Iterator, List, Mapping, Tuple, TypeVar
 
 from eth_typing import TypeStr
@@ -8,9 +9,17 @@ from web3._utils import abi
 
 _T = TypeVar("_T")
 
+
 Normalizer = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
 MapperKey = Tuple[Tuple[Normalizer, ...], Tuple[TypeStr, ...]]
 DataTreeFunc = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
+
+
+# cdef typing
+Iterable: Final = typing.Iterable
+Mapping: Final = typing.Mapping
+del typing
+
 
 ABITypedData: Final = abi.ABITypedData
 
