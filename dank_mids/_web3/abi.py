@@ -1,4 +1,4 @@
-from typing import Any, Callable, Final, Iterable, Iterator, List, Mapping, Sequence, Tuple, TypeVar
+from typing import Any, Callable, Dict, Final, Iterable, Iterator, List, Mapping, Tuple, TypeVar
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
@@ -14,9 +14,9 @@ DataTreeFunc = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
 
 @curry  # type: ignore [misc]
 def map_abi_data(
-    normalizers: Sequence[Normalizer],
+    normalizers: Tuple[Normalizer, ...],
     types: Tuple[TypeStr, ...],
-    data: Sequence[Any],
+    data: Iterable[Any],
 ) -> List[Any]:
     """
     This function will apply normalizers to your data, in the
