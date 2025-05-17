@@ -80,56 +80,35 @@ def get_data_tree_map(
     if f is None:
 
         def map_to_typed_data(elements: Any) -> abi.ABITypedData:
-            if isinstance(elements, ABITypedData) and elements.abi_type is not None:
+            datatype = type(elements)
+            if datatype is map or datatype is list:
+                return [map_to_typed_data(obj) for obj in elements]
+            elif datatype is tuple:
+                return tuple(map_to_typed_data(obj) for obj in elements)
+            elif isinstance(elements, Mapping):
+                return type(elements)((key, map_to_typed_data(val)) for key, val in elements.items())  # type: ignore [call-arg]
+            elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(elements, Iterable):
+                return type(elements)(map(map_to_typed_data, elements))
+            elif isinstance(elements, ABITypedData) and elements.abi_type is not None:
                 return ABITypedData(func(*elements))
             else:
                 return elements
 
-        typed_data_func = lambda data: recursive_map(map_to_typed_data, data)
-
-        f = _data_tree_maps[func] = typed_data_func
+        f = _data_tree_maps[func] = map_to_typed_data
 
     return f
 
 
-def recursive_map(func: Callable[..., _T], data: Any) -> _T:
-    """
-    Apply func to data, and any collection items inside data (using map_collection).
-    Define func so that it only applies to the type of value that you
-    want it to apply to.
-    """
-
-    def recurse(item: Any) -> _T:
-        return recursive_map(func, item)
-
-    items_mapped = map_collection(recurse, data)
-    return func(items_mapped)
-
-
-def map_collection(func: Callable[..., _T], collection: Any) -> Any:
-    """
-    Apply func to each element of a collection, or value of a dictionary.
-    If the value is not a collection, return it unmodified
-    """
-    if isinstance(collection, map):
-        return map(func, collection)
-    elif isinstance(collection, Mapping):
-        return type(collection)((key, func(val)) for key, val in collection.items())  # type: ignore [call-arg]
-    elif type(collection) is list:
-        return [func(obj) for obj in collection]
-    elif not isinstance(collection, (bytes, str, bytearray)) and isinstance(collection, Iterable):
-        return type(collection)(map(func, collection))
-    else:
-        return collection
-
-
 def strip_abi_types(data: Any) -> Any:
-    if isinstance(data, (map, list)):
+    datatype = type(data)
+    if datatype is map or datatype is list:
         return [strip_abi_types(obj) for obj in data]
+    elif datatype is tuple:
+        return tuple(strip_abi_types(obj) for obj in data)
     elif isinstance(data, Mapping):
         return type(data)((key, strip_abi_types(val)) for key, val in data.items())  # type: ignore [call-arg]
-    elif type(data) is tuple:
-        return tuple(strip_abi_types(obj) for obj in data)
+    elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(elements, Iterable):
+        return type(elements)(map(strip_abi_types, elements))
     else:
         return strip_abi_type(data)
 
