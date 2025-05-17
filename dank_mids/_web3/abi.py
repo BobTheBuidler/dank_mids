@@ -1,6 +1,7 @@
 import typing
 from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar, final
 
+from eth_abi.grammar import parse
 from eth_typing import TypeStr
 from eth_utils.toolz import curry
 from web3._utils.abi import abi_sub_tree
@@ -32,7 +33,7 @@ class Formatter:
     ):
         # TODO: vendor ABITypedData and cache some stuff from web3py
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
-        self.types: Final = types
+        self.types: Final = [parse(t) if isinstance(t, TypeStr) else t for t in types]
 
     def __call__(self, data: Any) -> List[Any]:
         # 1. Decorating the data tree with types
