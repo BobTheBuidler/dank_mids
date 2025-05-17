@@ -23,22 +23,8 @@ Mapping: Final = typing.Mapping
 ABITypedData: Final = abi.ABITypedData
 
 
-_mappers: Final[Dict[MapperKey, "_Mapper"]] = {}
-
-
-# web3py builds the pipeline every call, we cache it here instead
-def get_mapper(
-    normalizers: Tuple[Normalizer, ...],
-    types: Tuple[TypeStr, ...],
-) -> "_Mapper":
-    mapper = _mappers.get((normalizers, types))
-    if mapper is None:
-        mapper = _mappers[(normalizers, types)] = _Mapper(normalizers, types)
-    return mapper
-
-
 @final
-class _Mapper:
+class Formatter:
     def __init__(
         self,
         normalizers: Tuple[Normalizer, ...],
@@ -57,6 +43,20 @@ class _Mapper:
             data = n(data)
         # 3. Stripping the types back out of the tree
         return list(strip_abi_types(data))
+
+
+_formatters: Final[Dict[MapperKey, Formatter]] = {}
+
+
+# web3py builds the pipeline every call, we cache it here instead
+def get_formatter(
+    normalizers: Tuple[Normalizer, ...],
+    types: Tuple[TypeStr, ...],
+) -> Formatter:
+    mapper = _formatters.get((normalizers, types))
+    if mapper is None:
+        mapper = _formatters[(normalizers, types)] = Formatter(normalizers, types)
+    return mapper
 
 
 _data_tree_maps: Final[Dict[DataTreeFunc, "map_to_typed_data"]] = {}
