@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, Iterator, List, Mapping, Sequence, Tuple, TypeVar
+from typing import Any, Callable, Final, Iterable, Iterator, List, Mapping, Sequence, Tuple, TypeVar
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
@@ -15,7 +15,7 @@ DataTreeFunc = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
 @curry  # type: ignore [misc]
 def map_abi_data(
     normalizers: Sequence[Normalizer],
-    types: Sequence[TypeStr],
+    types: Tuple[TypeStr, ...],
     data: Sequence[Any],
 ) -> List[Any]:
     """
