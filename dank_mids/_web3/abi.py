@@ -2,7 +2,8 @@ from typing import Any, Callable, Dict, Final, Iterable, Iterator, List, Mapping
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
-from web3._utils.abi import ABITypedData, abi_sub_tree, strip_abi_type
+from web3._utils.abi import abi_sub_tree
+from web3._utils import abi
 
 
 _T = TypeVar("_T")
@@ -10,6 +11,8 @@ _T = TypeVar("_T")
 Normalizer = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
 MapperKey = Tuple[Tuple[Normalizer, ...], Tuple[TypeStr, ...]]
 DataTreeFunc = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
+
+ABITypedData: Final = abi.ABITypedData
 
 
 @curry  # type: ignore [misc]
@@ -46,10 +49,6 @@ def map_abi_data(
 _mappers: Final[Dict[MapperKey, Callable[..., List[Any]]]] = {}
 
 
-def strip_abi_types(data: Any) -> Any:
-    return recursive_map(strip_abi_type, data)
-
-
 # web3py builds the pipeline every call, we cache it here instead
 def get_mapper(
     normalizers: Tuple[Normalizer, ...],
@@ -71,16 +70,16 @@ def get_mapper(
     return mapper
 
 
-_data_tree_maps: Final[Dict[DataTreeFunc, Callable[[Any], ABITypedData]]] = {}
+_data_tree_maps: Final[Dict[DataTreeFunc, Callable[[Any], abi.ABITypedData]]] = {}
 
 
 def get_data_tree_map(
     func: DataTreeFunc,
-) -> Callable[[Any], ABITypedData]:
+) -> Callable[[Any], abi.ABITypedData]:
     f = _data_tree_maps.get(func)
     if f is None:
 
-        def map_to_typed_data(elements: Any) -> ABITypedData:
+        def map_to_typed_data(elements: Any) -> abi.ABITypedData:
             if isinstance(elements, ABITypedData) and elements.abi_type is not None:
                 return ABITypedData(func(*elements))
             else:
@@ -116,7 +115,27 @@ def map_collection(func: Callable[..., _T], collection: Any) -> Any:
         return map(func, collection)
     elif isinstance(collection, Mapping):
         return type(collection)((key, func(val)) for key, val in collection.items())  # type: ignore [call-arg]
+    elif type(collection) is list:
+        return [func(obj) for obj in collection]
     elif not isinstance(collection, (bytes, str, bytearray)) and isinstance(collection, Iterable):
         return type(collection)(map(func, collection))
     else:
         return collection
+
+
+def strip_abi_types(data: Any) -> Any:
+    if isinstance(data, (map, list)):
+        return [strip_abi_types(obj) for obj in data]
+    elif isinstance(data, Mapping):
+        return type(data)((key, strip_abi_types(val)) for key, val in data.items())  # type: ignore [call-arg]
+    elif type(data) is tuple:
+        return tuple(strip_abi_types(obj) for obj in data)
+    else:
+        return strip_abi_type(data)
+
+
+def strip_abi_type(elements: Any) -> Any:
+    if isinstance(elements, ABITypedData):
+        return elements.data
+    else:
+        return elements
