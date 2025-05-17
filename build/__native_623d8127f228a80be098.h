@@ -784,6 +784,7 @@ struct export_table_623d8127f228a80be098 {
     PyObject **CPyStatic_abi___Iterable;
     PyObject **CPyStatic_abi___Mapping;
     PyObject **CPyStatic_abi___ABITypedData;
+    PyObject **CPyStatic_abi___abi_sub_tree;
     PyObject **CPyStatic_abi____formatters;
     PyObject **CPyStatic_abi____data_tree_maps;
     PyTypeObject **CPyType_abi___Formatter;

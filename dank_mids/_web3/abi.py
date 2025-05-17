@@ -3,8 +3,6 @@ from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar, f
 
 from eth_abi.grammar import parse
 from eth_typing import TypeStr
-from eth_utils.toolz import curry
-from web3._utils.abi import abi_sub_tree
 from web3._utils import abi
 
 
@@ -22,6 +20,7 @@ Mapping: Final = typing.Mapping
 
 
 ABITypedData: Final = abi.ABITypedData
+abi_sub_tree: Final = abi.abi_sub_tree
 
 
 @final
@@ -79,7 +78,7 @@ class map_to_typed_data:
 
     def __call__(self, elements: Any) -> Any:
         datatype = type(elements)
-        if datatype is map or datatype is list:
+        if datatype is list or datatype is map:
             return [self(obj) for obj in elements]
         elif datatype is tuple:
             return tuple(self(obj) for obj in elements)
@@ -95,7 +94,7 @@ class map_to_typed_data:
 
 def strip_abi_types(data: Any) -> Any:
     datatype = type(data)
-    if datatype is map or datatype is list:
+    if datatype is list or datatype is map:
         return [strip_abi_types(obj) for obj in data]
     elif datatype is tuple:
         return tuple(strip_abi_types(obj) for obj in data)

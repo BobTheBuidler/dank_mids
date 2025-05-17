@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[880];
+extern PyObject *CPyStatics[876];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -66,14 +66,13 @@ extern CPyModule *CPyModule_dank_mids____web3___abi_internal;
 extern CPyModule *CPyModule_dank_mids____web3___abi;
 extern PyObject *CPyStatic_abi___globals;
 extern CPyModule *CPyModule_eth_abi___grammar;
-extern CPyModule *CPyModule_eth_utils___toolz;
-extern CPyModule *CPyModule_web3____utils___abi;
 extern CPyModule *CPyModule_web3____utils;
 extern CPyModule *CPyModule_dank_mids____web3___formatters_internal;
 extern CPyModule *CPyModule_dank_mids____web3___formatters;
 extern PyObject *CPyStatic_formatters___globals;
 extern CPyModule *CPyModule_eth_utils;
 extern CPyModule *CPyModule_eth_utils___curried;
+extern CPyModule *CPyModule_eth_utils___toolz;
 extern CPyModule *CPyModule_web3____utils___method_formatters;
 extern CPyModule *CPyModule_web3____utils___rpc_abi;
 extern CPyModule *CPyModule_web3___types;
@@ -273,6 +272,7 @@ extern char CPyDef__uid_____top_level__(void);
 extern PyObject *CPyStatic_abi___Iterable;
 extern PyObject *CPyStatic_abi___Mapping;
 extern PyObject *CPyStatic_abi___ABITypedData;
+extern PyObject *CPyStatic_abi___abi_sub_tree;
 extern PyObject *CPyStatic_abi____formatters;
 extern PyObject *CPyStatic_abi____data_tree_maps;
 extern PyTypeObject *CPyType_abi___Formatter;
