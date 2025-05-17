@@ -3,8 +3,6 @@ from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar, f
 
 from eth_abi.grammar import parse
 from eth_typing import TypeStr
-from eth_utils.toolz import curry
-from web3._utils.abi import abi_sub_tree
 from web3._utils import abi
 
 
