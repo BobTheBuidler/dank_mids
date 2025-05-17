@@ -86,11 +86,11 @@ def get_data_tree_map(
             elif datatype is tuple:
                 return tuple(map_to_typed_data(obj) for obj in elements)
             elif isinstance(elements, Mapping):
-                return type(elements)((key, map_to_typed_data(val)) for key, val in elements.items())  # type: ignore [call-arg]
+                return datatype((key, map_to_typed_data(val)) for key, val in elements.items())  # type: ignore [call-arg]
             elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(
                 elements, Iterable
             ):
-                return type(elements)(map(map_to_typed_data, elements))
+                return datatype(map(map_to_typed_data, elements))
             elif isinstance(elements, ABITypedData) and elements.abi_type is not None:
                 return ABITypedData(func(*elements))
             else:
@@ -108,9 +108,9 @@ def strip_abi_types(data: Any) -> Any:
     elif datatype is tuple:
         return tuple(strip_abi_types(obj) for obj in data)
     elif isinstance(data, Mapping):
-        return type(data)((key, strip_abi_types(val)) for key, val in data.items())  # type: ignore [call-arg]
-    elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(elements, Iterable):
-        return type(elements)(map(strip_abi_types, elements))
+        return datatype((key, strip_abi_types(val)) for key, val in data.items())  # type: ignore [call-arg]
+    elif not isinstance(data, (bytes, str, bytearray)) and isinstance(data, Iterable):
+        return datatype(map(strip_abi_types, data))
     else:
         return strip_abi_type(data)
 
