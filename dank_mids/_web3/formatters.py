@@ -12,7 +12,7 @@ from web3._utils.method_formatters import (
     STANDARD_NORMALIZERS,
 )
 from web3._utils.rpc_abi import RPC_ABIS, apply_abi_formatters_to_dict
-from web3.types import RPCEndpoint, RPCResponse
+from web3.types import Formatters, RPCEndpoint, RPCResponse
 
 
 from dank_mids._web3.abi import Formatter, get_formatter
