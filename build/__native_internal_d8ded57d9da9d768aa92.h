@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[885];
+extern PyObject *CPyStatics[884];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -70,7 +70,6 @@ extern CPyModule *CPyModule_web3____utils;
 extern CPyModule *CPyModule_dank_mids____web3___formatters_internal;
 extern CPyModule *CPyModule_dank_mids____web3___formatters;
 extern PyObject *CPyStatic_formatters___globals;
-extern CPyModule *CPyModule_eth_utils;
 extern CPyModule *CPyModule_eth_utils___curried;
 extern CPyModule *CPyModule_eth_utils___toolz;
 extern CPyModule *CPyModule_web3____utils___method_formatters;
