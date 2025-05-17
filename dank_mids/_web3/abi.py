@@ -1,5 +1,5 @@
 import typing
-from typing import Any, Callable, Dict, Final, Iterable, Iterator, List, Mapping, Tuple, TypeVar
+from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar
 
 from eth_typing import TypeStr
 from eth_utils.toolz import compose, curry
