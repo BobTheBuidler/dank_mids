@@ -15,7 +15,7 @@ from web3._utils.rpc_abi import RPC_ABIS, apply_abi_formatters_to_dict
 from web3.types import Formatters, RPCEndpoint, RPCResponse
 
 
-from dank_mids._web3.abi import Formatter, get_formatter
+from dank_mids._web3.abi import get_formatter
 
 
 _T = TypeVar("_T")
