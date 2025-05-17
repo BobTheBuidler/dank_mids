@@ -22,6 +22,7 @@ Mapping: Final = typing.Mapping
 
 
 ABITypedData: Final = abi.ABITypedData
+abi_sub_tree: Final = abi.abi_sub_tree
 
 
 @final
