@@ -78,6 +78,7 @@ class _Mapper:
         # TODO: vendor ABITypedData and cache some stuff from web3py
         self.normalizers: Final = [get_data_tree_map(n) for n in normalizers]
         self.types: Final = types
+
     def __call__(self, data: Any) -> List[Any]:
         # 1. Decorating the data tree with types
         # TODO: vendor abi_sub_tree
@@ -87,7 +88,6 @@ class _Mapper:
             data = n(data)
         # 3. Stripping the types back out of the tree
         return list(strip_abi_types(data))
-        
 
 
 _data_tree_maps: Final[Dict[DataTreeFunc, "map_to_typed_data"]] = {}
@@ -106,6 +106,7 @@ def get_data_tree_map(
 class map_to_typed_data:
     def __init__(self, func: DataTreeFunc) -> None:
         self.func: Final = func
+
     def __call__(self, elements: Any) -> Any:
         datatype = type(elements)
         if datatype is map or datatype is list:
@@ -114,15 +115,14 @@ class map_to_typed_data:
             return tuple(self(obj) for obj in elements)
         elif isinstance(elements, Mapping):
             return datatype((key, self(val)) for key, val in elements.items())  # type: ignore [call-arg]
-        elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(
-            elements, Iterable
-        ):
+        elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(elements, Iterable):
             return datatype(map(self, elements))
         elif isinstance(elements, ABITypedData) and elements.abi_type is not None:
             return ABITypedData(self.func(*elements))
         else:
             return elements
-        
+
+
 def strip_abi_types(data: Any) -> Any:
     datatype = type(data)
     if datatype is map or datatype is list:
