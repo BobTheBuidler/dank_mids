@@ -2,7 +2,7 @@ import typing
 from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar
 
 from eth_typing import TypeStr
-from eth_utils.toolz import compose, curry
+from eth_utils.toolz import curry
 from web3._utils.abi import abi_sub_tree
 from web3._utils import abi
 
@@ -21,37 +21,6 @@ Mapping: Final = typing.Mapping
 
 
 ABITypedData: Final = abi.ABITypedData
-
-
-@curry  # type: ignore [misc]
-def map_abi_data(
-    normalizers: Tuple[Normalizer, ...],
-    types: Tuple[TypeStr, ...],
-    data: typing.Iterable[Any],
-) -> List[Any]:
-    """
-    This function will apply normalizers to your data, in the
-    context of the relevant types. Each normalizer is in the format:
-
-    def normalizer(datatype, data):
-        # Conditionally modify data
-        return (datatype, data)
-
-    Where datatype is a valid ABI type string, like "uint".
-
-    In case of an array, like "bool[2]", normalizer will receive `data`
-    as an iterable of typed data, like `[("bool", True), ("bool", False)]`.
-
-    Internals
-    ---
-
-    This is accomplished by:
-
-    1. Decorating the data tree with types
-    2. Recursively mapping each of the normalizers to the data
-    3. Stripping the types back out of the tree
-    """
-    return get_mapper(normalizers, types)(data)
 
 
 _mappers: Final[Dict[MapperKey, "_Mapper"]] = {}
