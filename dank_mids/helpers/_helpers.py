@@ -15,8 +15,8 @@ from typing import (
     Union,
 )
 
-from eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map, is_null
-from eth_utils.toolz import assoc, complement, compose, merge
+from eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map
+from eth_utils.toolz import assoc, compose, merge
 from hexbytes import HexBytes
 from multicall.utils import get_async_w3
 from typing_extensions import Concatenate, ParamSpec
@@ -149,11 +149,13 @@ def set_done(
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 
-is_not_null = complement(is_null)
-"""
-A function that returns True if the input is not null, False otherwise.
-This is the complement of the `is_null` function.
-"""
+def is_not_null(obj: Any) -> bool:
+    """
+    A function that returns True if the input is not null, False otherwise.
+    This is the complement of the `is_null` function.
+    """
+    return obj is not None
+
 
 FORMATTER_DEFAULTS: FormattersDict = {
     "request_formatters": {},
