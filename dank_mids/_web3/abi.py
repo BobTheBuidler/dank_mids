@@ -18,7 +18,6 @@ DataTreeFunc = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
 # cdef typing
 Iterable: Final = typing.Iterable
 Mapping: Final = typing.Mapping
-del typing
 
 
 ABITypedData: Final = abi.ABITypedData
@@ -28,7 +27,7 @@ ABITypedData: Final = abi.ABITypedData
 def map_abi_data(
     normalizers: Tuple[Normalizer, ...],
     types: Tuple[TypeStr, ...],
-    data: Iterable[Any],
+    data: typing.Iterable[Any],
 ) -> List[Any]:
     """
     This function will apply normalizers to your data, in the
