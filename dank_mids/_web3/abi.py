@@ -87,7 +87,9 @@ def get_data_tree_map(
                 return tuple(map_to_typed_data(obj) for obj in elements)
             elif isinstance(elements, Mapping):
                 return type(elements)((key, map_to_typed_data(val)) for key, val in elements.items())  # type: ignore [call-arg]
-            elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(elements, Iterable):
+            elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(
+                elements, Iterable
+            ):
                 return type(elements)(map(map_to_typed_data, elements))
             elif isinstance(elements, ABITypedData) and elements.abi_type is not None:
                 return ABITypedData(func(*elements))
