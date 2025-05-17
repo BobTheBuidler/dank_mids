@@ -1,5 +1,5 @@
 import typing
-from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar
+from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar, final
 
 from eth_typing import TypeStr
 from eth_utils.toolz import curry
@@ -36,8 +36,8 @@ class Formatter:
 
     def __call__(self, data: Any) -> List[Any]:
         # 1. Decorating the data tree with types
-        # TODO: vendor abi_sub_tree
-        data = map(abi_sub_tree, self.types, self.data)
+        # TODO: vendor abi_sub_tree, its v wasteful
+        data = map(abi_sub_tree, self.types, data)
         # 2. Recursively mapping each of the normalizers to the data
         for n in self.normalizers:
             data = n(data)
