@@ -821,6 +821,7 @@ struct export_table_623d8127f228a80be098 {
     CPyTagged (*CPyDef__uid___UIDGenerator___latest)(PyObject *cpy_r_self);
     CPyTagged (*CPyDef__uid___UIDGenerator___next)(PyObject *cpy_r_self);
     char (*CPyDef__uid_____top_level__)(void);
+    PyObject **CPyStatic_abi___ABITypedData;
     PyObject **CPyStatic_abi____mappers;
     PyObject **CPyStatic_abi____data_tree_maps;
     PyTypeObject **CPyType_abi___get_mapper_env;
@@ -838,7 +839,6 @@ struct export_table_623d8127f228a80be098 {
     PyTypeObject **CPyType_abi___recurse_recursive_map_obj;
     PyObject *(*CPyDef_abi___recurse_recursive_map_obj)(void);
     PyObject *(*CPyDef_abi___map_abi_data)(PyObject *cpy_r_normalizers, PyObject *cpy_r_types, PyObject *cpy_r_data);
-    PyObject *(*CPyDef_abi___strip_abi_types)(PyObject *cpy_r_data);
     PyObject *(*CPyDef_abi_____mypyc_lambda__0_get_mapper_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
     PyObject *(*CPyDef_abi_____mypyc_lambda__0_get_mapper_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_data);
     PyObject *(*CPyDef_abi___get_mapper)(PyObject *cpy_r_normalizers, PyObject *cpy_r_types);
@@ -851,6 +851,8 @@ struct export_table_623d8127f228a80be098 {
     PyObject *(*CPyDef_abi___recurse_recursive_map_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_item);
     PyObject *(*CPyDef_abi___recursive_map)(PyObject *cpy_r_func, PyObject *cpy_r_data);
     PyObject *(*CPyDef_abi___map_collection)(PyObject *cpy_r_func, PyObject *cpy_r_collection);
+    PyObject *(*CPyDef_abi___strip_abi_types)(PyObject *cpy_r_data);
+    PyObject *(*CPyDef_abi___strip_abi_type)(PyObject *cpy_r_elements);
     char (*CPyDef_abi_____top_level__)(void);
     PyObject **CPyStatic_formatters___ABI_REQUEST_FORMATTERS;
     tuple_T3OOO *CPyStatic_formatters___REQUEST_FORMATTER_MAPS;
