@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_33d60d8fd7b41a9c363d_H
-#define MYPYC_NATIVE_33d60d8fd7b41a9c363d_H
+#ifndef MYPYC_NATIVE_623d8127f228a80be098_H
+#define MYPYC_NATIVE_623d8127f228a80be098_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -273,6 +273,61 @@ typedef struct {
     CPyTagged __value;
     PyObject *__lock;
 } dank_mids____uid___UIDGeneratorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_types;
+    PyObject *_normalizers;
+    PyObject *_mapper;
+} dank_mids____web3___abi___get_mapper_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids____web3___abi_____mypyc_lambda__0_get_mapper_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_func;
+    PyObject *_map_to_typed_data;
+    PyObject *_f;
+} dank_mids____web3___abi___get_data_tree_map_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids____web3___abi___map_to_typed_data_get_data_tree_map_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids____web3___abi_____mypyc_lambda__1_get_data_tree_map_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_func;
+    PyObject *_recurse;
+    PyObject *_data;
+} dank_mids____web3___abi___recursive_map_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids____web3___abi___recurse_recursive_map_objObject;
 
 typedef struct {
     PyObject_HEAD
@@ -674,7 +729,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_33d60d8fd7b41a9c363d {
+struct export_table_623d8127f228a80be098 {
     PyObject **CPyStatic__batch___logger;
     PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
@@ -766,6 +821,37 @@ struct export_table_33d60d8fd7b41a9c363d {
     CPyTagged (*CPyDef__uid___UIDGenerator___latest)(PyObject *cpy_r_self);
     CPyTagged (*CPyDef__uid___UIDGenerator___next)(PyObject *cpy_r_self);
     char (*CPyDef__uid_____top_level__)(void);
+    PyObject **CPyStatic_abi____mappers;
+    PyObject **CPyStatic_abi____data_tree_maps;
+    PyTypeObject **CPyType_abi___get_mapper_env;
+    PyObject *(*CPyDef_abi___get_mapper_env)(void);
+    PyTypeObject **CPyType_abi_____mypyc_lambda__0_get_mapper_obj;
+    PyObject *(*CPyDef_abi_____mypyc_lambda__0_get_mapper_obj)(void);
+    PyTypeObject **CPyType_abi___get_data_tree_map_env;
+    PyObject *(*CPyDef_abi___get_data_tree_map_env)(void);
+    PyTypeObject **CPyType_abi___map_to_typed_data_get_data_tree_map_obj;
+    PyObject *(*CPyDef_abi___map_to_typed_data_get_data_tree_map_obj)(void);
+    PyTypeObject **CPyType_abi_____mypyc_lambda__1_get_data_tree_map_obj;
+    PyObject *(*CPyDef_abi_____mypyc_lambda__1_get_data_tree_map_obj)(void);
+    PyTypeObject **CPyType_abi___recursive_map_env;
+    PyObject *(*CPyDef_abi___recursive_map_env)(void);
+    PyTypeObject **CPyType_abi___recurse_recursive_map_obj;
+    PyObject *(*CPyDef_abi___recurse_recursive_map_obj)(void);
+    PyObject *(*CPyDef_abi___map_abi_data)(PyObject *cpy_r_normalizers, PyObject *cpy_r_types, PyObject *cpy_r_data);
+    PyObject *(*CPyDef_abi___strip_abi_types)(PyObject *cpy_r_data);
+    PyObject *(*CPyDef_abi_____mypyc_lambda__0_get_mapper_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_abi_____mypyc_lambda__0_get_mapper_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_data);
+    PyObject *(*CPyDef_abi___get_mapper)(PyObject *cpy_r_normalizers, PyObject *cpy_r_types);
+    PyObject *(*CPyDef_abi___map_to_typed_data_get_data_tree_map_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_abi___map_to_typed_data_get_data_tree_map_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_elements);
+    PyObject *(*CPyDef_abi_____mypyc_lambda__1_get_data_tree_map_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_abi_____mypyc_lambda__1_get_data_tree_map_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_data);
+    PyObject *(*CPyDef_abi___get_data_tree_map)(PyObject *cpy_r_func);
+    PyObject *(*CPyDef_abi___recurse_recursive_map_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_abi___recurse_recursive_map_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_item);
+    PyObject *(*CPyDef_abi___recursive_map)(PyObject *cpy_r_func, PyObject *cpy_r_data);
+    PyObject *(*CPyDef_abi___map_collection)(PyObject *cpy_r_func, PyObject *cpy_r_collection);
+    char (*CPyDef_abi_____top_level__)(void);
     PyObject **CPyStatic_formatters___ABI_REQUEST_FORMATTERS;
     tuple_T3OOO *CPyStatic_formatters___REQUEST_FORMATTER_MAPS;
     PyObject **CPyStatic_formatters____request_formatters;

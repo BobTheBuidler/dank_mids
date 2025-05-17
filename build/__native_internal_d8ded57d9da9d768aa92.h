@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_af580648d361b45019b7_H
-#define MYPYC_NATIVE_INTERNAL_af580648d361b45019b7_H
+#ifndef MYPYC_NATIVE_INTERNAL_d8ded57d9da9d768aa92_H
+#define MYPYC_NATIVE_INTERNAL_d8ded57d9da9d768aa92_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_af580648d361b45019b7.h"
+#include "__native_d8ded57d9da9d768aa92.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[864];
+extern PyObject *CPyStatics[882];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -62,16 +62,19 @@ extern CPyModule *CPyModule_dank_mids____uid_internal;
 extern CPyModule *CPyModule_dank_mids____uid;
 extern PyObject *CPyStatic__uid___globals;
 extern CPyModule *CPyModule_dank_mids___helpers____lock;
+extern CPyModule *CPyModule_dank_mids____web3___abi_internal;
+extern CPyModule *CPyModule_dank_mids____web3___abi;
+extern PyObject *CPyStatic_abi___globals;
+extern CPyModule *CPyModule_eth_utils___toolz;
+extern CPyModule *CPyModule_web3____utils___abi;
 extern CPyModule *CPyModule_dank_mids____web3___formatters_internal;
 extern CPyModule *CPyModule_dank_mids____web3___formatters;
 extern PyObject *CPyStatic_formatters___globals;
 extern CPyModule *CPyModule_eth_utils;
 extern CPyModule *CPyModule_eth_utils___curried;
-extern CPyModule *CPyModule_eth_utils___toolz;
 extern CPyModule *CPyModule_web3____utils___method_formatters;
 extern CPyModule *CPyModule_web3____utils___rpc_abi;
 extern CPyModule *CPyModule_web3___types;
-extern CPyModule *CPyModule_dank_mids____web3___abi;
 extern CPyModule *CPyModule_dank_mids___brownie_patch_internal;
 extern CPyModule *CPyModule_dank_mids___brownie_patch;
 extern PyObject *CPyStatic_brownie_patch___globals;
@@ -268,6 +271,51 @@ extern PyObject *CPyPy__uid___UIDGenerator___latest(PyObject *self, PyObject *co
 extern CPyTagged CPyDef__uid___UIDGenerator___next(PyObject *cpy_r_self);
 extern PyObject *CPyPy__uid___UIDGenerator___next(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__uid_____top_level__(void);
+extern PyObject *CPyStatic_abi____mappers;
+extern PyObject *CPyStatic_abi____data_tree_maps;
+extern PyTypeObject *CPyType_abi___get_mapper_env;
+extern PyObject *CPyDef_abi___get_mapper_env(void);
+extern PyTypeObject *CPyType_abi_____mypyc_lambda__0_get_mapper_obj;
+extern PyObject *CPyDef_abi_____mypyc_lambda__0_get_mapper_obj(void);
+extern PyTypeObject *CPyType_abi___get_data_tree_map_env;
+extern PyObject *CPyDef_abi___get_data_tree_map_env(void);
+extern PyTypeObject *CPyType_abi___map_to_typed_data_get_data_tree_map_obj;
+extern PyObject *CPyDef_abi___map_to_typed_data_get_data_tree_map_obj(void);
+extern PyTypeObject *CPyType_abi_____mypyc_lambda__1_get_data_tree_map_obj;
+extern PyObject *CPyDef_abi_____mypyc_lambda__1_get_data_tree_map_obj(void);
+extern PyTypeObject *CPyType_abi___recursive_map_env;
+extern PyObject *CPyDef_abi___recursive_map_env(void);
+extern PyTypeObject *CPyType_abi___recurse_recursive_map_obj;
+extern PyObject *CPyDef_abi___recurse_recursive_map_obj(void);
+extern PyObject *CPyDef_abi___map_abi_data(PyObject *cpy_r_normalizers, PyObject *cpy_r_types, PyObject *cpy_r_data);
+extern PyObject *CPyPy_abi___map_abi_data(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___strip_abi_types(PyObject *cpy_r_data);
+extern PyObject *CPyPy_abi___strip_abi_types(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi_____mypyc_lambda__0_get_mapper_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_abi_____mypyc_lambda__0_get_mapper_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi_____mypyc_lambda__0_get_mapper_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_data);
+extern PyObject *CPyPy_abi_____mypyc_lambda__0_get_mapper_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___get_mapper(PyObject *cpy_r_normalizers, PyObject *cpy_r_types);
+extern PyObject *CPyPy_abi___get_mapper(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___map_to_typed_data_get_data_tree_map_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_abi___map_to_typed_data_get_data_tree_map_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___map_to_typed_data_get_data_tree_map_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_elements);
+extern PyObject *CPyPy_abi___map_to_typed_data_get_data_tree_map_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi_____mypyc_lambda__1_get_data_tree_map_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_abi_____mypyc_lambda__1_get_data_tree_map_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi_____mypyc_lambda__1_get_data_tree_map_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_data);
+extern PyObject *CPyPy_abi_____mypyc_lambda__1_get_data_tree_map_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___get_data_tree_map(PyObject *cpy_r_func);
+extern PyObject *CPyPy_abi___get_data_tree_map(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___recurse_recursive_map_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_abi___recurse_recursive_map_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___recurse_recursive_map_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_item);
+extern PyObject *CPyPy_abi___recurse_recursive_map_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___recursive_map(PyObject *cpy_r_func, PyObject *cpy_r_data);
+extern PyObject *CPyPy_abi___recursive_map(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___map_collection(PyObject *cpy_r_func, PyObject *cpy_r_collection);
+extern PyObject *CPyPy_abi___map_collection(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_abi_____top_level__(void);
 extern PyObject *CPyStatic_formatters___ABI_REQUEST_FORMATTERS;
 extern tuple_T3OOO CPyStatic_formatters___REQUEST_FORMATTER_MAPS;
 extern PyObject *CPyStatic_formatters____request_formatters;
