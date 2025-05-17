@@ -149,6 +149,7 @@ def set_done(
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
 
+
 def is_not_null(obj: Any) -> bool:
     """
     A function that returns True if the input is not null, False otherwise.
