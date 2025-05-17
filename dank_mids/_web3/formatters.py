@@ -15,7 +15,7 @@ from web3._utils.rpc_abi import RPC_ABIS, apply_abi_formatters_to_dict
 from web3.types import Formatters, RPCEndpoint, RPCResponse
 
 
-from dank_mids._web3.abi import get_mapper
+from dank_mids._web3.abi import Formatter, get_formatter
 
 
 _T = TypeVar("_T")
@@ -31,7 +31,7 @@ def abi_request_formatters(
 ) -> Iterator[Tuple[RPCEndpoint, Callable[..., Any]]]:
     for method, abi_types in abis.items():
         if isinstance(abi_types, list):
-            yield method, get_mapper(tuple(normalizers), tuple(abi_types))
+            yield method, get_formatter(tuple(normalizers), tuple(abi_types))
         elif isinstance(abi_types, dict):
             single_dict_formatter = apply_abi_formatters_to_dict(normalizers, abi_types)
             yield method, apply_formatter_at_index(single_dict_formatter, 0)
@@ -39,7 +39,7 @@ def abi_request_formatters(
             raise TypeError(f"ABI definitions must be a list or dictionary, got {abi_types!r}")
 
 
-ABI_REQUEST_FORMATTERS: Final[Formatters] = dict(
+ABI_REQUEST_FORMATTERS: Final[Dict[RPCEndpoint, Formatter]] = dict(
     abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
 )
 
