@@ -89,3 +89,4 @@ def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:
         NULL_RESULT_FORMATTERS.get(method, return_as_is),
     )
     return formatters
+
