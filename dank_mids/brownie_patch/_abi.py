@@ -91,7 +91,7 @@ def get_type_strings(
         type_str: str = i["type"]
         if type_str.startswith("tuple"):
             params = get_type_strings(i["components"], substitutions)
-            array_size = i["type"][5:]
+            array_size = type_str[5:]
             types_list.append(f"({','.join(params)}){array_size}")
         else:
             for orig, sub in substitutions.items():
