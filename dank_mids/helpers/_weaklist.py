@@ -35,10 +35,9 @@ class WeakList(Generic[_T]):
 
     def __iter__(self) -> Iterator[_T]:
         for r in self._refs.values():
-            if r is not None:
-                obj = _call_ref(r)
-                if obj is not None:
-                    yield obj
+            obj = _call_ref(r)
+            if obj is not None:
+                yield obj
 
     def append(self, item: _T) -> None:
         # Keep a weak reference with a callback for when the item is collected
