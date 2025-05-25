@@ -162,11 +162,11 @@ async def test_eth_getTransaction_2930():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransaction_2930():
-    tx_2930 = await dank_web3.eth.get_transaction(
+async def test_eth_getTransaction_7702():
+    tx_7702 = await dank_web3.eth.get_transaction(
         "0xad5cdaffa0901bf3abb63c7bfa0307035aeeb94a2ff27d01d6dc33c3d1b40c8a"
     )
-    assert isinstance(tx_2930, Transaction7702)
+    assert isinstance(tx_7702, Transaction7702)
 
 
 @pytest.mark.asyncio_cooperative
