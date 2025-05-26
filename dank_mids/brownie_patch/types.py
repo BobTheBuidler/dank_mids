@@ -2,6 +2,7 @@ from typing import Any, Dict, Optional, Tuple, TypeVar, Union, final
 
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from brownie.typing import AccountsType
+from eth_typing import ChecksumAddress
 
 from dank_mids.brownie_patch._method import _DankMethod, _DankMethodMixin, _EVMType
 
@@ -104,8 +105,13 @@ Instances of this class can be awaited directly to call the contract method with
 
 
 def _get_method_object(
-    address: str, abi: Dict, name: str, owner: Optional[AccountsType], natspec: Dict  # type: ignore [type-arg]
-) -> Union["ContractCall", "ContractTx"]:
+    address: ChecksumAddress,
+    abi: Dict[str, Any],
+    name: str,
+    owner: Optional[AccountsType],
+    natspec: Dict[str, Any],
+) -> Union[DankContractCall, DankContractTx]:
+    # sourcery skip: default-get
     """
     Retrieve an appropriate method object based on the ABI.
 

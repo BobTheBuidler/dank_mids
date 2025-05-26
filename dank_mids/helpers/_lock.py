@@ -1,4 +1,4 @@
-from threading import _RLock, _allocate_lock
+from threading import _RLock, _allocate_lock  # type: ignore [attr-defined]
 
 from dank_mids._logging import getLogger
 

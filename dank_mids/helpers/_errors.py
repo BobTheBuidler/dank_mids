@@ -99,14 +99,16 @@ def is_call_revert(e: BadResponse) -> bool:
 def is_revert_bytes(data: Any) -> bool:
     """
     Check if a call reverted inside of a multicall but returned a result, without causing the multicall to revert.
-    
+
     Args:
         data: The response to check.
-    
+
     Returns:
         True if the call reverted, False if it was successful.
     """
-    return isinstance(data, bytes) and any(data.startswith(selector) for selector in REVERT_SELECTORS)
+    return isinstance(data, bytes) and any(
+        data.startswith(selector) for selector in REVERT_SELECTORS
+    )
 
 
 def log_request_type_switch() -> None:

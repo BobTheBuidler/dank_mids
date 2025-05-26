@@ -1,4 +1,4 @@
-# mypy: disable-error-code="attr-defined,dict-item"
+# mypy: disable-error-code="attr-defined, has-type, dict-item"
 from logging import StreamHandler
 from typing import Dict, Final
 
