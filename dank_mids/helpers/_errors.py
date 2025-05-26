@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any, Final
 
 from dank_mids._exceptions import BadResponse
 from dank_mids._logging import DEBUG, getLogger
+from dank_mids.constants import REVERT_SELECTORS
 from dank_mids.types import PartialResponse
 
 if TYPE_CHECKING:
@@ -91,7 +92,21 @@ def is_call_revert(e: BadResponse) -> bool:
     Returns:
         True if the error was caused by an individual call revert, False otherwise.
     """
-    return any(map(f"{e}".lower().__contains__, INDIVIDUAL_CALL_REVERT_STRINGS))
+    stre = f"{e}".lower()
+    return any(string in stre for string in INDIVIDUAL_CALL_REVERT_STRINGS)
+
+
+def is_revert_bytes(data: Any) -> bool:
+    """
+    Check if a call reverted inside of a multicall but returned a result, without causing the multicall to revert.
+    
+    Args:
+        data: The response to check.
+    
+    Returns:
+        True if the call reverted, False if it was successful.
+    """
+    return isinstance(data, bytes) and any(data.startswith(selector) for selector in REVERT_SELECTORS)
 
 
 def log_request_type_switch() -> None:
