@@ -85,6 +85,7 @@ from dank_mids.helpers._errors import (
     error_logger_log_debug,
     gas_logger_debug,
     is_call_revert,
+    is_revert_bytes,
     log_internal_error,
     needs_full_request_spec,
     revert_logger,
@@ -589,10 +590,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
         log_func("exception set: %s", repr(exc))
 
 
-def _is_revert_bytes(data: Any) -> bool:
-    return isinstance(data, bytes) and any(filter(data.startswith, constants.REVERT_SELECTORS))
-
-
 _rpcrequest_init: Final = RPCRequest.__init__
 
 
@@ -642,7 +639,7 @@ class eth_call(RPCRequest):
 
         # NOTE: If `type(data)` is `bytes`, it is a result from a multicall. If not, `data` comes from a jsonrpc batch.
         # If this if clause is True, it means the call reverted inside of a multicall but returned a result, without causing the multicall to revert.
-        if _is_revert_bytes(data):
+        if is_revert_bytes(data):
             # TODO figure out how to include method selector in no_multicall key
             try:
                 # NOTE: If call response from multicall indicates failure, make sync call to get either:
@@ -1017,7 +1014,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
             to_gather = []
             for call, result in zip(calls, await self.decode(response)):
-                if _is_revert_bytes(result):
+                if is_revert_bytes(result):
                     # We will asynchronously handle this revert
                     to_gather.append(eth_call.spoof_response(call, result))
                 else:
