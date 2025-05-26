@@ -1045,6 +1045,7 @@ struct export_table_d8ded57d9da9d768aa92 {
     char (*CPyDef__errors___log_internal_error)(PyObject *cpy_r_logger, PyObject *cpy_r_batch, PyObject *cpy_r_exc);
     char (*CPyDef__errors___needs_full_request_spec)(PyObject *cpy_r_response);
     char (*CPyDef__errors___is_call_revert)(PyObject *cpy_r_e);
+    char (*CPyDef__errors___is_revert_bytes)(PyObject *cpy_r_data);
     char (*CPyDef__errors___log_request_type_switch)(void);
     char (*CPyDef__errors_____top_level__)(void);
     PyObject **CPyStatic__gather___Task;

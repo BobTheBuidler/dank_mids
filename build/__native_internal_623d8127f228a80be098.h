@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[874];
+extern PyObject *CPyStatics[876];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -125,6 +125,8 @@ extern CPyModule *CPyModule_eth_abi___abi;
 extern CPyModule *CPyModule_eth_abi___encoding;
 extern CPyModule *CPyModule_msgspec___json;
 extern PyObject *CPyStatic__errors___globals;
+extern CPyModule *CPyModule_dank_mids___constants_internal;
+extern CPyModule *CPyModule_dank_mids___constants;
 extern CPyModule *CPyModule_dank_mids___helpers____gather_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____gather;
 extern PyObject *CPyStatic__gather___globals;
@@ -132,8 +134,6 @@ extern CPyModule *CPyModule_a_sync___asyncio;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist;
 extern PyObject *CPyStatic__weaklist___globals;
-extern CPyModule *CPyModule_dank_mids___constants_internal;
-extern CPyModule *CPyModule_dank_mids___constants;
 extern PyObject *CPyStatic_constants___globals;
 extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal;
 extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES;
@@ -610,6 +610,8 @@ extern char CPyDef__errors___needs_full_request_spec(PyObject *cpy_r_response);
 extern PyObject *CPyPy__errors___needs_full_request_spec(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors___is_call_revert(PyObject *cpy_r_e);
 extern PyObject *CPyPy__errors___is_call_revert(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__errors___is_revert_bytes(PyObject *cpy_r_data);
+extern PyObject *CPyPy__errors___is_revert_bytes(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors___log_request_type_switch(void);
 extern PyObject *CPyPy__errors___log_request_type_switch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors_____top_level__(void);
