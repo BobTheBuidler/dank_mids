@@ -41,7 +41,7 @@ class MulticallContract(Struct):
     This is used for state override if necessary.
     """
 
-    needs_override_code_for_block: Callable[[BlockNumber], bool] = None
+    needs_override_code_for_block: Callable[[BlockNumber], bool] = None  # type: ignore [assignment]
     """
     A cached function that, when called, determines if the contract needs override code for a specific block.
 
