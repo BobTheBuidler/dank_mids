@@ -4,6 +4,14 @@ dank\_mids.helpers package
 Submodules
 ----------
 
+dank\_mids.helpers.batch\_size module
+-------------------------------------
+
+.. automodule:: dank_mids.helpers.batch_size
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dank\_mids.helpers.future module
 --------------------------------
 
