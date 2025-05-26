@@ -70,7 +70,9 @@ from dank_mids._exceptions import (
 )
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
+from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish
+from dank_mids.helpers.method import get_len as get_len_for_method
+from dank_mids.helpers.method import should_batch as should_batch_method
 from dank_mids.helpers._codec import (
     JSONRPCBatchResponse,
     MulticallChunk,
@@ -182,29 +184,6 @@ class _RequestBase(Generic[_Response]):
 
 
 ### Single requests:
-
-BYPASS_METHODS: Final = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
-"""
-A tuple of method names that should bypass batching.
-These methods are typically handled separately or have special requirements.
-"""
-
-
-@lru_cache_lite_nonull
-def _get_len_for_method(method: str) -> int:
-    # NOTE: These are totally arbitrary, used to reduce frequency of giant batches/responses
-    if method == "eth_getTransactionReceipt":
-        return 5
-    elif method in {"eth_getTransaction", "eth_getCode"} or "eth_getBlockBy" in method:
-        return 3
-    return 1
-
-
-@lru_cache_lite_nonull
-def _should_batch_method(method: str) -> bool:
-    return all(bypass not in method for bypass in BYPASS_METHODS)
-
-
 _REVERT_EXC_TYPES: Final = ContractLogicError, ExecutionReverted
 
 _request_base_init: Final = _RequestBase.__init__
@@ -249,7 +228,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         self.params = params
         """The parameters to send with this request, if any."""
 
-        if not _should_batch_method(method):
+        if not should_batch_method(method):
             self.should_batch = False
 
         if logger.isEnabledFor(DEBUG):
@@ -278,7 +257,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
     def __len__(self) -> int:
         # NOTE: We dont need to consider response size for each method for very small batch sizes since the requests/responses will never get too large
-        return 1 if self._tiny_batches else _get_len_for_method(self.method)
+        return 1 if self._tiny_batches else get_len_for_method(self.method)
 
     def __repr__(self) -> str:
         batch = self._batch
