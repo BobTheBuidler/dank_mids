@@ -109,7 +109,7 @@ def _get_method_object(
     abi: Dict[str, Any],
     name: str,
     owner: Optional[AccountsType],
-    natspec: Dict[str, Any]
+    natspec: Dict[str, Any],
 ) -> Union[DankContractCall, DankContractTx]:
     # sourcery skip: default-get
     """
