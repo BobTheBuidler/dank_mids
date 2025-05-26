@@ -20,6 +20,14 @@ dank\_mids.helpers.lru\_cache module
    :undoc-members:
    :show-inheritance:
 
+dank\_mids.helpers.method module
+--------------------------------
+
+.. automodule:: dank_mids.helpers.method
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
