@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit__eth_utils(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("2ae573dc1314f0487ec3__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("428e411ea874af5ab525__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____eth_utils");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "2ae573dc1314f0487ec3__mypyc.init_dank_mids____eth_utils");
+    void *init_func = PyCapsule_GetPointer(capsule, "428e411ea874af5ab525__mypyc.init_dank_mids____eth_utils");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
