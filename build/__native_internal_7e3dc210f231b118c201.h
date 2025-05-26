@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_d8ded57d9da9d768aa92_H
-#define MYPYC_NATIVE_INTERNAL_d8ded57d9da9d768aa92_H
+#ifndef MYPYC_NATIVE_INTERNAL_7e3dc210f231b118c201_H
+#define MYPYC_NATIVE_INTERNAL_7e3dc210f231b118c201_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_d8ded57d9da9d768aa92.h"
+#include "__native_7e3dc210f231b118c201.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[886];
+extern PyObject *CPyStatics[888];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -111,7 +111,6 @@ extern CPyModule *CPyModule_eth_abi___exceptions;
 extern CPyModule *CPyModule_evmspec___data;
 extern CPyModule *CPyModule_hexbytes___main;
 extern CPyModule *CPyModule_multicall___constants;
-extern CPyModule *CPyModule_dank_mids___helpers___lru_cache_internal;
 extern CPyModule *CPyModule_dank_mids___helpers___lru_cache;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___overloaded_internal;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___overloaded;
@@ -132,11 +131,12 @@ extern CPyModule *CPyModule_dank_mids___helpers____gather_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____gather;
 extern PyObject *CPyStatic__gather___globals;
 extern CPyModule *CPyModule_a_sync___asyncio;
-extern PyObject *CPyStatic_lru_cache___globals;
-extern CPyModule *CPyModule_typing_extensions;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist;
 extern PyObject *CPyStatic__weaklist___globals;
+extern CPyModule *CPyModule_dank_mids___helpers___method_internal;
+extern CPyModule *CPyModule_dank_mids___helpers___method;
+extern PyObject *CPyStatic_method___globals;
 extern PyObject *CPyStatic_constants___globals;
 extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal;
 extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES;
@@ -663,27 +663,6 @@ extern PyObject *CPyPy__gather___first_completed_gen_____await__(PyObject *self,
 extern PyObject *CPyDef__gather___first_completed(PyObject *cpy_r_fs, char cpy_r_cancel);
 extern PyObject *CPyPy__gather___first_completed(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__gather_____top_level__(void);
-extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_env;
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_env(void);
-extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj(void);
-extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_nonull_env;
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_nonull_env(void);
-extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj(void);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite(PyObject *cpy_r_func);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_lru_cache___lru_cache_lite_nonull(PyObject *cpy_r_func);
-extern PyObject *CPyPy_lru_cache___lru_cache_lite_nonull(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_lru_cache_____top_level__(void);
 extern PyObject *CPyStatic__weaklist___ref;
 extern PyObject *CPyStatic__weaklist____call_ref;
 extern PyTypeObject *CPyType__weaklist___WeakList;
@@ -725,6 +704,12 @@ extern PyObject *CPyPy__weaklist___WeakList___remove(PyObject *self, PyObject *c
 extern char CPyDef__weaklist___WeakList____gc_callback(PyObject *cpy_r_self, PyObject *cpy_r_item);
 extern PyObject *CPyPy__weaklist___WeakList____gc_callback(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist_____top_level__(void);
+extern tuple_T4OOOO CPyStatic_method___BYPASS_METHODS;
+extern CPyTagged CPyDef_method___get_len(PyObject *cpy_r_method);
+extern PyObject *CPyPy_method___get_len(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_method___should_batch(PyObject *cpy_r_method);
+extern PyObject *CPyPy_method___should_batch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_method_____top_level__(void);
 extern PyObject *CPyStatic_constants___TOO_MUCH_DATA_ERRS;
 extern PyObject *CPyStatic_constants___RETRY_ERRS;
 extern PyObject *CPyStatic_constants___GAS_LIMIT;

@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_623d8127f228a80be098_H
-#define MYPYC_NATIVE_623d8127f228a80be098_H
+#ifndef MYPYC_NATIVE_7e3dc210f231b118c201_H
+#define MYPYC_NATIVE_7e3dc210f231b118c201_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -689,7 +689,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_623d8127f228a80be098 {
+struct export_table_7e3dc210f231b118c201 {
     PyObject **CPyStatic__batch___logger;
     PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
@@ -1069,6 +1069,10 @@ struct export_table_623d8127f228a80be098 {
     char (*CPyDef__weaklist___WeakList___remove)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist___WeakList____gc_callback)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist_____top_level__)(void);
+    tuple_T4OOOO *CPyStatic_method___BYPASS_METHODS;
+    CPyTagged (*CPyDef_method___get_len)(PyObject *cpy_r_method);
+    char (*CPyDef_method___should_batch)(PyObject *cpy_r_method);
+    char (*CPyDef_method_____top_level__)(void);
     PyObject **CPyStatic_constants___TOO_MUCH_DATA_ERRS;
     PyObject **CPyStatic_constants___RETRY_ERRS;
     PyObject **CPyStatic_constants___GAS_LIMIT;
