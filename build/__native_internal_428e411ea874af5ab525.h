@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_2ae573dc1314f0487ec3_H
-#define MYPYC_NATIVE_INTERNAL_2ae573dc1314f0487ec3_H
+#ifndef MYPYC_NATIVE_INTERNAL_428e411ea874af5ab525_H
+#define MYPYC_NATIVE_INTERNAL_428e411ea874af5ab525_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_2ae573dc1314f0487ec3.h"
+#include "__native_428e411ea874af5ab525.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[897];
+extern PyObject *CPyStatics[902];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -135,6 +135,9 @@ extern CPyModule *CPyModule_a_sync___asyncio;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist_internal;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist;
 extern PyObject *CPyStatic__weaklist___globals;
+extern CPyModule *CPyModule_dank_mids___helpers___batch_size_internal;
+extern CPyModule *CPyModule_dank_mids___helpers___batch_size;
+extern PyObject *CPyStatic_batch_size___globals;
 extern PyObject *CPyStatic_lru_cache___globals;
 extern CPyModule *CPyModule_typing_extensions;
 extern CPyModule *CPyModule_dank_mids___helpers___method_internal;
@@ -707,6 +710,11 @@ extern PyObject *CPyPy__weaklist___WeakList___remove(PyObject *self, PyObject *c
 extern char CPyDef__weaklist___WeakList____gc_callback(PyObject *cpy_r_self, PyObject *cpy_r_item);
 extern PyObject *CPyPy__weaklist___WeakList____gc_callback(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist_____top_level__(void);
+extern PyObject *CPyStatic_batch_size___batch_size_logger;
+extern PyObject *CPyStatic_batch_size____log_info;
+extern char CPyDef_batch_size___log_check(PyObject *cpy_r_batch_type, PyObject *cpy_r_member_type, CPyTagged cpy_r_num_calls);
+extern PyObject *CPyPy_batch_size___log_check(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_batch_size_____top_level__(void);
 extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_env;
 extern PyObject *CPyDef_lru_cache___lru_cache_lite_env(void);
 extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;

@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_7e3dc210f231b118c201_H
-#define MYPYC_NATIVE_7e3dc210f231b118c201_H
+#ifndef MYPYC_NATIVE_428e411ea874af5ab525_H
+#define MYPYC_NATIVE_428e411ea874af5ab525_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -688,8 +688,41 @@ typedef struct {
     PyObject *___mypyc_env__;
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_func;
+    PyObject *_cache;
+    PyObject *_cache_miss;
+    PyObject *_lru_cache_lite_wrap;
+} dank_mids___helpers___lru_cache___lru_cache_lite_envObject;
 
-struct export_table_7e3dc210f231b118c201 {
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_func;
+    PyObject *_cache;
+    PyObject *_lru_cache_lite_wrap;
+} dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject;
+
+
+struct export_table_428e411ea874af5ab525 {
     PyObject **CPyStatic__batch___logger;
     PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
@@ -1069,6 +1102,25 @@ struct export_table_7e3dc210f231b118c201 {
     char (*CPyDef__weaklist___WeakList___remove)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist___WeakList____gc_callback)(PyObject *cpy_r_self, PyObject *cpy_r_item);
     char (*CPyDef__weaklist_____top_level__)(void);
+    PyObject **CPyStatic_batch_size___batch_size_logger;
+    PyObject **CPyStatic_batch_size____log_info;
+    char (*CPyDef_batch_size___log_check)(PyObject *cpy_r_batch_type, PyObject *cpy_r_member_type, CPyTagged cpy_r_num_calls);
+    char (*CPyDef_batch_size_____top_level__)(void);
+    PyTypeObject **CPyType_lru_cache___lru_cache_lite_env;
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_env)(void);
+    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj)(void);
+    PyTypeObject **CPyType_lru_cache___lru_cache_lite_nonull_env;
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull_env)(void);
+    PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj)(void);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite)(PyObject *cpy_r_func);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
+    PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull)(PyObject *cpy_r_func);
+    char (*CPyDef_lru_cache_____top_level__)(void);
     tuple_T4OOOO *CPyStatic_method___BYPASS_METHODS;
     CPyTagged (*CPyDef_method___get_len)(PyObject *cpy_r_method);
     char (*CPyDef_method___should_batch)(PyObject *cpy_r_method);

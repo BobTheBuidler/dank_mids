@@ -26,7 +26,6 @@ from typing import (
     Iterable,
     Iterator,
     List,
-    Literal,
     Optional,
     Sequence,
     Set,
@@ -70,9 +69,7 @@ from dank_mids._exceptions import (
 )
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish
-from dank_mids.helpers.method import get_len as get_len_for_method
-from dank_mids.helpers.method import should_batch as should_batch_method
+from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
 from dank_mids.helpers._codec import (
     JSONRPCBatchResponse,
     MulticallChunk,
@@ -101,6 +98,8 @@ from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._session import rate_limit_inactive
 from dank_mids.helpers._weaklist import WeakList
+from dank_mids.helpers.method import get_len as get_len_for_method
+from dank_mids.helpers.method import should_batch as should_batch_method
 from dank_mids.types import (
     BatchId,
     BlockId,
@@ -120,14 +119,13 @@ TIMEOUT_SECONDS_SMALL: Final = 30
 TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
 
 logger: Final = getLogger(__name__)
-batch_size_logger: Final = getLogger("dank_mids.batch_size")
-
 
 _Response = TypeVar(
     "_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse
 )
 
 
+@final
 class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
@@ -1078,16 +1076,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             await self.bisect_and_retry(e)
 
 
-def _log_checking_batch_size(
-    batch_type: Literal["multicall", "json"],
-    member_type: Literal["calls", "requests"],
-    num_calls: int,
-) -> None:
-    batch_size_logger.info(
-        "checking if we should reduce %s batch size... (%s %s)", batch_type, num_calls, member_type
-    )
-
-
 @final
 class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
     """
@@ -1488,10 +1476,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         """
         if self.is_multicalls_only:
             num_calls = self.total_calls
-            _log_checking_batch_size("multicall", "calls", num_calls)
+            batch_size.log_check("multicall", "calls", num_calls)
             self.controller.reduce_multicall_size(num_calls)
         else:
-            _log_checking_batch_size("json", "requests", len(self))
+            batch_size.log_check("json", "requests", len(self))
             self.controller.reduce_batch_size(len(self))
             _log_devhint(
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"
