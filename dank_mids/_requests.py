@@ -265,14 +265,19 @@ class RPCRequest(_RequestBase[RPCResponse]):
     def __del__(self) -> None:
         fut = self._fut
         if not fut.done() and not fut._loop.is_closed():
-            fut.set_exception(
-                GarbageCollectionError(
-                    f"{self} was garbage collected before finishing.\n"
-                    "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
+            try:
+                fut.set_exception(
+                    GarbageCollectionError(
+                        f"{self} was garbage collected before finishing.\n"
+                        "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
+                    )
                 )
-            )
-            # mark exception as retrieved, if its really relevant to the user it will be raised by their waiter
-            fut.exception()
+            except RuntimeError as e:
+                if str(e) != "no running event loop":
+                    raise
+            else:
+                # mark exception as retrieved, if its really relevant to the user it will be raised by their waiter
+                fut.exception()
 
     @property
     def request(self) -> Union[Request, PartialRequest]:
@@ -817,14 +822,18 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                     error_logger.error("%s was garbage collected before finishing", self)
                     logged = True
 
-                call._fut.set_exception(
-                    GarbageCollectionError(
-                        f"{self} was garbage collected before finishing.",
-                        f"{call} might hang indefinitely if I don't raise this exception, "
-                        "which only exists to help debug an issue inside of dank mids. "
-                        "Please show it to Bob.",
+                try:
+                    call._fut.set_exception(
+                        GarbageCollectionError(
+                            f"{self} was garbage collected before finishing.",
+                            f"{call} might hang indefinitely if I don't raise this exception, "
+                            "which only exists to help debug an issue inside of dank mids. "
+                            "Please show it to Bob.",
+                        )
                     )
-                )
+                except RuntimeError as e:
+                    if str(e) != "no running event loop":
+                        raise
 
     @cached_property
     def block(self) -> BlockId:
