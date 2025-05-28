@@ -14,6 +14,7 @@ from typing import (
     Tuple,
     Type,
     TypeVar,
+    Union,
     final,
     overload,
 )
@@ -46,7 +47,10 @@ Encodable = Union[int, StrEncodable, hexbytes.HexBytes, bytes]
 RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
 
 
-MulticallChunk = Tuple[ChecksumAddress, hexbytes.HexBytes]
+MulticallChunk = Union[
+    Tuple[ChecksumAddress, hexbytes.HexBytes],
+    List[Union[ChecksumAddress, hexbytes.HexBytes]],
+]
 MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
 
 DecodedMulticall = Tuple[int, int, Tuple[Tuple["Success", bytes], ...]]
