@@ -84,7 +84,7 @@ def to_hex(
         return "0x1" if primitive else "0x0"  # type: ignore [return-value]
 
     elif isinstance(primitive, (bytes, bytearray)):
-        return encode_hex(primitive)
+        return encode_hex(primitive)  # type: ignore [type-var]
 
     elif isinstance(primitive, memoryview):
         return encode_hex(bytes(primitive))
