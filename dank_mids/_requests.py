@@ -673,6 +673,9 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     def __len__(self) -> int:
         return len(self.calls)
 
+    def __await__(self) -> Generator[Any, None, _Response]:
+        return self._task.__await__()
+
     @property
     def bisected(self) -> Generator[Tuple[_Request, ...], None, None]:
         # set `self.calls` output to var so its only computed once
