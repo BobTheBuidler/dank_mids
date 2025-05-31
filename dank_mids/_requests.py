@@ -289,6 +289,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 _log_debug("bypassed dank batching, method is %s", self.method)
             return await self.get_response_unbatched()
 
+        await yield_to_loop()
+
         current_batch = self._batch
         if current_batch is None:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
