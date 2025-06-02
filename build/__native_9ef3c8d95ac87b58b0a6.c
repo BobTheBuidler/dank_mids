@@ -17322,26 +17322,26 @@ CPyL3: ;
     CPy_INCREF(CPyModule_eth_typing);
     CPy_DECREF(cpy_r_r12);
     cpy_r_r13 = CPyStatics[796]; /* ('apply_formatter_at_index',) */
-    cpy_r_r14 = CPyStatics[259]; /* 'eth_utils.curried' */
+    cpy_r_r14 = CPyStatics[259]; /* 'faster_eth_utils.curried' */
     cpy_r_r15 = CPyStatic_formatters___globals;
     cpy_r_r16 = CPyImport_ImportFromMany(cpy_r_r14, cpy_r_r13, cpy_r_r13, cpy_r_r15);
     if (unlikely(cpy_r_r16 == NULL)) {
         CPy_AddTraceback("dank_mids\\_web3\\formatters.py", "<module>", 4, CPyStatic_formatters___globals);
         goto CPyL55;
     }
-    CPyModule_eth_utils___curried = cpy_r_r16;
-    CPy_INCREF(CPyModule_eth_utils___curried);
+    CPyModule_faster_eth_utils___curried = cpy_r_r16;
+    CPy_INCREF(CPyModule_faster_eth_utils___curried);
     CPy_DECREF(cpy_r_r16);
     cpy_r_r17 = CPyStatics[797]; /* ('compose',) */
-    cpy_r_r18 = CPyStatics[260]; /* 'eth_utils.toolz' */
+    cpy_r_r18 = CPyStatics[260]; /* 'faster_eth_utils.toolz' */
     cpy_r_r19 = CPyStatic_formatters___globals;
     cpy_r_r20 = CPyImport_ImportFromMany(cpy_r_r18, cpy_r_r17, cpy_r_r17, cpy_r_r19);
     if (unlikely(cpy_r_r20 == NULL)) {
         CPy_AddTraceback("dank_mids\\_web3\\formatters.py", "<module>", 5, CPyStatic_formatters___globals);
         goto CPyL55;
     }
-    CPyModule_eth_utils___toolz = cpy_r_r20;
-    CPy_INCREF(CPyModule_eth_utils___toolz);
+    CPyModule_faster_eth_utils___toolz = cpy_r_r20;
+    CPy_INCREF(CPyModule_faster_eth_utils___toolz);
     CPy_DECREF(cpy_r_r20);
     cpy_r_r21 = CPyStatics[798]; /* ('ERROR_FORMATTERS', 'METHOD_NORMALIZERS',
                                     'NULL_RESULT_FORMATTERS', 'PYTHONIC_REQUEST_FORMATTERS',
@@ -58401,7 +58401,7 @@ CPyL3: ;
     if (!cpy_r_r6) goto CPyL5;
     return 10;
 CPyL5: ;
-    cpy_r_r7 = CPyStatics[892]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
+    cpy_r_r7 = CPyStatics[892]; /* frozenset({'eth_getCode', 'eth_getTransaction'}) */
     cpy_r_r8 = PySet_Contains(cpy_r_r7, cpy_r_method);
     cpy_r_r9 = cpy_r_r8 >= 0;
     if (unlikely(!cpy_r_r9)) {
@@ -62062,7 +62062,7 @@ CPyL271: ;
         goto CPyL376;
     }
     CPy_DECREF(cpy_r_r534);
-    cpy_r_r543 = CPyStatics[628]; /* 'eth_getCode' */
+    cpy_r_r543 = CPyStatics[627]; /* 'eth_getCode' */
     cpy_r_r544 = CPyStatics[715]; /* 'ETH_GETCODE_SEMAPHORE' */
     cpy_r_r545 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r546 = CPyStatics[42]; /* 'a_sync' */
@@ -62689,8 +62689,8 @@ int CPyGlobalsInit(void)
     CPyModule_builtins = Py_None;
     CPyModule_typing = Py_None;
     CPyModule_eth_typing = Py_None;
-    CPyModule_eth_utils___curried = Py_None;
-    CPyModule_eth_utils___toolz = Py_None;
+    CPyModule_faster_eth_utils___curried = Py_None;
+    CPyModule_faster_eth_utils___toolz = Py_None;
     CPyModule_web3____utils___method_formatters = Py_None;
     CPyModule_web3____utils___rpc_abi = Py_None;
     CPyModule_web3___types = Py_None;
@@ -62872,7 +62872,7 @@ const char * const CPyLit_Str[] = {
     "\002\034apply_abi_formatters_to_dict\030apply_formatter_at_index",
     "\0032ABI definitions must be a list or dictionary, got \a{!r:{}}\003get",
     "\004\freturn_as_is\acompose\020ERROR_FORMATTERS\026NULL_RESULT_FORMATTERS",
-    "\003\021eth_utils.curried\017eth_utils.toolz\022METHOD_NORMALIZERS",
+    "\003\030faster_eth_utils.curried\026faster_eth_utils.toolz\022METHOD_NORMALIZERS",
     "\002\033PYTHONIC_REQUEST_FORMATTERS\024STANDARD_NORMALIZERS",
     "\004\035web3._utils.method_formatters\bRPC_ABIS\023web3._utils.rpc_abi\nFormatters",
     "\004\vRPCEndpoint\vRPCResponse\nweb3.types\rget_formatter",
@@ -62960,7 +62960,7 @@ const char * const CPyLit_Str[] = {
     "\003\033dank_mids.helpers._weaklist\005_refs\bWeakList",
     "\0015checking if we should reduce %s batch size... (%s %s)",
     "\004\024dank_mids.batch_size\021batch_size_logger\004info\t_log_info",
-    "\003\031eth_getTransactionReceipt\022eth_getTransaction\veth_getCode",
+    "\003\031eth_getTransactionReceipt\veth_getCode\022eth_getTransaction",
     "\005\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_\006debug_",
     "\005\016BYPASS_METHODS\aget_len\fshould_batch\tmulticall\026dank_mids\\constants.py",
     "\004\vBlockNumber\aNetwork\021payload too large\030content length too large",
@@ -63097,8 +63097,8 @@ CPyModule *CPyModule_web3____utils;
 CPyModule *CPyModule_dank_mids____web3___formatters_internal = NULL;
 CPyModule *CPyModule_dank_mids____web3___formatters;
 PyObject *CPyStatic_formatters___globals;
-CPyModule *CPyModule_eth_utils___curried;
-CPyModule *CPyModule_eth_utils___toolz;
+CPyModule *CPyModule_faster_eth_utils___curried;
+CPyModule *CPyModule_faster_eth_utils___toolz;
 CPyModule *CPyModule_web3____utils___method_formatters;
 CPyModule *CPyModule_web3____utils___rpc_abi;
 CPyModule *CPyModule_web3___types;
