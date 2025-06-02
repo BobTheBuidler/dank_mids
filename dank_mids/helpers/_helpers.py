@@ -15,8 +15,8 @@ from typing import (
     Union,
 )
 
-from eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map
-from eth_utils.toolz import assoc, compose, merge
+from faster_eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map
+from faster_eth_utils.toolz import assoc, compose, merge
 from hexbytes import HexBytes
 from multicall.utils import get_async_w3
 from typing_extensions import Concatenate, ParamSpec

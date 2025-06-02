@@ -1,8 +1,8 @@
 from functools import lru_cache
 from typing import Callable, Optional
 
+from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress
-from eth_utils import to_checksum_address
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES
 
