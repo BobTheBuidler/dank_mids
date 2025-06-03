@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[900];
+extern PyObject *CPyStatics[888];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -237,7 +237,6 @@ extern PyTypeObject *CPyType__exceptions___OutOfGas;
 extern PyTypeObject *CPyType__exceptions___PayloadTooLarge;
 extern PyTypeObject *CPyType__exceptions___ExceedsMaxBatchSize;
 extern PyTypeObject *CPyType__exceptions___DankMidsClientResponseError;
-extern PyObject *CPyDef__exceptions___DankMidsClientResponseError(PyObject *cpy_r_exc, PyObject *cpy_r_request);
 extern PyTypeObject *CPyType__exceptions___DankMidsInternalError;
 extern PyTypeObject *CPyType__exceptions___BatchResponseSortError;
 extern PyTypeObject *CPyType__exceptions___RateLimitError;
