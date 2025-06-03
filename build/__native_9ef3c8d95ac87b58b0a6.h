@@ -237,9 +237,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *_request;
-    PyObject *_args;
-    PyObject *__exception;
 } dank_mids____exceptions___DankMidsClientResponseErrorObject;
 
 typedef struct {
@@ -751,7 +748,6 @@ struct export_table_9ef3c8d95ac87b58b0a6 {
     PyTypeObject **CPyType__exceptions___PayloadTooLarge;
     PyTypeObject **CPyType__exceptions___ExceedsMaxBatchSize;
     PyTypeObject **CPyType__exceptions___DankMidsClientResponseError;
-    PyObject *(*CPyDef__exceptions___DankMidsClientResponseError)(PyObject *cpy_r_exc, PyObject *cpy_r_request);
     PyTypeObject **CPyType__exceptions___DankMidsInternalError;
     PyTypeObject **CPyType__exceptions___BatchResponseSortError;
     PyTypeObject **CPyType__exceptions___RateLimitError;

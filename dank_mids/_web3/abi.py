@@ -1,12 +1,9 @@
 import typing
-from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar, final
+from typing import Any, Callable, Dict, Final, List, Optional, Tuple, final
 
 from eth_abi.grammar import parse
 from eth_typing import TypeStr
 from web3._utils import abi
-
-
-_T = TypeVar("_T")
 
 
 Normalizer = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
@@ -28,11 +25,18 @@ class Formatter:
     def __init__(
         self,
         normalizers: Tuple[Normalizer, ...],
-        types: Tuple[TypeStr, ...],
+        types: Tuple[Optional[TypeStr], ...],
     ):
         # TODO: vendor ABITypedData and cache some stuff from web3py
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
-        self.types: Final = [parse(t) if isinstance(t, TypeStr) else t for t in types]
+        self.types: Final = []
+
+        t: Optional[TypeStr]
+        for t in types:
+            if isinstance(t, TypeStr):
+                self.types.append(parse(t))
+            else:
+                self.types.append(t)
 
     def __call__(self, data: Any) -> List[Any]:
         # 1. Decorating the data tree with types

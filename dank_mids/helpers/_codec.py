@@ -172,7 +172,7 @@ def _rudimentary_encode_dict_value(value: int) -> HexStr: ...
 def _rudimentary_encode_dict_value(value: __T) -> __T: ...
 def _rudimentary_encode_dict_value(value: Union[int, __T]) -> Union[HexStr, __T]:
     # I dont think this needs to be robust, time will tell
-    return hex(value) if isinstance(value, int) else value
+    return hex(value) if isinstance(value, int) else value  # type: ignore [return-value]
 
 
 encode: Final = Encoder(enc_hook=_encode_hook).encode
@@ -198,7 +198,7 @@ _mcall_encoder: Final[MulticallEncoder] = default_codec._registry.get_encoder(
     "(bool,(address,bytes)[])"
 )
 _array_encoder: Final[DynamicArrayEncoder] = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
-_item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder
+_item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder  # type: ignore [assignment]
 
 # We don't need to follow the validation code from eth-abi since we guarantee the input types
 _mcall_encoder.validate_value = _array_encoder.validate_value = _item_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined, method-assign]
@@ -250,7 +250,7 @@ Success = bool
 
 def mcall_decode(data: "types.PartialResponse") -> Union[List[bytes], Exception]:
     try:
-        decoded = _mcall_decoder(ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type]
+        decoded = _mcall_decoder(ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type, no-untyped-call]
     except Exception as e:
         if PartialResponse is None:
             __import_from_types()
