@@ -51,16 +51,16 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-environment-variables-module">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-constants-module">dank_mids.constants module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-controller-module">dank_mids.controller module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-eth-module">dank_mids.eth module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-exceptions-module">dank_mids.exceptions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-middleware-module">dank_mids.middleware module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-semaphores-module">dank_mids.semaphores module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-stats-module">dank_mids.stats module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank-mids-types-module">dank_mids.types module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-contents">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.ENVIRONMENT_VARIABLES">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.constants">dank_mids.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.controller">dank_mids.controller module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.eth">dank_mids.eth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.exceptions">dank_mids.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.middleware">dank_mids.middleware module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.semaphores">dank_mids.semaphores module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.stats">dank_mids.stats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids.types">dank_mids.types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#module-dank_mids">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -98,20 +98,342 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="dank-mids-helpers-batch-size-module">
-<h2>dank_mids.helpers.batch_size module<a class="headerlink" href="#dank-mids-helpers-batch-size-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.helpers.batch_size">
+<span id="dank-mids-helpers-batch-size-module"></span><h2>dank_mids.helpers.batch_size module<a class="headerlink" href="#module-dank_mids.helpers.batch_size" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.batch_size.log_check">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.batch_size.</span></span><span class="sig-name descname"><span class="pre">log_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.batch_size.log_check" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
-<section id="dank-mids-helpers-future-module">
-<h2>dank_mids.helpers.future module<a class="headerlink" href="#dank-mids-helpers-future-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.helpers.future">
+<span id="dank-mids-helpers-future-module"></span><h2>dank_mids.helpers.future module<a class="headerlink" href="#module-dank_mids.helpers.future" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.future.</span></span><span class="sig-name descname"><span class="pre">DebuggableFuture</span></span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Future</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>_RequestBase</em>)</p></li>
+<li><p><strong>loop</strong> (<em>AbstractEventLoop</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.__iter__" title="Link to this definition"></a></dt>
+<dd><p>Implement iter(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.add_done_callback">
+<span class="sig-name descname"><span class="pre">add_done_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.add_done_callback" title="Link to this definition"></a></dt>
+<dd><p>Add a callback to be run when the future becomes done.</p>
+<p>The callback is called with a single argument - the future object. If
+the future is already done when this is called, the callback is
+scheduled with call_soon.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.cancel" title="Link to this definition"></a></dt>
+<dd><p>Cancel the future and schedule callbacks.</p>
+<p>If the future is already done or cancelled, return False.  Otherwise,
+change the future’s state to cancelled, schedule the callbacks and
+return True.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.cancelled">
+<span class="sig-name descname"><span class="pre">cancelled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.cancelled" title="Link to this definition"></a></dt>
+<dd><p>Return True if the future was cancelled.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.done">
+<span class="sig-name descname"><span class="pre">done</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.done" title="Link to this definition"></a></dt>
+<dd><p>Return True if the future is done.</p>
+<p>Done means either that a result / exception are available, or that the
+future was cancelled.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.exception">
+<span class="sig-name descname"><span class="pre">exception</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.exception" title="Link to this definition"></a></dt>
+<dd><p>Return the exception that was set on this future.</p>
+<p>The exception (or None if no exception was set) is returned only if
+the future is done.  If the future has been cancelled, raises
+CancelledError.  If the future isn’t done yet, raises
+InvalidStateError.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.get_loop">
+<span class="sig-name descname"><span class="pre">get_loop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.get_loop" title="Link to this definition"></a></dt>
+<dd><p>Return the event loop the Future is bound to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.remove_done_callback">
+<span class="sig-name descname"><span class="pre">remove_done_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.remove_done_callback" title="Link to this definition"></a></dt>
+<dd><p>Remove all instances of a callback from the “call when done” list.</p>
+<p>Returns the number of callbacks removed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.result">
+<span class="sig-name descname"><span class="pre">result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.result" title="Link to this definition"></a></dt>
+<dd><p>Return the result this future represents.</p>
+<p>If the future has been cancelled, raises CancelledError.  If the
+future’s result isn’t yet available, raises InvalidStateError.  If
+the future is done and has an exception set, this exception is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.set_exception">
+<span class="sig-name descname"><span class="pre">set_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.set_exception" title="Link to this definition"></a></dt>
+<dd><p>Mark the future done and set an exception.</p>
+<p>If the future is already done when this method is called, raises
+InvalidStateError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>exc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><em>type</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.13)"><em>BaseException</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.future.DebuggableFuture.set_result">
+<span class="sig-name descname"><span class="pre">set_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.future.DebuggableFuture.set_result" title="Link to this definition"></a></dt>
+<dd><p>Mark the future done and set its result.</p>
+<p>If the future is already done when this method is called, raises
+InvalidStateError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>RPCResponse</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="dank-mids-helpers-lru-cache-module">
-<h2>dank_mids.helpers.lru_cache module<a class="headerlink" href="#dank-mids-helpers-lru-cache-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.helpers.lru_cache">
+<span id="dank-mids-helpers-lru-cache-module"></span><h2>dank_mids.helpers.lru_cache module<a class="headerlink" href="#module-dank_mids.helpers.lru_cache" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.lru_cache.lru_cache_lite">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.lru_cache.</span></span><span class="sig-name descname"><span class="pre">lru_cache_lite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.lru_cache.lru_cache_lite" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.lru_cache.lru_cache_lite_nonull">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.lru_cache.</span></span><span class="sig-name descname"><span class="pre">lru_cache_lite_nonull</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.lru_cache.lru_cache_lite_nonull" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
-<section id="dank-mids-helpers-method-module">
-<h2>dank_mids.helpers.method module<a class="headerlink" href="#dank-mids-helpers-method-module" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.helpers.method">
+<span id="dank-mids-helpers-method-module"></span><h2>dank_mids.helpers.method module<a class="headerlink" href="#module-dank_mids.helpers.method" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.method.get_len">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.method.</span></span><span class="sig-name descname"><span class="pre">get_len</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.method.get_len" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.method.should_batch">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.method.</span></span><span class="sig-name descname"><span class="pre">should_batch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.method.should_batch" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-dank_mids.helpers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dank_mids.helpers" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">DebuggableFuture</span></span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Future</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>_RequestBase</em>)</p></li>
+<li><p><strong>loop</strong> (<em>AbstractEventLoop</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.__iter__" title="Link to this definition"></a></dt>
+<dd><p>Implement iter(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.add_done_callback">
+<span class="sig-name descname"><span class="pre">add_done_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.add_done_callback" title="Link to this definition"></a></dt>
+<dd><p>Add a callback to be run when the future becomes done.</p>
+<p>The callback is called with a single argument - the future object. If
+the future is already done when this is called, the callback is
+scheduled with call_soon.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.cancel" title="Link to this definition"></a></dt>
+<dd><p>Cancel the future and schedule callbacks.</p>
+<p>If the future is already done or cancelled, return False.  Otherwise,
+change the future’s state to cancelled, schedule the callbacks and
+return True.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.cancelled">
+<span class="sig-name descname"><span class="pre">cancelled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.cancelled" title="Link to this definition"></a></dt>
+<dd><p>Return True if the future was cancelled.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.done">
+<span class="sig-name descname"><span class="pre">done</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.done" title="Link to this definition"></a></dt>
+<dd><p>Return True if the future is done.</p>
+<p>Done means either that a result / exception are available, or that the
+future was cancelled.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.exception">
+<span class="sig-name descname"><span class="pre">exception</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.exception" title="Link to this definition"></a></dt>
+<dd><p>Return the exception that was set on this future.</p>
+<p>The exception (or None if no exception was set) is returned only if
+the future is done.  If the future has been cancelled, raises
+CancelledError.  If the future isn’t done yet, raises
+InvalidStateError.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.get_loop">
+<span class="sig-name descname"><span class="pre">get_loop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.get_loop" title="Link to this definition"></a></dt>
+<dd><p>Return the event loop the Future is bound to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.remove_done_callback">
+<span class="sig-name descname"><span class="pre">remove_done_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.remove_done_callback" title="Link to this definition"></a></dt>
+<dd><p>Remove all instances of a callback from the “call when done” list.</p>
+<p>Returns the number of callbacks removed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.result">
+<span class="sig-name descname"><span class="pre">result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.result" title="Link to this definition"></a></dt>
+<dd><p>Return the result this future represents.</p>
+<p>If the future has been cancelled, raises CancelledError.  If the
+future’s result isn’t yet available, raises InvalidStateError.  If
+the future is done and has an exception set, this exception is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.set_exception">
+<span class="sig-name descname"><span class="pre">set_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.set_exception" title="Link to this definition"></a></dt>
+<dd><p>Mark the future done and set an exception.</p>
+<p>If the future is already done when this method is called, raises
+InvalidStateError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>exc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><em>type</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.13)"><em>BaseException</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dank_mids.helpers.DebuggableFuture.set_result">
+<span class="sig-name descname"><span class="pre">set_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.DebuggableFuture.set_result" title="Link to this definition"></a></dt>
+<dd><p>Mark the future done and set its result.</p>
+<p>If the future is already done when this method is called, raises
+InvalidStateError.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>RPCResponse</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.gatherish">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">gatherish</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.gatherish" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.lru_cache_lite">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">lru_cache_lite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.lru_cache_lite" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.lru_cache_lite_nonull">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">lru_cache_lite_nonull</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.lru_cache_lite_nonull" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.setup_dank_w3">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.setup_dank_w3" title="Link to this definition"></a></dt>
+<dd><p>Sets up a DankWeb3 instance from a given Web3 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>async_w3</strong> (<em>Web3</em>) – The Web3 instance to be wrapped.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DankWeb3 instance with Dank Middleware injected.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DankWeb3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dank_mids.helpers.setup_dank_w3_from_sync">
+<span class="sig-prename descclassname"><span class="pre">dank_mids.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_dank_w3_from_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sync_w3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.helpers.setup_dank_w3_from_sync" title="Link to this definition"></a></dt>
+<dd><p>Sets up a DankWeb3 instance from a given synchronous Web3 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sync_w3</strong> (<em>Web3</em>) – The synchronous Web3 instance to be wrapped.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DankWeb3 instance with Dank Middleware injected, supporting batched asynchronous operations.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DankWeb3</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
