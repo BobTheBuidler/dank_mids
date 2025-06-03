@@ -204,7 +204,9 @@ class Contract(brownie.Contract):
     @property
     def __method_names__(self) -> Iterator[str]:
         """List of method names defined in the contract ABI."""
-        yield from (i["name"] for i in filter(_is_function_abi, self.abi))
+        for abi in self.abi:
+            if abi["type"] == "function":
+                yield abi["name"]
 
     def __get_method_object__(self, name: str) -> DankContractMethod:
         """
@@ -223,8 +225,8 @@ class Contract(brownie.Contract):
 
         overloaded = list(self.__method_names__).count(name) > 1
 
-        for abi in filter(_is_function_abi, self.abi):
-            if abi["name"] != name:
+        for abi in self.abi:
+            if abi["type"] != "function" or abi["name"] != name:
                 continue
 
             full_name = f"{self._name}.{name}"
@@ -244,10 +246,6 @@ class Contract(brownie.Contract):
             overloaded._add_fn(abi, natspec)
 
         return overloaded  # type: ignore [return-value]
-
-
-def _is_function_abi(abi: dict) -> bool:
-    return abi["type"] == "function"
 
 
 @overload
