@@ -136,10 +136,13 @@ def decode_hex(value: str) -> bytes:
 
 
 def encode_hex(value: AnyStr) -> HexStr:
-    if isinstance(value, (bytes, bytearray)):
+    ascii_bytes: Any  # no need to validate bytes type in the c code
+    if isinstance(value, bytes):
         ascii_bytes = value
     elif isinstance(value, str):
         ascii_bytes = value.encode("ascii")
+    elif isinstance(value, bytearray):
+        ascii_bytes = bytes(value)
     else:
         raise TypeError("Value must be an instance of str or unicode")
     ascii_hex = hexlify(ascii_bytes).decode("ascii")

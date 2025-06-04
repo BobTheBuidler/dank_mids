@@ -133,13 +133,8 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_self;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *_batches;
     PyObject *_last_failure;
     PyObject *___mypyc_temp__0;
@@ -157,24 +152,13 @@ typedef struct {
     PyObject *_e;
     PyObject *___mypyc_temp__9;
     tuple_T3OOO ___mypyc_temp__10;
-} dank_mids____batch____await_DankBatch_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids____batch____await_DankBatch_genObject;
 
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_self;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *_working_batch;
     PyObject *_batch_append;
     PyObject *_check_len;
@@ -184,12 +168,6 @@ typedef struct {
     PyObject *___mypyc_temp__14;
     PyObject *_mcall;
     PyObject *_call;
-} dank_mids____batch___coroutines_DankBatch_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids____batch___coroutines_DankBatch_genObject;
 
 typedef struct {
@@ -285,14 +263,9 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_normalizers;
     PyObject *_abis;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__0;
     CPyTagged ___mypyc_temp__1;
     CPyTagged ___mypyc_temp__2;
@@ -300,12 +273,6 @@ typedef struct {
     PyObject *_method;
     PyObject *_abi_types;
     PyObject *_single_dict_formatter;
-} dank_mids____web3___formatters___abi_request_formatters_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids____web3___formatters___abi_request_formatters_genObject;
 
 typedef struct {
@@ -352,7 +319,7 @@ typedef struct {
     PyObject *_value;
     PyObject *_traceback;
     PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__0;
     PyObject *___mypyc_temp__1;
     char ___mypyc_temp__2;
@@ -402,42 +369,27 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_call;
     CPyTagged _len_inputs;
     PyObject *_get_request_data;
     PyObject *_args;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__27;
     CPyTagged ___mypyc_temp__28;
+    PyObject *_arg;
     PyObject *_data;
     PyObject *___mypyc_temp__29;
     tuple_T3OOO ___mypyc_temp__30;
     tuple_T3OOO ___mypyc_temp__31;
     PyObject *_exc_str;
-} dank_mids___brownie_patch___call___encode_input_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids___brownie_patch___call___encode_input_genObject;
 
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_call;
     PyObject *_data;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *_decoded;
     PyObject *___mypyc_temp__32;
     tuple_T3OOO ___mypyc_temp__33;
@@ -446,30 +398,13 @@ typedef struct {
     PyObject *_e;
     PyObject *___mypyc_temp__36;
     tuple_T3OOO ___mypyc_temp__37;
-} dank_mids___brownie_patch___call___decode_output_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids___brownie_patch___call___decode_output_genObject;
 
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_call;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
-} dank_mids___brownie_patch___call____request_data_no_args_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
+    int32_t ___mypyc_next_label__;
 } dank_mids___brownie_patch___call____request_data_no_args_genObject;
 
 typedef struct {
@@ -495,7 +430,7 @@ typedef struct {
     PyObject *_value;
     PyObject *_traceback;
     PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *_fn;
     tuple_T3OOO ___mypyc_temp__0;
     PyObject *_e;
@@ -549,26 +484,15 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_self;
     PyObject *_args;
     PyObject *_block_identifier;
     PyObject *_decimals;
     PyObject *_override;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *_call;
     PyObject *___mypyc_temp__0;
     tuple_T3OOO ___mypyc_temp__1;
-} dank_mids___brownie_patch___types___coroutine_DankOverloadedMethod_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids___brownie_patch___types___coroutine_DankOverloadedMethod_genObject;
 
 typedef struct {
@@ -586,14 +510,9 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_coros;
     PyObject *_name;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *_loop;
     PyObject *___mypyc_temp__0;
     PyObject *___mypyc_temp__1;
@@ -615,25 +534,14 @@ typedef struct {
     PyObject *___mypyc_temp__14;
     tuple_T3OOO ___mypyc_temp__15;
     tuple_T3OOO ___mypyc_temp__16;
-} dank_mids___helpers____gather___gatherish_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids___helpers____gather___gatherish_genObject;
 
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_fs;
     char _cancel;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__17;
     tuple_T3OOO ___mypyc_temp__18;
     PyObject *___mypyc_temp__19;
@@ -643,12 +551,6 @@ typedef struct {
     PyObject *___mypyc_temp__21;
     PyObject *___mypyc_temp__22;
     PyObject *_p;
-} dank_mids___helpers____gather___first_completed_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids___helpers____gather___first_completed_genObject;
 
 typedef struct {
@@ -660,25 +562,14 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_self__;
     PyObject *_self;
-    PyObject *_type;
-    PyObject *_value;
-    PyObject *_traceback;
-    PyObject *_arg;
-    CPyTagged ___mypyc_next_label__;
+    int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__0;
     CPyTagged ___mypyc_temp__1;
     CPyTagged ___mypyc_temp__2;
     PyObject *___mypyc_temp__3;
     PyObject *_r;
     PyObject *_obj;
-} dank_mids___helpers____weaklist_____iter___3_WeakList_envObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_env__;
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 typedef struct {
@@ -720,12 +611,8 @@ struct export_table_428e411ea874af5ab525 {
     PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
     PyObject *(*CPyDef__batch___DankBatch)(PyObject *cpy_r_controller, PyObject *cpy_r_multicalls, PyObject *cpy_r_rpc_calls);
-    PyTypeObject **CPyType__batch____await_DankBatch_env;
-    PyObject *(*CPyDef__batch____await_DankBatch_env)(void);
     PyTypeObject **CPyType__batch____await_DankBatch_gen;
     PyObject *(*CPyDef__batch____await_DankBatch_gen)(void);
-    PyTypeObject **CPyType__batch___coroutines_DankBatch_env;
-    PyObject *(*CPyDef__batch___coroutines_DankBatch_env)(void);
     PyTypeObject **CPyType__batch___coroutines_DankBatch_gen;
     PyObject *(*CPyDef__batch___coroutines_DankBatch_gen)(void);
     PyObject *(*CPyDef__batch____create_named_task)(PyObject *cpy_r_awaitable);
@@ -829,8 +716,6 @@ struct export_table_428e411ea874af5ab525 {
     tuple_T3OOO *CPyStatic_formatters___REQUEST_FORMATTER_MAPS;
     PyObject **CPyStatic_formatters____request_formatters;
     PyObject **CPyStatic_formatters____response_formatters;
-    PyTypeObject **CPyType_formatters___abi_request_formatters_env;
-    PyObject *(*CPyDef_formatters___abi_request_formatters_env)(void);
     PyTypeObject **CPyType_formatters___abi_request_formatters_gen;
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen)(void);
     PyObject *(*CPyDef_formatters___return_as_is)(PyObject *cpy_r_x);
@@ -889,16 +774,10 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_obj)(void);
     PyTypeObject **CPyType_call___coroutine__get_coroutine_fn_gen;
     PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen)(void);
-    PyTypeObject **CPyType_call___encode_input_env;
-    PyObject *(*CPyDef_call___encode_input_env)(void);
     PyTypeObject **CPyType_call___encode_input_gen;
     PyObject *(*CPyDef_call___encode_input_gen)(void);
-    PyTypeObject **CPyType_call___decode_output_env;
-    PyObject *(*CPyDef_call___decode_output_env)(void);
     PyTypeObject **CPyType_call___decode_output_gen;
     PyObject *(*CPyDef_call___decode_output_gen)(void);
-    PyTypeObject **CPyType_call____request_data_no_args_env;
-    PyObject *(*CPyDef_call____request_data_no_args_env)(void);
     PyTypeObject **CPyType_call____request_data_no_args_gen;
     PyObject *(*CPyDef_call____request_data_no_args_gen)(void);
     PyObject *(*CPyDef_call_____mypyc_lambda__0_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
@@ -975,8 +854,6 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef_types___DankContractTx)(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
     PyTypeObject **CPyType_types___DankOverloadedMethod;
     PyObject *(*CPyDef_types___DankOverloadedMethod)(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
-    PyTypeObject **CPyType_types___coroutine_DankOverloadedMethod_env;
-    PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_env)(void);
     PyTypeObject **CPyType_types___coroutine_DankOverloadedMethod_gen;
     PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_gen)(void);
     PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
@@ -1045,12 +922,8 @@ struct export_table_428e411ea874af5ab525 {
     PyObject **CPyStatic__gather___get_running_loop;
     PyObject **CPyStatic__gather___wait;
     PyObject **CPyStatic__gather___yield_to_loop;
-    PyTypeObject **CPyType__gather___gatherish_env;
-    PyObject *(*CPyDef__gather___gatherish_env)(void);
     PyTypeObject **CPyType__gather___gatherish_gen;
     PyObject *(*CPyDef__gather___gatherish_gen)(void);
-    PyTypeObject **CPyType__gather___first_completed_env;
-    PyObject *(*CPyDef__gather___first_completed_env)(void);
     PyTypeObject **CPyType__gather___first_completed_gen;
     PyObject *(*CPyDef__gather___first_completed_gen)(void);
     PyObject *(*CPyDef__gather___gatherish_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
@@ -1074,8 +947,6 @@ struct export_table_428e411ea874af5ab525 {
     PyObject **CPyStatic__weaklist____call_ref;
     PyTypeObject **CPyType__weaklist___WeakList;
     PyObject *(*CPyDef__weaklist___WeakList)(PyObject *cpy_r_data);
-    PyTypeObject **CPyType__weaklist_____iter___3_WeakList_env;
-    PyObject *(*CPyDef__weaklist_____iter___3_WeakList_env)(void);
     PyTypeObject **CPyType__weaklist_____iter___3_WeakList_gen;
     PyObject *(*CPyDef__weaklist_____iter___3_WeakList_gen)(void);
     char (*CPyDef__weaklist___WeakList_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_data);
