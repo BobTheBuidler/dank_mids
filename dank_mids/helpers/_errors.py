@@ -1,6 +1,8 @@
 from logging import Logger
 from typing import TYPE_CHECKING, Any, Final
 
+from web3.exceptions import ContractLogicError
+
 from dank_mids._exceptions import BadResponse
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.constants import REVERT_SELECTORS
@@ -49,6 +51,9 @@ def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception) -> None:
         batch_objs = list(batch)
     except TypeError:
         # 'coroutine' object is not iterable
+        if isinstance(exc, ContractLogicError):
+            # we don't need to log reverts for single calls
+            return
         batch_objs = [batch]
     logger.error(
         "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
