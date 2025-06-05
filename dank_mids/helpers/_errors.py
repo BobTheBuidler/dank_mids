@@ -51,10 +51,10 @@ def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception) -> None:
         batch_objs = list(batch)
     except TypeError:
         # 'coroutine' object is not iterable
-        batch_objs = [batch]
         if isinstance(exc, ContractLogicError):
             # we don't need to log reverts for single calls
             return
+        batch_objs = [batch]
     logger.error(
         "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
         "Exc: %s\n"
