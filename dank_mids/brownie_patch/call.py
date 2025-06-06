@@ -160,7 +160,7 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
         try:
             decoded = await decode_output(self, output)
         except InsufficientDataBytes as e:
-            raise InsufficientDataBytes(str(e), self, self._address, output) from e
+            raise InsufficientDataBytes({"error": f"{e} when decoding response", "method": self, "contract": self._address, "args": args, "block": block_identifier, "response": output}) from e
 
         return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
 
