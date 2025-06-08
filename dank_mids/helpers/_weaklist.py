@@ -1,5 +1,5 @@
 from typing import Any, Callable, Dict, Final, Generic, Iterable, Iterator, Optional, TypeVar, final
-from weakref import ReverenceType, ref
+from weakref import ref
 
 
 _T = TypeVar("_T")
