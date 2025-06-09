@@ -1,21 +1,19 @@
-import weakref
 from typing import Any, Callable, Dict, Final, Generic, Iterable, Iterator, Optional, TypeVar, final
+from weakref import ref
 
 
 _T = TypeVar("_T")
 
-Ref = weakref.ReferenceType
 GCCallback = Callable[[Any], None]
 
-ref: Final[Callable[[_T, Optional[GCCallback]], "Ref[_T]"]] = weakref.ref
-_call_ref: Final[Callable[["Ref[_T]"], Optional[_T]]] = weakref.ref.__call__
+_call_ref: Final[Callable[["ref[_T]"], Optional[_T]]] = ref.__call__
 
 
 @final
 class WeakList(Generic[_T]):
     def __init__(self, data: Optional[Iterable[_T]] = None) -> None:
         # Mapping from object ID to weak reference
-        self._refs: Final[Dict[int, "Ref[_T]"]] = {}
+        self._refs: Final[Dict[int, "ref[_T]"]] = {}
         if data is not None:
             self.extend(data)
 
@@ -30,12 +28,12 @@ class WeakList(Generic[_T]):
         return any(self)
 
     def __contains__(self, item: _T) -> bool:
-        ref = self._refs.get(id(item))
-        return False if ref is None else ref() is item
+        reference = self._refs.get(id(item))
+        return False if reference is None else reference() is item
 
     def __iter__(self) -> Iterator[_T]:
-        for r in self._refs.values():
-            obj = _call_ref(r)
+        for reference in self._refs.values():
+            obj = _call_ref(reference)
             if obj is not None:
                 yield obj
 
@@ -49,8 +47,8 @@ class WeakList(Generic[_T]):
 
     def remove(self, item: _T) -> None:
         obj_id = id(item)
-        ref = self._refs.get(obj_id)
-        if ref is None or ref() is not item:
+        reference = self._refs.get(obj_id)
+        if reference is None or reference() is not item:
             raise ValueError("list.remove(x): x not in list")
         del self._refs[obj_id]
 
