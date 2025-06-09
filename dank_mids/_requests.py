@@ -46,6 +46,7 @@ from aiohttp.client_exceptions import ClientResponseError
 from eth_typing import ChecksumAddress
 from eth_utils.toolz import concat
 from hexbytes import HexBytes
+from requests.exceptions import ReadTimeout
 from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
@@ -631,11 +632,18 @@ class eth_call(RPCRequest):
                 # TODO: Get rid of the sync executor and just use `make_request`
                 controller = self.controller
                 target = self.target
-                data = await self.revert_threads.run(
-                    controller.sync_w3.eth.call,
-                    {"to": target, "data": self.calldata},
-                    self.block,
-                )
+                failures = 0
+                while failures < 5:
+                    try:
+                        data = await self.revert_threads.run(
+                            controller.sync_w3.eth.call,
+                            {"to": target, "data": self.calldata},
+                            self.block,
+                        )
+                    except ReadTimeout:
+                        failures += 1
+                    else:
+                        break
                 # The single call was successful. We don't want to include this contract in more multicalls
                 controller.no_multicall.add(target)
             except Exception as e:
