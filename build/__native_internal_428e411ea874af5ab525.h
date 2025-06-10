@@ -166,7 +166,6 @@ extern PyObject *CPyPy__batch___DankBatch_____repr__(PyObject *self, PyObject *c
 extern PyObject *CPyDef__batch___DankBatch_____await__(PyObject *cpy_r_self);
 extern PyObject *CPyPy__batch___DankBatch_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__batch____await_DankBatch_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy__batch____await_DankBatch_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__batch____await_DankBatch_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy__batch____await_DankBatch_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__batch____await_DankBatch_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -182,7 +181,6 @@ extern PyObject *CPyPy__batch____await_DankBatch_gen_____await__(PyObject *self,
 extern PyObject *CPyDef__batch___DankBatch____await(PyObject *cpy_r_self);
 extern PyObject *CPyPy__batch___DankBatch____await(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__batch___coroutines_DankBatch_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy__batch___coroutines_DankBatch_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__batch___coroutines_DankBatch_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -308,7 +306,6 @@ extern PyObject *CPyDef_formatters___abi_request_formatters_gen(void);
 extern PyObject *CPyDef_formatters___return_as_is(PyObject *cpy_r_x);
 extern PyObject *CPyPy_formatters___return_as_is(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_formatters___abi_request_formatters_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy_formatters___abi_request_formatters_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_formatters___abi_request_formatters_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_formatters___abi_request_formatters_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_formatters___abi_request_formatters_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -395,7 +392,6 @@ extern PyObject *CPyPy_call____patch_call(PyObject *self, PyObject *const *args,
 extern PyObject *CPyDef_call___coroutine__get_coroutine_fn_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 extern PyObject *CPyPy_call___coroutine__get_coroutine_fn_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___coroutine__get_coroutine_fn_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_call___coroutine__get_coroutine_fn_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___coroutine__get_coroutine_fn_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -415,7 +411,6 @@ extern PyObject *CPyPy_call____get_coroutine_fn(PyObject *self, PyObject *const 
 extern PyObject *CPyDef_call____call_no_args(PyObject *cpy_r_self);
 extern PyObject *CPyPy_call____call_no_args(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___encode_input_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy_call___encode_input_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___encode_input_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_call___encode_input_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___encode_input_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -431,7 +426,6 @@ extern PyObject *CPyPy_call___encode_input_gen_____await__(PyObject *self, PyObj
 extern PyObject *CPyDef_call___encode_input(PyObject *cpy_r_call, CPyTagged cpy_r_len_inputs, PyObject *cpy_r_get_request_data, PyObject *cpy_r_args);
 extern PyObject *CPyPy_call___encode_input(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___decode_output_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy_call___decode_output_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___decode_output_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_call___decode_output_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___decode_output_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -447,7 +441,6 @@ extern PyObject *CPyPy_call___decode_output_gen_____await__(PyObject *self, PyOb
 extern PyObject *CPyDef_call___decode_output(PyObject *cpy_r_call, PyObject *cpy_r_data);
 extern PyObject *CPyPy_call___decode_output(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call____request_data_no_args_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy_call____request_data_no_args_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call____request_data_no_args_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_call____request_data_no_args_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call____request_data_no_args_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -490,7 +483,6 @@ extern PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen(void
 extern PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 extern PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -517,7 +509,6 @@ extern PyObject *CPyDef_types___DankOverloadedMethod(PyObject *cpy_r_args, PyObj
 extern PyTypeObject *CPyType_types___coroutine_DankOverloadedMethod_gen;
 extern PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen(void);
 extern PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_types___coroutine_DankOverloadedMethod_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -620,7 +611,6 @@ extern PyObject *CPyDef__gather___gatherish_gen(void);
 extern PyTypeObject *CPyType__gather___first_completed_gen;
 extern PyObject *CPyDef__gather___first_completed_gen(void);
 extern PyObject *CPyDef__gather___gatherish_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy__gather___gatherish_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__gather___gatherish_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy__gather___gatherish_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__gather___gatherish_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -636,7 +626,6 @@ extern PyObject *CPyPy__gather___gatherish_gen_____await__(PyObject *self, PyObj
 extern PyObject *CPyDef__gather___gatherish(PyObject *cpy_r_coros, PyObject *cpy_r_name);
 extern PyObject *CPyPy__gather___gatherish(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__gather___first_completed_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy__gather___first_completed_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__gather___first_completed_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy__gather___first_completed_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__gather___first_completed_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -669,7 +658,6 @@ extern PyObject *CPyPy__weaklist___WeakList_____bool__(PyObject *self, PyObject 
 extern char CPyDef__weaklist___WeakList_____contains__(PyObject *cpy_r_self, PyObject *cpy_r_item);
 extern PyObject *CPyPy__weaklist___WeakList_____contains__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-extern PyObject *CPyPy__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__weaklist_____iter___3_WeakList_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy__weaklist_____iter___3_WeakList_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__weaklist_____iter___3_WeakList_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
