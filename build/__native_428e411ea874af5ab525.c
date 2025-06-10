@@ -450,9 +450,6 @@ CPyDef__batch____await_DankBatch_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef _batch____await_DankBatch_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy__batch____await_DankBatch_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy__batch____await_DankBatch_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -587,9 +584,6 @@ CPyDef__batch___coroutines_DankBatch_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef _batch___coroutines_DankBatch_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy__batch___coroutines_DankBatch_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -2261,29 +2255,6 @@ CPyL155: ;
     goto CPyL133;
 }
 
-PyObject *CPyPy__batch____await_DankBatch_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef__batch____await_DankBatch_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\_batch.py", "_await", 102, CPyStatic__batch___globals);
-    return NULL;
-}
-
 PyObject *CPyDef__batch____await_DankBatch_gen_____next__(PyObject *cpy_r___mypyc_self__) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
@@ -3392,29 +3363,6 @@ CPyL113: ;
 CPyL114: ;
     CPy_DecRef(cpy_r_r110);
     goto CPyL97;
-}
-
-PyObject *CPyPy__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\_batch.py", "coroutines", 131, CPyStatic__batch___globals);
-    return NULL;
 }
 
 PyObject *CPyDef__batch___coroutines_DankBatch_gen_____next__(PyObject *cpy_r___mypyc_self__) {
@@ -14758,9 +14706,6 @@ CPyDef_formatters___abi_request_formatters_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef formatters___abi_request_formatters_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy_formatters___abi_request_formatters_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy_formatters___abi_request_formatters_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -15495,29 +15440,6 @@ CPyL84: ;
 CPyL85: ;
     CPy_DecRef(cpy_r_r89);
     goto CPyL69;
-}
-
-PyObject *CPyPy_formatters___abi_request_formatters_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef_formatters___abi_request_formatters_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\_web3\\formatters.py", "abi_request_formatters", 27, CPyStatic_formatters___globals);
-    return NULL;
 }
 
 PyObject *CPyDef_formatters___abi_request_formatters_gen_____next__(PyObject *cpy_r___mypyc_self__) {
@@ -20321,9 +20243,6 @@ CPyDef_call___coroutine__get_coroutine_fn_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef call___coroutine__get_coroutine_fn_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy_call___coroutine__get_coroutine_fn_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -20475,9 +20394,6 @@ CPyDef_call___encode_input_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef call___encode_input_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy_call___encode_input_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy_call___encode_input_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -20634,9 +20550,6 @@ CPyDef_call___decode_output_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef call___decode_output_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy_call___decode_output_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy_call___decode_output_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -20759,9 +20672,6 @@ CPyDef_call____request_data_no_args_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef call____request_data_no_args_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy_call____request_data_no_args_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy_call____request_data_no_args_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -25355,29 +25265,6 @@ CPyL579: ;
     goto CPyL418;
 }
 
-PyObject *CPyPy_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "coroutine", 147, CPyStatic_call___globals);
-    return NULL;
-}
-
 PyObject *CPyDef_call___coroutine__get_coroutine_fn_gen_____next__(PyObject *cpy_r___mypyc_self__) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
@@ -27933,29 +27820,6 @@ CPyL267: ;
     goto CPyL201;
 }
 
-PyObject *CPyPy_call___encode_input_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef_call___encode_input_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "encode_input", 184, CPyStatic_call___globals);
-    return NULL;
-}
-
 PyObject *CPyDef_call___encode_input_gen_____next__(PyObject *cpy_r___mypyc_self__) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
@@ -29826,29 +29690,6 @@ CPyL231: ;
     goto CPyL183;
 }
 
-PyObject *CPyPy_call___decode_output_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef_call___decode_output_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "decode_output", 216, CPyStatic_call___globals);
-    return NULL;
-}
-
 PyObject *CPyDef_call___decode_output_gen_____next__(PyObject *cpy_r___mypyc_self__) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
@@ -30257,29 +30098,6 @@ CPyL9: ;
 CPyL12: ;
     cpy_r_r9 = NULL;
     return cpy_r_r9;
-}
-
-PyObject *CPyPy_call____request_data_no_args_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef_call____request_data_no_args_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "_request_data_no_args", 248, CPyStatic_call___globals);
-    return NULL;
 }
 
 PyObject *CPyDef_call____request_data_no_args_gen_____next__(PyObject *cpy_r___mypyc_self__) {
@@ -36409,9 +36227,6 @@ CPyDef_overloaded___coroutine__patch_overloaded_method_gen_trait_vtable_setup(vo
 }
 
 static PyMethodDef overloaded___coroutine__patch_overloaded_method_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy_overloaded___coroutine__patch_overloaded_method_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -37942,29 +37757,6 @@ CPyL193: ;
     CPy_XDECREF(cpy_r_r1);
     CPy_DECREF_NO_IMM(cpy_r_r2);
     goto CPyL141;
-}
-
-PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\overloaded.py", "coroutine", 23, CPyStatic_overloaded___globals);
-    return NULL;
 }
 
 PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____next__(PyObject *cpy_r___mypyc_self__) {
@@ -39548,9 +39340,6 @@ CPyDef_types___coroutine_DankOverloadedMethod_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef types___coroutine_DankOverloadedMethod_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy_types___coroutine_DankOverloadedMethod_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -40136,29 +39925,6 @@ CPyL75: ;
 CPyL76: ;
     CPy_XDECREF(cpy_r_r1);
     goto CPyL53;
-}
-
-PyObject *CPyPy_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\brownie_patch\\types.py", "coroutine", 57, CPyStatic_types___globals);
-    return NULL;
 }
 
 PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen_____next__(PyObject *cpy_r___mypyc_self__) {
@@ -48437,9 +48203,6 @@ CPyDef__gather___gatherish_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef _gather___gatherish_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy__gather___gatherish_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy__gather___gatherish_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -48590,9 +48353,6 @@ CPyDef__gather___first_completed_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef _gather___first_completed_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy__gather___first_completed_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy__gather___first_completed_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -50191,29 +49951,6 @@ CPyL238: ;
     goto CPyL197;
 }
 
-PyObject *CPyPy__gather___gatherish_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef__gather___gatherish_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "gatherish", 33, CPyStatic__gather___globals);
-    return NULL;
-}
-
 PyObject *CPyDef__gather___gatherish_gen_____next__(PyObject *cpy_r___mypyc_self__) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
@@ -51424,29 +51161,6 @@ CPyL125: ;
     goto CPyL97;
 }
 
-PyObject *CPyPy__gather___first_completed_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef__gather___first_completed_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\helpers\\_gather.py", "first_completed", 74, CPyStatic__gather___globals);
-    return NULL;
-}
-
 PyObject *CPyDef__gather___first_completed_gen_____next__(PyObject *cpy_r___mypyc_self__) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
@@ -52395,9 +52109,6 @@ CPyDef__weaklist_____iter___3_WeakList_gen_trait_vtable_setup(void)
 }
 
 static PyMethodDef _weaklist_____iter___3_WeakList_gen_methods[] = {
-    {"__mypyc_generator_helper__",
-     (PyCFunction)CPyPy__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__,
-     METH_FASTCALL | METH_KEYWORDS, NULL},
     {"__next__",
      (PyCFunction)CPyPy__weaklist_____iter___3_WeakList_gen_____next__,
      METH_FASTCALL | METH_KEYWORDS, NULL},
@@ -53204,29 +52915,6 @@ CPyL47: ;
 CPyL48: ;
     CPy_DecRef(cpy_r_r35);
     goto CPyL41;
-}
-
-PyObject *CPyPy__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
-    PyObject *obj___mypyc_self__ = self;
-    static const char * const kwlist[] = {"type", "value", "traceback", "arg", 0};
-    static CPyArg_Parser parser = {"OOOO:__mypyc_generator_helper__", kwlist, 0};
-    PyObject *obj_type;
-    PyObject *obj_value;
-    PyObject *obj_traceback;
-    PyObject *obj_arg;
-    if (!CPyArg_ParseStackAndKeywordsSimple(args, nargs, kwnames, &parser, &obj_type, &obj_value, &obj_traceback, &obj_arg)) {
-        return NULL;
-    }
-    PyObject *arg___mypyc_self__ = obj___mypyc_self__;
-    PyObject *arg_type = obj_type;
-    PyObject *arg_value = obj_value;
-    PyObject *arg_traceback = obj_traceback;
-    PyObject *arg_arg = obj_arg;
-    PyObject *retval = CPyDef__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__(arg___mypyc_self__, arg_type, arg_value, arg_traceback, arg_arg);
-    return retval;
-fail: ;
-    CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "__iter__", 36, CPyStatic__weaklist___globals);
-    return NULL;
 }
 
 PyObject *CPyDef__weaklist_____iter___3_WeakList_gen_____next__(PyObject *cpy_r___mypyc_self__) {
@@ -56252,7 +55940,7 @@ CPyL3: ;
     if (!cpy_r_r6) goto CPyL5;
     return 10;
 CPyL5: ;
-    cpy_r_r7 = CPyStatics[905]; /* frozenset({'eth_getCode', 'eth_getTransaction'}) */
+    cpy_r_r7 = CPyStatics[905]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
     cpy_r_r8 = PySet_Contains(cpy_r_r7, cpy_r_method);
     cpy_r_r9 = cpy_r_r8 >= 0;
     if (unlikely(!cpy_r_r9)) {
@@ -59929,7 +59617,7 @@ CPyL270: ;
         goto CPyL378;
     }
     CPy_DECREF(cpy_r_r541);
-    cpy_r_r550 = CPyStatics[637]; /* 'eth_getCode' */
+    cpy_r_r550 = CPyStatics[638]; /* 'eth_getCode' */
     cpy_r_r551 = CPyStatics[725]; /* 'ETH_GETCODE_SEMAPHORE' */
     cpy_r_r552 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r553 = CPyStatics[42]; /* 'a_sync' */
@@ -60851,18 +60539,17 @@ const char * const CPyLit_Str[] = {
     "\0015checking if we should reduce %s batch size... (%s %s)",
     "\005\024dank_mids.batch_size\021batch_size_logger\004info\t_log_info\006object",
     "\005\023lru_cache_lite_wrap\005cache\tParamSpec\021typing_extensions\003__P",
-    "\003\016lru_cache_lite\031eth_getTransactionReceipt\veth_getCode",
-    "\005\022eth_getTransaction\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_",
-    "\005\006debug_\016BYPASS_METHODS\aget_len\fshould_batch\tmulticall",
-    "\004\026dank_mids\\constants.py\vBlockNumber\aNetwork\021payload too large",
-    "\002\030content length too large\030request entity too large",
-    "\003\024batch limit exceeded\022TOO_MUCH_DATA_ERRS\030connection reset by peer",
-    "\003\023server disconnected\034execution aborted (timeout =\021request timed out",
-    "\005\vevm timeout\nRETRY_ERRS\tconstants\tGAS_LIMIT\023MULTICALL2_BYTECODE",
-    "\002\030MULTICALL2_OVERRIDE_CODE\023MULTICALL3_BYTECODE",
-    "\004\032__MULTICALL3_OVERRIDE_CODE\030MULTICALL3_OVERRIDE_CODE\aMainnet\006Fantom",
-    "\004\bArbitrum\bOptimism\030MULTICALL2_DEPLOY_BLOCKS\004Base",
-    "\001\030MULTICALL3_DEPLOY_BLOCKS",
+    "\003\016lru_cache_lite\031eth_getTransactionReceipt\022eth_getTransaction",
+    "\006\veth_getCode\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_\006debug_",
+    "\005\016BYPASS_METHODS\aget_len\fshould_batch\tmulticall\026dank_mids\\constants.py",
+    "\004\vBlockNumber\aNetwork\021payload too large\030content length too large",
+    "\003\030request entity too large\024batch limit exceeded\022TOO_MUCH_DATA_ERRS",
+    "\002\030connection reset by peer\023server disconnected",
+    "\004\034execution aborted (timeout =\021request timed out\vevm timeout\nRETRY_ERRS",
+    "\004\tconstants\tGAS_LIMIT\023MULTICALL2_BYTECODE\030MULTICALL2_OVERRIDE_CODE",
+    "\002\023MULTICALL3_BYTECODE\032__MULTICALL3_OVERRIDE_CODE",
+    "\005\030MULTICALL3_OVERRIDE_CODE\aMainnet\006Fantom\bArbitrum\bOptimism",
+    "\003\030MULTICALL2_DEPLOY_BLOCKS\004Base\030MULTICALL3_DEPLOY_BLOCKS",
     "\001\201J0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000094e6f206163636573730000000000000000000000000000000000000000000000",
     "\001\201J0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000e6d696e7420697320706175736564000000000000000000000000000000000000",
     "\001\201J0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016496e76616c6964206574686572207472616e7366657200000000000000000000",
@@ -61086,7 +60773,6 @@ PyObject *CPyPy__batch___DankBatch_____repr__(PyObject *self, PyObject *const *a
 PyObject *CPyDef__batch___DankBatch_____await__(PyObject *cpy_r_self);
 PyObject *CPyPy__batch___DankBatch_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__batch____await_DankBatch_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy__batch____await_DankBatch_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__batch____await_DankBatch_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy__batch____await_DankBatch_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__batch____await_DankBatch_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61102,7 +60788,6 @@ PyObject *CPyPy__batch____await_DankBatch_gen_____await__(PyObject *self, PyObje
 PyObject *CPyDef__batch___DankBatch____await(PyObject *cpy_r_self);
 PyObject *CPyPy__batch___DankBatch____await(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__batch___coroutines_DankBatch_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy__batch___coroutines_DankBatch_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__batch___coroutines_DankBatch_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61228,7 +60913,6 @@ PyObject *CPyDef_formatters___abi_request_formatters_gen(void);
 PyObject *CPyDef_formatters___return_as_is(PyObject *cpy_r_x);
 PyObject *CPyPy_formatters___return_as_is(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_formatters___abi_request_formatters_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy_formatters___abi_request_formatters_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_formatters___abi_request_formatters_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy_formatters___abi_request_formatters_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_formatters___abi_request_formatters_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61315,7 +60999,6 @@ PyObject *CPyPy_call____patch_call(PyObject *self, PyObject *const *args, size_t
 PyObject *CPyDef_call___coroutine__get_coroutine_fn_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 PyObject *CPyPy_call___coroutine__get_coroutine_fn_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___coroutine__get_coroutine_fn_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy_call___coroutine__get_coroutine_fn_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___coroutine__get_coroutine_fn_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61335,7 +61018,6 @@ PyObject *CPyPy_call____get_coroutine_fn(PyObject *self, PyObject *const *args, 
 PyObject *CPyDef_call____call_no_args(PyObject *cpy_r_self);
 PyObject *CPyPy_call____call_no_args(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___encode_input_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy_call___encode_input_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___encode_input_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy_call___encode_input_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___encode_input_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61351,7 +61033,6 @@ PyObject *CPyPy_call___encode_input_gen_____await__(PyObject *self, PyObject *co
 PyObject *CPyDef_call___encode_input(PyObject *cpy_r_call, CPyTagged cpy_r_len_inputs, PyObject *cpy_r_get_request_data, PyObject *cpy_r_args);
 PyObject *CPyPy_call___encode_input(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___decode_output_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy_call___decode_output_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___decode_output_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy_call___decode_output_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call___decode_output_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61367,7 +61048,6 @@ PyObject *CPyPy_call___decode_output_gen_____await__(PyObject *self, PyObject *c
 PyObject *CPyDef_call___decode_output(PyObject *cpy_r_call, PyObject *cpy_r_data);
 PyObject *CPyPy_call___decode_output(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call____request_data_no_args_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy_call____request_data_no_args_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call____request_data_no_args_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy_call____request_data_no_args_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_call____request_data_no_args_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61410,7 +61090,6 @@ PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen(void);
 PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy_overloaded___coroutine__patch_overloaded_method_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_overloaded___coroutine__patch_overloaded_method_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61437,7 +61116,6 @@ PyObject *CPyDef_types___DankOverloadedMethod(PyObject *cpy_r_args, PyObject *cp
 PyTypeObject *CPyType_types___coroutine_DankOverloadedMethod_gen;
 PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen(void);
 PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy_types___coroutine_DankOverloadedMethod_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61540,7 +61218,6 @@ PyObject *CPyDef__gather___gatherish_gen(void);
 PyTypeObject *CPyType__gather___first_completed_gen;
 PyObject *CPyDef__gather___first_completed_gen(void);
 PyObject *CPyDef__gather___gatherish_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy__gather___gatherish_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__gather___gatherish_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy__gather___gatherish_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__gather___gatherish_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61556,7 +61233,6 @@ PyObject *CPyPy__gather___gatherish_gen_____await__(PyObject *self, PyObject *co
 PyObject *CPyDef__gather___gatherish(PyObject *cpy_r_coros, PyObject *cpy_r_name);
 PyObject *CPyPy__gather___gatherish(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__gather___first_completed_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy__gather___first_completed_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__gather___first_completed_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy__gather___first_completed_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__gather___first_completed_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
@@ -61589,7 +61265,6 @@ PyObject *CPyPy__weaklist___WeakList_____bool__(PyObject *self, PyObject *const 
 char CPyDef__weaklist___WeakList_____contains__(PyObject *cpy_r_self, PyObject *cpy_r_item);
 PyObject *CPyPy__weaklist___WeakList_____contains__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-PyObject *CPyPy__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__weaklist_____iter___3_WeakList_gen_____next__(PyObject *cpy_r___mypyc_self__);
 PyObject *CPyPy__weaklist_____iter___3_WeakList_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 PyObject *CPyDef__weaklist_____iter___3_WeakList_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
