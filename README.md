@@ -1,6 +1,8 @@
 # Dank Mids
 
-Dank Mids is a EVM RPC batching library that helps reduce the number of HTTP requests to a node, saving time and resources. It automatically collects eth_call calls into [multicalls](https://github.com/makerdao/multicall#multicall-) and bundles all RPC calls together in [jsonrpc](https://www.jsonrpc.org/specification#batch) [batch](https://geth.ethereum.org/docs/interacting-with-geth/rpc/batch) calls. tl;dr: its fast as fuck.
+Dank Mids is a EVM RPC batching library that helps reduce the number of HTTP requests to a node, saving time and resources. It automatically collects eth_call calls into [multicalls](https://github.com/makerdao/multicall#multicall-) and bundles all RPC calls together in [jsonrpc](https://www.jsonrpc.org/specification#batch) [batch](https://geth.ethereum.org/docs/interacting-with-geth/rpc/batch) calls. 
+
+##### tl;dr: its fast as fuck.
 
 ![image](https://github.com/BobTheBuidler/dank_mids/assets/70677534/3ecb46aa-f33a-41bd-85fb-c6d2433c7154)
 
@@ -12,10 +14,11 @@ The goal of this tool is to reduce the workload on RPC nodes and allow users to 
 
 There are a number of optimizations that went into making Dank the fastest way to pull rpc data to Python.
 1. Implemented (mostly) in C.
-2. JSON encoding and decoding is handled by [msgspec](https://jcristharif.com/msgspec/). All responses are decoded to specialized [msgspec.Struct](https://jcristharif.com/msgspec/structs.html) objects defined in the [evmspec](https://github.com/BobTheBuidler/evmspec) library.
-3. We use my C-compiled [faster-eth-utils](https://github.com/BobTheBuidler/faster-eth-utils/tree/master) instead of the original python implementation [eth-utils](https://github.com/ethereum/eth-utils)
-4. Responses are decoded on a JIT (just-in-time) basis, meaning individual task cancellation works as expected even when response data is received as part of a larger batch. 
-5. more stuff I'll write down later...
+2. Bypasses the default formatters in [web3.py](https://github.com/ethereum/web3.py)
+3. JSON encoding and decoding is handled by [msgspec](https://jcristharif.com/msgspec/). All responses are decoded to specialized [msgspec.Struct](https://jcristharif.com/msgspec/structs.html) objects defined in the [evmspec](https://github.com/BobTheBuidler/evmspec) library.
+4. We use my C-compiled [faster-eth-utils](https://github.com/BobTheBuidler/faster-eth-utils/tree/master) instead of the original python implementation [eth-utils](https://github.com/ethereum/eth-utils)
+5. Responses are decoded on a JIT (just-in-time) basis, meaning individual task cancellation works as expected even when response data is received as part of a larger batch. 
+6. more stuff I'll write down later...
 
 ### Installation
 
