@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[906];
+extern PyObject *CPyStatics[902];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -641,7 +641,6 @@ extern PyObject *CPyPy__gather___first_completed_gen_____await__(PyObject *self,
 extern PyObject *CPyDef__gather___first_completed(PyObject *cpy_r_fs, char cpy_r_cancel);
 extern PyObject *CPyPy__gather___first_completed(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__gather_____top_level__(void);
-extern PyObject *CPyStatic__weaklist___ref;
 extern PyObject *CPyStatic__weaklist____call_ref;
 extern PyTypeObject *CPyType__weaklist___WeakList;
 extern PyObject *CPyDef__weaklist___WeakList(PyObject *cpy_r_data);
