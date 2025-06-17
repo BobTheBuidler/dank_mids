@@ -25,6 +25,7 @@ from eth_abi import decoding
 from eth_abi.abi import default_codec
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 from eth_typing import ChecksumAddress, HexStr
+from evmspec.data import Address
 from msgspec.json import Decoder, Encoder
 
 if TYPE_CHECKING:
@@ -41,7 +42,7 @@ better_decode: Optional[Callable[..., Any]] = None  # type: ignore [type-arg]
 __T = TypeVar("__T")
 
 
-StrEncodable = Union[ChecksumAddress, HexStr]
+StrEncodable = Union[ChecksumAddress, HexStr, Address]
 Encodable = Union[int, StrEncodable, hexbytes.HexBytes, bytes]
 
 RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
