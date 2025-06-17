@@ -93,18 +93,6 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      # Python 3.8
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.8"
-      - name: Install Mypyc (3.8)
-        run: pip install mypy[mypyc]==1.14.1 types-requests eth-typing
-      - name: Run Mypyc (3.8)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc-3-8
-
       # Python 3.9
       - name: Set up Python 3.9
         uses: actions/setup-python@v5
@@ -178,18 +166,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-
-      # Python 3.8
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.8"
-      - name: Install Mypyc (3.8)
-        run: pip install mypy[mypyc]==1.14.1 types-requests eth-typing
-      - name: Run Mypyc (3.8)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc-3-8
 
       # Python 3.9
       - name: Set up Python 3.9
