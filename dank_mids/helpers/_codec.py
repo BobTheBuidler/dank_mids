@@ -25,6 +25,7 @@ from eth_abi import decoding
 from eth_abi.abi import default_codec
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 from eth_typing import ChecksumAddress, HexStr
+from evmspec.data import Address
 from msgspec.json import Decoder, Encoder
 
 if TYPE_CHECKING:
@@ -41,7 +42,7 @@ better_decode: Optional[Callable[..., Any]] = None  # type: ignore [type-arg]
 __T = TypeVar("__T")
 
 
-StrEncodable = Union[ChecksumAddress, HexStr]
+StrEncodable = Union[ChecksumAddress, HexStr, Address]
 Encodable = Union[int, StrEncodable, hexbytes.HexBytes, bytes]
 
 RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
@@ -155,15 +156,16 @@ def _encode_hook(obj: Encodable) -> RpcThing:
         if isinstance(obj, Mapping):
             return {k: _rudimentary_encode_dict_value(v) for k, v in obj.items()}
         else:
-            raise TypeError(obj, type(obj)) from e
+            raise TypeError(*e.args, obj, type(obj)) from e
     except ValueError as e:
         # NOTE: The error is probably this if `obj` is a string:
         # ValueError: invalid literal for int() with base 10:"""
         if isinstance(obj, HexBytes):
             return obj.hex()  # type: ignore [return-value]
+        elif isinstance(obj, Address):
+            return str(obj)
         else:
-            e.args = *e.args, obj, type(obj)
-            raise ValueError(obj, type(obj)) from e
+            raise ValueError(*e.args, obj, type(obj)) from e
 
 
 @overload
