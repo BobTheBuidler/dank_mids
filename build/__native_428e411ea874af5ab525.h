@@ -568,7 +568,7 @@ typedef struct {
     CPyTagged ___mypyc_temp__1;
     CPyTagged ___mypyc_temp__2;
     PyObject *___mypyc_temp__3;
-    PyObject *_r;
+    PyObject *_reference;
     PyObject *_obj;
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
@@ -943,7 +943,6 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef__gather___first_completed_gen_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__gather___first_completed)(PyObject *cpy_r_fs, char cpy_r_cancel);
     char (*CPyDef__gather_____top_level__)(void);
-    PyObject **CPyStatic__weaklist___ref;
     PyObject **CPyStatic__weaklist____call_ref;
     PyTypeObject **CPyType__weaklist___WeakList;
     PyObject *(*CPyDef__weaklist___WeakList)(PyObject *cpy_r_data);
