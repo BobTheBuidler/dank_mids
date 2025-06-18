@@ -9,8 +9,13 @@ __pycache__
 .env
 .tox/
 .python-version
+# build stuff
 *.o
 *.so
 *.pyd
 ops.txt
 build/setup.py
+# windows build stuff
+*.obj
+*.exp
+*.lilb
