@@ -18,4 +18,4 @@ build/setup.py
 # windows build stuff
 *.obj
 *.exp
-*.lilb
+*.lib
