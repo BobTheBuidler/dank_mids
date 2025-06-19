@@ -10,9 +10,6 @@ __pycache__
 .tox/
 .python-version
 # build stuff
-*.o
-*.so
-*.pyd
 ops.txt
 build/setup.py
 # windows build stuff
