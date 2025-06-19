@@ -56105,7 +56105,7 @@ CPyL3: ;
     if (!cpy_r_r6) goto CPyL5;
     return 10;
 CPyL5: ;
-    cpy_r_r7 = CPyStatics[903]; /* frozenset({'eth_getCode', 'eth_getTransaction'}) */
+    cpy_r_r7 = CPyStatics[903]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
     cpy_r_r8 = PySet_Contains(cpy_r_r7, cpy_r_method);
     cpy_r_r9 = cpy_r_r8 >= 0;
     if (unlikely(!cpy_r_r9)) {
@@ -59782,7 +59782,7 @@ CPyL270: ;
         goto CPyL378;
     }
     CPy_DECREF(cpy_r_r541);
-    cpy_r_r550 = CPyStatics[636]; /* 'eth_getCode' */
+    cpy_r_r550 = CPyStatics[637]; /* 'eth_getCode' */
     cpy_r_r551 = CPyStatics[724]; /* 'ETH_GETCODE_SEMAPHORE' */
     cpy_r_r552 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r553 = CPyStatics[42]; /* 'a_sync' */
@@ -60705,18 +60705,17 @@ const char * const CPyLit_Str[] = {
     "\0015checking if we should reduce %s batch size... (%s %s)",
     "\005\024dank_mids.batch_size\021batch_size_logger\004info\t_log_info\006object",
     "\005\023lru_cache_lite_wrap\005cache\tParamSpec\021typing_extensions\003__P",
-    "\003\016lru_cache_lite\031eth_getTransactionReceipt\veth_getCode",
-    "\005\022eth_getTransaction\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_",
-    "\005\006debug_\016BYPASS_METHODS\aget_len\fshould_batch\tmulticall",
-    "\004\026dank_mids/constants.py\vBlockNumber\aNetwork\021payload too large",
-    "\002\030content length too large\030request entity too large",
-    "\003\024batch limit exceeded\022TOO_MUCH_DATA_ERRS\030connection reset by peer",
-    "\003\023server disconnected\034execution aborted (timeout =\021request timed out",
-    "\005\vevm timeout\nRETRY_ERRS\tconstants\tGAS_LIMIT\023MULTICALL2_BYTECODE",
-    "\002\030MULTICALL2_OVERRIDE_CODE\023MULTICALL3_BYTECODE",
-    "\004\032__MULTICALL3_OVERRIDE_CODE\030MULTICALL3_OVERRIDE_CODE\aMainnet\006Fantom",
-    "\004\bArbitrum\bOptimism\030MULTICALL2_DEPLOY_BLOCKS\004Base",
-    "\001\030MULTICALL3_DEPLOY_BLOCKS",
+    "\003\016lru_cache_lite\031eth_getTransactionReceipt\022eth_getTransaction",
+    "\006\veth_getCode\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_\006debug_",
+    "\005\016BYPASS_METHODS\aget_len\fshould_batch\tmulticall\026dank_mids/constants.py",
+    "\004\vBlockNumber\aNetwork\021payload too large\030content length too large",
+    "\003\030request entity too large\024batch limit exceeded\022TOO_MUCH_DATA_ERRS",
+    "\002\030connection reset by peer\023server disconnected",
+    "\004\034execution aborted (timeout =\021request timed out\vevm timeout\nRETRY_ERRS",
+    "\004\tconstants\tGAS_LIMIT\023MULTICALL2_BYTECODE\030MULTICALL2_OVERRIDE_CODE",
+    "\002\023MULTICALL3_BYTECODE\032__MULTICALL3_OVERRIDE_CODE",
+    "\005\030MULTICALL3_OVERRIDE_CODE\aMainnet\006Fantom\bArbitrum\bOptimism",
+    "\003\030MULTICALL2_DEPLOY_BLOCKS\004Base\030MULTICALL3_DEPLOY_BLOCKS",
     "\001\201J0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000094e6f206163636573730000000000000000000000000000000000000000000000",
     "\001\201J0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000e6d696e7420697320706175736564000000000000000000000000000000000000",
     "\001\201J0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016496e76616c6964206574686572207472616e7366657200000000000000000000",
