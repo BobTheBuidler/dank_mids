@@ -9,9 +9,9 @@ __pycache__
 .env
 .tox/
 .python-version
-*.o
-*.so
-*.pyd
+build/**/*.o
+build/**/*.so
+build/**/*.pyd
 # build stuff
 ops.txt
 build/setup.py
