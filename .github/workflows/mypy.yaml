@@ -38,4 +38,4 @@ jobs:
         pip install mypy types-requests types-aiofiles
 
     - name: Run MyPy
-      run: mypy ./dank_mids --pretty --ignore-missing-imports --show-error-codes --show-error-context --no-warn-no-return
+      run: mypy ./dank_mids --strict --pretty --ignore-missing-imports --show-error-codes --show-error-context --no-warn-no-return
