@@ -319,6 +319,7 @@ typedef struct {
     PyObject *_value;
     PyObject *_traceback;
     PyObject *_arg;
+    PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__0;
     PyObject *___mypyc_temp__1;
@@ -364,7 +365,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_genObject;
+} dank_mids___brownie_patch___call___coroutine_gen___3_147Object;
 
 typedef struct {
     PyObject_HEAD
@@ -430,6 +431,7 @@ typedef struct {
     PyObject *_value;
     PyObject *_traceback;
     PyObject *_arg;
+    PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
     PyObject *_fn;
     tuple_T3OOO ___mypyc_temp__0;
@@ -463,7 +465,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_genObject;
+} dank_mids___brownie_patch___overloaded___coroutine_gen___3_23Object;
 
 typedef struct {
     PyObject_HEAD
@@ -613,13 +615,15 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef__batch___DankBatch)(PyObject *cpy_r_controller, PyObject *cpy_r_multicalls, PyObject *cpy_r_rpc_calls);
     PyTypeObject **CPyType__batch____await_DankBatch_gen;
     PyObject *(*CPyDef__batch____await_DankBatch_gen)(void);
+    CPyThreadLocal dank_mids____batch____await_DankBatch_genObject **_batch____await_DankBatch_gen_free_instance;
     PyTypeObject **CPyType__batch___coroutines_DankBatch_gen;
     PyObject *(*CPyDef__batch___coroutines_DankBatch_gen)(void);
+    CPyThreadLocal dank_mids____batch___coroutines_DankBatch_genObject **_batch___coroutines_DankBatch_gen_free_instance;
     PyObject *(*CPyDef__batch____create_named_task)(PyObject *cpy_r_awaitable);
     char (*CPyDef__batch___DankBatch_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_controller, PyObject *cpy_r_multicalls, PyObject *cpy_r_rpc_calls);
     PyObject *(*CPyDef__batch___DankBatch_____repr__)(PyObject *cpy_r_self);
     PyObject *(*CPyDef__batch___DankBatch_____await__)(PyObject *cpy_r_self);
-    PyObject *(*CPyDef__batch____await_DankBatch_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef__batch____await_DankBatch_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef__batch____await_DankBatch_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__batch____await_DankBatch_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef__batch____await_DankBatch_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -627,7 +631,7 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef__batch____await_DankBatch_gen___close)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__batch____await_DankBatch_gen_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__batch___DankBatch____await)(PyObject *cpy_r_self);
-    PyObject *(*CPyDef__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef__batch___coroutines_DankBatch_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef__batch___coroutines_DankBatch_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__batch___coroutines_DankBatch_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef__batch___coroutines_DankBatch_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -718,8 +722,9 @@ struct export_table_428e411ea874af5ab525 {
     PyObject **CPyStatic_formatters____response_formatters;
     PyTypeObject **CPyType_formatters___abi_request_formatters_gen;
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen)(void);
+    CPyThreadLocal dank_mids____web3___formatters___abi_request_formatters_genObject **formatters___abi_request_formatters_gen_free_instance;
     PyObject *(*CPyDef_formatters___return_as_is)(PyObject *cpy_r_x);
-    PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef_formatters___abi_request_formatters_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -764,39 +769,48 @@ struct export_table_428e411ea874af5ab525 {
     PyObject **CPyStatic_call_____eth_abi_decode;
     PyTypeObject **CPyType_call_____mypyc_lambda__0_obj;
     PyObject *(*CPyDef_call_____mypyc_lambda__0_obj)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call_____mypyc_lambda__0_objObject **call_____mypyc_lambda__0_obj_free_instance;
     PyTypeObject **CPyType_call_____mypyc_lambda__1_obj;
     PyObject *(*CPyDef_call_____mypyc_lambda__1_obj)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call_____mypyc_lambda__1_objObject **call_____mypyc_lambda__1_obj_free_instance;
     PyTypeObject **CPyType_call____get_coroutine_fn_env;
     PyObject *(*CPyDef_call____get_coroutine_fn_env)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call____get_coroutine_fn_envObject **call____get_coroutine_fn_env_free_instance;
     PyTypeObject **CPyType_call___coroutine__get_coroutine_fn_env;
     PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_env)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_envObject **call___coroutine__get_coroutine_fn_env_free_instance;
     PyTypeObject **CPyType_call___coroutine__get_coroutine_fn_obj;
     PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_obj)(void);
-    PyTypeObject **CPyType_call___coroutine__get_coroutine_fn_gen;
-    PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject **call___coroutine__get_coroutine_fn_obj_free_instance;
+    PyTypeObject **CPyType_call___coroutine_gen___3_147;
+    PyObject *(*CPyDef_call___coroutine_gen___3_147)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call___coroutine_gen___3_147Object **call___coroutine_gen___3_147_free_instance;
     PyTypeObject **CPyType_call___encode_input_gen;
     PyObject *(*CPyDef_call___encode_input_gen)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call___encode_input_genObject **call___encode_input_gen_free_instance;
     PyTypeObject **CPyType_call___decode_output_gen;
     PyObject *(*CPyDef_call___decode_output_gen)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call___decode_output_genObject **call___decode_output_gen_free_instance;
     PyTypeObject **CPyType_call____request_data_no_args_gen;
     PyObject *(*CPyDef_call____request_data_no_args_gen)(void);
+    CPyThreadLocal dank_mids___brownie_patch___call____request_data_no_args_genObject **call____request_data_no_args_gen_free_instance;
     PyObject *(*CPyDef_call_____mypyc_lambda__0_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
     PyObject *(*CPyDef_call_____mypyc_lambda__0_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_args);
     PyObject *(*CPyDef_call_____mypyc_lambda__1_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
     PyObject *(*CPyDef_call_____mypyc_lambda__1_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_data);
     char (*CPyDef_call____patch_call)(PyObject *cpy_r_call, PyObject *cpy_r_w3);
     PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-    PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen_____next__)(PyObject *cpy_r___mypyc_self__);
-    PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
-    PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
-    PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
-    PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen___close)(PyObject *cpy_r___mypyc_self__);
-    PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_gen_____await__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_call___coroutine_gen___3_147_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
+    PyObject *(*CPyDef_call___coroutine_gen___3_147_____next__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_call___coroutine_gen___3_147___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_call___coroutine_gen___3_147_____iter__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_call___coroutine_gen___3_147___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+    PyObject *(*CPyDef_call___coroutine_gen___3_147___close)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_call___coroutine_gen___3_147_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_call___coroutine__get_coroutine_fn_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_block_identifier, PyObject *cpy_r_decimals, PyObject *cpy_r_override);
     PyObject *(*CPyDef_call____get_coroutine_fn)(PyObject *cpy_r_w3, CPyTagged cpy_r_len_inputs);
     PyObject *(*CPyDef_call____call_no_args)(PyObject *cpy_r_self);
-    PyObject *(*CPyDef_call___encode_input_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_call___encode_input_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef_call___encode_input_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_call___encode_input_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef_call___encode_input_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -804,7 +818,7 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef_call___encode_input_gen___close)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_call___encode_input_gen_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_call___encode_input)(PyObject *cpy_r_call, CPyTagged cpy_r_len_inputs, PyObject *cpy_r_get_request_data, PyObject *cpy_r_args);
-    PyObject *(*CPyDef_call___decode_output_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_call___decode_output_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef_call___decode_output_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_call___decode_output_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef_call___decode_output_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -812,7 +826,7 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef_call___decode_output_gen___close)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_call___decode_output_gen_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_call___decode_output)(PyObject *cpy_r_call, PyObject *cpy_r_data);
-    PyObject *(*CPyDef_call____request_data_no_args_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_call____request_data_no_args_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef_call____request_data_no_args_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_call____request_data_no_args_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef_call____request_data_no_args_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -831,20 +845,24 @@ struct export_table_428e411ea874af5ab525 {
     char (*CPyDef_call_____top_level__)(void);
     PyTypeObject **CPyType_overloaded____patch_overloaded_method_env;
     PyObject *(*CPyDef_overloaded____patch_overloaded_method_env)(void);
+    CPyThreadLocal dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject **overloaded____patch_overloaded_method_env_free_instance;
     PyTypeObject **CPyType_overloaded___coroutine__patch_overloaded_method_env;
     PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_env)(void);
+    CPyThreadLocal dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_envObject **overloaded___coroutine__patch_overloaded_method_env_free_instance;
     PyTypeObject **CPyType_overloaded___coroutine__patch_overloaded_method_obj;
     PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_obj)(void);
-    PyTypeObject **CPyType_overloaded___coroutine__patch_overloaded_method_gen;
-    PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_gen)(void);
+    CPyThreadLocal dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject **overloaded___coroutine__patch_overloaded_method_obj_free_instance;
+    PyTypeObject **CPyType_overloaded___coroutine_gen___3_23;
+    PyObject *(*CPyDef_overloaded___coroutine_gen___3_23)(void);
+    CPyThreadLocal dank_mids___brownie_patch___overloaded___coroutine_gen___3_23Object **overloaded___coroutine_gen___3_23_free_instance;
     PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
-    PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
-    PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____next__)(PyObject *cpy_r___mypyc_self__);
-    PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
-    PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
-    PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_gen___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
-    PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_gen___close)(PyObject *cpy_r___mypyc_self__);
-    PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_gen_____await__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_overloaded___coroutine_gen___3_23_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
+    PyObject *(*CPyDef_overloaded___coroutine_gen___3_23_____next__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_overloaded___coroutine_gen___3_23___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef_overloaded___coroutine_gen___3_23_____iter__)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_overloaded___coroutine_gen___3_23___throw)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+    PyObject *(*CPyDef_overloaded___coroutine_gen___3_23___close)(PyObject *cpy_r___mypyc_self__);
+    PyObject *(*CPyDef_overloaded___coroutine_gen___3_23_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_overloaded___coroutine__patch_overloaded_method_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_block_identifier, PyObject *cpy_r_decimals, PyObject *cpy_r_override);
     char (*CPyDef_overloaded____patch_overloaded_method)(PyObject *cpy_r_call, PyObject *cpy_r_w3);
     char (*CPyDef_overloaded_____top_level__)(void);
@@ -856,7 +874,8 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef_types___DankOverloadedMethod)(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
     PyTypeObject **CPyType_types___coroutine_DankOverloadedMethod_gen;
     PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_gen)(void);
-    PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    CPyThreadLocal dank_mids___brownie_patch___types___coroutine_DankOverloadedMethod_genObject **types___coroutine_DankOverloadedMethod_gen_free_instance;
+    PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef_types___coroutine_DankOverloadedMethod_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -882,6 +901,7 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef__codec___RawResponse)(PyObject *cpy_r_raw);
     PyTypeObject **CPyType__codec_____mypyc_lambda__0_obj;
     PyObject *(*CPyDef__codec_____mypyc_lambda__0_obj)(void);
+    CPyThreadLocal dank_mids___helpers____codec_____mypyc_lambda__0_objObject **_codec_____mypyc_lambda__0_obj_free_instance;
     char (*CPyDef__codec___RawResponse_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_raw);
     PyObject *(*CPyDef__codec___RawResponse___decode)(PyObject *cpy_r_self, char cpy_r_partial);
     PyObject *(*CPyDef__codec___decode_raw)(PyObject *cpy_r_data);
@@ -924,9 +944,11 @@ struct export_table_428e411ea874af5ab525 {
     PyObject **CPyStatic__gather___yield_to_loop;
     PyTypeObject **CPyType__gather___gatherish_gen;
     PyObject *(*CPyDef__gather___gatherish_gen)(void);
+    CPyThreadLocal dank_mids___helpers____gather___gatherish_genObject **_gather___gatherish_gen_free_instance;
     PyTypeObject **CPyType__gather___first_completed_gen;
     PyObject *(*CPyDef__gather___first_completed_gen)(void);
-    PyObject *(*CPyDef__gather___gatherish_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    CPyThreadLocal dank_mids___helpers____gather___first_completed_genObject **_gather___first_completed_gen_free_instance;
+    PyObject *(*CPyDef__gather___gatherish_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef__gather___gatherish_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__gather___gatherish_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef__gather___gatherish_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -934,7 +956,7 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef__gather___gatherish_gen___close)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__gather___gatherish_gen_____await__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__gather___gatherish)(PyObject *cpy_r_coros, PyObject *cpy_r_name);
-    PyObject *(*CPyDef__gather___first_completed_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef__gather___first_completed_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef__gather___first_completed_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__gather___first_completed_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef__gather___first_completed_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -948,12 +970,13 @@ struct export_table_428e411ea874af5ab525 {
     PyObject *(*CPyDef__weaklist___WeakList)(PyObject *cpy_r_data);
     PyTypeObject **CPyType__weaklist_____iter___3_WeakList_gen;
     PyObject *(*CPyDef__weaklist_____iter___3_WeakList_gen)(void);
+    CPyThreadLocal dank_mids___helpers____weaklist_____iter___3_WeakList_genObject **_weaklist_____iter___3_WeakList_gen_free_instance;
     char (*CPyDef__weaklist___WeakList_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_data);
     PyObject *(*CPyDef__weaklist___WeakList_____repr__)(PyObject *cpy_r_self);
     CPyTagged (*CPyDef__weaklist___WeakList_____len__)(PyObject *cpy_r_self);
     char (*CPyDef__weaklist___WeakList_____bool__)(PyObject *cpy_r_self);
     char (*CPyDef__weaklist___WeakList_____contains__)(PyObject *cpy_r_self, PyObject *cpy_r_item);
-    PyObject *(*CPyDef__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg);
+    PyObject *(*CPyDef__weaklist_____iter___3_WeakList_gen_____mypyc_generator_helper__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
     PyObject *(*CPyDef__weaklist_____iter___3_WeakList_gen_____next__)(PyObject *cpy_r___mypyc_self__);
     PyObject *(*CPyDef__weaklist_____iter___3_WeakList_gen___send)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
     PyObject *(*CPyDef__weaklist_____iter___3_WeakList_gen_____iter__)(PyObject *cpy_r___mypyc_self__);
@@ -971,12 +994,16 @@ struct export_table_428e411ea874af5ab525 {
     char (*CPyDef_batch_size_____top_level__)(void);
     PyTypeObject **CPyType_lru_cache___lru_cache_lite_env;
     PyObject *(*CPyDef_lru_cache___lru_cache_lite_env)(void);
+    CPyThreadLocal dank_mids___helpers___lru_cache___lru_cache_lite_envObject **lru_cache___lru_cache_lite_env_free_instance;
     PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj;
     PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj)(void);
+    CPyThreadLocal dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_objObject **lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_free_instance;
     PyTypeObject **CPyType_lru_cache___lru_cache_lite_nonull_env;
     PyObject *(*CPyDef_lru_cache___lru_cache_lite_nonull_env)(void);
+    CPyThreadLocal dank_mids___helpers___lru_cache___lru_cache_lite_nonull_envObject **lru_cache___lru_cache_lite_nonull_env_free_instance;
     PyTypeObject **CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj;
     PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj)(void);
+    CPyThreadLocal dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject **lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_free_instance;
     PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____get__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
     PyObject *(*CPyDef_lru_cache___lru_cache_lite_wrap_lru_cache_lite_obj_____call__)(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_args);
     PyObject *(*CPyDef_lru_cache___lru_cache_lite)(PyObject *cpy_r_func);
