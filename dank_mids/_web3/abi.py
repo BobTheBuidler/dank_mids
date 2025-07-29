@@ -136,12 +136,15 @@ class ABITypedData:
 
     # NOTE this class was changed to a dataclass so it compiles to C better
 
-    abi_type: TypeStr
+    abi_type: Optional[TypeStr]
     data: Any
 
 
-def abi_sub_tree(abi_type: ABIType, data_value: Any) -> ABITypedData:
+def abi_sub_tree(abi_type: Optional[ABIType], data_value: Any) -> ABITypedData:
     # TODO: specialize this function, possibly with functools.singledispatch
+
+    if abi_type is None:
+        return ABITypedData(None, data_value)
 
     # In the two special cases below, we rebuild the given data structures with
     # annotated items
