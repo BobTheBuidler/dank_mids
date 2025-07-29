@@ -246,7 +246,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
 
 
 async def _request_data_no_args(call: ContractCall) -> HexStr:
-    return call.signature
+    return call.signature  # type: ignore [return-value]
 
 
 # These methods were renamed in eth-abi 4.0.0
@@ -262,7 +262,7 @@ def __encode_input(abi: AbiDict, signature: str, *args: Any) -> Union[HexStr, Ex
     try:
         data = format_input_but_cache_checksums(abi, args)
         types_list = get_type_strings(abi["inputs"])
-        return signature + __eth_abi_encode(types_list, data).hex()
+        return signature + __eth_abi_encode(types_list, data).hex()  # type: ignore [return-value]
     except Exception as e:
         return e
 
