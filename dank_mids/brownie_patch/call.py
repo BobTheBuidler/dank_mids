@@ -246,15 +246,15 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
 
 
 async def _request_data_no_args(call: ContractCall) -> HexStr:
-    return call.signature
+    return call.signature  # type: ignore [no-any-return]
 
 
 # These methods were renamed in eth-abi 4.0.0
 __eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], bytes]] = (
-    eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
+    eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi  # type: ignore [attr-defined]
 )
 __eth_abi_decode: Final[Callable[[TypeStrs, hexbytes.HexBytes], Tuple[Any, ...]]] = (
-    eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+    eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi  # type: ignore [attr-defined]
 )
 
 
@@ -262,7 +262,7 @@ def __encode_input(abi: AbiDict, signature: str, *args: Any) -> Union[HexStr, Ex
     try:
         data = format_input_but_cache_checksums(abi, args)
         types_list = get_type_strings(abi["inputs"])
-        return signature + __eth_abi_encode(types_list, data).hex()
+        return signature + __eth_abi_encode(types_list, data).hex()  # type: ignore [return-value]
     except Exception as e:
         return e
 
@@ -297,7 +297,7 @@ def __validate_output(abi: AbiDict, hexstr: BytesLike) -> None:
     try:
         selector = HexBytes(hexstr)[:4].hex()
         if selector == "0x08c379a0":
-            revert_str = eth_abi.decode_abi(["string"], HexBytes(hexstr)[4:])[0]
+            revert_str = eth_abi.decode_abi(["string"], HexBytes(hexstr)[4:])[0]  # type: ignore [attr-defined]
             raise Revert(f"Call reverted: {revert_str}")
         elif selector == "0x4e487b71":
             error_code = int(HexBytes(hexstr)[4:].hex(), 16)
