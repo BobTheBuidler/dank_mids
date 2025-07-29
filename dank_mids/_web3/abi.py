@@ -32,7 +32,7 @@ class Formatter:
     ):
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
         self.types: Final[Tuple[Optional[ABIType], ...]] = tuple(
-            parse(t) if isinstance(t, str) else t for t in types
+            t if t is None else parse(t) for t in types
         )
 
     def __call__(self, data: Any) -> List[Any]:
