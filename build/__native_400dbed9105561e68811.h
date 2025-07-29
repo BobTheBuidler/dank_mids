@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_9ef3c8d95ac87b58b0a6_H
-#define MYPYC_NATIVE_9ef3c8d95ac87b58b0a6_H
+#ifndef MYPYC_NATIVE_400dbed9105561e68811_H
+#define MYPYC_NATIVE_400dbed9105561e68811_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -593,6 +593,12 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *__owner;
+} dank_mids___helpers____event___RequestEventObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *_coros;
     PyObject *_name;
@@ -689,7 +695,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_9ef3c8d95ac87b58b0a6 {
+struct export_table_400dbed9105561e68811 {
     PyObject **CPyStatic__batch___logger;
     PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
@@ -1015,6 +1021,16 @@ struct export_table_9ef3c8d95ac87b58b0a6 {
     char (*CPyDef__errors___is_revert_bytes)(PyObject *cpy_r_data);
     char (*CPyDef__errors___log_request_type_switch)(void);
     char (*CPyDef__errors_____top_level__)(void);
+    PyObject **CPyStatic__event____get_running_loop;
+    PyObject **CPyStatic__event____super_init;
+    PyObject **CPyStatic__event____super_set;
+    PyTypeObject **CPyType__event___RequestEvent;
+    PyObject *(*CPyDef__event___RequestEvent)(PyObject *cpy_r_owner);
+    char (*CPyDef__event___RequestEvent_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_owner);
+    PyObject *(*CPyDef__event___RequestEvent_____repr__)(PyObject *cpy_r_self);
+    char (*CPyDef__event___RequestEvent___set)(PyObject *cpy_r_self);
+    char (*CPyDef__event___RequestEvent_____mypyc_defaults_setup)(PyObject *cpy_r___mypyc_self__);
+    char (*CPyDef__event_____top_level__)(void);
     PyObject **CPyStatic__gather___Task;
     PyObject **CPyStatic__gather___get_running_loop;
     PyObject **CPyStatic__gather___wait;
