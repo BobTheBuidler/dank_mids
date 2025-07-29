@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Final, List, Tuple, TypeVar, final
+from typing import Any, Callable, Dict, Final, List, Optional, Tuple, TypeVar, final
 
 from eth_abi import grammar
 from eth_abi.grammar import ABIType, TupleType
@@ -28,11 +28,11 @@ class Formatter:
     def __init__(
         self,
         normalizers: Tuple[Normalizer, ...],
-        types: Tuple[TypeStr, ...],
+        types: Tuple[Optional[TypeStr], ...],
     ):
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
-        self.types: Final[Tuple[ABIType, ...]] = tuple(
-            parse(t) if isinstance(t, TypeStr) else t for t in types
+        self.types: Final[Tuple[Optional[ABIType], ...]] = tuple(
+            parse(t) if isinstance(t, str) else None for t in types
         )
 
     def __call__(self, data: Any) -> List[Any]:
@@ -136,12 +136,15 @@ class ABITypedData:
 
     # NOTE this class was changed to a dataclass so it compiles to C better
 
-    abi_type: TypeStr
+    abi_type: Optional[TypeStr]
     data: Any
 
 
-def abi_sub_tree(abi_type: ABIType, data_value: Any) -> ABITypedData:
+def abi_sub_tree(abi_type: Optional[ABIType], data_value: Any) -> ABITypedData:
     # TODO: specialize this function, possibly with functools.singledispatch
+
+    if abi_type is None:
+        return ABITypedData(None, data_value)
 
     # In the two special cases below, we rebuild the given data structures with
     # annotated items
