@@ -1,8 +1,8 @@
 from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, TypeVar, Union
 
 from eth_typing import TypeStr
-from faster_eth_utils.curried import apply_formatter_at_index
-from faster_eth_utils.toolz import compose
+from faster_eth_utils.curried import apply_formatter_at_index  # type: ignore [attr-defined]
+from faster_eth_utils.toolz import compose  # type: ignore [attr-defined]
 from web3._utils.method_formatters import (
     ERROR_FORMATTERS,
     METHOD_NORMALIZERS,
@@ -39,7 +39,7 @@ def abi_request_formatters(
 
 
 ABI_REQUEST_FORMATTERS: Final[Formatters] = dict(
-    abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)
+    abi_request_formatters(STANDARD_NORMALIZERS, RPC_ABIS)  # type: ignore [arg-type]
 )
 
 REQUEST_FORMATTER_MAPS: Final = (

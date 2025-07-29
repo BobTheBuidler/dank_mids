@@ -1,3 +1,4 @@
+# mypy: disable-error-code="attr-defined"
 """eth_utils uses a decorator to ensure certain functions are called with proper args.
 
 This is helpful for development but adds unnecessary overhead for production use.
@@ -96,7 +97,7 @@ def to_hex(
         )
 
     elif isinstance(primitive, int):
-        return hex(primitive)
+        return hex(primitive)  # type: ignore [return-value]
 
     raise TypeError(
         f"Unsupported type: '{repr(type(primitive))}'. Must be one of: bool, str, "
