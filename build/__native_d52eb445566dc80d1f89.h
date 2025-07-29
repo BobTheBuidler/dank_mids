@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_9ef3c8d95ac87b58b0a6_H
-#define MYPYC_NATIVE_9ef3c8d95ac87b58b0a6_H
+#ifndef MYPYC_NATIVE_d52eb445566dc80d1f89_H
+#define MYPYC_NATIVE_d52eb445566dc80d1f89_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -689,7 +689,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_9ef3c8d95ac87b58b0a6 {
+struct export_table_d52eb445566dc80d1f89 {
     PyObject **CPyStatic__batch___logger;
     PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
@@ -964,6 +964,7 @@ struct export_table_9ef3c8d95ac87b58b0a6 {
     char (*CPyDef_types___DankOverloadedMethod____add_fn)(PyObject *cpy_r_self, PyObject *cpy_r_abi, PyObject *cpy_r_natspec);
     PyObject *(*CPyDef_types____get_method_object)(PyObject *cpy_r_address, PyObject *cpy_r_abi, PyObject *cpy_r_name, PyObject *cpy_r_owner, PyObject *cpy_r_natspec);
     char (*CPyDef_types_____top_level__)(void);
+    char (*CPyDef_helpers_____top_level__)(void);
     PyObject **CPyStatic__codec___HexBytes;
     PyObject **CPyStatic__codec___Raw;
     PyObject **CPyStatic__codec___ContextFramesBytesIO;

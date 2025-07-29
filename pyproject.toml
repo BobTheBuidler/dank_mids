@@ -9,21 +9,21 @@ documentation = "https://BobTheBuidler.github.io/dank_mids"
 license = "MIT"
 readme = "README.md"
 include = [
-    { path = "9ef3c8d95ac87b58b0a6__mypyc.cpython-38-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "9ef3c8d95ac87b58b0a6__mypyc.cpython-38-darwin.so", format = ["sdist", "wheel"] },
-    { path = "9ef3c8d95ac87b58b0a6__mypyc.cp38-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cpython-39-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cpython-39-darwin.so", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cp39-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cpython-310-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cpython-310-darwin.so", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cp310-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cpython-311-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cpython-311-darwin.so", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cp311-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cpython-312-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cpython-312-darwin.so", format = ["sdist", "wheel"] },
-    { path = "428e411ea874af5ab525__mypyc.cp312-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "d52eb445566dc80d1f89__mypyc.cpython-38-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "d52eb445566dc80d1f89__mypyc.cpython-38-darwin.so", format = ["sdist", "wheel"] },
+    { path = "d52eb445566dc80d1f89__mypyc.cp38-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cpython-39-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cpython-39-darwin.so", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cp39-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cpython-310-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cpython-310-darwin.so", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cp310-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cpython-311-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cpython-311-darwin.so", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cp311-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cpython-312-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cpython-312-darwin.so", format = ["sdist", "wheel"] },
+    { path = "b45c814f706e6ae69602__mypyc.cp312-win_amd64.pyd", format = ["sdist", "wheel"] },
 ]
 exclude = ["tests", "tests.*"]
 
