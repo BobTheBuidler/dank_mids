@@ -13,7 +13,6 @@ build/**/*.o
 build/**/*.so
 build/**/*.pyd
 # build stuff
-ops.txt
 build/setup.py
 # windows build stuff
 *.obj
