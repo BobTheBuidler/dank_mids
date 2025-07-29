@@ -24,9 +24,10 @@ from dank_mids._uid import UIDGenerator, AlertingRLock
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers._codec import decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
-from dank_mids.helpers._helpers import w3_version_major, _make_hashable, _sync_w3_from_async
+from dank_mids.helpers._helpers import w3_version_major, _sync_w3_from_async
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._session import post, rate_limit_inactive
+from dank_mids.helpers.hashing import make_hashable
 from dank_mids.semaphores import _MethodQueues, BlockSemaphore
 from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
 
@@ -229,7 +230,7 @@ class DankMiddlewareController:
             except TypeError as e:
                 if "unhashable type" not in str(e):
                     raise
-            return await queue(self, method, _make_hashable(params))
+            return await queue(self, method, make_hashable(params))
         except GarbageCollectionError:
             # this exc shouldn't be exposed to the user so let's try this again
             return await self(method, params)

@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_d52eb445566dc80d1f89_H
-#define MYPYC_NATIVE_d52eb445566dc80d1f89_H
+#ifndef MYPYC_NATIVE_31a2127b4983b6ee261e_H
+#define MYPYC_NATIVE_31a2127b4983b6ee261e_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -689,7 +689,7 @@ typedef struct {
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
 
 
-struct export_table_d52eb445566dc80d1f89 {
+struct export_table_31a2127b4983b6ee261e {
     PyObject **CPyStatic__batch___logger;
     PyObject **CPyStatic__batch___create_task;
     PyTypeObject **CPyType__batch___DankBatch;
@@ -821,7 +821,6 @@ struct export_table_d52eb445566dc80d1f89 {
     char (*CPyDef_brownie_patch_____top_level__)(void);
     PyObject **CPyStatic__abi____singletons;
     PyObject **CPyStatic__abi___keccak;
-    PyObject **CPyStatic__abi____make_hashable;
     PyTypeObject **CPyType__abi___FunctionABI;
     PyObject *(*CPyDef__abi___FunctionABI)(PyObject *cpy_r_abi);
     char (*CPyDef__abi___FunctionABI_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_abi);
@@ -1073,6 +1072,8 @@ struct export_table_d52eb445566dc80d1f89 {
     PyObject **CPyStatic_batch_size____log_info;
     char (*CPyDef_batch_size___log_check)(PyObject *cpy_r_batch_type, PyObject *cpy_r_member_type, CPyTagged cpy_r_num_calls);
     char (*CPyDef_batch_size_____top_level__)(void);
+    PyObject *(*CPyDef_hashing___make_hashable)(PyObject *cpy_r_obj);
+    char (*CPyDef_hashing_____top_level__)(void);
     tuple_T4OOOO *CPyStatic_method___BYPASS_METHODS;
     CPyTagged (*CPyDef_method___get_len)(PyObject *cpy_r_method);
     char (*CPyDef_method___should_batch)(PyObject *cpy_r_method);

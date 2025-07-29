@@ -4,7 +4,7 @@ from weakref import WeakValueDictionary
 from eth_hash import auto
 
 from dank_mids.brownie_patch import _nocompile
-from dank_mids.helpers import _helpers
+from dank_mids.helpers.hashing import make_hashable
 
 
 SingletonKey = Tuple[Tuple[str, Any], ...]
@@ -13,8 +13,6 @@ _singletons: Final["WeakValueDictionary[SingletonKey, FunctionABI]"] = WeakValue
 
 
 keccak: Final = auto.keccak
-
-_make_hashable: Final = _helpers._make_hashable
 
 
 # NOTE we must inherit from a python object in order for weakrefs to work, so for now we inherit from _FunctionABI
@@ -68,7 +66,7 @@ class FunctionABI(_nocompile._FunctionABI):
         This class uses the lru_cache decorator to ensure only one instance is created
         for each unique set of ABI parameters, optimizing memory usage and performance.
         """
-        key = tuple((k, _make_hashable(abi[k])) for k in sorted(abi))
+        key = tuple((k, make_hashable(abi[k])) for k in sorted(abi))
         try:
             return _singletons[key]
         except KeyError:
