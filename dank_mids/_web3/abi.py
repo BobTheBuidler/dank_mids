@@ -1,9 +1,10 @@
 import typing
-from typing import Any, Callable, Dict, Final, Iterator, List, Tuple, TypeVar, final
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, Final, List, Tuple, TypeVar, final
 
-from eth_abi.grammar import parse
+from eth_abi import grammar
+from eth_abi.grammar import ABIType, TupleType
 from eth_typing import TypeStr
-from web3._utils import abi
 
 
 _T = TypeVar("_T")
@@ -19,8 +20,7 @@ Iterable: Final = typing.Iterable
 Mapping: Final = typing.Mapping
 
 
-ABITypedData: Final = abi.ABITypedData
-abi_sub_tree: Final = abi.abi_sub_tree
+parse: Final[Callable[[TypeStr], ABIType]] = grammar.parse
 
 
 @final
@@ -30,9 +30,10 @@ class Formatter:
         normalizers: Tuple[Normalizer, ...],
         types: Tuple[TypeStr, ...],
     ):
-        # TODO: vendor ABITypedData and cache some stuff from web3py
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
-        self.types: Final = [parse(t) if isinstance(t, TypeStr) else t for t in types]
+        self.types: Final[Tuple[ABIType, ...]] = tuple(
+            parse(t) if isinstance(t, TypeStr) else t for t in types
+        )
 
     def __call__(self, data: Any) -> List[Any]:
         # 1. Decorating the data tree with types
@@ -53,6 +54,7 @@ def get_formatter(
     normalizers: Tuple[Normalizer, ...],
     types: Tuple[TypeStr, ...],
 ) -> Formatter:
+    """Returns a cached :class:`~Formatter` for the unique combination of normalizers and types."""
     mapper = _formatters.get((normalizers, types))
     if mapper is None:
         mapper = _formatters[(normalizers, types)] = Formatter(normalizers, types)
@@ -87,7 +89,7 @@ class map_to_typed_data:
         elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(elements, Iterable):
             return datatype(map(self, elements))
         elif isinstance(elements, ABITypedData) and elements.abi_type is not None:
-            return ABITypedData(self.func(*elements))
+            return ABITypedData(*self.func(*elements))  # type: ignore [misc]
         else:
             return elements
 
@@ -96,7 +98,7 @@ def strip_abi_types(data: Any) -> Any:
     datatype = type(data)
     if datatype is list or datatype is map:
         return [strip_abi_types(obj) for obj in data]
-    elif datatype is tuple:
+    elif isinstance(data, tuple):
         return tuple(strip_abi_types(obj) for obj in data)
     elif isinstance(data, Mapping):
         return datatype((key, strip_abi_types(val)) for key, val in data.items())  # type: ignore [call-arg]
@@ -106,3 +108,56 @@ def strip_abi_types(data: Any) -> Any:
         return data.data
     else:
         return data
+
+
+# vendored from web3.py so we can compile it
+
+
+@final
+@dataclass(frozen=True)
+class ABITypedData:
+    """
+    This class marks data as having a certain ABI-type.
+
+    >>> a1 = ABITypedData('address', addr1)
+    >>> a2 = ABITypedData('address', addr2)
+    >>> addrs = ABITypedData('address[]', [a1, a2])
+
+    You can access the fields using tuple() interface, or with
+    attributes:
+
+    >>> assert a1.abi_type == a1[0]
+    >>> assert a1.data == a1[1]
+
+    Unlike a typical `namedtuple`, you initialize with a single
+    positional argument that is iterable, to match the init
+    interface of all other relevant collections.
+    """
+
+    # NOTE this class was changed to a dataclass so it compiles to C better
+
+    abi_type: TypeStr
+    data: Any
+
+
+def abi_sub_tree(abi_type: ABIType, data_value: Any) -> ABITypedData:
+    # TODO: specialize this function, possibly with functools.singledispatch
+
+    # In the two special cases below, we rebuild the given data structures with
+    # annotated items
+    if abi_type.is_array:
+        # If type is array, determine item type and annotate all
+        # items in iterable with that type
+        item_type = abi_type.item_type
+        value_to_annotate = [abi_sub_tree(item_type, item_value) for item_value in data_value]
+    elif isinstance(abi_type, TupleType):
+        # Otherwise, if type is tuple, determine component types and annotate
+        # tuple components in iterable respectively with those types
+        value_to_annotate = type(data_value)(
+            abi_sub_tree(comp_type, comp_value)
+            for comp_type, comp_value in zip(abi_type.components, data_value)
+        )
+    else:
+        value_to_annotate = data_value
+
+    return ABITypedData(abi_type.to_type_str(), value_to_annotate)

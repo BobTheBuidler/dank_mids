@@ -40,6 +40,13 @@ typedef struct tuple_T6OOOOOO {
 } tuple_T6OOOOOO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T0
+#define MYPYC_DECLARED_tuple_T0
+typedef struct tuple_T0 {
+    int empty_struct_error_flag;
+} tuple_T0;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T4CIOO
 #define MYPYC_DECLARED_tuple_T4CIOO
 typedef struct tuple_T4CIOO {
@@ -288,6 +295,13 @@ typedef struct {
     vectorcallfunc vectorcall;
     PyObject *_func;
 } dank_mids____web3___abi___map_to_typed_dataObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *_abi_type;
+    PyObject *_data;
+} dank_mids____web3___abi___ABITypedDataObject;
 
 typedef struct {
     PyObject_HEAD
@@ -783,14 +797,15 @@ struct export_table_31a2127b4983b6ee261e {
     char (*CPyDef__uid_____top_level__)(void);
     PyObject **CPyStatic_abi___Iterable;
     PyObject **CPyStatic_abi___Mapping;
-    PyObject **CPyStatic_abi___ABITypedData;
-    PyObject **CPyStatic_abi___abi_sub_tree;
+    PyObject **CPyStatic_abi___parse;
     PyObject **CPyStatic_abi____formatters;
     PyObject **CPyStatic_abi____data_tree_maps;
     PyTypeObject **CPyType_abi___Formatter;
     PyObject *(*CPyDef_abi___Formatter)(PyObject *cpy_r_normalizers, PyObject *cpy_r_types);
     PyTypeObject **CPyType_abi___map_to_typed_data;
     PyObject *(*CPyDef_abi___map_to_typed_data)(PyObject *cpy_r_func);
+    PyTypeObject **CPyType_abi___ABITypedData;
+    PyObject *(*CPyDef_abi___ABITypedData)(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
     char (*CPyDef_abi___Formatter_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_normalizers, PyObject *cpy_r_types);
     PyObject *(*CPyDef_abi___Formatter_____call__)(PyObject *cpy_r_self, PyObject *cpy_r_data);
     PyObject *(*CPyDef_abi___get_formatter)(PyObject *cpy_r_normalizers, PyObject *cpy_r_types);
@@ -798,6 +813,7 @@ struct export_table_31a2127b4983b6ee261e {
     char (*CPyDef_abi___map_to_typed_data_____init__)(PyObject *cpy_r_self, PyObject *cpy_r_func);
     PyObject *(*CPyDef_abi___map_to_typed_data_____call__)(PyObject *cpy_r_self, PyObject *cpy_r_elements);
     PyObject *(*CPyDef_abi___strip_abi_types)(PyObject *cpy_r_data);
+    PyObject *(*CPyDef_abi___abi_sub_tree)(PyObject *cpy_r_abi_type, PyObject *cpy_r_data_value);
     char (*CPyDef_abi_____top_level__)(void);
     PyObject **CPyStatic_formatters___ABI_REQUEST_FORMATTERS;
     tuple_T3OOO *CPyStatic_formatters___REQUEST_FORMATTER_MAPS;

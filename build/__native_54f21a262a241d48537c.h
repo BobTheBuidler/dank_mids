@@ -40,6 +40,13 @@ typedef struct tuple_T6OOOOOO {
 } tuple_T6OOOOOO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T0
+#define MYPYC_DECLARED_tuple_T0
+typedef struct tuple_T0 {
+    int empty_struct_error_flag;
+} tuple_T0;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T4CIOO
 #define MYPYC_DECLARED_tuple_T4CIOO
 typedef struct tuple_T4CIOO {
@@ -259,6 +266,13 @@ typedef struct {
     vectorcallfunc vectorcall;
     PyObject *_func;
 } dank_mids____web3___abi___map_to_typed_dataObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *_abi_type;
+    PyObject *_data;
+} dank_mids____web3___abi___ABITypedDataObject;
 
 typedef struct {
     PyObject_HEAD

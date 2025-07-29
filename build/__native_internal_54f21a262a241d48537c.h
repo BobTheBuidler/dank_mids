@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[916];
+extern PyObject *CPyStatics[925];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -65,8 +65,9 @@ extern CPyModule *CPyModule_dank_mids___helpers____lock;
 extern CPyModule *CPyModule_dank_mids____web3___abi_internal;
 extern CPyModule *CPyModule_dank_mids____web3___abi;
 extern PyObject *CPyStatic_abi___globals;
+extern CPyModule *CPyModule_dataclasses;
+extern CPyModule *CPyModule_eth_abi;
 extern CPyModule *CPyModule_eth_abi___grammar;
-extern CPyModule *CPyModule_web3____utils;
 extern CPyModule *CPyModule_dank_mids____web3___formatters_internal;
 extern CPyModule *CPyModule_dank_mids____web3___formatters;
 extern PyObject *CPyStatic_formatters___globals;
@@ -105,7 +106,6 @@ extern CPyModule *CPyModule_types;
 extern CPyModule *CPyModule_brownie___convert___datatypes;
 extern CPyModule *CPyModule_brownie___convert___normalize;
 extern CPyModule *CPyModule_brownie___network___contract;
-extern CPyModule *CPyModule_eth_abi;
 extern CPyModule *CPyModule_hexbytes;
 extern CPyModule *CPyModule_brownie___convert___utils;
 extern CPyModule *CPyModule_brownie___exceptions;
@@ -283,14 +283,15 @@ extern PyObject *CPyPy__uid___UIDGenerator___next(PyObject *self, PyObject *cons
 extern char CPyDef__uid_____top_level__(void);
 extern PyObject *CPyStatic_abi___Iterable;
 extern PyObject *CPyStatic_abi___Mapping;
-extern PyObject *CPyStatic_abi___ABITypedData;
-extern PyObject *CPyStatic_abi___abi_sub_tree;
+extern PyObject *CPyStatic_abi___parse;
 extern PyObject *CPyStatic_abi____formatters;
 extern PyObject *CPyStatic_abi____data_tree_maps;
 extern PyTypeObject *CPyType_abi___Formatter;
 extern PyObject *CPyDef_abi___Formatter(PyObject *cpy_r_normalizers, PyObject *cpy_r_types);
 extern PyTypeObject *CPyType_abi___map_to_typed_data;
 extern PyObject *CPyDef_abi___map_to_typed_data(PyObject *cpy_r_func);
+extern PyTypeObject *CPyType_abi___ABITypedData;
+extern PyObject *CPyDef_abi___ABITypedData(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
 extern char CPyDef_abi___Formatter_____init__(PyObject *cpy_r_self, PyObject *cpy_r_normalizers, PyObject *cpy_r_types);
 extern PyObject *CPyPy_abi___Formatter_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern PyObject *CPyDef_abi___Formatter_____call__(PyObject *cpy_r_self, PyObject *cpy_r_data);
@@ -305,6 +306,8 @@ extern PyObject *CPyDef_abi___map_to_typed_data_____call__(PyObject *cpy_r_self,
 extern PyObject *CPyPy_abi___map_to_typed_data_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_abi___strip_abi_types(PyObject *cpy_r_data);
 extern PyObject *CPyPy_abi___strip_abi_types(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_abi___abi_sub_tree(PyObject *cpy_r_abi_type, PyObject *cpy_r_data_value);
+extern PyObject *CPyPy_abi___abi_sub_tree(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_abi_____top_level__(void);
 extern PyObject *CPyStatic_formatters___ABI_REQUEST_FORMATTERS;
 extern tuple_T3OOO CPyStatic_formatters___REQUEST_FORMATTER_MAPS;
