@@ -1,4 +1,3 @@
-from asyncio import as_completed
 from functools import wraps
 from importlib.metadata import version
 from typing import (
@@ -7,7 +6,6 @@ from typing import (
     Awaitable,
     Callable,
     Coroutine,
-    Iterable,
     List,
     Literal,
     Optional,
@@ -22,7 +20,6 @@ from multicall.utils import get_async_w3
 from typing_extensions import Concatenate, ParamSpec
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
-from web3.datastructures import AttributeDict
 from web3.providers import HTTPProvider
 from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
@@ -301,23 +298,6 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     sync_w3.middleware_onion.clear()
     sync_w3.provider.middlewares = ()
     return sync_w3
-
-
-def _make_hashable(obj: Any) -> Any:
-    """
-    Converts an object into a hashable type if possible.
-
-    This function is used internally to ensure that objects can be used as
-    dictionary keys or in sets.
-
-    Args:
-        obj: The object to make hashable.
-    """
-    if isinstance(obj, (list, tuple)):
-        return tuple(map(_make_hashable, obj))
-    elif isinstance(obj, dict):
-        return AttributeDict(zip(obj.keys(), map(_make_hashable, obj.values())))  # type: ignore [arg-type]
-    return obj
 
 
 def __add_sync_attrdict_middleware(sync_w3: Web3) -> None:
