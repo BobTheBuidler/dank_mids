@@ -20,6 +20,14 @@ dank\_mids.helpers.future module
    :undoc-members:
    :show-inheritance:
 
+dank\_mids.helpers.hashing module
+---------------------------------
+
+.. automodule:: dank_mids.helpers.hashing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dank\_mids.helpers.lru\_cache module
 ------------------------------------
 
