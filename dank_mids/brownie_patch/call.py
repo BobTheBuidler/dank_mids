@@ -246,7 +246,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
 
 
 async def _request_data_no_args(call: ContractCall) -> HexStr:
-    return call.signature  # type: ignore [return-value]
+    return call.signature  # type: ignore [return-value, no-any-return]
 
 
 # These methods were renamed in eth-abi 4.0.0
