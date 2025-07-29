@@ -254,7 +254,7 @@ jobs:
       - name: Check for changes (Windows)
         shell: bash
         run: |
-          if git status --porcelain | grep; then
+          if [[ -n $(git status --porcelain) ]]; then
             echo "changes_detected=true" >> $GITHUB_ENV
           else
             echo "changes_detected=false" >> $GITHUB_ENV
