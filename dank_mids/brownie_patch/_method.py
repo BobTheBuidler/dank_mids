@@ -13,8 +13,8 @@ from typing import (
 )
 
 from a_sync import igather
-from brownie.convert.datatypes import EthAddress
 from brownie.typing import AccountsType
+from eth_typing import ChecksumAddress
 from hexbytes.main import BytesLike
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
@@ -31,7 +31,7 @@ class _DankMethodMixin(Generic[_EVMType]):
     with asynchronous support and memory optimization.
     """
 
-    _address: EthAddress
+    _address: ChecksumAddress
     """The address of the contract."""
 
     _abi: FunctionABI
@@ -147,7 +147,7 @@ get_function_abi = FunctionABI.singleton
 class _DankMethod(_DankMethodMixin):
     def __init__(
         self,
-        address: str,
+        address: ChecksumAddress,
         abi: Dict,
         name: str,
         owner: Optional[AccountsType],

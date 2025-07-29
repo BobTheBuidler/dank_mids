@@ -30,7 +30,7 @@ from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
-from eth_abi.exceptions import InsufficientDataBytes
+from eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
 from hexbytes.main import BytesLike
@@ -160,7 +160,16 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
         try:
             decoded = await decode_output(self, output)
         except InsufficientDataBytes as e:
-            raise InsufficientDataBytes(str(e), self, self._address, output) from e
+            raise InsufficientDataBytes(
+                {
+                    "error": f"{e} when decoding response",
+                    "method": self,
+                    "contract": self._address,
+                    "args": args,
+                    "block": block_identifier,
+                    "response": output,
+                }
+            ) from e
 
         return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
 
@@ -237,7 +246,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
 
 
 async def _request_data_no_args(call: ContractCall) -> HexStr:
-    return call.signature
+    return call.signature  # type: ignore [return-value, no-any-return]
 
 
 # These methods were renamed in eth-abi 4.0.0
@@ -253,7 +262,7 @@ def __encode_input(abi: AbiDict, signature: str, *args: Any) -> Union[HexStr, Ex
     try:
         data = format_input_but_cache_checksums(abi, args)
         types_list = get_type_strings(abi["inputs"])
-        return signature + __eth_abi_encode(types_list, data).hex()
+        return signature + __eth_abi_encode(types_list, data).hex()  # type: ignore [return-value]
     except Exception as e:
         return e
 
@@ -277,6 +286,9 @@ def __decode_output(hexstr: BytesLike, abi: AbiDict) -> Any:
         result = __eth_abi_decode(types_list, HexBytes(hexstr))
         result = format_output_but_cache_checksums(abi, result)
         return result[0] if len(result) == 1 else result
+    except DecodingError as e:
+        e.args = *e.args, {"hexstr": hexstr, "abi": abi}
+        return e
     except Exception as e:
         return e
 

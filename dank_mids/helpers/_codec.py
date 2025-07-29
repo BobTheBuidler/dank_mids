@@ -14,6 +14,7 @@ from typing import (
     Tuple,
     Type,
     TypeVar,
+    Union,
     final,
     overload,
 )
@@ -24,6 +25,7 @@ from eth_abi import decoding
 from eth_abi.abi import default_codec
 from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 from eth_typing import ChecksumAddress, HexStr
+from evmspec.data import Address
 from msgspec.json import Decoder, Encoder
 
 if TYPE_CHECKING:
@@ -40,13 +42,16 @@ better_decode: Optional[Callable[..., Any]] = None  # type: ignore [type-arg]
 __T = TypeVar("__T")
 
 
-StrEncodable = Union[ChecksumAddress, HexStr]
+StrEncodable = Union[ChecksumAddress, HexStr, Address]
 Encodable = Union[int, StrEncodable, hexbytes.HexBytes, bytes]
 
 RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
 
 
-MulticallChunk = Tuple[ChecksumAddress, hexbytes.HexBytes]
+MulticallChunk = Union[
+    Tuple[ChecksumAddress, hexbytes.HexBytes],
+    List[Union[ChecksumAddress, hexbytes.HexBytes]],
+]
 MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
 
 DecodedMulticall = Tuple[int, int, Tuple[Tuple["Success", bytes], ...]]
@@ -151,15 +156,16 @@ def _encode_hook(obj: Encodable) -> RpcThing:
         if isinstance(obj, Mapping):
             return {k: _rudimentary_encode_dict_value(v) for k, v in obj.items()}
         else:
-            raise TypeError(obj, type(obj)) from e
+            raise TypeError(*e.args, obj, type(obj)) from e
     except ValueError as e:
         # NOTE: The error is probably this if `obj` is a string:
         # ValueError: invalid literal for int() with base 10:"""
         if isinstance(obj, HexBytes):
-            return obj.hex()  # type: ignore [return-value]
+            return obj.hex()  # type: ignore [return-value, no-any-return]
+        elif isinstance(obj, Address):
+            return str(obj)  # type: ignore [return-value]
         else:
-            e.args = *e.args, obj, type(obj)
-            raise ValueError(obj, type(obj)) from e
+            raise ValueError(*e.args, obj, type(obj)) from e
 
 
 @overload
@@ -168,7 +174,7 @@ def _rudimentary_encode_dict_value(value: int) -> HexStr: ...
 def _rudimentary_encode_dict_value(value: __T) -> __T: ...
 def _rudimentary_encode_dict_value(value: Union[int, __T]) -> Union[HexStr, __T]:
     # I dont think this needs to be robust, time will tell
-    return hex(value) if isinstance(value, int) else value
+    return hex(value) if isinstance(value, int) else value  # type: ignore [return-value]
 
 
 encode: Final = Encoder(enc_hook=_encode_hook).encode

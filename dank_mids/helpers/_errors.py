@@ -1,8 +1,11 @@
 from logging import Logger
 from typing import TYPE_CHECKING, Any, Final
 
+from web3.exceptions import ContractLogicError
+
 from dank_mids._exceptions import BadResponse
 from dank_mids._logging import DEBUG, getLogger
+from dank_mids.constants import REVERT_SELECTORS
 from dank_mids.types import PartialResponse
 
 if TYPE_CHECKING:
@@ -48,6 +51,9 @@ def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception) -> None:
         batch_objs = list(batch)
     except TypeError:
         # 'coroutine' object is not iterable
+        if isinstance(exc, ContractLogicError):
+            # we don't need to log reverts for single calls
+            return
         batch_objs = [batch]
     logger.error(
         "That's not good, there was an exception in a %s (len=%s). These are supposed to be handled.\n"
@@ -91,7 +97,23 @@ def is_call_revert(e: BadResponse) -> bool:
     Returns:
         True if the error was caused by an individual call revert, False otherwise.
     """
-    return any(map(f"{e}".lower().__contains__, INDIVIDUAL_CALL_REVERT_STRINGS))
+    stre = f"{e}".lower()
+    return any(string in stre for string in INDIVIDUAL_CALL_REVERT_STRINGS)
+
+
+def is_revert_bytes(data: Any) -> bool:
+    """
+    Check if a call reverted inside of a multicall but returned a result, without causing the multicall to revert.
+
+    Args:
+        data: The response to check.
+
+    Returns:
+        True if the call reverted, False if it was successful.
+    """
+    return isinstance(data, bytes) and any(
+        data.startswith(selector) for selector in REVERT_SELECTORS
+    )
 
 
 def log_request_type_switch() -> None:

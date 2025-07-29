@@ -26,7 +26,6 @@ from typing import (
     Iterable,
     Iterator,
     List,
-    Literal,
     Optional,
     Sequence,
     Set,
@@ -47,6 +46,7 @@ from aiohttp.client_exceptions import ClientResponseError
 from eth_typing import ChecksumAddress
 from eth_utils.toolz import concat
 from hexbytes import HexBytes
+from requests.exceptions import ReadTimeout
 from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse
 from web3.types import RPCError as _RPCError
@@ -70,7 +70,7 @@ from dank_mids._exceptions import (
 )
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers import DebuggableFuture, _codec, _session, gatherish, lru_cache_lite_nonull
+from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
 from dank_mids.helpers._codec import (
     JSONRPCBatchResponse,
     MulticallChunk,
@@ -85,6 +85,7 @@ from dank_mids.helpers._errors import (
     error_logger_log_debug,
     gas_logger_debug,
     is_call_revert,
+    is_revert_bytes,
     log_internal_error,
     needs_full_request_spec,
     revert_logger,
@@ -98,6 +99,8 @@ from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._session import rate_limit_inactive
 from dank_mids.helpers._weaklist import WeakList
+from dank_mids.helpers.method import get_len as get_len_for_method
+from dank_mids.helpers.method import should_batch as should_batch_method
 from dank_mids.types import (
     BatchId,
     BlockId,
@@ -117,14 +120,13 @@ TIMEOUT_SECONDS_SMALL: Final = 30
 TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
 
 logger: Final = getLogger(__name__)
-batch_size_logger: Final = getLogger("dank_mids.batch_size")
-
 
 _Response = TypeVar(
     "_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse
 )
 
 
+@final
 class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
 
@@ -181,29 +183,6 @@ class _RequestBase(Generic[_Response]):
 
 
 ### Single requests:
-
-BYPASS_METHODS: Final = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
-"""
-A tuple of method names that should bypass batching.
-These methods are typically handled separately or have special requirements.
-"""
-
-
-@lru_cache_lite_nonull
-def _get_len_for_method(method: str) -> int:
-    # NOTE: These are totally arbitrary, used to reduce frequency of giant batches/responses
-    if method == "eth_getTransactionReceipt":
-        return 5
-    elif method in {"eth_getTransaction", "eth_getCode"} or "eth_getBlockBy" in method:
-        return 3
-    return 1
-
-
-@lru_cache_lite_nonull
-def _should_batch_method(method: str) -> bool:
-    return all(bypass not in method for bypass in BYPASS_METHODS)
-
-
 _REVERT_EXC_TYPES: Final = ContractLogicError, ExecutionReverted
 
 _request_base_init: Final = _RequestBase.__init__
@@ -248,7 +227,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         self.params = params
         """The parameters to send with this request, if any."""
 
-        if not _should_batch_method(method):
+        if not should_batch_method(method):
             self.should_batch = False
 
         if logger.isEnabledFor(DEBUG):
@@ -277,7 +256,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
     def __len__(self) -> int:
         # NOTE: We dont need to consider response size for each method for very small batch sizes since the requests/responses will never get too large
-        return 1 if self._tiny_batches else _get_len_for_method(self.method)
+        return 1 if self._tiny_batches else get_len_for_method(self.method)
 
     def __repr__(self) -> str:
         batch = self._batch
@@ -287,14 +266,19 @@ class RPCRequest(_RequestBase[RPCResponse]):
     def __del__(self) -> None:
         fut = self._fut
         if not fut.done() and not fut._loop.is_closed():
-            fut.set_exception(
-                GarbageCollectionError(
-                    f"{self} was garbage collected before finishing.\n"
-                    "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
+            try:
+                fut.set_exception(
+                    GarbageCollectionError(
+                        f"{self} was garbage collected before finishing.\n"
+                        "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
+                    )
                 )
-            )
-            # mark exception as retrieved, if its really relevant to the user it will be raised by their waiter
-            fut.exception()
+            except RuntimeError as e:
+                if str(e) != "no running event loop":
+                    raise
+            else:
+                # mark exception as retrieved, if its really relevant to the user it will be raised by their waiter
+                fut.exception()
 
     @property
     def request(self) -> Union[Request, PartialRequest]:
@@ -589,10 +573,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
         log_func("exception set: %s", repr(exc))
 
 
-def _is_revert_bytes(data: Any) -> bool:
-    return isinstance(data, bytes) and any(filter(data.startswith, constants.REVERT_SELECTORS))
-
-
 _rpcrequest_init: Final = RPCRequest.__init__
 
 
@@ -642,7 +622,7 @@ class eth_call(RPCRequest):
 
         # NOTE: If `type(data)` is `bytes`, it is a result from a multicall. If not, `data` comes from a jsonrpc batch.
         # If this if clause is True, it means the call reverted inside of a multicall but returned a result, without causing the multicall to revert.
-        if _is_revert_bytes(data):
+        if is_revert_bytes(data):
             # TODO figure out how to include method selector in no_multicall key
             try:
                 # NOTE: If call response from multicall indicates failure, make sync call to get either:
@@ -652,11 +632,18 @@ class eth_call(RPCRequest):
                 # TODO: Get rid of the sync executor and just use `make_request`
                 controller = self.controller
                 target = self.target
-                data = await self.revert_threads.run(
-                    controller.sync_w3.eth.call,
-                    {"to": target, "data": self.calldata},
-                    self.block,
-                )
+                failures = 0
+                while failures < 5:
+                    try:
+                        data = await self.revert_threads.run(
+                            controller.sync_w3.eth.call,
+                            {"to": target, "data": self.calldata},
+                            self.block,
+                        )
+                    except ReadTimeout:
+                        failures += 1
+                    else:
+                        break
                 # The single call was successful. We don't want to include this contract in more multicalls
                 controller.no_multicall.add(target)
             except Exception as e:
@@ -694,6 +681,9 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     def __len__(self) -> int:
         return len(self.calls)
 
+    def __await__(self) -> Generator[Any, None, _Response]:
+        return self._task.__await__()
+
     @property
     def bisected(self) -> Generator[Tuple[_Request, ...], None, None]:
         # set `self.calls` output to var so its only computed once
@@ -708,6 +698,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
 
     @cached_property
     def _task(self) -> "Task[None]":
+        self._awaited = True
         return create_task(
             self.get_response(), name=f"{type(self).__name__} {self.uid} get_response"
         )
@@ -843,14 +834,18 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                     error_logger.error("%s was garbage collected before finishing", self)
                     logged = True
 
-                call._fut.set_exception(
-                    GarbageCollectionError(
-                        f"{self} was garbage collected before finishing.",
-                        f"{call} might hang indefinitely if I don't raise this exception, "
-                        "which only exists to help debug an issue inside of dank mids. "
-                        "Please show it to Bob.",
+                try:
+                    call._fut.set_exception(
+                        GarbageCollectionError(
+                            f"{self} was garbage collected before finishing.",
+                            f"{call} might hang indefinitely if I don't raise this exception, "
+                            "which only exists to help debug an issue inside of dank mids. "
+                            "Please show it to Bob.",
+                        )
                     )
-                )
+                except RuntimeError as e:
+                    if str(e) != "no running event loop":
+                        raise
 
     @cached_property
     def block(self) -> BlockId:
@@ -906,11 +901,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                     controller._pending_eth_calls_pop(self.block, None)
 
     async def get_response(self) -> None:  # type: ignore [override]
-        if self._awaited:
-            raise RuntimeError(f"{self} already awaited", current_task())
-
-        self._awaited = True
-
         # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
         calls = tuple(self.calls)
 
@@ -1017,7 +1007,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
             to_gather = []
             for call, result in zip(calls, await self.decode(response)):
-                if _is_revert_bytes(result):
+                if is_revert_bytes(result):
                     # We will asynchronously handle this revert
                     to_gather.append(eth_call.spoof_response(call, result))
                 else:
@@ -1100,16 +1090,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             if not self.should_retry(e):
                 raise
             await self.bisect_and_retry(e)
-
-
-def _log_checking_batch_size(
-    batch_type: Literal["multicall", "json"],
-    member_type: Literal["calls", "requests"],
-    num_calls: int,
-) -> None:
-    batch_size_logger.info(
-        "checking if we should reduce %s batch size... (%s %s)", batch_type, num_calls, member_type
-    )
 
 
 @final
@@ -1241,14 +1221,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
                 self.controller._start_new_batch()
 
     async def get_response(self) -> None:  # type: ignore [override]
-        if self._awaited:
-            raise RuntimeError(
-                f"{self} was already awaited. This shouldn't really happen bro",
-                f"task that awaited the 2nd time: {current_task()}",
-            )
-
-        self._awaited = True
-
         if not self.calls:
             # TODO: figure out why this can happen and prevent it upstream
             self._done.set()
@@ -1512,10 +1484,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         """
         if self.is_multicalls_only:
             num_calls = self.total_calls
-            _log_checking_batch_size("multicall", "calls", num_calls)
+            batch_size.log_check("multicall", "calls", num_calls)
             self.controller.reduce_multicall_size(num_calls)
         else:
-            _log_checking_batch_size("json", "requests", len(self))
+            batch_size.log_check("json", "requests", len(self))
             self.controller.reduce_batch_size(len(self))
             _log_devhint(
                 "We still need some better logic for catching these errors and using them to better optimize the batching process"

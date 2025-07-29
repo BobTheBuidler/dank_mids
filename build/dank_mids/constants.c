@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_constants(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("d8ded57d9da9d768aa92__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("54f21a262a241d48537c__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___constants");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "d8ded57d9da9d768aa92__mypyc.init_dank_mids___constants");
+    void *init_func = PyCapsule_GetPointer(capsule, "54f21a262a241d48537c__mypyc.init_dank_mids___constants");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;

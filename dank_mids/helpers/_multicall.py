@@ -1,8 +1,8 @@
 from functools import lru_cache
 from typing import Callable, Optional
 
+from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress
-from eth_utils import to_checksum_address
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES
 
@@ -41,7 +41,7 @@ class MulticallContract(Struct):
     This is used for state override if necessary.
     """
 
-    needs_override_code_for_block: Callable[[BlockNumber], bool] = None
+    needs_override_code_for_block: Callable[[BlockNumber], bool] = None  # type: ignore [assignment]
     """
     A cached function that, when called, determines if the contract needs override code for a specific block.
 

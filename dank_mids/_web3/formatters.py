@@ -1,8 +1,8 @@
 from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, TypeVar, Union
 
 from eth_typing import TypeStr
-from eth_utils.curried import apply_formatter_at_index
-from eth_utils.toolz import compose
+from faster_eth_utils.curried import apply_formatter_at_index
+from faster_eth_utils.toolz import compose
 from web3._utils.method_formatters import (
     ERROR_FORMATTERS,
     METHOD_NORMALIZERS,

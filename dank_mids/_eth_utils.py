@@ -84,7 +84,7 @@ def to_hex(
         return "0x1" if primitive else "0x0"  # type: ignore [return-value]
 
     elif isinstance(primitive, (bytes, bytearray)):
-        return encode_hex(primitive)
+        return encode_hex(primitive)  # type: ignore [type-var]
 
     elif isinstance(primitive, memoryview):
         return encode_hex(bytes(primitive))
@@ -96,7 +96,7 @@ def to_hex(
         )
 
     elif isinstance(primitive, int):
-        return hex(primitive)
+        return hex(primitive)  # type: ignore [return-value]
 
     raise TypeError(
         f"Unsupported type: '{repr(type(primitive))}'. Must be one of: bool, str, "
@@ -136,10 +136,13 @@ def decode_hex(value: str) -> bytes:
 
 
 def encode_hex(value: AnyStr) -> HexStr:
-    if isinstance(value, (bytes, bytearray)):
+    ascii_bytes: Any  # no need to validate bytes type in the c code
+    if isinstance(value, bytes):
         ascii_bytes = value
     elif isinstance(value, str):
         ascii_bytes = value.encode("ascii")
+    elif isinstance(value, bytearray):
+        ascii_bytes = bytes(value)
     else:
         raise TypeError("Value must be an instance of str or unicode")
     ascii_hex = hexlify(ascii_bytes).decode("ascii")
