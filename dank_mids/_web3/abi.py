@@ -20,7 +20,7 @@ Iterable: Final = typing.Iterable
 Mapping: Final = typing.Mapping
 
 
-parse: Final[Callable[[Optional[TypeStr]], ABIType]] = grammar.parse
+parse: Final[Callable[[TypeStr], ABIType]] = grammar.parse
 
 
 @final
