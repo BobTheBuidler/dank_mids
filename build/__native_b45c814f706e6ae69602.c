@@ -56656,7 +56656,7 @@ CPyTagged CPyDef_method___get_len(PyObject *cpy_r_method) {
     if (!cpy_r_r1) goto CPyL2;
     return 10;
 CPyL2: ;
-    cpy_r_r2 = CPyStatics[911]; /* frozenset({'eth_getCode', 'eth_getTransaction'}) */
+    cpy_r_r2 = CPyStatics[911]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
     cpy_r_r3 = PySet_Contains(cpy_r_r2, cpy_r_method);
     cpy_r_r4 = cpy_r_r3 >= 0;
     if (unlikely(!cpy_r_r4)) {
@@ -60333,7 +60333,7 @@ CPyL270: ;
         goto CPyL378;
     }
     CPy_DECREF(cpy_r_r541);
-    cpy_r_r550 = CPyStatics[640]; /* 'eth_getCode' */
+    cpy_r_r550 = CPyStatics[641]; /* 'eth_getCode' */
     cpy_r_r551 = CPyStatics[728]; /* 'ETH_GETCODE_SEMAPHORE' */
     cpy_r_r552 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r553 = CPyStatics[42]; /* 'a_sync' */
@@ -61264,7 +61264,7 @@ const char * const CPyLit_Str[] = {
     "\0015checking if we should reduce %s batch size... (%s %s)",
     "\005\024dank_mids.batch_size\021batch_size_logger\004info\t_log_info\006object",
     "\005\023lru_cache_lite_wrap\005cache\tParamSpec\021typing_extensions\003__P",
-    "\003\031eth_getTransactionReceipt\veth_getCode\022eth_getTransaction",
+    "\003\031eth_getTransactionReceipt\022eth_getTransaction\veth_getCode",
     "\005\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_\006debug_",
     "\005\016BYPASS_METHODS\aget_len\fshould_batch\tmulticall\026dank_mids/constants.py",
     "\004\vBlockNumber\aNetwork\021payload too large\030content length too large",
