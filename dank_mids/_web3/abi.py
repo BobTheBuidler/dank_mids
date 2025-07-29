@@ -28,11 +28,11 @@ class Formatter:
     def __init__(
         self,
         normalizers: Tuple[Normalizer, ...],
-        types: Tuple[TypeStr, ...],
+        types: Tuple[TypeStr | None, ...],
     ):
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
         self.types: Final[Tuple[ABIType, ...]] = tuple(
-            parse(t) if isinstance(t, TypeStr) else t for t in types
+            parse(t) if isinstance(t, str) else t for t in types
         )
 
     def __call__(self, data: Any) -> List[Any]:
