@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Final, List, Tuple, TypeVar, final
+from typing import Any, Callable, Dict, Final, List, Optional, Tuple, TypeVar, final
 
 from eth_abi import grammar
 from eth_abi.grammar import ABIType, TupleType
@@ -20,7 +20,7 @@ Iterable: Final = typing.Iterable
 Mapping: Final = typing.Mapping
 
 
-parse: Final[Callable[[TypeStr], ABIType]] = grammar.parse
+parse: Final[Callable[[Optional[TypeStr]], ABIType]] = grammar.parse
 
 
 @final
@@ -28,7 +28,7 @@ class Formatter:
     def __init__(
         self,
         normalizers: Tuple[Normalizer, ...],
-        types: Tuple[TypeStr | None, ...],
+        types: Tuple[Optional[TypeStr], ...],
     ):
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
         self.types: Final[Tuple[ABIType, ...]] = tuple(
