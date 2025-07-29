@@ -161,9 +161,9 @@ def _encode_hook(obj: Encodable) -> RpcThing:
         # NOTE: The error is probably this if `obj` is a string:
         # ValueError: invalid literal for int() with base 10:"""
         if isinstance(obj, HexBytes):
-            return obj.hex()  # type: ignore [return-value]
+            return obj.hex()  # type: ignore [return-value, no-any-return]
         elif isinstance(obj, Address):
-            return str(obj)
+            return str(obj)  # type: ignore [return-value]
         else:
             raise ValueError(*e.args, obj, type(obj)) from e
 
@@ -174,7 +174,7 @@ def _rudimentary_encode_dict_value(value: int) -> HexStr: ...
 def _rudimentary_encode_dict_value(value: __T) -> __T: ...
 def _rudimentary_encode_dict_value(value: Union[int, __T]) -> Union[HexStr, __T]:
     # I dont think this needs to be robust, time will tell
-    return hex(value) if isinstance(value, int) else value
+    return hex(value) if isinstance(value, int) else value  # type: ignore [return-value]
 
 
 encode: Final = Encoder(enc_hook=_encode_hook).encode

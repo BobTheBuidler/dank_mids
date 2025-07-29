@@ -96,7 +96,7 @@ def to_hex(
         )
 
     elif isinstance(primitive, int):
-        return hex(primitive)
+        return hex(primitive)  # type: ignore [return-value]
 
     raise TypeError(
         f"Unsupported type: '{repr(type(primitive))}'. Must be one of: bool, str, "
