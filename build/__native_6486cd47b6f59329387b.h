@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_54f21a262a241d48537c_H
-#define MYPYC_NATIVE_54f21a262a241d48537c_H
+#ifndef MYPYC_NATIVE_6486cd47b6f59329387b_H
+#define MYPYC_NATIVE_6486cd47b6f59329387b_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -109,6 +109,13 @@ typedef struct tuple_T2IO {
     CPyTagged f0;
     PyObject *f1;
 } tuple_T2IO;
+#endif
+
+#ifndef MYPYC_DECLARED_tuple_T1O
+#define MYPYC_DECLARED_tuple_T1O
+typedef struct tuple_T1O {
+    PyObject *f0;
+} tuple_T1O;
 #endif
 
 #ifndef MYPYC_DECLARED_tuple_T10OOOOOOOOOO
@@ -624,5 +631,71 @@ typedef struct {
     vectorcallfunc vectorcall;
     PyObject *___mypyc_env__;
 } dank_mids___helpers___lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *__daemon;
+} dank_mids___stats____StatsLoggerObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *_errd_batches;
+    PyObject *_durations;
+    PyObject *_types;
+    PyObject *_event_loop_times;
+    PyObject *_validation_errors;
+} dank_mids___stats____CollectorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids___stats____WriterObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *_metrics;
+    PyObject *_units;
+    PyObject *_set_tag;
+    PyObject *_set_measurement;
+    PyObject *__exc;
+} dank_mids___stats____SentryExporterObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    uint32_t bitmap;
+    PyObject *_self;
+    int32_t ___mypyc_next_label__;
+    double _start;
+    double _time_since_notified;
+    PyObject *___mypyc_temp__0;
+    tuple_T3OOO ___mypyc_temp__1;
+    double _now;
+    double _duration;
+} dank_mids___stats____stats_daemon__StatsLogger_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_self;
+} dank_mids___stats_____init___3__Collector_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___stats_____mypyc_lambda__0___3_init___3__Collector_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___stats_____mypyc_lambda__1___3_init___3__Collector_objObject;
 
 #endif

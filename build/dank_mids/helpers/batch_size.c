@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_batch_size(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("54f21a262a241d48537c__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("6486cd47b6f59329387b__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___helpers___batch_size");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "54f21a262a241d48537c__mypyc.init_dank_mids___helpers___batch_size");
+    void *init_func = PyCapsule_GetPointer(capsule, "6486cd47b6f59329387b__mypyc.init_dank_mids___helpers___batch_size");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
