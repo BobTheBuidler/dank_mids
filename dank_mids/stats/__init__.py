@@ -562,7 +562,7 @@ class _SentryExporter:
             attr = getattr(collector, attr_name)
             if callable(attr):
                 attr = attr()
-            self.set_measurement(tag, attr, self.units.get(attr_name))
+            self.set_measurement(tag, attr, self.units.get(attr_name))  # type: ignore [misc]
 
     def push_envs(self) -> None:
         """
@@ -575,7 +575,7 @@ class _SentryExporter:
         """
         for env, value in _ENVS.items():
             try:
-                self.set_tag(env, value)
+                self.set_tag(env, value)  # type: ignore [misc]
             except Exception as e:
                 logger.warning(
                     f"Unable to set sentry tag {env} to {value}. See {e.__class__.__name__} below:"
