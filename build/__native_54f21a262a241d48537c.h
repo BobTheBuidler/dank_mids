@@ -391,12 +391,11 @@ typedef struct {
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__27;
     int64_t ___mypyc_temp__28;
-    int64_t ___mypyc_temp__29;
     PyObject *_arg;
     PyObject *_data;
-    PyObject *___mypyc_temp__30;
+    PyObject *___mypyc_temp__29;
+    tuple_T3OOO ___mypyc_temp__30;
     tuple_T3OOO ___mypyc_temp__31;
-    tuple_T3OOO ___mypyc_temp__32;
     PyObject *_exc_str;
 } dank_mids___brownie_patch___call___encode_input_genObject;
 
@@ -407,13 +406,13 @@ typedef struct {
     PyObject *_data;
     int32_t ___mypyc_next_label__;
     PyObject *_decoded;
-    PyObject *___mypyc_temp__33;
+    PyObject *___mypyc_temp__32;
+    tuple_T3OOO ___mypyc_temp__33;
     tuple_T3OOO ___mypyc_temp__34;
     tuple_T3OOO ___mypyc_temp__35;
-    tuple_T3OOO ___mypyc_temp__36;
     PyObject *_e;
-    PyObject *___mypyc_temp__37;
-    tuple_T3OOO ___mypyc_temp__38;
+    PyObject *___mypyc_temp__36;
+    tuple_T3OOO ___mypyc_temp__37;
 } dank_mids___brownie_patch___call___decode_output_genObject;
 
 typedef struct {
