@@ -292,10 +292,14 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *_abi;
-    PyObject *_input_sig;
-    PyObject *_signature;
-} dank_mids___brownie_patch____abi___FunctionABIObject;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch____abi_____init___3_FunctionABI_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch____abi___singleton_FunctionABI_objObject;
 
 typedef struct {
     PyObject_HEAD
