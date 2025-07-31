@@ -23,7 +23,10 @@ keccak: Final = auto.keccak
 
 
 @final
-class FunctionABI(_nocompile._FunctionABI):
+@mypyc_attr(native_class=False)
+# TODO: replace native_class=False with supports_weakref=True
+# once https://github.com/python/mypy/pull/19056 is merged
+class FunctionABI:
     """
     A class to hold function ABI information.
 
