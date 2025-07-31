@@ -702,7 +702,12 @@ PyObject *CPyDef__batch___coroutines_DankBatch_gen(void)
     return self;
 }
 
-static int _batch_exec(PyObject *module)
+static PyMethodDef _batchmodule_methods[] = {
+    {"_create_named_task", (PyCFunction)CPyPy__batch____create_named_task, METH_FASTCALL | METH_KEYWORDS, "_create_named_task(awaitable)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____batch(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____batch_internal, "__name__");
@@ -734,11 +739,6 @@ static int _batch_exec(PyObject *module)
     Py_CLEAR(CPyType__batch___coroutines_DankBatch_gen);
     return -1;
 }
-static PyMethodDef _batchmodule_methods[] = {
-    {"_create_named_task", (PyCFunction)CPyPy__batch____create_named_task, METH_FASTCALL | METH_KEYWORDS, "_create_named_task(awaitable)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _batchmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._batch",
@@ -757,7 +757,7 @@ PyObject *CPyInit_dank_mids____batch(void)
     CPyModule_dank_mids____batch_internal = PyModule_Create(&_batchmodule);
     if (unlikely(CPyModule_dank_mids____batch_internal == NULL))
         goto fail;
-    if (_batch_exec(CPyModule_dank_mids____batch_internal) != 0)
+    if (CPyExec_dank_mids____batch(CPyModule_dank_mids____batch_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____batch_internal;
     fail:
@@ -4307,7 +4307,11 @@ PyObject *CPyDef__demo_mode___DummyLogger(void)
     return self;
 }
 
-static int _demo_mode_exec(PyObject *module)
+static PyMethodDef _demo_modemodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____demo_mode(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____demo_mode_internal, "__name__");
@@ -4329,10 +4333,6 @@ static int _demo_mode_exec(PyObject *module)
     Py_CLEAR(CPyType__demo_mode___DummyLogger);
     return -1;
 }
-static PyMethodDef _demo_modemodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _demo_modemodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._demo_mode",
@@ -4351,7 +4351,7 @@ PyObject *CPyInit_dank_mids____demo_mode(void)
     CPyModule_dank_mids____demo_mode_internal = PyModule_Create(&_demo_modemodule);
     if (unlikely(CPyModule_dank_mids____demo_mode_internal == NULL))
         goto fail;
-    if (_demo_mode_exec(CPyModule_dank_mids____demo_mode_internal) != 0)
+    if (CPyExec_dank_mids____demo_mode(CPyModule_dank_mids____demo_mode_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____demo_mode_internal;
     fail:
@@ -4618,7 +4618,11 @@ CPyL27: ;
     CPy_DecRef(cpy_r_r20);
     goto CPyL26;
 }
-static int _envs_exec(PyObject *module)
+static PyMethodDef _envsmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____envs(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____envs_internal, "__name__");
@@ -4643,10 +4647,6 @@ static int _envs_exec(PyObject *module)
     CPyStatic__envs____deprecated_format = NULL;
     return -1;
 }
-static PyMethodDef _envsmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _envsmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._envs",
@@ -4665,7 +4665,7 @@ PyObject *CPyInit_dank_mids____envs(void)
     CPyModule_dank_mids____envs_internal = PyModule_Create(&_envsmodule);
     if (unlikely(CPyModule_dank_mids____envs_internal == NULL))
         goto fail;
-    if (_envs_exec(CPyModule_dank_mids____envs_internal) != 0)
+    if (CPyExec_dank_mids____envs(CPyModule_dank_mids____envs_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____envs_internal;
     fail:
@@ -5021,7 +5021,19 @@ CPyL42: ;
     CPy_DECREF(cpy_r_r71);
     goto CPyL27;
 }
-static int _eth_utils_exec(PyObject *module)
+static PyMethodDef _eth_utilsmodule_methods[] = {
+    {"patch_eth_utils", (PyCFunction)CPyPy__eth_utils___patch_eth_utils, METH_FASTCALL | METH_KEYWORDS, "patch_eth_utils()\n--\n\n" /* docstring */},
+    {"to_hex", (PyCFunction)CPyPy__eth_utils___to_hex, METH_FASTCALL | METH_KEYWORDS, "to_hex(primitive=None, hexstr=None, text=None)\n--\n\n" /* docstring */},
+    {"to_bytes", (PyCFunction)CPyPy__eth_utils___to_bytes, METH_FASTCALL | METH_KEYWORDS, "to_bytes(primitive=None, hexstr=None, text=None)\n--\n\n" /* docstring */},
+    {"decode_hex", (PyCFunction)CPyPy__eth_utils___decode_hex, METH_FASTCALL | METH_KEYWORDS, "decode_hex(value)\n--\n\n" /* docstring */},
+    {"encode_hex", (PyCFunction)CPyPy__eth_utils___encode_hex, METH_FASTCALL | METH_KEYWORDS, "encode_hex(value)\n--\n\n" /* docstring */},
+    {"is_0x_prefixed", (PyCFunction)CPyPy__eth_utils___is_0x_prefixed, METH_FASTCALL | METH_KEYWORDS, "is_0x_prefixed(value)\n--\n\n" /* docstring */},
+    {"remove_0x_prefix", (PyCFunction)CPyPy__eth_utils___remove_0x_prefix, METH_FASTCALL | METH_KEYWORDS, "remove_0x_prefix(value)\n--\n\n" /* docstring */},
+    {"add_0x_prefix", (PyCFunction)CPyPy__eth_utils___add_0x_prefix, METH_FASTCALL | METH_KEYWORDS, "add_0x_prefix(value)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____eth_utils(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____eth_utils_internal, "__name__");
@@ -5044,18 +5056,6 @@ static int _eth_utils_exec(PyObject *module)
     CPyStatic__eth_utils___unhexlify = NULL;
     return -1;
 }
-static PyMethodDef _eth_utilsmodule_methods[] = {
-    {"patch_eth_utils", (PyCFunction)CPyPy__eth_utils___patch_eth_utils, METH_FASTCALL | METH_KEYWORDS, "patch_eth_utils()\n--\n\n" /* docstring */},
-    {"to_hex", (PyCFunction)CPyPy__eth_utils___to_hex, METH_FASTCALL | METH_KEYWORDS, "to_hex(primitive=None, hexstr=None, text=None)\n--\n\n" /* docstring */},
-    {"to_bytes", (PyCFunction)CPyPy__eth_utils___to_bytes, METH_FASTCALL | METH_KEYWORDS, "to_bytes(primitive=None, hexstr=None, text=None)\n--\n\n" /* docstring */},
-    {"decode_hex", (PyCFunction)CPyPy__eth_utils___decode_hex, METH_FASTCALL | METH_KEYWORDS, "decode_hex(value)\n--\n\n" /* docstring */},
-    {"encode_hex", (PyCFunction)CPyPy__eth_utils___encode_hex, METH_FASTCALL | METH_KEYWORDS, "encode_hex(value)\n--\n\n" /* docstring */},
-    {"is_0x_prefixed", (PyCFunction)CPyPy__eth_utils___is_0x_prefixed, METH_FASTCALL | METH_KEYWORDS, "is_0x_prefixed(value)\n--\n\n" /* docstring */},
-    {"remove_0x_prefix", (PyCFunction)CPyPy__eth_utils___remove_0x_prefix, METH_FASTCALL | METH_KEYWORDS, "remove_0x_prefix(value)\n--\n\n" /* docstring */},
-    {"add_0x_prefix", (PyCFunction)CPyPy__eth_utils___add_0x_prefix, METH_FASTCALL | METH_KEYWORDS, "add_0x_prefix(value)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _eth_utilsmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._eth_utils",
@@ -5074,7 +5074,7 @@ PyObject *CPyInit_dank_mids____eth_utils(void)
     CPyModule_dank_mids____eth_utils_internal = PyModule_Create(&_eth_utilsmodule);
     if (unlikely(CPyModule_dank_mids____eth_utils_internal == NULL))
         goto fail;
-    if (_eth_utils_exec(CPyModule_dank_mids____eth_utils_internal) != 0)
+    if (CPyExec_dank_mids____eth_utils(CPyModule_dank_mids____eth_utils_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____eth_utils_internal;
     fail:
@@ -8336,7 +8336,11 @@ static PyTypeObject CPyType__exceptions___QuiknodeRateLimitError_template_ = {
 };
 static PyTypeObject *CPyType__exceptions___QuiknodeRateLimitError_template = &CPyType__exceptions___QuiknodeRateLimitError_template_;
 
-static int _exceptions_exec(PyObject *module)
+static PyMethodDef _exceptionsmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____exceptions(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____exceptions_internal, "__name__");
@@ -8371,10 +8375,6 @@ static int _exceptions_exec(PyObject *module)
     Py_CLEAR(CPyType__exceptions___QuiknodeRateLimitError);
     return -1;
 }
-static PyMethodDef _exceptionsmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _exceptionsmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._exceptions",
@@ -8393,7 +8393,7 @@ PyObject *CPyInit_dank_mids____exceptions(void)
     CPyModule_dank_mids____exceptions_internal = PyModule_Create(&_exceptionsmodule);
     if (unlikely(CPyModule_dank_mids____exceptions_internal == NULL))
         goto fail;
-    if (_exceptions_exec(CPyModule_dank_mids____exceptions_internal) != 0)
+    if (CPyExec_dank_mids____exceptions(CPyModule_dank_mids____exceptions_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____exceptions_internal;
     fail:
@@ -10585,7 +10585,11 @@ CPyL106: ;
     CPy_DecRef(cpy_r_r241);
     goto CPyL88;
 }
-static int _logging_exec(PyObject *module)
+static PyMethodDef _loggingmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____logging(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____logging_internal, "__name__");
@@ -10614,10 +10618,6 @@ static int _logging_exec(PyObject *module)
     CPyStatic__logging___NOTSET = CPY_INT_TAG;
     return -1;
 }
-static PyMethodDef _loggingmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _loggingmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._logging",
@@ -10636,7 +10636,7 @@ PyObject *CPyInit_dank_mids____logging(void)
     CPyModule_dank_mids____logging_internal = PyModule_Create(&_loggingmodule);
     if (unlikely(CPyModule_dank_mids____logging_internal == NULL))
         goto fail;
-    if (_logging_exec(CPyModule_dank_mids____logging_internal) != 0)
+    if (CPyExec_dank_mids____logging(CPyModule_dank_mids____logging_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____logging_internal;
     fail:
@@ -11083,7 +11083,11 @@ _uid___UIDGenerator_get_next(dank_mids____uid___UIDGeneratorObject *self, void *
     PyObject *retbox = CPyTagged_StealAsObject(retval);
     return retbox;
 }
-static int _uid_exec(PyObject *module)
+static PyMethodDef _uidmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____uid(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____uid_internal, "__name__");
@@ -11103,10 +11107,6 @@ static int _uid_exec(PyObject *module)
     Py_CLEAR(CPyType__uid___UIDGenerator);
     return -1;
 }
-static PyMethodDef _uidmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _uidmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._uid",
@@ -11125,7 +11125,7 @@ PyObject *CPyInit_dank_mids____uid(void)
     CPyModule_dank_mids____uid_internal = PyModule_Create(&_uidmodule);
     if (unlikely(CPyModule_dank_mids____uid_internal == NULL))
         goto fail;
-    if (_uid_exec(CPyModule_dank_mids____uid_internal) != 0)
+    if (CPyExec_dank_mids____uid(CPyModule_dank_mids____uid_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____uid_internal;
     fail:
@@ -12031,7 +12031,15 @@ abi___ABITypedData_set_data(dank_mids____web3___abi___ABITypedDataObject *self, 
     self->_data = tmp;
     return 0;
 }
-static int abi_exec(PyObject *module)
+static PyMethodDef abimodule_methods[] = {
+    {"get_formatter", (PyCFunction)CPyPy_abi___get_formatter, METH_FASTCALL | METH_KEYWORDS, "get_formatter(normalizers, types)\n--\n\n" /* docstring */},
+    {"get_data_tree_map", (PyCFunction)CPyPy_abi___get_data_tree_map, METH_FASTCALL | METH_KEYWORDS, "get_data_tree_map(func)\n--\n\n" /* docstring */},
+    {"strip_abi_types", (PyCFunction)CPyPy_abi___strip_abi_types, METH_FASTCALL | METH_KEYWORDS, "strip_abi_types(data)\n--\n\n" /* docstring */},
+    {"abi_sub_tree", (PyCFunction)CPyPy_abi___abi_sub_tree, METH_FASTCALL | METH_KEYWORDS, "abi_sub_tree(abi_type, data_value)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____web3___abi(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____web3___abi_internal, "__name__");
@@ -12063,14 +12071,6 @@ static int abi_exec(PyObject *module)
     Py_CLEAR(CPyType_abi___ABITypedData);
     return -1;
 }
-static PyMethodDef abimodule_methods[] = {
-    {"get_formatter", (PyCFunction)CPyPy_abi___get_formatter, METH_FASTCALL | METH_KEYWORDS, "get_formatter(normalizers, types)\n--\n\n" /* docstring */},
-    {"get_data_tree_map", (PyCFunction)CPyPy_abi___get_data_tree_map, METH_FASTCALL | METH_KEYWORDS, "get_data_tree_map(func)\n--\n\n" /* docstring */},
-    {"strip_abi_types", (PyCFunction)CPyPy_abi___strip_abi_types, METH_FASTCALL | METH_KEYWORDS, "strip_abi_types(data)\n--\n\n" /* docstring */},
-    {"abi_sub_tree", (PyCFunction)CPyPy_abi___abi_sub_tree, METH_FASTCALL | METH_KEYWORDS, "abi_sub_tree(abi_type, data_value)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef abimodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._web3.abi",
@@ -12089,7 +12089,7 @@ PyObject *CPyInit_dank_mids____web3___abi(void)
     CPyModule_dank_mids____web3___abi_internal = PyModule_Create(&abimodule);
     if (unlikely(CPyModule_dank_mids____web3___abi_internal == NULL))
         goto fail;
-    if (abi_exec(CPyModule_dank_mids____web3___abi_internal) != 0)
+    if (CPyExec_dank_mids____web3___abi(CPyModule_dank_mids____web3___abi_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____web3___abi_internal;
     fail:
@@ -15438,7 +15438,15 @@ PyObject *CPyDef_formatters___abi_request_formatters_gen(void)
     return self;
 }
 
-static int formatters_exec(PyObject *module)
+static PyMethodDef formattersmodule_methods[] = {
+    {"return_as_is", (PyCFunction)CPyPy_formatters___return_as_is, METH_FASTCALL | METH_KEYWORDS, "return_as_is(x)\n--\n\n" /* docstring */},
+    {"abi_request_formatters", (PyCFunction)CPyPy_formatters___abi_request_formatters, METH_FASTCALL | METH_KEYWORDS, "abi_request_formatters(normalizers, abis)\n--\n\n" /* docstring */},
+    {"get_request_formatters", (PyCFunction)CPyPy_formatters___get_request_formatters, METH_FASTCALL | METH_KEYWORDS, "get_request_formatters(method_name)\n--\n\n" /* docstring */},
+    {"_get_response_formatters", (PyCFunction)CPyPy_formatters____get_response_formatters, METH_FASTCALL | METH_KEYWORDS, "_get_response_formatters(method)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids____web3___formatters(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids____web3___formatters_internal, "__name__");
@@ -15471,14 +15479,6 @@ static int formatters_exec(PyObject *module)
     Py_CLEAR(CPyType_formatters___abi_request_formatters_gen);
     return -1;
 }
-static PyMethodDef formattersmodule_methods[] = {
-    {"return_as_is", (PyCFunction)CPyPy_formatters___return_as_is, METH_FASTCALL | METH_KEYWORDS, "return_as_is(x)\n--\n\n" /* docstring */},
-    {"abi_request_formatters", (PyCFunction)CPyPy_formatters___abi_request_formatters, METH_FASTCALL | METH_KEYWORDS, "abi_request_formatters(normalizers, abis)\n--\n\n" /* docstring */},
-    {"get_request_formatters", (PyCFunction)CPyPy_formatters___get_request_formatters, METH_FASTCALL | METH_KEYWORDS, "get_request_formatters(method_name)\n--\n\n" /* docstring */},
-    {"_get_response_formatters", (PyCFunction)CPyPy_formatters____get_response_formatters, METH_FASTCALL | METH_KEYWORDS, "_get_response_formatters(method)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef formattersmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids._web3.formatters",
@@ -15497,7 +15497,7 @@ PyObject *CPyInit_dank_mids____web3___formatters(void)
     CPyModule_dank_mids____web3___formatters_internal = PyModule_Create(&formattersmodule);
     if (unlikely(CPyModule_dank_mids____web3___formatters_internal == NULL))
         goto fail;
-    if (formatters_exec(CPyModule_dank_mids____web3___formatters_internal) != 0)
+    if (CPyExec_dank_mids____web3___formatters(CPyModule_dank_mids____web3___formatters_internal) != 0)
         goto fail;
     return CPyModule_dank_mids____web3___formatters_internal;
     fail:
@@ -17684,7 +17684,11 @@ CPyL69: ;
     CPy_DecRef(cpy_r_r145);
     goto CPyL55;
 }
-static int brownie_patch_exec(PyObject *module)
+static PyMethodDef brownie_patchmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___brownie_patch(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___brownie_patch_internal, "__name__");
@@ -17703,10 +17707,6 @@ static int brownie_patch_exec(PyObject *module)
     Py_CLEAR(modname);
     return -1;
 }
-static PyMethodDef brownie_patchmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef brownie_patchmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.brownie_patch",
@@ -17725,7 +17725,7 @@ PyObject *CPyInit_dank_mids___brownie_patch(void)
     CPyModule_dank_mids___brownie_patch_internal = PyModule_Create(&brownie_patchmodule);
     if (unlikely(CPyModule_dank_mids___brownie_patch_internal == NULL))
         goto fail;
-    if (brownie_patch_exec(CPyModule_dank_mids___brownie_patch_internal) != 0)
+    if (CPyExec_dank_mids___brownie_patch(CPyModule_dank_mids___brownie_patch_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___brownie_patch_internal;
     fail:
@@ -18595,7 +18595,14 @@ _abi___FunctionABI_set_signature(dank_mids___brownie_patch____abi___FunctionABIO
     self->_signature = tmp;
     return 0;
 }
-static int _abi_exec(PyObject *module)
+static PyMethodDef _abimodule_methods[] = {
+    {"get_type_strings", (PyCFunction)CPyPy__abi___get_type_strings, METH_FASTCALL | METH_KEYWORDS, "get_type_strings(abi_params, substitutions=None)\n--\n\n" /* docstring */},
+    {"build_function_signature", (PyCFunction)CPyPy__abi___build_function_signature, METH_FASTCALL | METH_KEYWORDS, "build_function_signature(abi)\n--\n\n" /* docstring */},
+    {"build_function_selector", (PyCFunction)CPyPy__abi___build_function_selector, METH_FASTCALL | METH_KEYWORDS, "build_function_selector(input_signature)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___brownie_patch____abi(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___brownie_patch____abi_internal, "__name__");
@@ -18619,13 +18626,6 @@ static int _abi_exec(PyObject *module)
     Py_CLEAR(CPyType__abi___FunctionABI);
     return -1;
 }
-static PyMethodDef _abimodule_methods[] = {
-    {"get_type_strings", (PyCFunction)CPyPy__abi___get_type_strings, METH_FASTCALL | METH_KEYWORDS, "get_type_strings(abi_params, substitutions=None)\n--\n\n" /* docstring */},
-    {"build_function_signature", (PyCFunction)CPyPy__abi___build_function_signature, METH_FASTCALL | METH_KEYWORDS, "build_function_signature(abi)\n--\n\n" /* docstring */},
-    {"build_function_selector", (PyCFunction)CPyPy__abi___build_function_selector, METH_FASTCALL | METH_KEYWORDS, "build_function_selector(input_signature)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _abimodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.brownie_patch._abi",
@@ -18644,7 +18644,7 @@ PyObject *CPyInit_dank_mids___brownie_patch____abi(void)
     CPyModule_dank_mids___brownie_patch____abi_internal = PyModule_Create(&_abimodule);
     if (unlikely(CPyModule_dank_mids___brownie_patch____abi_internal == NULL))
         goto fail;
-    if (_abi_exec(CPyModule_dank_mids___brownie_patch____abi_internal) != 0)
+    if (CPyExec_dank_mids___brownie_patch____abi(CPyModule_dank_mids___brownie_patch____abi_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___brownie_patch____abi_internal;
     fail:
@@ -21540,7 +21540,25 @@ PyObject *CPyDef_call____request_data_no_args_gen(void)
     return self;
 }
 
-static int call_exec(PyObject *module)
+static PyMethodDef callmodule_methods[] = {
+    {"_patch_call", (PyCFunction)CPyPy_call____patch_call, METH_FASTCALL | METH_KEYWORDS, "_patch_call(call, w3)\n--\n\n" /* docstring */},
+    {"_get_coroutine_fn", (PyCFunction)CPyPy_call____get_coroutine_fn, METH_FASTCALL | METH_KEYWORDS, "_get_coroutine_fn(w3, len_inputs)\n--\n\n" /* docstring */},
+    {"_call_no_args", (PyCFunction)CPyPy_call____call_no_args, METH_FASTCALL | METH_KEYWORDS, "_call_no_args(self)\n--\n\n" /* docstring */},
+    {"encode_input", (PyCFunction)CPyPy_call___encode_input, METH_FASTCALL | METH_KEYWORDS, "encode_input(call, len_inputs, get_request_data, *args)\n--\n\n" /* docstring */},
+    {"decode_output", (PyCFunction)CPyPy_call___decode_output, METH_FASTCALL | METH_KEYWORDS, "decode_output(call, data)\n--\n\n" /* docstring */},
+    {"_request_data_no_args", (PyCFunction)CPyPy_call____request_data_no_args, METH_FASTCALL | METH_KEYWORDS, "_request_data_no_args(call)\n--\n\n" /* docstring */},
+    {"__encode_input", (PyCFunction)CPyPy_call_____encode_input, METH_FASTCALL | METH_KEYWORDS, "__encode_input(abi, signature, *args)\n--\n\n" /* docstring */},
+    {"__decode_output", (PyCFunction)CPyPy_call_____decode_output, METH_FASTCALL | METH_KEYWORDS, "__decode_output(hexstr, abi)\n--\n\n" /* docstring */},
+    {"__validate_output", (PyCFunction)CPyPy_call_____validate_output, METH_FASTCALL | METH_KEYWORDS, "__validate_output(abi, hexstr)\n--\n\n" /* docstring */},
+    {"format_input_but_cache_checksums", (PyCFunction)CPyPy_call___format_input_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "format_input_but_cache_checksums(abi, inputs)\n--\n\n" /* docstring */},
+    {"format_output_but_cache_checksums", (PyCFunction)CPyPy_call___format_output_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "format_output_but_cache_checksums(abi, outputs)\n--\n\n" /* docstring */},
+    {"_format_tuple_but_cache_checksums", (PyCFunction)CPyPy_call____format_tuple_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "_format_tuple_but_cache_checksums(abi_types, values)\n--\n\n" /* docstring */},
+    {"_format_array_but_cache_checksums", (PyCFunction)CPyPy_call____format_array_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "_format_array_but_cache_checksums(abi_type, values)\n--\n\n" /* docstring */},
+    {"_format_single_but_cache_checksums", (PyCFunction)CPyPy_call____format_single_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "_format_single_but_cache_checksums(type_str, value)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___brownie_patch___call(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___brownie_patch___call_internal, "__name__");
@@ -21636,24 +21654,6 @@ static int call_exec(PyObject *module)
     Py_CLEAR(CPyType_call____request_data_no_args_gen);
     return -1;
 }
-static PyMethodDef callmodule_methods[] = {
-    {"_patch_call", (PyCFunction)CPyPy_call____patch_call, METH_FASTCALL | METH_KEYWORDS, "_patch_call(call, w3)\n--\n\n" /* docstring */},
-    {"_get_coroutine_fn", (PyCFunction)CPyPy_call____get_coroutine_fn, METH_FASTCALL | METH_KEYWORDS, "_get_coroutine_fn(w3, len_inputs)\n--\n\n" /* docstring */},
-    {"_call_no_args", (PyCFunction)CPyPy_call____call_no_args, METH_FASTCALL | METH_KEYWORDS, "_call_no_args(self)\n--\n\n" /* docstring */},
-    {"encode_input", (PyCFunction)CPyPy_call___encode_input, METH_FASTCALL | METH_KEYWORDS, "encode_input(call, len_inputs, get_request_data, *args)\n--\n\n" /* docstring */},
-    {"decode_output", (PyCFunction)CPyPy_call___decode_output, METH_FASTCALL | METH_KEYWORDS, "decode_output(call, data)\n--\n\n" /* docstring */},
-    {"_request_data_no_args", (PyCFunction)CPyPy_call____request_data_no_args, METH_FASTCALL | METH_KEYWORDS, "_request_data_no_args(call)\n--\n\n" /* docstring */},
-    {"__encode_input", (PyCFunction)CPyPy_call_____encode_input, METH_FASTCALL | METH_KEYWORDS, "__encode_input(abi, signature, *args)\n--\n\n" /* docstring */},
-    {"__decode_output", (PyCFunction)CPyPy_call_____decode_output, METH_FASTCALL | METH_KEYWORDS, "__decode_output(hexstr, abi)\n--\n\n" /* docstring */},
-    {"__validate_output", (PyCFunction)CPyPy_call_____validate_output, METH_FASTCALL | METH_KEYWORDS, "__validate_output(abi, hexstr)\n--\n\n" /* docstring */},
-    {"format_input_but_cache_checksums", (PyCFunction)CPyPy_call___format_input_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "format_input_but_cache_checksums(abi, inputs)\n--\n\n" /* docstring */},
-    {"format_output_but_cache_checksums", (PyCFunction)CPyPy_call___format_output_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "format_output_but_cache_checksums(abi, outputs)\n--\n\n" /* docstring */},
-    {"_format_tuple_but_cache_checksums", (PyCFunction)CPyPy_call____format_tuple_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "_format_tuple_but_cache_checksums(abi_types, values)\n--\n\n" /* docstring */},
-    {"_format_array_but_cache_checksums", (PyCFunction)CPyPy_call____format_array_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "_format_array_but_cache_checksums(abi_type, values)\n--\n\n" /* docstring */},
-    {"_format_single_but_cache_checksums", (PyCFunction)CPyPy_call____format_single_but_cache_checksums, METH_FASTCALL | METH_KEYWORDS, "_format_single_but_cache_checksums(type_str, value)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef callmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.brownie_patch.call",
@@ -21672,7 +21672,7 @@ PyObject *CPyInit_dank_mids___brownie_patch___call(void)
     CPyModule_dank_mids___brownie_patch___call_internal = PyModule_Create(&callmodule);
     if (unlikely(CPyModule_dank_mids___brownie_patch___call_internal == NULL))
         goto fail;
-    if (call_exec(CPyModule_dank_mids___brownie_patch___call_internal) != 0)
+    if (CPyExec_dank_mids___brownie_patch___call(CPyModule_dank_mids___brownie_patch___call_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___brownie_patch___call_internal;
     fail:
@@ -37286,7 +37286,12 @@ PyObject *CPyDef_overloaded___coroutine_gen___3_23(void)
     return self;
 }
 
-static int overloaded_exec(PyObject *module)
+static PyMethodDef overloadedmodule_methods[] = {
+    {"_patch_overloaded_method", (PyCFunction)CPyPy_overloaded____patch_overloaded_method, METH_FASTCALL | METH_KEYWORDS, "_patch_overloaded_method(call, w3)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___brownie_patch___overloaded(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___brownie_patch___overloaded_internal, "__name__");
@@ -37321,11 +37326,6 @@ static int overloaded_exec(PyObject *module)
     Py_CLEAR(CPyType_overloaded___coroutine_gen___3_23);
     return -1;
 }
-static PyMethodDef overloadedmodule_methods[] = {
-    {"_patch_overloaded_method", (PyCFunction)CPyPy_overloaded____patch_overloaded_method, METH_FASTCALL | METH_KEYWORDS, "_patch_overloaded_method(call, w3)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef overloadedmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.brownie_patch.overloaded",
@@ -37344,7 +37344,7 @@ PyObject *CPyInit_dank_mids___brownie_patch___overloaded(void)
     CPyModule_dank_mids___brownie_patch___overloaded_internal = PyModule_Create(&overloadedmodule);
     if (unlikely(CPyModule_dank_mids___brownie_patch___overloaded_internal == NULL))
         goto fail;
-    if (overloaded_exec(CPyModule_dank_mids___brownie_patch___overloaded_internal) != 0)
+    if (CPyExec_dank_mids___brownie_patch___overloaded(CPyModule_dank_mids___brownie_patch___overloaded_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___brownie_patch___overloaded_internal;
     fail:
@@ -40429,7 +40429,12 @@ PyObject *CPyDef_types___coroutine_DankOverloadedMethod_gen(void)
     return self;
 }
 
-static int types_exec(PyObject *module)
+static PyMethodDef typesmodule_methods[] = {
+    {"_get_method_object", (PyCFunction)CPyPy_types____get_method_object, METH_FASTCALL | METH_KEYWORDS, "_get_method_object(address, abi, name, owner, natspec)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___brownie_patch___types(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___brownie_patch___types_internal, "__name__");
@@ -40455,11 +40460,6 @@ static int types_exec(PyObject *module)
     Py_CLEAR(CPyType_types___coroutine_DankOverloadedMethod_gen);
     return -1;
 }
-static PyMethodDef typesmodule_methods[] = {
-    {"_get_method_object", (PyCFunction)CPyPy_types____get_method_object, METH_FASTCALL | METH_KEYWORDS, "_get_method_object(address, abi, name, owner, natspec)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef typesmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.brownie_patch.types",
@@ -40478,7 +40478,7 @@ PyObject *CPyInit_dank_mids___brownie_patch___types(void)
     CPyModule_dank_mids___brownie_patch___types_internal = PyModule_Create(&typesmodule);
     if (unlikely(CPyModule_dank_mids___brownie_patch___types_internal == NULL))
         goto fail;
-    if (types_exec(CPyModule_dank_mids___brownie_patch___types_internal) != 0)
+    if (CPyExec_dank_mids___brownie_patch___types(CPyModule_dank_mids___brownie_patch___types_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___brownie_patch___types_internal;
     fail:
@@ -42513,7 +42513,11 @@ CPyL60: ;
     CPy_DecRef(cpy_r_r120);
     goto CPyL50;
 }
-static int helpers_exec(PyObject *module)
+static PyMethodDef helpersmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers_internal, "__name__");
@@ -42532,10 +42536,6 @@ static int helpers_exec(PyObject *module)
     Py_CLEAR(modname);
     return -1;
 }
-static PyMethodDef helpersmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef helpersmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers",
@@ -42554,7 +42554,7 @@ PyObject *CPyInit_dank_mids___helpers(void)
     CPyModule_dank_mids___helpers_internal = PyModule_Create(&helpersmodule);
     if (unlikely(CPyModule_dank_mids___helpers_internal == NULL))
         goto fail;
-    if (helpers_exec(CPyModule_dank_mids___helpers_internal) != 0)
+    if (CPyExec_dank_mids___helpers(CPyModule_dank_mids___helpers_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers_internal;
     fail:
@@ -43000,7 +43000,23 @@ PyObject *CPyDef__codec_____mypyc_lambda__0_obj(void)
     return self;
 }
 
-static int _codec_exec(PyObject *module)
+static PyMethodDef _codecmodule_methods[] = {
+    {"decode_raw", (PyCFunction)CPyPy__codec___decode_raw, METH_FASTCALL | METH_KEYWORDS, "decode_raw(data)\n--\n\n" /* docstring */},
+    {"decode_jsonrpc_batch", (PyCFunction)CPyPy__codec___decode_jsonrpc_batch, METH_FASTCALL | METH_KEYWORDS, "decode_jsonrpc_batch(data)\n--\n\n" /* docstring */},
+    {"_encode_hook", (PyCFunction)CPyPy__codec____encode_hook, METH_FASTCALL | METH_KEYWORDS, "_encode_hook(obj)\n--\n\n" /* docstring */},
+    {"_rudimentary_encode_dict_value", (PyCFunction)CPyPy__codec____rudimentary_encode_dict_value, METH_FASTCALL | METH_KEYWORDS, "_rudimentary_encode_dict_value(value)\n--\n\n" /* docstring */},
+    {"_int_to_big_endian", (PyCFunction)CPyPy__codec____int_to_big_endian, METH_FASTCALL | METH_KEYWORDS, "_int_to_big_endian(value)\n--\n\n" /* docstring */},
+    {"_encode_uint_256", (PyCFunction)CPyPy__codec____encode_uint_256, METH_FASTCALL | METH_KEYWORDS, "_encode_uint_256(i)\n--\n\n" /* docstring */},
+    {"__encode_new", (PyCFunction)CPyPy__codec_____encode_new, METH_FASTCALL | METH_KEYWORDS, "__encode_new(values)\n--\n\n" /* docstring */},
+    {"__encode_elements_new", (PyCFunction)CPyPy__codec_____encode_elements_new, METH_FASTCALL | METH_KEYWORDS, "__encode_elements_new(values)\n--\n\n" /* docstring */},
+    {"mcall_encode", (PyCFunction)CPyPy__codec___mcall_encode, METH_FASTCALL | METH_KEYWORDS, "mcall_encode(data)\n--\n\n" /* docstring */},
+    {"mcall_decode", (PyCFunction)CPyPy__codec___mcall_decode, METH_FASTCALL | METH_KEYWORDS, "mcall_decode(data)\n--\n\n" /* docstring */},
+    {"__import_from_types", (PyCFunction)CPyPy__codec_____import_from_types, METH_FASTCALL | METH_KEYWORDS, "__import_from_types()\n--\n\n" /* docstring */},
+    {"__make_decode_batch", (PyCFunction)CPyPy__codec_____make_decode_batch, METH_FASTCALL | METH_KEYWORDS, "__make_decode_batch()\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers____codec(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers____codec_internal, "__name__");
@@ -43046,22 +43062,6 @@ static int _codec_exec(PyObject *module)
     Py_CLEAR(CPyType__codec_____mypyc_lambda__0_obj);
     return -1;
 }
-static PyMethodDef _codecmodule_methods[] = {
-    {"decode_raw", (PyCFunction)CPyPy__codec___decode_raw, METH_FASTCALL | METH_KEYWORDS, "decode_raw(data)\n--\n\n" /* docstring */},
-    {"decode_jsonrpc_batch", (PyCFunction)CPyPy__codec___decode_jsonrpc_batch, METH_FASTCALL | METH_KEYWORDS, "decode_jsonrpc_batch(data)\n--\n\n" /* docstring */},
-    {"_encode_hook", (PyCFunction)CPyPy__codec____encode_hook, METH_FASTCALL | METH_KEYWORDS, "_encode_hook(obj)\n--\n\n" /* docstring */},
-    {"_rudimentary_encode_dict_value", (PyCFunction)CPyPy__codec____rudimentary_encode_dict_value, METH_FASTCALL | METH_KEYWORDS, "_rudimentary_encode_dict_value(value)\n--\n\n" /* docstring */},
-    {"_int_to_big_endian", (PyCFunction)CPyPy__codec____int_to_big_endian, METH_FASTCALL | METH_KEYWORDS, "_int_to_big_endian(value)\n--\n\n" /* docstring */},
-    {"_encode_uint_256", (PyCFunction)CPyPy__codec____encode_uint_256, METH_FASTCALL | METH_KEYWORDS, "_encode_uint_256(i)\n--\n\n" /* docstring */},
-    {"__encode_new", (PyCFunction)CPyPy__codec_____encode_new, METH_FASTCALL | METH_KEYWORDS, "__encode_new(values)\n--\n\n" /* docstring */},
-    {"__encode_elements_new", (PyCFunction)CPyPy__codec_____encode_elements_new, METH_FASTCALL | METH_KEYWORDS, "__encode_elements_new(values)\n--\n\n" /* docstring */},
-    {"mcall_encode", (PyCFunction)CPyPy__codec___mcall_encode, METH_FASTCALL | METH_KEYWORDS, "mcall_encode(data)\n--\n\n" /* docstring */},
-    {"mcall_decode", (PyCFunction)CPyPy__codec___mcall_decode, METH_FASTCALL | METH_KEYWORDS, "mcall_decode(data)\n--\n\n" /* docstring */},
-    {"__import_from_types", (PyCFunction)CPyPy__codec_____import_from_types, METH_FASTCALL | METH_KEYWORDS, "__import_from_types()\n--\n\n" /* docstring */},
-    {"__make_decode_batch", (PyCFunction)CPyPy__codec_____make_decode_batch, METH_FASTCALL | METH_KEYWORDS, "__make_decode_batch()\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _codecmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers._codec",
@@ -43080,7 +43080,7 @@ PyObject *CPyInit_dank_mids___helpers____codec(void)
     CPyModule_dank_mids___helpers____codec_internal = PyModule_Create(&_codecmodule);
     if (unlikely(CPyModule_dank_mids___helpers____codec_internal == NULL))
         goto fail;
-    if (_codec_exec(CPyModule_dank_mids___helpers____codec_internal) != 0)
+    if (CPyExec_dank_mids___helpers____codec(CPyModule_dank_mids___helpers____codec_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers____codec_internal;
     fail:
@@ -47862,7 +47862,18 @@ CPyL215: ;
     CPy_DecRef(cpy_r_r485);
     goto CPyL175;
 }
-static int _errors_exec(PyObject *module)
+static PyMethodDef _errorsmodule_methods[] = {
+    {"error_logger_log_debug", (PyCFunction)CPyPy__errors___error_logger_log_debug, METH_FASTCALL | METH_KEYWORDS, "error_logger_log_debug(msg, *args)\n--\n\n" /* docstring */},
+    {"revert_logger_log_debug", (PyCFunction)CPyPy__errors___revert_logger_log_debug, METH_FASTCALL | METH_KEYWORDS, "revert_logger_log_debug(msg, *args)\n--\n\n" /* docstring */},
+    {"log_internal_error", (PyCFunction)CPyPy__errors___log_internal_error, METH_FASTCALL | METH_KEYWORDS, "log_internal_error(logger, batch, exc)\n--\n\n" /* docstring */},
+    {"needs_full_request_spec", (PyCFunction)CPyPy__errors___needs_full_request_spec, METH_FASTCALL | METH_KEYWORDS, "needs_full_request_spec(response)\n--\n\n" /* docstring */},
+    {"is_call_revert", (PyCFunction)CPyPy__errors___is_call_revert, METH_FASTCALL | METH_KEYWORDS, "is_call_revert(e)\n--\n\n" /* docstring */},
+    {"is_revert_bytes", (PyCFunction)CPyPy__errors___is_revert_bytes, METH_FASTCALL | METH_KEYWORDS, "is_revert_bytes(data)\n--\n\n" /* docstring */},
+    {"log_request_type_switch", (PyCFunction)CPyPy__errors___log_request_type_switch, METH_FASTCALL | METH_KEYWORDS, "log_request_type_switch()\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers____errors(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers____errors_internal, "__name__");
@@ -47903,17 +47914,6 @@ static int _errors_exec(PyObject *module)
     CPyStatic__errors___INDIVIDUAL_CALL_REVERT_STRINGS = NULL;
     return -1;
 }
-static PyMethodDef _errorsmodule_methods[] = {
-    {"error_logger_log_debug", (PyCFunction)CPyPy__errors___error_logger_log_debug, METH_FASTCALL | METH_KEYWORDS, "error_logger_log_debug(msg, *args)\n--\n\n" /* docstring */},
-    {"revert_logger_log_debug", (PyCFunction)CPyPy__errors___revert_logger_log_debug, METH_FASTCALL | METH_KEYWORDS, "revert_logger_log_debug(msg, *args)\n--\n\n" /* docstring */},
-    {"log_internal_error", (PyCFunction)CPyPy__errors___log_internal_error, METH_FASTCALL | METH_KEYWORDS, "log_internal_error(logger, batch, exc)\n--\n\n" /* docstring */},
-    {"needs_full_request_spec", (PyCFunction)CPyPy__errors___needs_full_request_spec, METH_FASTCALL | METH_KEYWORDS, "needs_full_request_spec(response)\n--\n\n" /* docstring */},
-    {"is_call_revert", (PyCFunction)CPyPy__errors___is_call_revert, METH_FASTCALL | METH_KEYWORDS, "is_call_revert(e)\n--\n\n" /* docstring */},
-    {"is_revert_bytes", (PyCFunction)CPyPy__errors___is_revert_bytes, METH_FASTCALL | METH_KEYWORDS, "is_revert_bytes(data)\n--\n\n" /* docstring */},
-    {"log_request_type_switch", (PyCFunction)CPyPy__errors___log_request_type_switch, METH_FASTCALL | METH_KEYWORDS, "log_request_type_switch()\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _errorsmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers._errors",
@@ -47932,7 +47932,7 @@ PyObject *CPyInit_dank_mids___helpers____errors(void)
     CPyModule_dank_mids___helpers____errors_internal = PyModule_Create(&_errorsmodule);
     if (unlikely(CPyModule_dank_mids___helpers____errors_internal == NULL))
         goto fail;
-    if (_errors_exec(CPyModule_dank_mids___helpers____errors_internal) != 0)
+    if (CPyExec_dank_mids___helpers____errors(CPyModule_dank_mids___helpers____errors_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers____errors_internal;
     fail:
@@ -49824,7 +49824,13 @@ PyObject *CPyDef__gather___first_completed_gen(void)
     return self;
 }
 
-static int _gather_exec(PyObject *module)
+static PyMethodDef _gathermodule_methods[] = {
+    {"gatherish", (PyCFunction)CPyPy__gather___gatherish, METH_FASTCALL | METH_KEYWORDS, "gatherish(coros, *, name=None)\n--\n\n" /* docstring */},
+    {"first_completed", (PyCFunction)CPyPy__gather___first_completed, METH_FASTCALL | METH_KEYWORDS, "first_completed(*fs, cancel=False)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers____gather(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers____gather_internal, "__name__");
@@ -49859,12 +49865,6 @@ static int _gather_exec(PyObject *module)
     Py_CLEAR(CPyType__gather___first_completed_gen);
     return -1;
 }
-static PyMethodDef _gathermodule_methods[] = {
-    {"gatherish", (PyCFunction)CPyPy__gather___gatherish, METH_FASTCALL | METH_KEYWORDS, "gatherish(coros, *, name=None)\n--\n\n" /* docstring */},
-    {"first_completed", (PyCFunction)CPyPy__gather___first_completed, METH_FASTCALL | METH_KEYWORDS, "first_completed(*fs, cancel=False)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _gathermodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers._gather",
@@ -49883,7 +49883,7 @@ PyObject *CPyInit_dank_mids___helpers____gather(void)
     CPyModule_dank_mids___helpers____gather_internal = PyModule_Create(&_gathermodule);
     if (unlikely(CPyModule_dank_mids___helpers____gather_internal == NULL))
         goto fail;
-    if (_gather_exec(CPyModule_dank_mids___helpers____gather_internal) != 0)
+    if (CPyExec_dank_mids___helpers____gather(CPyModule_dank_mids___helpers____gather_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers____gather_internal;
     fail:
@@ -53608,7 +53608,11 @@ PyObject *CPyDef__weaklist_____iter___3_WeakList_gen(void)
     return self;
 }
 
-static int _weaklist_exec(PyObject *module)
+static PyMethodDef _weaklistmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers____weaklist(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers____weaklist_internal, "__name__");
@@ -53634,10 +53638,6 @@ static int _weaklist_exec(PyObject *module)
     Py_CLEAR(CPyType__weaklist_____iter___3_WeakList_gen);
     return -1;
 }
-static PyMethodDef _weaklistmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef _weaklistmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers._weaklist",
@@ -53656,7 +53656,7 @@ PyObject *CPyInit_dank_mids___helpers____weaklist(void)
     CPyModule_dank_mids___helpers____weaklist_internal = PyModule_Create(&_weaklistmodule);
     if (unlikely(CPyModule_dank_mids___helpers____weaklist_internal == NULL))
         goto fail;
-    if (_weaklist_exec(CPyModule_dank_mids___helpers____weaklist_internal) != 0)
+    if (CPyExec_dank_mids___helpers____weaklist(CPyModule_dank_mids___helpers____weaklist_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers____weaklist_internal;
     fail:
@@ -54677,65 +54677,48 @@ char CPyDef__weaklist___WeakList___append(PyObject *cpy_r_self, PyObject *cpy_r_
     PyObject *cpy_r_r1;
     PyObject *cpy_r_r2;
     PyObject *cpy_r_r3;
-    PyObject *cpy_r_r4;
-    PyObject **cpy_r_r6;
-    PyObject *cpy_r_r7;
-    PyObject *cpy_r_r8;
-    CPyTagged cpy_r_r9;
-    PyObject *cpy_r_r10;
-    int32_t cpy_r_r11;
-    char cpy_r_r12;
-    char cpy_r_r13;
+    CPyTagged cpy_r_r4;
+    PyObject *cpy_r_r5;
+    int32_t cpy_r_r6;
+    char cpy_r_r7;
+    char cpy_r_r8;
     cpy_r_r0 = CPyStatics[624]; /* '_gc_callback' */
     cpy_r_r1 = CPyObject_GetAttr(cpy_r_self, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "append", 42, CPyStatic__weaklist___globals);
-        goto CPyL6;
+        goto CPyL5;
     }
-    cpy_r_r2 = CPyStatic__weaklist___globals;
-    cpy_r_r3 = CPyStatics[625]; /* 'ref' */
-    cpy_r_r4 = CPyDict_GetItem(cpy_r_r2, cpy_r_r3);
-    if (unlikely(cpy_r_r4 == NULL)) {
-        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "append", 42, CPyStatic__weaklist___globals);
-        goto CPyL7;
-    }
-    PyObject *cpy_r_r5[2] = {cpy_r_item, cpy_r_r1};
-    cpy_r_r6 = (PyObject **)&cpy_r_r5;
-    cpy_r_r7 = PyObject_Vectorcall(cpy_r_r4, cpy_r_r6, 2, 0);
-    CPy_DECREF(cpy_r_r4);
-    if (unlikely(cpy_r_r7 == NULL)) {
-        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "append", 42, CPyStatic__weaklist___globals);
-        goto CPyL7;
-    }
+    cpy_r_r2 = PyWeakref_NewRef(cpy_r_item, cpy_r_r1);
     CPy_DECREF(cpy_r_r1);
-    cpy_r_r8 = ((dank_mids___helpers____weaklist___WeakListObject *)cpy_r_self)->__refs;
-    if (unlikely(cpy_r_r8 == NULL)) {
-        CPy_AttributeError("dank_mids\\helpers\\_weaklist.py", "append", "WeakList", "_refs", 42, CPyStatic__weaklist___globals);
-        goto CPyL8;
-    }
-    CPy_INCREF(cpy_r_r8);
-CPyL4: ;
-    cpy_r_r9 = CPyTagged_Id(cpy_r_item);
-    cpy_r_r10 = CPyTagged_StealAsObject(cpy_r_r9);
-    cpy_r_r11 = CPyDict_SetItem(cpy_r_r8, cpy_r_r10, cpy_r_r7);
-    CPy_DECREF(cpy_r_r8);
-    CPy_DECREF(cpy_r_r10);
-    CPy_DECREF(cpy_r_r7);
-    cpy_r_r12 = cpy_r_r11 >= 0;
-    if (unlikely(!cpy_r_r12)) {
+    if (unlikely(cpy_r_r2 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "append", 42, CPyStatic__weaklist___globals);
+        goto CPyL5;
+    }
+    cpy_r_r3 = ((dank_mids___helpers____weaklist___WeakListObject *)cpy_r_self)->__refs;
+    if (unlikely(cpy_r_r3 == NULL)) {
+        CPy_AttributeError("dank_mids\\helpers\\_weaklist.py", "append", "WeakList", "_refs", 42, CPyStatic__weaklist___globals);
         goto CPyL6;
+    }
+    CPy_INCREF(cpy_r_r3);
+CPyL3: ;
+    cpy_r_r4 = CPyTagged_Id(cpy_r_item);
+    cpy_r_r5 = CPyTagged_StealAsObject(cpy_r_r4);
+    cpy_r_r6 = CPyDict_SetItem(cpy_r_r3, cpy_r_r5, cpy_r_r2);
+    CPy_DECREF(cpy_r_r3);
+    CPy_DECREF(cpy_r_r5);
+    CPy_DECREF(cpy_r_r2);
+    cpy_r_r7 = cpy_r_r6 >= 0;
+    if (unlikely(!cpy_r_r7)) {
+        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "append", 42, CPyStatic__weaklist___globals);
+        goto CPyL5;
     }
     return 1;
+CPyL5: ;
+    cpy_r_r8 = 2;
+    return cpy_r_r8;
 CPyL6: ;
-    cpy_r_r13 = 2;
-    return cpy_r_r13;
-CPyL7: ;
-    CPy_DecRef(cpy_r_r1);
-    goto CPyL6;
-CPyL8: ;
-    CPy_DecRef(cpy_r_r7);
-    goto CPyL6;
+    CPy_DecRef(cpy_r_r2);
+    goto CPyL5;
 }
 
 PyObject *CPyPy__weaklist___WeakList___append(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
@@ -54775,130 +54758,115 @@ char CPyDef__weaklist___WeakList___extend(PyObject *cpy_r_self, PyObject *cpy_r_
     PyObject *cpy_r_r5;
     CPyTagged cpy_r_r6;
     PyObject *cpy_r_r7;
-    PyObject *cpy_r_r8;
+    tuple_T2IO cpy_r_r8;
     PyObject *cpy_r_r9;
-    PyObject **cpy_r_r11;
-    PyObject *cpy_r_r12;
-    tuple_T2IO cpy_r_r13;
-    PyObject *cpy_r_r14;
-    int32_t cpy_r_r15;
-    char cpy_r_r16;
-    char cpy_r_r17;
-    int32_t cpy_r_r18;
-    char cpy_r_r19;
-    char cpy_r_r20;
+    int32_t cpy_r_r10;
+    char cpy_r_r11;
+    char cpy_r_r12;
+    int32_t cpy_r_r13;
+    char cpy_r_r14;
+    char cpy_r_r15;
     cpy_r_r0 = CPyStatics[624]; /* '_gc_callback' */
     cpy_r_r1 = CPyObject_GetAttr(cpy_r_self, cpy_r_r0);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 45, CPyStatic__weaklist___globals);
-        goto CPyL11;
+        goto CPyL10;
     }
     cpy_r_r2 = ((dank_mids___helpers____weaklist___WeakListObject *)cpy_r_self)->__refs;
     if (unlikely(cpy_r_r2 == NULL)) {
         CPy_AttributeError("dank_mids\\helpers\\_weaklist.py", "extend", "WeakList", "_refs", 46, CPyStatic__weaklist___globals);
-        goto CPyL12;
+        goto CPyL11;
     }
     CPy_INCREF(cpy_r_r2);
 CPyL2: ;
     cpy_r_r3 = PyList_New(0);
     if (unlikely(cpy_r_r3 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 46, CPyStatic__weaklist___globals);
-        goto CPyL13;
+        goto CPyL12;
     }
     cpy_r_r4 = PyObject_GetIter(cpy_r_items);
     if (unlikely(cpy_r_r4 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 46, CPyStatic__weaklist___globals);
-        goto CPyL14;
+        goto CPyL13;
     }
 CPyL4: ;
     cpy_r_r5 = PyIter_Next(cpy_r_r4);
-    if (cpy_r_r5 == NULL) goto CPyL15;
+    if (cpy_r_r5 == NULL) goto CPyL14;
     cpy_r_r6 = CPyTagged_Id(cpy_r_r5);
-    cpy_r_r7 = CPyStatic__weaklist___globals;
-    cpy_r_r8 = CPyStatics[625]; /* 'ref' */
-    cpy_r_r9 = CPyDict_GetItem(cpy_r_r7, cpy_r_r8);
-    if (unlikely(cpy_r_r9 == NULL)) {
-        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 46, CPyStatic__weaklist___globals);
-        goto CPyL16;
-    }
-    PyObject *cpy_r_r10[2] = {cpy_r_r5, cpy_r_r1};
-    cpy_r_r11 = (PyObject **)&cpy_r_r10;
-    cpy_r_r12 = PyObject_Vectorcall(cpy_r_r9, cpy_r_r11, 2, 0);
-    CPy_DECREF(cpy_r_r9);
-    if (unlikely(cpy_r_r12 == NULL)) {
-        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 46, CPyStatic__weaklist___globals);
-        goto CPyL16;
-    }
+    cpy_r_r7 = PyWeakref_NewRef(cpy_r_r5, cpy_r_r1);
     CPy_DECREF(cpy_r_r5);
-    cpy_r_r13.f0 = cpy_r_r6;
-    cpy_r_r13.f1 = cpy_r_r12;
-    cpy_r_r14 = PyTuple_New(2);
-    if (unlikely(cpy_r_r14 == NULL))
-        CPyError_OutOfMemory();
-    PyObject *__tmp272 = CPyTagged_StealAsObject(cpy_r_r13.f0);
-    PyTuple_SET_ITEM(cpy_r_r14, 0, __tmp272);
-    PyObject *__tmp273 = cpy_r_r13.f1;
-    PyTuple_SET_ITEM(cpy_r_r14, 1, __tmp273);
-    cpy_r_r15 = PyList_Append(cpy_r_r3, cpy_r_r14);
-    CPy_DECREF(cpy_r_r14);
-    cpy_r_r16 = cpy_r_r15 >= 0;
-    if (unlikely(!cpy_r_r16)) {
+    if (unlikely(cpy_r_r7 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 46, CPyStatic__weaklist___globals);
-        goto CPyL17;
+        goto CPyL15;
+    }
+    cpy_r_r8.f0 = cpy_r_r6;
+    cpy_r_r8.f1 = cpy_r_r7;
+    cpy_r_r9 = PyTuple_New(2);
+    if (unlikely(cpy_r_r9 == NULL))
+        CPyError_OutOfMemory();
+    PyObject *__tmp272 = CPyTagged_StealAsObject(cpy_r_r8.f0);
+    PyTuple_SET_ITEM(cpy_r_r9, 0, __tmp272);
+    PyObject *__tmp273 = cpy_r_r8.f1;
+    PyTuple_SET_ITEM(cpy_r_r9, 1, __tmp273);
+    cpy_r_r10 = PyList_Append(cpy_r_r3, cpy_r_r9);
+    CPy_DECREF(cpy_r_r9);
+    cpy_r_r11 = cpy_r_r10 >= 0;
+    if (unlikely(!cpy_r_r11)) {
+        CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 46, CPyStatic__weaklist___globals);
+        goto CPyL16;
     } else
         goto CPyL4;
-CPyL8: ;
-    cpy_r_r17 = CPy_NoErrOccurred();
-    if (unlikely(!cpy_r_r17)) {
+CPyL7: ;
+    cpy_r_r12 = CPy_NoErrOccurred();
+    if (unlikely(!cpy_r_r12)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 46, CPyStatic__weaklist___globals);
-        goto CPyL18;
+        goto CPyL17;
     }
-    cpy_r_r18 = CPyDict_UpdateFromAny(cpy_r_r2, cpy_r_r3);
+    cpy_r_r13 = CPyDict_UpdateFromAny(cpy_r_r2, cpy_r_r3);
     CPy_DECREF(cpy_r_r2);
     CPy_DECREF_NO_IMM(cpy_r_r3);
-    cpy_r_r19 = cpy_r_r18 >= 0;
-    if (unlikely(!cpy_r_r19)) {
+    cpy_r_r14 = cpy_r_r13 >= 0;
+    if (unlikely(!cpy_r_r14)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "extend", 46, CPyStatic__weaklist___globals);
-        goto CPyL11;
+        goto CPyL10;
     }
     return 1;
+CPyL10: ;
+    cpy_r_r15 = 2;
+    return cpy_r_r15;
 CPyL11: ;
-    cpy_r_r20 = 2;
-    return cpy_r_r20;
+    CPy_DecRef(cpy_r_r1);
+    goto CPyL10;
 CPyL12: ;
     CPy_DecRef(cpy_r_r1);
-    goto CPyL11;
+    CPy_DecRef(cpy_r_r2);
+    goto CPyL10;
 CPyL13: ;
     CPy_DecRef(cpy_r_r1);
     CPy_DecRef(cpy_r_r2);
-    goto CPyL11;
+    CPy_DecRef(cpy_r_r3);
+    goto CPyL10;
 CPyL14: ;
+    CPy_DECREF(cpy_r_r1);
+    CPy_DECREF(cpy_r_r4);
+    goto CPyL7;
+CPyL15: ;
     CPy_DecRef(cpy_r_r1);
     CPy_DecRef(cpy_r_r2);
     CPy_DecRef(cpy_r_r3);
-    goto CPyL11;
-CPyL15: ;
-    CPy_DECREF(cpy_r_r1);
-    CPy_DECREF(cpy_r_r4);
-    goto CPyL8;
+    CPy_DecRef(cpy_r_r4);
+    CPyTagged_DecRef(cpy_r_r6);
+    goto CPyL10;
 CPyL16: ;
     CPy_DecRef(cpy_r_r1);
     CPy_DecRef(cpy_r_r2);
     CPy_DecRef(cpy_r_r3);
     CPy_DecRef(cpy_r_r4);
-    CPy_DecRef(cpy_r_r5);
-    CPyTagged_DecRef(cpy_r_r6);
-    goto CPyL11;
+    goto CPyL10;
 CPyL17: ;
-    CPy_DecRef(cpy_r_r1);
     CPy_DecRef(cpy_r_r2);
     CPy_DecRef(cpy_r_r3);
-    CPy_DecRef(cpy_r_r4);
-    goto CPyL11;
-CPyL18: ;
-    CPy_DecRef(cpy_r_r2);
-    CPy_DecRef(cpy_r_r3);
-    goto CPyL11;
+    goto CPyL10;
 }
 
 PyObject *CPyPy__weaklist___WeakList___extend(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
@@ -54986,7 +54954,7 @@ CPyL1: ;
     } else
         goto CPyL9;
 CPyL5: ;
-    cpy_r_r9 = CPyStatics[626]; /* 'list.remove(x): x not in list' */
+    cpy_r_r9 = CPyStatics[625]; /* 'list.remove(x): x not in list' */
     cpy_r_r10 = CPyModule_builtins;
     cpy_r_r11 = CPyStatics[179]; /* 'ValueError' */
     cpy_r_r12 = CPyObject_GetAttr(cpy_r_r10, cpy_r_r11);
@@ -55087,7 +55055,7 @@ char CPyDef__weaklist___WeakList____gc_callback(PyObject *cpy_r_self, PyObject *
     CPy_INCREF(cpy_r_r0);
 CPyL1: ;
     cpy_r_r1 = CPyTagged_Id(cpy_r_item);
-    cpy_r_r2 = CPyStatics[627]; /* 'pop' */
+    cpy_r_r2 = CPyStatics[626]; /* 'pop' */
     cpy_r_r3 = CPyTagged_StealAsObject(cpy_r_r1);
     cpy_r_r4 = Py_None;
     PyObject *cpy_r_r5[3] = {cpy_r_r0, cpy_r_r3, cpy_r_r4};
@@ -55326,7 +55294,7 @@ CPyL3: ;
         goto CPyL26;
     }
     cpy_r_r41 = CPyStatic__weaklist___globals;
-    cpy_r_r42 = CPyStatics[625]; /* 'ref' */
+    cpy_r_r42 = CPyStatics[628]; /* 'ref' */
     cpy_r_r43 = CPyDict_GetItem(cpy_r_r41, cpy_r_r42);
     if (unlikely(cpy_r_r43 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 9, CPyStatic__weaklist___globals);
@@ -55351,7 +55319,7 @@ CPyL3: ;
         goto CPyL26;
     }
     cpy_r_r50 = CPyStatic__weaklist___globals;
-    cpy_r_r51 = CPyStatics[628]; /* 'Generic' */
+    cpy_r_r51 = CPyStatics[627]; /* 'Generic' */
     cpy_r_r52 = CPyDict_GetItem(cpy_r_r50, cpy_r_r51);
     if (unlikely(cpy_r_r52 == NULL)) {
         CPy_AddTraceback("dank_mids\\helpers\\_weaklist.py", "<module>", 13, CPyStatic__weaklist___globals);
@@ -55434,7 +55402,12 @@ CPyL30: ;
     CPy_DecRef(cpy_r_r60);
     goto CPyL26;
 }
-static int batch_size_exec(PyObject *module)
+static PyMethodDef batch_sizemodule_methods[] = {
+    {"log_check", (PyCFunction)CPyPy_batch_size___log_check, METH_FASTCALL | METH_KEYWORDS, "log_check(batch_type, member_type, num_calls)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers___batch_size(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers___batch_size_internal, "__name__");
@@ -55457,11 +55430,6 @@ static int batch_size_exec(PyObject *module)
     CPyStatic_batch_size____log_info = NULL;
     return -1;
 }
-static PyMethodDef batch_sizemodule_methods[] = {
-    {"log_check", (PyCFunction)CPyPy_batch_size___log_check, METH_FASTCALL | METH_KEYWORDS, "log_check(batch_type, member_type, num_calls)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef batch_sizemodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers.batch_size",
@@ -55480,7 +55448,7 @@ PyObject *CPyInit_dank_mids___helpers___batch_size(void)
     CPyModule_dank_mids___helpers___batch_size_internal = PyModule_Create(&batch_sizemodule);
     if (unlikely(CPyModule_dank_mids___helpers___batch_size_internal == NULL))
         goto fail;
-    if (batch_size_exec(CPyModule_dank_mids___helpers___batch_size_internal) != 0)
+    if (CPyExec_dank_mids___helpers___batch_size(CPyModule_dank_mids___helpers___batch_size_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers___batch_size_internal;
     fail:
@@ -55699,7 +55667,12 @@ CPyL14: ;
     cpy_r_r32 = 2;
     return cpy_r_r32;
 }
-static int hashing_exec(PyObject *module)
+static PyMethodDef hashingmodule_methods[] = {
+    {"make_hashable", (PyCFunction)CPyPy_hashing___make_hashable, METH_FASTCALL | METH_KEYWORDS, "make_hashable(obj)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers___hashing(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers___hashing_internal, "__name__");
@@ -55718,11 +55691,6 @@ static int hashing_exec(PyObject *module)
     Py_CLEAR(modname);
     return -1;
 }
-static PyMethodDef hashingmodule_methods[] = {
-    {"make_hashable", (PyCFunction)CPyPy_hashing___make_hashable, METH_FASTCALL | METH_KEYWORDS, "make_hashable(obj)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef hashingmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers.hashing",
@@ -55741,7 +55709,7 @@ PyObject *CPyInit_dank_mids___helpers___hashing(void)
     CPyModule_dank_mids___helpers___hashing_internal = PyModule_Create(&hashingmodule);
     if (unlikely(CPyModule_dank_mids___helpers___hashing_internal == NULL))
         goto fail;
-    if (hashing_exec(CPyModule_dank_mids___helpers___hashing_internal) != 0)
+    if (CPyExec_dank_mids___helpers___hashing(CPyModule_dank_mids___helpers___hashing_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers___hashing_internal;
     fail:
@@ -56623,7 +56591,13 @@ lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj_set___3_mypyc_env__(da
     self->___mypyc_env__ = tmp;
     return 0;
 }
-static int lru_cache_exec(PyObject *module)
+static PyMethodDef lru_cachemodule_methods[] = {
+    {"lru_cache_lite", (PyCFunction)CPyPy_lru_cache___lru_cache_lite, METH_FASTCALL | METH_KEYWORDS, "lru_cache_lite(func)\n--\n\n" /* docstring */},
+    {"lru_cache_lite_nonull", (PyCFunction)CPyPy_lru_cache___lru_cache_lite_nonull, METH_FASTCALL | METH_KEYWORDS, "lru_cache_lite_nonull(func)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers___lru_cache(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers___lru_cache_internal, "__name__");
@@ -56658,12 +56632,6 @@ static int lru_cache_exec(PyObject *module)
     Py_CLEAR(CPyType_lru_cache___lru_cache_lite_wrap_lru_cache_lite_nonull_obj);
     return -1;
 }
-static PyMethodDef lru_cachemodule_methods[] = {
-    {"lru_cache_lite", (PyCFunction)CPyPy_lru_cache___lru_cache_lite, METH_FASTCALL | METH_KEYWORDS, "lru_cache_lite(func)\n--\n\n" /* docstring */},
-    {"lru_cache_lite_nonull", (PyCFunction)CPyPy_lru_cache___lru_cache_lite_nonull, METH_FASTCALL | METH_KEYWORDS, "lru_cache_lite_nonull(func)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef lru_cachemodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers.lru_cache",
@@ -56682,7 +56650,7 @@ PyObject *CPyInit_dank_mids___helpers___lru_cache(void)
     CPyModule_dank_mids___helpers___lru_cache_internal = PyModule_Create(&lru_cachemodule);
     if (unlikely(CPyModule_dank_mids___helpers___lru_cache_internal == NULL))
         goto fail;
-    if (lru_cache_exec(CPyModule_dank_mids___helpers___lru_cache_internal) != 0)
+    if (CPyExec_dank_mids___helpers___lru_cache(CPyModule_dank_mids___helpers___lru_cache_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers___lru_cache_internal;
     fail:
@@ -57646,7 +57614,13 @@ CPyL15: ;
     cpy_r_r49 = 2;
     return cpy_r_r49;
 }
-static int method_exec(PyObject *module)
+static PyMethodDef methodmodule_methods[] = {
+    {"get_len", (PyCFunction)CPyPy_method___get_len, METH_FASTCALL | METH_KEYWORDS, "get_len(method)\n--\n\n" /* docstring */},
+    {"should_batch", (PyCFunction)CPyPy_method___should_batch, METH_FASTCALL | METH_KEYWORDS, "should_batch(method)\n--\n\n" /* docstring */},
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___helpers___method(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___helpers___method_internal, "__name__");
@@ -57670,12 +57644,6 @@ static int method_exec(PyObject *module)
     CPyStatic_method___BYPASS_METHODS = (tuple_T4OOOO) { NULL, NULL, NULL, NULL };
     return -1;
 }
-static PyMethodDef methodmodule_methods[] = {
-    {"get_len", (PyCFunction)CPyPy_method___get_len, METH_FASTCALL | METH_KEYWORDS, "get_len(method)\n--\n\n" /* docstring */},
-    {"should_batch", (PyCFunction)CPyPy_method___should_batch, METH_FASTCALL | METH_KEYWORDS, "should_batch(method)\n--\n\n" /* docstring */},
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef methodmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.helpers.method",
@@ -57694,7 +57662,7 @@ PyObject *CPyInit_dank_mids___helpers___method(void)
     CPyModule_dank_mids___helpers___method_internal = PyModule_Create(&methodmodule);
     if (unlikely(CPyModule_dank_mids___helpers___method_internal == NULL))
         goto fail;
-    if (method_exec(CPyModule_dank_mids___helpers___method_internal) != 0)
+    if (CPyExec_dank_mids___helpers___method(CPyModule_dank_mids___helpers___method_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___helpers___method_internal;
     fail:
@@ -57718,7 +57686,7 @@ CPyTagged CPyDef_method___get_len(PyObject *cpy_r_method) {
     if (!cpy_r_r1) goto CPyL2;
     return 10;
 CPyL2: ;
-    cpy_r_r2 = CPyStatics[924]; /* frozenset({'eth_getCode', 'eth_getTransaction'}) */
+    cpy_r_r2 = CPyStatics[924]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
     cpy_r_r3 = PySet_Contains(cpy_r_r2, cpy_r_method);
     cpy_r_r4 = cpy_r_r3 >= 0;
     if (unlikely(!cpy_r_r4)) {
@@ -58088,7 +58056,11 @@ CPyL17: ;
     CPy_DecRef(cpy_r_r38);
     goto CPyL15;
 }
-static int constants_exec(PyObject *module)
+static PyMethodDef constantsmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___constants(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___constants_internal, "__name__");
@@ -58135,10 +58107,6 @@ static int constants_exec(PyObject *module)
     CPyStatic_constants___REVERT_SELECTORS = (tuple_T2OO) { NULL, NULL };
     return -1;
 }
-static PyMethodDef constantsmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef constantsmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.constants",
@@ -58157,7 +58125,7 @@ PyObject *CPyInit_dank_mids___constants(void)
     CPyModule_dank_mids___constants_internal = PyModule_Create(&constantsmodule);
     if (unlikely(CPyModule_dank_mids___constants_internal == NULL))
         goto fail;
-    if (constants_exec(CPyModule_dank_mids___constants_internal) != 0)
+    if (CPyExec_dank_mids___constants(CPyModule_dank_mids___constants_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___constants_internal;
     fail:
@@ -59070,7 +59038,11 @@ CPyL91: ;
     CPy_DecRef(cpy_r_r176);
     goto CPyL80;
 }
-static int ENVIRONMENT_VARIABLES_exec(PyObject *module)
+static PyMethodDef ENVIRONMENT_VARIABLESmodule_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+int CPyExec_dank_mids___ENVIRONMENT_VARIABLES(PyObject *module)
 {
     PyObject* modname = NULL;
     modname = PyObject_GetAttrString((PyObject *)CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal, "__name__");
@@ -59131,10 +59103,6 @@ static int ENVIRONMENT_VARIABLES_exec(PyObject *module)
     CPyStatic_ENVIRONMENT_VARIABLES___method_semaphores = NULL;
     return -1;
 }
-static PyMethodDef ENVIRONMENT_VARIABLESmodule_methods[] = {
-    {NULL, NULL, 0, NULL}
-};
-
 static struct PyModuleDef ENVIRONMENT_VARIABLESmodule = {
     PyModuleDef_HEAD_INIT,
     "dank_mids.ENVIRONMENT_VARIABLES",
@@ -59153,7 +59121,7 @@ PyObject *CPyInit_dank_mids___ENVIRONMENT_VARIABLES(void)
     CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal = PyModule_Create(&ENVIRONMENT_VARIABLESmodule);
     if (unlikely(CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal == NULL))
         goto fail;
-    if (ENVIRONMENT_VARIABLES_exec(CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal) != 0)
+    if (CPyExec_dank_mids___ENVIRONMENT_VARIABLES(CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal) != 0)
         goto fail;
     return CPyModule_dank_mids___ENVIRONMENT_VARIABLES_internal;
     fail:
@@ -61395,7 +61363,7 @@ CPyL270: ;
         goto CPyL378;
     }
     CPy_DECREF(cpy_r_r541);
-    cpy_r_r550 = CPyStatics[649]; /* 'eth_getCode' */
+    cpy_r_r550 = CPyStatics[650]; /* 'eth_getCode' */
     cpy_r_r551 = CPyStatics[737]; /* 'ETH_GETCODE_SEMAPHORE' */
     cpy_r_r552 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r553 = CPyStatics[42]; /* 'a_sync' */
@@ -62328,24 +62296,23 @@ const char * const CPyLit_Str[] = {
     "\004\036INDIVIDUAL_CALL_REVERT_STRINGS\004loop\017FIRST_COMPLETED\vreturn_when",
     "\005\006cancel\034dank_mids\\helpers\\_gather.py\tCoroutine\003Set\016a_sync.asyncio",
     "\005\023asyncio.Future[__T]\rFinishedTasks\fPendingTasks\020get_running_loop\004wait",
-    "\t\006sleep0\ryield_to_loop\002([\002, \004repr\002])\003any\f_gc_callback\003ref",
-    "\005\035list.remove(x): x not in list\003pop\aGeneric\nGCCallback\b__call__",
+    "\b\006sleep0\ryield_to_loop\002([\002, \004repr\002])\003any\f_gc_callback",
+    "\006\035list.remove(x): x not in list\003pop\aGeneric\003ref\nGCCallback\b__call__",
     "\004\t_call_ref\033dank_mids.helpers._weaklist\005_refs\bWeakList",
     "\0015checking if we should reduce %s batch size... (%s %s)",
     "\005\024dank_mids.batch_size\021batch_size_logger\004info\t_log_info\rAttributeDict",
     "\005\023web3.datastructures\006object\023lru_cache_lite_wrap\005cache\tParamSpec",
-    "\004\021typing_extensions\003__P\031eth_getTransactionReceipt\veth_getCode",
-    "\005\022eth_getTransaction\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_",
-    "\005\006debug_\016BYPASS_METHODS\aget_len\fshould_batch\tmulticall",
-    "\004\026dank_mids\\constants.py\vBlockNumber\aNetwork\021payload too large",
-    "\002\030content length too large\030request entity too large",
-    "\003\024batch limit exceeded\022TOO_MUCH_DATA_ERRS\030connection reset by peer",
-    "\003\023server disconnected\034execution aborted (timeout =\021request timed out",
-    "\005\vevm timeout\nRETRY_ERRS\tconstants\tGAS_LIMIT\023MULTICALL2_BYTECODE",
-    "\002\030MULTICALL2_OVERRIDE_CODE\023MULTICALL3_BYTECODE",
-    "\004\032__MULTICALL3_OVERRIDE_CODE\030MULTICALL3_OVERRIDE_CODE\aMainnet\006Fantom",
-    "\004\bArbitrum\bOptimism\030MULTICALL2_DEPLOY_BLOCKS\004Base",
-    "\001\030MULTICALL3_DEPLOY_BLOCKS",
+    "\004\021typing_extensions\003__P\031eth_getTransactionReceipt\022eth_getTransaction",
+    "\006\veth_getCode\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_\006debug_",
+    "\005\016BYPASS_METHODS\aget_len\fshould_batch\tmulticall\026dank_mids\\constants.py",
+    "\004\vBlockNumber\aNetwork\021payload too large\030content length too large",
+    "\003\030request entity too large\024batch limit exceeded\022TOO_MUCH_DATA_ERRS",
+    "\002\030connection reset by peer\023server disconnected",
+    "\004\034execution aborted (timeout =\021request timed out\vevm timeout\nRETRY_ERRS",
+    "\004\tconstants\tGAS_LIMIT\023MULTICALL2_BYTECODE\030MULTICALL2_OVERRIDE_CODE",
+    "\002\023MULTICALL3_BYTECODE\032__MULTICALL3_OVERRIDE_CODE",
+    "\005\030MULTICALL3_OVERRIDE_CODE\aMainnet\006Fantom\bArbitrum\bOptimism",
+    "\003\030MULTICALL2_DEPLOY_BLOCKS\004Base\030MULTICALL3_DEPLOY_BLOCKS",
     "\001\201J0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000094e6f206163636573730000000000000000000000000000000000000000000000",
     "\001\201J0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000e6d696e7420697320706175736564000000000000000000000000000000000000",
     "\001\201J0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016496e76616c6964206574686572207472616e7366657200000000000000000000",
@@ -62412,7 +62379,7 @@ const int CPyLit_Tuple[] = {
     537, 1, 558, 3, 33, 34, 36, 1, 574, 1, 181, 2, 208, 47, 1, 580, 2,
     604, 5, 1, 606, 3, 32, 32, 32, 1, 899, 10, 609, 36, 243, 527, 137,
     610, 233, 38, 39, 529, 3, 611, 42, 42, 1, 902, 10, 34, 231, 232, 36,
-    628, 243, 268, 137, 38, 40, 1, 625, 2, 36, 527, 1, 34, 1, 640, 3, 231,
+    627, 243, 268, 137, 38, 40, 1, 628, 2, 36, 527, 1, 34, 1, 640, 3, 231,
     232, 38, 1, 645, 2, 232, 36, 3, 429, 659, 659, 1, 912, 1, 661, 1, 662,
     1, 699, 3, 79, 79, 79, 2, 785, 917, 1, 701, 2, 207, 47, 1, 702, 2,
     713, 714, 1, 713
@@ -63185,21 +63152,11 @@ PyObject *CPyStatic_ENVIRONMENT_VARIABLES___STUCK_CALL_TIMEOUT = NULL;
 PyObject *CPyStatic_ENVIRONMENT_VARIABLES___method_semaphores = NULL;
 char CPyDef_ENVIRONMENT_VARIABLES_____top_level__(void);
 
-PyMODINIT_FUNC PyInit_54f21a262a241d48537c__mypyc(void)
+static int exec_54f21a262a241d48537c__mypyc(PyObject *module)
 {
-    static PyModuleDef def = { PyModuleDef_HEAD_INIT, "54f21a262a241d48537c__mypyc", NULL, -1, NULL, NULL };
     int res;
     PyObject *capsule;
     PyObject *tmp;
-    static PyObject *module;
-    if (module) {
-        Py_INCREF(module);
-        return module;
-    }
-    module = PyModule_Create(&def);
-    if (!module) {
-        goto fail;
-    }
     
     extern PyObject *CPyInit_dank_mids____batch(void);
     capsule = PyCapsule_New((void *)CPyInit_dank_mids____batch, "54f21a262a241d48537c__mypyc.init_dank_mids____batch", NULL);
@@ -63476,8 +63433,30 @@ PyMODINIT_FUNC PyInit_54f21a262a241d48537c__mypyc(void)
         goto fail;
     }
     
-    return module;
+    return 0;
     fail:
-    Py_XDECREF(module);
-    return NULL;
+    return -1;
+}
+static PyModuleDef module_def_54f21a262a241d48537c__mypyc = {
+    PyModuleDef_HEAD_INIT,
+    .m_name = "54f21a262a241d48537c__mypyc",
+    .m_doc = NULL,
+    .m_size = -1,
+    .m_methods = NULL,
+};
+PyMODINIT_FUNC PyInit_54f21a262a241d48537c__mypyc(void) {
+    static PyObject *module = NULL;
+    if (module) {
+        Py_INCREF(module);
+        return module;
+    }
+    module = PyModule_Create(&module_def_54f21a262a241d48537c__mypyc);
+    if (!module) {
+        return NULL;
+    }
+    if (exec_54f21a262a241d48537c__mypyc(module) < 0) {
+        Py_DECREF(module);
+        return NULL;
+    }
+    return module;
 }
