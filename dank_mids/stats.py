@@ -310,9 +310,8 @@ class _StatsLogger(logging.Logger):
         if enabled:
             self._log(
                 DEVHINT,
-                f"ValidationError when decoding response for {method}",
-                ("This *should* not impact your script. If it does, you'll know."),
-                e,
+                "ValidationError when decoding response for %s. This *should* not impact your script. If it does, you'll know.",
+                (method,),
             )
 
     def log_types(self, method: RPCEndpoint, decoded: Any) -> None:
