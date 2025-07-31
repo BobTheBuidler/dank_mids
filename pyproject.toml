@@ -46,6 +46,7 @@ pytest = "*"
 pytest-asyncio-cooperative = "*"
 pytest-cov = "*"
 pytest-sugar = "*"
+types-aiofiles = "*"
 # need this to resolve brownie locally, didn't before
 importlib-resources = ">=6.4.0"
 
