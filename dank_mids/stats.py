@@ -378,7 +378,7 @@ class _Collector:
         representing durations. Each deque has a maximum length of 50,000.
         """
 
-        self.types: Set[Type] = set()  # type: ignore [type-arg]
+        self.types: Set[Type[Any]] = set()
         """
         A set that stores all the types encountered during data collection.
         This is used for debugging and analysis purposes.
@@ -479,6 +479,7 @@ class _Collector:
         return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
 
 
+@final
 class _Writer:
     """
     Writer is used to turn Collector stats into human readable on a as-needed, JIT basis
@@ -525,6 +526,7 @@ class _Writer:
         return f"{pool} has {pool._queue_count} items in its queue"
 
 
+@final
 class _SentryExporter:
     """
     A class for exporting statistics and metrics from the :obj:`metrics` dict to Sentry.
