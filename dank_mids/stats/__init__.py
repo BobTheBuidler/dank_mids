@@ -230,10 +230,7 @@ class _StatsLogger(logging.Logger):
         Raises:
             ValueError: If no message is provided.
         """
-        try:
-            return super()._log(level, args[0], args[1:], **kwargs)
-        except IndexError:
-            raise ValueError("Both a level and a message are required.") from None
+        return super()._log(level, msg, args, **kwargs)
 
     def _log_fn_result(
         self,
