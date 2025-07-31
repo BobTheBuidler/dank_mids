@@ -2,7 +2,9 @@ from typing import Any, Dict, Final, List, Optional, Tuple, final
 from weakref import WeakValueDictionary
 
 from eth_hash import auto
+from eth_typing import ABIFunction
 from mypy_extensions import mypyc_attr
+from typing_extensions import Unpack
 
 from dank_mids.helpers.hashing import make_hashable
 
@@ -34,7 +36,7 @@ class FunctionABI:
     for each unique set of ABI parameters, optimizing memory usage and performance.
     """
 
-    def __init__(self, **abi: Any) -> None:
+    def __init__(self, **abi: Unpack[ABIFunction]) -> None:
         """
         Initialize a FunctionABI instance with the given ABI information.
 
