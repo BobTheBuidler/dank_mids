@@ -575,7 +575,7 @@ class _SentryExporter:
         """
         for env, value in _ENVS.items():
             try:
-                self.set_tag(env, value)  # type: ignore [misc]
+                self.set_tag(env, value)  # type: ignore [call-arg, misc]
             except Exception as e:
                 logger.warning(
                     f"Unable to set sentry tag {env} to {value}. See {e.__class__.__name__} below:"
