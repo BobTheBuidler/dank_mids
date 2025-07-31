@@ -1,17 +1,16 @@
 from decimal import Decimal
 from typing import TYPE_CHECKING, Final, Literal, Optional, Type, Union
 
-import a_sync
-from a_sync import SmartProcessingQueue, ThreadsafeSemaphore
-from a_sync.primitives import DummySemaphore
+from a_sync import SmartProcessingQueue
 from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,
     _PrioritySemaphoreContextManager,
 )
 from eth_typing import BlockNumber, HexStr
+from mypy_extensions import mypyc_attr
 from web3.types import RPCEndpoint
 
-from dank_mids.helpers.lru_cache import lru_cache_lite, lru_cache_lite_nonull
+from dank_mids.helpers.lru_cache import lru_cache_lite
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
@@ -44,6 +43,7 @@ _TOP_PRIORITY: Final = -1
 
 # NOTE: keep this so we can include in type stubs
 # class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+@mypyc_attr(allow_interpreted_subclasses=True)
 class BlockSemaphore(_AbstractPrioritySemaphore):  # type: ignore [misc]
     """A semaphore for managing concurrency based on block numbers.
 
