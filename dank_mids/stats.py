@@ -199,11 +199,11 @@ class _StatsLogger(logging.Logger):
             >>> _logger.log_subprocess_stats()
         """
         for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:  # type: ignore [attr-defined]
-            self._log_fn_result(level, _Writer.queue, pool)
+            self._log_fn_result(level, _Writer.queue, pool)  # type: ignore [arg-type]
 
     # Internal helpers
 
-    def _log(self, level: _LogLevel, msg: str, *args: Any, **kwargs: Any) -> None:
+    def _log(self, level: _LogLevel, msg: str, args: Tuple[Any, ...], **kwargs: Any) -> None:  # type: ignore [override]
         """
         Wrapper around the standard logging method to simplify custom log level checks.
 
@@ -476,7 +476,7 @@ class _Collector:
         Example:
             >>> mcall_length = collector.mcall_decoder_queue_len
         """
-        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined]
+        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
 
 
 class _Writer:
