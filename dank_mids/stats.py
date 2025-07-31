@@ -30,6 +30,7 @@ from typing import (
     Final,
     Iterable,
     Set,
+    Tuple,
     Type,
     TypeVar,
     final,
@@ -203,7 +204,7 @@ class _StatsLogger(logging.Logger):
 
     # Internal helpers
 
-    def _log(self, level: _LogLevel, msg: str, args: Tuple[Any, ...], **kwargs: Any) -> None:  # type: ignore [override]
+    def _log(self, level: _LogLevel, msg: str, args: Tuple[Any, ...] = (), **kwargs: Any) -> None:  # type: ignore [override]
         """
         Wrapper around the standard logging method to simplify custom log level checks.
 
