@@ -43,6 +43,7 @@ from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
 from web3.types import RPCEndpoint
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids.stats import _nocompile
 
 if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch
@@ -581,40 +582,35 @@ class _SentryExporter:
                 )
                 logger.info(e, exc_info=True)
 
-    try:
-        import sentry_sdk
+    set_tag: Final = _nocompile.set_tag
+    """
+    Set a tag for the current scope in Sentry.
 
-        set_tag = sentry_sdk.set_tag
-        """
-        Set a tag for the current scope in Sentry.
+    This is a reference to :func:`sentry_sdk.set_tag`.
 
-        This is a reference to :func:`sentry_sdk.set_tag`.
+    See Also:
+        Sentry documentation on using tags:
+        https://docs.sentry.io/platforms/python/enriching-events/tags/
+    """
 
-        See Also:
-            Sentry documentation on using tags:
-            https://docs.sentry.io/platforms/python/enriching-events/tags/
-        """
 
-        set_measurement = sentry_sdk.set_measurement
-        """
-        Set a measurement for the current scope in Sentry.
+    set_measurement: Final = _nocompile.set_measurement
+    """
+    Set a measurement for the current scope in Sentry.
 
-        This is a reference to :func:`sentry_sdk.set_measurement`.
+    This is a reference to :func:`sentry_sdk.set_measurement`.
 
-        See Also:
-            Sentry documentation on using measurements:
-            https://docs.sentry.io/platforms/python/enriching-events/measurements/
-        """
+    See Also:
+        Sentry documentation on using measurements:
+        https://docs.sentry.io/platforms/python/enriching-events/measurements/
+    """
 
-        _exc = None
-        """
-        Stores any ImportError that occurred when trying to import sentry_sdk.
-        If this is not None, it indicates that Sentry integration is not available.
-        """
-    except ImportError as e:
-        _exc = e
-        set_tag = None
-        set_measurement = None
+
+    _exc: Final = _nocompile.exc
+    """
+    Stores any ImportError that occurred when trying to import sentry_sdk.
+    If this is not None, it indicates that Sentry integration is not available.
+    """
 
 
 logger: Final = _StatsLogger(__name__)
