@@ -9,6 +9,7 @@ Subpackages
 
    dank_mids.brownie_patch
    dank_mids.helpers
+   dank_mids.stats
 
 Submodules
 ----------
@@ -65,14 +66,6 @@ dank\_mids.semaphores module
 ----------------------------
 
 .. automodule:: dank_mids.semaphores
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dank\_mids.stats module
------------------------
-
-.. automodule:: dank_mids.stats
    :members:
    :undoc-members:
    :show-inheritance:

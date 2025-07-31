@@ -1,0 +1,10 @@
+dank\_mids.stats package
+========================
+
+Module contents
+---------------
+
+.. automodule:: dank_mids.stats
+   :members:
+   :undoc-members:
+   :show-inheritance:

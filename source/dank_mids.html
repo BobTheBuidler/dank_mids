@@ -49,6 +49,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html">dank_mids.brownie_patch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.helpers.html">dank_mids.helpers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.stats.html">dank_mids.stats package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -80,16 +81,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.semaphores">dank_mids.semaphores module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#dank_mids.semaphores.BlockSemaphore"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.stats">dank_mids.stats module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.devhint"><code class="docutils literal notranslate"><span class="pre">devhint()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.log"><code class="docutils literal notranslate"><span class="pre">log()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.log_duration"><code class="docutils literal notranslate"><span class="pre">log_duration()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.log_errd_batch"><code class="docutils literal notranslate"><span class="pre">log_errd_batch()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.COLLECT_STATS"><code class="docutils literal notranslate"><span class="pre">COLLECT_STATS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.DEVHINT"><code class="docutils literal notranslate"><span class="pre">DEVHINT</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dank_mids.stats.STATS"><code class="docutils literal notranslate"><span class="pre">STATS</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dank_mids.types">dank_mids.types module</a><ul>
@@ -394,6 +385,16 @@
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.helpers.html#dank_mids.helpers.make_hashable"><code class="docutils literal notranslate"><span class="pre">make_hashable()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.helpers.html#dank_mids.helpers.setup_dank_w3"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.helpers.html#dank_mids.helpers.setup_dank_w3_from_sync"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3_from_sync()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dank_mids.stats.html">dank_mids.stats package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.stats.html#module-dank_mids.stats">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.stats.html#dank_mids.stats.devhint"><code class="docutils literal notranslate"><span class="pre">devhint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.stats.html#dank_mids.stats.log"><code class="docutils literal notranslate"><span class="pre">log()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.stats.html#dank_mids.stats.log_duration"><code class="docutils literal notranslate"><span class="pre">log_duration()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.stats.html#dank_mids.stats.log_errd_batch"><code class="docutils literal notranslate"><span class="pre">log_errd_batch()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -2198,113 +2199,6 @@ become larger than zero again, wake up that coroutine.</p>
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-</section>
-<section id="module-dank_mids.stats">
-<span id="dank-mids-stats-module"></span><h2>dank_mids.stats module<a class="headerlink" href="#module-dank_mids.stats" title="Link to this heading"></a></h2>
-<p>stats.py</p>
-<p>This module provides functionality for logging and collecting statistics related to the Dank Mids library.
-It includes custom logging levels, a specialized logger, and classes for collecting and writing statistics.</p>
-<p>Key components:
-- Custom logging levels (STATS, DEVHINT)
-- _StatsLogger: A specialized logger for Dank Mids statistics
-- _Collector: Handles collection and computation of stats-related data
-- _Writer: Converts collected stats into human-readable format
-- _SentryExporter: Pushes metrics to Sentry</p>
-<p>This module is crucial for debugging, performance monitoring, and optimization of the Dank Mids library.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.stats.devhint">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">devhint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.stats.devhint" title="Link to this definition"></a></dt>
-<dd><p>Log a message with the DEVHINT logging level.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> – The message to log.</p></li>
-<li><p><strong>*args</strong> – Additional positional arguments for the logger.</p></li>
-<li><p><strong>**kwargs</strong> – Additional keyword arguments for the logger.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_logger</span><span class="o">.</span><span class="n">devhint</span><span class="p">(</span><span class="s2">&quot;This is a developer hint for debugging purposes&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.stats.log">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.stats.log" title="Link to this definition"></a></dt>
-<dd><p>Log a message with the STATS logging level.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> – The message to log.</p></li>
-<li><p><strong>*args</strong> – Additional positional arguments for the logger.</p></li>
-<li><p><strong>**kwargs</strong> – Additional keyword arguments for the logger.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_logger</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="s2">&quot;Operation took </span><span class="si">%s</span><span class="s2"> seconds&quot;</span><span class="p">,</span> <span class="mf">3.14</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.stats.log_duration">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">log_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">work_descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.stats.log_duration" title="Link to this definition"></a></dt>
-<dd><p>Log the duration of a specific operation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>work_descriptor</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Description of the work being timed.</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Start time of the operation.</p></li>
-<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Logging level to use. Defaults to STATS.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dank_mids.stats.log_errd_batch">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">log_errd_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.stats.log_errd_batch" title="Link to this definition"></a></dt>
-<dd><p>Log information about a failed JSON-RPC batch.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>batch</strong> (<em>JSONRPCBatch</em>) – The failed batch to log.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.stats.COLLECT_STATS">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">COLLECT_STATS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#dank_mids.stats.COLLECT_STATS" title="Link to this definition"></a></dt>
-<dd><p>Flag to enable or disable stats collection.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.stats.DEVHINT">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">DEVHINT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Final" title="(in Python v3.13)"><span class="pre">Final</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15</span></em><a class="headerlink" href="#dank_mids.stats.DEVHINT" title="Link to this definition"></a></dt>
-<dd><p>Custom logging level for developer hints, between STATS and INFO.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="dank_mids.stats.STATS">
-<span class="sig-prename descclassname"><span class="pre">dank_mids.stats.</span></span><span class="sig-name descname"><span class="pre">STATS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Final" title="(in Python v3.13)"><span class="pre">Final</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">13</span></em><a class="headerlink" href="#dank_mids.stats.STATS" title="Link to this definition"></a></dt>
-<dd><p>Custom logging level for statistics, between DEBUG and INFO.</p>
 </dd></dl>
 
 </section>
