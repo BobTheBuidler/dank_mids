@@ -79,6 +79,10 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
       
+      - name: Upgrade Setuptools
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry run pip install -U "setuptools<81"
+      
       - name: Setup brownie networks
         run: |
           poetry run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
