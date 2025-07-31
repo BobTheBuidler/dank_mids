@@ -291,7 +291,7 @@ class _StatsLogger(logging.Logger):
                 self.log_subprocess_stats(level=logging.INFO)
                 self.log_brownie_stats(level=logging.INFO)
                 self.log_event_loop_stats(level=logging.INFO)
-                time_since_notified = 0
+                time_since_notified = 0.0
 
     # TODO: MOVE COLLECTIONS UOT OF THIS CLASS
 
