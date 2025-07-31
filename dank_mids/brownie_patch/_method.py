@@ -95,7 +95,7 @@ class _DankMethodMixin(Generic[_EVMType]):
             )
 
     @property
-    def abi(self) -> dict:
+    def abi(self) -> ABIFunction:
         """
         The ABI of the contract function.
 
