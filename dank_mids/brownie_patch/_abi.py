@@ -2,8 +2,8 @@ from typing import Any, Dict, Final, List, Optional, Tuple, final
 from weakref import WeakValueDictionary
 
 from eth_hash import auto
+from mypy_extensions import mypyc_attr
 
-from dank_mids.brownie_patch import _nocompile
 from dank_mids.helpers.hashing import make_hashable
 
 
