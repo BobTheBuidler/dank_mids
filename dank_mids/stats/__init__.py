@@ -593,7 +593,6 @@ class _SentryExporter:
         https://docs.sentry.io/platforms/python/enriching-events/tags/
     """
 
-
     set_measurement: Final = _nocompile.set_measurement
     """
     Set a measurement for the current scope in Sentry.
@@ -604,7 +603,6 @@ class _SentryExporter:
         Sentry documentation on using measurements:
         https://docs.sentry.io/platforms/python/enriching-events/measurements/
     """
-
 
     _exc: Final = _nocompile.exc
     """
