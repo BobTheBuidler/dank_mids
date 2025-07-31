@@ -20,6 +20,7 @@ import logging
 from asyncio import create_task
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor
+from copy import deepcopy
 from time import time
 from typing import (
     TYPE_CHECKING,
