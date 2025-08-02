@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: "3.9"
       - name: Install Mypyc (3.9)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.9)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -37,7 +37,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install Mypyc (3.10)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.10)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -49,7 +49,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Mypyc (3.11)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.11)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -61,7 +61,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Mypyc (3.12)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e setuptools types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 setuptools types-requests eth-typing
       - name: Run Mypyc (3.12)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -99,7 +99,7 @@ jobs:
         with:
           python-version: "3.9"
       - name: Install Mypyc (3.9)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.9)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -111,7 +111,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install Mypyc (3.10)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.10)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -123,7 +123,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Mypyc (3.11)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.11)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -135,7 +135,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Mypyc (3.12)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e setuptools types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 setuptools types-requests eth-typing
       - name: Run Mypyc (3.12)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -173,7 +173,7 @@ jobs:
         with:
           python-version: "3.9"
       - name: Install Mypyc (3.9)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.9)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -185,7 +185,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install Mypyc (3.10)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.10)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -197,7 +197,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Mypyc (3.11)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e types-requests eth-typing
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 types-requests eth-typing
       - name: Run Mypyc (3.11)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -209,7 +209,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Mypyc (3.12)
-        run: pip install git+https://github.com/BobTheBuidler/mypy@f09d531eec1b918b01ca6486901ef1a024be0b9e setuptools types-requests
+        run: pip install git+https://github.com/python/mypy@07f40fc08d8ef08d590d8bfa744ab97a0c009be0 setuptools types-requests
       - name: Run Mypyc (3.12)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
