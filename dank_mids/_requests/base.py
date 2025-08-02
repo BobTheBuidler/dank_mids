@@ -18,7 +18,7 @@ Batch = Union["Multicall", "JSONRPCBatch", "DankBatch"]
 
 @mypyc_attr(native_class=False)
 # TODO: replace `native_class` with `supports_weakref` once PR is merged
-class _RequestBase(Generic[_Response]):
+class _RequestBase(Generic["_Response"]):
 
     __slots__ = "controller", "uid", "_batch", "_fut", "__weakref__"
 
@@ -32,7 +32,7 @@ class _RequestBase(Generic[_Response]):
         self._batch: Optional[Batch] = None
         self._fut: Final = DebuggableFuture(self, controller._loop)
 
-    def __await__(self) -> Generator[Any, None, _Response]:
+    def __await__(self) -> Generator[Any, None, "_Response"]:
         return self.get_response().__await__()
 
     # Abstract methods to be implemented by subclasses
@@ -40,5 +40,5 @@ class _RequestBase(Generic[_Response]):
     def __len__(self) -> int:
         raise NotImplementedError
 
-    async def get_response(self) -> _Response:
+    async def get_response(self) -> "_Response":
         raise NotImplementedError
