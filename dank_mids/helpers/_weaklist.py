@@ -6,8 +6,6 @@ _T = TypeVar("_T")
 
 GCCallback = Callable[[Any], None]
 
-_call_ref: Final[Callable[["ref[_T]"], Optional[_T]]] = ref.__call__
-
 
 @final
 class WeakList(Generic[_T]):
@@ -33,7 +31,7 @@ class WeakList(Generic[_T]):
 
     def __iter__(self) -> Iterator[_T]:
         for reference in self._refs.values():
-            obj = _call_ref(reference)
+            obj = reference()
             if obj is not None:
                 yield obj
 
