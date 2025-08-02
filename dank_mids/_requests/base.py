@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Final, Generator, Generic, Optional
+from typing import TYPE_CHECKING, Any, Final, Generator, Generic, Optional, Union
 
 from mypy_extensions import mypyc_attr
 
@@ -6,10 +6,14 @@ from dank_mids.helpers import DebuggableFuture
 
 if TYPE_CHECKING:
     from dank_mids.controller import DankMiddlewareController
-    from dank_mids._requests import _Batch, _Response
+    from dank_mids._batch import DankBatch
+    from dank_mids._requests import _Response, JSONRPCBatch, Multicall
 
 
 __all__ = ["_RequestBase"]
+
+
+Batch = Union["Multicall", "JSONRPCBatch", "DankBatch"]
 
 
 @mypyc_attr(native_class=False)
@@ -25,7 +29,7 @@ class _RequestBase(Generic[_Response]):
         self.uid: Final = controller.call_uid.next if uid is None else uid
         """The unique id for this request."""
 
-        self._batch: Final[Optional["_Batch"]] = None  # type: ignore [type-arg]
+        self._batch: Optional[Batch] = None
         self._fut: Final = DebuggableFuture(self, controller._loop)
 
     def __await__(self) -> Generator[Any, None, _Response]:
