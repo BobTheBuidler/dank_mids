@@ -15,10 +15,8 @@ __all__ = ["_RequestBase"]
 @mypyc_attr(native_class=False)
 # TODO: replace `native_class` with `supports_weakref` once PR is merged
 class _RequestBase(Generic[_Response]):
-    _fut: DebuggableFuture
-    _batch: Optional["_Batch"] = None
 
-    __slots__ = "controller", "uid", "_fut", "__weakref__"
+    __slots__ = "controller", "uid", "_batch", "_fut", "__weakref__"
 
     def __init__(self, controller: "DankMiddlewareController", uid: Optional[str] = None) -> None:
         self.controller: Final = controller
@@ -27,6 +25,7 @@ class _RequestBase(Generic[_Response]):
         self.uid: Final = controller.call_uid.next if uid is None else uid
         """The unique id for this request."""
 
+        self._batch: Final[Optional["_Batch"]] = None  # type: ignore [type-arg]
         self._fut: Final = DebuggableFuture(self, controller._loop)
 
     def __await__(self) -> Generator[Any, None, _Response]:
