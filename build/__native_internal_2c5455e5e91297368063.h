@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_6486cd47b6f59329387b_H
-#define MYPYC_NATIVE_INTERNAL_6486cd47b6f59329387b_H
+#ifndef MYPYC_NATIVE_INTERNAL_2c5455e5e91297368063_H
+#define MYPYC_NATIVE_INTERNAL_2c5455e5e91297368063_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_6486cd47b6f59329387b.h"
+#include "__native_2c5455e5e91297368063.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1032];
+extern PyObject *CPyStatics[1043];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -62,6 +62,12 @@ extern CPyModule *CPyModule_dank_mids____uid_internal;
 extern CPyModule *CPyModule_dank_mids____uid;
 extern PyObject *CPyStatic__uid___globals;
 extern CPyModule *CPyModule_dank_mids___helpers____lock;
+extern CPyModule *CPyModule_dank_mids____requests___base_internal;
+extern CPyModule *CPyModule_dank_mids____requests___base;
+extern PyObject *CPyStatic_base___globals;
+extern CPyModule *CPyModule_mypy_extensions;
+extern CPyModule *CPyModule_dank_mids___helpers_internal;
+extern CPyModule *CPyModule_dank_mids___helpers;
 extern CPyModule *CPyModule_dank_mids____web3___abi_internal;
 extern CPyModule *CPyModule_dank_mids____web3___abi;
 extern PyObject *CPyStatic_abi___globals;
@@ -81,8 +87,6 @@ extern CPyModule *CPyModule_dank_mids___brownie_patch;
 extern PyObject *CPyStatic_brownie_patch___globals;
 extern CPyModule *CPyModule_contextlib;
 extern CPyModule *CPyModule_web3___eth;
-extern CPyModule *CPyModule_dank_mids___helpers_internal;
-extern CPyModule *CPyModule_dank_mids___helpers;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___types_internal;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___types;
 extern CPyModule *CPyModule_dank_mids___eth;
@@ -94,7 +98,6 @@ extern CPyModule *CPyModule_dank_mids___brownie_patch____abi;
 extern PyObject *CPyStatic__abi___globals;
 extern CPyModule *CPyModule_weakref;
 extern CPyModule *CPyModule_eth_hash;
-extern CPyModule *CPyModule_mypy_extensions;
 extern CPyModule *CPyModule_dank_mids___helpers___hashing_internal;
 extern CPyModule *CPyModule_dank_mids___helpers___hashing;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___call_internal;
@@ -290,6 +293,52 @@ extern PyObject *CPyPy__uid___UIDGenerator___latest(PyObject *self, PyObject *co
 extern CPyTagged CPyDef__uid___UIDGenerator___next(PyObject *cpy_r_self);
 extern PyObject *CPyPy__uid___UIDGenerator___next(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__uid_____top_level__(void);
+extern PyTypeObject *CPyType_base____RequestBase;
+extern PyTypeObject *CPyType_base_____init___3__RequestBase_obj;
+extern PyObject *CPyDef_base_____init___3__RequestBase_obj(void);
+extern CPyThreadLocal dank_mids____requests___base_____init___3__RequestBase_objObject *base_____init___3__RequestBase_obj_free_instance;
+extern PyTypeObject *CPyType_base_____await___3__RequestBase_obj;
+extern PyObject *CPyDef_base_____await___3__RequestBase_obj(void);
+extern CPyThreadLocal dank_mids____requests___base_____await___3__RequestBase_objObject *base_____await___3__RequestBase_obj_free_instance;
+extern PyTypeObject *CPyType_base_____len___3__RequestBase_obj;
+extern PyObject *CPyDef_base_____len___3__RequestBase_obj(void);
+extern CPyThreadLocal dank_mids____requests___base_____len___3__RequestBase_objObject *base_____len___3__RequestBase_obj_free_instance;
+extern PyTypeObject *CPyType_base___get_response__RequestBase_obj;
+extern PyObject *CPyDef_base___get_response__RequestBase_obj(void);
+extern CPyThreadLocal dank_mids____requests___base___get_response__RequestBase_objObject *base___get_response__RequestBase_obj_free_instance;
+extern PyTypeObject *CPyType_base___get_response__RequestBase_gen;
+extern PyObject *CPyDef_base___get_response__RequestBase_gen(void);
+extern CPyThreadLocal dank_mids____requests___base___get_response__RequestBase_genObject *base___get_response__RequestBase_gen_free_instance;
+extern PyObject *CPyDef_base_____init___3__RequestBase_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_base_____init___3__RequestBase_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_base_____init___3__RequestBase_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_controller, PyObject *cpy_r_uid);
+extern PyObject *CPyPy_base_____init___3__RequestBase_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base_____await___3__RequestBase_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_base_____await___3__RequestBase_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base_____await___3__RequestBase_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self);
+extern PyObject *CPyPy_base_____await___3__RequestBase_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base_____len___3__RequestBase_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_base_____len___3__RequestBase_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern CPyTagged CPyDef_base_____len___3__RequestBase_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self);
+extern PyObject *CPyPy_base_____len___3__RequestBase_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base___get_response__RequestBase_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy_base___get_response__RequestBase_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base___get_response__RequestBase_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
+extern PyObject *CPyDef_base___get_response__RequestBase_gen_____next__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_base___get_response__RequestBase_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base___get_response__RequestBase_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+extern PyObject *CPyPy_base___get_response__RequestBase_gen___send(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base___get_response__RequestBase_gen_____iter__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_base___get_response__RequestBase_gen_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base___get_response__RequestBase_gen___throw(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+extern PyObject *CPyPy_base___get_response__RequestBase_gen___throw(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base___get_response__RequestBase_gen___close(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_base___get_response__RequestBase_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base___get_response__RequestBase_gen_____await__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_base___get_response__RequestBase_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_base___get_response__RequestBase_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self);
+extern PyObject *CPyPy_base___get_response__RequestBase_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_base_____top_level__(void);
 extern PyObject *CPyStatic_abi___Iterable;
 extern PyObject *CPyStatic_abi___Mapping;
 extern PyObject *CPyStatic_abi___parse;

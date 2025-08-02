@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_6486cd47b6f59329387b_H
-#define MYPYC_NATIVE_6486cd47b6f59329387b_H
+#ifndef MYPYC_NATIVE_2c5455e5e91297368063_H
+#define MYPYC_NATIVE_2c5455e5e91297368063_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -40,6 +40,17 @@ typedef struct tuple_T6OOOOOO {
 } tuple_T6OOOOOO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T5OOOOO
+#define MYPYC_DECLARED_tuple_T5OOOOO
+typedef struct tuple_T5OOOOO {
+    PyObject *f0;
+    PyObject *f1;
+    PyObject *f2;
+    PyObject *f3;
+    PyObject *f4;
+} tuple_T5OOOOO;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T0
 #define MYPYC_DECLARED_tuple_T0
 typedef struct tuple_T0 {
@@ -55,17 +66,6 @@ typedef struct tuple_T4CIOO {
     PyObject *f2;
     PyObject *f3;
 } tuple_T4CIOO;
-#endif
-
-#ifndef MYPYC_DECLARED_tuple_T5OOOOO
-#define MYPYC_DECLARED_tuple_T5OOOOO
-typedef struct tuple_T5OOOOO {
-    PyObject *f0;
-    PyObject *f1;
-    PyObject *f2;
-    PyObject *f3;
-    PyObject *f4;
-} tuple_T5OOOOO;
 #endif
 
 #ifndef MYPYC_DECLARED_tuple_T2OI
@@ -258,6 +258,37 @@ typedef struct {
     CPyTagged __value;
     PyObject *__lock;
 } dank_mids____uid___UIDGeneratorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids____requests___base_____init___3__RequestBase_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids____requests___base_____await___3__RequestBase_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids____requests___base_____len___3__RequestBase_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids____requests___base___get_response__RequestBase_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *_self;
+    int32_t ___mypyc_next_label__;
+} dank_mids____requests___base___get_response__RequestBase_genObject;
 
 typedef struct {
     PyObject_HEAD
