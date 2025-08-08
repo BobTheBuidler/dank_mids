@@ -1,8 +1,10 @@
-from typing import Any, Dict, Final, List, Optional, Tuple, final
+from typing import Any, Dict, Final, List, Optional, Sequence, Tuple, final
 from weakref import WeakValueDictionary
 
 from eth_hash import auto
+from eth_typing import ABIComponent, ABIFunction
 from mypy_extensions import mypyc_attr
+from typing_extensions import Unpack
 
 from dank_mids.helpers.hashing import make_hashable
 
@@ -34,7 +36,7 @@ class FunctionABI:
     for each unique set of ABI parameters, optimizing memory usage and performance.
     """
 
-    def __init__(self, **abi: Any) -> None:
+    def __init__(self, **abi: Unpack[ABIFunction]) -> None:
         """
         Initialize a FunctionABI instance with the given ABI information.
 
@@ -62,14 +64,14 @@ class FunctionABI:
         """
 
     @staticmethod
-    def singleton(**abi: Any) -> "FunctionABI":
+    def singleton(**abi: Unpack[ABIFunction]) -> "FunctionABI":
         """
         Get a singleton FunctionABI to hold function ABI information.
 
         This class uses the lru_cache decorator to ensure only one instance is created
         for each unique set of ABI parameters, optimizing memory usage and performance.
         """
-        key = tuple((k, make_hashable(abi[k])) for k in sorted(abi))
+        key = tuple((k, make_hashable(abi[k])) for k in sorted(abi))  # type: ignore [literal-required]
         try:
             return _singletons[key]
         except KeyError:
@@ -80,7 +82,7 @@ class FunctionABI:
 
 
 def get_type_strings(
-    abi_params: List[Dict[str, Any]],
+    abi_params: Sequence[ABIComponent],
     substitutions: Optional[Dict[str, Any]] = None,
 ) -> List[str]:
     """Converts a list of parameters from an ABI into a list of type strings."""
@@ -89,7 +91,7 @@ def get_type_strings(
         substitutions = {}
 
     for i in abi_params:
-        type_str: str = i["type"]
+        type_str = i["type"]
         if type_str.startswith("tuple"):
             params = get_type_strings(i["components"], substitutions)
             array_size = type_str[5:]
@@ -103,7 +105,7 @@ def get_type_strings(
     return types_list
 
 
-def build_function_signature(abi: Dict[str, Any]) -> str:
+def build_function_signature(abi: ABIFunction) -> str:
     types_list = get_type_strings(abi["inputs"])
     return f"{abi['name']}({','.join(types_list)})"
 

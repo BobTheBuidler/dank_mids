@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1032];
+extern PyObject *CPyStatics[1037];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -95,6 +95,7 @@ extern PyObject *CPyStatic__abi___globals;
 extern CPyModule *CPyModule_weakref;
 extern CPyModule *CPyModule_eth_hash;
 extern CPyModule *CPyModule_mypy_extensions;
+extern CPyModule *CPyModule_typing_extensions;
 extern CPyModule *CPyModule_dank_mids___helpers___hashing_internal;
 extern CPyModule *CPyModule_dank_mids___helpers___hashing;
 extern CPyModule *CPyModule_dank_mids___brownie_patch___call_internal;
@@ -148,7 +149,6 @@ extern PyObject *CPyStatic_batch_size___globals;
 extern PyObject *CPyStatic_hashing___globals;
 extern CPyModule *CPyModule_web3___datastructures;
 extern PyObject *CPyStatic_lru_cache___globals;
-extern CPyModule *CPyModule_typing_extensions;
 extern CPyModule *CPyModule_dank_mids___helpers___method_internal;
 extern CPyModule *CPyModule_dank_mids___helpers___method;
 extern PyObject *CPyStatic_method___globals;
