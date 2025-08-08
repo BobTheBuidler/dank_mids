@@ -36,7 +36,7 @@ class FunctionABI:
     for each unique set of ABI parameters, optimizing memory usage and performance.
     """
 
-    def __init__(self, **abi: Unpack[ABIFunction]) -> None:
+    def __init__(self, **abi: Unpack[ABIFunction]) -> None:  # type: ignore [misc]
         """
         Initialize a FunctionABI instance with the given ABI information.
 
@@ -64,7 +64,7 @@ class FunctionABI:
         """
 
     @staticmethod
-    def singleton(**abi: Any) -> "FunctionABI":
+    def singleton(**abi: Unpack[ABIFunction]) -> "FunctionABI":  # type: ignore [misc]
         """
         Get a singleton FunctionABI to hold function ABI information.
 
