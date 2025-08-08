@@ -75,7 +75,7 @@ class FunctionABI:
         try:
             return _singletons[key]
         except KeyError:
-            singleton = _singletons[key] = FunctionABI(**abi)  # type: ignore [misc]
+            singleton = _singletons[key] = FunctionABI(**abi)
             return singleton
         except AttributeError as e:
             raise AttributeError(str(e), key) from e
