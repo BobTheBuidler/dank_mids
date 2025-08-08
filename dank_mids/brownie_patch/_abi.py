@@ -105,7 +105,7 @@ def get_type_strings(
     return types_list
 
 
-def build_function_signature(abi: Dict[str, Any]) -> str:
+def build_function_signature(abi: ABIFunction) -> str:
     types_list = get_type_strings(abi["inputs"])
     return f"{abi['name']}({','.join(types_list)})"
 
