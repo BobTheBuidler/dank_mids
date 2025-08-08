@@ -71,7 +71,7 @@ class FunctionABI:
         This class uses the lru_cache decorator to ensure only one instance is created
         for each unique set of ABI parameters, optimizing memory usage and performance.
         """
-        key = tuple((k, make_hashable(abi[k])) for k in sorted(abi))
+        key = tuple((k, make_hashable(abi[k])) for k in sorted(abi))  # type: ignore [literal-required]
         try:
             return _singletons[key]
         except KeyError:
