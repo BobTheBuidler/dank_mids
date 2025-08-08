@@ -1,8 +1,8 @@
-from typing import Any, Dict, Final, List, Optional, Tuple, final
+from typing import Any, Dict, Final, List, Optional, Sequence, Tuple, final
 from weakref import WeakValueDictionary
 
 from eth_hash import auto
-from eth_typing import ABIFunction
+from eth_typing import ABIComponent, ABIFunction
 from mypy_extensions import mypyc_attr
 from typing_extensions import Unpack
 
@@ -82,7 +82,7 @@ class FunctionABI:
 
 
 def get_type_strings(
-    abi_params: List[Dict[str, Any]],
+    abi_params: Sequence[ABIComponent],
     substitutions: Optional[Dict[str, Any]] = None,
 ) -> List[str]:
     """Converts a list of parameters from an ABI into a list of type strings."""
