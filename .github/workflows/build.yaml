@@ -19,18 +19,6 @@ jobs:
           # Check out the PR branch
           ref: ${{ github.head_ref }}
 
-      # Python 3.9
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-      - name: Install Mypyc (3.9)
-        run: pip install git+https://github.com/python/mypy@d219f8fef5d6b4fdbee4384cb85377940a1199b3 types-requests eth-typing
-      - name: Run Mypyc (3.9)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
       # Python 3.10
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
@@ -93,18 +81,6 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      # Python 3.9
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-      - name: Install Mypyc (3.9)
-        run: pip install git+https://github.com/python/mypy@d219f8fef5d6b4fdbee4384cb85377940a1199b3 types-requests eth-typing
-      - name: Run Mypyc (3.9)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
       # Python 3.10
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
@@ -166,18 +142,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-
-      # Python 3.9
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-      - name: Install Mypyc (3.9)
-        run: pip install git+https://github.com/python/mypy@d219f8fef5d6b4fdbee4384cb85377940a1199b3 types-requests eth-typing
-      - name: Run Mypyc (3.9)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
 
       # Python 3.10
       - name: Set up Python 3.10
