@@ -138,9 +138,11 @@ def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValu
 def _to_tuple(value: Union[List[Any], Tuple[Any, ...]]) -> Any:
     return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
 
+
 @_to_tuple.register(list)
 def _(value: List[Any]) -> Any:
     return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+
 
 @_to_tuple.register(tuple)
 def _(value: Tuple[Any, ...]) -> Any:
