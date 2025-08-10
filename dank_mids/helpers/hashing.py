@@ -47,10 +47,10 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
     def __setattr__(self, attr: str, val: TValue) -> None:
         if attr == "__dict__":
             super().__setattr__(attr, val)
-        raise Web3TypeError("This data is immutable -- create a copy instead of modifying")
+        raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __delattr__(self, key: str) -> None:
-        raise Web3TypeError("This data is immutable -- create a copy instead of modifying")
+        raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __getitem__(self, key: TKey) -> TValue:
         return self.__dict__[key]
@@ -82,10 +82,14 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         Recursively convert mappings to ReadableAttributeDict instances and
         process nested collections (e.g., lists, sets, and dictionaries).
         """
-        if isinstance(value, Mapping):
+        if isinstance(value, tuple):
+            return tuple(AttributeDict.recursive(v) for v in value)
+        elif isinstance(value, list):
+            return [AttributeDict.recursive(v) for v in value]
+        elif isinstance(value, Mapping):
             return AttributeDict({k: AttributeDict.recursive(v) for k, v in value.items()})
-        elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-            return type(value)([AttributeDict.recursive(v) for v in value])  # type: ignore
         elif isinstance(value, set):
             return {AttributeDict.recursive(v) for v in value}
+        elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
+            return type(value)(AttributeDict.recursive(v) for v in value)
         return value
