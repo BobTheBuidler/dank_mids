@@ -31,9 +31,7 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
     Provides superficial immutability, someone could hack around it
     """
 
-    def __init__(
-        self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue
-    ) -> None:
+    def __init__(self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
         self.__dict__: Final = dict(dictionary)
         self.__dict__.update(dict(*args, **kwargs))
 
@@ -51,14 +49,10 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
     def __setattr__(self, attr: str, val: TValue) -> None:
         if attr == "__dict__":
             super().__setattr__(attr, val)
-        raise Web3TypeError(
-            "This data is immutable -- create a copy instead of modifying"
-        )
+        raise Web3TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __delattr__(self, key: str) -> None:
-        raise Web3TypeError(
-            "This data is immutable -- create a copy instead of modifying"
-        )
+        raise Web3TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __getitem__(self, key: TKey) -> TValue:
         return self.__dict__[key]
