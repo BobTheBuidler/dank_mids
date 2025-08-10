@@ -602,6 +602,21 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *___dict__;
+    PyObject *___hash;
+} dank_mids___helpers___hashing___AttributeDictObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *_registry;
+    PyObject *_dispatch_cache;
+} dank_mids___helpers___hashing____to_tuple_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *_func;
     PyObject *_cache;
