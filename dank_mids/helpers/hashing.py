@@ -117,13 +117,13 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         return value
 
     def keys(self) -> KeysView[TKey]:
-        return self.__dict__.keys()
+        return self.__dict__.keys()  # type: ignore [return-value]
 
     def values(self) -> ValuesView[TValue]:
         return self.__dict__.values()
 
     def items(self) -> ItemsView[TKey, TValue]:
-        return self.__dict__.items()
+        return self.__dict__.items()  # type: ignore [return-value]
 
 
 def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValue]:
