@@ -61133,7 +61133,7 @@ CPyTagged CPyDef_method___get_len(PyObject *cpy_r_method) {
     if (!cpy_r_r1) goto CPyL2;
     return 10;
 CPyL2: ;
-    cpy_r_r2 = CPyStatics[1049]; /* frozenset({'eth_getCode', 'eth_getTransaction'}) */
+    cpy_r_r2 = CPyStatics[1049]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
     cpy_r_r3 = PySet_Contains(cpy_r_r2, cpy_r_method);
     cpy_r_r4 = cpy_r_r3 >= 0;
     if (unlikely(!cpy_r_r4)) {
@@ -73358,7 +73358,7 @@ CPyL270: ;
         goto CPyL378;
     }
     CPy_DECREF(cpy_r_r541);
-    cpy_r_r550 = CPyStatics[666]; /* 'eth_getCode' */
+    cpy_r_r550 = CPyStatics[667]; /* 'eth_getCode' */
     cpy_r_r551 = CPyStatics[842]; /* 'ETH_GETCODE_SEMAPHORE' */
     cpy_r_r552 = CPyStatic_ENVIRONMENT_VARIABLES___globals;
     cpy_r_r553 = CPyStatics[42]; /* 'a_sync' */
@@ -74318,7 +74318,7 @@ const char * const CPyLit_Str[] = {
     "\a\t__class__\004text\a<cycle>\006pretty\bHashable\027Found unhashable type \'\003\': ",
     "\a\017collections.abc\004TKey\005bound\006TValue\006__hash\rAttributeDict\006object",
     "\005\023lru_cache_lite_wrap\005cache\tParamSpec\003__P\031eth_getTransactionReceipt",
-    "\004\veth_getCode\022eth_getTransaction\016eth_getBlockBy\017eth_blockNumber",
+    "\004\022eth_getTransaction\veth_getCode\016eth_getBlockBy\017eth_blockNumber",
     "\006\veth_getLogs\006trace_\006debug_\016BYPASS_METHODS\aget_len\fshould_batch",
     "\004$jsonrpc batch failed\njson batch id: \003jid\b | len: \020 | total calls: ",
     "\005\vtotal_calls\001\n\020methods called: \rmethod_counts\fisEnabledFor",
