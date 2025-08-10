@@ -43,7 +43,7 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
     """
 
     def __init__(self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
-        self.__dict__: Final = dict(dictionary)
+        self.__dict__: Final = dict(dictionary)  # type: ignore [arg-type]
         self.__dict__.update(dict(*args, **kwargs))
         self.__hash: Optional[int] = None
 
@@ -71,7 +71,7 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __getitem__(self, key: TKey) -> TValue:
-        return self.__dict__[key]
+        return self.__dict__[key]  # type: ignore [index, no-any-return]
 
     def __iter__(self) -> Iterator[Any]:
         return iter(self.__dict__)
