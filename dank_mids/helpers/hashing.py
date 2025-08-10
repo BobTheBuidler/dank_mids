@@ -137,7 +137,7 @@ def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValu
     for k, v in d.items():
         if isinstance(v, (list, tuple)):
             ret[k] = _to_tuple(v)
-        elif isinstance(v, Mapping):
+        elif isinstance(v, dict) or isinstance(v, Mapping):
             ret[k] = tupleize_lists_nested(v)
         elif not isinstance(v, Hashable):
             raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}")
