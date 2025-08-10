@@ -21,6 +21,7 @@ from typing import (
 
 import hexbytes
 import msgspec
+
 # we cant use faster_eth_abi here without segfaults
 from eth_abi import decoding
 from eth_abi.abi import default_codec
