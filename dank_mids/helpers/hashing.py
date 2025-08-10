@@ -1,8 +1,6 @@
 from collections.abc import Hashable
 from typing import Any, Mapping, TypeVar, final
 
-from web3.datastructures import AttributeDict
-
 
 TKey = TypeVar("TKey", bound=Hashable)
 TValue = TypeVar("TValue")
