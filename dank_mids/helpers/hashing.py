@@ -1,5 +1,5 @@
 from collections.abc import Hashable
-from typing import Any, Mapping, TypeVar, final
+from typing import Any, List, Mapping, Tuple, TypeVar, final
 
 
 TKey = TypeVar("TKey", bound=Hashable)
@@ -32,9 +32,14 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
     def __init__(self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
         self.__dict__: Final = dict(dictionary)
         self.__dict__.update(dict(*args, **kwargs))
+        self.__hash: Optional[int] = None
 
     def __hash__(self) -> int:
-        return hash(tuple(sorted(tupleize_lists_nested(self).items())))
+        retval = self.__hash
+        if retval is None:
+            retval = hash(tuple(sorted(tupleize_lists_nested(self).items())))
+            self.__hash = retval
+        return retval
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, AttributeDict):
@@ -93,3 +98,26 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
             return type(value)(AttributeDict.recursive(v) for v in value)
         return value
+
+
+def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValue]:
+    """
+    Unhashable types inside dicts will throw an error if attempted to be hashed.
+    This method converts lists to tuples, rendering them hashable.
+    Other unhashable types found will raise a TypeError
+    """
+
+    def _to_tuple(value: Union[List[Any], Tuple[Any, ...]]) -> Any:
+        return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+
+    ret = dict()
+    for k, v in d.items():
+        if isinstance(v, (list, tuple)):
+            ret[k] = _to_tuple(v)
+        elif isinstance(v, Mapping):
+            ret[k] = tupleize_lists_nested(v)
+        elif not isinstance(v, Hashable):
+            raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}")
+        else:
+            ret[k] = v
+    return AttributeDict(ret)
