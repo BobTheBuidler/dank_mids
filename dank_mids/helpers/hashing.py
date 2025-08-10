@@ -1,5 +1,18 @@
 from collections.abc import Hashable
-from typing import Any, List, Mapping, Tuple, TypeVar, final
+from typing import (
+    Any,
+    Dict,
+    Final,
+    Iterator,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+    final,
+)
 
 
 TKey = TypeVar("TKey", bound=Hashable)
