@@ -33,7 +33,6 @@ from hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field
 from msgspec.json import Decoder
 from msgspec.json import decode as json_decode
-from web3.datastructures import AttributeDict
 from web3.types import RPCEndpoint, RPCError, RPCResponse
 
 from dank_mids import constants, stats
@@ -47,6 +46,7 @@ from dank_mids._exceptions import (
     QuiknodeRateLimitError,
 )
 from dank_mids.helpers._codec import RawResponse, decode_string, encode
+from dank_mids.helpers.hashing import AttributeDict
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 
 if TYPE_CHECKING:
