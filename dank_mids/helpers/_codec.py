@@ -21,12 +21,10 @@ from typing import (
 
 import hexbytes
 import msgspec
-
-# we cant use faster_eth_abi here without segfaults
-from eth_abi import decoding
-from eth_abi.abi import default_codec
-from eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 from eth_typing import ChecksumAddress, HexStr
+from faster_eth_abi import decoding
+from faster_eth_abi.abi import default_codec
+from faster_eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 from evmspec.data import Address
 from msgspec.json import Decoder, Encoder
 
