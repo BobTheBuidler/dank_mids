@@ -21,7 +21,7 @@ from typing import (
 import brownie.convert.datatypes
 import brownie.convert.normalize
 import brownie.network.contract
-import eth_abi
+import faster_eth_abi
 import hexbytes
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
@@ -30,7 +30,7 @@ from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
-from eth_abi.exceptions import DecodingError, InsufficientDataBytes
+from faster_eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
 from hexbytes.main import BytesLike
@@ -249,12 +249,9 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
     return call.signature  # type: ignore [return-value, no-any-return]
 
 
-# These methods were renamed in eth-abi 4.0.0
-__eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], bytes]] = (
-    eth_abi.encode if hasattr(eth_abi, "encode") else eth_abi.encode_abi
-)
+__eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], bytes]] = faster_eth_abi.encode
 __eth_abi_decode: Final[Callable[[TypeStrs, hexbytes.HexBytes], Tuple[Any, ...]]] = (
-    eth_abi.decode if hasattr(eth_abi, "decode") else eth_abi.decode_abi
+    faster_eth_abi.decode
 )
 
 
@@ -297,7 +294,7 @@ def __validate_output(abi: AbiDict, hexstr: BytesLike) -> None:
     try:
         selector = HexBytes(hexstr)[:4].hex()
         if selector == "0x08c379a0":
-            revert_str = eth_abi.decode_abi(["string"], HexBytes(hexstr)[4:])[0]
+            revert_str = __eth_abi_decode(["string"], HexBytes(hexstr)[4:])[0]  # type: ignore [list-item]
             raise Revert(f"Call reverted: {revert_str}")
         elif selector == "0x4e487b71":
             error_code = int(HexBytes(hexstr)[4:].hex(), 16)

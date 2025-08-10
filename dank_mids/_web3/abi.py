@@ -2,9 +2,9 @@ import typing
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, Final, List, Optional, Tuple, TypeVar, final
 
-from eth_abi import grammar
-from eth_abi.grammar import ABIType, TupleType
 from eth_typing import TypeStr
+from faster_eth_abi import grammar
+from faster_eth_abi.grammar import ABIType, TupleType
 
 
 _T = TypeVar("_T")
