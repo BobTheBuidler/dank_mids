@@ -30,7 +30,6 @@ from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
-from faster_eth_abi import decode_abi
 from faster_eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
@@ -295,7 +294,7 @@ def __validate_output(abi: AbiDict, hexstr: BytesLike) -> None:
     try:
         selector = HexBytes(hexstr)[:4].hex()
         if selector == "0x08c379a0":
-            revert_str = decode_abi(["string"], HexBytes(hexstr)[4:])[0]
+            revert_str = __eth_abi_decode(["string"], HexBytes(hexstr)[4:])[0]
             raise Revert(f"Call reverted: {revert_str}")
         elif selector == "0x4e487b71":
             error_code = int(HexBytes(hexstr)[4:].hex(), 16)
