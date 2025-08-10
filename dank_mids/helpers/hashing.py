@@ -1,3 +1,4 @@
+import functools
 from collections.abc import Hashable
 from typing import (
     Any,
@@ -120,9 +121,6 @@ def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValu
     Other unhashable types found will raise a TypeError
     """
 
-    def _to_tuple(value: Union[List[Any], Tuple[Any, ...]]) -> Any:
-        return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
-
     ret = dict()
     for k, v in d.items():
         if isinstance(v, (list, tuple)):
@@ -134,3 +132,16 @@ def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValu
         else:
             ret[k] = v
     return AttributeDict(ret)
+
+
+@functools.singledispatch
+def _to_tuple(value: Union[List[Any], Tuple[Any, ...]]) -> Any:
+    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+
+@_to_tuple.register(list)
+def _(value: List[Any]) -> Any:
+    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+
+@_to_tuple.register(tuple)
+def _(value: Tuple[Any, ...]) -> Any:
+    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
