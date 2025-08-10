@@ -294,7 +294,7 @@ def __validate_output(abi: AbiDict, hexstr: BytesLike) -> None:
     try:
         selector = HexBytes(hexstr)[:4].hex()
         if selector == "0x08c379a0":
-            revert_str = __eth_abi_decode(["string"], HexBytes(hexstr)[4:])[0]
+            revert_str = __eth_abi_decode(["string"], HexBytes(hexstr)[4:])[0]  # type: ignore [list-item]
             raise Revert(f"Call reverted: {revert_str}")
         elif selector == "0x4e487b71":
             error_code = int(HexBytes(hexstr)[4:].hex(), 16)
