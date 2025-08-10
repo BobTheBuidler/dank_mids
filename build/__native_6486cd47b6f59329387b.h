@@ -390,7 +390,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___brownie_patch___call___coroutine_gen___3_147Object;
+} dank_mids___brownie_patch___call___coroutine_gen___3_148Object;
 
 typedef struct {
     PyObject_HEAD
