@@ -4,7 +4,9 @@ from typing import (
     Any,
     Dict,
     Final,
+    ItemsView,
     Iterator,
+    KeysView,
     List,
     Mapping,
     Optional,
@@ -12,6 +14,7 @@ from typing import (
     Tuple,
     TypeVar,
     Union,
+    ValuesView,
     final,
 )
 
@@ -112,6 +115,15 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
             return type(value)(AttributeDict.recursive(v) for v in value)  # type: ignore [call-arg]
         return value
+
+    def keys(self) -> KeysView[TKey]:
+        return self.__dict__.keys()
+
+    def values(self) -> ValuesView[TValue]:
+        return self.__dict__.values()
+
+    def items(self) -> ItemsView[TKey, TValue]:
+        return self.__dict__.items()
 
 
 def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValue]:
