@@ -4,19 +4,11 @@ PyMODINIT_FUNC
 PyInit__demo_mode(void)
 {
     PyObject *tmp;
-<<<<<<< HEAD
-    if (!(tmp = PyImport_ImportModule("6486cd47b6f59329387b__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("d3671565f89b6cb0ec69__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____demo_mode");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "6486cd47b6f59329387b__mypyc.init_dank_mids____demo_mode");
-=======
-    if (!(tmp = PyImport_ImportModule("e533ac94cbe235f69297__mypyc"))) return NULL;
-    PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____demo_mode");
-    Py_DECREF(tmp);
-    if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "e533ac94cbe235f69297__mypyc.init_dank_mids____demo_mode");
->>>>>>> chore: extract _RequestEvent to its own module
+    void *init_func = PyCapsule_GetPointer(capsule, "d3671565f89b6cb0ec69__mypyc.init_dank_mids____demo_mode");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
