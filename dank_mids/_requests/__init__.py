@@ -69,6 +69,7 @@ from dank_mids._exceptions import (
     internal_err_types,
 )
 from dank_mids._logging import DEBUG, getLogger
+from dank_mids._requests.base import _RequestBase
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
 from dank_mids.helpers._codec import (
@@ -155,33 +156,6 @@ class _RequestEvent(a_sync.Event):
     _owner = "[not displayed...]"
 
 
-class _RequestBase(Generic[_Response]):
-    _fut: DebuggableFuture
-    _batch: Optional["_Batch"] = None
-
-    __slots__ = "controller", "uid", "_fut", "__weakref__"
-
-    def __init__(self, controller: "DankMiddlewareController", uid: Optional[str] = None) -> None:
-        self.controller: "DankMiddlewareController" = controller
-        """The DankMiddlewareController that created this request."""
-
-        self.uid = controller.call_uid.next if uid is None else uid
-        """The unique id for this request."""
-
-        self._fut = DebuggableFuture(self, controller._loop)
-
-    def __await__(self) -> Generator[Any, None, _Response]:
-        return self.get_response().__await__()
-
-    # Abstract methods to be implemented by subclasses
-
-    def __len__(self) -> int:
-        raise NotImplementedError
-
-    async def get_response(self) -> _Response:
-        raise NotImplementedError
-
-
 ### Single requests:
 _REVERT_EXC_TYPES: Final = ContractLogicError, ExecutionReverted
 
@@ -230,7 +204,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         if not should_batch_method(method):
             self.should_batch = False
 
-        if logger.isEnabledFor(DEBUG):
+        if _logger_is_enabled_for(DEBUG):
             self._debug_logs_enabled = True
 
         if controller.max_jsonrpc_batch_size <= 50:
@@ -246,13 +220,13 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     controller._pending_rpc_calls_append(self)
         _demo_logger_info("added to queue (cid: %s)", self.uid)
         if _logger_is_enabled_for(DEBUG):
-            self._daemon = create_task(self._debug_daemon(), name="RPCRequest debug daemon")
+            self._daemon = create_task(self._fut.__debug_daemon(), name="RPCRequest debug daemon")
 
     def __hash__(self) -> int:
         return id(self)
 
     def __eq__(self, __o: object) -> bool:
-        return (self.uid == __o.uid) if type(__o) is type(self) else False
+        return (self.uid == __o.uid) if type(__o) is type(self) else False  # type: ignore [attr-defined]
 
     def __len__(self) -> int:
         # NOTE: We dont need to consider response size for each method for very small batch sizes since the requests/responses will never get too large
