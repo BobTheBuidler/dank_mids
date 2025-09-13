@@ -2156,14 +2156,13 @@ yaml = ["pyyaml"]
 
 [[package]]
 name = "multicall"
-version = "0.15.0"
+version = "0.15.1"
 description = "aggregate results from multiple ethereum contract calls"
 optional = false
 python-versions = "<4,>=3.10"
 groups = ["main"]
 files = [
-    {file = "multicall-0.15.0-py3-none-any.whl", hash = "sha256:486c75fb0a5ef6ae496a9f771c05ade2e6055c42f3b4ec54259ddb022f28ecbc"},
-    {file = "multicall-0.15.0.tar.gz", hash = "sha256:4fc158fb9576a58c62c81217f076e58fb8d1d58a8ad32f0424917352a1daa1ba"},
+    {file = "multicall-0.15.1.tar.gz", hash = "sha256:df86d035d4c31c74e7ba3f72aae3c460a163a04298fff80807914c2092235756"},
 ]
 
 [package.dependencies]
