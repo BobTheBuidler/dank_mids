@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_6486cd47b6f59329387b_H
-#define MYPYC_NATIVE_6486cd47b6f59329387b_H
+#ifndef MYPYC_NATIVE_d3671565f89b6cb0ec69_H
+#define MYPYC_NATIVE_d3671565f89b6cb0ec69_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -534,6 +534,12 @@ typedef struct {
     CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
 } dank_mids___helpers____codec_____mypyc_lambda__0_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *__owner;
+} dank_mids___helpers____event___RequestEventObject;
 
 typedef struct {
     PyObject_HEAD

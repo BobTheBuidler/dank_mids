@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_6486cd47b6f59329387b_H
-#define MYPYC_NATIVE_INTERNAL_6486cd47b6f59329387b_H
+#ifndef MYPYC_NATIVE_INTERNAL_d3671565f89b6cb0ec69_H
+#define MYPYC_NATIVE_INTERNAL_d3671565f89b6cb0ec69_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_6486cd47b6f59329387b.h"
+#include "__native_d3671565f89b6cb0ec69.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1058];
+extern PyObject *CPyStatics[1083];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -138,6 +138,9 @@ extern PyObject *CPyStatic__errors___globals;
 extern CPyModule *CPyModule_web3___exceptions;
 extern CPyModule *CPyModule_dank_mids___constants__internal;
 extern CPyModule *CPyModule_dank_mids___constants;
+extern CPyModule *CPyModule_dank_mids___helpers____event__internal;
+extern CPyModule *CPyModule_dank_mids___helpers____event;
+extern PyObject *CPyStatic__event___globals;
 extern PyObject *CPyStatic__gather___globals;
 extern CPyModule *CPyModule_a_sync___asyncio;
 extern CPyModule *CPyModule_dank_mids___helpers____weaklist__internal;
@@ -648,6 +651,20 @@ extern PyObject *CPyPy__errors___is_revert_bytes(PyObject *self, PyObject *const
 extern char CPyDef__errors___log_request_type_switch(void);
 extern PyObject *CPyPy__errors___log_request_type_switch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors_____top_level__(void);
+extern PyObject *CPyStatic__event____get_running_loop;
+extern PyObject *CPyStatic__event____super_init;
+extern PyObject *CPyStatic__event____super_set;
+extern PyTypeObject *CPyType__event___RequestEvent;
+extern PyObject *CPyDef__event___RequestEvent(PyObject *cpy_r_owner);
+extern char CPyDef__event___RequestEvent_____init__(PyObject *cpy_r_self, PyObject *cpy_r_owner);
+extern PyObject *CPyPy__event___RequestEvent_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern PyObject *CPyDef__event___RequestEvent_____repr__(PyObject *cpy_r_self);
+extern PyObject *CPyPy__event___RequestEvent_____repr__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__event___RequestEvent___set(PyObject *cpy_r_self);
+extern PyObject *CPyPy__event___RequestEvent___set(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__event___RequestEvent_____mypyc_defaults_setup(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy__event___RequestEvent_____mypyc_defaults_setup(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__event_____top_level__(void);
 extern PyObject *CPyStatic__gather___Task;
 extern PyObject *CPyStatic__gather___get_running_loop;
 extern PyObject *CPyStatic__gather___wait;
