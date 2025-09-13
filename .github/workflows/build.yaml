@@ -1,4 +1,4 @@
-name: Build Mypyc
+name: Compile
 
 on:
   pull_request:
@@ -19,43 +19,20 @@ jobs:
           # Check out the PR branch
           ref: ${{ github.head_ref }}
 
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-      - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
-      - name: Run Mypyc (3.10)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-      - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
-      - name: Run Mypyc (3.11)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.12
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.18.1 setuptools types-requests eth-typing
-      - name: Run Mypyc (3.12)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
+          
+      - name: Install Poetry
+        run: pip install poetry
+        
+      - name: Install Evmspec
+        run: |
+          poetry install
+          poetry run pip install .
 
-      - name: Check for changes (Ubuntu)
+      - name: Check for changes
         run: |
           if [[ -n $(git status --porcelain) ]]; then
             echo "changes_detected=true" >> $GITHUB_ENV
@@ -63,136 +40,11 @@ jobs:
             echo "changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit changes (Ubuntu)
+      - name: Commit changes
         if: env.changes_detected == 'true'
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "chore: compile to C for Linux x64 with mypyc"
-          git push
-
-  build-macos:
-    needs: build-ubuntu
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.head_ref }}
-
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-      - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
-      - name: Run Mypyc (3.10)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-      - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
-      - name: Run Mypyc (3.11)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.18.1 setuptools types-requests eth-typing
-      - name: Run Mypyc (3.12)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      - name: Check for changes (macOS)
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes (macOS)
-        if: env.changes_detected == 'true'
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: compile to C for macOS with mypyc"
-          git push
-
-  build-windows:
-    needs: build-macos
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.head_ref }}
-
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-      - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
-      - name: Run Mypyc (3.10)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-      - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
-      - name: Run Mypyc (3.11)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.18.1 setuptools types-requests eth-typing
-      - name: Run Mypyc (3.12)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      - name: Check for changes (Windows)
-        shell: bash
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes (Windows)
-        if: env.changes_detected == 'true'
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: compile to C for Windows AMD64 with mypyc"
+          git commit -m "chore: compile C files for source control"
           git push
