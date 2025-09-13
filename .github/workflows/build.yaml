@@ -27,7 +27,7 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
         
-      - name: Install Evmspec
+      - name: Install typed-envs
         run: |
           poetry install
           poetry run pip install .
