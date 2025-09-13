@@ -157,14 +157,11 @@ setup(
     packages=find_packages(),
     package_data={"evmspec": ["py.typed"]},
     include_package_data=True,
-    install_requires=poetry_dependencies_to_install_requires(
-        poetry_config["dependencies"]
-    ),
+    install_requires=poetry_dependencies_to_install_requires(poetry_config["dependencies"]),
     ext_modules=mypycify(
         [
             "dank_mids/_batch.py",
-            "dank_mids/_demo_mode.py"
-            "dank_mids/_envs.py",
+            "dank_mids/_demo_mode.py" "dank_mids/_envs.py",
             "dank_mids/_eth_utils.py",
             "dank_mids/_exceptions.py",
             "dank_mids/_logging.py",
