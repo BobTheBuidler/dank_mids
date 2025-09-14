@@ -23,7 +23,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
+          python-version: "3.13"
       - name: Install Mypyc (3.10)
         run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
       - name: Run Mypyc (3.10)
@@ -35,7 +35,7 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.13"
       - name: Install Mypyc (3.11)
         run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
       - name: Run Mypyc (3.11)
@@ -47,7 +47,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.13"
       - name: Install Mypyc (3.12)
         run: pip install mypy[mypyc]==1.18.1 setuptools types-requests eth-typing
       - name: Run Mypyc (3.12)
@@ -97,7 +97,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
+          python-version: "3.13"
       - name: Install Mypyc (3.10)
         run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
       - name: Run Mypyc (3.10)
@@ -109,7 +109,7 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.13"
       - name: Install Mypyc (3.11)
         run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
       - name: Run Mypyc (3.11)
@@ -121,7 +121,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.13"
       - name: Install Mypyc (3.12)
         run: pip install mypy[mypyc]==1.18.1 setuptools types-requests eth-typing
       - name: Run Mypyc (3.12)
@@ -171,7 +171,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
+          python-version: "3.13"
       - name: Install Mypyc (3.10)
         run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
       - name: Run Mypyc (3.10)
@@ -183,7 +183,7 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.13"
       - name: Install Mypyc (3.11)
         run: pip install mypy[mypyc]==1.18.1 types-requests eth-typing
       - name: Run Mypyc (3.11)
@@ -195,7 +195,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.13"
       - name: Install Mypyc (3.12)
         run: pip install mypy[mypyc]==1.18.1 setuptools types-requests eth-typing
       - name: Run Mypyc (3.12)
