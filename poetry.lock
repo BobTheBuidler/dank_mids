@@ -1033,7 +1033,10 @@ files = [
 ]
 
 [package.dependencies]
-msgspec = {version = ">=0.18.5", markers = "python_version < \"3.13\""}
+msgspec = [
+    {version = ">=0.19.0", markers = "python_version >= \"3.13\""},
+    {version = ">=0.18.5", markers = "python_version < \"3.13\""},
+]
 
 [[package]]
 name = "eip712"
@@ -4019,5 +4022,5 @@ type = ["pytest-mypy"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.10,<3.13"
-content-hash = "e2e3caa907df53922a2bccdc8bdd1d1096273468392906c9a90ec6d6d9abec59"
+python-versions = ">=3.10,<3.14"
+content-hash = "1a0b77945317f34014ded4b0ee7e88e0cc1b2b0d739f70022bd68a1913593a55"
