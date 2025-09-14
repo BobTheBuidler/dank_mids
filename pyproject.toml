@@ -21,6 +21,9 @@ include = [
     { path = "6486cd47b6f59329387b__mypyc.cpython-312-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
     { path = "6486cd47b6f59329387b__mypyc.cpython-312-darwin.so", format = ["sdist", "wheel"] },
     { path = "6486cd47b6f59329387b__mypyc.cp312-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "6486cd47b6f59329387b__mypyc.cpython-313-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "6486cd47b6f59329387b__mypyc.cpython-313-darwin.so", format = ["sdist", "wheel"] },
+    { path = "6486cd47b6f59329387b__mypyc.cp313-win_amd64.pyd", format = ["sdist", "wheel"] },
 ]
 exclude = ["tests", "tests.*"]
 
