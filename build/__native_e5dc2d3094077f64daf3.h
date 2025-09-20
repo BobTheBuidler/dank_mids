@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_6486cd47b6f59329387b_H
-#define MYPYC_NATIVE_6486cd47b6f59329387b_H
+#ifndef MYPYC_NATIVE_e5dc2d3094077f64daf3_H
+#define MYPYC_NATIVE_e5dc2d3094077f64daf3_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -433,6 +433,69 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__call;
     int32_t ___mypyc_next_label__;
 } dank_mids___brownie_patch___call____request_data_no_args_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} dank_mids___brownie_patch___contract____ContractMethodPlaceholderObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch___contract___from_abi_Contract_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch___contract___from_ethpm_Contract_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch___contract___from_explorer_Contract_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch___contract_____init___3_Contract_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch___contract_____post_init___3_Contract_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch___contract_____getattribute___3_Contract_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch___contract_____method_names___3_Contract_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_temp__0;
+    PyObject *___mypyc_temp__1;
+    PyObject *___mypyc_generator_attribute__abi;
+} dank_mids___brownie_patch___contract_____method_names___3_Contract_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___brownie_patch___contract_____get_method_object___3_Contract_objObject;
 
 typedef struct {
     PyObject_HEAD
