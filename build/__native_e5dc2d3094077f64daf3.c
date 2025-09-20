@@ -38924,7 +38924,7 @@ CPyL2: ;
         CPy_TypeErrorTraceback("dank_mids/brownie_patch/contract.py", "__post_init__", 207, CPyStatic_contract___globals, "str", cpy_r_r3);
         goto CPyL13;
     }
-    cpy_r_r5 = CPyStatics[1112]; /* frozenset({'_owner', '_name'}) */
+    cpy_r_r5 = CPyStatics[1112]; /* frozenset({'_name', '_owner'}) */
     cpy_r_r6 = PySet_Contains(cpy_r_r5, cpy_r_r4);
     cpy_r_r7 = cpy_r_r6 >= 0;
     if (unlikely(!cpy_r_r7)) {
@@ -80663,7 +80663,7 @@ const int CPyLit_Tuple[] = {
     1100, 1, 817, 1, 818, 1, 855, 3, 79, 79, 79, 2, 942, 1105, 1, 857, 2,
     205, 46, 1, 858, 2, 868, 869, 1, 868
 };
-const int CPyLit_FrozenSet[] = {2, 2, 486, 378, 2, 714, 715};
+const int CPyLit_FrozenSet[] = {2, 2, 378, 486, 2, 714, 715};
 CPyModule *CPyModule_dank_mids____batch__internal = NULL;
 CPyModule *CPyModule_dank_mids____batch;
 PyObject *CPyStatic__batch___globals;
