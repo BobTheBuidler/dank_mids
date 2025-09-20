@@ -1,4 +1,17 @@
-from typing import Any, Callable, Dict, Iterator, List, Literal, NewType, Optional, Tuple, TypeVar, Union, overload
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterator,
+    List,
+    Literal,
+    NewType,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+    overload,
+)
 
 import brownie
 from brownie.network.contract import (
@@ -51,7 +64,9 @@ Signature = NewType("Signature", str)
 _P = ParamSpec("_P")
 _T = TypeVar("_T")
 
-retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(min_sleep_time=1, max_sleep_time=2, suppress_logs=2)
+retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(
+    min_sleep_time=1, max_sleep_time=2, suppress_logs=2
+)
 """A wrapper that retries failed calls to the Etherscan API."""
 
 
