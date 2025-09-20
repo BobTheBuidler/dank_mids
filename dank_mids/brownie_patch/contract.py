@@ -2,6 +2,7 @@ from typing import (
     Any,
     Callable,
     Dict,
+    Final,
     Iterator,
     List,
     Literal,
@@ -69,6 +70,8 @@ retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(
 )
 """A wrapper that retries failed calls to the Etherscan API."""
 
+
+_brownie_contract_init: Final = brownie.Contract.__init__
 
 class Contract(brownie.Contract):  # type: ignore [misc]
     """
@@ -189,7 +192,7 @@ class Contract(brownie.Contract):  # type: ignore [misc]
 
         This method sets up lazy initialization for contract methods.
         """
-        super().__init__(address_or_alias, *args, owner=owner, **kwargs)
+        _brownie_contract_init(self, address_or_alias, *args, owner=owner, **kwargs)
         self.__post_init__()
 
     def __post_init__(self) -> None:
