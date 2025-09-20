@@ -70,7 +70,7 @@ retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(
 """A wrapper that retries failed calls to the Etherscan API."""
 
 
-class Contract(brownie.Contract):
+class Contract(brownie.Contract):  # type: ignore [misc]
     """
     An extended version of brownie.Contract with additional functionality for Dank Mids.
 
@@ -106,7 +106,7 @@ class Contract(brownie.Contract):
             A new Contract instance.
         """
         persisted = brownie.Contract.from_abi(name, address, abi, owner, _check_persist(persist))
-        return Contract(persisted.address)
+        return Contract(persisted.address)  # type: ignore [no-any-return]
 
     @classmethod
     @retry_etherscan
@@ -137,7 +137,7 @@ class Contract(brownie.Contract):
         persisted = brownie.Contract.from_ethpm(
             name, manifest_uri, address, owner, _check_persist(persist)
         )
-        return Contract(persisted.address)
+        return Contract(persisted.address)  # type: ignore [no-any-return]
 
     @classmethod
     @retry_etherscan
@@ -168,7 +168,7 @@ class Contract(brownie.Contract):
         persisted = brownie.Contract.from_explorer(
             address, as_proxy_for, owner, silent, _check_persist(persist)
         )
-        return Contract(persisted.address)
+        return Contract(persisted.address)  # type: ignore [no-any-return]
 
     topics: Dict[str, str]
     """A dictionary mapping event names to their corresponding topics."""
