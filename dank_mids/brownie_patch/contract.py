@@ -24,6 +24,7 @@ from brownie.network.contract import (
 from brownie.typing import AccountsType
 from eth_retry import auto_retry
 from eth_typing import ABI, HexAddress
+from mypy_extensions import mypyc_attr
 from typing_extensions import ParamSpec
 
 from dank_mids.brownie_patch.call import _patch_call
@@ -74,6 +75,7 @@ retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(
 _brownie_contract_init: Final = brownie.Contract.__init__
 
 
+@mypyc_attr(native_class=False)
 class Contract(brownie.Contract):  # type: ignore [misc]
     """
     An extended version of brownie.Contract with additional functionality for Dank Mids.
