@@ -16,7 +16,7 @@ There are a number of optimizations that went into making Dank the fastest way t
 1. Implemented (mostly) in C.
 2. Bypasses the default formatters in [web3.py](https://github.com/ethereum/web3.py)
 3. JSON encoding and decoding is handled by [msgspec](https://jcristharif.com/msgspec/). All responses are decoded to specialized [msgspec.Struct](https://jcristharif.com/msgspec/structs.html) objects defined in the [evmspec](https://github.com/BobTheBuidler/evmspec) library.
-4. We use my C-compiled [faster-eth-utils](https://github.com/BobTheBuidler/faster-eth-utils/tree/master) instead of the original python implementation [eth-utils](https://github.com/ethereum/eth-utils)
+4. We use my C-compiled [faster-eth-abi](https://github.com/BobTheBuidler/faster-eth-abi/tree/master) and [faster-eth-utils](https://github.com/BobTheBuidler/faster-eth-utils/tree/master) instead of the original python implementations [eth-abi](https://github.com/ethereum/eth-abi) and [eth-utils](https://github.com/ethereum/eth-utils).
 5. Responses are decoded on a JIT (just-in-time) basis, meaning individual task cancellation works as expected even when response data is received as part of a larger batch. 
 6. more stuff I'll write down later...
 
@@ -84,3 +84,4 @@ random_block = await dank_web3.eth.get_block(123)
 ### Notes
 
 You can also set `DANK_MIDS_DEMO_MODE=True` to see a visual representation of the batching in real time on your console.
+
