@@ -1,4 +1,4 @@
-from typing import Any, Dict, Iterator, List, Literal, NewType, Optional, Tuple, Union, overload
+from typing import Any, Callable, Dict, Iterator, List, Literal, NewType, Optional, Tuple, TypeVar, Union, overload
 
 import brownie
 from brownie.network.contract import (
@@ -9,6 +9,8 @@ from brownie.network.contract import (
 )
 from brownie.typing import AccountsType
 from eth_retry import auto_retry
+from eth_typing import ABI, HexAddress
+from typing_extensions import ParamSpec
 
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
@@ -46,7 +48,10 @@ Signature = NewType("Signature", str)
 """A type representing the signature of a method in a smart contract."""
 
 
-retry_etherscan = auto_retry(min_sleep_time=1, max_sleep_time=2, suppress_logs=2)
+_P = ParamSpec("_P")
+_T = TypeVar("_T")
+
+retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(min_sleep_time=1, max_sleep_time=2, suppress_logs=2)
 """A wrapper that retries failed calls to the Etherscan API."""
 
 
@@ -63,8 +68,8 @@ class Contract(brownie.Contract):
     def from_abi(
         cls,
         name: str,
-        address: str,
-        abi: List[dict],
+        address: HexAddress,
+        abi: ABI,
         owner: Optional[AccountsType] = None,
         persist: bool = True,
     ) -> "Contract":
@@ -94,7 +99,7 @@ class Contract(brownie.Contract):
         cls,
         name: str,
         manifest_uri: str,
-        address: Optional[str] = None,
+        address: Optional[HexAddress] = None,
         owner: Optional[AccountsType] = None,
         persist: bool = True,
     ) -> "Contract":
@@ -123,8 +128,8 @@ class Contract(brownie.Contract):
     @retry_etherscan
     def from_explorer(
         cls,
-        address: str,
-        as_proxy_for: Optional[str] = None,
+        address: HexAddress,
+        as_proxy_for: Optional[HexAddress] = None,
         owner: Optional[AccountsType] = None,
         silent: bool = False,
         persist: bool = True,
@@ -157,13 +162,19 @@ class Contract(brownie.Contract):
     """A dictionary mapping method names to their corresponding signatures."""
 
     @retry_etherscan
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(
+        self,
+        address_or_alias: HexAddress | str,
+        *args: Any,
+        owner: Optional[AccountsType] = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the Contract instance.
 
         This method sets up lazy initialization for contract methods.
         """
-        super().__init__(*args, **kwargs)
+        super().__init__(address_or_alias, *args, owner=owner, **kwargs)
         self.__post_init__()
 
     def __post_init__(self) -> None:
@@ -199,7 +210,7 @@ class Contract(brownie.Contract):
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
             object.__setattr__(self, name, attr)
-        return attr
+        return attr  # type: ignore [no-any-return]
 
     @property
     def __method_names__(self) -> Iterator[str]:
@@ -270,7 +281,7 @@ def patch_contract(
     if not isinstance(contract, brownie.Contract):
         contract = brownie.Contract(contract)
     if w3 is None and brownie.network.is_connected():
-        from dank_mids import dank_web3 as w3
+        from dank_mids import dank_web3 as w3  # type: ignore [attr-defined]
     if w3 is None:
         raise RuntimeError(
             "You must make sure either brownie is connected or you pass in a Web3 instance."
