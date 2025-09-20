@@ -76,6 +76,7 @@ _brownie_contract_init: Final = brownie.Contract.__init__
 
 _getattribute: Final = object.__getattribute__
 
+
 @mypyc_attr(native_class=False)
 class Contract(brownie.Contract):  # type: ignore [misc]
     """
