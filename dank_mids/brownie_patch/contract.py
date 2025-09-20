@@ -74,6 +74,7 @@ retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(
 
 _brownie_contract_init: Final = brownie.Contract.__init__
 
+_getattribute: Final = object.__getattribute__
 
 @mypyc_attr(native_class=False)
 class Contract(brownie.Contract):  # type: ignore [misc]
@@ -207,7 +208,7 @@ class Contract(brownie.Contract):  # type: ignore [misc]
         for name in self.__method_names__:
             # these are properties defined on _ContractBase and cannot be written to
             if name not in {"_name", "_owner"}:
-                object.__setattr__(self, name, _ContractMethodPlaceholder)
+                setattr(self, name, _ContractMethodPlaceholder)
 
     def __getattribute__(self, name: str) -> DankContractMethod:
         """
@@ -223,14 +224,14 @@ class Contract(brownie.Contract):  # type: ignore [misc]
             The contract method object.
         """
         try:
-            attr = object.__getattribute__(self, name)
+            attr = _getattribute(self, name)
         except AttributeError as e:
             raise AttributeError(
                 f"Contract '{self._name}' object has no attribute '{name}'"
             ) from e.__cause__
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
-            object.__setattr__(self, name, attr)
+            setattr(self, name, attr)
         return attr  # type: ignore [no-any-return]
 
     @property
