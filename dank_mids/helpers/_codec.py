@@ -19,7 +19,7 @@ from typing import (
     overload,
 )
 
-import hexbytes
+import faster_hexbytes
 import msgspec
 from eth_typing import ChecksumAddress, HexStr
 from faster_eth_abi import decoding
@@ -43,14 +43,14 @@ __T = TypeVar("__T")
 
 
 StrEncodable = Union[ChecksumAddress, HexStr, Address]
-Encodable = Union[int, StrEncodable, hexbytes.HexBytes, bytes]
+Encodable = Union[int, StrEncodable, faster_hexbytes.HexBytes, bytes]
 
 RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
 
 
 MulticallChunk = Union[
-    Tuple[ChecksumAddress, hexbytes.HexBytes],
-    List[Union[ChecksumAddress, hexbytes.HexBytes]],
+    Tuple[ChecksumAddress, faster_hexbytes.HexBytes],
+    List[Union[ChecksumAddress, faster_hexbytes.HexBytes]],
 ]
 MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
 
@@ -64,7 +64,7 @@ JSONRPCBatchResponse = Union[List["RawResponse"], "types.PartialResponse"]
 BatchDecoder = Callable[[Union[str, bytes]], Union[List[msgspec.Raw], "types.PartialResponse"]]
 
 # these compile to C constants
-HexBytes: Final = hexbytes.HexBytes
+HexBytes: Final = faster_hexbytes.HexBytes
 Raw: Final = msgspec.Raw
 ContextFramesBytesIO: Final = decoding.ContextFramesBytesIO
 DecodeError: Final = msgspec.DecodeError
