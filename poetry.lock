@@ -1716,13 +1716,62 @@ test = ["hypothesis (>=4.43.0)", "mypy (==1.5.1)", "pytest (>=7.0.0)", "pytest-x
 
 [[package]]
 name = "faster-hexbytes"
-version = "1.3.1"
+version = "1.3.2"
 description = "A faster fork of hexbytes: Python `bytes` subclass that decodes hex, with a readable console output. Implemented in C."
 optional = false
 python-versions = "<4,>=3.9"
 groups = ["main"]
 files = [
-    {file = "faster_hexbytes-1.3.1.tar.gz", hash = "sha256:cff0c6c58025fd9ad51d5762afb725bf089b7f25bd42b593eaabb9c4138bf439"},
+    {file = "faster_hexbytes-1.3.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:99d0f938368a5180b183e7a3e7164ea07d0ee90ffb67ffe843a28b3de4d05b2c"},
+    {file = "faster_hexbytes-1.3.2-cp310-cp310-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:8c7f34ed14caa83e3b60586a09a027e1a6f46c816005b585692be403fdcd4052"},
+    {file = "faster_hexbytes-1.3.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:96f1aceeb08f272a9e70c5bf0863ea9c7f6efe979c3fb0a78787f327e52dc605"},
+    {file = "faster_hexbytes-1.3.2-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:10c57ea3d2d6c0f4eb51ba54984a3425fb6a5ebe7b4118ac47a761db45fcf979"},
+    {file = "faster_hexbytes-1.3.2-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:c6693687358a5eefb94367bf90cbd194110c743fc5e85981ffdc907ef371095b"},
+    {file = "faster_hexbytes-1.3.2-cp310-cp310-win32.whl", hash = "sha256:8f28991fd35bdee0eb41b76df5e1bcf3048529d480790519a5bf395643fb511a"},
+    {file = "faster_hexbytes-1.3.2-cp310-cp310-win_amd64.whl", hash = "sha256:a194224e81fe7ea165e81d3a8cac4c060c2a9a304a9331fb350ca43882f91c43"},
+    {file = "faster_hexbytes-1.3.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:14c0b968cecc502f68a1c498c46187c065bb01f3f1d5eac1e4755a6c2a6d07e1"},
+    {file = "faster_hexbytes-1.3.2-cp311-cp311-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:5eed9eaccd6b59cf30be00611f8cd600da6fa35ae769f1a5fdafba8dd54a06de"},
+    {file = "faster_hexbytes-1.3.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:942edcddf953bc67964469a1d41f4d6005695a54121531c7a8f8ad08b238856d"},
+    {file = "faster_hexbytes-1.3.2-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:9727629bf8ec9cafb875f15c160ae17372a898b57e58b93d69dc79172b20d635"},
+    {file = "faster_hexbytes-1.3.2-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:9c4b0390f7b9c9fcfbd41aa04c054c4b8ded1622ba64614d688ce19bdc392613"},
+    {file = "faster_hexbytes-1.3.2-cp311-cp311-win32.whl", hash = "sha256:8578502b6e27894437a769646271f54eb54f7933f9c58cb7702d9f5063eab5dc"},
+    {file = "faster_hexbytes-1.3.2-cp311-cp311-win_amd64.whl", hash = "sha256:5fb984bfdd8b9abc70cf485503d8233eaefaa32949dad1fcd73b97df01ba8c8b"},
+    {file = "faster_hexbytes-1.3.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:108de133c55da22df02d934d6df89ce8543620be561e0eeb439cac3330d3351f"},
+    {file = "faster_hexbytes-1.3.2-cp312-cp312-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:267c10630e02feed5434eef01eba568960804ecfbe0b2ea31e99279633fb996d"},
+    {file = "faster_hexbytes-1.3.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:54a4b5863b08f8feafd8fb75ba2270bad207255248a1b15d3275b5c24cc53767"},
+    {file = "faster_hexbytes-1.3.2-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:a65c069f14f73e694898b85012750fe8be982674ba1134a0f4c97b578d2fbb8a"},
+    {file = "faster_hexbytes-1.3.2-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:d807d6e2561709f7fa2a020e9fd09c3057bb75944f507035c372283f5ebb9f4d"},
+    {file = "faster_hexbytes-1.3.2-cp312-cp312-win32.whl", hash = "sha256:13a6c65f9a744e8ece3a6225b5b4c62bb28854a1010a9e2c278188070e66f538"},
+    {file = "faster_hexbytes-1.3.2-cp312-cp312-win_amd64.whl", hash = "sha256:aa7bca0ed4f72fdf9844c85c9e24c4c83573342ee6c4e2ecd914f8e7eb91af14"},
+    {file = "faster_hexbytes-1.3.2-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:23dcc0242d432326a389c3f19ed10b636ef86ce2b0fc68e010992abd2697036f"},
+    {file = "faster_hexbytes-1.3.2-cp313-cp313-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:28f2c6c91ba5466500d48840d78d0f3c70399c5a4f679c50a3f43f34191fde32"},
+    {file = "faster_hexbytes-1.3.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:c7f179f341b1f9b3bdda52118615f3b15510bd853377ad5eb62788c8c938f9e3"},
+    {file = "faster_hexbytes-1.3.2-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:426781498cb6a627f268b895f368e82340eadc55e9a3cb3ba3617f135f09b19f"},
+    {file = "faster_hexbytes-1.3.2-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:d4f602c4bf24458577b0bf885e781d53d07eea8ca9585e4f446f0de2531ea86d"},
+    {file = "faster_hexbytes-1.3.2-cp313-cp313-win32.whl", hash = "sha256:f3899db72547146b099fc2df1f2c43ff00888c7637b5507757b86c2253fb05f0"},
+    {file = "faster_hexbytes-1.3.2-cp313-cp313-win_amd64.whl", hash = "sha256:b696018a2addd4fdc6ae1351e73df0b03aad8c9ba1390fbea9c56e72d83d6a0f"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:942b2d38f883e731a4105d4d618642642ec46ab9b46bc818c88a87a6d09e1a36"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:5a893e3a87139f6bd2b9c88b02e31ef90d75f2e8db24f1d3c947a38bbc2910db"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:3d88a6e6d04da0f7d20947f554b894264093ef5f266ad3ab8ebc135798172208"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314-musllinux_1_2_i686.whl", hash = "sha256:4abc13652bf8ab871a84be435d47d53cb4d9da949c13c7013a979c6ea8c4d7d3"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:191bbb288ac7dbe3d9e68159a2f9df795a0cf6b9c877fff7401c3a88edd0add7"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314-win32.whl", hash = "sha256:2bb7cce45d0ad967856c64846a00c40b6c1d3c28ec8e4d96742be21fc3d1bd66"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314-win_amd64.whl", hash = "sha256:4171c5b62dc1e9af4030476370ba6d4ee07bf6280e1db078945557c9e5c28274"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:6b74ca0185244f9ce86a3423e6de985f2a546e54cd0023e2970435e2993cee68"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314t-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:0da7a977d18084b3cc4607054fa6da7a72a7192ec733e724944206bc3480a67a"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:2d5edba731dfc8e773e86e21aec07891845a31e6287a41034503a0f5f4f91c36"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314t-musllinux_1_2_i686.whl", hash = "sha256:4a3c5ae69b6549ea7dd7d7b0ff4c00dbd34e76eae54c7e4b5cbc5acde8c4cd04"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:366088e3e97dfb2958d102ea57ce5f7dc18de486f0db932f81adfdf9a9b354ba"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314t-win32.whl", hash = "sha256:1f54c44c4a18299d93362fed5d49d1cec08fb72d541acf608092d83c38a723af"},
+    {file = "faster_hexbytes-1.3.2-cp314-cp314t-win_amd64.whl", hash = "sha256:48f1d0c1dc176f9fb1fec45683bd8445969eb73952651fc7bebc694ae8e57477"},
+    {file = "faster_hexbytes-1.3.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:00a916dbfb43d41f22ed3bceb39b59ca4ad789b527b361faf5e756340ff2e20c"},
+    {file = "faster_hexbytes-1.3.2-cp39-cp39-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:0fa675070a0a07409f7dd32f3def3b2d8b4cdbfbfc8da3d95786ed534aafce3f"},
+    {file = "faster_hexbytes-1.3.2-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:097cc7f89443526b35d60780e9d7debf8ccfcaa56b015aa9f82f7b3cb689050a"},
+    {file = "faster_hexbytes-1.3.2-cp39-cp39-musllinux_1_2_i686.whl", hash = "sha256:d0b77616d95d36547eb6470ed00e4fc82473cb6fc153438aabece981d6560a82"},
+    {file = "faster_hexbytes-1.3.2-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:356dacd9e5e602f4c7728dce26cf2742b007b21b888e389a105e23a5abf529cf"},
+    {file = "faster_hexbytes-1.3.2-cp39-cp39-win32.whl", hash = "sha256:64278c55f89436ae5b6169f1d49d7b3c3bc67a1f2c4ce3e23da9a016dba4ebe1"},
+    {file = "faster_hexbytes-1.3.2-cp39-cp39-win_amd64.whl", hash = "sha256:ba66c2e962ffa00797a789de67a52ff68b0535ab6798d009e1e39ad6d9caf2fc"},
+    {file = "faster_hexbytes-1.3.2.tar.gz", hash = "sha256:e0879aa7ccb6219043d5c067ef12928fb4abd572ad8452fa4e3f7d7a8658d7fe"},
 ]
 
 [package.dependencies]
