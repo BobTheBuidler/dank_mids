@@ -29,7 +29,7 @@ from eth_typing import ChecksumAddress
 from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
 from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
 from evmspec.structs.log import Log
-from hexbytes import HexBytes
+from faster_hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field
 from msgspec.json import Decoder
 from msgspec.json import decode as json_decode
