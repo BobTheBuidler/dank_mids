@@ -45,7 +45,7 @@ from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
 from eth_typing import ChecksumAddress
 from eth_utils.toolz import concat
-from hexbytes import HexBytes
+from faster_hexbytes import HexBytes
 from requests.exceptions import ReadTimeout
 from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse

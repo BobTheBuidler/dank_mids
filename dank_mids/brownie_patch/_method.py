@@ -15,7 +15,7 @@ from typing import (
 from a_sync import igather
 from brownie.typing import AccountsType
 from eth_typing import ABIFunction, ChecksumAddress
-from hexbytes.main import BytesLike
+from faster_hexbytes.main import BytesLike
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.brownie_patch import call

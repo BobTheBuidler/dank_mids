@@ -26,7 +26,7 @@ from evmspec.data._main import DecodeHook
 from evmspec.structs.block import TinyBlock
 from evmspec.structs.log import Log
 from evmspec.structs.receipt import Status
-from hexbytes import HexBytes
+from faster_hexbytes import HexBytes
 from msgspec import Raw, Struct, ValidationError, json
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC

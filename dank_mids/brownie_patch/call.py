@@ -22,7 +22,7 @@ import brownie.convert.datatypes
 import brownie.convert.normalize
 import brownie.network.contract
 import faster_eth_abi
-import hexbytes
+import faster_hexbytes
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
 from brownie.convert.normalize import ABIType
@@ -59,7 +59,7 @@ AbiDict = NewType("AbiDict", Dict[str, Any])
 
 # these compile to C constants to avoid global name lookups
 Decimal: Final[Callable[[Any], decimal.Decimal]] = decimal.Decimal
-HexBytes: Final = hexbytes.HexBytes
+HexBytes: Final = faster_hexbytes.HexBytes
 Contract: Final = brownie.network.contract.Contract
 ReturnValue: Final = brownie.convert.datatypes.ReturnValue
 HexString: Final = brownie.convert.normalize.HexString
@@ -250,7 +250,7 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
 
 
 __eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], bytes]] = faster_eth_abi.encode
-__eth_abi_decode: Final[Callable[[TypeStrs, hexbytes.HexBytes], Tuple[Any, ...]]] = (
+__eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], Tuple[Any, ...]]] = (
     faster_eth_abi.decode
 )
 
