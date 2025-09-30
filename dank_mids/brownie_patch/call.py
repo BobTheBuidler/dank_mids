@@ -250,7 +250,7 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
 
 
 __eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], bytes]] = faster_eth_abi.encode
-__eth_abi_decode: Final[Callable[[TypeStrs, hexbytes.HexBytes], Tuple[Any, ...]]] = (
+__eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], Tuple[Any, ...]]] = (
     faster_eth_abi.decode
 )
 
