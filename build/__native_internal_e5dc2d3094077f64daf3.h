@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1114];
+extern PyObject *CPyStatics[1117];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -109,7 +109,7 @@ extern CPyModule *CPyModule_types;
 extern CPyModule *CPyModule_brownie___convert___datatypes;
 extern CPyModule *CPyModule_brownie___convert___normalize;
 extern CPyModule *CPyModule_brownie___network___contract;
-extern CPyModule *CPyModule_hexbytes;
+extern CPyModule *CPyModule_faster_hexbytes;
 extern CPyModule *CPyModule_brownie___convert___utils;
 extern CPyModule *CPyModule_brownie___exceptions;
 extern CPyModule *CPyModule_brownie___project___compiler___solidity;
@@ -133,6 +133,7 @@ extern CPyModule *CPyModule_dank_mids___helpers____gather__internal;
 extern CPyModule *CPyModule_dank_mids___helpers____gather;
 extern CPyModule *CPyModule_dank_mids___helpers___future;
 extern PyObject *CPyStatic__codec___globals;
+extern CPyModule *CPyModule_hexbytes;
 extern CPyModule *CPyModule_msgspec;
 extern CPyModule *CPyModule_faster_eth_abi___abi;
 extern CPyModule *CPyModule_faster_eth_abi___encoding;
@@ -515,6 +516,7 @@ extern PyObject *CPyDef_call____format_single_but_cache_checksums(PyObject *cpy_
 extern PyObject *CPyPy_call____format_single_but_cache_checksums(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_call_____top_level__(void);
 extern PyObject *CPyStatic_contract____brownie_contract_init;
+extern PyObject *CPyStatic_contract____getattribute;
 extern PyTypeObject *CPyType_contract___Contract;
 extern PyTypeObject *CPyType_contract____ContractMethodPlaceholder;
 extern PyObject *CPyDef_contract____ContractMethodPlaceholder(void);
