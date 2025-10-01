@@ -73,6 +73,7 @@ retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(
 
 _brownie_contract_init: Final = brownie.Contract.__init__
 
+
 class Contract(brownie.Contract):  # type: ignore [misc]
     """
     An extended version of brownie.Contract with additional functionality for Dank Mids.
