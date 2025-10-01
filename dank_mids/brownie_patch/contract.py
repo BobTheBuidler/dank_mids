@@ -1,4 +1,18 @@
-from typing import Any, Dict, Iterator, List, Literal, NewType, Optional, Tuple, Union, overload
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Final,
+    Iterator,
+    List,
+    Literal,
+    NewType,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+    overload,
+)
 
 import brownie
 from brownie.network.contract import (
@@ -9,6 +23,9 @@ from brownie.network.contract import (
 )
 from brownie.typing import AccountsType
 from eth_retry import auto_retry
+from eth_typing import ABI, HexAddress
+from mypy_extensions import mypyc_attr
+from typing_extensions import ParamSpec
 
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
@@ -46,11 +63,22 @@ Signature = NewType("Signature", str)
 """A type representing the signature of a method in a smart contract."""
 
 
-retry_etherscan = auto_retry(min_sleep_time=1, max_sleep_time=2, suppress_logs=2)
+_P = ParamSpec("_P")
+_T = TypeVar("_T")
+
+retry_etherscan: Callable[[Callable[_P, _T]], Callable[_P, _T]] = auto_retry(
+    min_sleep_time=1, max_sleep_time=2, suppress_logs=2
+)
 """A wrapper that retries failed calls to the Etherscan API."""
 
 
-class Contract(brownie.Contract):
+_brownie_contract_init: Final = brownie.Contract.__init__
+
+_getattribute: Final = object.__getattribute__
+
+
+@mypyc_attr(native_class=False)
+class Contract(brownie.Contract):  # type: ignore [misc]
     """
     An extended version of brownie.Contract with additional functionality for Dank Mids.
 
@@ -63,8 +91,8 @@ class Contract(brownie.Contract):
     def from_abi(
         cls,
         name: str,
-        address: str,
-        abi: List[dict],
+        address: HexAddress,
+        abi: ABI,
         owner: Optional[AccountsType] = None,
         persist: bool = True,
     ) -> "Contract":
@@ -86,7 +114,7 @@ class Contract(brownie.Contract):
             A new Contract instance.
         """
         persisted = brownie.Contract.from_abi(name, address, abi, owner, _check_persist(persist))
-        return Contract(persisted.address)
+        return Contract(persisted.address)  # type: ignore [no-any-return]
 
     @classmethod
     @retry_etherscan
@@ -94,7 +122,7 @@ class Contract(brownie.Contract):
         cls,
         name: str,
         manifest_uri: str,
-        address: Optional[str] = None,
+        address: Optional[HexAddress] = None,
         owner: Optional[AccountsType] = None,
         persist: bool = True,
     ) -> "Contract":
@@ -117,14 +145,14 @@ class Contract(brownie.Contract):
         persisted = brownie.Contract.from_ethpm(
             name, manifest_uri, address, owner, _check_persist(persist)
         )
-        return Contract(persisted.address)
+        return Contract(persisted.address)  # type: ignore [no-any-return]
 
     @classmethod
     @retry_etherscan
     def from_explorer(
         cls,
-        address: str,
-        as_proxy_for: Optional[str] = None,
+        address: HexAddress,
+        as_proxy_for: Optional[HexAddress] = None,
         owner: Optional[AccountsType] = None,
         silent: bool = False,
         persist: bool = True,
@@ -148,7 +176,7 @@ class Contract(brownie.Contract):
         persisted = brownie.Contract.from_explorer(
             address, as_proxy_for, owner, silent, _check_persist(persist)
         )
-        return Contract(persisted.address)
+        return Contract(persisted.address)  # type: ignore [no-any-return]
 
     topics: Dict[str, str]
     """A dictionary mapping event names to their corresponding topics."""
@@ -157,13 +185,19 @@ class Contract(brownie.Contract):
     """A dictionary mapping method names to their corresponding signatures."""
 
     @retry_etherscan
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(
+        self,
+        address_or_alias: HexAddress | str,
+        *args: Any,
+        owner: Optional[AccountsType] = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the Contract instance.
 
         This method sets up lazy initialization for contract methods.
         """
-        super().__init__(*args, **kwargs)
+        _brownie_contract_init(self, address_or_alias, *args, owner=owner, **kwargs)
         self.__post_init__()
 
     def __post_init__(self) -> None:
@@ -175,7 +209,7 @@ class Contract(brownie.Contract):
         for name in self.__method_names__:
             # these are properties defined on _ContractBase and cannot be written to
             if name not in {"_name", "_owner"}:
-                object.__setattr__(self, name, _ContractMethodPlaceholder)
+                setattr(self, name, _ContractMethodPlaceholder)
 
     def __getattribute__(self, name: str) -> DankContractMethod:
         """
@@ -191,20 +225,22 @@ class Contract(brownie.Contract):
             The contract method object.
         """
         try:
-            attr = object.__getattribute__(self, name)
+            attr = _getattribute(self, name)
         except AttributeError as e:
             raise AttributeError(
                 f"Contract '{self._name}' object has no attribute '{name}'"
             ) from e.__cause__
         if attr is _ContractMethodPlaceholder:
             attr = self.__get_method_object__(name)
-            object.__setattr__(self, name, attr)
-        return attr
+            setattr(self, name, attr)
+        return attr  # type: ignore [no-any-return]
 
     @property
     def __method_names__(self) -> Iterator[str]:
         """List of method names defined in the contract ABI."""
-        yield from (i["name"] for i in filter(_is_function_abi, self.abi))
+        for abi in self.abi:
+            if abi["type"] == "function":
+                yield abi["name"]
 
     def __get_method_object__(self, name: str) -> DankContractMethod:
         """
@@ -223,8 +259,8 @@ class Contract(brownie.Contract):
 
         overloaded = list(self.__method_names__).count(name) > 1
 
-        for abi in filter(_is_function_abi, self.abi):
-            if abi["name"] != name:
+        for abi in self.abi:
+            if abi["type"] != "function" or abi["name"] != name:
                 continue
 
             full_name = f"{self._name}.{name}"
@@ -244,10 +280,6 @@ class Contract(brownie.Contract):
             overloaded._add_fn(abi, natspec)
 
         return overloaded  # type: ignore [return-value]
-
-
-def _is_function_abi(abi: dict) -> bool:
-    return abi["type"] == "function"
 
 
 @overload
@@ -272,7 +304,7 @@ def patch_contract(
     if not isinstance(contract, brownie.Contract):
         contract = brownie.Contract(contract)
     if w3 is None and brownie.network.is_connected():
-        from dank_mids import dank_web3 as w3
+        from dank_mids import dank_web3 as w3  # type: ignore [attr-defined]
     if w3 is None:
         raise RuntimeError(
             "You must make sure either brownie is connected or you pass in a Web3 instance."
