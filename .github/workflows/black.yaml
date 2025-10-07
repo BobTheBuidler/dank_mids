@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - master
+    paths-ignore:
+      - '.github/workflows/**'
+      - '!.github/workflows/black.yaml'
 
 jobs:
   format:
