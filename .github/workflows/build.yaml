@@ -220,6 +220,7 @@ jobs:
           
       - name: Normalize C files for diffchecking
         # This makes it much easier to diffcheck changes in the C files
+        shell: bash
         run: |
           # Insert DIFFCHECK_PLACEHOLDER macro at the top if not present
           for f in build/*.c; do
