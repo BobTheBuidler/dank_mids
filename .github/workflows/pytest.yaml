@@ -8,6 +8,7 @@ on:
       - '**.so'
       - '**/pytest.yaml'
       - 'poetry.lock'
+  workflow_dispatch:
       
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
