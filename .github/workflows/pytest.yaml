@@ -80,7 +80,7 @@ jobs:
       
       - name: Upgrade Setuptools
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry run pip install -U "setuptools<81"
+        run: poetry run python -m pip install -U "setuptools<81"
       
       - name: Setup brownie networks
         run: |
