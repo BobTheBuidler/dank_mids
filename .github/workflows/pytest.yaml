@@ -35,6 +35,9 @@ jobs:
           pyversion: "3.8"
         - os: macos-latest
           pyversion: "3.9"
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Check out repository code
@@ -63,10 +66,6 @@ jobs:
       - name: Install Poetry
         if: steps.cached-poetry.outputs.cache-hit != 'true' && matrix.pyversion != '3.8'
         uses: snok/install-poetry@v1
-
-      - name: Add Poetry to PATH on Windows
-        if: runner.os == 'Windows'
-        run: echo "##[add-path]C:\Users\runneradmin\.local\bin"
         
       - name: Load cached venv
         id: cached-poetry-dependencies
@@ -81,7 +80,7 @@ jobs:
       
       - name: Upgrade Setuptools
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry run pip install -U "setuptools<81"
+        run: poetry run python -m pip install -U "setuptools<81"
       
       - name: Setup brownie networks
         run: |
