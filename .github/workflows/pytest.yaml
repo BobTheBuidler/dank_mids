@@ -66,10 +66,6 @@ jobs:
       - name: Install Poetry
         if: steps.cached-poetry.outputs.cache-hit != 'true' && matrix.pyversion != '3.8'
         uses: snok/install-poetry@v1
-
-      - name: Add Poetry to PATH on Windows
-        if: runner.os == 'Windows'
-        run: echo "##[add-path]C:\Users\runneradmin\.local\bin"
         
       - name: Load cached venv
         id: cached-poetry-dependencies
