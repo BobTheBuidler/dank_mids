@@ -23,6 +23,7 @@ RETRY_ERRS: Final = {
     "batch limit exceeded",
     "request timed out",
     "evm timeout",
+    "evm error",
 }
 """A list of error messages that are expected during normal use and are not indicative of any problem(s).
 
