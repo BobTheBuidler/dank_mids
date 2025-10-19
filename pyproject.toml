@@ -44,7 +44,7 @@ typed-envs = ">=0.2,<0.3"
 web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<8"
 
 [tool.poetry.group.dev.dependencies]
-eth-brownie = ">=1.20.3"
+eth-brownie = "1.21.0"
 pytest = "*"
 pytest-asyncio-cooperative = "*"
 pytest-cov = "*"
