@@ -68,14 +68,6 @@ typedef struct tuple_T5OOOOO {
 } tuple_T5OOOOO;
 #endif
 
-#ifndef MYPYC_DECLARED_tuple_T2OI
-#define MYPYC_DECLARED_tuple_T2OI
-typedef struct tuple_T2OI {
-    PyObject *f0;
-    CPyTagged f1;
-} tuple_T2OI;
-#endif
-
 #ifndef MYPYC_DECLARED_tuple_T2CO
 #define MYPYC_DECLARED_tuple_T2CO
 typedef struct tuple_T2CO {
@@ -528,12 +520,6 @@ typedef struct {
     CPyVTableItem *vtable;
     PyObject *__raw;
 } dank_mids___helpers____codec___RawResponseObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-} dank_mids___helpers____codec_____mypyc_lambda__0_objObject;
 
 typedef struct {
     PyObject_HEAD

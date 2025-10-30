@@ -200,43 +200,6 @@ See Also:
 _mcall_encoder: Final[MulticallEncoder] = default_codec._registry.get_encoder(
     "(bool,(address,bytes)[])"
 )
-_array_encoder: Final[DynamicArrayEncoder] = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
-_item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder
-
-# We don't need to follow the validation code from eth-abi since we guarantee the input types
-_mcall_encoder.validate_value = _array_encoder.validate_value = _item_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined, method-assign]
-
-
-def _int_to_big_endian(value: int) -> bytes:
-    return value.to_bytes((value.bit_length() + 7) // 8 or 1, "big")
-
-
-def _encode_uint_256(i: int) -> bytes:
-    big_endian = _int_to_big_endian(i)
-    return big_endian.rjust(32, b"\x00")
-
-
-def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
-    encoded_elements, num_elements = __encode_elements_new(values)
-    return _encode_uint_256(num_elements) + encoded_elements  # type: ignore [no-any-return]
-
-
-def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]:
-    tail_chunks = [_item_encoder(v) for v in values]
-    count = len(tail_chunks)
-    head_length = 32 * count
-    tail_offsets = [0]
-    offset = 0
-    for chunk in tail_chunks[:-1]:
-        offset += len(chunk)
-        tail_offsets.append(offset)
-    head_chunks = (_encode_uint_256(head_length + tail_offset) for tail_offset in tail_offsets)
-    return b"".join((*head_chunks, *tail_chunks)), count
-
-
-_array_encoder.encode = __encode_new  # type: ignore [method-assign]
-_array_encoder.encode_elements = __encode_elements_new  # type: ignore [method-assign]
-
 
 _mcall_decoder: Final[MulticallDecoder] = default_codec._registry.get_decoder(
     "(uint256,uint256,(bool,bytes)[])"
@@ -244,7 +207,7 @@ _mcall_decoder: Final[MulticallDecoder] = default_codec._registry.get_decoder(
 
 
 def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
-    return _mcall_encoder((False, data))
+    return _mcall_encoder((False, list(data)))
 
 
 # maybe use this success flag to do something later
