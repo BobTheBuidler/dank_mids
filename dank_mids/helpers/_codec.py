@@ -241,7 +241,7 @@ _mcall_decoder: Final[MulticallDecoder] = default_codec._registry.get_decoder(
 
 
 def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
-    return _mcall_encoder((False, data))
+    return _mcall_encoder((False, list(data)))
 
 
 # maybe use this success flag to do something later
