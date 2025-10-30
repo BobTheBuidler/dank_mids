@@ -203,9 +203,6 @@ _mcall_encoder: Final[MulticallEncoder] = default_codec._registry.get_encoder(
 _array_encoder: Final[DynamicArrayEncoder] = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
 _item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder
 
-# We don't need to follow the validation code from eth-abi since we guarantee the input types
-_mcall_encoder.validate_value = _array_encoder.validate_value = _item_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined, method-assign]
-
 
 def _int_to_big_endian(value: int) -> bytes:
     return value.to_bytes((value.bit_length() + 7) // 8 or 1, "big")
