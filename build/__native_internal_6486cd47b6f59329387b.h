@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1049];
+extern PyObject *CPyStatics[1050];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -444,7 +444,7 @@ extern PyObject *CPyDef_call___coroutine_gen___3_147___close(PyObject *cpy_r___m
 extern PyObject *CPyPy_call___coroutine_gen___3_147___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call___coroutine_gen___3_147_____await__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_call___coroutine_gen___3_147_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_call___coroutine__get_coroutine_fn_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_block_identifier, PyObject *cpy_r_decimals, PyObject *cpy_r_override);
+extern PyObject *CPyDef_call___coroutine__get_coroutine_fn_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_self, PyObject *cpy_r_args, PyObject *cpy_r_block_identifier, PyObject *cpy_r_decimals, PyObject *cpy_r_override, CPyTagged cpy_r__attempt_number);
 extern PyObject *CPyPy_call___coroutine__get_coroutine_fn_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_call____get_coroutine_fn(PyObject *cpy_r_w3, CPyTagged cpy_r_len_inputs);
 extern PyObject *CPyPy_call____get_coroutine_fn(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);

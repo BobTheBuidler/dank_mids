@@ -332,6 +332,7 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__block_identifier;
     PyObject *___mypyc_generator_attribute__decimals;
     PyObject *___mypyc_generator_attribute__override;
+    CPyTagged ___mypyc_generator_attribute___attempt_number;
     PyObject *_type;
     PyObject *_value;
     PyObject *_traceback;
@@ -369,6 +370,8 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__decoded;
     tuple_T3OOO ___mypyc_temp__26;
     PyObject *___mypyc_generator_attribute__e;
+    PyObject *___mypyc_temp__27;
+    tuple_T3OOO ___mypyc_temp__28;
 } dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_envObject;
 
 typedef struct {
@@ -392,14 +395,14 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__get_request_data;
     PyObject *___mypyc_generator_attribute__args;
     int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_temp__27;
-    int64_t ___mypyc_temp__28;
-    int64_t ___mypyc_temp__29;
+    PyObject *___mypyc_temp__29;
+    int64_t ___mypyc_temp__30;
+    int64_t ___mypyc_temp__31;
     PyObject *___mypyc_generator_attribute__arg;
     PyObject *___mypyc_generator_attribute__data;
-    PyObject *___mypyc_temp__30;
-    tuple_T3OOO ___mypyc_temp__31;
-    tuple_T3OOO ___mypyc_temp__32;
+    PyObject *___mypyc_temp__32;
+    tuple_T3OOO ___mypyc_temp__33;
+    tuple_T3OOO ___mypyc_temp__34;
     PyObject *___mypyc_generator_attribute__exc_str;
 } dank_mids___brownie_patch___call___encode_input_genObject;
 
@@ -410,13 +413,13 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__data;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__decoded;
-    PyObject *___mypyc_temp__33;
-    tuple_T3OOO ___mypyc_temp__34;
-    tuple_T3OOO ___mypyc_temp__35;
+    PyObject *___mypyc_temp__35;
     tuple_T3OOO ___mypyc_temp__36;
-    PyObject *___mypyc_generator_attribute__e;
-    PyObject *___mypyc_temp__37;
+    tuple_T3OOO ___mypyc_temp__37;
     tuple_T3OOO ___mypyc_temp__38;
+    PyObject *___mypyc_generator_attribute__e;
+    PyObject *___mypyc_temp__39;
+    tuple_T3OOO ___mypyc_temp__40;
 } dank_mids___brownie_patch___call___decode_output_genObject;
 
 typedef struct {
