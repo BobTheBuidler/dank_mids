@@ -150,6 +150,7 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
         block_identifier: Optional[BlockIdentifier] = None,
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None,
+        _attempt_number: int = 1
     ) -> Any:
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
@@ -159,17 +160,34 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
                 output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
         try:
             decoded = await decode_output(self, output)
-        except InsufficientDataBytes as e:
-            raise InsufficientDataBytes(
-                {
-                    "error": f"{e} when decoding response",
-                    "method": self,
-                    "contract": self._address,
-                    "args": args,
-                    "block": block_identifier,
-                    "response": output,
-                }
-            ) from e
+        except DecodingError as e:
+            # I'm not convinced that this Exception is deterministic
+            # I also don't know for sure that it isn't
+            # We're going to retry a few times before we give up
+            if _attempt_number < 5:
+                return await self.coroutine(
+                    *args,
+                    block_identifier=block_identifier,
+                    decimals=decimals,
+                    override=override,
+                    _attempt_number=_attempt_number+1
+                )
+            else:
+                # We gave up.
+                if type(e) is not InsufficientDataBytes:
+                    raise
+
+                # TODO: check api for other exc types and add this context to them as well
+                raise InsufficientDataBytes(
+                    {
+                        "error": f"{e} when decoding response",
+                        "method": self,
+                        "contract": self._address,
+                        "args": args,
+                        "block": block_identifier,
+                        "response": output,
+                    }
+                ) from e
 
         return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
 
@@ -232,7 +250,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         if isinstance(decoded, Exception):
             raise decoded
         return decoded
-    except InsufficientDataBytes as e:
+    except DecodingError as e:
         # Add some context to the exception for the sake of the end-user.
         e.args = *e.args, call, call._address, data
         raise
