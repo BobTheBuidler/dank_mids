@@ -150,7 +150,7 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
         block_identifier: Optional[BlockIdentifier] = None,
         decimals: Optional[int] = None,
         override: Optional[Dict[str, str]] = None,
-        _attempt_number: int = 1
+        _attempt_number: int = 1,
     ) -> Any:
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
@@ -170,7 +170,7 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
                     block_identifier=block_identifier,
                     decimals=decimals,
                     override=override,
-                    _attempt_number=_attempt_number+1
+                    _attempt_number=_attempt_number + 1,
                 )
             else:
                 # We gave up.
