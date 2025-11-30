@@ -112,7 +112,7 @@ extern CPyModule *CPyModule_faster_hexbytes;
 extern CPyModule *CPyModule_brownie___convert___utils;
 extern CPyModule *CPyModule_brownie___exceptions;
 extern CPyModule *CPyModule_brownie___project___compiler___solidity;
-extern CPyModule *CPyModule_faster_eth_abi___exceptions;
+extern CPyModule *CPyModule_eth_abi___exceptions;
 extern CPyModule *CPyModule_evmspec___data;
 extern CPyModule *CPyModule_hexbytes___main;
 extern CPyModule *CPyModule_multicall___constants;

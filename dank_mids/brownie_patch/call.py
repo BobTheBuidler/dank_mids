@@ -30,7 +30,7 @@ from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
 from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
-from faster_eth_abi.exceptions import DecodingError, InsufficientDataBytes
+from eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
 from hexbytes.main import BytesLike

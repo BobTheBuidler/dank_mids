@@ -35741,15 +35741,15 @@ CPyL3: ;
     CPy_INCREF(CPyModule_brownie___project___compiler___solidity);
     CPy_DECREF(cpy_r_r76);
     cpy_r_r77 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* ('DecodingError', 'InsufficientDataBytes') */
-    cpy_r_r78 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* 'faster_eth_abi.exceptions' */
+    cpy_r_r78 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* 'eth_abi.exceptions' */
     cpy_r_r79 = CPyStatic_call___globals;
     cpy_r_r80 = CPyImport_ImportFromMany(cpy_r_r78, cpy_r_r77, cpy_r_r77, cpy_r_r79);
     if (unlikely(cpy_r_r80 == NULL)) {
         CPy_AddTraceback("dank_mids\\brownie_patch\\call.py", "<module>", DIFFCHECK_PLACEHOLDER, CPyStatic_call___globals);
         goto CPyL208;
     }
-    CPyModule_faster_eth_abi___exceptions = cpy_r_r80;
-    CPy_INCREF(CPyModule_faster_eth_abi___exceptions);
+    CPyModule_eth_abi___exceptions = cpy_r_r80;
+    CPy_INCREF(CPyModule_eth_abi___exceptions);
     CPy_DECREF(cpy_r_r80);
     cpy_r_r81 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* ('HexStr',) */
     cpy_r_r82 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* 'eth_typing' */
@@ -73891,7 +73891,7 @@ int CPyGlobalsInit(void)
     CPyModule_brownie___convert___utils = Py_None;
     CPyModule_brownie___exceptions = Py_None;
     CPyModule_brownie___project___compiler___solidity = Py_None;
-    CPyModule_faster_eth_abi___exceptions = Py_None;
+    CPyModule_eth_abi___exceptions = Py_None;
     CPyModule_eth_typing = Py_None;
     CPyModule_evmspec___data = Py_None;
     CPyModule_hexbytes___main = Py_None;
@@ -74110,17 +74110,16 @@ const char * const CPyLit_Str[] = {
     "\002\031brownie.convert.datatypes\031brownie.convert.normalize",
     "\004\030brownie.network.contract\017faster_hexbytes\005chain\025brownie.convert.utils",
     "\003\022brownie.exceptions\fContractCall!brownie.project.compiler.solidity",
-    "\004\031faster_eth_abi.exceptions\aAddress\fevmspec.data\tBytesLike",
-    "\003\rhexbytes.main\024MULTICALL2_ADDRESSES\023multicall.constants",
-    "\003\017BlockIdentifier\nexceptions\025lru_cache_lite_nonull",
-    "\004\033dank_mids.helpers.lru_cache\vapplication\020APPLICATION_MODE\bTypeStrs",
-    "\a\vListOrTuple\aAbiDict\aDecimal\bHexBytes\aconvert\tdatatypes\vReturnValue",
-    "\a\tnormalize\tHexString\006Revert\ato_bool\nto_decimal\006to_int\tto_string",
-    "\006\ato_uint\f_check_array\016_get_abi_types\006encode\006decode\bchecksum",
-    "\003\023to_checksum_address\020__eth_abi_encode\020__eth_abi_decode",
-    "\005*0xcA11bde05977b3631167028862bE2a173976CA11\002id\achainid\001e\003429",
-    "\003\nmulticall2 format_input_but_cache_checksums\fformat_input",
-    "\002!format_output_but_cache_checksums\rformat_output",
+    "\005\022eth_abi.exceptions\aAddress\fevmspec.data\tBytesLike\rhexbytes.main",
+    "\004\024MULTICALL2_ADDRESSES\023multicall.constants\017BlockIdentifier\nexceptions",
+    "\003\025lru_cache_lite_nonull\033dank_mids.helpers.lru_cache\vapplication",
+    "\006\020APPLICATION_MODE\bTypeStrs\vListOrTuple\aAbiDict\aDecimal\bHexBytes",
+    "\a\aconvert\tdatatypes\vReturnValue\tnormalize\tHexString\006Revert\ato_bool",
+    "\006\nto_decimal\006to_int\tto_string\ato_uint\f_check_array\016_get_abi_types",
+    "\005\006encode\006decode\bchecksum\023to_checksum_address\020__eth_abi_encode",
+    "\003\020__eth_abi_decode*0xcA11bde05977b3631167028862bE2a173976CA11\002id",
+    "\005\achainid\001e\003429\nmulticall2 format_input_but_cache_checksums",
+    "\003\fformat_input!format_output_but_cache_checksums\rformat_output",
     "\002!_format_array_but_cache_checksums\r_format_array",
     "\002\"_format_single_but_cache_checksums\016_format_single",
     "\003!_format_tuple_but_cache_checksums\r_format_tuple\021_get_fn_from_args",
@@ -74374,7 +74373,7 @@ CPyModule *CPyModule_faster_hexbytes;
 CPyModule *CPyModule_brownie___convert___utils;
 CPyModule *CPyModule_brownie___exceptions;
 CPyModule *CPyModule_brownie___project___compiler___solidity;
-CPyModule *CPyModule_faster_eth_abi___exceptions;
+CPyModule *CPyModule_eth_abi___exceptions;
 CPyModule *CPyModule_evmspec___data;
 CPyModule *CPyModule_hexbytes___main;
 CPyModule *CPyModule_multicall___constants;
