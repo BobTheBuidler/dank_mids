@@ -168,12 +168,6 @@ method_semaphores: Final[Dict[str, a_sync.Semaphore]] = {
         default=BROWNIE_CALL_SEMAPHORE._value,
         verbose=False,
     ),
-    "eth_getCode": _envs.create_env(
-        "ETH_GETCODE_SEMAPHORE",
-        a_sync.Semaphore,
-        default=5_000,
-        verbose=False,
-    ),
 }
 
 if not typed_envs.logger.disabled:
