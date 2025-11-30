@@ -97,25 +97,15 @@ class _MethodQueues:
         A reference to the DankMiddlewareController instance that this _MethodQueues is associated with.
         """
 
-        self.method_queues = {
-            method: a_sync.SmartProcessingQueue(
-                RPCRequest, num_workers=sem._value, name=f"{method} {controller}"
-            )
-            for method, sem in ENVIRONMENT_VARIABLES.method_semaphores.items()
-            if method != "eth_call"
-        }
-        """
-        A dictionary mapping RPC method names to their corresponding SmartProcessingQueues.
-        These queues are used to manage and process requests for different RPC methods.
-        """
+        # NOTE: this class is *mostly* deprecated but still has one queue which will be removed soon
+        old_style_semaphore = ENVIRONMENT_VARIABLES.method_semaphores["eth_getCode"]
 
-        self.keys = self.method_queues.keys()
-        """
-        A view of the keys (RPC method names) in the method_queues dictionary.
-        This allows for efficient iteration over the available method names.
-        """
+        self.queue = a_sync.SmartProcessingQueue(
+            RPCRequest,
+            num_workers=old_style_semaphore._value,
+            name=f"eth_getCode {controller}",
+        )
 
-    @lru_cache_lite
     def __getitem__(self, method: RPCEndpoint) -> Optional[a_sync.SmartProcessingQueue]:
         """
         Retrieves the queue for a given RPC method.
@@ -126,7 +116,4 @@ class _MethodQueues:
         Returns:
             The queue for the method, or None if no specific queue is found.
         """
-        return next(
-            (self.method_queues[key] for key in self.keys if key in method),
-            None,
-        )
+        return self.queue if method == "eth_getCode" else None
