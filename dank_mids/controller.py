@@ -203,11 +203,13 @@ class DankMiddlewareController:
             if method == "eth_call":
                 async with self.eth_call_semaphores[params[1]]:
                     # create a strong ref to the call that will be held until the caller completes or is cancelled
-                    _logger_debug("making %s %s with params %s", self.request_type.__name__, method, params)
+                    _logger_debug(
+                        "making %s %s with params %s", self.request_type.__name__, method, params
+                    )
                     if params[0]["to"] in self.no_multicall:
                         return await RPCRequest(self, method, params)
                     return await eth_call(self, params)
-            
+
             _logger_debug("making %s %s with params %s", self.request_type.__name__, method, params)
             return await RPCRequest(self, method, params)
         except GarbageCollectionError:
