@@ -1,19 +1,15 @@
 from decimal import Decimal
-from typing import TYPE_CHECKING, Literal, Optional, Type, Union
+from typing import Final, Literal, Optional, Type, Union
 
 import a_sync
-from a_sync.primitives import DummySemaphore, ThreadsafeSemaphore
 from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,
     _PrioritySemaphoreContextManager,
 )
 from eth_typing import HexStr
-from web3.types import RPCEndpoint
 
-from dank_mids.helpers.lru_cache import lru_cache_lite, lru_cache_lite_nonull
 
-if TYPE_CHECKING:
-    from dank_mids.controller import DankMiddlewareController
+_TOP_PRIORITY: Final = -1
 
 
 class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
@@ -36,9 +32,6 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
         if not isinstance(priority, (int, float, Decimal)):
             raise TypeError(priority)
         super().__init__(parent, priority, name)
-
-
-_TOP_PRIORITY = -1
 
 
 # NOTE: keep this so we can include in type stubs
@@ -78,42 +71,3 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
         else:
             priority = _TOP_PRIORITY
         return super().__getitem__(priority)
-
-
-class _MethodQueues:
-    """
-    A class that manages queues for different RPC methods.
-
-    This class creates and stores SmartProcessingQueues for various RPC methods,
-    allowing for controlled processing of method calls.
-    """
-
-    def __init__(self, controller: "DankMiddlewareController") -> None:
-        from dank_mids import ENVIRONMENT_VARIABLES
-        from dank_mids._requests import RPCRequest
-
-        self.controller = controller
-        """
-        A reference to the DankMiddlewareController instance that this _MethodQueues is associated with.
-        """
-
-        # NOTE: this class is *mostly* deprecated but still has one queue which will be removed soon
-        old_style_semaphore = ENVIRONMENT_VARIABLES.method_semaphores["eth_getCode"]
-
-        self.queue = a_sync.SmartProcessingQueue(
-            RPCRequest,
-            num_workers=old_style_semaphore._value,
-            name=f"eth_getCode {controller}",
-        )
-
-    def __getitem__(self, method: RPCEndpoint) -> Optional[a_sync.SmartProcessingQueue]:
-        """
-        Retrieves the queue for a given RPC method.
-
-        Args:
-            method: The RPC method to get the queue for.
-
-        Returns:
-            The queue for the method, or None if no specific queue is found.
-        """
-        return self.queue if method == "eth_getCode" else None

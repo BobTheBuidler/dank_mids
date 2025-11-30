@@ -27,8 +27,7 @@ from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _sync_w3_from_async
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._session import post, rate_limit_inactive
-from dank_mids.helpers.hashing import make_hashable
-from dank_mids.semaphores import _MethodQueues, BlockSemaphore
+from dank_mids.semaphores import BlockSemaphore
 from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
 
 logger = getLogger(__name__)
@@ -140,10 +139,6 @@ class DankMiddlewareController:
         )
         """Used for managing concurrency of eth_calls."""
 
-        # semaphores soon to be deprecated for smart queue
-        self.method_queues: Final = _MethodQueues(self)
-        """Queues for different method types."""
-
         self.batcher: Final[NotSoBrightBatcher] = NotSoBrightBatcher()
         """Batcher for RPC calls."""
 
@@ -209,28 +204,14 @@ class DankMiddlewareController:
                 async with self.eth_call_semaphores[params[1]]:
                     # create a strong ref to the call that will be held until the caller completes or is cancelled
                     _logger_debug(
-                        f"making {self.request_type.__name__} {method} with params {params}"
+                        "making %s %s with params %s", self.request_type.__name__, method, params
                     )
                     if params[0]["to"] in self.no_multicall:
                         return await RPCRequest(self, method, params)
                     return await eth_call(self, params)
 
-            # some methods go thru a SmartProcessingQueue, we check those next
-            queue = self.method_queues[method]
-            _logger_debug(f"making {self.request_type.__name__} {method} with params {params}")
-
-            # no queue, we can make the request normally
-            if queue is None:
-                return await RPCRequest(self, method, params)
-
-            # queue found, queue up the call and await the future
-            try:
-                # NOTE: is this a strong enough ref?
-                return await queue(self, method, params)  # type: ignore [return-type]
-            except TypeError as e:
-                if "unhashable type" not in str(e):
-                    raise
-            return await queue(self, method, make_hashable(params))
+            _logger_debug("making %s %s with params %s", self.request_type.__name__, method, params)
+            return await RPCRequest(self, method, params)
         except GarbageCollectionError:
             # this exc shouldn't be exposed to the user so let's try this again
             return await self(method, params)
