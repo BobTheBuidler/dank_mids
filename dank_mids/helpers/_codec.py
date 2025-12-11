@@ -19,7 +19,6 @@ from typing import (
     overload,
 )
 
-import hexbytes
 import faster_hexbytes
 import msgspec
 from eth_typing import ChecksumAddress, HexStr
@@ -65,7 +64,7 @@ JSONRPCBatchResponse = Union[List["RawResponse"], "types.PartialResponse"]
 BatchDecoder = Callable[[Union[str, bytes]], Union[List[msgspec.Raw], "types.PartialResponse"]]
 
 # these compile to C constants
-HexBytes: Final = hexbytes.HexBytes  # this should be slow hexbytes for isinstance purposes
+HexBytes: Final = faster_hexbytes.HexBytes
 Raw: Final = msgspec.Raw
 ContextFramesBytesIO: Final = decoding.ContextFramesBytesIO
 DecodeError: Final = msgspec.DecodeError
