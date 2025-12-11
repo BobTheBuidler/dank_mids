@@ -55,7 +55,7 @@ class AttributeDict(Mapping[TKey, TValue]):
         self_dict = dict(dictionary)
         if args or kwargs:
             self_dict.update(dict(*args, **kwargs))  # type: ignore [arg-type]
-        self.__dict__: Final = self_dict
+        self.__dict__: Final = self_dict  # type: ignore [assignment]
         self.__hash: Optional[int] = None
 
     def __hash__(self) -> int:
