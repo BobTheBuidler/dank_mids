@@ -59,8 +59,7 @@ class AttributeDict(Generic[TKey, TValue]):
     def __hash__(self) -> int:
         retval = self.__hash
         if retval is None:
-            hashable = cast(AttributeDict, tupleize_lists_nested(self))
-            retval = hash(tuple(sorted(hashable.items())))
+            retval = hash(tuple(sorted(tupleize_lists_nested(self).items())))
             self.__hash = retval
         return retval
 
