@@ -15,6 +15,7 @@ from typing import (
     TypeVar,
     Union,
     ValuesView,
+    cast,
     final,
 )
 
@@ -113,7 +114,7 @@ class AttributeDict(Mapping[TKey, TValue]):
         elif isinstance(value, set):
             return {AttributeDict.recursive(v) for v in value}
         elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-            return type(value)(AttributeDict.recursive(v) for v in value)  # type: ignore [call-arg]
+            return type(value)(map(AttributeDict.recursive, value))  # type: ignore [call-arg]
         return value
 
     def keys(self) -> KeysView[TKey]:
