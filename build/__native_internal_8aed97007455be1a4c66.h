@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1187];
+extern PyObject *CPyStatics[1190];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -167,6 +167,7 @@ extern CPyModule *CPyModule_dank_mids___controller;
 extern PyObject *CPyStatic_controller___globals;
 extern CPyModule *CPyModule_eth_retry;
 extern CPyModule *CPyModule_cchecksum;
+extern CPyModule *CPyModule_eth_typing___evm;
 extern CPyModule *CPyModule_multicall___multicall;
 extern CPyModule *CPyModule_web3;
 extern CPyModule *CPyModule_dank_mids___exceptions;
