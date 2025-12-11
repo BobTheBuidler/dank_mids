@@ -836,10 +836,10 @@ extern PyObject *CPyDef_hashing____to_tuple_obj___register(PyObject *cpy_r___myp
 extern PyObject *CPyPy_hashing____to_tuple_obj___register(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_hashing____to_tuple(PyObject *cpy_r_value);
 extern PyObject *CPyPy_hashing____to_tuple(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_hashing_______162(PyObject *cpy_r_value);
-extern PyObject *CPyPy_hashing_______162(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_hashing_______167(PyObject *cpy_r_value);
-extern PyObject *CPyPy_hashing_______167(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_hashing_______168(PyObject *cpy_r_value);
+extern PyObject *CPyPy_hashing_______168(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_hashing_______173(PyObject *cpy_r_value);
+extern PyObject *CPyPy_hashing_______173(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_hashing_____top_level__(void);
 extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_env;
 extern PyObject *CPyDef_lru_cache___lru_cache_lite_env(void);
