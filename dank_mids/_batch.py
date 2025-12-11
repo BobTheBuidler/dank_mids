@@ -32,7 +32,7 @@ create_task: Final = a_sync.create_task
 
 
 def _create_named_task(awaitable: Awaitable[__T]) -> "Task[__T]":
-    return create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")  # type: ignore [no-any-return]
+    return create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
 
 
 @final
