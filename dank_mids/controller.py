@@ -2,7 +2,7 @@ from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
 from time import time
-from typing import Any, DefaultDict, Final, List, Literal, Optional, Set, Union, cast, final
+from typing import Any, DefaultDict, Final, List, Literal, Optional, Set, Tuple, Union, cast, final
 
 import eth_retry
 from cchecksum import to_checksum_address
