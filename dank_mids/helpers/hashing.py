@@ -88,7 +88,7 @@ class AttributeDict(Generic[TKey, TValue]):
         return len(self.__dict)
 
     def __repr__(self) -> str:
-        return self.__class__.__name__ + f"({self.__dict!r})"
+        return f"{self.__class__.__name__}({self.__dict!r})"
 
     def _repr_pretty_(self, builder: Any, cycle: bool) -> None:
         """
