@@ -57,17 +57,6 @@ typedef struct tuple_T4CIOO {
 } tuple_T4CIOO;
 #endif
 
-#ifndef MYPYC_DECLARED_tuple_T5OOOOO
-#define MYPYC_DECLARED_tuple_T5OOOOO
-typedef struct tuple_T5OOOOO {
-    PyObject *f0;
-    PyObject *f1;
-    PyObject *f2;
-    PyObject *f3;
-    PyObject *f4;
-} tuple_T5OOOOO;
-#endif
-
 #ifndef MYPYC_DECLARED_tuple_T2CO
 #define MYPYC_DECLARED_tuple_T2CO
 typedef struct tuple_T2CO {
@@ -163,7 +152,13 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
     PyObject *___mypyc_generator_attribute__self;
+    PyObject *_type;
+    PyObject *_value;
+    PyObject *_traceback;
+    PyObject *_arg;
+    PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__working_batch;
     PyObject *___mypyc_generator_attribute__batch_append;
@@ -174,6 +169,12 @@ typedef struct {
     PyObject *___mypyc_temp__14;
     PyObject *___mypyc_generator_attribute__mcall;
     PyObject *___mypyc_generator_attribute__call;
+} dank_mids____batch___coroutines_DankBatch_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_env__;
 } dank_mids____batch___coroutines_DankBatch_genObject;
 
 typedef struct {
@@ -592,9 +593,86 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___dict__;
-    PyObject *___hash;
-} dank_mids___helpers___hashing___AttributeDictObject;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____init___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____hash___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____eq___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____setattr___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____delattr___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____getitem___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____iter___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____len___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing_____repr___3_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing____repr_pretty__AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing___recursive_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing___keys_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing___values_AttributeDict_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___helpers___hashing___items_AttributeDict_objObject;
 
 typedef struct {
     PyObject_HEAD
