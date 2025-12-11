@@ -397,7 +397,7 @@ class DankMiddlewareController:
             )
 
     @lru_cache(maxsize=1024)
-    def _select_mcall_target_for_block(self, block: Union[BlockNumber, Literal["latest"]) -> MulticallContract:
+    def _select_mcall_target_for_block(self, block: Union[BlockNumber, Literal["latest"]]) -> MulticallContract:
         """
         Select the appropriate multicall contract for a given block.
 
@@ -408,12 +408,12 @@ class DankMiddlewareController:
             The selected multicall contract.
         """
         if block == "latest":
-            return self._latest_mc  # type: ignore [return-value]
+            return self._latest_mc
         mc3 = self.mc3
         if mc3 and not mc3.needs_override_code_for_block(block):
             return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
-        return self.mc2 or mc3  # type: ignore [return-value]
+        return self.mc2 or mc3
 
     def _start_new_batch(self) -> None:
         """Creates a new :class:`~JSONRPCBatch` and updates the :meth:`_pending_rpc_calls_append` alias accordingly."""
