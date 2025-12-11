@@ -58,7 +58,9 @@ class MulticallContract(Struct):
             self.__needs_override_code_for_block
         )
 
-    def __needs_override_code_for_block(self, block: Union[BlockNumber, Literal["latest"], HexStr]) -> bool:
+    def __needs_override_code_for_block(
+        self, block: Union[BlockNumber, Literal["latest"], HexStr]
+    ) -> bool:
         """
         Determine if the contract needs override code for a specific block.
 
