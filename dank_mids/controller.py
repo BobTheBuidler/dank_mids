@@ -120,7 +120,7 @@ class DankMiddlewareController:
         self._sort_response: bool = using_tenderly_client or using_chainstack_rpc
         """A boolean that indicates whether a jsonrpc batch response must be sorted by id in order for dank to work with the connected rpc."""
 
-        if using_tenderly_client and int(ENVS.MAX_JSONRPC_BATCH_SIZE) > 10:
+        if using_tenderly_client and self.max_jsonrpc_batch_size > 10:
             logger.info("max jsonrpc batch size for Tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
 
@@ -283,7 +283,7 @@ class DankMiddlewareController:
         """
         with self.pools_closed_lock:
             if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
-                return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size
+                return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size  # type: ignore [no-any-return]
             eth_calls = sum(map(len, self.pending_eth_calls.values()))
             other_calls = sum(map(len, self.pending_rpc_calls))
             return eth_calls + other_calls >= cast(int, self.batcher.step)
