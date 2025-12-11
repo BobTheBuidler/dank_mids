@@ -812,7 +812,6 @@ typedef struct {
     PyObject *_jsonrpc_batch_uid;
     PyObject *_pools_closed_lock;
     PyObject *_pending_eth_calls;
-    PyObject *__pending_rpc_calls_append;
 } dank_mids___controller___DankMiddlewareControllerObject;
 
 typedef struct {

@@ -145,6 +145,7 @@ class DankBatch:
         working_batch = self.rpc_calls
 
         # alias since this code runs in tight loops
+        # TODO: remove this once JSONRPCBatch is an extension class
         batch_append = working_batch.append
 
         # Go thru the multicalls and add calls to the batch

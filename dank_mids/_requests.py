@@ -243,7 +243,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 elif self.method.startswith(("trace", "debug")):
                     raise NotImplementedError("we should not get here", self)
                 else:
-                    controller._pending_rpc_calls_append(self)
+                    controller.pending_rpc_calls.append(self)
         _demo_logger_info("added to queue (cid: %s)", self.uid)
         if _logger_is_enabled_for(DEBUG):
             self._daemon = create_task(self._debug_daemon(), name="RPCRequest debug daemon")
@@ -898,7 +898,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             if cleanup:
                 controller = self.controller
                 with controller.pools_closed_lock:
-                    controller._pending_eth_calls_pop(self.block, None)
+                    controller.pending_eth_calls.pop(self.block, None)
 
     async def get_response(self) -> None:  # type: ignore [override]
         # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
@@ -1065,10 +1065,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             Multicall(controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)
         ]
         if controller.pending_rpc_calls:
-            controller._pending_rpc_calls_append(batch0)
+            controller.pending_rpc_calls.append(batch0)
             if batch1:
                 if controller.pending_rpc_calls:
-                    controller._pending_rpc_calls_append(batch1)
+                    controller.pending_rpc_calls.append(batch1)
                 else:
                     await batch1
             await controller.pending_rpc_calls._done.wait()
