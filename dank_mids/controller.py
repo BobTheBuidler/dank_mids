@@ -2,7 +2,7 @@ from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
 from time import time
-from typing import Any, Callable, DefaultDict, Final, List, Literal, Optional, Set, final
+from typing import Any, Callable, DefaultDict, Final, List, Literal, Optional, Set, cast, final
 
 import eth_retry
 from cchecksum import to_checksum_address
@@ -427,7 +427,7 @@ class DankMiddlewareController:
 
 @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)
 def _get_client_version(sync_w3: Web3) -> str:
-    return sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion  # type: ignore [attr-defined]
+    return cast(str, sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion)  # type: ignore [attr-defined]
 
 
 def _logger_debug(msg: str, *args: Any) -> None: ...
