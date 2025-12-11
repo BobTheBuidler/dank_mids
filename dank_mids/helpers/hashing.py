@@ -137,7 +137,7 @@ Hashable.register(AttributeDict)
 
 
 def tupleize_lists_nested(
-    d: Union[AttributeDict[TKey, TValue], Mapping[TKey, TValue]]
+    d: Union[AttributeDict[TKey, TValue], Mapping[TKey, TValue]],
 ) -> AttributeDict[TKey, TValue]:
     """
     Unhashable types inside dicts will throw an error if attempted to be hashed.
