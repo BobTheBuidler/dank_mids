@@ -425,7 +425,7 @@ class DankMiddlewareController:
             self._pending_rpc_calls_append = batch.append
 
 
-@eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)
+@eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)  # type: ignore [misc]
 def _get_client_version(sync_w3: Web3) -> str:
     return cast(str, sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion)  # type: ignore [attr-defined]
 
