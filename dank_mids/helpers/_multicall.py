@@ -19,6 +19,8 @@ except ImportError:
     MULTICALL3_ADDRESSES = {}
 
 
+BlockIdentifier = Union[BlockNumber, Literal["latest"], HexStr]
+
 class MulticallContract(Struct):
     """
     Represents a multicall contract with its address, deployment block, and bytecode.
@@ -41,7 +43,7 @@ class MulticallContract(Struct):
     This is used for state override if necessary.
     """
 
-    needs_override_code_for_block: Callable[[BlockNumber], bool] = None  # type: ignore [assignment]
+    needs_override_code_for_block: Callable[[BlockIdentifier], bool] = None  # type: ignore [assignment]
     """
     A cached function that, when called, determines if the contract needs override code for a specific block.
 
@@ -59,7 +61,7 @@ class MulticallContract(Struct):
         )
 
     def __needs_override_code_for_block(
-        self, block: Union[BlockNumber, Literal["latest"], HexStr]
+        self, block: BlockIdentifier
     ) -> bool:
         """
         Determine if the contract needs override code for a specific block.
