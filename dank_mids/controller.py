@@ -161,15 +161,6 @@ class DankMiddlewareController:
         )
         """A dictionary of pending :class:`~Multicall` objects by block. The Multicalls hold all pending eth_calls."""
 
-        self._pending_eth_calls_pop = self.pending_eth_calls.pop
-        """An alias for `controller.pending_eth_calls.pop`, intended to minimize attr lookups."""
-        self._pending_eth_calls_copy = self.pending_eth_calls.copy
-        """An alias for `controller.pending_eth_calls.copy`, intended to minimize attr lookups."""
-        self._pending_eth_calls_clear = self.pending_eth_calls.clear
-        """An alias for `controller.pending_eth_calls.clear`, intended to minimize attr lookups."""
-        self._pending_eth_calls_values = self.pending_eth_calls.values
-        """An alias for `controller.pending_eth_calls.values`, intended to minimize attr lookups."""
-
         self._start_new_batch()
 
     def __repr__(self) -> str:
@@ -262,8 +253,8 @@ class DankMiddlewareController:
         and executes them as a single batch.
         """
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
-            multicalls = self._pending_eth_calls_copy()
-            self._pending_eth_calls_clear()
+            multicalls = self.pending_eth_calls.copy()
+            self.pending_eth_calls.clear()
             rpc_calls = self.pending_rpc_calls
         self._start_new_batch()
         demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)  # type: ignore
@@ -282,7 +273,7 @@ class DankMiddlewareController:
         with self.pools_closed_lock:
             if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
                 return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size
-            eth_calls = sum(map(len, self._pending_eth_calls_values()))
+            eth_calls = sum(map(len, self.pending_eth_calls.values()))
             other_calls = sum(map(len, self.pending_rpc_calls))
             return eth_calls + other_calls >= self.batcher.step
 
@@ -310,8 +301,8 @@ class DankMiddlewareController:
         are queued to form a full batch.
         """
         with self.pools_closed_lock:
-            self.pending_rpc_calls.extend(self._pending_eth_calls_values(), skip_check=True)
-            self._pending_eth_calls_clear()
+            self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
+            self.pending_eth_calls.clear()
             self.pending_rpc_calls.start()
 
     def reduce_multicall_size(self, num_calls: int) -> None:
