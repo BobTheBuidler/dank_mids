@@ -76,6 +76,7 @@ class AttributeDict(Generic[TKey, TValue]):
     def __setattr__(self, attr: str, val: TValue) -> None:
         if attr in ("__dict__", "__hash"):
             super().__setattr__(attr, val)
+        raise ValueError(f"THIS IS FOR TESTING YOU NEED TO REMOVE ME {attr} {val}")
         raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __delattr__(self, key: str) -> None:
