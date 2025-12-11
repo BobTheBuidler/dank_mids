@@ -431,7 +431,7 @@ class DankMiddlewareController:
         return cast(MulticallContract, self.mc2 or mc3)
 
     def _start_new_batch(self) -> None:
-        """Creates a new :class:`~JSONRPCBatch` and updates the :meth:`_pending_rpc_calls_append` alias accordingly."""
+        """Creates a new :class:`~JSONRPCBatch`."""
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
             batch = JSONRPCBatch(self)
             self.pending_rpc_calls = batch
