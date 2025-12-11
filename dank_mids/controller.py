@@ -435,7 +435,6 @@ class DankMiddlewareController:
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
             batch = JSONRPCBatch(self)
             self.pending_rpc_calls = batch
-            self._pending_rpc_calls_append = batch.append
 
 
 @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)
