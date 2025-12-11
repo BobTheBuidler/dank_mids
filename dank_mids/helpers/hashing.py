@@ -49,9 +49,9 @@ class AttributeDict(Generic[TKey, TValue]):
     """
 
     def __init__(self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
-        self_dict = dict(dictionary)  # type: ignore [arg-type]
+        self_dict = dict(dictionary)
         if args or kwargs:
-            self_dict.update(dict(*args, **kwargs))
+            self_dict.update(dict(*args, **kwargs))  # type: ignore [arg-type]
         self.__dict: Final = self_dict
         self.__hash: Optional[int] = None
 
