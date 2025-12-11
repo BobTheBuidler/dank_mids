@@ -136,23 +136,27 @@ Mapping.register(AttributeDict)
 Hashable.register(AttributeDict)
 
 
-def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValue]:
+def tupleize_lists_nested(
+    d: Union[AttributeDict[TKey, TValue], Mapping[TKey, TValue]]
+) -> AttributeDict[TKey, TValue]:
     """
     Unhashable types inside dicts will throw an error if attempted to be hashed.
     This method converts lists to tuples, rendering them hashable.
     Other unhashable types found will raise a TypeError
     """
 
-    ret = dict()
+    ret = {}
     for k, v in d.items():
         if isinstance(v, (list, tuple)):
             ret[k] = _to_tuple(v)
-        elif isinstance(v, dict) or isinstance(v, Mapping):
+        elif isinstance(v, dict) or isinstance(v, AttributeDict) or isinstance(v, Mapping):
             ret[k] = tupleize_lists_nested(v)
-        elif not isinstance(v, Hashable):
-            raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}")
         else:
-            ret[k] = v
+            try:
+                ret[k] = v
+            except TypeError:
+                raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}") from None
+
     return AttributeDict(ret)
 
 
