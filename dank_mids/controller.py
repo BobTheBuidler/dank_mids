@@ -219,7 +219,7 @@ class DankMiddlewareController:
 
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)  # type: ignore [untyped-decorator]
     async def make_request(
-        self, method: str, params: Sequence[Any, ...], request_id: Optional[int] = None
+        self, method: str, params: Sequence[Any], request_id: Optional[int] = None
     ) -> RawResponse:
         """
         Makes an RPC request to the Ethereum node.
