@@ -2,7 +2,7 @@ from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
 from time import time
-from typing import Any, DefaultDict, Final, List, Literal, Optional, Set, cast, final
+from typing import Any, DefaultDict, Final, List, Literal, Optional, Set, Union, cast, final
 
 import eth_retry
 from cchecksum import to_checksum_address
@@ -410,12 +410,12 @@ class DankMiddlewareController:
             The selected multicall contract.
         """
         if block == "latest":
-            return self._latest_mc
+            return cast(MulticallContract, self._latest_mc)
         mc3 = self.mc3
         if mc3 and not mc3.needs_override_code_for_block(block):
             return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
-        return self.mc2 or mc3
+        return cast(MulticallContract, self.mc2 or mc3)
 
     def _start_new_batch(self) -> None:
         """Creates a new :class:`~JSONRPCBatch` and updates the :meth:`_pending_rpc_calls_append` alias accordingly."""
