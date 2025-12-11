@@ -24,6 +24,7 @@ class DummyLogger:
             *args: Positional arguments (ignored).
             **kwargs: Keyword arguments (ignored).
         """
+        return
 
 
 # Choose between a real logger and a dummy logger based on the demo mode setting
