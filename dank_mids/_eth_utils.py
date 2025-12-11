@@ -24,7 +24,7 @@ def patch_eth_utils() -> None:
     """
     import eth_utils.crypto
 
-    eth_utils.crypto.to_bytes = to_bytes
+    eth_utils.crypto.to_bytes = to_bytes  # type: ignore [attr-defined]
 
     import web3.main
 

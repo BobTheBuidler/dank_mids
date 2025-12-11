@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, TypeVar, Union
 
 from eth_typing import TypeStr
-from faster_eth_utils.curried import apply_formatter_at_index
+from faster_eth_utils.curried import apply_formatter_at_index  # type: ignore [attr-defined]
 from faster_eth_utils.toolz import compose
 from web3._utils.method_formatters import (
     ERROR_FORMATTERS,
@@ -33,7 +33,7 @@ def abi_request_formatters(
             yield method, get_formatter(tuple(normalizers), tuple(abi_types))
         elif isinstance(abi_types, dict):
             single_dict_formatter = apply_abi_formatters_to_dict(normalizers, abi_types)
-            yield method, apply_formatter_at_index(single_dict_formatter, 0)
+            yield method, apply_formatter_at_index(single_dict_formatter, 0)  # type: ignore [call-arg]
         else:
             raise TypeError(f"ABI definitions must be a list or dictionary, got {abi_types!r}")
 
