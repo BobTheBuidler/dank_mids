@@ -20,8 +20,6 @@ from typing import (
     final,
 )
 
-from mypy_extensions import mypyc_attr
-
 
 TKey = TypeVar("TKey", bound=Hashable)
 TValue = TypeVar("TValue")
@@ -45,15 +43,16 @@ def make_hashable(obj: Any) -> Hashable:
 
 
 @final
-@mypyc_attr(native_class=False)
 class AttributeDict(Generic[TKey, TValue]):
     """
     Provides superficial immutability, someone could hack around it
     """
 
     def __init__(self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
-        self.__dict__: Final = dict(dictionary)  # type: ignore [arg-type]
-        self.__dict__.update(dict(*args, **kwargs))
+        self_dict = dict(dictionary)  # type: ignore [arg-type]
+        if args or kwargs:
+            self_dict.update(dict(*args, **kwargs))
+        self.__dict: Final = self_dict
         self.__hash: Optional[int] = None
 
     def __hash__(self) -> int:
@@ -67,12 +66,12 @@ class AttributeDict(Generic[TKey, TValue]):
         if isinstance(other, AttributeDict):
             return hash(self) == hash(other)
         elif isinstance(other, Mapping):
-            return self.__dict__ == dict(other)
+            return self.__dict == dict(other)
         else:
             return False
 
     def __setattr__(self, attr: str, val: TValue) -> None:
-        if attr == "__dict__":
+        if attr == "__dict":
             super().__setattr__(attr, val)
         raise TypeError("This data is immutable -- create a copy instead of modifying")
 
@@ -80,16 +79,16 @@ class AttributeDict(Generic[TKey, TValue]):
         raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __getitem__(self, key: TKey) -> TValue:
-        return self.__dict__[key]  # type: ignore [index, no-any-return]
+        return self.__dict[key]  # type: ignore [index, no-any-return]
 
     def __iter__(self) -> Iterator[Any]:
-        return iter(self.__dict__)
+        return iter(self.__dict)
 
     def __len__(self) -> int:
-        return len(self.__dict__)
+        return len(self.__dict)
 
     def __repr__(self) -> str:
-        return self.__class__.__name__ + f"({self.__dict__!r})"
+        return self.__class__.__name__ + f"({self.__dict!r})"
 
     def _repr_pretty_(self, builder: Any, cycle: bool) -> None:
         """
@@ -100,7 +99,7 @@ class AttributeDict(Generic[TKey, TValue]):
         if cycle:
             builder.text("<cycle>")
         else:
-            builder.pretty(self.__dict__)
+            builder.pretty(self.__dict)
         builder.text(")")
 
     @classmethod
@@ -122,13 +121,13 @@ class AttributeDict(Generic[TKey, TValue]):
         return value
 
     def keys(self) -> KeysView[TKey]:
-        return self.__dict__.keys()  # type: ignore [return-value]
+        return self.__dict.keys()  # type: ignore [return-value]
 
     def values(self) -> ValuesView[TValue]:
-        return self.__dict__.values()
+        return self.__dict.values()
 
     def items(self) -> ItemsView[TKey, TValue]:
-        return self.__dict__.items()  # type: ignore [return-value]
+        return self.__dict.items()  # type: ignore [return-value]
 
 
 Mapping.register(AttributeDict)
