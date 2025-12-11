@@ -46,7 +46,7 @@ def make_hashable(obj: Any) -> Hashable:
 
 @final
 @mypyc_attr(native_class=False)
-class AttributeDict(Mapping[TKey, TValue]):
+class AttributeDict(Generic[TKey, TValue]):
     """
     Provides superficial immutability, someone could hack around it
     """
