@@ -205,7 +205,7 @@ class DankMiddlewareController:
             # this exc shouldn't be exposed to the user so let's try this again
             return await self(method, params)
 
-    @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)  # type: ignore [misc]
+    @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)  # type: ignore [untyped-decorator]
     async def make_request(
         self, method: str, params: List[Any], request_id: Optional[int] = None
     ) -> RawResponse:
@@ -397,7 +397,7 @@ class DankMiddlewareController:
             )
 
     @lru_cache(maxsize=1024)
-    def _select_mcall_target_for_block(self, block: BlockNumber) -> MulticallContract:
+    def _select_mcall_target_for_block(self, block: Union[BlockNumber, Literal["latest"]) -> MulticallContract:
         """
         Select the appropriate multicall contract for a given block.
 
@@ -423,7 +423,7 @@ class DankMiddlewareController:
             self._pending_rpc_calls_append = batch.append
 
 
-@eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)  # type: ignore [misc]
+@eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)  # type: ignore [untyped-decorator]
 def _get_client_version(sync_w3: Web3) -> str:
     return cast(str, sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion)  # type: ignore [attr-defined]
 
