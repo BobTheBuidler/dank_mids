@@ -2,7 +2,7 @@ from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
 from time import time
-from typing import Any, DefaultDict, Final, List, Literal, Optional, Set, Tuple, Union, cast, final
+from typing import Any, DefaultDict, Final, List, Literal, Optional, Sequence, Set, Union, cast, final
 
 import eth_retry
 from cchecksum import to_checksum_address
@@ -207,7 +207,7 @@ class DankMiddlewareController:
 
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)  # type: ignore [untyped-decorator]
     async def make_request(
-        self, method: str, params: Tuple[Any, ...], request_id: Optional[int] = None
+        self, method: str, params: Sequence[Any, ...], request_id: Optional[int] = None
     ) -> RawResponse:
         """
         Makes an RPC request to the Ethereum node.
