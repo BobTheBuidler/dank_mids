@@ -207,7 +207,7 @@ class DankMiddlewareController:
             # this exc shouldn't be exposed to the user so let's try this again
             return await self(method, params)
 
-    @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)
+    @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)  # type: ignore [misc]
     async def make_request(
         self, method: str, params: List[Any], request_id: Optional[int] = None
     ) -> RawResponse:
