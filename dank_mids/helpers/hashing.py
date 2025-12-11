@@ -19,6 +19,8 @@ from typing import (
     final,
 )
 
+from mypy_extensions import mypyc_attr
+
 
 TKey = TypeVar("TKey", bound=Hashable)
 TValue = TypeVar("TValue")
@@ -42,6 +44,7 @@ def make_hashable(obj: Any) -> Hashable:
 
 
 @final
+@mypyc_attr(native_class=False)
 class AttributeDict(Mapping[TKey, TValue]):
     """
     Provides superficial immutability, someone could hack around it
