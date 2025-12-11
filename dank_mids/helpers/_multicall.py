@@ -21,6 +21,7 @@ except ImportError:
 
 BlockIdentifier = Union[BlockNumber, Literal["latest"], HexStr]
 
+
 class MulticallContract(Struct):
     """
     Represents a multicall contract with its address, deployment block, and bytecode.
@@ -60,9 +61,7 @@ class MulticallContract(Struct):
             self.__needs_override_code_for_block
         )
 
-    def __needs_override_code_for_block(
-        self, block: BlockIdentifier
-    ) -> bool:
+    def __needs_override_code_for_block(self, block: BlockIdentifier) -> bool:
         """
         Determine if the contract needs override code for a specific block.
 
