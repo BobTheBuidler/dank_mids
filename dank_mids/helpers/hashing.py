@@ -15,6 +15,7 @@ from typing import (
     TypeVar,
     Union,
     ValuesView,
+    cast,
     final,
 )
 
@@ -25,7 +26,7 @@ TKey = TypeVar("TKey", bound=Hashable)
 TValue = TypeVar("TValue")
 
 
-def make_hashable(obj: Any) -> Any:
+def make_hashable(obj: Any) -> Hashable:
     """
     Converts an object into a hashable type if possible.
 
@@ -39,12 +40,12 @@ def make_hashable(obj: Any) -> Any:
         return tuple(make_hashable(o) for o in obj)
     elif isinstance(obj, dict):
         return AttributeDict({key: make_hashable(obj[key]) for key in obj})
-    return obj
+    return cast(Hashable, obj)
 
 
 @final
 @mypyc_attr(native_class=False)
-class AttributeDict(Mapping[TKey, TValue], Hashable):
+class AttributeDict(Mapping[TKey, TValue]):
     """
     Provides superficial immutability, someone could hack around it
     """
@@ -116,7 +117,7 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         elif isinstance(value, set):
             return {AttributeDict.recursive(v) for v in value}
         elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-            return type(value)(AttributeDict.recursive(v) for v in value)  # type: ignore [call-arg]
+            return type(value)(map(AttributeDict.recursive, value))  # type: ignore [call-arg]
         return value
 
     def keys(self) -> KeysView[TKey]:
@@ -127,6 +128,9 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
 
     def items(self) -> ItemsView[TKey, TValue]:
         return self.__dict__.items()  # type: ignore [return-value]
+
+
+Hashable.register(AttributeDict)
 
 
 def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValue]:
