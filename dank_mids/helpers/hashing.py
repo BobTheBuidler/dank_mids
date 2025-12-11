@@ -25,7 +25,7 @@ TKey = TypeVar("TKey", bound=Hashable)
 TValue = TypeVar("TValue")
 
 
-def make_hashable(obj: Any) -> Any:
+def make_hashable(obj: Any) -> Hashable:
     """
     Converts an object into a hashable type if possible.
 
@@ -44,7 +44,7 @@ def make_hashable(obj: Any) -> Any:
 
 @final
 @mypyc_attr(native_class=False)
-class AttributeDict(Mapping[TKey, TValue], Hashable):
+class AttributeDict(Mapping[TKey, TValue]):
     """
     Provides superficial immutability, someone could hack around it
     """
@@ -127,6 +127,9 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
 
     def items(self) -> ItemsView[TKey, TValue]:
         return self.__dict__.items()  # type: ignore [return-value]
+
+
+Hashable.register(AttributeDict)
 
 
 def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValue]:
