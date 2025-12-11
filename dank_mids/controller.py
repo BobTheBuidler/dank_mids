@@ -275,7 +275,7 @@ class DankMiddlewareController:
                 return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size
             eth_calls = sum(map(len, self.pending_eth_calls.values()))
             other_calls = sum(map(len, self.pending_rpc_calls))
-            return eth_calls + other_calls >= self.batcher.step
+            return eth_calls + other_calls >= cast(int, self.batcher.step)
 
     def _check_request_type(self) -> bool:
         """
