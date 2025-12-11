@@ -37,7 +37,7 @@ def make_hashable(obj: Any) -> Hashable:
         return tuple(make_hashable(o) for o in obj)
     elif isinstance(obj, dict):
         return AttributeDict({key: make_hashable(obj[key]) for key in obj})
-    return obj
+    return cast(Hashable, obj)
 
 
 @final
