@@ -1,8 +1,8 @@
 from functools import lru_cache
-from typing import Callable, Optional
+from typing import Callable, Literal, Optional, Union
 
 from cchecksum import to_checksum_address
-from eth_typing import BlockNumber, ChecksumAddress
+from eth_typing import BlockNumber, ChecksumAddress, HexStr
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES
 
@@ -58,7 +58,7 @@ class MulticallContract(Struct):
             self.__needs_override_code_for_block
         )
 
-    def __needs_override_code_for_block(self, block: BlockNumber) -> bool:
+    def __needs_override_code_for_block(self, block: Union[BlockNumber, Literal["latest"], HexStr]) -> bool:
         """
         Determine if the contract needs override code for a specific block.
 
