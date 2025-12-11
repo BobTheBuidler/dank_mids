@@ -4,6 +4,7 @@ from typing import (
     Any,
     Dict,
     Final,
+    Generic,
     ItemsView,
     Iterator,
     KeysView,
@@ -37,7 +38,7 @@ def make_hashable(obj: Any) -> Hashable:
         obj: The object to make hashable.
     """
     if isinstance(obj, (list, tuple)):
-        return tuple(make_hashable(o) for o in obj)
+        return tuple(map(make_hashable, obj))
     elif isinstance(obj, dict):
         return AttributeDict({key: make_hashable(obj[key]) for key in obj})
     return cast(Hashable, obj)
@@ -45,7 +46,7 @@ def make_hashable(obj: Any) -> Hashable:
 
 @final
 @mypyc_attr(native_class=False)
-class AttributeDict(Mapping[TKey, TValue]):
+class AttributeDict(Generic[TKey, TValue]):
     """
     Provides superficial immutability, someone could hack around it
     """
@@ -58,7 +59,8 @@ class AttributeDict(Mapping[TKey, TValue]):
     def __hash__(self) -> int:
         retval = self.__hash
         if retval is None:
-            retval = hash(tuple(sorted(tupleize_lists_nested(self).items())))
+            hashable = cast(AttributeDict, tupleize_lists_nested(self))
+            retval = hash(tuple(sorted(hashable.items())))
             self.__hash = retval
         return retval
 
@@ -130,6 +132,7 @@ class AttributeDict(Mapping[TKey, TValue]):
         return self.__dict__.items()  # type: ignore [return-value]
 
 
+Mapping.register(AttributeDict)
 Hashable.register(AttributeDict)
 
 
