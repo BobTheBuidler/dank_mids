@@ -122,7 +122,7 @@ typedef struct {
     PyObject *_multicalls;
     PyObject *_rpc_calls;
     char __awaited;
-    PyObject *__check_len;
+    CPyTagged __check_len;
 } dank_mids____batch___DankBatchObject;
 
 typedef struct {
@@ -162,7 +162,7 @@ typedef struct {
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__working_batch;
     PyObject *___mypyc_generator_attribute__batch_append;
-    PyObject *___mypyc_generator_attribute__check_len;
+    CPyTagged ___mypyc_generator_attribute__check_len;
     PyObject *___mypyc_temp__11;
     CPyTagged ___mypyc_temp__12;
     int64_t ___mypyc_temp__13;
