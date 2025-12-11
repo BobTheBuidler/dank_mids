@@ -1,5 +1,5 @@
 from asyncio import Task
-from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, Union, final
+from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, Union, cast, final
 
 import a_sync
 
@@ -71,7 +71,7 @@ class DankBatch:
         self._awaited: bool = False
         """A flag indicating whether the batch has been awaited."""
 
-        self._check_len: Final = min(CHECK, controller.batcher.step)
+        self._check_len: Final = min(CHECK, cast(int, controller.batcher.step))
 
     def __repr__(self) -> str:
         return f"<dank_mids.DankBatch object at {hex(id(self))}>"
