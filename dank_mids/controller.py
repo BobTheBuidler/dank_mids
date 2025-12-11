@@ -22,14 +22,14 @@ from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers._codec import decode_raw
+from dank_mids.helpers._codec import RawResponse, decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _sync_w3_from_async
 from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._session import post, rate_limit_inactive
 from dank_mids.semaphores import BlockSemaphore
-from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
+from dank_mids.types import BlockId, PartialRequest, Request
 
 logger = getLogger(__name__)
 # our new logger logs the same stuff plus more
