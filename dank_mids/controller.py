@@ -2,7 +2,7 @@ from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
 from time import time
-from typing import Any, Callable, DefaultDict, Final, List, Literal, Optional, Set, cast, final
+from typing import Any, DefaultDict, Final, List, Literal, Optional, Set, cast, final
 
 import eth_retry
 from cchecksum import to_checksum_address
@@ -53,9 +53,6 @@ class DankMiddlewareController:
 
     pending_rpc_calls: JSONRPCBatch
     """A :class:`~JSONRPCBatch` containing all pending rpc requests."""
-
-    _pending_rpc_calls_append: Callable
-    """An alias for `controller.pending_rpc_calls.append`, intended to minimize attr lookups."""
 
     def __init__(self, w3: Web3) -> None:
         """
