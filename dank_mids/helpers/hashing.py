@@ -4,6 +4,7 @@ from typing import (
     Any,
     Dict,
     Final,
+    Generic,
     ItemsView,
     Iterator,
     KeysView,
@@ -37,7 +38,7 @@ def make_hashable(obj: Any) -> Hashable:
         obj: The object to make hashable.
     """
     if isinstance(obj, (list, tuple)):
-        return tuple(make_hashable(o) for o in obj)
+        return tuple(map(make_hashable, obj))
     elif isinstance(obj, dict):
         return AttributeDict({key: make_hashable(obj[key]) for key in obj})
     return cast(Hashable, obj)
@@ -45,14 +46,16 @@ def make_hashable(obj: Any) -> Hashable:
 
 @final
 @mypyc_attr(native_class=False)
-class AttributeDict(Mapping[TKey, TValue]):
+class AttributeDict(Generic[TKey, TValue]):
     """
     Provides superficial immutability, someone could hack around it
     """
 
     def __init__(self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
-        self.__dict__: Final = dict(dictionary)  # type: ignore [arg-type]
-        self.__dict__.update(dict(*args, **kwargs))
+        self_dict = dict(dictionary)
+        if args or kwargs:
+            self_dict.update(dict(*args, **kwargs))  # type: ignore [arg-type]
+        self.__dict: Final = self_dict
         self.__hash: Optional[int] = None
 
     def __hash__(self) -> int:
@@ -66,12 +69,12 @@ class AttributeDict(Mapping[TKey, TValue]):
         if isinstance(other, AttributeDict):
             return hash(self) == hash(other)
         elif isinstance(other, Mapping):
-            return self.__dict__ == dict(other)
+            return self.__dict == dict(other)
         else:
             return False
 
     def __setattr__(self, attr: str, val: TValue) -> None:
-        if attr == "__dict__":
+        if attr == "__dict":
             super().__setattr__(attr, val)
         raise TypeError("This data is immutable -- create a copy instead of modifying")
 
@@ -79,16 +82,16 @@ class AttributeDict(Mapping[TKey, TValue]):
         raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __getitem__(self, key: TKey) -> TValue:
-        return self.__dict__[key]  # type: ignore [index, no-any-return]
+        return self.__dict[key]  # type: ignore [index, no-any-return]
 
     def __iter__(self) -> Iterator[Any]:
-        return iter(self.__dict__)
+        return iter(self.__dict)
 
     def __len__(self) -> int:
-        return len(self.__dict__)
+        return len(self.__dict)
 
     def __repr__(self) -> str:
-        return self.__class__.__name__ + f"({self.__dict__!r})"
+        return f"{self.__class__.__name__}({self.__dict!r})"
 
     def _repr_pretty_(self, builder: Any, cycle: bool) -> None:
         """
@@ -99,7 +102,7 @@ class AttributeDict(Mapping[TKey, TValue]):
         if cycle:
             builder.text("<cycle>")
         else:
-            builder.pretty(self.__dict__)
+            builder.pretty(self.__dict)
         builder.text(")")
 
     @classmethod
@@ -121,35 +124,40 @@ class AttributeDict(Mapping[TKey, TValue]):
         return value
 
     def keys(self) -> KeysView[TKey]:
-        return self.__dict__.keys()  # type: ignore [return-value]
+        return self.__dict.keys()  # type: ignore [return-value]
 
     def values(self) -> ValuesView[TValue]:
-        return self.__dict__.values()
+        return self.__dict.values()
 
     def items(self) -> ItemsView[TKey, TValue]:
-        return self.__dict__.items()  # type: ignore [return-value]
+        return self.__dict.items()  # type: ignore [return-value]
 
 
+Mapping.register(AttributeDict)
 Hashable.register(AttributeDict)
 
 
-def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValue]:
+def tupleize_lists_nested(
+    d: Union[AttributeDict[TKey, TValue], Mapping[TKey, TValue]],
+) -> AttributeDict[TKey, TValue]:
     """
     Unhashable types inside dicts will throw an error if attempted to be hashed.
     This method converts lists to tuples, rendering them hashable.
     Other unhashable types found will raise a TypeError
     """
 
-    ret = dict()
+    ret = {}
     for k, v in d.items():
         if isinstance(v, (list, tuple)):
             ret[k] = _to_tuple(v)
-        elif isinstance(v, dict) or isinstance(v, Mapping):
+        elif isinstance(v, dict) or isinstance(v, AttributeDict) or isinstance(v, Mapping):
             ret[k] = tupleize_lists_nested(v)
-        elif not isinstance(v, Hashable):
-            raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}")
         else:
-            ret[k] = v
+            try:
+                ret[k] = v
+            except TypeError:
+                raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}") from None
+
     return AttributeDict(ret)
 
 
