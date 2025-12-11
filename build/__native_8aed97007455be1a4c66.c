@@ -81714,7 +81714,7 @@ CPyL7: ;
         CPy_AttributeError("dank_mids/controller.py", "make_request", "make_request_DankMiddlewareController_env", "params", 230, CPyStatic_controller___globals);
         goto CPyL101;
     }
-    CPy_INCREF_NO_IMM(cpy_r_r8);
+    CPy_INCREF(cpy_r_r8);
 CPyL8: ;
     cpy_r_r9 = ((dank_mids___controller___make_request_DankMiddlewareController_envObject *)cpy_r_r2)->___mypyc_generator_attribute__request_id;
     if (unlikely(cpy_r_r9 == NULL)) {
@@ -81802,7 +81802,7 @@ CPyL19: ;
         goto CPyL106;
     }
     CPy_DECREF(cpy_r_r7);
-    CPy_DECREF_NO_IMM(cpy_r_r8);
+    CPy_DECREF(cpy_r_r8);
     CPy_DECREF(cpy_r_r20);
     if (((dank_mids___controller___make_request_DankMiddlewareController_envObject *)cpy_r_r2)->___mypyc_generator_attribute__request != NULL) {
         CPy_DECREF(((dank_mids___controller___make_request_DankMiddlewareController_envObject *)cpy_r_r2)->___mypyc_generator_attribute__request);
@@ -82712,9 +82712,9 @@ CPyL2: ;
         CPy_AddTraceback("dank_mids/controller.py", "make_request", 209, CPyStatic_controller___globals);
         goto CPyL13;
     }
-    CPy_INCREF_NO_IMM(cpy_r_params);
+    CPy_INCREF(cpy_r_params);
     if (((dank_mids___controller___make_request_DankMiddlewareController_envObject *)cpy_r_r1)->___mypyc_generator_attribute__params != NULL) {
-        CPy_DECREF_NO_IMM(((dank_mids___controller___make_request_DankMiddlewareController_envObject *)cpy_r_r1)->___mypyc_generator_attribute__params);
+        CPy_DECREF(((dank_mids___controller___make_request_DankMiddlewareController_envObject *)cpy_r_r1)->___mypyc_generator_attribute__params);
     }
     ((dank_mids___controller___make_request_DankMiddlewareController_envObject *)cpy_r_r1)->___mypyc_generator_attribute__params = cpy_r_params;
     cpy_r_r4 = 1;
@@ -82795,11 +82795,11 @@ PyObject *CPyPy_controller___DankMiddlewareController___make_request(PyObject *s
         CPy_TypeError("str", obj_method); 
         goto fail;
     }
-    PyObject *arg_params;
-    if (likely(PyList_Check(obj_params)))
+    PyObject * arg_params;
+    if (likely(PyTuple_Check(obj_params)))
         arg_params = obj_params;
     else {
-        CPy_TypeError("list", obj_params); 
+        CPy_TypeError("tuple", obj_params); 
         goto fail;
     }
     PyObject *arg_request_id;
@@ -87007,7 +87007,7 @@ CPyL3: ;
     CPy_INCREF(CPyModule_time);
     CPy_DECREF(cpy_r_r20);
     cpy_r_r21 = CPyStatics[1154]; /* ('Any', 'DefaultDict', 'Final', 'List', 'Literal',
-                                     'Optional', 'Set', 'Union', 'cast', 'final') */
+                                     'Optional', 'Set', 'Tuple', 'Union', 'cast', 'final') */
     cpy_r_r22 = CPyStatics[39]; /* 'typing' */
     cpy_r_r23 = CPyStatic_controller___globals;
     cpy_r_r24 = CPyImport_ImportFromMany(cpy_r_r22, cpy_r_r21, cpy_r_r21, cpy_r_r23);
@@ -90993,13 +90993,13 @@ const int CPyLit_Tuple[] = {
     60, 2, 707, 705, 1, 85, 1, 719, 1, 693, 12, 31, 32, 226, 747, 748, 34,
     238, 602, 228, 527, 36, 38, 1, 1102, 1, 609, 1, 749, 1, 273, 1, 739,
     2, 227, 34, 3, 434, 775, 775, 1, 1145, 1, 777, 1, 778, 3, 369, 842,
-    466, 2, 164, 845, 1, 607, 1, 707, 1, 871, 10, 32, 747, 34, 169, 526,
-    134, 602, 37, 648, 38, 3, 872, 872, 872, 1, 1155, 1, 462, 2, 777, 503,
-    1, 875, 1, 831, 1, 833, 1, 877, 2, 273, 274, 1, 847, 1, 68, 1, 75, 4,
-    22, 26, 840, 520, 1, 212, 1, 841, 2, 48, 843, 1, 878, 2, 868, 817, 3,
-    879, 828, 829, 2, 844, 838, 3, 882, 822, 522, 2, 915, 916, 1, 918, 1,
-    920, 3, 78, 78, 78, 2, 999, 1179, 1, 922, 2, 202, 45, 1, 923, 2, 931,
-    932, 1, 931
+    466, 2, 164, 845, 1, 607, 1, 707, 1, 871, 11, 32, 747, 34, 169, 526,
+    134, 602, 228, 37, 648, 38, 3, 872, 872, 872, 1, 1155, 1, 462, 2, 777,
+    503, 1, 875, 1, 831, 1, 833, 1, 877, 2, 273, 274, 1, 847, 1, 68, 1,
+    75, 4, 22, 26, 840, 520, 1, 212, 1, 841, 2, 48, 843, 1, 878, 2, 868,
+    817, 3, 879, 828, 829, 2, 844, 838, 3, 882, 822, 522, 2, 915, 916, 1,
+    918, 1, 920, 3, 78, 78, 78, 2, 999, 1179, 1, 922, 2, 202, 45, 1, 923,
+    2, 931, 932, 1, 931
 };
 const int CPyLit_FrozenSet[] = {1, 2, 673, 674};
 CPyModule *CPyModule_dank_mids____batch__internal = NULL;
