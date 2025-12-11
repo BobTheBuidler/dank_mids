@@ -106,7 +106,7 @@ class DankMiddlewareController:
         """The time at which the request type was automatically updated by dank's internals. Zero if never updated after init."""
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
-        self.state_override_not_supported: Final[bool] = ENVS.GANACHE_FORK or chainid == 100  # type: ignore [assignment]
+        self.state_override_not_supported: Final = bool(ENVS.GANACHE_FORK or chainid == 100)
         """A boolean that indicates whether the connected rpc supports state override functionality."""
 
         self.endpoint: Final[str] = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
@@ -120,12 +120,12 @@ class DankMiddlewareController:
         self._sort_response: bool = using_tenderly_client or using_chainstack_rpc
         """A boolean that indicates whether a jsonrpc batch response must be sorted by id in order for dank to work with the connected rpc."""
 
-        if using_tenderly_client and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
+        if using_tenderly_client and int(ENVS.MAX_JSONRPC_BATCH_SIZE) > 10:
             logger.info("max jsonrpc batch size for Tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
 
         self._instance: Final = sum(map(len, instances.values()))
-        instances[chainid].append(self)  # type: ignore
+        instances[chainid].append(self)
 
         self.mc2: Final = _get_multicall2(chainid)
         self.mc3: Final = _get_multicall3(chainid)
@@ -268,7 +268,7 @@ class DankMiddlewareController:
             self.pending_eth_calls.clear()
             rpc_calls = self.pending_rpc_calls
         self._start_new_batch()
-        demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)  # type: ignore
+        demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)
         batch = DankBatch(self, multicalls, rpc_calls)
         await batch
         demo_logger.info("%s done", batch)
