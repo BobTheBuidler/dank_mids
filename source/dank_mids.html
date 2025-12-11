@@ -176,9 +176,13 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.remove_deployment"><code class="docutils literal notranslate"><span class="pre">Contract.remove_deployment()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.set_alias"><code class="docutils literal notranslate"><span class="pre">Contract.set_alias()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.abi"><code class="docutils literal notranslate"><span class="pre">Contract.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.address"><code class="docutils literal notranslate"><span class="pre">Contract.address</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.alias"><code class="docutils literal notranslate"><span class="pre">Contract.alias</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.bytecode"><code class="docutils literal notranslate"><span class="pre">Contract.bytecode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.selectors"><code class="docutils literal notranslate"><span class="pre">Contract.selectors</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.signatures"><code class="docutils literal notranslate"><span class="pre">Contract.signatures</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.topics"><code class="docutils literal notranslate"><span class="pre">Contract.topics</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.tx"><code class="docutils literal notranslate"><span class="pre">Contract.tx</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName"><code class="docutils literal notranslate"><span class="pre">EventName</span></code></a></li>
@@ -261,9 +265,13 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.remove_deployment"><code class="docutils literal notranslate"><span class="pre">Contract.remove_deployment()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.set_alias"><code class="docutils literal notranslate"><span class="pre">Contract.set_alias()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.abi"><code class="docutils literal notranslate"><span class="pre">Contract.abi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.address"><code class="docutils literal notranslate"><span class="pre">Contract.address</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.alias"><code class="docutils literal notranslate"><span class="pre">Contract.alias</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.bytecode"><code class="docutils literal notranslate"><span class="pre">Contract.bytecode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.selectors"><code class="docutils literal notranslate"><span class="pre">Contract.selectors</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.signatures"><code class="docutils literal notranslate"><span class="pre">Contract.signatures</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.topics"><code class="docutils literal notranslate"><span class="pre">Contract.topics</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.Contract.tx"><code class="docutils literal notranslate"><span class="pre">Contract.tx</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.brownie_patch.html#dank_mids.brownie_patch.DankContractCall"><code class="docutils literal notranslate"><span class="pre">DankContractCall</span></code></a><ul>
@@ -4059,7 +4067,7 @@ object in future sessions.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="dank_mids.Contract.abi">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a></em><a class="headerlink" href="#dank_mids.Contract.abi" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ABIFunction</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ABIConstructor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ABIFallback</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ABIReceive</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ABIEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ABIError</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dank_mids.Contract.abi" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
