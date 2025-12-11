@@ -19,6 +19,7 @@ from typing import (
 import eth_retry
 from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress
+from eth_typing.evm import BlockParams
 from evmspec.data import ChainId
 from multicall.constants import MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
@@ -410,7 +411,7 @@ class DankMiddlewareController:
 
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(
-        self, block: Union[BlockNumber, Literal["latest"]]
+        self, block: Union[BlockNumber, BlockParams]
     ) -> MulticallContract:
         """
         Select the appropriate multicall contract for a given block.
