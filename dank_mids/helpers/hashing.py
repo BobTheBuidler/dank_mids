@@ -55,7 +55,7 @@ class AttributeDict(Generic[TKey, TValue]):
         self_dict = dict(dictionary)
         if args or kwargs:
             self_dict.update(dict(*args, **kwargs))  # type: ignore [arg-type]
-        self.__dict: Final = self_dict
+        self.__dict__: Final = self_dict  # type: ignore [assignment]
         self.__hash: Optional[int] = None
 
     def __hash__(self) -> int:
@@ -69,29 +69,30 @@ class AttributeDict(Generic[TKey, TValue]):
         if isinstance(other, AttributeDict):
             return hash(self) == hash(other)
         elif isinstance(other, Mapping):
-            return self.__dict == dict(other)
+            return self.__dict__ == dict(other)
         else:
             return False
 
     def __setattr__(self, attr: str, val: TValue) -> None:
-        if attr == "__dict":
+        if attr in ("__dict__", "__hash"):
             super().__setattr__(attr, val)
-        raise TypeError("This data is immutable -- create a copy instead of modifying")
+        else:
+            raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __delattr__(self, key: str) -> None:
         raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __getitem__(self, key: TKey) -> TValue:
-        return self.__dict[key]  # type: ignore [index, no-any-return]
+        return self.__dict__[key]  # type: ignore [index, no-any-return]
 
     def __iter__(self) -> Iterator[Any]:
-        return iter(self.__dict)
+        return iter(self.__dict__)
 
     def __len__(self) -> int:
-        return len(self.__dict)
+        return len(self.__dict__)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.__dict!r})"
+        return f"{self.__class__.__name__}({self.__dict__!r})"
 
     def _repr_pretty_(self, builder: Any, cycle: bool) -> None:
         """
@@ -102,7 +103,7 @@ class AttributeDict(Generic[TKey, TValue]):
         if cycle:
             builder.text("<cycle>")
         else:
-            builder.pretty(self.__dict)
+            builder.pretty(self.__dict__)
         builder.text(")")
 
     @classmethod
@@ -124,16 +125,15 @@ class AttributeDict(Generic[TKey, TValue]):
         return value
 
     def keys(self) -> KeysView[TKey]:
-        return self.__dict.keys()  # type: ignore [return-value]
+        return self.__dict__.keys()  # type: ignore [return-value]
 
     def values(self) -> ValuesView[TValue]:
-        return self.__dict.values()
+        return self.__dict__.values()
 
     def items(self) -> ItemsView[TKey, TValue]:
-        return self.__dict.items()  # type: ignore [return-value]
+        return self.__dict__.items()  # type: ignore [return-value]
 
 
-Mapping.register(AttributeDict)
 Hashable.register(AttributeDict)
 
 

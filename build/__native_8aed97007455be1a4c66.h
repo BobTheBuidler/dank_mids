@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_6486cd47b6f59329387b_H
-#define MYPYC_NATIVE_6486cd47b6f59329387b_H
+#ifndef MYPYC_NATIVE_8aed97007455be1a4c66_H
+#define MYPYC_NATIVE_8aed97007455be1a4c66_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3CIO
@@ -780,5 +780,133 @@ typedef struct {
     vectorcallfunc vectorcall;
     PyObject *___mypyc_env__;
 } dank_mids___stats_____mypyc_lambda__1___3_init___3__Collector_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    uint32_t bitmap;
+    PyObject *_pending_rpc_calls;
+    PyObject *__loop;
+    PyObject *_w3;
+    CPyTagged _max_jsonrpc_batch_size;
+    PyObject *_sync_w3;
+    PyObject *_chain_id;
+    PyObject *_client_version;
+    PyObject *_request_type;
+    double __request_type_changed_ts;
+    char _state_override_not_supported;
+    PyObject *_endpoint;
+    char __sort_calls;
+    char __sort_response;
+    CPyTagged __instance;
+    PyObject *_mc2;
+    PyObject *_mc3;
+    PyObject *_no_multicall;
+    PyObject *__latest_mc;
+    PyObject *_eth_call_semaphores;
+    PyObject *_batcher;
+    PyObject *_call_uid;
+    PyObject *_multicall_uid;
+    PyObject *_request_uid;
+    PyObject *_jsonrpc_batch_uid;
+    PyObject *_pools_closed_lock;
+    PyObject *_pending_eth_calls;
+    PyObject *__pending_rpc_calls_append;
+} dank_mids___controller___DankMiddlewareControllerObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_self;
+    PyObject *_w3;
+    PyObject *_chainid;
+    char _using_reth_client;
+    PyObject *_using_tenderly_client;
+    char _using_chainstack_rpc;
+    PyObject *_multicall;
+} dank_mids___controller_____init___3_DankMiddlewareController_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___controller_____mypyc_lambda__0___3_init___3_DankMiddlewareController_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
+    PyObject *___mypyc_generator_attribute__method;
+    PyObject *___mypyc_generator_attribute__params;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_temp__0;
+    tuple_T3OOO ___mypyc_temp__1;
+    PyObject *___mypyc_temp__2;
+    PyObject *___mypyc_temp__3;
+    char ___mypyc_temp__4;
+    PyObject *___mypyc_temp__5;
+    tuple_T3OOO ___mypyc_temp__6;
+    PyObject *___mypyc_temp__7;
+    tuple_T3OOO ___mypyc_temp__8;
+    PyObject *___mypyc_temp__9;
+    PyObject *___mypyc_temp__10;
+    tuple_T3OOO ___mypyc_temp__11;
+    tuple_T3OOO ___mypyc_temp__12;
+    PyObject *___mypyc_temp__13;
+    tuple_T3OOO ___mypyc_temp__14;
+    PyObject *___mypyc_temp__15;
+    tuple_T3OOO ___mypyc_temp__16;
+    PyObject *___mypyc_temp__17;
+    tuple_T3OOO ___mypyc_temp__18;
+    tuple_T3OOO ___mypyc_temp__19;
+    PyObject *___mypyc_temp__20;
+    tuple_T3OOO ___mypyc_temp__21;
+} dank_mids___controller_____call___3_DankMiddlewareController_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *___mypyc_generator_attribute__self;
+    PyObject *___mypyc_generator_attribute__method;
+    PyObject *___mypyc_generator_attribute__params;
+    PyObject *___mypyc_generator_attribute__request_id;
+    PyObject *_type;
+    PyObject *_value;
+    PyObject *_traceback;
+    PyObject *_arg;
+    PyObject **_stop_iter_ptr;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_generator_attribute__request;
+    PyObject *___mypyc_temp__22;
+    tuple_T3OOO ___mypyc_temp__23;
+    tuple_T3OOO ___mypyc_temp__24;
+    PyObject *___mypyc_generator_attribute__e;
+} dank_mids___controller___make_request_DankMiddlewareController_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_env__;
+} dank_mids___controller___make_request_DankMiddlewareController_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_temp__25;
+    PyObject *___mypyc_temp__26;
+    char ___mypyc_temp__27;
+    PyObject *___mypyc_generator_attribute__multicalls;
+    PyObject *___mypyc_generator_attribute__rpc_calls;
+    tuple_T3OOO ___mypyc_temp__28;
+    PyObject *___mypyc_generator_attribute__batch;
+    PyObject *___mypyc_temp__29;
+    tuple_T3OOO ___mypyc_temp__30;
+} dank_mids___controller___execute_batch_DankMiddlewareController_genObject;
 
 #endif

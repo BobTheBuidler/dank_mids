@@ -2,11 +2,24 @@ from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
 from time import time
-from typing import Any, Callable, DefaultDict, Final, List, Literal, Optional, Set, final
+from typing import (
+    Any,
+    DefaultDict,
+    Final,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Set,
+    Union,
+    cast,
+    final,
+)
 
 import eth_retry
 from cchecksum import to_checksum_address
-from eth_typing import ChecksumAddress
+from eth_typing import BlockNumber, ChecksumAddress, HexStr
+from eth_typing.evm import BlockParams
 from evmspec.data import ChainId
 from multicall.constants import MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
@@ -20,15 +33,16 @@ from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
-from dank_mids._uid import UIDGenerator, AlertingRLock
+from dank_mids._uid import UIDGenerator
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers._codec import decode_raw
+from dank_mids.helpers._codec import RawResponse, decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _sync_w3_from_async
+from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._session import post, rate_limit_inactive
 from dank_mids.semaphores import BlockSemaphore
-from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
+from dank_mids.types import BlockId, PartialRequest, Request
 
 logger = getLogger(__name__)
 # our new logger logs the same stuff plus more
@@ -52,9 +66,6 @@ class DankMiddlewareController:
 
     pending_rpc_calls: JSONRPCBatch
     """A :class:`~JSONRPCBatch` containing all pending rpc requests."""
-
-    _pending_rpc_calls_append: Callable
-    """An alias for `controller.pending_rpc_calls.append`, intended to minimize attr lookups."""
 
     def __init__(self, w3: Web3) -> None:
         """
@@ -161,15 +172,6 @@ class DankMiddlewareController:
         )
         """A dictionary of pending :class:`~Multicall` objects by block. The Multicalls hold all pending eth_calls."""
 
-        self._pending_eth_calls_pop = self.pending_eth_calls.pop
-        """An alias for `controller.pending_eth_calls.pop`, intended to minimize attr lookups."""
-        self._pending_eth_calls_copy = self.pending_eth_calls.copy
-        """An alias for `controller.pending_eth_calls.copy`, intended to minimize attr lookups."""
-        self._pending_eth_calls_clear = self.pending_eth_calls.clear
-        """An alias for `controller.pending_eth_calls.clear`, intended to minimize attr lookups."""
-        self._pending_eth_calls_values = self.pending_eth_calls.values
-        """An alias for `controller.pending_eth_calls.values`, intended to minimize attr lookups."""
-
         self._start_new_batch()
 
     def __repr__(self) -> str:
@@ -216,9 +218,9 @@ class DankMiddlewareController:
             # this exc shouldn't be exposed to the user so let's try this again
             return await self(method, params)
 
-    @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)
+    @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)  # type: ignore [untyped-decorator]
     async def make_request(
-        self, method: str, params: List[Any], request_id: Optional[int] = None
+        self, method: str, params: Sequence[Any], request_id: Optional[int] = None
     ) -> RawResponse:
         """
         Makes an RPC request to the Ethereum node.
@@ -262,8 +264,8 @@ class DankMiddlewareController:
         and executes them as a single batch.
         """
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
-            multicalls = self._pending_eth_calls_copy()
-            self._pending_eth_calls_clear()
+            multicalls = self.pending_eth_calls.copy()
+            self.pending_eth_calls.clear()
             rpc_calls = self.pending_rpc_calls
         self._start_new_batch()
         demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)  # type: ignore
@@ -282,9 +284,9 @@ class DankMiddlewareController:
         with self.pools_closed_lock:
             if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
                 return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size
-            eth_calls = sum(map(len, self._pending_eth_calls_values()))
+            eth_calls = sum(map(len, self.pending_eth_calls.values()))
             other_calls = sum(map(len, self.pending_rpc_calls))
-            return eth_calls + other_calls >= self.batcher.step
+            return eth_calls + other_calls >= cast(int, self.batcher.step)
 
     def _check_request_type(self) -> bool:
         """
@@ -310,8 +312,8 @@ class DankMiddlewareController:
         are queued to form a full batch.
         """
         with self.pools_closed_lock:
-            self.pending_rpc_calls.extend(self._pending_eth_calls_values(), skip_check=True)
-            self._pending_eth_calls_clear()
+            self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
+            self.pending_eth_calls.clear()
             self.pending_rpc_calls.start()
 
     def reduce_multicall_size(self, num_calls: int) -> None:
@@ -408,7 +410,9 @@ class DankMiddlewareController:
             )
 
     @lru_cache(maxsize=1024)
-    def _select_mcall_target_for_block(self, block) -> MulticallContract:
+    def _select_mcall_target_for_block(
+        self, block: Union[BlockNumber, Literal["latest"], HexStr]
+    ) -> MulticallContract:
         """
         Select the appropriate multicall contract for a given block.
 
@@ -419,12 +423,12 @@ class DankMiddlewareController:
             The selected multicall contract.
         """
         if block == "latest":
-            return self._latest_mc  # type: ignore [return-value]
+            return cast(MulticallContract, self._latest_mc)
         mc3 = self.mc3
         if mc3 and not mc3.needs_override_code_for_block(block):
             return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
-        return self.mc2 or mc3  # type: ignore [return-value]
+        return cast(MulticallContract, self.mc2 or mc3)
 
     def _start_new_batch(self) -> None:
         """Creates a new :class:`~JSONRPCBatch` and updates the :meth:`_pending_rpc_calls_append` alias accordingly."""
@@ -434,9 +438,9 @@ class DankMiddlewareController:
             self._pending_rpc_calls_append = batch.append
 
 
-@eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)
+@eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)  # type: ignore [untyped-decorator]
 def _get_client_version(sync_w3: Web3) -> str:
-    return sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion  # type: ignore [attr-defined]
+    return cast(str, sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion)  # type: ignore [attr-defined]
 
 
 def _logger_debug(msg: str, *args: Any) -> None: ...
