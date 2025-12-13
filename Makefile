@@ -18,6 +18,12 @@ mypyc:
 
 # Vendoring
 
-# Update aiolimiter submodule to latest upstream main branch
+# Robustly set up or update aiolimiter submodule to the latest "mypyc" branch from your fork
 update-aiolimiter:
-	cd dank_mids/_vendor/aiolimiter && git fetch && git checkout main && git pull
+	git submodule update --init --recursive dank_mids/_vendor/aiolimiter || true
+	git submodule sync dank_mids/_vendor/aiolimiter || true
+	cd dank_mids/_vendor/aiolimiter && \
+		git remote set-url origin https://github.com/BobTheBuidler/aiolimiter.git && \
+		git fetch origin mypyc && \
+		git checkout mypyc && \
+		git pull origin mypyc
