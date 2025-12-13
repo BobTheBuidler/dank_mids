@@ -1,3 +1,0 @@
-[submodule "dank_mids/_vendor/aiolimiter"]
-	path = dank_mids/_vendor/aiolimiter
-	url = https://github.com/mjpieters/aiolimiter.git
