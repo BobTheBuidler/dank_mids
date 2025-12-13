@@ -26,16 +26,15 @@ dank_mids/_vendor/aiolimiter/
 
 To vendor a new library (e.g., `aiolimiter`):
 
-- Use `git subtree` to pull in the upstream repository:
+- Use `git submodule` to add the upstream repository as a submodule:
 
   ```sh
-  git subtree add --prefix=dank_mids/_vendor/aiolimiter https://github.com/mjpieters/aiolimiter.git main --squash
+  git submodule add <REPO_URL> dank_mids/_vendor/<package_name>
+  git submodule update --init --recursive
   ```
 
-  - Replace `aiolimiter` and the repo URL with the appropriate package and upstream repository.
-  - The `--squash` flag creates a single commit for the import.
-
-- If you only want a subdirectory (e.g., the package code, not tests/docs), you may need to remove unnecessary files after import.
+  - Replace `<REPO_URL>` and `<package_name>` with the appropriate values for the library you are vendoring.
+  - This will make the vendored library appear as a separate repository in your source control tools.
 
 ### 2. Updating a Vendored Library
 
@@ -44,10 +43,13 @@ To update a vendored library to the latest upstream version:
 - Use the Makefile target (if available), or run:
 
   ```sh
-  git subtree pull --prefix=dank_mids/_vendor/aiolimiter https://github.com/mjpieters/aiolimiter.git main --squash
+  cd dank_mids/_vendor/<package_name>
+  git fetch
+  git checkout main
+  git pull
   ```
 
-  - Adjust the path and repo URL as needed for other libraries.
+  - Adjust the path and branch as needed for other libraries.
 
 - Review the changes, resolve any conflicts, and test your code.
 
@@ -57,7 +59,7 @@ For each vendored library, add a Makefile target to update it. Example for aioli
 
 ```makefile
 update-aiolimiter:
-	git subtree pull --prefix=dank_mids/_vendor/aiolimiter https://github.com/mjpieters/aiolimiter.git main --squash
+	cd dank_mids/_vendor/aiolimiter && git fetch && git checkout main && git pull
 ```
 
 For additional libraries, add similar targets.
@@ -101,6 +103,11 @@ For additional libraries, add similar targets.
 
 - Vendored at: `dank_mids/_vendor/aiolimiter/`
 - Upstream: https://github.com/mjpieters/aiolimiter
+- Add with: 
+  ```sh
+  git submodule add https://github.com/mjpieters/aiolimiter.git dank_mids/_vendor/aiolimiter
+  git submodule update --init --recursive
+  ```
 - Update with: `make update-aiolimiter`
 - Compile with mypyc: add files to Makefile as shown above
 
