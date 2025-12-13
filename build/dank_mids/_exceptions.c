@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit__exceptions(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("83808869364a34eb2637__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("7d4736dea06f96865f11__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____exceptions");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "83808869364a34eb2637__mypyc.init_dank_mids____exceptions");
+    void *init_func = PyCapsule_GetPointer(capsule, "7d4736dea06f96865f11__mypyc.init_dank_mids____exceptions");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;

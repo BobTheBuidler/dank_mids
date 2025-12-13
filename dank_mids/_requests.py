@@ -97,7 +97,7 @@ from dank_mids.helpers._gather import first_completed
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract
-from dank_mids.helpers._session import rate_limit_inactive
+from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._weaklist import WeakList
 from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
