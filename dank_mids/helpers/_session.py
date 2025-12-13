@@ -15,11 +15,11 @@ from a_sync.asyncio import sleep0 as yield_to_loop
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
-from aiolimiter import AsyncLimiter
 from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._logging import DEBUG, getLogger
+from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 from dank_mids.helpers._codec import JSONRPCBatchResponse, RawResponse
 from dank_mids.types import PartialRequest
 
