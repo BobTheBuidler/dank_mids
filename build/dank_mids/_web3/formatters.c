@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_formatters(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("8aed97007455be1a4c66__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("83808869364a34eb2637__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____web3___formatters");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "8aed97007455be1a4c66__mypyc.init_dank_mids____web3___formatters");
+    void *init_func = PyCapsule_GetPointer(capsule, "83808869364a34eb2637__mypyc.init_dank_mids____web3___formatters");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
