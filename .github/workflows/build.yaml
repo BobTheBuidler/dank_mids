@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   build-ubuntu:
+    needs: [build-macos, build-windows]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -74,33 +75,19 @@ jobs:
           MYPYC_STRICT_DUNDER_TYPING: 1
         run: make mypyc
 
-      - name: Check for changes (Ubuntu)
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
+      - name: Download aiolimiter artifacts (macOS)
+        uses: actions/download-artifact@v4
+        with:
+          name: aiolimiter-macos-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/
 
-      - name: Commit changes (Ubuntu)
-        if: env.changes_detected == 'true'
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git pull
-          git add .
-          git commit -m "chore: compile to C for Linux x64 with mypyc"
-
-      - name: Check for changes (aiolimiter - Ubuntu)
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
-          fi
+      - name: Download aiolimiter artifacts (Windows)
+        uses: actions/download-artifact@v4
+        with:
+          name: aiolimiter-windows-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/
 
       - name: Commit and push aiolimiter changes (Ubuntu)
-        if: env.aiolimiter_changes_detected == 'true'
         env:
           GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
@@ -110,7 +97,7 @@ jobs:
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
           git pull
           git add .
-          git commit -m "chore: compile to C for Linux x64 with mypyc"
+          git commit -m "chore: add artifacts for dank-mids"
           git push origin HEAD:mypyc
 
   build-macos:
@@ -197,22 +184,13 @@ jobs:
             echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit and push aiolimiter changes (macOS)
-        if: env.aiolimiter_changes_detected == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
-        run: |
-          cd dank_mids/_vendor/aiolimiter
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
-          git pull
-          git add .
-          git commit -m "chore: compile to C for macOS with mypyc"
-          git push origin HEAD:mypyc
+      - name: Archive aiolimiter artifacts (macOS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: aiolimiter-macos-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/**/*.so
 
   build-windows:
-    needs: [build-ubuntu, build-macos]
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -314,23 +292,11 @@ jobs:
             echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit and push aiolimiter changes (Windows)
-        if: env.aiolimiter_changes_detected == 'true'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
-        run: |
-          cd dank_mids/_vendor/aiolimiter
-          git remote prune origin
-          git fetch --all --prune
-          git gc --prune=now
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
-          git pull
-          git add .
-          git commit -m "chore: compile to C for Windows AMD64 with mypyc"
-          git push origin HEAD:mypyc
+      - name: Archive aiolimiter artifacts (Windows)
+        uses: actions/upload-artifact@v4
+        with:
+          name: aiolimiter-windows-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/**/*.so
 
   update-submodule-pointer:
     needs: [build-ubuntu, build-macos, build-windows]
