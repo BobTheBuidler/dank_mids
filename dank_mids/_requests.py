@@ -189,6 +189,7 @@ _request_base_init: Final = _RequestBase.__init__
 
 _batch_tasks: Final[Set[asyncio.Task[Any]]] = set()
 
+
 def _batch_task_done_callback(t: asyncio.Task[Any]) -> None:
     if t._exception is None and not t.cancelled():
         _batch_tasks.discard(t)
@@ -306,9 +307,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
             await first_completed(current_batch._task, self._fut)
 
         fut = self._fut
-        
+
         if self._batch is None:
-            
+
             batch_task = create_task(
                 self.controller.execute_batch(), name="batch task execute_batch"
             )
@@ -318,7 +319,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
             # discard the strong reference when the task completes successfully
             batch_task.add_done_callback(_batch_task_done_callback)
-            
+
             try:
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
