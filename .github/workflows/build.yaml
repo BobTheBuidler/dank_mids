@@ -90,7 +90,6 @@ jobs:
           git pull
           git add .
           git commit -m "chore: compile to C for Linux x64 with mypyc"
-          git push
 
       - name: Check for changes (aiolimiter - Ubuntu)
         run: |
@@ -100,15 +99,26 @@ jobs:
             echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit changes (aiolimiter - Ubuntu)
+      - name: Commit and PR aiolimiter changes (Ubuntu)
         if: env.aiolimiter_changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
           cd dank_mids/_vendor/aiolimiter
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
+          branch_name="mypyc-auto-pr-linux-$(date +%s)"
+          git checkout -b "$branch_name"
           git add .
           git commit -m "chore: compile to C for Linux x64 with mypyc"
-          git push
+          git push origin "$branch_name"
+          gh pr create \
+            --title "chore: compile to C for Linux x64 with mypyc" \
+            --body "Automated PR to merge compiled C files for Linux x64 with mypyc" \
+            --base mypyc \
+            --head "$branch_name" \
+            --repo BobTheBuidler/aiolimiter
 
   build-macos:
     needs: build-ubuntu
@@ -186,7 +196,6 @@ jobs:
           git pull
           git add .
           git commit -m "chore: compile to C for macOS with mypyc"
-          git push
 
       - name: Check for changes (aiolimiter - macOS)
         run: |
@@ -196,15 +205,26 @@ jobs:
             echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit changes (aiolimiter - macOS)
+      - name: Commit and PR aiolimiter changes (macOS)
         if: env.aiolimiter_changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
           cd dank_mids/_vendor/aiolimiter
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
+          branch_name="mypyc-auto-pr-macos-$(date +%s)"
+          git checkout -b "$branch_name"
           git add .
           git commit -m "chore: compile to C for macOS with mypyc"
-          git push
+          git push origin "$branch_name"
+          gh pr create \
+            --title "chore: compile to C for macOS with mypyc" \
+            --body "Automated PR to merge compiled C files for macOS with mypyc" \
+            --base mypyc \
+            --head "$branch_name" \
+            --repo BobTheBuidler/aiolimiter
 
   build-windows:
     needs: build-macos
@@ -298,7 +318,6 @@ jobs:
           git pull
           git add .
           git commit -m "chore: compile to C for Windows AMD64 with mypyc"
-          git push
 
       - name: Check for changes (aiolimiter - Windows)
         run: |
@@ -308,12 +327,23 @@ jobs:
             echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit changes (aiolimiter - Windows)
+      - name: Commit and PR aiolimiter changes (Windows)
         if: env.aiolimiter_changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
           cd dank_mids/_vendor/aiolimiter
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
+          branch_name="mypyc-auto-pr-windows-$(date +%s)"
+          git checkout -b "$branch_name"
           git add .
           git commit -m "chore: compile to C for Windows AMD64 with mypyc"
-          git push
+          git push origin "$branch_name"
+          gh pr create \
+            --title "chore: compile to C for Windows AMD64 with mypyc" \
+            --body "Automated PR to merge compiled C files for Windows AMD64 with mypyc" \
+            --base mypyc \
+            --head "$branch_name" \
+            --repo BobTheBuidler/aiolimiter
