@@ -321,6 +321,9 @@ jobs:
           GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
           cd dank_mids/_vendor/aiolimiter
+          git remote prune origin
+          git fetch --all --prune
+          git gc --prune=now
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
@@ -332,7 +335,6 @@ jobs:
   update-submodule-pointer:
     needs: [build-ubuntu, build-macos, build-windows]
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
