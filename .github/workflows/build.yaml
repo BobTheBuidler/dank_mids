@@ -76,13 +76,13 @@ jobs:
         run: make mypyc
 
       - name: Download aiolimiter artifacts (macOS)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: aiolimiter-macos-artifacts
           path: dank_mids/_vendor/aiolimiter/src/
 
       - name: Download aiolimiter artifacts (Windows)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: aiolimiter-windows-artifacts
           path: dank_mids/_vendor/aiolimiter/src/
@@ -188,7 +188,7 @@ jobs:
           git push
 
       - name: Archive aiolimiter artifacts (macOS)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: aiolimiter-macos-artifacts
           path: dank_mids/_vendor/aiolimiter/src/**/*.so
@@ -287,7 +287,7 @@ jobs:
           git push
 
       - name: Archive aiolimiter artifacts (Windows)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: aiolimiter-windows-artifacts
           path: dank_mids/_vendor/aiolimiter/src/**/*.pyd
