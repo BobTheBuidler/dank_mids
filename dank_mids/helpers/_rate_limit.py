@@ -55,7 +55,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
 
 async def __rate_limit_inactive(endpoint: str) -> None:
     # sourcery skip: use-contextlib-suppress
-    
+
     # alias this global var so we only look it up 1x
     yield_to_loop = sleep0
 
