@@ -9,6 +9,7 @@ documentation = "https://BobTheBuidler.github.io/dank_mids"
 license = "MIT"
 readme = "README.md"
 include = [
+    { path = "dank_mids/_vendor/**", format = ["sdist", "wheel"] },
     { path = "9e8e2bd62adbcef60f26__mypyc.cpython-39-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
     { path = "9e8e2bd62adbcef60f26__mypyc.cpython-39-darwin.so", format = ["sdist", "wheel"] },
     { path = "9e8e2bd62adbcef60f26__mypyc.cp39-win_amd64.pyd", format = ["sdist", "wheel"] },
