@@ -92,9 +92,6 @@ jobs:
           git commit -m "chore: compile to C for Linux x64 with mypyc"
           git push
 
-      - name: cd into aiolimiter submodule
-        run: cd dank_mids/_vendor/aiolimiter
-
       - name: Check for changes (aiolimiter - Ubuntu)
         run: |
           if [[ -n $(git status --porcelain) ]]; then
@@ -106,6 +103,7 @@ jobs:
       - name: Commit changes (aiolimiter - Ubuntu)
         if: env.aiolimiter_changes_detected == 'true'
         run: |
+          cd dank_mids/_vendor/aiolimiter
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add .
@@ -190,9 +188,6 @@ jobs:
           git commit -m "chore: compile to C for macOS with mypyc"
           git push
 
-      - name: cd into aiolimiter submodule
-        run: cd dank_mids/_vendor/aiolimiter
-
       - name: Check for changes (aiolimiter - macOS)
         run: |
           if [[ -n $(git status --porcelain) ]]; then
@@ -204,6 +199,7 @@ jobs:
       - name: Commit changes (aiolimiter - macOS)
         if: env.aiolimiter_changes_detected == 'true'
         run: |
+          cd dank_mids/_vendor/aiolimiter
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add .
@@ -304,9 +300,6 @@ jobs:
           git commit -m "chore: compile to C for Windows AMD64 with mypyc"
           git push
 
-      - name: cd into aiolimiter submodule
-        run: cd dank_mids/_vendor/aiolimiter
-
       - name: Check for changes (aiolimiter - Windows)
         run: |
           if [[ -n $(git status --porcelain) ]]; then
@@ -318,6 +311,7 @@ jobs:
       - name: Commit changes (aiolimiter - Windows)
         if: env.aiolimiter_changes_detected == 'true'
         run: |
+          cd dank_mids/_vendor/aiolimiter
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add .
