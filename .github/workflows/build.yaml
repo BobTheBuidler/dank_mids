@@ -75,6 +75,24 @@ jobs:
           MYPYC_STRICT_DUNDER_TYPING: 1
         run: make mypyc
 
+      - name: Check for changes (Ubuntu)
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "changes_detected=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit changes (Ubuntu)
+        if: env.changes_detected == 'true'
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
+          git add .
+          git commit -m "chore: compile to C for Linux x64 with mypyc"
+          git push
+
       - name: Download aiolimiter artifacts (macOS)
         uses: actions/download-artifact@v7
         with:
