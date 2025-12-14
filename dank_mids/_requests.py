@@ -190,7 +190,11 @@ _batch_tasks: Final[Set[asyncio.Task[Any]]] = set()
 
 
 def _batch_task_done_callback(t: asyncio.Task[Any]) -> None:
-    if t._exception is None and not t.cancelled():
+    if t._exception is not None:
+        logger.exception("exception in batch task %s", batch_task)
+    elif t.cancelled():
+        logger.exception("batch task is cancelled??? %s", t)
+    else:
         _batch_tasks.discard(t)
 
 
