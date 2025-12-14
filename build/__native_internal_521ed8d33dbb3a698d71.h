@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1283];
+extern PyObject *CPyStatics[1284];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -75,7 +75,6 @@ extern CPyModule *CPyModule_sys;
 extern CPyModule *CPyModule_warnings;
 extern CPyModule *CPyModule_functools;
 extern CPyModule *CPyModule_heapq;
-extern CPyModule *CPyModule_itertools;
 extern CPyModule *CPyModule_types;
 extern CPyModule *CPyModule_pathlib;
 extern CPyModule *CPyModule_dank_mids____web3___abi__internal;
@@ -323,6 +322,8 @@ extern CPyTagged CPyDef__uid___UIDGenerator___next(PyObject *cpy_r_self);
 extern PyObject *CPyPy__uid___UIDGenerator___next(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__uid_____top_level__(void);
 extern char CPyDef_aiolimiter_____top_level__(void);
+extern PyTypeObject *CPyType_leakybucket___count;
+extern PyObject *CPyDef_leakybucket___count(void);
 extern PyTypeObject *CPyType_leakybucket___AsyncLimiter;
 extern PyObject *CPyDef_leakybucket___AsyncLimiter(double cpy_r_max_rate, double cpy_r_time_period, uint32_t cpy_r___bitmap);
 extern PyTypeObject *CPyType_leakybucket___acquire_AsyncLimiter_gen;
@@ -334,6 +335,14 @@ extern CPyThreadLocal dank_mids____vendor___aiolimiter___src___aiolimiter___leak
 extern PyTypeObject *CPyType_leakybucket_____aexit___3_AsyncLimiter_gen;
 extern PyObject *CPyDef_leakybucket_____aexit___3_AsyncLimiter_gen(void);
 extern CPyThreadLocal dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket_____aexit___3_AsyncLimiter_genObject *leakybucket_____aexit___3_AsyncLimiter_gen_free_instance;
+extern char CPyDef_leakybucket___count_____init__(PyObject *cpy_r_self);
+extern PyObject *CPyPy_leakybucket___count_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern PyObject *CPyDef_leakybucket___count_____repr__(PyObject *cpy_r_self);
+extern PyObject *CPyPy_leakybucket___count_____repr__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_leakybucket___count_____iter__(PyObject *cpy_r_self);
+extern PyObject *CPyPy_leakybucket___count_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern CPyTagged CPyDef_leakybucket___count_____next__(PyObject *cpy_r_self);
+extern PyObject *CPyPy_leakybucket___count_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_leakybucket___AsyncLimiter_____init__(PyObject *cpy_r_self, double cpy_r_max_rate, double cpy_r_time_period, uint32_t cpy_r___bitmap);
 extern PyObject *CPyPy_leakybucket___AsyncLimiter_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern PyObject *CPyDef_leakybucket___AsyncLimiter____loop(PyObject *cpy_r_self);

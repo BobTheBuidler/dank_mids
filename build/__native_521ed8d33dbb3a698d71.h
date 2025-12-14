@@ -49,15 +49,6 @@ typedef struct tuple_T3FIO {
 } tuple_T3FIO;
 #endif
 
-#ifndef MYPYC_DECLARED_tuple_T3FOO
-#define MYPYC_DECLARED_tuple_T3FOO
-typedef struct tuple_T3FOO {
-    double f0;
-    PyObject *f1;
-    PyObject *f2;
-} tuple_T3FOO;
-#endif
-
 #ifndef MYPYC_DECLARED_tuple_T2II
 #define MYPYC_DECLARED_tuple_T2II
 typedef struct tuple_T2II {
@@ -277,6 +268,12 @@ typedef struct {
     CPyTagged __value;
     PyObject *__lock;
 } dank_mids____uid___UIDGeneratorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    CPyTagged _value;
+} dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket___countObject;
 
 typedef struct {
     PyObject_HEAD
