@@ -58,7 +58,6 @@ from dank_mids._exceptions import (
     BadResponse,
     BatchResponseSortError,
     ChainstackRateLimitError,
-    DankMidsClientResponseError,
     DankMidsInternalError,
     EmptyBatch,
     ExceedsMaxBatchSize,
@@ -381,7 +380,11 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         "%s got stuck waiting for its fut, we're creating a new one",
                         self,
                     )
+                    done = False
+                else:
+                    done = True
 
+                if not done:
                     duplicate = self.create_duplicate()
 
                     # don't start counting for the timeout while we still have a queue of requests to send
@@ -402,9 +405,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
                             fut._Future__log_traceback = False
                             return response
 
-        except ClientResponseError as e:
-            # TODO think about getting rid of this
-            raise DankMidsClientResponseError(e, self.request) from e
         except Exception as e:
             if not hasattr(e, "request"):
                 e.request = request = self.request  # type: ignore [attr-defined]
