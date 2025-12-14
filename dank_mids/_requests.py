@@ -187,6 +187,12 @@ _REVERT_EXC_TYPES: Final = ContractLogicError, ExecutionReverted
 
 _request_base_init: Final = _RequestBase.__init__
 
+_batch_tasks: Final[Set[asyncio.Task[Any]] = set()
+
+def _batch_task_done_callback(t: asyncio.Task[Any]) -> None:
+    if t._exception is None and not t.cancelled():
+        _batch_tasks.discard(t)
+
 
 class RPCRequest(_RequestBase[RPCResponse]):
     should_batch: bool = True
@@ -300,22 +306,36 @@ class RPCRequest(_RequestBase[RPCResponse]):
             await first_completed(current_batch._task, self._fut)
 
         fut = self._fut
-
+        
         if self._batch is None:
+            
+            batch_task = create_task(
+                self.controller.execute_batch(), name="batch task execute_batch"
+            )
+
+            # create a strong reference since we might exit when a result is received but the batch is incomplete
+            _batch_tasks.add(batch_task)
+
+            # discard the strong reference when the task completes successfully
+            batch_task.add_done_callback(_batch_task_done_callback)
+            
             try:
-                batch_task = create_task(
-                    self.controller.execute_batch(), name="batch task execute_batch"
-                )
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
-                # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
+                # Any calls that have not yet completed with results will be recreated,
+                # rebatched (potentially bringing better results?), and retried
                 await wait_for(shield(batch_task), timeout=TIMEOUT_SECONDS_BIG)
             except TimeoutError:
+                batch_complete = False
                 _log_debug(
                     "%s got stuck awaiting its batch, we're creating a new one",
                     self,
                 )
+            else:
+                batch_complete = True
+                _batch_tasks.discard(batch_task)
 
+            if not batch_complete:
                 duplicate = self.create_duplicate()
 
                 # don't start counting for the timeout while we still have a queue of requests to send
