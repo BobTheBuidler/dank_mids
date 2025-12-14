@@ -187,7 +187,7 @@ _REVERT_EXC_TYPES: Final = ContractLogicError, ExecutionReverted
 
 _request_base_init: Final = _RequestBase.__init__
 
-_batch_tasks: Final[Set[asyncio.Task[Any]] = set()
+_batch_tasks: Final[Set[asyncio.Task[Any]]] = set()
 
 def _batch_task_done_callback(t: asyncio.Task[Any]) -> None:
     if t._exception is None and not t.cancelled():
