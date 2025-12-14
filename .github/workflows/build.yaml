@@ -101,6 +101,7 @@ jobs:
           git push origin HEAD:mypyc
 
   build-macos:
+    needs: build-windows
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -279,7 +280,6 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git pull
           git add .
           git commit -m "chore: compile to C for Windows AMD64 with mypyc"
 
