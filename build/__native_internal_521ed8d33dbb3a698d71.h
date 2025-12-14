@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1275];
+extern PyObject *CPyStatics[1284];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -77,6 +77,7 @@ extern CPyModule *CPyModule_functools;
 extern CPyModule *CPyModule_heapq;
 extern CPyModule *CPyModule_itertools;
 extern CPyModule *CPyModule_types;
+extern CPyModule *CPyModule_pathlib;
 extern CPyModule *CPyModule_dank_mids____web3___abi__internal;
 extern CPyModule *CPyModule_dank_mids____web3___abi;
 extern PyObject *CPyStatic_abi___globals;
