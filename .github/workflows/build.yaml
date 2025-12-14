@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   build-ubuntu:
+    needs: [build-macos, build-windows]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -74,26 +75,42 @@ jobs:
           MYPYC_STRICT_DUNDER_TYPING: 1
         run: make mypyc
 
-      - name: Check for changes (Ubuntu)
+      - name: Download aiolimiter artifacts (macOS)
+        uses: actions/download-artifact@v4
+        with:
+          name: aiolimiter-macos-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/
+
+      - name: Download aiolimiter artifacts (Windows)
+        uses: actions/download-artifact@v4
+        with:
+          name: aiolimiter-windows-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/
+
+      - name: Check for changes (aiolimiter)
         run: |
           if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
+            echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
           else
-            echo "changes_detected=false" >> $GITHUB_ENV
+            echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit changes (Ubuntu)
-        if: env.changes_detected == 'true'
+      - name: Commit and push aiolimiter changes
+        if: env.aiolimiter_changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
+          cd dank_mids/_vendor/aiolimiter
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
           git pull
           git add .
-          git commit -m "chore: compile to C for Linux x64 with mypyc"
-          git push
+          git commit -m "chore: add artifacts for dank-mids"
+          git push origin HEAD:mypyc
 
   build-macos:
-    needs: build-ubuntu
+    needs: build-windows
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -168,10 +185,14 @@ jobs:
           git pull
           git add .
           git commit -m "chore: compile to C for macOS with mypyc"
-          git push
+
+      - name: Archive aiolimiter artifacts (macOS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: aiolimiter-macos-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/**/*.so
 
   build-windows:
-    needs: build-macos
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -256,10 +277,31 @@ jobs:
 
       - name: Commit changes (Windows)
         if: env.changes_detected == 'true'
+        shell: bash
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git pull
           git add .
           git commit -m "chore: compile to C for Windows AMD64 with mypyc"
+
+      - name: Archive aiolimiter artifacts (Windows)
+        uses: actions/upload-artifact@v4
+        with:
+          name: aiolimiter-windows-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/**/*.pyd
+
+  update-submodule-pointer:
+    needs: [build-ubuntu, build-macos, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Update aiolimiter submodule pointer in main repo
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add dank_mids/_vendor/aiolimiter
+          git commit -m "chore: update aiolimiter submodule pointer"
           git push
