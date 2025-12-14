@@ -93,6 +93,7 @@ jobs:
 
       - name: Check for changes (aiolimiter - Ubuntu)
         run: |
+          cd dank_mids/_vendor/aiolimiter
           if [[ -n $(git status --porcelain) ]]; then
             echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
           else
@@ -191,6 +192,7 @@ jobs:
 
       - name: Check for changes (aiolimiter - macOS)
         run: |
+          cd dank_mids/_vendor/aiolimiter
           if [[ -n $(git status --porcelain) ]]; then
             echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
           else
@@ -296,6 +298,7 @@ jobs:
 
       - name: Commit changes (Windows)
         if: env.changes_detected == 'true'
+        shell: bash
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -304,7 +307,9 @@ jobs:
           git commit -m "chore: compile to C for Windows AMD64 with mypyc"
 
       - name: Check for changes (aiolimiter - Windows)
+        shell: bash
         run: |
+          cd dank_mids/_vendor/aiolimiter
           if [[ -n $(git status --porcelain) ]]; then
             echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
           else
@@ -313,6 +318,7 @@ jobs:
 
       - name: Commit and push aiolimiter changes (Windows)
         if: env.aiolimiter_changes_detected == 'true'
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
