@@ -93,7 +93,6 @@ jobs:
 
       - name: Check for changes (aiolimiter - Ubuntu)
         run: |
-          cd dank_mids/_vendor/aiolimiter
           if [[ -n $(git status --porcelain) ]]; then
             echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
           else
@@ -109,12 +108,12 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
+          git pull
           git add .
           git commit -m "chore: compile to C for Linux x64 with mypyc"
           git push origin HEAD:mypyc
 
   build-macos:
-    needs: build-ubuntu
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -192,7 +191,6 @@ jobs:
 
       - name: Check for changes (aiolimiter - macOS)
         run: |
-          cd dank_mids/_vendor/aiolimiter
           if [[ -n $(git status --porcelain) ]]; then
             echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
           else
@@ -208,12 +206,13 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
+          git pull
           git add .
           git commit -m "chore: compile to C for macOS with mypyc"
           git push origin HEAD:mypyc
 
   build-windows:
-    needs: build-macos
+    needs: [build-ubuntu, build-macos]
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -309,7 +308,6 @@ jobs:
       - name: Check for changes (aiolimiter - Windows)
         shell: bash
         run: |
-          cd dank_mids/_vendor/aiolimiter
           if [[ -n $(git status --porcelain) ]]; then
             echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
           else
@@ -326,6 +324,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
+          git pull
           git add .
           git commit -m "chore: compile to C for Windows AMD64 with mypyc"
           git push origin HEAD:mypyc
