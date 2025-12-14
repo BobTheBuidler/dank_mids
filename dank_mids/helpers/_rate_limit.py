@@ -22,7 +22,7 @@ yield_to_loop: Final = sleep0
 
 # default is 50 requests/second
 limiters: Final[DefaultDict[str, AsyncLimiter]] = defaultdict(
-    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)  # type: ignore [operator]
+    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)  # type: ignore [has-type, operator]
 )
 
 _rate_limit_waiters: Final[Dict[str, a_sync.Event]] = {}
