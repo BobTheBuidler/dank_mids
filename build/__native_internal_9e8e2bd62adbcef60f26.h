@@ -697,7 +697,7 @@ extern PyObject *CPyStatic__rate_limit___create_task;
 extern PyObject *CPyStatic__rate_limit___nlargest;
 extern PyObject *CPyStatic__rate_limit___Event;
 extern PyObject *CPyStatic__rate_limit___shield;
-extern PyObject *CPyStatic__rate_limit___yield_to_loop;
+extern PyObject *CPyStatic__rate_limit___sleep0;
 extern PyObject *CPyStatic__rate_limit___limiters;
 extern PyObject *CPyStatic__rate_limit____rate_limit_waiters;
 extern PyObject *CPyStatic__rate_limit____rate_limit_tasks;

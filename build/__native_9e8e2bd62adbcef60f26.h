@@ -604,6 +604,7 @@ typedef struct {
     CPyVTableItem *vtable;
     PyObject *___mypyc_generator_attribute__endpoint;
     int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_generator_attribute__yield_to_loop;
     PyObject *___mypyc_generator_attribute__waiters;
     tuple_T3FIO ___mypyc_generator_attribute__last_waiter_tuple;
     PyObject *___mypyc_generator_attribute__last_waiter;
