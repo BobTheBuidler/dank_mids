@@ -272,12 +272,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    CPyTagged _value;
-} dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket___countObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     double _max_rate;
     double _time_period;
     PyObject *__event_loop;
