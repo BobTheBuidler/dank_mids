@@ -5,7 +5,7 @@ from typing import DefaultDict, Dict, Final
 
 import a_sync
 import a_sync._smart
-from a_sync.asyncio import sleep0
+import a_sync.asyncio
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 
@@ -17,12 +17,12 @@ nlargest: Final = heapq.nlargest
 
 Event: Final = a_sync.Event
 shield: Final = a_sync._smart.shield
-yield_to_loop: Final = sleep0
+sleep0: Final = a_sync.asyncio.sleep0
 
 
 # default is 50 requests/second
 limiters: Final[DefaultDict[str, AsyncLimiter]] = defaultdict(
-    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)  # type: ignore [operator]
+    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)  # type: ignore [has-type, operator]
 )
 
 _rate_limit_waiters: Final[Dict[str, a_sync.Event]] = {}
@@ -55,7 +55,14 @@ async def rate_limit_inactive(endpoint: str) -> None:
 
 async def __rate_limit_inactive(endpoint: str) -> None:
     # sourcery skip: use-contextlib-suppress
+
+    # alias this global var so we only look it up 1x
+    yield_to_loop = sleep0
+
+    # get the waiters for this particular endpoint
     waiters = limiters[endpoint]._waiters
+
+    # run it
     while waiters:
         # pop last item
         last_waiter_tuple = nlargest(1, waiters)[0]
