@@ -134,6 +134,8 @@ async def get_session() -> "DankClientSession":
     return await _get_session_for_thread(get_ident())
 
 
+_last_throttled_at: Final[dict[AsyncLimiter, float]] = {}
+
 @final
 class DankClientSession(ClientSession):
     _limited = False
@@ -195,14 +197,15 @@ class DankClientSession(ClientSession):
                     raise
 
     async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
+        now = time()
         limiter = limiters[endpoint]
-        if (now := time()) > getattr(limiter, "_last_updated_at", 0) + 10:
+        if now > _last_throttled_at.get(limiter, 0) + 10:
             current_rate = limiter._rate_per_sec
             new_rate = current_rate * 0.97
             if new_rate >= ENVS.MIN_REQUESTS_PER_SECOND:
                 limiter.time_period /= 0.97
                 limiter._rate_per_sec = new_rate
-                limiter._last_updated_at = now
+                _last_throttled_at[limiter] = now
                 _logger_info(
                     "reduced requests per second for %s from %s to %s",
                     endpoint,
