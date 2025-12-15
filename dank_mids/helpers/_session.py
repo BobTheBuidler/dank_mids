@@ -136,6 +136,7 @@ async def get_session() -> "DankClientSession":
 
 _last_throttled_at: Final[dict[AsyncLimiter, float]] = {}
 
+
 @final
 class DankClientSession(ClientSession):
     _limited = False
