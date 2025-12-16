@@ -12,7 +12,7 @@ _TOP_PRIORITY: Final = -1
 
 
 @final
-class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager[BlockNumber]):
+class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):  # type: ignore [type-arg]
     """
     A context manager for block-specific semaphores.
 
