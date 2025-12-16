@@ -148,9 +148,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
-
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
+          submodules: true
 
       # Python 3.10
       - name: Set up Python 3.10
@@ -231,9 +229,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
-
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
+          submodules: true
 
       # Python 3.10
       - name: Set up Python 3.10
