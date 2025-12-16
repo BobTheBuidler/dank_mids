@@ -640,19 +640,12 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_generator_attribute__fs;
-    char ___mypyc_generator_attribute__cancel;
+    PyObject *___mypyc_generator_attribute__task;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__17;
     tuple_T3OOO ___mypyc_temp__18;
-    PyObject *___mypyc_temp__19;
-    tuple_T3OOO ___mypyc_temp__20;
-    PyObject *___mypyc_generator_attribute__done;
-    PyObject *___mypyc_generator_attribute__pending;
-    PyObject *___mypyc_temp__21;
-    PyObject *___mypyc_temp__22;
-    PyObject *___mypyc_generator_attribute__p;
-} dank_mids___helpers____gather___first_completed_genObject;
+    tuple_T3OOO ___mypyc_temp__19;
+} dank_mids___helpers____gather____log_cancelled_error_genObject;
 
 typedef struct {
     PyObject_HEAD
