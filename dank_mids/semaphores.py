@@ -6,13 +6,13 @@ from a_sync.primitives.locks.prio_semaphore import (
     _PrioritySemaphoreContextManager,
 )
 from eth_typing import BlockNumber, HexStr
-from mypy_extensions import mypyc_attr
 
 
 _TOP_PRIORITY: Final = -1
 
 
-class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
+@final
+class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager[BlockNumber]):
     """
     A context manager for block-specific semaphores.
 
@@ -20,7 +20,7 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
     related to specific blockchain blocks.
     """
 
-    _priority_name = "block"
+    _priority_name: Final = "block"
     """The noun that describes the priority, set to "block"."""
 
     def __init__(
@@ -34,10 +34,8 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
         super().__init__(parent, priority, name)
 
 
-# NOTE: keep this so we can include in type stubs
-# class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
-@mypyc_attr(native_class=False)
-class BlockSemaphore(_AbstractPrioritySemaphore):
+@final
+class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):
     """A semaphore for managing concurrency based on block numbers.
 
     This class extends :class:`_AbstractPrioritySemaphore` to provide block-specific concurrency control.
