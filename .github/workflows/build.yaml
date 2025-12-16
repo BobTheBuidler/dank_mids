@@ -23,9 +23,19 @@ jobs:
         with:
           # Check out the PR branch
           ref: ${{ github.head_ref }}
+          submodules: true
 
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
+      - name: Download aiolimiter artifacts (macOS)
+        uses: actions/download-artifact@v7
+        with:
+          name: aiolimiter-macos-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/
+
+      - name: Download aiolimiter artifacts (Windows)
+        uses: actions/download-artifact@v7
+        with:
+          name: aiolimiter-windows-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/
 
       # Python 3.10
       - name: Set up Python 3.10
@@ -108,18 +118,6 @@ jobs:
           git commit -m "chore: compile to C for Linux x64 with mypyc"
           git push
 
-      - name: Download aiolimiter artifacts (macOS)
-        uses: actions/download-artifact@v7
-        with:
-          name: aiolimiter-macos-artifacts
-          path: dank_mids/_vendor/aiolimiter/src/
-
-      - name: Download aiolimiter artifacts (Windows)
-        uses: actions/download-artifact@v7
-        with:
-          name: aiolimiter-windows-artifacts
-          path: dank_mids/_vendor/aiolimiter/src/
-
       - name: Check for changes (aiolimiter)
         run: |
           if [[ -n $(git status --porcelain) ]]; then
@@ -150,9 +148,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
-
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
+          submodules: true
 
       # Python 3.10
       - name: Set up Python 3.10
@@ -233,9 +229,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
-
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
+          submodules: true
 
       # Python 3.10
       - name: Set up Python 3.10
