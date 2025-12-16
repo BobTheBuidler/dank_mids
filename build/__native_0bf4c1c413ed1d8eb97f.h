@@ -265,6 +265,17 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__fut;
+    CPyTagged ___mypyc_generator_attribute__timeout;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_temp__0;
+    tuple_T3OOO ___mypyc_temp__1;
+    tuple_T3OOO ___mypyc_temp__2;
+} dank_mids____tasks___try_for_result_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     CPyTagged __value;
     PyObject *__lock;
 } dank_mids____uid___UIDGeneratorObject;
