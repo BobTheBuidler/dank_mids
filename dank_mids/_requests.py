@@ -3,7 +3,6 @@ from asyncio import (
     Task,
     TimeoutError,
     create_task,
-    get_running_loop,
     shield,
     sleep,
     wait_for,
@@ -32,10 +31,7 @@ from typing import (
     Union,
     final,
 )
-from weakref import ProxyType
-from weakref import proxy as weak_proxy
 
-import a_sync
 import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
 from a_sync.asyncio import sleep0 as yield_to_loop
@@ -98,6 +94,7 @@ from dank_mids.helpers._errors import (
     timeout_logger_debug,
     timeout_logger_warning,
 )
+from dank_mids.helpers._event import RequestEvent
 from dank_mids.helpers._gather import first_completed
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._lock import AlertingRLock
@@ -131,30 +128,6 @@ _Response = TypeVar(
 @final
 class RPCError(_RPCError, total=False):
     dankmids_added_context: Dict[str, Any]
-
-
-_super_init: Final = a_sync.Event.__init__
-_super_set: Final = a_sync.Event.set
-
-
-class _RequestEvent(a_sync.Event):
-    def __init__(self, owner: "_RequestBase[_Response]") -> None:
-        _super_init(self, debug_daemon_interval=300)
-        if self.debug_logs_enabled:
-            self._owner: ProxyType[_RequestBase[_Response]] = weak_proxy(owner)
-
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
-
-    def set(self) -> None:
-        # Make sure we wake up the _RequestEvent's event loop if its in another thread
-        if self._loop is get_running_loop():
-            _super_set(self)
-        else:
-            self._loop.call_soon_threadsafe(_super_set, self)
-
-    # default if no debug logs enabled
-    _owner = "[not displayed...]"
 
 
 class _RequestBase(Generic[_Response]):
@@ -640,7 +613,7 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 
 class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     calls: Final[WeakList[_Request]]
-    _done: Final[_RequestEvent]
+    _done: Final[RequestEvent]
 
     _awaited: bool = False
     """A flag indicating whether the batch has been awaited."""
@@ -652,7 +625,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         self.calls = WeakList(calls)
         self._batcher = controller.batcher
         self._lock = AlertingRLock(name=self.__class__.__name__)
-        self._done = _RequestEvent(self)
+        self._done = RequestEvent(self)
 
     def __len__(self) -> int:
         return len(self.calls)
