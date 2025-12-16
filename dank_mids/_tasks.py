@@ -5,6 +5,9 @@ from typing import Any, Final
 from dank_mids.types import T
 
 
+TIMEOUT_SECONDS_SMALL: Final = 30.0
+TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
+
 BATCH_TASKS: Final[set[asyncio.Task[Any]]] = set()
 
 
@@ -16,9 +19,17 @@ shield: Final = asyncio.shield
 wait_for: Final = asyncio.wait_for
 
 
-async def try_for_result(fut: asyncio.Future[T], *, timeout: int) -> T:
+async def try_for_result(fut: asyncio.Future[T]) -> T:
     try:
-        return await wait_for(shield(fut), timeout)
+        return await wait_for(shield(fut), TIMEOUT_SECONDS_BIG)
+    except CancelledError:
+        fut.cancel()
+        raise
+
+
+async def try_for_result_quick(fut: asyncio.Future[T]) -> T:
+    try:
+        return await wait_for(shield(fut), TIMEOUT_SECONDS_SMALL)
     except CancelledError:
         fut.cancel()
         raise
