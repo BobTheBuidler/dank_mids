@@ -784,7 +784,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     def __bool__(self) -> bool:
         """Return True if the multicall contains at least one active request, False if complete."""
-        return any(self)
+        return any(self.calls)
 
     def __del__(self) -> None:
         calls = list(self.calls)
@@ -1103,7 +1103,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
     def __bool__(self) -> bool:
         """Return True if the batch contains at least one active request, False if complete."""
-        return any(self)
+        return any(self.calls)
 
     def __del__(self) -> None:
         if self and not self._done.is_set():
