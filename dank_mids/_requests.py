@@ -66,7 +66,7 @@ from dank_mids._exceptions import (
     internal_err_types,
 )
 from dank_mids._logging import DEBUG, getLogger
-from dank_mids._tasks import BATCH_TASKS, batch_done_callback, try_for_result
+from dank_mids._tasks import BATCH_TASKS, batch_done_callback, try_for_result, try_for_result_quick
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
 from dank_mids.helpers._codec import (
@@ -113,9 +113,6 @@ if TYPE_CHECKING:
     from dank_mids._batch import DankBatch
     from dank_mids.controller import DankMiddlewareController
 
-
-TIMEOUT_SECONDS_SMALL: Final = 30
-TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
 
 logger: Final = getLogger(__name__)
 
@@ -353,7 +350,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 response = fut.result()
             else:
                 try:
-                    response = await try_for_result(fut, timeout=TIMEOUT_SECONDS_BIG)
+                    response = await try_for_result(fut)
                 except TimeoutError:
                     _log_debug(
                         "%s got stuck waiting for its fut, we're creating a new one",
@@ -416,7 +413,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
         task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
-            await try_for_result(task, timeout=TIMEOUT_SECONDS_BIG)
+            await try_for_result(task)
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
             _log_debug(
@@ -490,7 +487,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         )
 
         try:
-            response = await try_for_result(task, timeout=TIMEOUT_SECONDS_SMALL)
+            response = await try_for_result_quick(task)
         except TimeoutError:
             log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
