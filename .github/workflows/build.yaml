@@ -23,7 +23,6 @@ jobs:
         with:
           # Check out the PR branch
           ref: ${{ github.head_ref }}
-          submodules: true
           
       - name: Update aiolimiter submodule
         run: make update-aiolimiter
@@ -151,7 +150,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
-          submodules: true
 
       - name: Update aiolimiter submodule
         run: make update-aiolimiter
@@ -235,7 +233,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
-          submodules: true
       
       - name: Update aiolimiter submodule
         run: make update-aiolimiter
