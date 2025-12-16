@@ -447,7 +447,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             else:
                 # If original task finished first, cancel duplicate
                 duplicate_task.cancel()
-            
+
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
         return (
