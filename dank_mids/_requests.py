@@ -177,6 +177,10 @@ class _RequestBase(Generic[_Response]):
 
         self._fut: Final = DebuggableFuture(self, controller._loop) if fut is None else fut
 
+    def __bool__(self) -> bool:
+        """Return True if the request is active, False if complete."""
+        return not self._fut.done()
+
     def __await__(self) -> Generator[Any, None, _Response]:
         return self.get_response().__await__()
 
@@ -272,6 +276,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         return f"<{self.__class__.__name__} uid={self.uid} method={self.method} params={self.params}{batch_info}>"
 
     def __del__(self) -> None:
+        """Log an error if this call is not complete it is deleted."""
         fut = self._fut
         if not fut.done() and not fut._loop.is_closed():
             try:
@@ -550,7 +555,11 @@ class eth_call(RPCRequest):
     __slots__ = "target", "calldata", "block"
 
     def __init__(
-        self, controller: "DankMiddlewareController", params: Any, uid: Optional[str] = None
+        self,
+        controller: "DankMiddlewareController",
+        params: Any,
+        uid: Optional[str] = None,
+        fut: DebuggableFuture[RPCResponse] | None = None,
     ) -> None:
         """Adds a call to the DankMiddlewareContoller's `pending_eth_calls`."""
 
@@ -565,7 +574,7 @@ class eth_call(RPCRequest):
         self.block: BlockId = block
         """The block height at which the contract will be called."""
 
-        _rpcrequest_init(self, controller, "eth_call", params, uid)
+        _rpcrequest_init(self, controller, "eth_call", params, uid, fut)
 
     def __repr__(self) -> str:
         tx, block = self.params
@@ -779,9 +788,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return iter(self.calls)
 
     def __bool__(self) -> bool:
-        return bool(self.calls)
+        """Return True if the multicall contains at least one active request, False if complete."""
+        return any(self.calls)
 
     def __del__(self) -> None:
+        """Log an error if any call in this multicall is not complete when the multicall is deleted."""
         calls = list(self.calls)
         if not calls or self._done.is_set():
             return
@@ -1097,12 +1108,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         return filter(None, self.calls)
 
     def __bool__(self) -> bool:
-        for _ in self:
-            return True
-        return False
+        """Return True if the batch contains at least one active request, False if complete."""
+        return any(self.calls)
 
     def __del__(self) -> None:
-        if any(self) and not self._done.is_set():
+        """Log an error if any call in this batch is not complete when the batch is deleted."""
+        if self and not self._done.is_set():
             for cls, calls in groupby(self.calls, type):
                 if cls is Multicall:
                     calls = concat(filter(None, calls))
