@@ -177,6 +177,10 @@ class _RequestBase(Generic[_Response]):
 
         self._fut: Final = DebuggableFuture(self, controller._loop) if fut is None else fut
 
+    def __bool__(self) -> bool:
+        """Return True if the request is active, False if complete."""
+        return not self._fut.done()
+
     def __await__(self) -> Generator[Any, None, _Response]:
         return self.get_response().__await__()
 
@@ -779,7 +783,8 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return iter(self.calls)
 
     def __bool__(self) -> bool:
-        return bool(self.calls)
+        """Return True if the multicall contains at least one active request, False if complete."""
+        return any(self.calls)
 
     def __del__(self) -> None:
         calls = list(self.calls)
@@ -1097,12 +1102,11 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         return filter(None, self.calls)
 
     def __bool__(self) -> bool:
-        for _ in self:
-            return True
-        return False
+        """Return True if the batch contains at least one active request, False if complete."""
+        return any(self.calls)
 
     def __del__(self) -> None:
-        if any(self) and not self._done.is_set():
+        if self and not self._done.is_set():
             for cls, calls in groupby(self.calls, type):
                 if cls is Multicall:
                     calls = concat(filter(None, calls))
