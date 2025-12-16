@@ -1,13 +1,7 @@
 import asyncio
 import weakref
 from asyncio import (
-    AbstractEventLoop,
     Future,
-    InvalidStateError,
-    Task,
-    create_task,
-    get_running_loop,
-    sleep,
 )
 from time import time
 from typing import TYPE_CHECKING, Any, Final, Generator, Optional, Union, final
@@ -28,11 +22,12 @@ logger: Final = getLogger("dank_mids.future")
 _logger_is_enabled_for: Final = logger.isEnabledFor
 _logger_log: Final = logger._log
 
-_future_init: Final = Future.__init__
-_future_await: Final = Future.__await__
-_future_set_result: Final = Future.set_result
-_future_set_exc: Final = Future.set_exception
+_future_init: Final = asyncio.Future.__init__
+_future_await: Final = asyncio.Future.__await__
+_future_set_result: Final = asyncio.Future.set_result
+_future_set_exc: Final = asyncio.Future.set_exception
 
+InvalidStateError: Final = asyncio.InvalidStateError
 create_task: Final = asyncio.create_task
 get_running_loop: Final = asyncio.get_running_loop
 sleep: Final = asyncio.sleep
@@ -41,15 +36,15 @@ proxy: Final = weakref.proxy
 
 
 @final
-class DebuggableFuture(Future[T]):
+class DebuggableFuture(asyncio.Future[T]):
     # default values
     _debug_logs_enabled: bool = False
-    __debug_daemon_task: Optional["Task[None]"] = None
+    __debug_daemon_task: Optional["asyncio.Task[None]"] = None
 
     # type hints
     _result: Optional[RPCResponse]
 
-    def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:  # type: ignore [type-arg]
+    def __init__(self, owner: "_RequestBase", loop: asyncio.AbstractEventLoop) -> None:  # type: ignore [type-arg]
         _future_init(self, loop=loop)
         if _logger_is_enabled_for(DEBUG):
             self._debug_logs_enabled = True
