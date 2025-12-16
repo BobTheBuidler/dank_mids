@@ -6,6 +6,7 @@ from asyncio import (
     get_running_loop,
     shield,
     sleep,
+    wait,
     wait_for,
 )
 from collections import defaultdict
@@ -98,7 +99,6 @@ from dank_mids.helpers._errors import (
     timeout_logger_debug,
     timeout_logger_warning,
 )
-from dank_mids.helpers._gather import first_completed
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract
@@ -310,15 +310,14 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         elif current_batch._awaited is False:
             # NOTE: If current_batch is not None, that means we filled a batch. Let's await it now so we can send something to the node.
-            await first_completed(current_batch._task, self._fut)
+            await wait((current_batch._task, self._fut), return_when="FIRST_COMPLETED")
 
         fut = self._fut
 
         if self._batch is None:
 
-            batch_task = create_task(
-                self.controller.execute_batch(), name="batch task execute_batch"
-            )
+            batch_coro = self.controller.execute_batch()
+            batch_task = create_task(batch_coro, name="batch task execute_batch")
 
             # create a strong reference since we might exit when a result is received but the batch is incomplete
             BATCH_TASKS.add(batch_task)
@@ -355,7 +354,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 # up with an exception we don't need to know about it
                 duplicate_task._Future__log_traceback = False
 
-                await first_completed(batch_task, fut)
+                await wait((batch_task, fut), return_when="FIRST_COMPLETED")
 
         try:
             if fut.done():
@@ -381,7 +380,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     dup_coro = duplicate.get_response()
                     duplicate_task = create_task(dup_coro, name="duplicate.get_response")
 
-                    await first_completed(fut, duplicate_task)
+                    await wait((fut, duplicate_task), return_when="FIRST_COMPLETED")
 
                     if duplicate_task.done():
                         # If duplicate finished first, return the result right away
@@ -409,7 +408,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             return response.to_dict(self.method)
 
         if needs_full_request_spec(response) and self.controller._check_request_type():
-            method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method  # type: ignore [assignment]
+            method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
             return await self.controller(method, self.params)
         elif revert_logger.isEnabledFor(DEBUG) and type(response.exception) is ExecutionReverted:
             revert_logger_log_debug("%s for %s", response.exception, self)
@@ -439,7 +438,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             dup_coro = duplicate.get_response_unbatched()
             duplicate_task = create_task(dup_coro, name="duplicate.get_response_unbatched")
 
-            await first_completed(task, duplicate_task)
+            await wait((task, duplicate_task), return_when="FIRST_COMPLETED")
 
             if duplicate_task.done():
                 # If duplicate finished first, return the result right away
@@ -508,14 +507,13 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 num_previous_timeouts + 1,
                 self,
             )
-            next_attempt_task = create_task(
-                self.make_request(num_previous_timeouts + 1), name="next attempt task"
-            )
-            done: Set[Task] = await first_completed(task, next_attempt_task, cancel=True)
+            next_attempt_coro = self.make_request(num_previous_timeouts + 1)
+            next_attempt_task = create_task(next_attempt_coro, name="next attempt task")
+            done, _ = await wait((task, next_attempt_task), return_when="FIRST_COMPLETED")
             first_done = done.pop()
             response = first_done.result()
             if first_done is not next_attempt_task:
-                # next_attempt_task would have already set the fut result
+                # `next_attempt_task` would have already set the fut result, but `task` would not have
                 self._fut.set_result(response)
         else:
             self._fut.set_result(response)

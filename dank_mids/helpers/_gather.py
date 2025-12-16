@@ -1,27 +1,27 @@
 import asyncio
 from typing import (
+    Any,
     Coroutine,
     Final,
     Iterable,
-    Literal,
-    Optional,
-    Set,
-    Tuple,
     TypeVar,
-    Union,
-    overload,
 )
 
 import a_sync.asyncio
 
+from dank_mids._logging import getLogger
+
 
 __T = TypeVar("__T")
 
-FinishedTasks = Set["asyncio.Future[__T]"]
-PendingTasks = Set["asyncio.Future[__T]"]
+FinishedTasks = set["asyncio.Future[__T]"]
+PendingTasks = set["asyncio.Future[__T]"]
 
+
+logger: Final = getLogger("dank_mids.gather")
 
 # These compile to C constants
+CancelledError: Final = asyncio.CancelledError
 Task: Final = asyncio.Task
 get_running_loop: Final = asyncio.get_running_loop
 wait: Final = asyncio.wait
@@ -30,7 +30,7 @@ wait: Final = asyncio.wait
 yield_to_loop: Final = a_sync.asyncio.sleep0
 
 
-async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -> None:  # type: ignore [type-arg]
+async def gatherish(coros: Iterable[Coroutine[Any, Any, Any]], *, name: str | None = None) -> None:
     # sourcery skip: use-contextlib-suppress
     """
     An implementation of asyncio.gather optimized for use cases that:
@@ -50,33 +50,22 @@ async def gatherish(coros: Iterable[Coroutine], *, name: Optional[str] = None) -
     await yield_to_loop()
     for task in tasks:
         try:
-            await task
+            await _log_cancelled_error(task)
         except Exception:
             # we will only retrieve the first exc from our tasks, if any
             # this hack prevents asyncio from logging a message that the other excs were not retrieved
             for task in tasks:
                 # Make sure all the remaining tasks complete before we raise the exc
                 try:
-                    await task
+                    await _log_cancelled_error(task)
                 except Exception:
                     pass
             raise
 
 
-@overload
-async def first_completed(
-    *fs: asyncio.Future[__T], cancel: Literal[True]
-) -> FinishedTasks[__T]: ...
-@overload
-async def first_completed(
-    *fs: asyncio.Future[__T], cancel: Literal[False] = False
-) -> Tuple[FinishedTasks[__T], PendingTasks[__T]]: ...
-async def first_completed(
-    *fs: asyncio.Future[__T], cancel: bool = False
-) -> Union[FinishedTasks[__T], Tuple[FinishedTasks[__T], PendingTasks[__T]]]:
-    if not cancel:
-        return await wait(fs, return_when="FIRST_COMPLETED")
-    done, pending = await wait(fs, return_when="FIRST_COMPLETED")
-    for p in pending:
-        p.cancel()
-    return done
+async def _log_cancelled_error(task: asyncio.Task[__T]) -> __T:
+    try:
+        return await task
+    except CancelledError:
+        logger.exception("CancelledError in `gatherish`. This should not happen.")
+        raise
