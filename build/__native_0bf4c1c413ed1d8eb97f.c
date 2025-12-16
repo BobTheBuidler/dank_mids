@@ -73412,7 +73412,11 @@ CPyTagged CPyDef_method___get_len(PyObject *cpy_r_method) {
     if (!cpy_r_r1) goto CPyL2;
     return 10;
 CPyL2: ;
+<<<<<<< HEAD
     cpy_r_r2 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
+=======
+    cpy_r_r2 = CPyStatics[1291]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
+>>>>>>> 4c848f347373040fce1f7391822f9e4f8c709015
     cpy_r_r3 = PySet_Contains(cpy_r_r2, cpy_r_method);
     cpy_r_r4 = cpy_r_r3 >= 0;
     if (unlikely(!cpy_r_r4)) {
