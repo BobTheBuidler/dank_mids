@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Final, Literal, Optional, Type, Union
+from typing import Final, Literal, Optional, Type, Union, final
 
 from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,
@@ -51,7 +51,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManag
     _context_manager_class: Type[_BlockSemaphoreContextManager]
     """The context manager class used by this semaphore."""
 
-    _top_priority: Literal[-1]
+    _top_priority: Literal[-1]  # type: ignore [assignment]
     """The highest priority value, set to -1."""
 
     def __init__(
