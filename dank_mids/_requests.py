@@ -68,6 +68,7 @@ from dank_mids._exceptions import (
     internal_err_types,
 )
 from dank_mids._logging import DEBUG, getLogger
+from dank_mids._tasks import BATCH_TASKS, batch_done_callback
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
 from dank_mids.helpers._codec import (
@@ -185,17 +186,6 @@ class _RequestBase(Generic[_Response]):
 _REVERT_EXC_TYPES: Final = ContractLogicError, ExecutionReverted
 
 _request_base_init: Final = _RequestBase.__init__
-
-_batch_tasks: Final[Set[Task[Any]]] = set()
-
-
-def _batch_task_done_callback(t: Task[Any]) -> None:
-    if t._exception is not None:
-        logger.exception("exception in batch task %s", batch_task)
-    elif t.cancelled():
-        logger.exception("batch task is cancelled??? %s", t)
-    else:
-        _batch_tasks.discard(t)
 
 
 class RPCRequest(_RequestBase[RPCResponse]):
@@ -318,10 +308,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
             )
 
             # create a strong reference since we might exit when a result is received but the batch is incomplete
-            _batch_tasks.add(batch_task)
+            BATCH_TASKS.add(batch_task)
 
             # discard the strong reference when the task completes successfully
-            batch_task.add_done_callback(_batch_task_done_callback)
+            batch_task.add_done_callback(batch_done_callback)
 
             try:
                 # If this timeout fails, we go nuclear and destroy the batch.
@@ -337,7 +327,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 )
             else:
                 batch_complete = True
-                _batch_tasks.discard(batch_task)
+                BATCH_TASKS.discard(batch_task)
 
             if not batch_complete:
                 duplicate = self.create_duplicate()
