@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1316];
+extern PyObject *CPyStatics[1313];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -795,8 +795,6 @@ extern PyObject *CPyDef__event___RequestEvent_____repr__(PyObject *cpy_r_self);
 extern PyObject *CPyPy__event___RequestEvent_____repr__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__event___RequestEvent___set(PyObject *cpy_r_self);
 extern PyObject *CPyPy__event___RequestEvent___set(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef__event___RequestEvent_____mypyc_defaults_setup(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy__event___RequestEvent_____mypyc_defaults_setup(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__event_____top_level__(void);
 extern PyObject *CPyStatic__gather___Task;
 extern PyObject *CPyStatic__gather___get_running_loop;

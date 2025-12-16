@@ -612,6 +612,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *__owner;
+    char __owner_in_repr;
 } dank_mids___helpers____event___RequestEventObject;
 
 typedef struct {
