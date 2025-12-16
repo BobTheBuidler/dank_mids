@@ -1100,7 +1100,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         return any(filter(None, self))
 
     def __del__(self) -> None:
-        if any(self) and not self._done.is_set():
+        if self and not self._done.is_set():
             for cls, calls in groupby(self.calls, type):
                 if cls is Multicall:
                     calls = concat(filter(None, calls))
