@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1292];
+extern PyObject *CPyStatics[1289];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -318,27 +318,6 @@ extern char CPyDef__logging_____top_level__(void);
 extern PyObject *CPyStatic__tasks___BATCH_TASKS;
 extern PyObject *CPyStatic__tasks___logger;
 extern PyObject *CPyStatic__tasks___log_task_exception;
-extern PyObject *CPyStatic__tasks___CancelledError;
-extern PyObject *CPyStatic__tasks___shield;
-extern PyObject *CPyStatic__tasks___wait_for;
-extern PyTypeObject *CPyType__tasks___try_for_result_gen;
-extern PyObject *CPyDef__tasks___try_for_result_gen(void);
-extern CPyThreadLocal dank_mids____tasks___try_for_result_genObject *_tasks___try_for_result_gen_free_instance;
-extern PyObject *CPyDef__tasks___try_for_result_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
-extern PyObject *CPyDef__tasks___try_for_result_gen_____next__(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy__tasks___try_for_result_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef__tasks___try_for_result_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
-extern PyObject *CPyPy__tasks___try_for_result_gen___send(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef__tasks___try_for_result_gen_____iter__(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy__tasks___try_for_result_gen_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef__tasks___try_for_result_gen___throw(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
-extern PyObject *CPyPy__tasks___try_for_result_gen___throw(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef__tasks___try_for_result_gen___close(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy__tasks___try_for_result_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef__tasks___try_for_result_gen_____await__(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy__tasks___try_for_result_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef__tasks___try_for_result(PyObject *cpy_r_fut, CPyTagged cpy_r_timeout);
-extern PyObject *CPyPy__tasks___try_for_result(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__tasks___batch_done_callback(PyObject *cpy_r_t);
 extern PyObject *CPyPy__tasks___batch_done_callback(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__tasks_____top_level__(void);
