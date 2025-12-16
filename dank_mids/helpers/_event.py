@@ -26,7 +26,7 @@ class RequestEvent(a_sync.Event):
             self._owner_in_repr = False
 
     def __repr__(self) -> str:
-=        owner_info = ", waiter:{self._owner}" if self._owner_in_repr else ""
+        owner_info = f", waiter: {repr(self._owner)}" if self._owner_in_repr else ""
         return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}{owner_info}>"
 
     def set(self) -> None:
