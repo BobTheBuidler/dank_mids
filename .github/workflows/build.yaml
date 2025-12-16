@@ -24,6 +24,9 @@ jobs:
           # Check out the PR branch
           ref: ${{ github.head_ref }}
           submodules: true
+          
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
 
       - name: Download aiolimiter artifacts (macOS)
         uses: actions/download-artifact@v7
@@ -150,6 +153,9 @@ jobs:
           ref: ${{ github.head_ref }}
           submodules: true
 
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
+
       # Python 3.10
       - name: Set up Python 3.10
         uses: actions/setup-python@v6
@@ -230,6 +236,9 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           submodules: true
+      
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
 
       # Python 3.10
       - name: Set up Python 3.10
