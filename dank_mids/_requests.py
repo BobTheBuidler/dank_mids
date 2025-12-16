@@ -4,7 +4,6 @@ from asyncio import (
     Task,
     TimeoutError,
     create_task,
-    current_task,
     get_running_loop,
     shield,
     sleep,
@@ -109,6 +108,7 @@ from dank_mids.types import (
     PartialResponse,
     Request,
     Response,
+    T,
 )
 
 if TYPE_CHECKING:
@@ -153,6 +153,14 @@ class _RequestEvent(a_sync.Event):
 
     # default if no debug logs enabled
     _owner = "[not displayed...]"
+
+
+async def try_for_result(fut: Future[T], *, timeout: int) -> T:
+    try:
+        return await wait_for(shield(fut), timeout)
+    except CancelledError:
+        fut.cancel()
+        raise
 
 
 class _RequestBase(Generic[_Response]):
@@ -355,10 +363,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 response = fut.result()
             else:
                 try:
-                    response = await wait_for(shield(fut), timeout=TIMEOUT_SECONDS_BIG)  # type: ignore [arg-type]
-                except CancelledError:
-                    fut.cancel()
-                    raise
+                    response = await try_for_result(fut, timeout=TIMEOUT_SECONDS_BIG)
                 except TimeoutError:
                     _log_debug(
                         "%s got stuck waiting for its fut, we're creating a new one",
@@ -421,10 +426,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
         task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
-            await wait_for(shield(task), timeout=TIMEOUT_SECONDS_BIG)
-        except CancelledError:
-            task.cancel()
-            raise
+            await try_for_result(task, timeout=TIMEOUT_SECONDS_BIG)
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
             _log_debug(
@@ -496,11 +498,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
             coro=self.controller.make_request(self.method, self.params, request_id=self.uid),
             name=f"RPCRequest.make_request attempt {num_previous_timeouts+1}",
         )
+
         try:
-            response = await wait_for(shield(task), TIMEOUT_SECONDS_SMALL)
-        except CancelledError:
-            task.cancel()
-            raise
+            response = await try_for_result(task, timeout=TIMEOUT_SECONDS_SMALL)
         except TimeoutError:
             log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
