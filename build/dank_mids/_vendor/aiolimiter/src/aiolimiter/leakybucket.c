@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_leakybucket(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("0bf4c1c413ed1d8eb97f__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("178935f7fae2983bd82f__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "0bf4c1c413ed1d8eb97f__mypyc.init_dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket");
+    void *init_func = PyCapsule_GetPointer(capsule, "178935f7fae2983bd82f__mypyc.init_dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
