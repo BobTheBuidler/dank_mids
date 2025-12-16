@@ -8,13 +8,12 @@ from asyncio import (
     sleep,
 )
 from time import time
-from typing import TYPE_CHECKING, Any, Generator, Optional, Union
+from typing import TYPE_CHECKING, Any, Generator
 from weakref import ProxyType, proxy
-
-from web3.types import RPCResponse
 
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.helpers._errors import error_logger_debug
+from dank_mids.types import T
 
 if TYPE_CHECKING:
     from dank_mids._requests import _RequestBase, _Response
@@ -31,13 +30,13 @@ _future_set_result = Future.set_result
 _future_set_exc = Future.set_exception
 
 
-class DebuggableFuture(Future):
+class DebuggableFuture(Future[T]):
     # default values
     _debug_logs_enabled: bool = False
-    __debug_daemon_task: Optional["Task[None]"] = None
+    __debug_daemon_task: Task[None] | None = None
 
     # type hints
-    _result: Optional[RPCResponse]
+    _result: T | None
 
     def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:
         _future_init(self, loop=loop)
@@ -45,7 +44,7 @@ class DebuggableFuture(Future):
             self._debug_logs_enabled = True
             self._owner: ProxyType["_RequestBase[_Response]"] = proxy(owner)
 
-    def __await__(self) -> Generator[Any, None, RPCResponse]:
+    def __await__(self) -> Generator[Any, None, T]:
         if self._debug_logs_enabled and self.__debug_daemon_task is None:
             self.__debug_daemon_task = create_task(
                 coro=self.__debug_daemon(),
@@ -53,7 +52,7 @@ class DebuggableFuture(Future):
             )
         return _future_await(self)
 
-    def set_result(self, value: RPCResponse) -> None:
+    def set_result(self, value: T) -> None:
         # sourcery skip: merge-duplicate-blocks, remove-redundant-if
         if self._loop is get_running_loop():
             try:
@@ -89,7 +88,7 @@ class DebuggableFuture(Future):
         else:
             raise NotImplementedError(f"{self._state} is not a valid state")
 
-    def set_exception(self, exc: Union[type, BaseException]) -> None:
+    def set_exception(self, exc: type | BaseException) -> None:
         if self._loop is get_running_loop():
             try:
                 _future_set_exc(self, exc)
