@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Final, Generator, final
 
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.helpers._errors import error_logger_debug
+from dank_mids.types import T
 
 if TYPE_CHECKING:
     from dank_mids._requests import _RequestBase, _Response
