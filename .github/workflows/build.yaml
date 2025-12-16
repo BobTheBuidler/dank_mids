@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   build-ubuntu:
+    needs: [build-macos, build-windows]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,6 +23,21 @@ jobs:
         with:
           # Check out the PR branch
           ref: ${{ github.head_ref }}
+          
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
+
+      - name: Download aiolimiter artifacts (macOS)
+        uses: actions/download-artifact@v7
+        with:
+          name: aiolimiter-macos-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/
+
+      - name: Download aiolimiter artifacts (Windows)
+        uses: actions/download-artifact@v7
+        with:
+          name: aiolimiter-windows-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/
 
       # Python 3.10
       - name: Set up Python 3.10
@@ -29,7 +45,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
+        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
       - name: Run Mypyc (3.10)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -41,7 +57,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
+        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
       - name: Run Mypyc (3.11)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -53,7 +69,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
       - name: Run Mypyc (3.12)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -65,156 +81,20 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install Mypyc (3.13)
-        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
       - name: Run Mypyc (3.13)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
         run: make mypyc
 
-      - name: Check for changes (Ubuntu)
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes (Ubuntu)
-        if: env.changes_detected == 'true'
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: compile to C for Linux x64 with mypyc"
-          git push
-
-  build-macos:
-    needs: build-ubuntu
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
-
-      # Python 3.10
-      - name: Set up Python 3.10
+      # Python 3.14
+      - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
-      - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
-      - name: Run Mypyc (3.10)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-      - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
-      - name: Run Mypyc (3.11)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
-      - name: Run Mypyc (3.12)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.13
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-      - name: Install Mypyc (3.13)
-        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
-      - name: Run Mypyc (3.13)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      - name: Check for changes (macOS)
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes (macOS)
-        if: env.changes_detected == 'true'
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: compile to C for macOS with mypyc"
-          git push
-
-  build-windows:
-    needs: build-macos
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
-
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-      - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
-      - name: Run Mypyc (3.10)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-      - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
-      - name: Run Mypyc (3.11)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
-      - name: Run Mypyc (3.12)
-        env:
-          MYPYC_STRICT_DUNDER_TYPING: 1
-        run: make mypyc
-
-      # Python 3.13
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-      - name: Install Mypyc (3.13)
-        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20
-      - name: Run Mypyc (3.13)
+          python-version: "3.14"
+      - name: Install Mypyc (3.14)
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.14)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
         run: make mypyc
@@ -234,6 +114,213 @@ jobs:
           # Replace index in CPyStatics[...] with macro
           sed -i 's/CPyStatics\[[0-9]\+\]/CPyStatics[DIFFCHECK_PLACEHOLDER]/g' build/*.c
 
+      - name: Check for changes (Ubuntu)
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "changes_detected=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit changes (Ubuntu)
+        if: env.changes_detected == 'true'
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
+          git add .
+          git commit -m "chore: compile to C for Linux x64 with mypyc"
+          git push
+
+      - name: Check for changes (aiolimiter)
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit and push aiolimiter changes
+        if: env.aiolimiter_changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
+        run: |
+          cd dank_mids/_vendor/aiolimiter
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
+          git add .
+          git commit -m "chore: add artifacts for dank-mids"
+          git pull --rebase
+          git push origin HEAD:mypyc
+
+  build-macos:
+    needs: build-windows
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
+
+      # Python 3.10
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+      - name: Install Mypyc (3.10)
+        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.10)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      # Python 3.11
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install Mypyc (3.11)
+        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.11)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      # Python 3.12
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install Mypyc (3.12)
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.12)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      # Python 3.13
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Install Mypyc (3.13)
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.13)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      # Python 3.14
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Install Mypyc (3.14)
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.14)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      - name: Check for changes (macOS)
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "changes_detected=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit changes (macOS)
+        if: env.changes_detected == 'true'
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
+          git add .
+          git commit -m "chore: compile to C for macOS with mypyc"
+          git push
+
+      - name: Archive aiolimiter artifacts (macOS)
+        uses: actions/upload-artifact@v6
+        with:
+          name: aiolimiter-macos-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/**/*.so
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
+
+      # Python 3.10
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+      - name: Install Mypyc (3.10)
+        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.10)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      # Python 3.11
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install Mypyc (3.11)
+        run: pip install mypy[mypyc]==1.19.0 types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.11)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      # Python 3.12
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install Mypyc (3.12)
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.12)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      # Python 3.13
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Install Mypyc (3.13)
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.13)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
+      # Python 3.14
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Install Mypyc (3.14)
+        run: pip install mypy[mypyc]==1.19.0 setuptools types-requests eth-brownie==1.22.0.dev0 eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.6 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4
+      - name: Run Mypyc (3.14)
+        env:
+          MYPYC_STRICT_DUNDER_TYPING: 1
+        run: make mypyc
+
       - name: Check for changes (Windows)
         shell: bash
         run: |
@@ -245,9 +332,33 @@ jobs:
 
       - name: Commit changes (Windows)
         if: env.changes_detected == 'true'
+        shell: bash
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "chore: compile to C for Windows AMD64 with mypyc"
+          git push
+
+      - name: Archive aiolimiter artifacts (Windows)
+        uses: actions/upload-artifact@v6
+        with:
+          name: aiolimiter-windows-artifacts
+          path: dank_mids/_vendor/aiolimiter/src/**/*.pyd
+
+  update-submodule-pointer:
+    needs: [build-ubuntu, build-macos, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Update aiolimiter submodule pointer in main repo
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          make update-aiolimiter
+          git add dank_mids/_vendor/aiolimiter
+          git commit -m "chore: update aiolimiter submodule pointer"
           git push

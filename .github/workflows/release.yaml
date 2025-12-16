@@ -17,8 +17,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v6
       with:
-        fetch-depth: 0
         persist-credentials: false
+        submodules: true
     
     - name: Setup Python
       uses: actions/setup-python@v6
@@ -31,7 +31,7 @@ jobs:
 
     - name: Load cached Poetry installation
       id: cached-poetry
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.local  # the path depends on the OS
         key: poetry-${{ runner.os }}-3.9-0  # increment to reset cache
@@ -44,4 +44,3 @@ jobs:
       run: |
         poetry config pypi-token.pypi ${{ secrets.PYPI_PASSWORD }}
         poetry publish --build --no-interaction
-

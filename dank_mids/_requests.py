@@ -1,10 +1,8 @@
 from asyncio import (
-    CancelledError,
     Future,
     Task,
     TimeoutError,
     create_task,
-    current_task,
     get_running_loop,
     shield,
     sleep,
@@ -58,7 +56,6 @@ from dank_mids._exceptions import (
     BadResponse,
     BatchResponseSortError,
     ChainstackRateLimitError,
-    DankMidsClientResponseError,
     DankMidsInternalError,
     EmptyBatch,
     ExceedsMaxBatchSize,
@@ -69,6 +66,14 @@ from dank_mids._exceptions import (
     internal_err_types,
 )
 from dank_mids._logging import DEBUG, getLogger
+from dank_mids._tasks import (
+    BATCH_TASKS,
+    TIMEOUT_SECONDS_BIG,
+    TIMEOUT_SECONDS_SMALL,
+    batch_done_callback,
+    try_for_result,
+    try_for_result_quick,
+)
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
 from dank_mids.helpers._codec import (
@@ -97,7 +102,7 @@ from dank_mids.helpers._gather import first_completed
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract
-from dank_mids.helpers._session import rate_limit_inactive
+from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._weaklist import WeakList
 from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
@@ -115,9 +120,6 @@ if TYPE_CHECKING:
     from dank_mids._batch import DankBatch
     from dank_mids.controller import DankMiddlewareController
 
-
-TIMEOUT_SECONDS_SMALL: Final = 30
-TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]
 
 logger: Final = getLogger(__name__)
 
@@ -161,14 +163,19 @@ class _RequestBase(Generic[_Response]):
 
     __slots__ = "controller", "uid", "_fut", "__weakref__"
 
-    def __init__(self, controller: "DankMiddlewareController", uid: Optional[str] = None) -> None:
-        self.controller: "DankMiddlewareController" = controller
+    def __init__(
+        self,
+        controller: "DankMiddlewareController",
+        uid: Optional[str] = None,
+        fut: DebuggableFuture[RPCResponse] | None = None,
+    ) -> None:
+        self.controller: Final = controller
         """The DankMiddlewareController that created this request."""
 
-        self.uid = controller.call_uid.next if uid is None else uid
+        self.uid: Final = controller.call_uid.next if uid is None else uid
         """The unique id for this request."""
 
-        self._fut = DebuggableFuture(self, controller._loop)
+        self._fut: Final = DebuggableFuture(self, controller._loop) if fut is None else fut
 
     def __await__(self) -> Generator[Any, None, _Response]:
         return self.get_response().__await__()
@@ -213,8 +220,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
         method: RPCEndpoint,
         params: Any,
         uid: Optional[str] = None,
+        fut: DebuggableFuture[RPCResponse] | None = None,
     ) -> None:  # sourcery skip: hoist-statement-from-if
-        _request_base_init(self, controller, uid)
+        _request_base_init(self, controller, uid, fut)
         if method[-4:] == "_raw":
             self.method = method[:-4]
             """The rpc method for this request."""
@@ -302,65 +310,64 @@ class RPCRequest(_RequestBase[RPCResponse]):
         fut = self._fut
 
         if self._batch is None:
+
+            batch_task = create_task(
+                self.controller.execute_batch(), name="batch task execute_batch"
+            )
+
+            # create a strong reference since we might exit when a result is received but the batch is incomplete
+            BATCH_TASKS.add(batch_task)
+
+            # discard the strong reference when the task completes successfully
+            batch_task.add_done_callback(batch_done_callback)
+
             try:
-                batch_task = create_task(
-                    self.controller.execute_batch(), name="batch task execute_batch"
-                )
                 # If this timeout fails, we go nuclear and destroy the batch.
                 # Any calls that already succeeded will have already completed on the client side.
-                # Any calls that have not yet completed with results will be recreated, rebatched (potentially bringing better results?), and retried
+                # Any calls that have not yet completed with results will be recreated,
+                # rebatched (potentially bringing better results?), and retried
                 await wait_for(shield(batch_task), timeout=TIMEOUT_SECONDS_BIG)
             except TimeoutError:
+                batch_complete = False
                 _log_debug(
                     "%s got stuck awaiting its batch, we're creating a new one",
                     self,
                 )
+            else:
+                batch_complete = True
+                BATCH_TASKS.discard(batch_task)
 
+            if not batch_complete:
                 duplicate = self.create_duplicate()
 
                 # don't start counting for the timeout while we still have a queue of requests to send
                 await rate_limit_inactive(self.controller.endpoint)
 
-                duplicate_task = create_task(
-                    duplicate.get_response(), name="duplicate task get_response"
-                )
-                done, pending = await first_completed(batch_task, fut, duplicate_task)
-                for d in done:
-                    if d in (batch_task, fut):
-                        # we'll get and decode the value below
-                        continue
-                    elif fut.done():
-                        # if our fut is also done we can just return the result now
-                        return d.result()
-                    try:
-                        # but if it isn't, we need to set the result before returning
-                        # so our garbage collection code doesn't trigger
-                        result = d.result()
-                    except Exception as e:
-                        fut.set_exception(e)
-                    else:
-                        fut.set_result(result)
-                        return result
+                dup_coro = duplicate.get_response()
+                duplicate_task = create_task(dup_coro, name="duplicate task get_response")
 
-                # We did not get our result from the duplicate task, if it
-                # ends up with an exception we don't need to know about it
+                # We will get our result from the future, if the task ends
+                # up with an exception we don't need to know about it
                 duplicate_task._Future__log_traceback = False
+
+                await first_completed(batch_task, fut)
 
         try:
             if fut.done():
                 response = fut.result()
             else:
                 try:
-                    response = await wait_for(shield(fut), timeout=TIMEOUT_SECONDS_BIG)  # type: ignore [arg-type]
-                except CancelledError:
-                    fut.cancel()
-                    raise
+                    response = await try_for_result(fut)
                 except TimeoutError:
                     _log_debug(
                         "%s got stuck waiting for its fut, we're creating a new one",
                         self,
                     )
+                    done = False
+                else:
+                    done = True
 
+                if not done:
                     duplicate = self.create_duplicate()
 
                     # don't start counting for the timeout while we still have a queue of requests to send
@@ -381,9 +388,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
                             fut._Future__log_traceback = False
                             return response
 
-        except ClientResponseError as e:
-            # TODO think about getting rid of this
-            raise DankMidsClientResponseError(e, self.request) from e
         except Exception as e:
             if not hasattr(e, "request"):
                 e.request = request = self.request  # type: ignore [attr-defined]
@@ -416,10 +420,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
         task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
-            await wait_for(shield(task), timeout=TIMEOUT_SECONDS_BIG)
-        except CancelledError:
-            task.cancel()
-            raise
+            await try_for_result(task)
         except TimeoutError:
             # looks like its stuck for some reason, let's try another one
             _log_debug(
@@ -491,11 +492,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
             coro=self.controller.make_request(self.method, self.params, request_id=self.uid),
             name=f"RPCRequest.make_request attempt {num_previous_timeouts+1}",
         )
+
         try:
-            response = await wait_for(shield(task), TIMEOUT_SECONDS_SMALL)
-        except CancelledError:
-            task.cancel()
-            raise
+            response = await try_for_result_quick(task)
         except TimeoutError:
             log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
@@ -521,42 +520,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
     def create_duplicate(self) -> Union["RPCRequest", "eth_call"]:
         dupe_uid = f"{self.uid}_copy"
         if type(self) is eth_call:
-            duplicate = eth_call(self.controller, self.params, dupe_uid)
+            duplicate = eth_call(self.controller, self.params, dupe_uid, self._fut)
         else:
-            method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method  # type: ignore [assignment]
-            duplicate = RPCRequest(self.controller, method, self.params, dupe_uid)
-
-        selffut = self._fut
-        dupefut = duplicate._fut
-
-        def _self_done_callback(selffut):
-            if dupefut.done():
-                return
-
-            dupefut.remove_done_callback(_dupe_done_callback)
-
-            if selffut.cancelled():
-                dupefut.cancel()
-            elif (exc := selffut.exception()) is not None:
-                dupefut.set_exception(exc)
-            else:
-                dupefut.set_result(selffut.result())
-
-        def _dupe_done_callback(dupefut):
-            if selffut.done():
-                return
-
-            selffut.remove_done_callback(_self_done_callback)
-
-            if dupefut.cancelled():
-                selffut.cancel()
-            elif (exc := dupefut.exception()) is not None:
-                selffut.set_exception(exc)
-            else:
-                selffut.set_result(dupefut.result())
-
-        selffut.add_done_callback(_self_done_callback)
-        dupefut.add_done_callback(_dupe_done_callback)
+            method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
+            duplicate = RPCRequest(self.controller, method, self.params, dupe_uid, self._fut)
 
         return duplicate
 
