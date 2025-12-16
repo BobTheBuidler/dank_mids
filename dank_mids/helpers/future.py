@@ -119,13 +119,13 @@ class DebuggableFuture(asyncio.Future[T]):
             raise
 
     async def __debug_daemon(self) -> None:
-        start = time()
+        start = gettime()
         done = self.done
         while not done():
             await sleep(60)
             if not done():
                 _logger_log(
-                    DEBUG, "%s has not received data after %ss", (self._owner, int(time() - start))
+                    DEBUG, "%s has not received data after %ss", (self._owner, int(gettime() - start))
                 )
 
 
