@@ -125,7 +125,9 @@ class DebuggableFuture(asyncio.Future[T]):
             await sleep(60)
             if not done():
                 _logger_log(
-                    DEBUG, "%s has not received data after %ss", (self._owner, int(gettime() - start))
+                    DEBUG,
+                    "%s has not received data after %ss",
+                    (self._owner, int(gettime() - start)),
                 )
 
 
