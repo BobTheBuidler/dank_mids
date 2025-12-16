@@ -1,5 +1,4 @@
 from asyncio import (
-    CancelledError,
     Future,
     Task,
     TimeoutError,
@@ -67,7 +66,7 @@ from dank_mids._exceptions import (
     internal_err_types,
 )
 from dank_mids._logging import DEBUG, getLogger
-from dank_mids._tasks import BATCH_TASKS, batch_done_callback
+from dank_mids._tasks import BATCH_TASKS, batch_done_callback, try_for_result
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
 from dank_mids.helpers._codec import (
@@ -108,7 +107,6 @@ from dank_mids.types import (
     PartialResponse,
     Request,
     Response,
-    T,
 )
 
 if TYPE_CHECKING:
@@ -153,14 +151,6 @@ class _RequestEvent(a_sync.Event):
 
     # default if no debug logs enabled
     _owner = "[not displayed...]"
-
-
-async def try_for_result(fut: Future[T], *, timeout: int) -> T:
-    try:
-        return await wait_for(shield(fut), timeout)
-    except CancelledError:
-        fut.cancel()
-        raise
 
 
 class _RequestBase(Generic[_Response]):
@@ -528,7 +518,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         if type(self) is eth_call:
             duplicate = eth_call(self.controller, self.params, dupe_uid, self._fut)
         else:
-            method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method  # type: ignore [assignment]
+            method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
             duplicate = RPCRequest(self.controller, method, self.params, dupe_uid, self._fut)
 
         return duplicate
