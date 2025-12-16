@@ -138,7 +138,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
           git add .
-          git commit -m "chore: add artifacts for dank-mids" || true
+          git commit -m "chore: add artifacts for dank-mids"
           git pull --rebase
           git push origin HEAD:mypyc
 
