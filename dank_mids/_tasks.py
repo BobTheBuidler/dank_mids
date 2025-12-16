@@ -2,6 +2,7 @@ import asyncio
 from logging import getLogger
 from typing import Any, Final
 
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.types import T
 
 
