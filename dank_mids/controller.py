@@ -147,7 +147,8 @@ class DankMiddlewareController:
         self._latest_mc: Final = self.mc3 or self.mc2
 
         self.eth_call_semaphores: Final = BlockSemaphore(
-            ENVS.method_semaphores["eth_call"]._value, name=f"eth_call {self}"
+            BlockNumber(ENVS.method_semaphores["eth_call"]._value),
+            name=f"eth_call {self}",
         )
         """Used for managing concurrency of eth_calls."""
 
