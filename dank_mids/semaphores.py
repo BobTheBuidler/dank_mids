@@ -1,12 +1,11 @@
 from decimal import Decimal
 from typing import Final, Literal, Optional, Type, Union
 
-import a_sync
 from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,
     _PrioritySemaphoreContextManager,
 )
-from eth_typing import HexStr
+from eth_typing import BlockNumber, HexStr
 
 
 _TOP_PRIORITY: Final = -1
@@ -55,7 +54,12 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
     _top_priority: Literal[-1]
     """The highest priority value, set to -1."""
 
-    def __init__(self, value=1, *, name=None) -> None:
+    def __init__(
+        self,
+        value: BlockNumber = BlockNumber(1),
+        *,
+        name: Optional[str] = None,
+    ) -> None:
         super().__init__(_BlockSemaphoreContextManager, -1, int(value), name=name)
 
     def __getitem__(self, block: Union[int, HexStr, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
@@ -67,7 +71,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
             priority = int(block, 16)
         elif block not in {None, "latest"}:
             # NOTE: We do this to generate an err if an unsuitable value was provided
-            priority = block
+            priority = block  # type: ignore [assignment]
         else:
             priority = _TOP_PRIORITY
         return super().__getitem__(priority)
