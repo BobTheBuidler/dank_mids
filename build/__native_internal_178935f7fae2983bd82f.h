@@ -959,8 +959,6 @@ extern PyObject *CPyDef_future_____debug_daemon_DebuggableFuture_gen_____await__
 extern PyObject *CPyPy_future_____debug_daemon_DebuggableFuture_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_future___DebuggableFuture_____debug_daemon(PyObject *cpy_r_self);
 extern PyObject *CPyPy_future___DebuggableFuture_____debug_daemon(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_future___DebuggableFuture_____mypyc_defaults_setup(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy_future___DebuggableFuture_____mypyc_defaults_setup(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_future_____top_level__(void);
 extern PyTypeObject *CPyType_hashing___AttributeDict;
 extern PyTypeObject *CPyType_hashing_____init___3_AttributeDict_obj;

@@ -722,10 +722,10 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    char __debug_logs_enabled;
-    PyObject *___debug_daemon_task;
     PyObject *__result;
     PyObject *__owner;
+    PyObject *__debug_daemon_task;
+    char __debug_logs_enabled;
 } dank_mids___helpers___future___DebuggableFutureObject;
 
 typedef struct {
