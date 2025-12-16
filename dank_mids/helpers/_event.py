@@ -1,10 +1,8 @@
 import asyncio
 import weakref
-from typing import Final, final
+from typing import Any, Final, final
 
 import a_sync
-
-from dank_mids.types import T
 
 
 _get_running_loop: Final = asyncio.get_running_loop
@@ -14,10 +12,9 @@ _super_set: Final = a_sync.Event.set
 
 @final
 class RequestEvent(a_sync.Event):
-    _owner: Final[weakref.ProxyType[T]]
-    _owner_in_repr: Final[bool]
+    _owner: Final[weakref.ProxyType[object]]
 
-    def __init__(self, owner: T) -> None:
+    def __init__(self, owner: object) -> None:
         _super_init(self, debug_daemon_interval=300)
         if self.debug_logs_enabled:
             self._owner_in_repr = True
