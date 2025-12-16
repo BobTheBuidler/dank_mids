@@ -212,7 +212,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
     method: Final[RPCEndpoint]
     params: Final[Any]
     raw: Final[bool]
-    _fut: Final[DebuggableFuture]
+    _fut: Final[DebuggableFuture[RPCResponse]]
     _daemon: Final[Optional["Task[None]"]]
     __dict__: Final[Dict[str, Any]]
 
@@ -378,20 +378,18 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     # don't start counting for the timeout while we still have a queue of requests to send
                     await rate_limit_inactive(self.controller.endpoint)
 
-                    duplicate_task = create_task(
-                        duplicate.get_response(), name="duplicate.get_response"
-                    )
-                    done_futs = await first_completed(fut, duplicate_task, cancel=True)
-                    # cancel if not finished, suppress exc logging if finished
-                    duplicate_task.cancel()
-                    duplicate._fut.cancel()
-                    for d in done_futs:
-                        response = d.result()
-                        if d is not fut:
-                            # this means duplicate_task finished first
-                            # in case fut is also finished with an exception, we'll mark it as retrieved
-                            fut._Future__log_traceback = False
-                            return response
+                    dup_coro = duplicate.get_response()
+                    duplicate_task = create_task(dup_coro, name="duplicate.get_response")
+
+                    await first_completed(fut, duplicate_task)
+
+                    if duplicate_task.done():
+                        # If duplicate finished first, return the result right away
+                        return duplicate_task.result()
+                    else:
+                        # If original task finished first, cancel duplicate
+                        duplicate_task.cancel()
+                        response = fut.result()
 
         except Exception as e:
             if not hasattr(e, "request"):
@@ -438,16 +436,18 @@ class RPCRequest(_RequestBase[RPCResponse]):
             # don't start counting for the timeout while we still have a queue of requests to send
             await rate_limit_inactive(self.controller.endpoint)
 
-            duplicate_task = create_task(
-                duplicate.get_response_unbatched(), name="duplicate.get_response_unbatched"
-            )
-            done: Set[Task] = await first_completed(task, duplicate_task, cancel=True)
-            for fut in done:
-                if fut is not task:
-                    # this means the duplicate completed first
-                    return fut.result()
-            # cancel the duplicate if it wasn't the one that completed first
-            duplicate._fut.cancel()
+            dup_coro = duplicate.get_response_unbatched()
+            duplicate_task = create_task(dup_coro, name="duplicate.get_response_unbatched")
+
+            await first_completed(task, duplicate_task)
+
+            if duplicate_task.done():
+                # If duplicate finished first, return the result right away
+                return duplicate_task.result()
+            else:
+                # If original task finished first, cancel duplicate
+                duplicate_task.cancel()
+            
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
         return (
