@@ -6,6 +6,7 @@ from a_sync.primitives.locks.prio_semaphore import (
     _PrioritySemaphoreContextManager,
 )
 from eth_typing import BlockNumber, HexStr
+from mypy_extensions import mypyc_attr
 
 
 _TOP_PRIORITY: Final = -1
@@ -35,6 +36,7 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
 
 # NOTE: keep this so we can include in type stubs
 # class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
+@mypyc_attr(allow_interpreted_subclasses=True)
 class BlockSemaphore(_AbstractPrioritySemaphore):
     """A semaphore for managing concurrency based on block numbers.
 
