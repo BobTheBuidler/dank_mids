@@ -1,9 +1,10 @@
 import asyncio
-
-from typing import TYPE_CHECKING, Final, Generic, Union, final
+from typing import TYPE_CHECKING, Final, final
 from weakref import ProxyType, proxy
 
 import a_sync
+
+from dank_mids.types import T
 
 if TYPE_CHECKING:
     from dank_mids._requests import _RequestBase, _Response
@@ -15,17 +16,21 @@ _super_set: Final = a_sync.Event.set
 
 
 @final
-class RequestEvent(a_sync.Event, Generic["_RequestBase[_Response]"]):  # type: ignore [misc]
-    # default if no debug logs enabled
-    _owner: Union[str, ProxyType["_RequestBase[_Response]"]] = "[not displayed...]"  # type: ignore [valid-type]
-
-    def __init__(self, owner: "_RequestBase[_Response]") -> None:
+class RequestEvent(a_sync.Event):
+    _owner: Final[ProxyType[T]]
+    _owner_in_repr: Final[bool]
+    
+    def __init__(self, owner: T) -> None:
         _super_init(self, debug_daemon_interval=300)
         if self.debug_logs_enabled:
+            self._owner_in_repr = True
             self._owner = proxy(owner)
+        else:
+            self._owner_in_repr = False
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}, waiter:{self._owner}>"
+=        owner_info = ", waiter:{self._owner}" if self._owner_in_repr else ""
+        return f"<{self.__class__.__name__} object at {hex(id(self))} [{'set' if self.is_set() else 'unset'}{owner_info}>"
 
     def set(self) -> None:
         # Make sure we wake up the _RequestEvent's event loop if its in another thread
