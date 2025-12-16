@@ -161,14 +161,19 @@ class _RequestBase(Generic[_Response]):
 
     __slots__ = "controller", "uid", "_fut", "__weakref__"
 
-    def __init__(self, controller: "DankMiddlewareController", uid: Optional[str] = None) -> None:
-        self.controller: "DankMiddlewareController" = controller
+    def __init__(
+        self,
+        controller: "DankMiddlewareController",
+        uid: Optional[str] = None,
+        fut: DebuggableFuture[RPCResponse] | None = None,
+    ) -> None:
+        self.controller: Final = controller
         """The DankMiddlewareController that created this request."""
 
-        self.uid = controller.call_uid.next if uid is None else uid
+        self.uid: Final = controller.call_uid.next if uid is None else uid
         """The unique id for this request."""
 
-        self._fut = DebuggableFuture(self, controller._loop)
+        self._fut: Final = DebuggableFuture(self, controller._loop) if fut is None else fut
 
     def __await__(self) -> Generator[Any, None, _Response]:
         return self.get_response().__await__()
@@ -213,8 +218,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
         method: RPCEndpoint,
         params: Any,
         uid: Optional[str] = None,
+        fut: DebuggableFuture[RPCResponse] | None = None,
     ) -> None:  # sourcery skip: hoist-statement-from-if
-        _request_base_init(self, controller, uid)
+        _request_base_init(self, controller, uid, fut)
         if method[-4:] == "_raw":
             self.method = method[:-4]
             """The rpc method for this request."""
@@ -335,30 +341,14 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 # don't start counting for the timeout while we still have a queue of requests to send
                 await rate_limit_inactive(self.controller.endpoint)
 
-                duplicate_task = create_task(
-                    duplicate.get_response(), name="duplicate task get_response"
-                )
-                done, pending = await first_completed(batch_task, fut, duplicate_task)
-                for d in done:
-                    if d in (batch_task, fut):
-                        # we'll get and decode the value below
-                        continue
-                    elif fut.done():
-                        # if our fut is also done we can just return the result now
-                        return d.result()
-                    try:
-                        # but if it isn't, we need to set the result before returning
-                        # so our garbage collection code doesn't trigger
-                        result = d.result()
-                    except Exception as e:
-                        fut.set_exception(e)
-                    else:
-                        fut.set_result(result)
-                        return result
+                dup_coro = duplicate.get_response()
+                duplicate_task = create_task(dup_coro, name="duplicate task get_response")
 
-                # We did not get our result from the duplicate task, if it
-                # ends up with an exception we don't need to know about it
+                # We will get our result from the future, if the task ends
+                # up with an exception we don't need to know about it
                 duplicate_task._Future__log_traceback = False
+
+                await first_completed(batch_task, fut)
 
         try:
             if fut.done():
@@ -536,42 +526,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
     def create_duplicate(self) -> Union["RPCRequest", "eth_call"]:
         dupe_uid = f"{self.uid}_copy"
         if type(self) is eth_call:
-            duplicate = eth_call(self.controller, self.params, dupe_uid)
+            duplicate = eth_call(self.controller, self.params, dupe_uid, self._fut)
         else:
             method: RPCEndpoint = f"{self.method}_raw" if self.raw else self.method  # type: ignore [assignment]
-            duplicate = RPCRequest(self.controller, method, self.params, dupe_uid)
-
-        selffut = self._fut
-        dupefut = duplicate._fut
-
-        def _self_done_callback(selffut):
-            if dupefut.done():
-                return
-
-            dupefut.remove_done_callback(_dupe_done_callback)
-
-            if selffut.cancelled():
-                dupefut.cancel()
-            elif (exc := selffut.exception()) is not None:
-                dupefut.set_exception(exc)
-            else:
-                dupefut.set_result(selffut.result())
-
-        def _dupe_done_callback(dupefut):
-            if selffut.done():
-                return
-
-            selffut.remove_done_callback(_self_done_callback)
-
-            if dupefut.cancelled():
-                selffut.cancel()
-            elif (exc := dupefut.exception()) is not None:
-                selffut.set_exception(exc)
-            else:
-                selffut.set_result(dupefut.result())
-
-        selffut.add_done_callback(_self_done_callback)
-        dupefut.add_done_callback(_dupe_done_callback)
+            duplicate = RPCRequest(self.controller, method, self.params, dupe_uid, self._fut)
 
         return duplicate
 
