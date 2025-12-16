@@ -779,7 +779,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return iter(self.calls)
 
     def __bool__(self) -> bool:
-        return bool(self.calls)
+        return any(not call._fut.done() for call in self.calls)
 
     def __del__(self) -> None:
         calls = list(self.calls)
