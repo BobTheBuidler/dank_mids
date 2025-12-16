@@ -1,3 +1,5 @@
+import asyncio
+import weakref
 from asyncio import (
     AbstractEventLoop,
     Future,
@@ -8,30 +10,38 @@ from asyncio import (
     sleep,
 )
 from time import time
-from typing import TYPE_CHECKING, Any, Generator, Optional, Union
+from typing import TYPE_CHECKING, Any, Final, Generator, Optional, Union, final
 from weakref import ProxyType, proxy
 
 from web3.types import RPCResponse
 
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids.helpers._errors import error_logger_debug
+from dank_mids.types import T
 
 if TYPE_CHECKING:
     from dank_mids._requests import _RequestBase, _Response
 
 
-logger = getLogger("dank_mids.future")
+logger: Final = getLogger("dank_mids.future")
 
-_logger_is_enabled_for = logger.isEnabledFor
-_logger_log = logger._log
+_logger_is_enabled_for: Final = logger.isEnabledFor
+_logger_log: Final = logger._log
 
-_future_init = Future.__init__
-_future_await = Future.__await__
-_future_set_result = Future.set_result
-_future_set_exc = Future.set_exception
+_future_init: Final = Future.__init__
+_future_await: Final = Future.__await__
+_future_set_result: Final = Future.set_result
+_future_set_exc: Final = Future.set_exception
+
+create_task: Final = asyncio.create_task
+get_running_loop: Final = asyncio.get_running_loop
+sleep: Final = asyncio.sleep
+
+proxy: Final = weakref.proxy
 
 
-class DebuggableFuture(Future):
+@final
+class DebuggableFuture(Future[T]):
     # default values
     _debug_logs_enabled: bool = False
     __debug_daemon_task: Optional["Task[None]"] = None
@@ -39,11 +49,11 @@ class DebuggableFuture(Future):
     # type hints
     _result: Optional[RPCResponse]
 
-    def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:
+    def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:  # type: ignore [type-arg]
         _future_init(self, loop=loop)
         if _logger_is_enabled_for(DEBUG):
             self._debug_logs_enabled = True
-            self._owner: ProxyType["_RequestBase[_Response]"] = proxy(owner)
+            self._owner: weakref.ProxyType["_RequestBase[_Response]"] = proxy(owner)  # type: ignore [valid-type]
 
     def __await__(self) -> Generator[Any, None, RPCResponse]:
         if self._debug_logs_enabled and self.__debug_daemon_task is None:
