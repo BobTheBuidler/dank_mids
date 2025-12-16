@@ -1097,9 +1097,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         return filter(None, self.calls)
 
     def __bool__(self) -> bool:
-        for _ in self:
-            return True
-        return False
+        return any(filter(None, self))
 
     def __del__(self) -> None:
         if any(self) and not self._done.is_set():
