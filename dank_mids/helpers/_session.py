@@ -7,7 +7,13 @@ from threading import get_ident
 from time import time
 from typing import Any, Callable, Final, Tuple, final, overload
 
-from aiohttp import ClientConnectorError, ClientResponseError, ClientSession, ClientTimeout, TCPConnector
+from aiohttp import (
+    ClientConnectorError,
+    ClientResponseError,
+    ClientSession,
+    ClientTimeout,
+    TCPConnector,
+)
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from async_lru import alru_cache
 
