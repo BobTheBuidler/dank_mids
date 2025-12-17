@@ -56,10 +56,8 @@ def batch_done_callback(t: asyncio.Task[Any]) -> None:
             t.result()
         except CancelledError as e:
             cancel_message = e.args[0] if e.args else None
-        
+
         # Now log the exception because something is fucked up and the user needs to know.
-        log_task_exception(
-            "batch task %s is cancelled???\nreason: %s", t, cancel_message
-        )
+        log_task_exception("batch task %s is cancelled???\nreason: %s", t, cancel_message)
     else:
         BATCH_TASKS.discard(t)
