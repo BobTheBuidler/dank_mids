@@ -22,6 +22,7 @@ RETRY_ERRS: Final = {
     "execution aborted (timeout =",
     "batch limit exceeded",
     "request timed out",
+    "request timeout",
     "evm timeout",
     "evm error",
 }
