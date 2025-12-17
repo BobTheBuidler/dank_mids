@@ -387,7 +387,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         return duplicate_task.result()
                     else:
                         # If original task finished first, cancel duplicate
-                        duplicate_task.cancel()
+                        duplicate_task.cancel(
+                            f"duplicate task {duplicate_task} for {duplicate} cancelled, "
+                            f"original {self} is done"
+                        )
                         response = fut.result()
 
         except Exception as e:
@@ -445,7 +448,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 return duplicate_task.result()
             else:
                 # If original task finished first, cancel duplicate
-                duplicate_task.cancel()
+                duplicate_task.cancel(
+                    f"duplicate task {duplicate_task} for {duplicate} cancelled, "
+                    f"original {self} is done"
+                )
 
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
