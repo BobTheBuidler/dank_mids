@@ -270,6 +270,9 @@ typedef struct {
     PyObject *___mypyc_temp__0;
     tuple_T3OOO ___mypyc_temp__1;
     tuple_T3OOO ___mypyc_temp__2;
+    PyObject *___mypyc_generator_attribute__e;
+    PyObject *___mypyc_generator_attribute__task;
+    PyObject *___mypyc_generator_attribute__cancel_message;
 } dank_mids____tasks___try_for_result_genObject;
 
 typedef struct {
@@ -280,6 +283,9 @@ typedef struct {
     PyObject *___mypyc_temp__3;
     tuple_T3OOO ___mypyc_temp__4;
     tuple_T3OOO ___mypyc_temp__5;
+    PyObject *___mypyc_generator_attribute__e;
+    PyObject *___mypyc_generator_attribute__task;
+    PyObject *___mypyc_generator_attribute__cancel_message;
 } dank_mids____tasks___try_for_result_quick_genObject;
 
 typedef struct {
