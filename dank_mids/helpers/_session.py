@@ -8,7 +8,7 @@ from time import time
 from typing import Any, Callable, Final, Tuple, final, overload
 
 from aiohttp import (
-    ClientConnectorError,
+    ClientError,
     ClientResponseError,
     ClientSession,
     ClientTimeout,
@@ -177,7 +177,7 @@ class DankClientSession(ClientSession):
                         _logger_debug("received response %s", response_data)
                         return response_data
 
-            except (ConnectionResetError, ClientConnectorError):
+            except (ConnectionResetError, ClientError):
                 if resets < 10:
                     # Who cares, run it again!
                     resets += 1
