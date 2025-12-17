@@ -83,6 +83,7 @@ async def __rate_limit_inactive(endpoint: str) -> None:
             await last_waiter
         except CancelledError:
             # AsyncLimiter cancels the fut as part of regular operation
+            # This cannot be cancelled from above due to use of `asyncio.shield` in `rate_limit_inactive`
             pass
 
         # let recently popped waiters check the limiter for capacity, they might create new waiters
