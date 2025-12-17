@@ -1671,47 +1671,47 @@ testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
 name = "ez-a-sync"
-version = "0.33.7"
+version = "0.33.9"
 description = "A library that makes it easy to define objects that can be used for both sync and async use cases."
 optional = false
 python-versions = "<3.15,>=3.10"
 groups = ["main"]
 files = [
-    {file = "ez_a_sync-0.33.7-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:49b97da388c9261ee2915dca60f627405335458a65d78c56be76df35f92c33e1"},
-    {file = "ez_a_sync-0.33.7-cp310-cp310-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:31bf2df69a65d17c1b76d4ad11ab6ec9b3c99c3fbf85719a27419825fade8fa0"},
-    {file = "ez_a_sync-0.33.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:01b2c376832dabb861d9791408f68c88ed9086970c6caa0e02761612964debe6"},
-    {file = "ez_a_sync-0.33.7-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:efd16b2e98fad096df3b16e9a7fd4c1d7a2ec244502dfb1748b4e79f74b9388a"},
-    {file = "ez_a_sync-0.33.7-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:3f8ec428d19a5b01a381b0e2705577f18c6e7db8c7037454a7cc70a831c1a5d8"},
-    {file = "ez_a_sync-0.33.7-cp310-cp310-win32.whl", hash = "sha256:eee06d5a5bfc1c028b5767a63216794b9b71a3fc0cce34ac0cef4978d96b8c56"},
-    {file = "ez_a_sync-0.33.7-cp310-cp310-win_amd64.whl", hash = "sha256:fbf2bf476f221a94f18d9aae2b4ba44fb750ad92358324e27d0172f8f135e80b"},
-    {file = "ez_a_sync-0.33.7-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:1e97b4f67e66dbf1c2e36a9b7769eb4031a3379c7085a4dac4d2e44c64b1b3a5"},
-    {file = "ez_a_sync-0.33.7-cp311-cp311-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:554a378d468d87e31c0a04ffd79562d2589c76c696f7f10e888a3463583d549b"},
-    {file = "ez_a_sync-0.33.7-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:8753d20141dc1f433e5d5b35c95f209ddc334677173f3f1698166c7cad5ecad6"},
-    {file = "ez_a_sync-0.33.7-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:d0f8894b00c1da1e758ce35fab7b1da92782d5e4d12d985f9d44c25a920de23e"},
-    {file = "ez_a_sync-0.33.7-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:8ab35861977f2bde91c57fc3c20c073ef50fcd9d8d83d00612375388d113cc3c"},
-    {file = "ez_a_sync-0.33.7-cp311-cp311-win32.whl", hash = "sha256:1b8effadd039980b9e46c3ef631d7cf601f31419e5171c5b40882571df0e39fd"},
-    {file = "ez_a_sync-0.33.7-cp311-cp311-win_amd64.whl", hash = "sha256:1a2f79cc8336f78603de8c2d2471d6df448ce49cf3d48925b93814ce79f24550"},
-    {file = "ez_a_sync-0.33.7-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:c2e2a9fc7a499700f510187822fa49f50ec8112c7b10ebb4a4d7f49f42e3a868"},
-    {file = "ez_a_sync-0.33.7-cp312-cp312-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:294435307372d398b563d1dd4a0c6744931dacbb8a36eff11c3229c33c6db25b"},
-    {file = "ez_a_sync-0.33.7-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:87ea4ab4332598ac77f231edd1f2db652f0c684c59b429584b90dd68f3f70bc5"},
-    {file = "ez_a_sync-0.33.7-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:30b1a89b244ac35741af48cb30335320cd1a6718ea8b87eae37653a41ed70ee8"},
-    {file = "ez_a_sync-0.33.7-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:fece5bdc2e4109ff130c79749f7ad31e77f74fd8547455bd4fc1a081040b8458"},
-    {file = "ez_a_sync-0.33.7-cp312-cp312-win32.whl", hash = "sha256:2af13cd761edf5aca239fb0cbc81ac369ac16a611b66b828a50a628e2038a218"},
-    {file = "ez_a_sync-0.33.7-cp312-cp312-win_amd64.whl", hash = "sha256:f3079ed0ce72763d4fc6e240b90eab89fbf750f54881d60edf5eaf37f48e88d2"},
-    {file = "ez_a_sync-0.33.7-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:7122a2008157bf487e4fce6175c697b2903effdb6f7bda32f464623aa9408c28"},
-    {file = "ez_a_sync-0.33.7-cp313-cp313-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:a40dd6914cbc09f8e6c2cbf2767875d3c747232b805f943aa96fd0604738e80a"},
-    {file = "ez_a_sync-0.33.7-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:9f9859078e5fc32935cfa6ad302b4dba78e4e7de52f258ffe01ed87092ebad6b"},
-    {file = "ez_a_sync-0.33.7-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:53d5503f14793ea5eed5b18f7217a4381e1c1e99eb52bf8666f0645d4c549f75"},
-    {file = "ez_a_sync-0.33.7-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:f1dc074323c3a854d4c2bd6d3b61774ea5d1cf137fcfcb5bcb03faaf70360ed1"},
-    {file = "ez_a_sync-0.33.7-cp313-cp313-win32.whl", hash = "sha256:2f42455a81c33b9198023b82cc4b6cd0de80e947805b7a56eb4f46e890249743"},
-    {file = "ez_a_sync-0.33.7-cp313-cp313-win_amd64.whl", hash = "sha256:cd7ec80112039e65017af10e44822edfe1cc0ae0052f9bd841b66398f09b6fa0"},
-    {file = "ez_a_sync-0.33.7-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:93a7c1bb368d58508ec0622e4bf0f95536f051a9dda2e2b6d41586a9a860a192"},
-    {file = "ez_a_sync-0.33.7-cp314-cp314-win32.whl", hash = "sha256:83b99a348fa1c614069816d7c02d3c14afeb4821fe1ae454a0e7757c1f9cef34"},
-    {file = "ez_a_sync-0.33.7-cp314-cp314-win_amd64.whl", hash = "sha256:789ad9fbb65206fff0c4d3cd1d71bee0cebd0c297b9e4f64f0dda20d47568694"},
-    {file = "ez_a_sync-0.33.7-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:acb5a74bc7b1bf4e4bc3b403b494c63e7944b37416497e141a4888b46c2b7ef5"},
-    {file = "ez_a_sync-0.33.7-cp314-cp314t-win32.whl", hash = "sha256:42c5680b27d793f2fe174fb0515114e8507ee3acbe254eec1e6d047d3f8feb5b"},
-    {file = "ez_a_sync-0.33.7-cp314-cp314t-win_amd64.whl", hash = "sha256:5db7ea356120b0a0820b396ae82046fabdcbe266ef2cda4bc0ec09932110c416"},
-    {file = "ez_a_sync-0.33.7.tar.gz", hash = "sha256:a4f7e20ce0621f4d2e21e9abc025876d34ab2fc3dd7c3fedbf161d78d8eb5770"},
+    {file = "ez_a_sync-0.33.9-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:16fec393a43de0312d46e31478d44bb5b2c4f9a9319c3d9f1b06a2a37bfbc531"},
+    {file = "ez_a_sync-0.33.9-cp310-cp310-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:dda6e340883fe1c439fa3f640e4f3350f12aff1731ac524be2a769b73b4c341e"},
+    {file = "ez_a_sync-0.33.9-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:bdedafb1a002700fc2c773c0e38c0e7ea3f20e1bf9a44682a1a3b8f7bcfb047b"},
+    {file = "ez_a_sync-0.33.9-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:61d69a2eeaf77616de8ae5601bf62b25a74e9289a2699cd6001ec337a55b9bd4"},
+    {file = "ez_a_sync-0.33.9-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:6a16a752599cf946815a43b7caab4303d18b1c72fa3505c0a616547ef9c9c8e4"},
+    {file = "ez_a_sync-0.33.9-cp310-cp310-win32.whl", hash = "sha256:a3bc52900c4dc9c0716e62c08f58346b6e74e71d352ce70d6688830b13859e87"},
+    {file = "ez_a_sync-0.33.9-cp310-cp310-win_amd64.whl", hash = "sha256:4da368fe0e47234d27ad2d323bcb882cd08269372ee023d911cb860246c689d2"},
+    {file = "ez_a_sync-0.33.9-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:530a0b52b4a77301efb54b7c84c8304cb6bf26c1676b2996cf75f299a77860cb"},
+    {file = "ez_a_sync-0.33.9-cp311-cp311-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:26c2c88897f6017eb32bedc5804850f9b045300e7205be192abc4d67b3ba5ee5"},
+    {file = "ez_a_sync-0.33.9-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:310be0afd149b8c779d097a322ae448ae179e5d58b1edc2f167640f73de28e93"},
+    {file = "ez_a_sync-0.33.9-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:54faa3c8529a2e99b2c90dcd38ddea72c101fa74906ee0320d60189503c18005"},
+    {file = "ez_a_sync-0.33.9-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:eb3df8c09ad526b2e9e235251b1608afe5106bfbc4839c5a994c8e0dda9ea977"},
+    {file = "ez_a_sync-0.33.9-cp311-cp311-win32.whl", hash = "sha256:a68539682d8aec4ac9b6d019a4b758b41eea526bbbf25c5d3c571944405e6097"},
+    {file = "ez_a_sync-0.33.9-cp311-cp311-win_amd64.whl", hash = "sha256:bde7896b755d1710233b3f0eb1bd4ed3c9eab615bf12f06b49c60d0bb5b8f4d9"},
+    {file = "ez_a_sync-0.33.9-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:31e84ad06ee40b312b27e7f66175d874eceaa2166a1f7f9555c567de3ce2a06f"},
+    {file = "ez_a_sync-0.33.9-cp312-cp312-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:c0dabc469a82972c4c719405c13896017549d50d3f53bfbb7c9de37e107371b4"},
+    {file = "ez_a_sync-0.33.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:984c76add9ac4c0a0429bb9eb31f092c8ce720efc155a2b1814987e0265f35c9"},
+    {file = "ez_a_sync-0.33.9-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:f017f97f74e3ef1d405f35c5a6390f1afce8cfeb5b8d6f0b307ed28e8cd4d609"},
+    {file = "ez_a_sync-0.33.9-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:c19763a02ae6fc19478651db7373851455166ed073be75cd880b3b670ce19e1a"},
+    {file = "ez_a_sync-0.33.9-cp312-cp312-win32.whl", hash = "sha256:5ada96a871c37655c1acefdd2dec79aeb209698d208c23c9ae6487c8b5186c35"},
+    {file = "ez_a_sync-0.33.9-cp312-cp312-win_amd64.whl", hash = "sha256:3482d222b9341f903a7171d5242049514d5fc85c504ea800f865f28f6bde473b"},
+    {file = "ez_a_sync-0.33.9-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:acbba379ba8cb68d07db3be9e640db90f5abaee341ff0901c31990ae5552797c"},
+    {file = "ez_a_sync-0.33.9-cp313-cp313-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:b7dc52029dd88d14fde250d3e404720e124231c5431f825b01c6e0498af8f398"},
+    {file = "ez_a_sync-0.33.9-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:e43bb5ebe2d24b746c5a471ffe5120f4be63ca377b4bbe68e35dd945f900da6b"},
+    {file = "ez_a_sync-0.33.9-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:45d1b649907fb18a5340611a10fa07dc8d356951b57584a8c6432df83ba1e872"},
+    {file = "ez_a_sync-0.33.9-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:ce7e2899998bc1282c6f7080392920b49b738c125d7534fa50906ec928dace8f"},
+    {file = "ez_a_sync-0.33.9-cp313-cp313-win32.whl", hash = "sha256:ea1b712000c2dc0dd186e0763ac46cc80ebdef66543d7079a42a9c7e4307e271"},
+    {file = "ez_a_sync-0.33.9-cp313-cp313-win_amd64.whl", hash = "sha256:d128d82710ffe736b34855e3bf61b01cd78d3406ff87f15361e66a56923feb08"},
+    {file = "ez_a_sync-0.33.9-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:276f06bb9e4a5b651f50a8908851798b1bfe85293ca0b64bfa9198ad15af2684"},
+    {file = "ez_a_sync-0.33.9-cp314-cp314-win32.whl", hash = "sha256:1205f11cbefd8c4777d2edc47433c6d6a6930f86512d92aada566c199600ad10"},
+    {file = "ez_a_sync-0.33.9-cp314-cp314-win_amd64.whl", hash = "sha256:6d8e74bfb97d14b2afdfa0e74958a16a3babe62af93b356c99afdd95efd1f0f3"},
+    {file = "ez_a_sync-0.33.9-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:4bd0ebb707eac9dd9d226ec738be1a493bec1ab6d4b6eff0404cf81b0254944e"},
+    {file = "ez_a_sync-0.33.9-cp314-cp314t-win32.whl", hash = "sha256:6967ec79ef3e18e7422e46e76470c118e9e1255010d1f4a532892d00f7d8d40c"},
+    {file = "ez_a_sync-0.33.9-cp314-cp314t-win_amd64.whl", hash = "sha256:44543a0a554917e18364dce5bfd3763f85a76dc7dbe4b4748db43e2a2e8b967a"},
+    {file = "ez_a_sync-0.33.9.tar.gz", hash = "sha256:07315e47ef9975a1ecf68f12b9c9afe75d73c57cdceac4fc102533c9a254d885"},
 ]
 
 [package.dependencies]
@@ -4664,4 +4664,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "be91ee0de364878c07771057936de31481e593551be2a68e850a30bf0741d19d"
+content-hash = "f41db5138435999d88cd6815c35dc042c7fbac8bbaeecffc488f02c9804aed7b"
