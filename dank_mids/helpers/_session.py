@@ -7,8 +7,13 @@ from threading import get_ident
 from time import time
 from typing import Any, Callable, Final, Tuple, final, overload
 
-from aiohttp import ClientSession, ClientTimeout, TCPConnector
-from aiohttp.client_exceptions import ClientResponseError
+from aiohttp import (
+    ClientConnectorError,
+    ClientResponseError,
+    ClientSession,
+    ClientTimeout,
+    TCPConnector,
+)
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
 from async_lru import alru_cache
 
@@ -172,7 +177,7 @@ class DankClientSession(ClientSession):
                         _logger_debug("received response %s", response_data)
                         return response_data
 
-            except ConnectionResetError:
+            except (ConnectionResetError, ClientConnectorError):
                 if resets < 10:
                     # Who cares, run it again!
                     resets += 1
