@@ -163,6 +163,7 @@ class DankClientSession(ClientSession):
 
         # Try the request until success or 5 failures.
         tried = 0
+        resets = 0
         while True:
             try:
                 async with limiters[endpoint]:
@@ -170,6 +171,15 @@ class DankClientSession(ClientSession):
                         response_data = await response.json(loads=loads, content_type=None)
                         _logger_debug("received response %s", response_data)
                         return response_data
+                    
+            except ConnectionResetError:
+                if resets < 10:
+                    # Who cares, run it again!
+                    resets += 1
+                else:
+                    # Ehh this is too many, something is wrong.
+                    raise
+                
             except ClientResponseError as ce:
                 status = ce.status
                 if status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
