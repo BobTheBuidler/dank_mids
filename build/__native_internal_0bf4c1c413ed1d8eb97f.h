@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1310];
+extern PyObject *CPyStatics[1308];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -302,9 +302,8 @@ extern PyObject *CPyStatic__tasks___logger;
 extern PyObject *CPyStatic__tasks___log_task_exception;
 extern PyObject *CPyStatic__tasks___CancelledError;
 extern PyObject *CPyStatic__tasks___current_task;
+extern PyObject *CPyStatic__tasks___ensure_future;
 extern PyObject *CPyStatic__tasks___wait_for;
-extern PyObject *CPyStatic__tasks____ensure_future;
-extern PyObject *CPyStatic__tasks____get_loop;
 extern PyObject *CPyStatic__tasks___create_task;
 extern PyTypeObject *CPyType__tasks___try_for_result_gen;
 extern PyObject *CPyDef__tasks___try_for_result_gen(void);
@@ -365,6 +364,8 @@ extern char CPyDef__tasks____outer_done_callback_shield_obj_____call__(PyObject 
 extern PyObject *CPyPy__tasks____outer_done_callback_shield_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__tasks___shield(PyObject *cpy_r_arg);
 extern PyObject *CPyPy__tasks___shield(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__tasks____get_loop(PyObject *cpy_r_fut);
+extern PyObject *CPyPy__tasks____get_loop(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__tasks_____top_level__(void);
 extern PyTypeObject *CPyType__uid___UIDGenerator;
 extern PyObject *CPyDef__uid___UIDGenerator(void);
