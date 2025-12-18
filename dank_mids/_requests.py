@@ -379,14 +379,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     # don't start counting for the timeout while we still have a queue of requests to send
                     await rate_limit_inactive(self.controller.endpoint)
 
-                    dup_coro = duplicate.get_response()
-                    duplicate_task = create_task(dup_coro, name="duplicate.get_response")
-
-                    # The the original request and the duplicate request share the same future
-                    # await both so we don't get exception warnings
-                    await fut
-                    # The duplicate task is already decoded, return the result from there
-                    return await duplicate_task
+                    # The the original request and the duplicate request share the same underlying future so we can just await the duplicate
+                    return await duplicate.get_response()
 
         except Exception as e:
             if not hasattr(e, "request"):
