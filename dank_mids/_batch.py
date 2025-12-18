@@ -1,4 +1,4 @@
-from asyncio import Task, shield
+from asyncio import Future, Task, shield
 from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, Union, cast, final
 
 import a_sync
@@ -31,8 +31,8 @@ create_task: Final = a_sync.create_task
 igather: Final = a_sync.igather
 
 
-def _create_named_task(awaitable: Awaitable[__T]) -> "Task[__T]":
-    task = create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
+def _create_named_task(awaitable: Awaitable[__T]) -> Future[__T]:
+    task: Task[__T] = create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
     BATCH_TASKS.add(task)
     task.add_done_callback(batch_done_callback)
     return shield(task)
