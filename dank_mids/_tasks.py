@@ -39,7 +39,7 @@ async def try_for_result(fut: asyncio.Future[T]) -> T:
         return await wait_for(shield(fut), TIMEOUT_SECONDS_BIG)
     except CancelledError as e:
         waiter = current_task()
-        if waiter.cancelled():
+        if waiter is not None and waiter.cancelled():
             cancel_message = e.args[0] if e.args else None
             fut.cancel(
                 f"{waiter} cancellation propagated by dank_mids._tasks.try_for_result: {cancel_message}"
@@ -57,7 +57,7 @@ async def try_for_result_quick(fut: asyncio.Future[T]) -> T:
         return await wait_for(shield(fut), TIMEOUT_SECONDS_SMALL)
     except CancelledError as e:
         waiter = current_task()
-        if waiter.cancelled():
+        if waiter is not None and waiter.cancelled():
             cancel_message = e.args[0] if e.args else None
             fut.cancel(
                 f"{waiter} cancellation propagated by dank_mids._tasks.try_for_result_quick: {cancel_message}"
