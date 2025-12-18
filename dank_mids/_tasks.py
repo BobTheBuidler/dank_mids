@@ -21,8 +21,8 @@ log_task_exception: Final = logger.exception
 CancelledError: Final = asyncio.CancelledError
 current_task: Final = asyncio.current_task
 wait_for: Final = asyncio.wait_for
-_ensure_future: Final = asyncio.tasks._ensure_future
-_get_loop: Final = asyncio.futures._get_loop
+_ensure_future: Final = asyncio.tasks._ensure_future  # type: ignore [attr-defined]
+_get_loop: Final = asyncio.futures._get_loop  # type: ignore [attr-defined]
 
 create_task: Final = a_sync.create_task
 
