@@ -600,7 +600,7 @@ class eth_call(RPCRequest):
     def multicall_compatible(self) -> bool:
         """True if this contract is multicall compatible, False if not."""
         return self.target not in self.controller.no_multicall
-    
+
     @stuck_coro_debugger
     async def spoof_response(self, data: Union[bytes, Exception, RawResponse]) -> None:  # type: ignore
         """Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker."""
