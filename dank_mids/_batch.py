@@ -5,7 +5,7 @@ import a_sync
 
 from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall
-from dank_mids._tasks import BATCH_TASKS, batch_done_callback
+from dank_mids._tasks import create_batch_task
 from dank_mids.helpers._codec import RawResponse
 from dank_mids.types import Multicalls
 
@@ -27,15 +27,11 @@ CHECK: Final = MIN_SIZE - 1
 
 logger: Final = getLogger(__name__)
 
-create_task: Final = a_sync.create_task
 igather: Final = a_sync.igather
 
 
 def _create_named_task(awaitable: Awaitable[__T]) -> Future[__T]:
-    task: Task[__T] = create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
-    BATCH_TASKS.add(task)
-    task.add_done_callback(batch_done_callback)
-    return shield(task)
+    return shield(create_batch_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch"))
 
 
 @final

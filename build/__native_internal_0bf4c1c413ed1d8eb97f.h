@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1302];
+extern PyObject *CPyStatics[1303];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -197,7 +197,6 @@ extern CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES;
 extern PyObject *CPyStatic_ENVIRONMENT_VARIABLES___globals;
 extern CPyModule *CPyModule_dank_mids____mode;
 extern PyObject *CPyStatic__batch___logger;
-extern PyObject *CPyStatic__batch___create_task;
 extern PyObject *CPyStatic__batch___igather;
 extern PyTypeObject *CPyType__batch___DankBatch;
 extern PyObject *CPyDef__batch___DankBatch(PyObject *cpy_r_controller, PyObject *cpy_r_multicalls, PyObject *cpy_r_rpc_calls);
@@ -306,6 +305,7 @@ extern PyObject *CPyStatic__tasks___CancelledError;
 extern PyObject *CPyStatic__tasks___current_task;
 extern PyObject *CPyStatic__tasks___shield;
 extern PyObject *CPyStatic__tasks___wait_for;
+extern PyObject *CPyStatic__tasks___create_task;
 extern PyTypeObject *CPyType__tasks___try_for_result_gen;
 extern PyObject *CPyDef__tasks___try_for_result_gen(void);
 extern CPyThreadLocal dank_mids____tasks___try_for_result_genObject *_tasks___try_for_result_gen_free_instance;
@@ -342,6 +342,8 @@ extern PyObject *CPyDef__tasks___try_for_result_quick_gen_____await__(PyObject *
 extern PyObject *CPyPy__tasks___try_for_result_quick_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__tasks___try_for_result_quick(PyObject *cpy_r_fut);
 extern PyObject *CPyPy__tasks___try_for_result_quick(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__tasks___create_batch_task(PyObject *cpy_r_a, PyObject *cpy_r_name);
+extern PyObject *CPyPy__tasks___create_batch_task(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__tasks___batch_done_callback(PyObject *cpy_r_t);
 extern PyObject *CPyPy__tasks___batch_done_callback(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__tasks_____top_level__(void);
