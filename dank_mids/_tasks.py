@@ -52,7 +52,7 @@ async def try_for_result_quick(fut: asyncio.Future[T]) -> T:
 
 
 def create_batch_task(a: Awaitable[T], name: str) -> asyncio.Task[T]:
-    batch_task = create_task(a, name=name)
+    batch_task: asyncio.Task[T] = create_task(a, name=name)
     # create a strong reference since we might exit when a result
     # is received for the first waiters but the batch is still running
     BATCH_TASKS.add(batch_task)
