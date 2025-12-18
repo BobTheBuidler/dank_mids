@@ -267,6 +267,32 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_inner;
+    PyObject *_outer;
+    PyObject *__inner_done_callback;
+    PyObject *__outer_done_callback;
+    PyObject *_arg;
+    PyObject *_loop;
+} dank_mids____tasks___shield_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids____tasks____inner_done_callback_shield_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids____tasks____outer_done_callback_shield_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     CPyTagged __value;
     PyObject *__lock;
 } dank_mids____uid___UIDGeneratorObject;
