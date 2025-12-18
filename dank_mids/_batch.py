@@ -1,13 +1,12 @@
-from asyncio import Task
+from asyncio import Future, Task, shield
 from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, Union, cast, final
 
 import a_sync
 
-from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall
+from dank_mids._tasks import BATCH_TASKS, batch_done_callback
 from dank_mids.helpers._codec import RawResponse
-from dank_mids.helpers._errors import log_internal_error
 from dank_mids.types import Multicalls
 
 if TYPE_CHECKING:
@@ -29,10 +28,14 @@ CHECK: Final = MIN_SIZE - 1
 logger: Final = getLogger(__name__)
 
 create_task: Final = a_sync.create_task
+igather: Final = a_sync.igather
 
 
-def _create_named_task(awaitable: Awaitable[__T]) -> "Task[__T]":
-    return create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
+def _create_named_task(awaitable: Awaitable[__T]) -> Future[__T]:
+    task: Task[__T] = create_task(awaitable, name=f"{type(awaitable).__name__} via DankBatch")
+    BATCH_TASKS.add(task)
+    task.add_done_callback(batch_done_callback)
+    return shield(task)
 
 
 @final
@@ -97,38 +100,10 @@ class DankBatch:
             mcall.start(self, cleanup=False)
         for call in self.rpc_calls:
             call._batch = self  # type: ignore [assignment]
-        return self._await().__await__()
-
-    async def _await(self) -> None:
-        """
-        Internal method to await the completion of all coroutines in the batch.
-
-        This method gathers all coroutines in the batch and awaits their completion,
-        logging any exceptions that may occur during execution. It's designed to
-        handle both successful completions and potential errors gracefully.
-
-        Raises:
-            Exception: If any of the coroutines in the batch raise an exception,
-                       it will be re-raised after all coroutines have been processed.
-        """
-        batches = list(self.coroutines)
-
-        last_failure = None
-        for batch, task in zip(batches, [_create_named_task(coro) for coro in batches]):
-            try:
-                await task
-            except Exception as e:
-                # we just collect the exceptions for now, we raise later if applicable
-                if not isinstance(e, DankMidsInternalError):
-                    log_internal_error(logger, batch, e)  # type: ignore [arg-type]
-                last_failure = task
-
-        if last_failure is not None:
-            # raise the last exception if any
-            await last_failure
+        return igather(map(_create_named_task, self.coroutines)).__await__()  # type: ignore [no-any-return]
 
     @property
-    def coroutines(self) -> Generator[Coro, None, None]:  # type: ignore [type-arg]
+    def coroutines(self) -> Generator[Coro, None, None]:
         """
         Generator that prepares RPC calls and multicalls for batch processing.
 
@@ -137,7 +112,7 @@ class DankBatch:
         and yielding batches when they reach the defined size or when all calls are included.
 
         Yields:
-            A combination of JSON-RPC batches ready for execution.
+            A combination of JSON-RPC batches and multicalls, ready for execution.
         """
         # Combine multicalls into one or more jsonrpc batches
 

@@ -145,30 +145,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *___mypyc_generator_attribute__self;
-    int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_generator_attribute__batches;
-    PyObject *___mypyc_generator_attribute__last_failure;
-    PyObject *___mypyc_temp__0;
-    int64_t ___mypyc_temp__1;
-    PyObject *___mypyc_temp__2;
-    int64_t ___mypyc_temp__3;
-    PyObject *___mypyc_generator_attribute__coro;
-    PyObject *___mypyc_temp__4;
-    int64_t ___mypyc_temp__5;
-    PyObject *___mypyc_generator_attribute__batch;
-    PyObject *___mypyc_generator_attribute__task;
-    PyObject *___mypyc_temp__6;
-    tuple_T3OOO ___mypyc_temp__7;
-    tuple_T3OOO ___mypyc_temp__8;
-    PyObject *___mypyc_generator_attribute__e;
-    PyObject *___mypyc_temp__9;
-    tuple_T3OOO ___mypyc_temp__10;
-} dank_mids____batch____await_DankBatch_genObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *___mypyc_generator_attribute__self;
     PyObject *_type;
@@ -180,10 +156,10 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__working_batch;
     PyObject *___mypyc_generator_attribute__batch_append;
     CPyTagged ___mypyc_generator_attribute__check_len;
-    PyObject *___mypyc_temp__11;
-    CPyTagged ___mypyc_temp__12;
-    int64_t ___mypyc_temp__13;
-    PyObject *___mypyc_temp__14;
+    PyObject *___mypyc_temp__0;
+    CPyTagged ___mypyc_temp__1;
+    int64_t ___mypyc_temp__2;
+    PyObject *___mypyc_temp__3;
     PyObject *___mypyc_generator_attribute__mcall;
     PyObject *___mypyc_generator_attribute__call;
 } dank_mids____batch___coroutines_DankBatch_envObject;
