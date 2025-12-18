@@ -40,6 +40,7 @@ import a_sync
 import eth_retry
 from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
 from a_sync.asyncio import sleep0 as yield_to_loop
+from a_sync.debugging import stuck_coro_debugger
 from a_sync.functools import cached_property_unsafe as cached_property
 from aiohttp.client_exceptions import ClientResponseError
 from eth_typing import ChecksumAddress
@@ -297,6 +298,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
     def request(self) -> Union[Request, PartialRequest]:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
 
+    @stuck_coro_debugger
     async def get_response(self) -> RPCResponse:  # type: ignore [override]
         if not self.should_batch:
             if self._debug_logs_enabled:
@@ -422,6 +424,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         response["error"] = dict(response["error"].items(), dankmids_added_context=self.request)
         return response
 
+    @stuck_coro_debugger
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
         task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
@@ -491,6 +494,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             exc = TypeError(f"{dtype.__name__} not supported for spoofing.", dtype, data)
             self.__set_exception(exc)
 
+    @stuck_coro_debugger
     async def make_request(self, num_previous_timeouts: int = 0) -> RawResponse:
         """
         Execute the request with no batching.
@@ -596,7 +600,8 @@ class eth_call(RPCRequest):
     def multicall_compatible(self) -> bool:
         """True if this contract is multicall compatible, False if not."""
         return self.target not in self.controller.no_multicall
-
+    
+    @stuck_coro_debugger
     async def spoof_response(self, data: Union[bytes, Exception, RawResponse]) -> None:  # type: ignore
         """Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker."""
 
@@ -882,6 +887,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 with controller.pools_closed_lock:
                     controller.pending_eth_calls.pop(self.block, None)
 
+    @stuck_coro_debugger
     async def get_response(self) -> None:  # type: ignore [override]
         # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
         calls = tuple(self.calls)
@@ -949,6 +955,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return len(self) > 1
 
     @set_done
+    @stuck_coro_debugger
     async def spoof_response(
         self, data: Union[RawResponse, Exception], calls: Optional[Sequence[eth_call]] = None
     ) -> None:
@@ -1026,6 +1033,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return retval
 
     @set_done
+    @stuck_coro_debugger
     async def bisect_and_retry(self, e: Exception) -> None:
         """
         Split the :class:`~Multicall` into 2 chunks, then await both.
@@ -1202,6 +1210,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             if cleanup:
                 self.controller._start_new_batch()
 
+    @stuck_coro_debugger
     async def get_response(self) -> None:  # type: ignore [override]
         if not self.calls:
             # TODO: figure out why this can happen and prevent it upstream
@@ -1272,6 +1281,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
         _demo_logger_info("request %s for jsonrpc batch %s complete", rid, self.jid)  # type: ignore
 
+    @stuck_coro_debugger
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1, suppress_logs=2)
     async def post(self) -> Tuple[List[RawResponse], List[Union[Multicall, RPCRequest]]]:
         """
@@ -1359,6 +1369,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         return _Batch.should_retry(self, e)
 
     @set_done
+    @stuck_coro_debugger
     async def spoof_response(
         self, response: List[RawResponse], calls: Tuple[RPCRequest, ...]
     ) -> None:
@@ -1420,6 +1431,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             await gatherish(mcall_coros, name="JSONRPCBatch.spoof_response gatherish")
 
     @set_done
+    @stuck_coro_debugger
     async def bisect_and_retry(self, e: Exception) -> None:
         """
         Split the batch into two halves and retry each half separately.
