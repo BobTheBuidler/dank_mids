@@ -21,7 +21,6 @@ CancelledError: Final = asyncio.CancelledError
 current_task: Final = asyncio.current_task
 ensure_future: Final = asyncio.tasks.ensure_future
 wait_for: Final = asyncio.wait_for
-_get_loop: Final = asyncio.futures._get_loop  # type: ignore [attr-defined]
 
 create_task: Final = a_sync.create_task
 
@@ -78,6 +77,8 @@ def batch_done_callback(t: asyncio.Task[Any]) -> None:
         BATCH_TASKS.discard(t)
 
 
+# Vendored from asyncio:
+
 def shield(arg: asyncio.tasks._FutureLike[T]) -> asyncio.Future[T]:
     """Wait for a future, shielding it from cancellation.
 
@@ -116,7 +117,7 @@ def shield(arg: asyncio.tasks._FutureLike[T]) -> asyncio.Future[T]:
     if inner.done():
         # Shortcut.
         return inner
-    loop: asyncio.AbstractEventLoop = _get_loop(inner)
+    loop = _get_loop(inner)
     outer: asyncio.Future[T] = loop.create_future()
 
     def _inner_done_callback(inner: asyncio.Future[T]) -> None:
@@ -142,3 +143,14 @@ def shield(arg: asyncio.tasks._FutureLike[T]) -> asyncio.Future[T]:
     inner.add_done_callback(_inner_done_callback)
     outer.add_done_callback(_outer_done_callback)
     return outer
+
+
+def _get_loop(fut: asyncio.Future[Any]) -> asyncio.AbstractEventLoop:
+    # Tries to call Future.get_loop() if it's available.
+    # Otherwise fallbacks to using the old '_loop' property.
+    try:
+        get_loop = fut.get_loop
+    except AttributeError:
+        return fut._loop
+    else:
+        return get_loop()
