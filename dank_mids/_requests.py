@@ -382,19 +382,11 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     dup_coro = duplicate.get_response()
                     duplicate_task = create_task(dup_coro, name="duplicate.get_response")
 
-                    # The first one to complete will set the other as complete too
-                    await gather(fut, duplicate_task)
-
-                    if duplicate_task.done():
-                        # If duplicate finished first, return the result right away
-                        return duplicate_task.result()
-                    else:
-                        # If original task finished first, cancel duplicate
-                        duplicate_task.cancel(
-                            f"duplicate task {duplicate_task} for {duplicate} cancelled, "
-                            f"original {self} is done"
-                        )
-                        response = fut.result()
+                    # The the original request and the duplicate request share the same future
+                    # await both so we don't get exception warnings
+                    await fut
+                    # The duplicate task is already decoded, return the result from there
+                    return await duplicate_task
 
         except Exception as e:
             if not hasattr(e, "request"):
@@ -448,7 +440,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             await wait((task, duplicate_task), return_when="FIRST_COMPLETED")
 
             if duplicate_task.done():
-                # The duplicatealready decoded the response, return the result right away
+                # The duplicate already decoded the response, return the result right away
                 return duplicate_task.result()
             else:
                 # If original task finished first, cancel duplicate
