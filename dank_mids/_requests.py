@@ -167,7 +167,7 @@ class _RequestBase(Generic[_Response]):
     def __init__(
         self,
         controller: "DankMiddlewareController",
-        uid: Optional[str] = None,
+        uid: str | None = None,
         fut: DebuggableFuture[RPCResponse] | None = None,
     ) -> None:
         self.controller: Final = controller
@@ -214,7 +214,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
     params: Final[Any]
     raw: Final[bool]
     _fut: Final[DebuggableFuture[RPCResponse]]
-    _daemon: Final[Optional["Task[None]"]]
+    _daemon: Final[Task[None] | None]
     __dict__: Final[Dict[str, Any]]
 
     __slots__ = "method", "params", "raw", "_daemon", "__dict__"
@@ -224,7 +224,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         controller: "DankMiddlewareController",
         method: RPCEndpoint,
         params: Any,
-        uid: Optional[str] = None,
+        uid: str | None = None,
         fut: DebuggableFuture[RPCResponse] | None = None,
     ) -> None:  # sourcery skip: hoist-statement-from-if
         _request_base_init(self, controller, uid, fut)
@@ -305,6 +305,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 _log_debug("bypassed dank batching, method is %s", self.method)
             return await self.get_response_unbatched()
 
+        fut = self._fut
         current_batch = self._batch
         if current_batch is None:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
@@ -312,9 +313,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         elif current_batch._awaited is False:
             # NOTE: If current_batch is not None, that means we filled a batch. Let's await it now so we can send something to the node.
-            await wait((current_batch._task, self._fut), return_when="FIRST_COMPLETED")
-
-        fut = self._fut
+            await wait((current_batch._task, fut), return_when="FIRST_COMPLETED")
 
         if self._batch is None:
 
@@ -541,7 +540,7 @@ class eth_call(RPCRequest):
         self,
         controller: "DankMiddlewareController",
         params: Any,
-        uid: Optional[str] = None,
+        uid: str | None = None,
         fut: DebuggableFuture[RPCResponse] | None = None,
     ) -> None:
         """Adds a call to the DankMiddlewareContoller's `pending_eth_calls`."""
@@ -656,12 +655,20 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     def is_full(self) -> bool:
         raise NotImplementedError(type(self).__name__)
 
+    @property
+    def _task(self) -> Future[None]:
+        """Shield the actual Task from cancellation if the caller is cancelled."""
+        return shield(self.__task)
+
     @cached_property
-    def _task(self) -> "Task[None]":
+    def __task(self) -> Task[None]:
         self._awaited = True
-        return create_task(
+        task = create_task(
             self.get_response(), name=f"{type(self).__name__} {self.uid} get_response"
         )
+        BATCH_TASKS.add(task)
+        task.add_done_callback(batch_done_callback)
+        return task
 
     def append(self, call: _Request, skip_check: bool = False) -> None:
         if self._awaited is True:
@@ -754,7 +761,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         self,
         controller: "DankMiddlewareController",
         calls: Iterable[eth_call] = [],
-        bid: Optional[BatchId] = None,
+        bid: BatchId | None = None,
     ) -> None:
         # sourcery skip: default-mutable-arg
         _batch_init(self, controller, calls)
@@ -932,7 +939,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     @set_done
     @stuck_coro_debugger
     async def spoof_response(
-        self, data: Union[RawResponse, Exception], calls: Optional[Sequence[eth_call]] = None
+        self, data: RawResponse | Exception, calls: Sequence[eth_call] | None = None
     ) -> None:
         # This happens if an Exception takes place during a non-batched Multicall request.
         if isinstance(data, Exception):
@@ -1073,7 +1080,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         self,
         controller: "DankMiddlewareController",
         calls: Iterable[Union[Multicall, RPCRequest]] = [],
-        jid: Optional[BatchId] = None,
+        jid: BatchId | None = None,
     ) -> None:  # sourcery skip: default-mutable-arg
         """
         Initialize a new JSONRPCBatch.
