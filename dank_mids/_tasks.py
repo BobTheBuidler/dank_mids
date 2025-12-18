@@ -113,7 +113,7 @@ def shield(arg: asyncio.tasks._FutureLike[T]) -> asyncio.Future[T]:
     may get garbage collected at any time, even before it's done.
     """
     # TODO: add a fastpath here for Multicall and JSONRPCBatch types (maybe DankBatch too?)
-    inner: asyncio.Future[T] = ensure_future(arg)
+    inner: asyncio.Future[T] = ensure_future(arg)  # type: ignore [arg-type]
     if inner.done():
         # Shortcut.
         return inner
