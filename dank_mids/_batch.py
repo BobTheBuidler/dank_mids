@@ -1,11 +1,11 @@
-from asyncio import Future, Task, shield
+from asyncio import Future
 from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, Union, cast, final
 
 import a_sync
 
 from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall
-from dank_mids._tasks import create_batch_task
+from dank_mids._tasks import create_batch_task, shield
 from dank_mids.helpers._codec import RawResponse
 from dank_mids.types import Multicalls
 

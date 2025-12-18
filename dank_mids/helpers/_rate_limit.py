@@ -4,9 +4,9 @@ from collections import defaultdict
 from typing import DefaultDict, Dict, Final
 
 import a_sync
-import a_sync._smart
 import a_sync.asyncio
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids._tasks import shield
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 
 
@@ -16,7 +16,6 @@ create_task: Final = asyncio.create_task
 nlargest: Final = heapq.nlargest
 
 Event: Final = a_sync.Event
-shield: Final = a_sync._smart.shield
 sleep0: Final = a_sync.asyncio.sleep0
 
 

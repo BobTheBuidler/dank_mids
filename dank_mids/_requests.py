@@ -4,7 +4,6 @@ from asyncio import (
     TimeoutError,
     create_task,
     get_running_loop,
-    shield,
     sleep,
     wait,
     wait_for,
@@ -72,6 +71,7 @@ from dank_mids._tasks import (
     TIMEOUT_SECONDS_BIG,
     TIMEOUT_SECONDS_SMALL,
     create_batch_task,
+    shield,
     try_for_result,
     try_for_result_quick,
 )
