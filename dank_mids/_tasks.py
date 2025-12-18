@@ -1,6 +1,8 @@
 import asyncio
 from logging import getLogger
-from typing import Any, Final
+from typing import Any, Awaitable, Final
+
+import a_sync
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.types import T
@@ -19,6 +21,8 @@ CancelledError: Final = asyncio.CancelledError
 current_task: Final = asyncio.current_task
 shield: Final = asyncio.shield
 wait_for: Final = asyncio.wait_for
+
+create_task: Final = a_sync.create_task
 
 
 async def try_for_result(fut: asyncio.Future[T]) -> T:
@@ -45,6 +49,16 @@ async def try_for_result_quick(fut: asyncio.Future[T]) -> T:
             f"{task} cancellation propagated by dank_mids._tasks.try_for_result_quick: {cancel_message}"
         )
         raise
+
+
+def create_batch_task(a: Awaitable[T], name: str) -> asyncio.Task[T]:
+    batch_task = create_task(a, name=name)
+    # create a strong reference since we might exit when a result
+    # is received for the first waiters but the batch is still running
+    BATCH_TASKS.add(batch_task)
+    # discard the strong reference when the task completes successfully
+    batch_task.add_done_callback(batch_done_callback)
+    return batch_task
 
 
 def batch_done_callback(t: asyncio.Task[Any]) -> None:

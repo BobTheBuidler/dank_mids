@@ -27,7 +27,6 @@ from typing import (
     List,
     Optional,
     Sequence,
-    Set,
     Tuple,
     TypeVar,
     Union,
@@ -72,7 +71,7 @@ from dank_mids._tasks import (
     BATCH_TASKS,
     TIMEOUT_SECONDS_BIG,
     TIMEOUT_SECONDS_SMALL,
-    batch_done_callback,
+    create_batch_task,
     try_for_result,
     try_for_result_quick,
 )
@@ -318,13 +317,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         if self._batch is None:
 
             batch_coro = self.controller.execute_batch()
-            batch_task = create_task(batch_coro, name="batch task execute_batch")
-
-            # create a strong reference since we might exit when a result is received but the batch is incomplete
-            BATCH_TASKS.add(batch_task)
-
-            # discard the strong reference when the task completes successfully
-            batch_task.add_done_callback(batch_done_callback)
+            batch_task = create_batch_task(batch_coro, name="batch task execute_batch")
 
             try:
                 # If this timeout fails, we go nuclear and destroy the batch.
@@ -655,12 +648,9 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
     @cached_property
     def __task(self) -> Task[None]:
         self._awaited = True
-        task = create_task(
+        return create_batch_task(
             self.get_response(), name=f"{type(self).__name__} {self.uid} get_response"
         )
-        BATCH_TASKS.add(task)
-        task.add_done_callback(batch_done_callback)
-        return task
 
     def append(self, call: _Request, skip_check: bool = False) -> None:
         if self._awaited is True:
