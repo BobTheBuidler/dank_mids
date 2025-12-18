@@ -374,6 +374,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     done = True
 
                 if not done:
+                    # Create the duplicate before checking on the rate limit so it can join an existing batch if available
                     duplicate = self.create_duplicate()
 
                     # don't start counting for the timeout while we still have a queue of requests to send
@@ -423,25 +424,12 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 self,
             )
 
-            duplicate = self.create_duplicate()
-
             # don't start counting for the timeout while we still have a queue of requests to send
             await rate_limit_inactive(self.controller.endpoint)
 
-            dup_coro = duplicate.get_response_unbatched()
-            duplicate_task = create_task(dup_coro, name="duplicate.get_response_unbatched")
-
-            await wait((task, duplicate_task), return_when="FIRST_COMPLETED")
-
-            if duplicate_task.done():
-                # The duplicate already decoded the response, return the result right away
-                return duplicate_task.result()
-            else:
-                # If original task finished first, cancel duplicate
-                duplicate_task.cancel(
-                    f"duplicate task {duplicate_task} for {duplicate} cancelled, "
-                    f"original {self} is done"
-                )
+            # The the original request and the duplicate request share the same underlying future so we can just await the duplicate
+            # NOTE: Now that this has been refactored do we actually even need the duplicate task?
+            return await self.create_duplicate().get_response_unbatched()
 
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
