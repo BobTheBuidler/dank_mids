@@ -343,19 +343,11 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 BATCH_TASKS.discard(batch_task)
 
             if not batch_complete:
+                # Create the duplicate before checking the rate limiter
+                # so it can be added to any pending batch that might exist
                 duplicate = self.create_duplicate()
-
-                # don't start counting for the timeout while we still have a queue of requests to send
                 await rate_limit_inactive(self.controller.endpoint)
-
-                dup_coro = duplicate.get_response()
-                duplicate_task = create_task(dup_coro, name="duplicate task get_response")
-
-                # We will get our result from the future, if the task ends
-                # up with an exception we don't need to know about it
-                duplicate_task._Future__log_traceback = False
-
-                await wait((batch_task, fut), return_when="FIRST_COMPLETED")
+                return await duplicate.get_response()
 
         try:
             if fut.done():
