@@ -19,8 +19,8 @@ log_task_exception: Final = logger.exception
 
 CancelledError: Final = asyncio.CancelledError
 current_task: Final = asyncio.current_task
+ensure_future: Final = asyncio.tasks.ensure_future
 wait_for: Final = asyncio.wait_for
-_ensure_future: Final = asyncio.tasks._ensure_future  # type: ignore [attr-defined]
 _get_loop: Final = asyncio.futures._get_loop  # type: ignore [attr-defined]
 
 create_task: Final = a_sync.create_task
@@ -112,7 +112,7 @@ def shield(arg: asyncio.tasks._FutureLike[T]) -> asyncio.Future[T]:
     may get garbage collected at any time, even before it's done.
     """
     # TODO: add a fastpath here for Multicall and JSONRPCBatch types (maybe DankBatch too?)
-    inner: asyncio.Future[T] = _ensure_future(arg)
+    inner: asyncio.Future[T] = ensure_future(arg)
     if inner.done():
         # Shortcut.
         return inner
