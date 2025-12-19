@@ -11,15 +11,19 @@ from dank_mids.helpers._codec import JSONRPCBatchResponse, RawResponse
 from dank_mids.helpers._session import DankClientSession
 
 
+run_coroutine_threadsafe: Final = asyncio.run_coroutine_threadsafe
+wrap_future: Final = asyncio.wrap_future
+
+
 @final
 class HTTPRequesterThread(threading.Thread):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(daemon=True)
         self.loop: Final = asyncio.new_event_loop()
         self._session: DankClientSession | None = None
         self.start()
 
-    def run(self):
+    def run(self) -> None:
         asyncio.set_event_loop(self.loop)
         self.loop.run_forever()
 
@@ -56,10 +60,9 @@ class HTTPRequesterThread(threading.Thread):
         async def do_post():
             # we have to access self.session in the subthread first so we need this silly helper coro
             return await self.session.post(endpoint, *args, loads=loads, **kwargs)
-        thread_future = asyncio.run_coroutine_threadsafe(do_post(), self.loop)
-        return await asyncio.wrap_future(thread_future)
+        return await wrap_future(run_coroutine_threadsafe(do_post(), self.loop))
 
-def shutdown_http_requester():
+def shutdown_http_requester() -> None:
     async def close_session_and_stop():
         if session := _requester._session:
             await session.close()
