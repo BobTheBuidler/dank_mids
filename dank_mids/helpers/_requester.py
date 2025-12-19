@@ -60,6 +60,7 @@ class HTTPRequesterThread(threading.Thread):
         async def do_post():
             # we have to access self.session in the subthread first so we need this silly helper coro
             return await self.session.post(endpoint, *args, loads=loads, **kwargs)
+
         return await wrap_future(run_coroutine_threadsafe(do_post(), self.loop))
 
 def shutdown_http_requester() -> None:
