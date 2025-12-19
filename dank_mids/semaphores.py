@@ -1,18 +1,18 @@
 from decimal import Decimal
-from typing import Final, Literal, Optional, Type, Union
+from typing import Final, Literal, Optional, Type, Union, final
 
-import a_sync
 from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,
     _PrioritySemaphoreContextManager,
 )
-from eth_typing import HexStr
+from eth_typing import BlockNumber, HexStr
 
 
 _TOP_PRIORITY: Final = -1
 
 
-class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
+@final
+class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):  # type: ignore [type-arg]
     """
     A context manager for block-specific semaphores.
 
@@ -20,7 +20,7 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
     related to specific blockchain blocks.
     """
 
-    _priority_name = "block"
+    _priority_name: Final = "block"
     """The noun that describes the priority, set to "block"."""
 
     def __init__(
@@ -34,9 +34,8 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
         super().__init__(parent, priority, name)
 
 
-# NOTE: keep this so we can include in type stubs
-# class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):  # type: ignore [type-var]
-class BlockSemaphore(_AbstractPrioritySemaphore):
+@final
+class BlockSemaphore(_AbstractPrioritySemaphore[str, _BlockSemaphoreContextManager]):
     """A semaphore for managing concurrency based on block numbers.
 
     This class extends :class:`_AbstractPrioritySemaphore` to provide block-specific concurrency control.
@@ -52,10 +51,15 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
     _context_manager_class: Type[_BlockSemaphoreContextManager]
     """The context manager class used by this semaphore."""
 
-    _top_priority: Literal[-1]
+    _top_priority: Literal[-1]  # type: ignore [assignment]
     """The highest priority value, set to -1."""
 
-    def __init__(self, value=1, *, name=None) -> None:
+    def __init__(
+        self,
+        value: BlockNumber = BlockNumber(1),
+        *,
+        name: Optional[str] = None,
+    ) -> None:
         super().__init__(_BlockSemaphoreContextManager, -1, int(value), name=name)
 
     def __getitem__(self, block: Union[int, HexStr, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
@@ -67,7 +71,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
             priority = int(block, 16)
         elif block not in {None, "latest"}:
             # NOTE: We do this to generate an err if an unsuitable value was provided
-            priority = block
+            priority = block  # type: ignore [assignment]
         else:
             priority = _TOP_PRIORITY
         return super().__getitem__(priority)
