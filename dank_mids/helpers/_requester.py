@@ -1,14 +1,14 @@
 import asyncio
 import atexit
 import threading
-from typing import Any, Callable, Final, final, overload
+from typing import Any, Callable, Final, final
 
 from aiohttp import ClientTimeout, TCPConnector
-from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
+from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids.helpers._codec import JSONRPCBatchResponse, RawResponse
 from dank_mids.helpers._session import DankClientSession
+from dank_mids.types import T
 
 
 run_coroutine_threadsafe: Final = asyncio.run_coroutine_threadsafe
@@ -42,29 +42,19 @@ class HTTPRequesterThread(threading.Thread):
             )
         return session
 
-
-    @overload
     async def post(
-        self, endpoint: str, *args: Any, loads: Callable[[Any], RawResponse], **kwargs: Any
-    ) -> RawResponse:
-        """Returns a :class:`~RawResponse` object from `endpoint`."""
-    @overload
-    async def post(
-        self, endpoint: str, *args: Any, loads: Callable[[Any], JSONRPCBatchResponse], **kwargs: Any
-    ) -> JSONRPCBatchResponse:
-        """Returns a decoded JSONRPCBatchResponse from `endpoint`."""
-    async def post(
-        self, endpoint: str, *args: Any, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs: Any
-    ) -> Any:
+        self, endpoint: str, *args: Any, loads: Callable[[str], T] = DEFAULT_JSON_DECODER, **kwargs: Any
+    ) -> T:
         """Returns decoded json data from `endpoint`."""
-        async def do_post():
+
+        async def do_post() -> T:
             # we have to access self.session in the subthread first so we need this silly helper coro
             return await self.session.post(endpoint, *args, loads=loads, **kwargs)
 
         return await wrap_future(run_coroutine_threadsafe(do_post(), self.loop))
 
 def shutdown_http_requester() -> None:
-    async def close_session_and_stop():
+    async def close_session_and_stop() -> None:
         if session := _requester._session:
             await session.close()
         _requester.loop.stop()
