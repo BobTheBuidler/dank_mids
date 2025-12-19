@@ -3,6 +3,7 @@ from asyncio import (
     Task,
     TimeoutError,
     create_task,
+    current_task,
     get_running_loop,
     sleep,
     wait,
@@ -66,14 +67,13 @@ from dank_mids._exceptions import (
     internal_err_types,
 )
 from dank_mids._logging import DEBUG, getLogger
+from dank_mids._nocompile import try_for_result, try_for_result_quick
 from dank_mids._tasks import (
     BATCH_TASKS,
     TIMEOUT_SECONDS_BIG,
     TIMEOUT_SECONDS_SMALL,
     create_batch_task,
     shield,
-    try_for_result,
-    try_for_result_quick,
 )
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
@@ -842,7 +842,11 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
         batch = batch or self
         if _logger_is_enabled_for(DEBUG):
-            self._daemon = create_task(self._debug_daemon(), name="Multicall debug daemon")
+            debug_daemon = create_task(self._debug_daemon(), name="Multicall debug daemon")
+            self._daemon = debug_daemon
+            waiter = current_task()
+            if waiter is not None:
+                waiter.add_done_callback(lambda: debug_daemon.cancel("Multicall complete"))
         with self._lock:
             for call in self.calls:
                 call._batch = self
@@ -1162,7 +1166,11 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         # sourcery skip: hoist-loop-from-if
         batch = batch or self
         if _logger_is_enabled_for(DEBUG):
-            self._daemon = create_task(self._debug_daemon(), name="JSONRPCBatch debug daemon")
+            debug_daemon = create_task(self._debug_daemon(), name="JSONRPCBatch debug daemon")
+            self._daemon = debug_daemon
+            waiter = current_task()
+            if waiter is not None:
+                waiter.add_done_callback(lambda: debug_daemon.cancel("JSONRPCBatch complete"))
         with self._lock:
             for typ, calls in groupby(self.calls, type):
                 if typ is Multicall:

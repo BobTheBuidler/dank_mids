@@ -241,37 +241,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-} dank_mids____tasks___InternalTaskCancelledErrorObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_generator_attribute__fut;
-    int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_temp__0;
-    tuple_T3OOO ___mypyc_temp__1;
-    tuple_T3OOO ___mypyc_temp__2;
-    PyObject *___mypyc_generator_attribute__e;
-    PyObject *___mypyc_generator_attribute__waiter;
-    PyObject *___mypyc_generator_attribute__cancel_message;
-} dank_mids____tasks___try_for_result_genObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
-    PyObject *___mypyc_generator_attribute__fut;
-    int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_temp__3;
-    tuple_T3OOO ___mypyc_temp__4;
-    tuple_T3OOO ___mypyc_temp__5;
-    PyObject *___mypyc_generator_attribute__e;
-    PyObject *___mypyc_generator_attribute__waiter;
-    PyObject *___mypyc_generator_attribute__cancel_message;
-} dank_mids____tasks___try_for_result_quick_genObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *_inner;
     PyObject *_outer;
