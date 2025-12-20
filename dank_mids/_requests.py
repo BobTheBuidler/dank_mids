@@ -1,5 +1,6 @@
 from asyncio import (
     Future,
+    Lock,
     Task,
     TimeoutError,
     create_task,
@@ -121,6 +122,8 @@ if TYPE_CHECKING:
     from dank_mids._batch import DankBatch
     from dank_mids.controller import DankMiddlewareController
 
+
+EXECUTION_LOCK: Final = Lock()
 
 logger: Final = getLogger(__name__)
 
@@ -305,7 +308,15 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 _log_debug("bypassed dank batching, method is %s", self.method)
             return await self.get_response_unbatched()
 
-        fut = self._fut
+        # We do some janky stuff here to make the event loop run a few times
+        # so we can collect as many requests as possible into our batch
+        async with EXECUTION_LOCK:
+            fut = self._fut
+            if self._batch is None:
+                # We want to pause here to let the event loop start any batches that have been queued up
+                # We don't want to start tiny batches or start the same batch more than 1x, that's waste
+                await yield_to_loop()
+        
         current_batch = self._batch
         if current_batch is None:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
