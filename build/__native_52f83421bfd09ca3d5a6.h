@@ -1193,14 +1193,16 @@ typedef struct {
     CPyVTableItem *vtable;
     PyObject *___mypyc_generator_attribute__self;
     int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_generator_attribute__multicalls;
+    PyObject *___mypyc_generator_attribute__pending_eth_calls;
     PyObject *___mypyc_temp__25;
     char ___mypyc_temp__26;
-    PyObject *___mypyc_generator_attribute__multicalls;
     PyObject *___mypyc_generator_attribute__rpc_calls;
     tuple_T3OOO ___mypyc_temp__27;
     PyObject *___mypyc_generator_attribute__batch;
     PyObject *___mypyc_temp__28;
     tuple_T3OOO ___mypyc_temp__29;
+    PyObject *___mypyc_generator_attribute___;
 } dank_mids___controller___execute_batch_DankMiddlewareController_genObject;
 
 #endif
