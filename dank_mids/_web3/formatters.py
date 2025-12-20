@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Final, List, Tuple, TypeVar, Union
+from typing import Any, Callable, Final, TypeVar, Union
 from collections.abc import Iterator, Sequence
 
 from eth_typing import TypeStr
