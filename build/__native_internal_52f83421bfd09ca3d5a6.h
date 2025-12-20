@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1369];
+extern PyObject *CPyStatics[1374];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -174,6 +174,7 @@ extern CPyModule *CPyModule_dank_mids___helpers___batch_size__internal;
 extern CPyModule *CPyModule_dank_mids___helpers___batch_size;
 extern PyObject *CPyStatic_batch_size___globals;
 extern PyObject *CPyStatic_hashing___globals;
+extern CPyModule *CPyModule_web3___datastructures;
 extern PyObject *CPyStatic_lru_cache___globals;
 extern CPyModule *CPyModule_dank_mids___helpers___method__internal;
 extern CPyModule *CPyModule_dank_mids___helpers___method;
@@ -1167,10 +1168,10 @@ extern PyObject *CPyDef_hashing____to_tuple_obj___register(PyObject *cpy_r___myp
 extern PyObject *CPyPy_hashing____to_tuple_obj___register(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_hashing____to_tuple(PyObject *cpy_r_value);
 extern PyObject *CPyPy_hashing____to_tuple(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_hashing_______153(PyObject *cpy_r_value);
-extern PyObject *CPyPy_hashing_______153(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_hashing_______158(PyObject *cpy_r_value);
-extern PyObject *CPyPy_hashing_______158(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_hashing_______160(PyObject *cpy_r_value);
+extern PyObject *CPyPy_hashing_______160(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_hashing_______170(PyObject *cpy_r_value);
+extern PyObject *CPyPy_hashing_______170(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_hashing_____top_level__(void);
 extern PyTypeObject *CPyType_lru_cache___lru_cache_lite_env;
 extern PyObject *CPyDef_lru_cache___lru_cache_lite_env(void);
