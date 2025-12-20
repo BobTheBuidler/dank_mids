@@ -1,7 +1,7 @@
 import asyncio
 import heapq
 from collections import defaultdict
-from typing import Dict, Final
+from typing import Final
 
 import a_sync
 import a_sync.asyncio
