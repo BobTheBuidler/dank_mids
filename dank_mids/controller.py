@@ -262,14 +262,26 @@ class DankMiddlewareController:
         This method collects all pending eth calls and RPC calls, clears the pending queues,
         and executes them as a single batch.
         """
+        multicalls: dict[BlockId, Multicall]
+        pending_eth_calls = self.pending_eth_calls
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
-            multicalls = self.pending_eth_calls.copy()
-            self.pending_eth_calls.clear()
+            if pending_eth_calls:
+                multicalls = pending_eth_calls.copy()
+                pending_eth_calls.clear()
+            else:
+                multicalls = {}
             rpc_calls = self.pending_rpc_calls
-        self._start_new_batch()
+            self._start_new_batch()
+        if not multicalls and not rpc_calls:
+            logger.warning(
+                "For some reason we're creating an empty batch. Here's the traceback:",
+                exc_info=True,
+            )
+            return
         demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)
         batch = DankBatch(self, multicalls, rpc_calls)
-        await batch
+        # I think this unnecessary assignment might help fix a mypyc compiler bug
+        _ = await batch  # type: ignore [func-returns-value]
         demo_logger.info("%s done", batch)
 
     @property
