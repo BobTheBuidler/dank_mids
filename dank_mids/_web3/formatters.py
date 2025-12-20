@@ -1,6 +1,5 @@
-from typing import Any, Final, TypeVar, Union
-from collections.abc import Callable
-from collections.abc import Iterator, Sequence
+from typing import Any, Final, TypeVar
+from collections.abc import Callable, Iterator, Sequence
 
 from eth_typing import TypeStr
 from faster_eth_utils.curried import apply_formatter_at_index  # type: ignore [attr-defined]
