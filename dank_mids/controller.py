@@ -273,11 +273,15 @@ class DankMiddlewareController:
             rpc_calls = self.pending_rpc_calls
             self._start_new_batch()
         if not multicalls and not rpc_calls:
-            logger.warning(
-                "For some reason we're creating an empty batch. Here's the traceback:",
-                exc_info=True,
-            )
-            return
+            try:
+                # make an exception so we can print the traceback with exc_info
+                raise Exception("empty batch!")  # sourcery skip: raise-specific-error
+            except Exception:
+                logger.warning(
+                    "For some reason we're creating an empty batch. Here's the traceback:",
+                    exc_info=True,
+                )
+                return
         demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)
         batch = DankBatch(self, multicalls, rpc_calls)
         # I think this unnecessary assignment might help fix a mypyc compiler bug
