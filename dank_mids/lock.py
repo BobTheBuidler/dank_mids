@@ -231,7 +231,7 @@ class Lock:
         self._waiters: Deque[Future[Literal[True]]] | None = None
         self._locked: bool = False
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         res = super().__repr__()
         extra = "locked" if self._locked else "unlocked"
         if self._waiters:
