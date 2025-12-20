@@ -25,7 +25,7 @@ sleep0: Final = a_sync.asyncio.sleep0
 
 # default is 50 requests/second
 limiters: Final[RateLimiters] = defaultdict(
-    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)
+    lambda: AsyncLimiter(1, 1 / int(ENVS.REQUESTS_PER_SECOND))
 )
 
 _rate_limit_waiters: Final[Dict[str, a_sync.Event]] = {}
