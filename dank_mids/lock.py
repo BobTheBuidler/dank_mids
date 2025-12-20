@@ -35,7 +35,7 @@ class AlertingRLock:
             :class:`UIDGenerator`
         """
         self._block: Final[LockType] = _allocate_lock()
-        self._owner = None
+        self._owner: int | None = None
         self._count = 0
         self._name: Final = name
 
@@ -129,11 +129,11 @@ class AlertingRLock:
 
     # Internal methods used by condition variables
 
-    def _acquire_restore(self, state: int) -> None:
+    def _acquire_restore(self, state: tuple[int, int | None]) -> None:
         self._block.acquire()
         self._count, self._owner = state
 
-    def _release_save(self) -> tuple[int, int]:
+    def _release_save(self) -> tuple[int, int | None]:
         if self._count == 0:
             raise RuntimeError("cannot release un-acquired lock")
         count = self._count
