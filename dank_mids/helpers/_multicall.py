@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Literal, Optional, Union
+from typing import Literal, Union
 from collections.abc import Callable
 
 from cchecksum import to_checksum_address
