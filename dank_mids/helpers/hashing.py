@@ -2,12 +2,9 @@ import functools
 from collections.abc import Hashable
 from typing import (
     Any,
-    Dict,
     Final,
     Generic,
-    List,
     Optional,
-    Tuple,
     TypeVar,
     Union,
     cast,
