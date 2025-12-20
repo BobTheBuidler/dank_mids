@@ -1,4 +1,4 @@
-from typing import Any, Literal, NewType, Optional, Union, overload
+from typing import Any, Literal, NewType, overload
 from collections.abc import Iterator
 
 import brownie
