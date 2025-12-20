@@ -82,7 +82,7 @@ class DankMiddlewareController:
         self.w3: Final[Web3] = w3
         """The Web3 instance used to make rpc requests."""
 
-        self.max_jsonrpc_batch_size = int(ENVS.MAX_JSONRPC_BATCH_SIZE)  # type: ignore [call-overload]
+        self.max_jsonrpc_batch_size = int(ENVS.MAX_JSONRPC_BATCH_SIZE)
 
         self.sync_w3: Final = _sync_w3_from_async(w3)
         """A sync Web3 instance connected to the same rpc, used to make calls during init."""
@@ -154,19 +154,19 @@ class DankMiddlewareController:
         self.batcher: Final[NotSoBrightBatcher] = NotSoBrightBatcher()
         """Batcher for RPC calls."""
 
-        self.batcher.step = ENVS.MAX_MULTICALL_SIZE  # type: ignore [attr-defined]
+        self.batcher.step = int(ENVS.MAX_MULTICALL_SIZE)
 
         self.call_uid: Final[UIDGenerator] = UIDGenerator()
         """Unique identifier generator for individual calls."""
 
-        self.multicall_uid: Final[UIDGenerator] = UIDGenerator()
+        self.multicall_uid: Final = UIDGenerator()
         """Unique identifier generator for multicall operations."""
 
-        self.request_uid: Final[UIDGenerator] = UIDGenerator()
+        self.request_uid: Final = UIDGenerator()
         """Unique identifier generator for RPC requests."""
 
-        self.jsonrpc_batch_uid: Final[UIDGenerator] = UIDGenerator()
-        self.pools_closed_lock: Final[AlertingRLock] = AlertingRLock(name="pools closed")
+        self.jsonrpc_batch_uid: Final = UIDGenerator()
+        self.pools_closed_lock: Final = AlertingRLock(name="pools closed")
 
         self.pending_eth_calls: Final[DefaultDict[BlockId, Multicall]] = defaultdict(
             lambda: Multicall(self)
@@ -283,8 +283,8 @@ class DankMiddlewareController:
             True if the queue is full, False otherwise.
         """
         with self.pools_closed_lock:
-            if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
-                return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size  # type: ignore [no-any-return]
+            if ENVS.OPERATION_MODE.infura:
+                return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size
             eth_calls = sum(map(len, self.pending_eth_calls.values()))
             other_calls = sum(map(len, self.pending_rpc_calls))
             return eth_calls + other_calls >= cast(int, self.batcher.step)
@@ -439,7 +439,7 @@ class DankMiddlewareController:
 
 @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)
 def _get_client_version(sync_w3: Web3) -> str:
-    return cast(str, sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion)  # type: ignore [attr-defined]
+    return sync_w3.client_version if w3_version_major >= 6 else cast(str, sync_w3.clientVersion)  # type: ignore [attr-defined]
 
 
 def _logger_debug(msg: str, *args: Any) -> None: ...
