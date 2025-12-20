@@ -4,9 +4,7 @@ from typing import (
     Any,
     Final,
     Generic,
-    Optional,
     TypeVar,
-    Union,
     cast,
     final,
 )
