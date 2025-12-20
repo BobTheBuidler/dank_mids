@@ -1,6 +1,5 @@
-from typing import Any, Final, Generic, Optional, TypeVar, final
-from collections.abc import Callable
-from collections.abc import Iterable, Iterator
+from typing import Any, Final, Generic, TypeVar, final
+from collections.abc import Callable, Iterable, Iterator
 from weakref import ref
 
 
