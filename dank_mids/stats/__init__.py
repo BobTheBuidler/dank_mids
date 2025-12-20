@@ -31,8 +31,7 @@ from typing import (
     TypeVar,
     final,
 )
-from collections.abc import Callable
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 
 import msgspec
 from a_sync.asyncio import sleep0
