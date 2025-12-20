@@ -61,7 +61,7 @@ class HTTPRequesterThread(threading.Thread):
         """Returns decoded json data from `endpoint`."""
         if not self.is_alive():
             raise self._exc.with_traceback(self._exc.__traceback__)
-        
+
         caller_loop = get_running_loop()
         caller_future: asyncio.Future[T] = caller_loop.create_future()
 
