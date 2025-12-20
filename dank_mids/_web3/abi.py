@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Final, List, Optional, Tuple, TypeVar, final
+from typing import Any, Callable, Dict, Final, Optional, TypeVar, final
 
 from eth_typing import TypeStr
 from faster_eth_abi import grammar
