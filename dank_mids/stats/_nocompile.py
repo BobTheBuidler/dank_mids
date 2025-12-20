@@ -5,7 +5,7 @@ based on whether or not the user has `sentry_sdk` installed.
 Mypyc does not currently handle conditional imports like this well.
 """
 
-from typing import Any, Optional
+from typing import Any
 from collections.abc import Callable
 
 
