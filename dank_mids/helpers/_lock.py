@@ -1,9 +1,9 @@
 import threading
 import time as _time
 from _thread import LockType
+from threading import _allocate_lock  # type: ignore [attr-defined]
 from types import TracebackType
 from typing import Final, TypeVar, final
-from collections.abc import Callable
 
 from dank_mids._logging import getLogger
 
@@ -14,7 +14,6 @@ logger: Final = getLogger("dank_mids.AlertingRLock")
 
 get_ident: Final = threading.get_ident
 acquire_lock = threading._RLock.acquire
-allocate_lock: Final[Callable[[], LockType]] = threading._allocate_lock()  # type: ignore [attr-defined]
 
 time: Final = _time.time
 
@@ -37,7 +36,7 @@ class AlertingRLock(threading._RLock):  # type: ignore [misc]
         See Also:
             :class:`UIDGenerator`
         """
-        self._block: Final[LockType] = allocate_lock()
+        self._block: Final[LockType] = _allocate_lock()
         self._owner = None
         self._count = 0
         self._name: Final = name
