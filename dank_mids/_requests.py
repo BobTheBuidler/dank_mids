@@ -316,7 +316,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 # We want to pause here to let the event loop start any batches that have been queued up
                 # We don't want to start tiny batches or start the same batch more than 1x, that's waste
                 await yield_to_loop()
-        
+
         current_batch = self._batch
         if current_batch is None:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
