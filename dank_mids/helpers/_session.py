@@ -4,20 +4,20 @@ from enum import IntEnum
 from itertools import chain
 from random import random
 from time import time
-from typing import Any, Final, Tuple, final
+from typing import Any, Callable, Final, Tuple, final
 
 from aiohttp import (
     ClientError,
     ClientResponseError,
     ClientSession,
 )
-from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
+from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 from dank_mids.helpers._rate_limit import limiters
-from dank_mids.types import PartialRequest
+from dank_mids.types import PartialRequest, T
 
 
 logger: Final = getLogger("dank_mids.session")
@@ -126,7 +126,7 @@ class DankClientSession(ClientSession):
     _last_rate_limited_at = 0
     _continue_requests_at = 0
 
-    async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> bytes:  # type: ignore [override]
+    async def post(self, endpoint: str, *args: Any, loads: Callable[[str], T] = DEFAULT_JSON_DECODER, **kwargs: Any) -> T:
         # This should only be called in the HTTPRequesterThread
         if (now := time()) < self._continue_requests_at:
             await sleep(self._continue_requests_at - now)
