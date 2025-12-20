@@ -75,7 +75,7 @@ class DankBatch:
     def __repr__(self) -> str:
         return f"<dank_mids.DankBatch object at {hex(id(self))}>"
 
-    def __await__(self) -> Generator[Any, None, None]:
+    def __await__(self) -> Generator[Any, None, list[Any]]:
         """
         Executes all operations in the batch.
 
