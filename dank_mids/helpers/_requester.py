@@ -23,7 +23,7 @@ class HTTPRequesterThread(threading.Thread):
         super().__init__(daemon=True)
         self.loop: Final = asyncio.new_event_loop()
         self._session: DankClientSession | None = None
-        self._tasks: Final[set[asyncio.Task[Any]]] = set()
+        self._tasks: Final[set[asyncio.Task[None]]] = set()
         self.start()
 
     def run(self) -> None:
@@ -66,7 +66,7 @@ class HTTPRequesterThread(threading.Thread):
                 caller_loop.call_soon_threadsafe(caller_future.set_result, result)
 
         def start_request() -> None:
-            task = create_task(run_and_set_result())
+            task: asyncio.Task[None] = create_task(run_and_set_result())
             self._tasks.add(task)
             task.add_done_callback(self._tasks.discard)
 
