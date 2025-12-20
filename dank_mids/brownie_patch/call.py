@@ -7,12 +7,9 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
     Final,
-    List,
     NewType,
     Optional,
-    Tuple,
     TypeVar,
     Union,
 )
