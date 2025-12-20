@@ -71,7 +71,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         tasks = TASKS  # one globals lookup is better than two
         tasks.add(task)
         task.add_done_callback(tasks.discard)
-    
+
     handle = _requester.loop.call_soon_threadsafe(start_check)
     try:
         await caller_future
