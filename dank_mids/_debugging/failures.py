@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Literal, Type, Union
+from typing import TYPE_CHECKING, Literal, Union
 
 from a_sync import ProcessingQueue
 from a_sync.functools import cached_property_unsafe as cached_property
