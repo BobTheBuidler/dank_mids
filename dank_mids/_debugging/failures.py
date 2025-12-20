@@ -27,7 +27,7 @@ class FailedRequestWriter(_CSVWriter):
     column_names = "request_type", "request_uid", "request_length", "error", "request_data"
     """The names of the columns in the CSV file."""
 
-    def __init__(self, chainid: int, failure_type: Type[BaseException]) -> None:
+    def __init__(self, chainid: int, failure_type: type[BaseException]) -> None:
         """
         Initialize the FailedRequestWriter.
 
@@ -62,9 +62,9 @@ class FailedRequestWriter(_CSVWriter):
         self,
         e: Exception,
         request_type: str,
-        request_uid: Union[str, int],
-        request_length: Union[int, Literal["unknown"]],
-        request_data: Union[List["Request"], List["PartialRequest"], bytes],
+        request_uid: str | int,
+        request_length: int | Literal["unknown"],
+        request_data: list["Request"] | list["PartialRequest"] | bytes,
     ) -> None:
         """
         Record a failed request to the CSV file.
@@ -88,9 +88,9 @@ def record(
     chainid: int,
     e: Exception,
     request_type: str,
-    request_uid: Union[int, str],
-    request_length: Union[int, Literal["unknown"]],
-    request_data: Union[List["Request"], List["PartialRequest"], bytes],
+    request_uid: int | str,
+    request_length: int | Literal["unknown"],
+    request_data: list["Request"] | list["PartialRequest"] | bytes,
 ) -> None:
     """
     Record a failed request using a new FailedRequestWriter instance.

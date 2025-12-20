@@ -1,7 +1,8 @@
 import abc
 import logging
 import os
-from typing import Any, Iterable, Literal
+from typing import Any, Literal
+from collections.abc import Iterable
 
 import aiofiles
 from a_sync.functools import cached_property_unsafe as cached_property

@@ -6,17 +6,16 @@ from types import MethodType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Dict,
     Final,
     List,
     NewType,
     Optional,
-    Sequence,
     Tuple,
     TypeVar,
     Union,
 )
+from collections.abc import Callable, Sequence
 
 import brownie.convert.datatypes
 import brownie.convert.normalize
@@ -52,9 +51,9 @@ APPLICATION_MODE: Final[bool] = ENVS.OPERATION_MODE.application
 
 _T = TypeVar("_T")
 TypeStr = NewType("TypeStr", str)
-TypeStrs = List[TypeStr]
-ListOrTuple = Union[List[_T], Tuple[_T, ...]]
-AbiDict = NewType("AbiDict", Dict[str, Any])
+TypeStrs = list[TypeStr]
+ListOrTuple = Union[list[_T], tuple[_T, ...]]
+AbiDict = NewType("AbiDict", dict[str, Any])
 
 
 # these compile to C constants to avoid global name lookups
@@ -147,9 +146,9 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
     async def coroutine(
         self: ContractCall,
         *args: Any,
-        block_identifier: Optional[BlockIdentifier] = None,
-        decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        block_identifier: BlockIdentifier | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
         _attempt_number: int = 1,
     ) -> Any:
         if override:
@@ -267,13 +266,13 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
     return call.signature  # type: ignore [return-value, no-any-return]
 
 
-__eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], bytes]] = faster_eth_abi.encode
-__eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], Tuple[Any, ...]]] = (
+__eth_abi_encode: Final[Callable[[TypeStrs, list[Any]], bytes]] = faster_eth_abi.encode
+__eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], tuple[Any, ...]]] = (
     faster_eth_abi.decode
 )
 
 
-def __encode_input(abi: AbiDict, signature: str, *args: Any) -> Union[HexStr, Exception]:
+def __encode_input(abi: AbiDict, signature: str, *args: Any) -> HexStr | Exception:
     try:
         data = format_input_but_cache_checksums(abi, args)
         types_list = get_type_strings(abi["inputs"])
@@ -335,7 +334,7 @@ def __validate_output(abi: AbiDict, hexstr: BytesLike) -> None:
 # NOTE: We do a little monkey patching to save cpu cycles on checksums
 
 
-def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> List[Any]:
+def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> list[Any]:
     # Format contract inputs based on ABI types
     if len(inputs) and not len(abi["inputs"]):
         raise TypeError(f"{abi['name']} requires no arguments")
@@ -361,7 +360,7 @@ brownie.network.contract.format_output = format_output_but_cache_checksums
 
 def _format_tuple_but_cache_checksums(
     abi_types: Sequence[ABIType], values: ListOrTuple[Any]
-) -> List[Any]:
+) -> list[Any]:
     result = []
     _check_array(values, len(abi_types))
     for type_, value in zip(abi_types, values):
@@ -377,7 +376,7 @@ def _format_tuple_but_cache_checksums(
     return result
 
 
-def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any]) -> List[Any]:
+def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any]) -> list[Any]:
     _check_array(values, abi_type.arrlist[-1][0] if len(abi_type.arrlist[-1]) else None)
     item_type = abi_type.item_type
     if item_type.is_array:

@@ -2,7 +2,8 @@ import threading
 import time as _time
 from _thread import LockType
 from types import TracebackType
-from typing import Callable, Final, TypeVar, final
+from typing import Final, TypeVar, final
+from collections.abc import Callable
 
 from dank_mids._logging import getLogger
 

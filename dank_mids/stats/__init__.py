@@ -25,17 +25,16 @@ from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     DefaultDict,
     Deque,
     Final,
-    Iterable,
     Set,
     Tuple,
     Type,
     TypeVar,
     final,
 )
+from collections.abc import Callable, Iterable
 
 import msgspec
 from a_sync.asyncio import sleep0
@@ -206,7 +205,7 @@ class _StatsLogger(logging.Logger):
 
     # Internal helpers
 
-    def _log(self, level: _LogLevel, msg: str, args: Tuple[Any, ...] = (), **kwargs: Any) -> None:  # type: ignore [override]
+    def _log(self, level: _LogLevel, msg: str, args: tuple[Any, ...] = (), **kwargs: Any) -> None:  # type: ignore [override]
         """
         Wrapper around the standard logging method to simplify custom log level checks.
 
@@ -377,7 +376,7 @@ class _Collector:
         representing durations. Each deque has a maximum length of 50,000.
         """
 
-        self.types: Set[Type[Any]] = set()
+        self.types: set[type[Any]] = set()
         """
         A set that stores all the types encountered during data collection.
         This is used for debugging and analysis purposes.
