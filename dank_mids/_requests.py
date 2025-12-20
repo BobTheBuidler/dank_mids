@@ -1,6 +1,5 @@
 from asyncio import (
     Future,
-    Lock,
     Task,
     TimeoutError,
     create_task,
@@ -107,7 +106,7 @@ from dank_mids.helpers._requester import _requester
 from dank_mids.helpers._weaklist import WeakList
 from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
-from dank_mids.lock import AlertingRLock
+from dank_mids.lock import AlertingRLock, Lock
 from dank_mids.types import (
     BatchId,
     BlockId,
