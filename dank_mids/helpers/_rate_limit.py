@@ -24,8 +24,8 @@ limiters: Final[DefaultDict[str, AsyncLimiter]] = defaultdict(
     lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)  # type: ignore [has-type, operator]
 )
 
-_rate_limit_waiters: Final[Dict[str, a_sync.Event]] = {}
-_rate_limit_tasks: Final[Dict[str, "asyncio.Task[None]"]] = {}
+_rate_limit_waiters: Final[dict[str, a_sync.Event]] = {}
+_rate_limit_tasks: Final[dict[str, "asyncio.Task[None]"]] = {}
 
 
 async def rate_limit_inactive(endpoint: str) -> None:

@@ -80,7 +80,7 @@ class MethodNoFormat(Method[TFunc]):
         return cls(method, [default_root_munger])
 
 
-def bypass_chainid_formatter(eth: Type[BaseEth]) -> None:
+def bypass_chainid_formatter(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_chainId method.
 
     Args:
@@ -89,7 +89,7 @@ def bypass_chainid_formatter(eth: Type[BaseEth]) -> None:
     eth._chain_id = MethodNoFormat(RPC.eth_chainId)
 
 
-def bypass_getbalance_formatter(eth: Type[BaseEth]) -> None:
+def bypass_getbalance_formatter(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getBalance method.
 
     Args:
@@ -98,7 +98,7 @@ def bypass_getbalance_formatter(eth: Type[BaseEth]) -> None:
     eth._get_balance = MethodNoFormat(RPC.eth_getBalance, mungers=[eth.block_id_munger])
 
 
-def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
+def bypass_transaction_count_formatter(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getTransactionCount method.
 
     Args:
@@ -109,7 +109,7 @@ def bypass_transaction_count_formatter(eth: Type[BaseEth]) -> None:
     )
 
 
-def bypass_log_formatter(eth: Type[BaseEth]) -> None:
+def bypass_log_formatter(eth: type[BaseEth]) -> None:
     """Bypasses formatters for log-related methods such as eth_getLogs.
 
     Args:
@@ -121,7 +121,7 @@ def bypass_log_formatter(eth: Type[BaseEth]) -> None:
     eth.get_filter_changes = MethodNoFormat.default(RPC.eth_getFilterChanges)
 
 
-def bypass_transaction_receipt_formatter(eth: Type[BaseEth]) -> None:
+def bypass_transaction_receipt_formatter(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getTransactionReceipt method.
 
     Args:
@@ -134,7 +134,7 @@ def bypass_transaction_receipt_formatter(eth: Type[BaseEth]) -> None:
         eth._get_transaction_receipt = method
 
 
-def bypass_transaction_formatter(eth: Type[BaseEth]) -> None:
+def bypass_transaction_formatter(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getTransactionByHash method.
 
     Args:
@@ -150,7 +150,7 @@ _block_selectors = dict(
 )
 
 
-def bypass_block_formatters(eth: Type[BaseEth]) -> None:
+def bypass_block_formatters(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for block-related methods such as eth_getBlockByNumber.
 
     Adjusts the mungers definition based on the major version of the web3 library.
@@ -164,7 +164,7 @@ def bypass_block_formatters(eth: Type[BaseEth]) -> None:
 
         def get_block_munger(
             self, block_identifier: BlockIdentifier, full_transactions: bool = False
-        ) -> Tuple[BlockIdentifier, bool]:
+        ) -> tuple[BlockIdentifier, bool]:
             return (block_identifier, full_transactions)
 
     eth._get_block = MethodNoFormat(
@@ -173,7 +173,7 @@ def bypass_block_formatters(eth: Type[BaseEth]) -> None:
     )
 
 
-def bypass_eth_call_formatter(eth: Type[BaseEth]) -> None:
+def bypass_eth_call_formatter(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_call method.
 
     Args:
@@ -182,7 +182,7 @@ def bypass_eth_call_formatter(eth: Type[BaseEth]) -> None:
     eth._call = MethodNoFormat(RPC.eth_call, mungers=[eth.call_munger])
 
 
-def bypass_get_code_formatter(eth: Type[BaseEth]) -> None:
+def bypass_get_code_formatter(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for the eth_getCode method.
 
     Args:

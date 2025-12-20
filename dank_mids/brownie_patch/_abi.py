@@ -1,4 +1,5 @@
-from typing import Any, Dict, Final, List, Optional, Sequence, Tuple, final
+from typing import Any, Dict, Final, List, Optional, Tuple, final
+from collections.abc import Sequence
 from weakref import WeakValueDictionary
 
 from eth_hash import auto
@@ -9,7 +10,7 @@ from typing_extensions import Unpack
 from dank_mids.helpers.hashing import make_hashable
 
 
-SingletonKey = Tuple[Tuple[str, Any], ...]
+SingletonKey = tuple[tuple[str, Any], ...]
 
 _singletons: Final["WeakValueDictionary[SingletonKey, FunctionABI]"] = WeakValueDictionary()
 
@@ -83,8 +84,8 @@ class FunctionABI:
 
 def get_type_strings(
     abi_params: Sequence[ABIComponent],
-    substitutions: Optional[Dict[str, Any]] = None,
-) -> List[str]:
+    substitutions: dict[str, Any] | None = None,
+) -> list[str]:
     """Converts a list of parameters from an ABI into a list of type strings."""
     types_list = []
     if substitutions is None:
