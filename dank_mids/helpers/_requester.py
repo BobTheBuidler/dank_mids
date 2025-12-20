@@ -33,7 +33,7 @@ class HTTPRequesterThread(threading.Thread):
         if session is None:
             connector = TCPConnector(limit=0, enable_cleanup_closed=True)
             client_timeout = ClientTimeout(int(ENVS.AIOHTTP_TIMEOUT))
-            session = self._session =  DankClientSession(
+            session = self._session = DankClientSession(
                 connector=connector,
                 headers={"content-type": "application/json"},
                 timeout=client_timeout,
@@ -68,13 +68,16 @@ class HTTPRequesterThread(threading.Thread):
         self.loop.call_soon_threadsafe(start_request)
         return await caller_future
 
+
 def shutdown_http_requester() -> None:
     async def close_session_and_stop() -> None:
         if session := _requester._session:
             await session.close()
         _requester.loop.stop()
+
     # Block until the ClientSession and loop are both closed
     asyncio.run_coroutine_threadsafe(close_session_and_stop(), _requester.loop).result()
+
 
 _requester = HTTPRequesterThread()
 atexit.register(shutdown_http_requester)

@@ -44,6 +44,7 @@ async def rate_limit_inactive(endpoint: str) -> None:
         run_coroutine_threadsafe(_rate_limit_inactive(endpoint), _requester.loop)
     )
 
+
 async def _rate_limit_inactive(endpoint: str) -> None:
     """
     Wait until the rate limiter for `endpoint` has no remaining waiters.

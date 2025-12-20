@@ -114,7 +114,6 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
             raise error from ve
         raise
 
- 
 
 _last_throttled_at: Final[dict[AsyncLimiter, float]] = {}
 
