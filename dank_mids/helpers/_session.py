@@ -3,24 +3,19 @@ from asyncio import sleep
 from enum import IntEnum
 from itertools import chain
 from random import random
-from threading import get_ident
 from time import time
-from typing import Any, Callable, Final, Tuple, final, overload
+from typing import Any, Final, Tuple, final
 
 from aiohttp import (
     ClientError,
     ClientResponseError,
     ClientSession,
-    ClientTimeout,
-    TCPConnector,
 )
 from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
-from async_lru import alru_cache
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
-from dank_mids.helpers._codec import JSONRPCBatchResponse, RawResponse
 from dank_mids.helpers._rate_limit import limiters
 from dank_mids.types import PartialRequest
 
@@ -120,24 +115,7 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
             raise error from ve
         raise
 
-
-@overload
-async def post(
-    endpoint: str, *args, loads: Callable[[Any], RawResponse], **kwargs
-) -> RawResponse: ...
-@overload
-async def post(
-    endpoint: str, *args, loads: Callable[[Any], JSONRPCBatchResponse], **kwargs
-) -> JSONRPCBatchResponse: ...
-async def post(endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> Any:
-    """Returns decoded json data from `endpoint`"""
-    session = await get_session()
-    return await session.post(endpoint, *args, loads=loads, **kwargs)
-
-
-async def get_session() -> "DankClientSession":
-    return await _get_session_for_thread(get_ident())
-
+ 
 
 _last_throttled_at: Final[dict[AsyncLimiter, float]] = {}
 
@@ -149,6 +127,7 @@ class DankClientSession(ClientSession):
     _continue_requests_at = 0
 
     async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> bytes:  # type: ignore [override]
+        # This should only be called in the HTTPRequesterThread
         if (now := time()) < self._continue_requests_at:
             await sleep(self._continue_requests_at - now)
 
@@ -257,26 +236,6 @@ class DankClientSession(ClientSession):
             _logger_debug("rate limited: retrying after %.3fs", try_after)
         else:
             _logger_info("rate limited: retrying after %.3fs", try_after)
-
-
-@alru_cache(maxsize=None)
-async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
-    """
-    This makes our ClientSession threadsafe just in case.
-    Most everything should be run in main thread though.
-    """
-    # I'm testing the value to use for limit, eventually will make an env var for this with an appropriate default
-    connector = TCPConnector(limit=0, enable_cleanup_closed=True)
-    client_timeout = ClientTimeout(  # type: ignore [arg-type, attr-defined]
-        int(ENVS.AIOHTTP_TIMEOUT)
-    )
-    return DankClientSession(
-        connector=connector,
-        headers={"content-type": "application/json"},
-        timeout=client_timeout,
-        raise_for_status=True,
-        read_bufsize=2**20,  # 1mb
-    )
 
 
 def _logger_is_enabled_for(level: int) -> bool: ...

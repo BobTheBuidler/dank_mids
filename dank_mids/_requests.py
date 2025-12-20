@@ -76,7 +76,7 @@ from dank_mids._tasks import (
     shield,
 )
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers import DebuggableFuture, _codec, _session, batch_size, gatherish
+from dank_mids.helpers import DebuggableFuture, _codec, batch_size, gatherish
 from dank_mids.helpers._codec import (
     JSONRPCBatchResponse,
     MulticallChunk,
@@ -103,6 +103,7 @@ from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._rate_limit import rate_limit_inactive
+from dank_mids.helpers._requester import _requester
 from dank_mids.helpers._weaklist import WeakList
 from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
@@ -1279,7 +1280,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
             # for the multicalls too
             mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
-            response: JSONRPCBatchResponse = await _session.post(
+            response: JSONRPCBatchResponse = await _requester.post(
                 self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
             )
         except ClientResponseError as e:

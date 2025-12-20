@@ -8,10 +8,13 @@ import a_sync.asyncio
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._tasks import shield
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
+from dank_mids.helpers._requester import _requester
 
 
 CancelledError: Final = asyncio.CancelledError
 create_task: Final = asyncio.create_task
+run_coroutine_threadsafe: Final = asyncio.run_coroutine_threadsafe
+wrap_future: Final = asyncio.wrap_future
 
 nlargest: Final = heapq.nlargest
 
@@ -35,6 +38,19 @@ async def rate_limit_inactive(endpoint: str) -> None:
     Otherwise, set up our own Event and signal once no waiters remain.
     """
     # Quick exit if no queued waiters
+    if not limiters[endpoint]._waiters:
+        return
+    return await wrap_future(
+        run_coroutine_threadsafe(_rate_limit_inactive(endpoint), _requester.loop)
+    )
+
+async def _rate_limit_inactive(endpoint: str) -> None:
+    """
+    Wait until the rate limiter for `endpoint` has no remaining waiters.
+    If someone's already waiting on this endpoint, just await their Event.
+    Otherwise, set up our own Event and signal once no waiters remain.
+    """
+    # Quick exit if no queued waiters (2nd check)
     if not limiters[endpoint]._waiters:
         return
 
