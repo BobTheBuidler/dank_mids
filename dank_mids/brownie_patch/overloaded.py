@@ -1,6 +1,6 @@
 from functools import wraps
 from types import MethodType
-from typing import Any, Optional, Union
+from typing import Any
 
 from brownie import Contract
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
