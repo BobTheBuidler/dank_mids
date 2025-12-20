@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_overloaded(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("52f83421bfd09ca3d5a6__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("70d6a0f411c3a3480616__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___brownie_patch___overloaded");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "52f83421bfd09ca3d5a6__mypyc.init_dank_mids___brownie_patch___overloaded");
+    void *init_func = PyCapsule_GetPointer(capsule, "70d6a0f411c3a3480616__mypyc.init_dank_mids___brownie_patch___overloaded");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
