@@ -54,6 +54,14 @@ dank\_mids.exceptions module
    :undoc-members:
    :show-inheritance:
 
+dank\_mids.lock module
+----------------------
+
+.. automodule:: dank_mids.lock
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dank\_mids.middleware module
 ----------------------------
 
