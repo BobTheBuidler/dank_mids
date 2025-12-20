@@ -106,7 +106,7 @@ from dank_mids.helpers._requester import _requester
 from dank_mids.helpers._weaklist import WeakList
 from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
-from dank_mids.lock import AlertingRLock
+from dank_mids.lock import AlertingRLock, Lock
 from dank_mids.types import (
     BatchId,
     BlockId,
@@ -121,6 +121,8 @@ if TYPE_CHECKING:
     from dank_mids._batch import DankBatch
     from dank_mids.controller import DankMiddlewareController
 
+
+EXECUTION_LOCK: Final = Lock()
 
 logger: Final = getLogger(__name__)
 
@@ -305,7 +307,15 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 _log_debug("bypassed dank batching, method is %s", self.method)
             return await self.get_response_unbatched()
 
-        fut = self._fut
+        # We do some janky stuff here to make the event loop run a few times
+        # so we can collect as many requests as possible into our batch
+        async with EXECUTION_LOCK:
+            fut = self._fut
+            if self._batch is None:
+                # We want to pause here to let the event loop start any batches that have been queued up
+                # We don't want to start tiny batches or start the same batch more than 1x, that's waste
+                await yield_to_loop()
+
         current_batch = self._batch
         if current_batch is None:
             # NOTE: We want to force the event loop to make one full _run_once call before we execute.
@@ -327,15 +337,11 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 # rebatched (potentially bringing better results?), and retried
                 await wait_for(shield(batch_task), timeout=TIMEOUT_SECONDS_BIG)
             except AttributeError as e:
-                if "__mypyc_temp__" in str(e):
-                    # This is a mypyc compiler bug that we can work around.
-                    # It's worth it for fast C.
-                    logger.exception(
-                        "This is for Bob, you can show him but he probably knows already."
-                    )
-                    return await self.create_duplicate().get_response()
-                else:
+                if "__mypyc_temp__" not in str(e):
                     raise
+                # This is a mypyc compiler bug that we can work around. It's worth it for fast C.
+                logger.exception("This is for Bob, you can show him but he probably knows already.")
+                batch_complete = False
             except TimeoutError:
                 batch_complete = False
                 _log_debug(
@@ -1290,9 +1296,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
             # for the multicalls too
             mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
-            response: JSONRPCBatchResponse = await _requester.post(
+            post_coro = _requester.post(
                 self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
             )
+            response: JSONRPCBatchResponse = await wait_for(post_coro, timeout=30)
+        except TimeoutError:
+            timeout_logger_warning("JSONRPCBatch.post timed out (30s). Retrying.")
+            return await self.post()
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 _log_warning("Payload too large: %s", self.method_counts)

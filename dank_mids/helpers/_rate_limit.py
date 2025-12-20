@@ -10,6 +10,7 @@ from dank_mids._logging import getLogger
 from dank_mids._tasks import shield
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 from dank_mids.helpers._requester import _requester
+from dank_mids.lock import Lock
 from dank_mids.types import RateLimiters
 
 
@@ -33,7 +34,7 @@ limiters: Final[RateLimiters] = defaultdict(
     lambda: AsyncLimiter(1, 1 / int(ENVS.REQUESTS_PER_SECOND))
 )
 
-locks: Final[DefaultDict[str, asyncio.Lock]] = defaultdict(asyncio.Lock)
+locks: Final[DefaultDict[str, Lock]] = defaultdict(Lock)
 
 _rate_limit_waiters: Final[dict[str, a_sync.Event]] = {}
 _rate_limit_tasks: Final[dict[str, "asyncio.Task[None]"]] = {}
