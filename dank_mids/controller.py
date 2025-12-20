@@ -156,7 +156,7 @@ class DankMiddlewareController:
 
         self.batcher.step = int(ENVS.MAX_MULTICALL_SIZE)
 
-        self.call_uid: Final = UIDGenerator()
+        self.call_uid: Final[UIDGenerator] = UIDGenerator()
         """Unique identifier generator for individual calls."""
 
         self.multicall_uid: Final = UIDGenerator()
