@@ -4,13 +4,9 @@ from enum import IntEnum
 from itertools import chain
 from random import random
 from time import time
-from typing import Any, Callable, Final, Tuple, final
+from typing import Any, Callable, Final, final
 
-from aiohttp import (
-    ClientError,
-    ClientResponseError,
-    ClientSession,
-)
+from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
