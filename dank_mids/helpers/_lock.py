@@ -44,10 +44,10 @@ class AlertingRLock(threading._RLock):  # type: ignore [misc]
 
     def __enter__(self) -> bool:
         return self.acquire()
-    
+
     def __exit__(self, t: type[E] | None, v: E | None, tb: TracebackType | None) -> None:
         self.release()
-    
+
     def acquire(self, blocking: bool = True, timeout: float = -1.0) -> bool:
         """
         Acquire a lock, blocking or non-blocking, with alerting if not acquired within 5 seconds.
