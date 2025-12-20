@@ -4,15 +4,13 @@ from typing import (
     AnyStr,
     Final,
     Literal,
-    Optional,
     Type,
     TypeVar,
     Union,
     final,
     overload,
 )
-from collections.abc import Callable
-from collections.abc import Iterable, Mapping
+from collections.abc import Callable, Iterable, Mapping
 
 import faster_hexbytes
 import msgspec
