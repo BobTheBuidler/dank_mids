@@ -34,7 +34,7 @@ class AlertingRLock:
         See Also:
             :class:`UIDGenerator`
         """
-        self._lock: Final[threading.Lock] = _allocate_lock()
+        self._lock: Final = threading.Lock()
         self._owner: int | None = None
         self._count = 0
         self._name: Final = name
