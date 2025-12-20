@@ -152,6 +152,7 @@ def tupleize_lists_nested(
 
 # NOTE: These functions are specialized by input type to generate more optimized C code:
 
+
 def _tupleize_dict_lists_nested(
     d: dict[TKey, TValue],
 ) -> AttributeDict[TKey, TValue]:  # sourcery skip: merge-isinstance
@@ -206,7 +207,11 @@ def _list_to_tuple(value: list[Any]) -> Any:
     # We split up the isinstance check because we generate
     # faster C code by calling _to_tuple with specifc types
     return tuple(
-        _list_to_tuple(i) if isinstance(i, list) else _tuple_to_tuple(i) if isinstance(i, tuple) else i
+        (
+            _list_to_tuple(i)
+            if isinstance(i, list)
+            else _tuple_to_tuple(i) if isinstance(i, tuple) else i
+        )
         for i in value
     )
 
@@ -215,7 +220,11 @@ def _tuple_to_tuple(value: tuple[Any, ...]) -> Any:
     # We split up the isinstance check because we generate
     # faster C code by calling _to_tuple with specifc types
     return tuple(
-        _list_to_tuple(i) if isinstance(i, list) else _tuple_to_tuple(i) if isinstance(i, tuple) else i
+        (
+            _list_to_tuple(i)
+            if isinstance(i, list)
+            else _tuple_to_tuple(i) if isinstance(i, tuple) else i
+        )
         for i in value
     )
 
