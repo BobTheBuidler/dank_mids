@@ -57,11 +57,13 @@ async def rate_limit_inactive(endpoint: str) -> None:
             try:
                 caller_loop.call_soon_threadsafe(caller_future.set_exception, e)
             except InvalidStateError:
+                # The Future in the main thread is already done, it must have been cancelled.
                 return
         else:
             try:
                 caller_loop.call_soon_threadsafe(caller_future.set_result, None)
             except InvalidStateError:
+                # The Future in the main thread is already done, it must have been cancelled.
                 return
 
     def start_check() -> None:
