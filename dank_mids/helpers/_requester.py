@@ -43,7 +43,11 @@ class HTTPRequesterThread(threading.Thread):
         return session
 
     async def post(
-        self, endpoint: str, *args: Any, loads: Callable[[str], T] = DEFAULT_JSON_DECODER, **kwargs: Any
+        self,
+        endpoint: str,
+        *args: Any,
+        loads: Callable[[str], T] = DEFAULT_JSON_DECODER,
+        **kwargs: Any,
     ) -> T:
         """Returns decoded json data from `endpoint`."""
 
