@@ -43,6 +43,10 @@ async def rate_limit_inactive(endpoint: str) -> None:
     if not limiters[endpoint]._waiters:
         return
 
+    if not _requester.is_alive():
+        raise _requester._exc.with_traceback(_requester._exc.__traceback__)
+        raise RuntimeError("subthread is dead???")
+
     caller_loop = get_running_loop()
     caller_future: asyncio.Future[None] = caller_loop.create_future()
 
@@ -59,9 +63,13 @@ async def rate_limit_inactive(endpoint: str) -> None:
         tasks = TASKS  # one globals lookup is better than two
         tasks.add(task)
         task.add_done_callback(tasks.discard)
-
-    _requester.loop.call_soon_threadsafe(start_check)
-    await caller_future
+    
+    handle = _requester.loop.call_soon_threadsafe(start_check)
+    try:
+        await caller_future
+    except CancelledError:
+        handle.cancel()
+        raise
 
 
 async def _rate_limit_inactive(endpoint: str) -> None:

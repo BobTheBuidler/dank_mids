@@ -29,7 +29,12 @@ class HTTPRequesterThread(threading.Thread):
 
     def run(self) -> None:
         asyncio.set_event_loop(self.loop)
-        self.loop.run_forever()
+        try:
+            self.loop.run_forever()
+        except Exception as e:
+            self._exc = e
+        finally:
+            self.loop.close()
 
     @property
     def session(self) -> DankClientSession:
@@ -54,6 +59,9 @@ class HTTPRequesterThread(threading.Thread):
         **kwargs: Any,
     ) -> T:
         """Returns decoded json data from `endpoint`."""
+        if not self.is_alive():
+            raise self._exc.with_traceback(self._exc.__traceback__)
+        
         caller_loop = get_running_loop()
         caller_future: asyncio.Future[T] = caller_loop.create_future()
 
