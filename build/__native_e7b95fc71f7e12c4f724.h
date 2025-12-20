@@ -638,11 +638,62 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
     PyObject *___mypyc_generator_attribute__endpoint;
+    PyObject *_type;
+    PyObject *_value;
+    PyObject *_traceback;
+    PyObject *_arg;
+    PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_generator_attribute__caller_future;
+    PyObject *___mypyc_generator_attribute__caller_loop;
+    PyObject *___mypyc_generator_attribute__chained_result_callback;
+    PyObject *___mypyc_generator_attribute__start_check;
     PyObject *___mypyc_temp__0;
     tuple_T3OOO ___mypyc_temp__1;
+} dank_mids___helpers____rate_limit___rate_limit_inactive_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_env__;
 } dank_mids___helpers____rate_limit___rate_limit_inactive_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *___mypyc_env__;
+    PyObject *___mypyc_generator_attribute__t;
+    PyObject *_type;
+    PyObject *_value;
+    PyObject *_traceback;
+    PyObject *_arg;
+    PyObject **_stop_iter_ptr;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_generator_attribute__exc;
+} dank_mids___helpers____rate_limit___chained_result_callback_rate_limit_inactive_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers____rate_limit___chained_result_callback_rate_limit_inactive_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers____rate_limit___chained_result_callback_gen___3_49Object;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers____rate_limit___start_check_rate_limit_inactive_objObject;
 
 typedef struct {
     PyObject_HEAD
@@ -681,6 +732,7 @@ typedef struct {
     CPyVTableItem *vtable;
     PyObject *_loop;
     PyObject *__session;
+    PyObject *__tasks;
 } dank_mids___helpers____requester___HTTPRequesterThreadObject;
 
 typedef struct {
@@ -741,7 +793,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___run_and_set_result_gen___3_56Object;
+} dank_mids___helpers____requester___run_and_set_result_gen___3_59Object;
 
 typedef struct {
     PyObject_HEAD
@@ -785,7 +837,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___close_session_and_stop_gen___3_73Object;
+} dank_mids___helpers____requester___close_session_and_stop_gen___3_78Object;
 
 typedef struct {
     PyObject_HEAD
