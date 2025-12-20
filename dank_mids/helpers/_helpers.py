@@ -1,13 +1,6 @@
 from functools import wraps
 from importlib.metadata import version
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Literal,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, Union
 from collections.abc import Callable
 from collections.abc import Awaitable, Coroutine
 
