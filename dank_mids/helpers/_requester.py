@@ -51,7 +51,7 @@ class HTTPRequesterThread(threading.Thread):
     ) -> T:
         """Returns decoded json data from `endpoint`."""
         caller_loop = get_running_loop()
-        caller_future = caller_loop.create_future()
+        caller_future: asyncio.Future[T] = caller_loop.create_future()
 
         async def run_and_set_result() -> None:
             try:
