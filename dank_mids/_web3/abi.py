@@ -1,4 +1,4 @@
-import typing
+import collections.abc
 from dataclasses import dataclass
 from typing import Any, Final, TypeVar, final
 from collections.abc import Callable
@@ -17,8 +17,8 @@ DataTreeFunc = Callable[[TypeStr, Any], tuple[TypeStr, Any]]
 
 
 # cdef typing
-Iterable: Final = typing.Iterable
-Mapping: Final = typing.Mapping
+Iterable: Final = collections.abc.Iterable
+Mapping: Final = collections.abc.Mapping
 
 
 parse: Final[Callable[[TypeStr], ABIType]] = grammar.parse
