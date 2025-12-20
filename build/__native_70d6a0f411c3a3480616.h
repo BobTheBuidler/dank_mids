@@ -652,20 +652,19 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__start_check;
     PyObject *___mypyc_generator_attribute__limiter;
     PyObject *___mypyc_temp__0;
-    PyObject *___mypyc_temp__1;
-    char ___mypyc_temp__2;
-    PyObject *___mypyc_temp__3;
-    tuple_T3OOO ___mypyc_temp__4;
-    PyObject *___mypyc_temp__5;
+    char ___mypyc_temp__1;
+    PyObject *___mypyc_temp__2;
+    tuple_T3OOO ___mypyc_temp__3;
+    PyObject *___mypyc_temp__4;
     PyObject *___mypyc_generator_attribute__handle;
-    PyObject *___mypyc_temp__11;
+    PyObject *___mypyc_temp__10;
+    tuple_T3OOO ___mypyc_temp__11;
     tuple_T3OOO ___mypyc_temp__12;
     tuple_T3OOO ___mypyc_temp__13;
-    tuple_T3OOO ___mypyc_temp__14;
-    PyObject *___mypyc_temp__15;
-    tuple_T3OOO ___mypyc_temp__16;
-    PyObject *___mypyc_temp__17;
-    tuple_T3OOO ___mypyc_temp__18;
+    PyObject *___mypyc_temp__14;
+    tuple_T3OOO ___mypyc_temp__15;
+    PyObject *___mypyc_temp__16;
+    tuple_T3OOO ___mypyc_temp__17;
 } dank_mids___helpers____rate_limit___rate_limit_inactive_envObject;
 
 typedef struct {
@@ -685,12 +684,12 @@ typedef struct {
     PyObject *_arg;
     PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_temp__6;
+    PyObject *___mypyc_temp__5;
+    tuple_T3OOO ___mypyc_temp__6;
     tuple_T3OOO ___mypyc_temp__7;
-    tuple_T3OOO ___mypyc_temp__8;
     PyObject *___mypyc_generator_attribute__e;
+    tuple_T3OOO ___mypyc_temp__8;
     tuple_T3OOO ___mypyc_temp__9;
-    tuple_T3OOO ___mypyc_temp__10;
 } dank_mids___helpers____rate_limit___check_rate_limit_inactive_envObject;
 
 typedef struct {
@@ -704,7 +703,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____rate_limit___check_gen___3_72Object;
+} dank_mids___helpers____rate_limit___check_gen___3_73Object;
 
 typedef struct {
     PyObject_HEAD
@@ -719,11 +718,11 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__endpoint;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__existing;
-    PyObject *___mypyc_temp__19;
-    tuple_T3OOO ___mypyc_temp__20;
+    PyObject *___mypyc_temp__18;
+    tuple_T3OOO ___mypyc_temp__19;
     PyObject *___mypyc_generator_attribute__task;
-    PyObject *___mypyc_temp__21;
-    tuple_T3OOO ___mypyc_temp__22;
+    PyObject *___mypyc_temp__20;
+    tuple_T3OOO ___mypyc_temp__21;
 } dank_mids___helpers____rate_limit____rate_limit_inactive_genObject;
 
 typedef struct {
@@ -735,14 +734,14 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__waiters;
     tuple_T3FIO ___mypyc_generator_attribute__last_waiter_tuple;
     PyObject *___mypyc_generator_attribute__last_waiter;
-    PyObject *___mypyc_temp__23;
+    PyObject *___mypyc_temp__22;
+    tuple_T3OOO ___mypyc_temp__23;
     tuple_T3OOO ___mypyc_temp__24;
-    tuple_T3OOO ___mypyc_temp__25;
+    CPyTagged ___mypyc_temp__25;
     CPyTagged ___mypyc_temp__26;
-    CPyTagged ___mypyc_temp__27;
     PyObject *___mypyc_generator_attribute___;
-    PyObject *___mypyc_temp__28;
-    tuple_T3OOO ___mypyc_temp__29;
+    PyObject *___mypyc_temp__27;
+    tuple_T3OOO ___mypyc_temp__28;
 } dank_mids___helpers____rate_limit_____rate_limit_inactive_genObject;
 
 typedef struct {
@@ -964,14 +963,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    vectorcallfunc vectorcall;
-    PyObject *_registry;
-    PyObject *_dispatch_cache;
-} dank_mids___helpers___hashing____to_tuple_objObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *_func;
     PyObject *_cache;
@@ -1010,6 +1001,47 @@ typedef struct {
     CPyTagged __count;
     PyObject *__name;
 } dank_mids___lock___AlertingRLockObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *__loop;
+    PyObject *__waiters;
+    char __locked;
+} dank_mids___lock___LockObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_temp__0;
+    tuple_T3OOO ___mypyc_temp__1;
+} dank_mids___lock_____aenter___3_Lock_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
+    PyObject *___mypyc_generator_attribute__t;
+    PyObject *___mypyc_generator_attribute__v;
+    PyObject *___mypyc_generator_attribute__tb;
+    int32_t ___mypyc_next_label__;
+} dank_mids___lock_____aexit___3_Lock_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_temp__2;
+    PyObject *___mypyc_temp__3;
+    PyObject *___mypyc_generator_attribute__w;
+    PyObject *___mypyc_generator_attribute__fut;
+    PyObject *___mypyc_temp__4;
+    tuple_T3OOO ___mypyc_temp__5;
+    tuple_T3OOO ___mypyc_temp__6;
+} dank_mids___lock___acquire_Lock_genObject;
 
 typedef struct {
     PyObject_HEAD
