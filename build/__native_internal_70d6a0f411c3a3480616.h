@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1385];
+extern PyObject *CPyStatics[1380];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -181,7 +181,6 @@ extern CPyModule *CPyModule_dank_mids___helpers___method;
 extern PyObject *CPyStatic_method___globals;
 extern PyObject *CPyStatic_lock___globals;
 extern CPyModule *CPyModule_time;
-extern CPyModule *CPyModule__thread;
 extern CPyModule *CPyModule_dank_mids___middleware__internal;
 extern CPyModule *CPyModule_dank_mids___middleware;
 extern PyObject *CPyStatic_middleware___globals;

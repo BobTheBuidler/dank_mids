@@ -1,7 +1,5 @@
 import threading
 import time as _time
-from _thread import LockType
-from threading import _allocate_lock  # type: ignore [attr-defined]
 from types import TracebackType
 from typing import Final, TypeVar, final
 
