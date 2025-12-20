@@ -25,14 +25,13 @@ from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     DefaultDict,
     Deque,
     Final,
     TypeVar,
     final,
 )
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 
 import msgspec
 from a_sync.asyncio import sleep0

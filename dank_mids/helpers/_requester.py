@@ -1,7 +1,8 @@
 import asyncio
 import atexit
 import threading
-from typing import Any, Callable, Final, final
+from typing import Any, Final, final
+from collections.abc import Callable
 
 import a_sync
 from aiohttp import ClientTimeout, TCPConnector

@@ -5,10 +5,11 @@ based on whether or not the user has `sentry_sdk` installed.
 Mypyc does not currently handle conditional imports like this well.
 """
 
-from typing import Any, Callable, Optional
+from typing import Any
+from collections.abc import Callable
 
 
-set_tag: Optional[Callable[[str, Any], None]]
+set_tag: Callable[[str, Any], None] | None
 """
 Set a tag for the current scope in Sentry.
 
@@ -20,7 +21,7 @@ See Also:
 """
 
 
-set_measurement: Optional[Callable]
+set_measurement: Callable | None
 """
 Set a measurement for the current scope in Sentry.
 
@@ -32,7 +33,7 @@ See Also:
 """
 
 
-exc: Optional[ImportError]
+exc: ImportError | None
 """
 Stores any ImportError that occurred when trying to import sentry_sdk.
 If this is not None, it indicates that Sentry integration is not available.

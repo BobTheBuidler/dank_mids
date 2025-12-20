@@ -1,5 +1,6 @@
 from functools import lru_cache
-from typing import Callable, Literal, Optional, Union
+from typing import Literal, Union
+from collections.abc import Callable
 
 from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress, HexStr
@@ -32,7 +33,7 @@ class MulticallContract(Struct):
     The Ethereum address of the multicall contract.
     """
 
-    deploy_block: Optional[BlockNumber]
+    deploy_block: BlockNumber | None
     """
     The block number at which the multicall contract was deployed.
     If None, it means the deployment block is unknown.
@@ -80,7 +81,7 @@ class MulticallContract(Struct):
         return block < self.deploy_block
 
 
-def _get_multicall2(chainid: int) -> Optional[MulticallContract]:
+def _get_multicall2(chainid: int) -> MulticallContract | None:
     if multicall2 := MULTICALL2_ADDRESSES.get(chainid):
         return MulticallContract(
             address=to_checksum_address(multicall2),
@@ -90,7 +91,7 @@ def _get_multicall2(chainid: int) -> Optional[MulticallContract]:
         )
 
 
-def _get_multicall3(chainid: int) -> Optional[MulticallContract]:
+def _get_multicall3(chainid: int) -> MulticallContract | None:
     if multicall3 := MULTICALL3_ADDRESSES.get(chainid):
         return MulticallContract(
             address=to_checksum_address(multicall3),

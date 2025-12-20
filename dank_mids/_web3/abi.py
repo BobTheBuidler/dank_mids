@@ -1,6 +1,7 @@
 import typing
 from dataclasses import dataclass
-from typing import Any, Callable, Final, Optional, TypeVar, final
+from typing import Any, Final, TypeVar, final
+from collections.abc import Callable
 
 from eth_typing import TypeStr
 from faster_eth_abi import grammar
@@ -28,10 +29,10 @@ class Formatter:
     def __init__(
         self,
         normalizers: tuple[Normalizer, ...],
-        types: tuple[Optional[TypeStr], ...],
+        types: tuple[TypeStr | None, ...],
     ):
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
-        self.types: Final[tuple[Optional[ABIType], ...]] = tuple(
+        self.types: Final[tuple[ABIType | None, ...]] = tuple(
             parse(t) if isinstance(t, str) else None for t in types
         )
 
@@ -136,11 +137,11 @@ class ABITypedData:
 
     # NOTE this class was changed to a dataclass so it compiles to C better
 
-    abi_type: Optional[TypeStr]
+    abi_type: TypeStr | None
     data: Any
 
 
-def abi_sub_tree(abi_type: Optional[ABIType], data_value: Any) -> ABITypedData:
+def abi_sub_tree(abi_type: ABIType | None, data_value: Any) -> ABITypedData:
     # TODO: specialize this function, possibly with functools.singledispatch
 
     if abi_type is None:

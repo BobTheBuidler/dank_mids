@@ -30,7 +30,7 @@ jobs:
       run: pip install pyupgrade
 
     - name: Run PyUpgrade
-      run: pyupgrade --py39-plus --exit-zero-even-if-changed **/**/**.py
+      run: pyupgrade --py310-plus --exit-zero-even-if-changed **/**/**.py
 
     - name: Check for changes
       id: changes
@@ -47,7 +47,7 @@ jobs:
         git config --local user.name "github-actions[bot]"
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git commit -m "chore: run \`pyupgrade\` for Python3.9"
+        git commit -m "chore: run \`pyupgrade\` for Python3.10"
         git push
   
   black:

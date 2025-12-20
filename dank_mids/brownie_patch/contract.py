@@ -1,4 +1,4 @@
-from typing import Any, Literal, NewType, Optional, Union, overload
+from typing import Any, Literal, NewType, overload
 from collections.abc import Iterator
 
 import brownie
@@ -66,7 +66,7 @@ class Contract(brownie.Contract):
         name: str,
         address: str,
         abi: list[dict],
-        owner: Optional[AccountsType] = None,
+        owner: AccountsType | None = None,
         persist: bool = True,
     ) -> "Contract":
         """
@@ -95,8 +95,8 @@ class Contract(brownie.Contract):
         cls,
         name: str,
         manifest_uri: str,
-        address: Optional[str] = None,
-        owner: Optional[AccountsType] = None,
+        address: str | None = None,
+        owner: AccountsType | None = None,
         persist: bool = True,
     ) -> "Contract":
         """
@@ -125,8 +125,8 @@ class Contract(brownie.Contract):
     def from_explorer(
         cls,
         address: str,
-        as_proxy_for: Optional[str] = None,
-        owner: Optional[AccountsType] = None,
+        as_proxy_for: str | None = None,
+        owner: AccountsType | None = None,
         silent: bool = False,
         persist: bool = True,
     ) -> "Contract":
@@ -252,14 +252,14 @@ def _is_function_abi(abi: dict) -> bool:
 
 
 @overload
-def patch_contract(contract: Contract, w3: Optional[DankWeb3] = None) -> Contract: ...
+def patch_contract(contract: Contract, w3: DankWeb3 | None = None) -> Contract: ...
 @overload
 def patch_contract(
-    contract: Union[brownie.Contract, str], w3: Optional[DankWeb3] = None
+    contract: brownie.Contract | str, w3: DankWeb3 | None = None
 ) -> brownie.Contract: ...
 def patch_contract(
-    contract: Union[Contract, brownie.Contract, str], w3: Optional[DankWeb3] = None
-) -> Union[Contract, brownie.Contract]:
+    contract: Contract | brownie.Contract | str, w3: DankWeb3 | None = None
+) -> Contract | brownie.Contract:
     """
     Patch a contract with async and call batching functionalities.
 
