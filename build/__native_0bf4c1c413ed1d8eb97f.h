@@ -885,7 +885,7 @@ typedef struct {
     PyObject *_pending_rpc_calls;
     PyObject *__loop;
     PyObject *_w3;
-    PyObject *_max_jsonrpc_batch_size;
+    CPyTagged _max_jsonrpc_batch_size;
     PyObject *_sync_w3;
     PyObject *_chain_id;
     PyObject *_client_version;
