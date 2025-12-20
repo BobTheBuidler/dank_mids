@@ -3,6 +3,7 @@ import atexit
 import threading
 from typing import Any, Callable, Final, final
 
+import a_sync
 from aiohttp import ClientTimeout, TCPConnector
 from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
@@ -11,8 +12,9 @@ from dank_mids.helpers._session import DankClientSession
 from dank_mids.types import T
 
 
-ensure_future: Final = asyncio.ensure_future
 get_running_loop: Final = asyncio.get_running_loop
+
+create_task: Final = a_sync.create_task
 
 
 @final
@@ -21,6 +23,7 @@ class HTTPRequesterThread(threading.Thread):
         super().__init__(daemon=True)
         self.loop: Final = asyncio.new_event_loop()
         self._session: DankClientSession | None = None
+        self._tasks: Final[set[asyncio.Task[Any]]] = set()
         self.start()
 
     def run(self) -> None:
@@ -63,7 +66,9 @@ class HTTPRequesterThread(threading.Thread):
                 caller_loop.call_soon_threadsafe(caller_future.set_result, result)
 
         def start_request() -> None:
-            ensure_future(run_and_set_result(), loop=self.loop)
+            task = create_task(run_and_set_result())
+            self._tasks.add(task)
+            task.add_done_callback(self._tasks.discard)
 
         self.loop.call_soon_threadsafe(start_request)
         return await caller_future
