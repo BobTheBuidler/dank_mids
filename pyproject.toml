@@ -41,7 +41,7 @@ faster-eth-abi = ">=5.2.12"
 faster-eth-utils = ">=5.3.11"
 faster-hexbytes = ">1,<2"
 multicall = ">=0.6.2,<1"
-typed-envs = ">=0.2,<0.3"
+typed-envs = ">=0.2.1,<0.3"
 web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<8"
 
 [tool.poetry.group.dev.dependencies]
