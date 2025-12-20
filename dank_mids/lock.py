@@ -34,7 +34,7 @@ class AlertingRLock:
         See Also:
             :class:`UIDGenerator`
         """
-        self._block: Final[LockType] = _allocate_lock()
+        self._lock: Final[threading.Lock] = _allocate_lock()
         self._owner: int | None = None
         self._count = 0
         self._name: Final = name
@@ -73,30 +73,42 @@ class AlertingRLock:
 
         endtime: Final = None if timeout is None or timeout < 0 else (time() + timeout)
 
-        while True:
-            # Calculate the timeout for this attempt
-            this_timeout = 5.0
-            if endtime is not None:
+        if endtime is None:
+            while True:
+                if self._lock.acquire(timeout=5.0):
+                    self._owner = me
+                    self._count = 1
+                    return True
+
+                logger.warning("wtf?! %s with name %s is locked!", self, self._name)
+
+                # If not blocking, or timeout expired, return False
+                if not blocking:
+                    return False
+
+        else:
+            while True:
+                # Calculate the timeout for this attempt
                 remaining = endtime - time()
                 if remaining <= 0:
                     this_timeout = 0.0
                 elif remaining < 5.0:
                     this_timeout = remaining
+                else:
+                    this_timeout = 5.0
 
-            if self._block.acquire(timeout=this_timeout):
-                self._owner = me
-                self._count = 1
-                return True
+                if self._lock.acquire(timeout=this_timeout):
+                    self._owner = me
+                    self._count = 1
+                    return True
 
-            logger.warning("wtf?! %s with name %s is locked!", self, self._name)
+                logger.warning("wtf?! %s with name %s is locked!", self, self._name)
 
-            # If not blocking, or timeout expired, return False
-            if not blocking:
-                return False
-            if endtime is None:
-                continue
-            if endtime - time() <= 0:
-                return False
+                # If not blocking, or timeout expired, return False
+                if not blocking:
+                    return False
+                if endtime - time() <= 0:
+                    return False
 
     def release(self) -> None:
         """Release a lock, decrementing the recursion level.
@@ -119,7 +131,7 @@ class AlertingRLock:
         self._count = count = self._count - 1
         if not count:
             self._owner = None
-            self._block.release()
+            self._lock.release()
 
     def locked(self) -> bool:
         """
@@ -130,7 +142,7 @@ class AlertingRLock:
     # Internal methods used by condition variables
 
     def _acquire_restore(self, state: tuple[int, int | None]) -> None:
-        self._block.acquire()
+        self._lock.acquire()
         self._count, self._owner = state
 
     def _release_save(self) -> tuple[int, int | None]:
@@ -140,7 +152,7 @@ class AlertingRLock:
         self._count = 0
         owner = self._owner
         self._owner = None
-        self._block.release()
+        self._lock.release()
         return (count, owner)
 
     def _is_owned(self) -> bool:
