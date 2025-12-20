@@ -1524,3 +1524,4 @@ _log_warning: Final = logger.warning
 _logger_is_enabled_for: Final = logger.isEnabledFor
 _log_devhint: Final = stats.logger.devhint
 _demo_logger_info: Final = demo_logger.info
+
