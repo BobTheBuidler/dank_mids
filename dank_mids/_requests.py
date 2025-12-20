@@ -1286,9 +1286,13 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
             # for the multicalls too
             mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
-            response: JSONRPCBatchResponse = await _requester.post(
+            post_coro = _requester.post(
                 self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
             )
+            response: JSONRPCBatchResponse = await wait_for(post_coro, timeout=30)
+        except TimeoutError:
+            timeout_logger_warning("JSONRPCBatch.post timed out (30s). Retrying.")
+            return await self.post()
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 _log_warning("Payload too large: %s", self.method_counts)
