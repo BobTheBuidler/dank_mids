@@ -327,15 +327,11 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 # rebatched (potentially bringing better results?), and retried
                 await wait_for(shield(batch_task), timeout=TIMEOUT_SECONDS_BIG)
             except AttributeError as e:
-                if "__mypyc_temp__" in str(e):
-                    # This is a mypyc compiler bug that we can work around.
-                    # It's worth it for fast C.
-                    logger.exception(
-                        "This is for Bob, you can show him but he probably knows already."
-                    )
-                    return await self.create_duplicate().get_response()
-                else:
+                if "__mypyc_temp__" not in str(e):
                     raise
+                # This is a mypyc compiler bug that we can work around. It's worth it for fast C.
+                logger.exception("This is for Bob, you can show him but he probably knows already.")
+                batch_complete = False
             except TimeoutError:
                 batch_complete = False
                 _log_debug(
