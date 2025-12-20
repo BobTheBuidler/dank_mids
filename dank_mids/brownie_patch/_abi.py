@@ -1,4 +1,4 @@
-from typing import Any, Final, Optional, final
+from typing import Any, Final, final
 from collections.abc import Sequence
 from weakref import WeakValueDictionary
 
