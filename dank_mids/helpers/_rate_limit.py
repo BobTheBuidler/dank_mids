@@ -1,17 +1,22 @@
 import asyncio
 import heapq
 from collections import defaultdict
-from typing import DefaultDict, Dict, Final
+from typing import Dict, Final
 
 import a_sync
 import a_sync.asyncio
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._tasks import shield
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
+from dank_mids.helpers._requester import _requester
+from dank_mids.types import RateLimiters
 
+
+TASKS: Final[set[asyncio.Task[None]]] = set()
 
 CancelledError: Final = asyncio.CancelledError
 create_task: Final = asyncio.create_task
+get_running_loop: Final = asyncio.get_running_loop
 
 nlargest: Final = heapq.nlargest
 
@@ -20,8 +25,8 @@ sleep0: Final = a_sync.asyncio.sleep0
 
 
 # default is 50 requests/second
-limiters: Final[DefaultDict[str, AsyncLimiter]] = defaultdict(
-    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)  # type: ignore [has-type, operator]
+limiters: Final[RateLimiters] = defaultdict(
+    lambda: AsyncLimiter(1, 1 / int(ENVS.REQUESTS_PER_SECOND))
 )
 
 _rate_limit_waiters: Final[Dict[str, a_sync.Event]] = {}
@@ -35,6 +40,37 @@ async def rate_limit_inactive(endpoint: str) -> None:
     Otherwise, set up our own Event and signal once no waiters remain.
     """
     # Quick exit if no queued waiters
+    if not limiters[endpoint]._waiters:
+        return
+
+    caller_loop = get_running_loop()
+    caller_future: asyncio.Future[None] = caller_loop.create_future()
+
+    async def chained_result_callback(t: asyncio.Task[None]) -> None:
+        exc = t.exception()
+        if exc is None:
+            caller_loop.call_soon_threadsafe(caller_future.set_result, None)
+        else:
+            caller_loop.call_soon_threadsafe(caller_future.set_exception, exc)
+
+    def start_check() -> None:
+        task = create_task(_rate_limit_inactive(endpoint))
+        task.add_done_callback(chained_result_callback)
+        tasks = TASKS  # one globals lookup is better than two
+        tasks.add(task)
+        task.add_done_callback(tasks.discard)
+
+    _requester.loop.call_soon_threadsafe(start_check)
+    await caller_future
+
+
+async def _rate_limit_inactive(endpoint: str) -> None:
+    """
+    Wait until the rate limiter for `endpoint` has no remaining waiters.
+    If someone's already waiting on this endpoint, just await their Event.
+    Otherwise, set up our own Event and signal once no waiters remain.
+    """
+    # Quick exit if no queued waiters (2nd check)
     if not limiters[endpoint]._waiters:
         return
 

@@ -8,6 +8,7 @@ from typing import (
     Callable,
     ClassVar,
     Coroutine,
+    DefaultDict,
     Dict,
     Final,
     List,
@@ -15,7 +16,6 @@ from typing import (
     NewType,
     Optional,
     Set,
-    Tuple,
     Type,
     TypedDict,
     TypeVar,
@@ -51,6 +51,7 @@ from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
+    from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 
 
 T = TypeVar("T")
@@ -450,3 +451,6 @@ def _get_decode_func(
     dec_hook: Callable[[Type[T], Union[str, bytes]], T],
 ) -> Callable[[Union[str, bytes]], T]:
     return Decoder(type=type, dec_hook=dec_hook).decode
+
+
+RateLimiters = DefaultDict[str, "AsyncLimiter"]
