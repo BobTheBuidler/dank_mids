@@ -12,10 +12,11 @@ from dank_mids.helpers._requester import _requester
 from dank_mids.types import RateLimiters
 
 
+TASKS: Final[set[asyncio.Task[None]]] = set()
+
 CancelledError: Final = asyncio.CancelledError
 create_task: Final = asyncio.create_task
-run_coroutine_threadsafe: Final = asyncio.run_coroutine_threadsafe
-wrap_future: Final = asyncio.wrap_future
+get_running_loop: Final = asyncio.get_running_loop
 
 nlargest: Final = heapq.nlargest
 
@@ -41,9 +42,26 @@ async def rate_limit_inactive(endpoint: str) -> None:
     # Quick exit if no queued waiters
     if not limiters[endpoint]._waiters:
         return
-    return await wrap_future(
-        run_coroutine_threadsafe(_rate_limit_inactive(endpoint), _requester.loop)
-    )
+
+    caller_loop = get_running_loop()
+    caller_future: asyncio.Future[None] = caller_loop.create_future()
+
+    async def chained_result_callback(t: asyncio.Task[None]) -> None:
+        exc = t.exception()
+        if exc is None:
+            caller_loop.call_soon_threadsafe(caller_future.set_result, None)
+        else:
+            caller_loop.call_soon_threadsafe(caller_future.set_exception, exc)
+
+    def start_check() -> None:
+        task = create_task(_rate_limit_inactive(endpoint))
+        task.add_done_callback(chained_result_callback)
+        tasks = TASKS  # one globals lookup is better than two
+        tasks.add(task)
+        task.add_done_callback(tasks.discard)
+
+    _requester.loop.call_soon_threadsafe(start_check)
+    await caller_future
 
 
 async def _rate_limit_inactive(endpoint: str) -> None:
