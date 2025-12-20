@@ -151,9 +151,8 @@ def _to_tuple(value: list[Any] | tuple[Any, ...]) -> Any:
     # We split up the isinstance check because we generate
     # faster C code by calling _to_tuple with specifc types
     return tuple(
-        _to_tuple(i) if isinstance(i, list)
-        else _to_tuple(i) if isinstance(i, tuple)
-        else i for i in value
+        _to_tuple(i) if isinstance(i, list) else _to_tuple(i) if isinstance(i, tuple) else i
+        for i in value
     )
 
 
@@ -162,9 +161,8 @@ def _(value: list[Any]) -> Any:
     # We split up the isinstance check because we generate
     # faster C code by calling _to_tuple with specifc types
     return tuple(
-        _to_tuple(i) if isinstance(i, list)
-        else _to_tuple(i) if isinstance(i, tuple)
-        else i for i in value
+        _to_tuple(i) if isinstance(i, list) else _to_tuple(i) if isinstance(i, tuple) else i
+        for i in value
     )
 
 
@@ -173,9 +171,8 @@ def _(value: tuple[Any, ...]) -> Any:
     # We split up the isinstance check because we generate
     # faster C code by calling _to_tuple with specifc types
     return tuple(
-        _to_tuple(i) if isinstance(i, list)
-        else _to_tuple(i) if isinstance(i, tuple)
-        else i for i in value
+        _to_tuple(i) if isinstance(i, list) else _to_tuple(i) if isinstance(i, tuple) else i
+        for i in value
     )
 
 
