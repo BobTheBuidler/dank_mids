@@ -79,7 +79,7 @@ class AlertingRLock:
             if endtime is not None:
                 remaining = endtime - time()
                 if remaining <= 0:
-                    this_timeout = 0
+                    this_timeout = 0.0
                 elif remaining < 5.0:
                     this_timeout = remaining
 
