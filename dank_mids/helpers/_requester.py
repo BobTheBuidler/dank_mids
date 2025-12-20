@@ -11,8 +11,8 @@ from dank_mids.helpers._session import DankClientSession
 from dank_mids.types import T
 
 
-run_coroutine_threadsafe: Final = asyncio.run_coroutine_threadsafe
-wrap_future: Final = asyncio.wrap_future
+ensure_future: Final = asyncio.ensure_future
+get_running_loop: Final = asyncio.get_running_loop
 
 
 @final
@@ -50,12 +50,23 @@ class HTTPRequesterThread(threading.Thread):
         **kwargs: Any,
     ) -> T:
         """Returns decoded json data from `endpoint`."""
+        caller_loop = get_running_loop()
+        caller_future = caller_loop.create_future()
 
-        async def do_post() -> T:
-            # we have to access self.session in the subthread first so we need this silly helper coro
-            return await self.session.post(endpoint, *args, loads=loads, **kwargs)
+        async def run_and_set_result() -> None:
+            try:
+                # we have to access self.session in the subthread first so we need this silly helper coro
+                result = await self.session.post(endpoint, *args, loads=loads, **kwargs)
+            except Exception as exc:
+                caller_loop.call_soon_threadsafe(caller_future.set_exception, exc)
+            else:
+                caller_loop.call_soon_threadsafe(caller_future.set_result, result)
 
-        return await wrap_future(run_coroutine_threadsafe(do_post(), self.loop))
+        def start_request() -> None:
+            ensure_future(run_and_set_result(), loop=self.loop)
+
+        self.loop.call_soon_threadsafe(start_request)
+        return await caller_future
 
 def shutdown_http_requester() -> None:
     async def close_session_and_stop() -> None:
