@@ -8,7 +8,6 @@ from typing import (
     Final,
     List,
     Literal,
-    Optional,
     Sequence,
     Set,
     Union,
@@ -19,7 +18,6 @@ from typing import (
 import eth_retry
 from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress, HexStr
-from eth_typing.evm import BlockParams
 from evmspec.data import ChainId
 from multicall.constants import MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
@@ -38,10 +36,10 @@ from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers._codec import RawResponse, decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _sync_w3_from_async
-from dank_mids.helpers._lock import AlertingRLock
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._requester import _requester
+from dank_mids.lock import AlertingRLock
 from dank_mids.semaphores import BlockSemaphore
 from dank_mids.types import BlockId, PartialRequest, Request
 

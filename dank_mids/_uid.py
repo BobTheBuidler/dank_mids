@@ -1,4 +1,4 @@
-from dank_mids.helpers._lock import AlertingRLock
+from dank_mids.lock import AlertingRLock
 
 
 class UIDGenerator:

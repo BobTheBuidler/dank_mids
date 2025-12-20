@@ -19,9 +19,7 @@ time: Final = _time.time
 
 
 @final
-class AlertingRLock(threading._RLock):  # type: ignore [misc]
-    __slots__ = "_block", "_owner", "_count", "_name"
-
+class AlertingRLock:
     def __init__(self, name: str) -> None:
         """
         Initializes the reentrant lock with a given name.
@@ -122,6 +120,31 @@ class AlertingRLock(threading._RLock):  # type: ignore [misc]
         if not count:
             self._owner = None
             self._block.release()
+
+    def locked(self) -> bool:
+        """
+        Return True if the lock is held by any thread, False otherwise.
+        """
+        return self._owner is not None
+
+    # Internal methods used by condition variables
+
+    def _acquire_restore(self, state: int) -> None:
+        self._block.acquire()
+        self._count, self._owner = state
+
+    def _release_save(self) -> tuple[int, int]:
+        if self._count == 0:
+            raise RuntimeError("cannot release un-acquired lock")
+        count = self._count
+        self._count = 0
+        owner = self._owner
+        self._owner = None
+        self._block.release()
+        return (count, owner)
+
+    def _is_owned(self) -> bool:
+        return self._owner == get_ident()
 
 
 __all__ = ["AlertingRLock"]
