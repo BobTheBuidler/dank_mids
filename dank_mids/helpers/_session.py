@@ -4,7 +4,8 @@ from enum import IntEnum
 from itertools import chain
 from random import random
 from time import time
-from typing import Any, Callable, Final, final
+from typing import Any, Final, final
+from collections.abc import Callable
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.typedefs import DEFAULT_JSON_DECODER

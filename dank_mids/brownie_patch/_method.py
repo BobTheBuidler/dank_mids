@@ -1,5 +1,6 @@
 from decimal import Decimal
-from typing import Any, Callable, Generic, Optional, TypeVar
+from typing import Any, Generic, Optional, TypeVar
+from collections.abc import Callable
 from collections.abc import Awaitable, Generator, Iterable
 
 from a_sync import igather
@@ -56,10 +57,10 @@ class _DankMethodMixin(Generic[_EVMType]):
     async def map(
         self,
         args: Iterable[Any],
-        block_identifier: Optional[int] = None,
+        block_identifier: int | None = None,
         *,
         iter_args: bool = False,
-        decimals: Optional[int] = None,
+        decimals: int | None = None,
     ) -> list[_EVMType]:
         """
         Asynchronously call the contract method with multiple sets of arguments.
@@ -106,9 +107,9 @@ class _DankMethodMixin(Generic[_EVMType]):
     async def coroutine(
         self,
         *args: Any,
-        block_identifier: Optional[int] = None,
-        decimals: Optional[int] = None,
-        override: Optional[dict[str, str]] = None,
+        block_identifier: int | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method with the given arguments.
@@ -140,8 +141,8 @@ class _DankMethod(_DankMethodMixin):
         address: ChecksumAddress,
         abi: dict,
         name: str,
-        owner: Optional[AccountsType],
-        natspec: Optional[dict] = None,
+        owner: AccountsType | None,
+        natspec: dict | None = None,
     ) -> None:
         self._address = address
         self._abi = get_function_abi(**abi)
@@ -163,9 +164,9 @@ class _DankMethod(_DankMethodMixin):
     async def coroutine(
         self,
         *args: Any,
-        block_identifier: Optional[int] = None,
-        decimals: Optional[int] = None,
-        override: Optional[dict[str, str]] = None,
+        block_identifier: int | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method via dank mids and await the result.

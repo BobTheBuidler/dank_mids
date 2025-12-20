@@ -62,9 +62,9 @@ class FailedRequestWriter(_CSVWriter):
         self,
         e: Exception,
         request_type: str,
-        request_uid: Union[str, int],
-        request_length: Union[int, Literal["unknown"]],
-        request_data: Union[list["Request"], list["PartialRequest"], bytes],
+        request_uid: str | int,
+        request_length: int | Literal["unknown"],
+        request_data: list["Request"] | list["PartialRequest"] | bytes,
     ) -> None:
         """
         Record a failed request to the CSV file.
@@ -88,9 +88,9 @@ def record(
     chainid: int,
     e: Exception,
     request_type: str,
-    request_uid: Union[int, str],
-    request_length: Union[int, Literal["unknown"]],
-    request_data: Union[list["Request"], list["PartialRequest"], bytes],
+    request_uid: int | str,
+    request_length: int | Literal["unknown"],
+    request_data: list["Request"] | list["PartialRequest"] | bytes,
 ) -> None:
     """
     Record a failed request using a new FailedRequestWriter instance.

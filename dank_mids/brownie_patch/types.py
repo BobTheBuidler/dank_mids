@@ -57,9 +57,9 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ign
     async def coroutine(
         self,
         *args: Any,
-        block_identifier: Optional[int] = None,
-        decimals: Optional[int] = None,
-        override: Optional[dict[str, str]] = None,
+        block_identifier: int | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method using dank mids and await the result.
@@ -72,7 +72,7 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ign
         Returns:
             Whatever the node sends back as the output for this contract method.
         """
-        call: Union[DankContractCall, DankContractTx] = self._get_fn_from_args(args)
+        call: DankContractCall | DankContractTx = self._get_fn_from_args(args)
         return await call.coroutine(
             *args, block_identifier=block_identifier, decimals=decimals, override=override
         )
@@ -108,9 +108,9 @@ def _get_method_object(
     address: ChecksumAddress,
     abi: dict[str, Any],
     name: str,
-    owner: Optional[AccountsType],
+    owner: AccountsType | None,
     natspec: dict[str, Any],
-) -> Union[DankContractCall, DankContractTx]:
+) -> DankContractCall | DankContractTx:
     # sourcery skip: default-get
     """
     Retrieve an appropriate method object based on the ABI.

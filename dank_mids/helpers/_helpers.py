@@ -3,19 +3,20 @@ from importlib.metadata import version
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Literal,
     Optional,
     TypeVar,
     Union,
 )
+from collections.abc import Callable
 from collections.abc import Awaitable, Coroutine
 
 from faster_eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map
 from faster_eth_utils.toolz import assoc, compose, merge
 from faster_hexbytes import HexBytes
 from multicall.utils import get_async_w3
-from typing_extensions import Concatenate, ParamSpec
+from typing_extensions import ParamSpec
+from typing import Concatenate
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
 from web3.providers import HTTPProvider
@@ -203,9 +204,9 @@ async def geth_poa_middleware(
 
 
 async def async_construct_formatting_middleware(
-    request_formatters: Optional[Formatters] = None,
-    result_formatters: Optional[Formatters] = None,
-    error_formatters: Optional[Formatters] = None,
+    request_formatters: Formatters | None = None,
+    result_formatters: Formatters | None = None,
+    error_formatters: Formatters | None = None,
 ) -> AsyncMiddleware:
     async def ignore_web3_in_standard_formatters(
         _w3: "Web3",

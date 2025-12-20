@@ -48,7 +48,7 @@ class AttributeDict(Generic[TKey, TValue]):
         if args or kwargs:
             self_dict.update(dict(*args, **kwargs))  # type: ignore [arg-type]
         self.__dict__: Final = self_dict  # type: ignore [assignment]
-        self.__hash: Optional[int] = None
+        self.__hash: int | None = None
 
     def __hash__(self) -> int:
         retval = self.__hash
@@ -130,7 +130,7 @@ Hashable.register(AttributeDict)
 
 
 def tupleize_lists_nested(
-    d: Union[AttributeDict[TKey, TValue], Mapping[TKey, TValue]],
+    d: AttributeDict[TKey, TValue] | Mapping[TKey, TValue],
 ) -> AttributeDict[TKey, TValue]:
     """
     Unhashable types inside dicts will throw an error if attempted to be hashed.
@@ -154,7 +154,7 @@ def tupleize_lists_nested(
 
 
 @functools.singledispatch
-def _to_tuple(value: Union[list[Any], tuple[Any, ...]]) -> Any:
+def _to_tuple(value: list[Any] | tuple[Any, ...]) -> Any:
     return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
 
 

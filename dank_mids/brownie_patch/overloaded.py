@@ -23,9 +23,9 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
     async def coroutine(
         self: Contract,
         *args: Any,
-        block_identifier: Optional[Union[int, str, bytes]] = None,
-        decimals: Optional[int] = None,
-        override: Optional[dict[str, str]] = None,
+        block_identifier: int | str | bytes | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
     ) -> Any:
         """
         Coroutine to call the overloaded contract method.

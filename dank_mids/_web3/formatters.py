@@ -1,4 +1,5 @@
-from typing import Any, Callable, Final, TypeVar, Union
+from typing import Any, Final, TypeVar, Union
+from collections.abc import Callable
 from collections.abc import Iterator, Sequence
 
 from eth_typing import TypeStr
@@ -27,7 +28,7 @@ def return_as_is(x: _T) -> _T:
 
 def abi_request_formatters(
     normalizers: Sequence[Callable[[TypeStr, Any], tuple[TypeStr, Any]]],
-    abis: dict[RPCEndpoint, Union[list[Any], dict[str, Any]]],
+    abis: dict[RPCEndpoint, list[Any] | dict[str, Any]],
 ) -> Iterator[tuple[RPCEndpoint, Callable[..., Any]]]:
     for method, abi_types in abis.items():
         if isinstance(abi_types, list):

@@ -25,13 +25,13 @@ from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     DefaultDict,
     Deque,
     Final,
     TypeVar,
     final,
 )
+from collections.abc import Callable
 from collections.abc import Iterable
 
 import msgspec

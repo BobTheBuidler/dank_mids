@@ -6,13 +6,13 @@ from types import MethodType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Final,
     NewType,
     Optional,
     TypeVar,
     Union,
 )
+from collections.abc import Callable
 from collections.abc import Sequence
 
 import brownie.convert.datatypes
@@ -144,9 +144,9 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
     async def coroutine(
         self: ContractCall,
         *args: Any,
-        block_identifier: Optional[BlockIdentifier] = None,
-        decimals: Optional[int] = None,
-        override: Optional[dict[str, str]] = None,
+        block_identifier: BlockIdentifier | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
         _attempt_number: int = 1,
     ) -> Any:
         if override:
@@ -270,7 +270,7 @@ __eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], tuple[Any
 )
 
 
-def __encode_input(abi: AbiDict, signature: str, *args: Any) -> Union[HexStr, Exception]:
+def __encode_input(abi: AbiDict, signature: str, *args: Any) -> HexStr | Exception:
     try:
         data = format_input_but_cache_checksums(abi, args)
         types_list = get_type_strings(abi["inputs"])

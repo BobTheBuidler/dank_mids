@@ -84,7 +84,7 @@ class FunctionABI:
 
 def get_type_strings(
     abi_params: Sequence[ABIComponent],
-    substitutions: Optional[dict[str, Any]] = None,
+    substitutions: dict[str, Any] | None = None,
 ) -> list[str]:
     """Converts a list of parameters from an ABI into a list of type strings."""
     types_list = []

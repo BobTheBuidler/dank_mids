@@ -2,7 +2,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AnyStr,
-    Callable,
     Final,
     Literal,
     Optional,
@@ -12,6 +11,7 @@ from typing import (
     final,
     overload,
 )
+from collections.abc import Callable
 from collections.abc import Iterable, Mapping
 
 import faster_hexbytes
@@ -28,10 +28,10 @@ if TYPE_CHECKING:
 
 
 # due to a circ import issue we will import these later
-PartialResponse: Optional[type["types.PartialResponse"]] = None
-Request: Optional[type["types.Request"]] = None
-Response: Optional[type["types.Response"]] = None
-better_decode: Optional[Callable[..., Any]] = None  # type: ignore [type-arg]
+PartialResponse: type["types.PartialResponse"] | None = None
+Request: type["types.Request"] | None = None
+Response: type["types.Response"] | None = None
+better_decode: Callable[..., Any] | None = None  # type: ignore [type-arg]
 
 
 __T = TypeVar("__T")
@@ -67,7 +67,7 @@ DecodeError: Final = msgspec.DecodeError
 decode_string: Final = Decoder(type=str).decode
 _decode_raw: Final = Decoder(type=Raw).decode
 # due to a forward reference issue we will populate this later
-_decode_batch: Optional[BatchDecoder] = None
+_decode_batch: BatchDecoder | None = None
 
 
 @final
@@ -167,7 +167,7 @@ def _encode_hook(obj: Encodable) -> RpcThing:
 def _rudimentary_encode_dict_value(value: int) -> HexStr: ...
 @overload
 def _rudimentary_encode_dict_value(value: __T) -> __T: ...
-def _rudimentary_encode_dict_value(value: Union[int, __T]) -> Union[HexStr, __T]:
+def _rudimentary_encode_dict_value(value: int | __T) -> HexStr | __T:
     # I dont think this needs to be robust, time will tell
     return hex(value) if isinstance(value, int) else value  # type: ignore [return-value]
 
@@ -208,7 +208,7 @@ def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
 Success = bool
 
 
-def mcall_decode(data: "types.PartialResponse") -> Union[list[bytes], Exception]:
+def mcall_decode(data: "types.PartialResponse") -> list[bytes] | Exception:
     try:
         decoded = _mcall_decoder(ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type]
     except Exception as e:
