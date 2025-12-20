@@ -1005,7 +1005,7 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *__block;
+    PyObject *__lock;
     PyObject *__owner;
     CPyTagged __count;
     PyObject *__name;
