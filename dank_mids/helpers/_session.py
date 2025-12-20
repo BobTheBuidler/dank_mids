@@ -126,7 +126,13 @@ class DankClientSession(ClientSession):
     _last_rate_limited_at = 0
     _continue_requests_at = 0
 
-    async def post(self, endpoint: str, *args: Any, loads: Callable[[str], T] = DEFAULT_JSON_DECODER, **kwargs: Any) -> T:
+    async def post(
+        self,
+        endpoint: str,
+        *args: Any,
+        loads: Callable[[str], T] = DEFAULT_JSON_DECODER,
+        **kwargs: Any,
+    ) -> T:
         # This should only be called in the HTTPRequesterThread
         if (now := time()) < self._continue_requests_at:
             await sleep(self._continue_requests_at - now)
