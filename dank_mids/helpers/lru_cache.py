@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Callable, Dict, TypeVar
+from typing import Callable, TypeVar
 
 from typing_extensions import ParamSpec
 
@@ -34,7 +34,7 @@ def lru_cache_lite(func: Callable[__P, __T]) -> Callable[__P, __T]:
         - `functools.lru_cache <https://docs.python.org/3/library/functools.html#functools.lru_cache>`_
         - :func:`~dank_mids.lru_cache_lite_nonull` for a variant using ``None`` as the cache-miss marker.
     """
-    cache: Dict[__P.args, __T] = {}  # type: ignore [valid-type]
+    cache: dict[__P.args, __T] = {}  # type: ignore [valid-type]
     cache_miss = object()
 
     @wraps(func)
@@ -83,7 +83,7 @@ def lru_cache_lite_nonull(func: Callable[__P, __T]) -> Callable[__P, __T]:
         - :func:`~dank_mids.lru_cache_lite` which uses a unique cache-miss marker.
         - `functools.lru_cache <https://docs.python.org/3/library/functools.html#functools.lru_cache>`_
     """
-    cache: Dict[__P.args, __T] = {}  # type: ignore [valid-type]
+    cache: dict[__P.args, __T] = {}  # type: ignore [valid-type]
 
     @wraps(func)
     def lru_cache_lite_wrap(*args: __P.args) -> __T:  # type: ignore [valid-type]

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Literal, Type, Union
+from typing import TYPE_CHECKING, Literal, Union
 
 from a_sync import ProcessingQueue
 from a_sync.functools import cached_property_unsafe as cached_property
@@ -27,7 +27,7 @@ class FailedRequestWriter(_CSVWriter):
     column_names = "request_type", "request_uid", "request_length", "error", "request_data"
     """The names of the columns in the CSV file."""
 
-    def __init__(self, chainid: int, failure_type: Type[BaseException]) -> None:
+    def __init__(self, chainid: int, failure_type: type[BaseException]) -> None:
         """
         Initialize the FailedRequestWriter.
 
@@ -64,7 +64,7 @@ class FailedRequestWriter(_CSVWriter):
         request_type: str,
         request_uid: Union[str, int],
         request_length: Union[int, Literal["unknown"]],
-        request_data: Union[List["Request"], List["PartialRequest"], bytes],
+        request_data: Union[list["Request"], list["PartialRequest"], bytes],
     ) -> None:
         """
         Record a failed request to the CSV file.
@@ -90,7 +90,7 @@ def record(
     request_type: str,
     request_uid: Union[int, str],
     request_length: Union[int, Literal["unknown"]],
-    request_data: Union[List["Request"], List["PartialRequest"], bytes],
+    request_data: Union[list["Request"], list["PartialRequest"], bytes],
 ) -> None:
     """
     Record a failed request using a new FailedRequestWriter instance.

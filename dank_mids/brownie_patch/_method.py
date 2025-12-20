@@ -1,16 +1,6 @@
 from decimal import Decimal
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Generator,
-    Generic,
-    Iterable,
-    List,
-    Optional,
-    TypeVar,
-)
+from typing import Any, Callable, Generic, Optional, TypeVar
+from collections.abc import Awaitable, Generator, Iterable
 
 from a_sync import igather
 from brownie.typing import AccountsType
@@ -70,7 +60,7 @@ class _DankMethodMixin(Generic[_EVMType]):
         *,
         iter_args: bool = False,
         decimals: Optional[int] = None,
-    ) -> List[_EVMType]:
+    ) -> list[_EVMType]:
         """
         Asynchronously call the contract method with multiple sets of arguments.
 
@@ -118,7 +108,7 @@ class _DankMethodMixin(Generic[_EVMType]):
         *args: Any,
         block_identifier: Optional[int] = None,
         decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        override: Optional[dict[str, str]] = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method with the given arguments.
@@ -148,10 +138,10 @@ class _DankMethod(_DankMethodMixin):
     def __init__(
         self,
         address: ChecksumAddress,
-        abi: Dict,
+        abi: dict,
         name: str,
         owner: Optional[AccountsType],
-        natspec: Optional[Dict] = None,
+        natspec: Optional[dict] = None,
     ) -> None:
         self._address = address
         self._abi = get_function_abi(**abi)
@@ -175,7 +165,7 @@ class _DankMethod(_DankMethodMixin):
         *args: Any,
         block_identifier: Optional[int] = None,
         decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        override: Optional[dict[str, str]] = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method via dank mids and await the result.

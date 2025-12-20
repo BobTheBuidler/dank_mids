@@ -4,13 +4,9 @@ from enum import IntEnum
 from itertools import chain
 from random import random
 from time import time
-from typing import Any, Callable, Final, Tuple, final
+from typing import Any, Callable, Final, final
 
-from aiohttp import (
-    ClientError,
-    ClientResponseError,
-    ClientSession,
-)
+from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
@@ -251,7 +247,7 @@ def _logger_is_enabled_for(level: int) -> bool: ...
 def _logger_warning(msg: str, *args: Any) -> None: ...
 def _logger_info(msg: str, *args: Any) -> None: ...
 def _logger_debug(msg: str, *args: Any) -> None: ...
-def _logger_log(level: int, msg: str, args: Tuple[Any, ...]) -> None: ...
+def _logger_log(level: int, msg: str, args: tuple[Any, ...]) -> None: ...
 
 
 _logger_is_enabled_for: Final = logger.isEnabledFor

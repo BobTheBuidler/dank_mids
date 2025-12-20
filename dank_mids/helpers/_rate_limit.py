@@ -1,7 +1,7 @@
 import asyncio
 import heapq
 from collections import defaultdict
-from typing import Dict, Final
+from typing import Final
 
 import a_sync
 import a_sync.asyncio
@@ -29,8 +29,8 @@ limiters: Final[RateLimiters] = defaultdict(
     lambda: AsyncLimiter(1, 1 / int(ENVS.REQUESTS_PER_SECOND))
 )
 
-_rate_limit_waiters: Final[Dict[str, a_sync.Event]] = {}
-_rate_limit_tasks: Final[Dict[str, "asyncio.Task[None]"]] = {}
+_rate_limit_waiters: Final[dict[str, a_sync.Event]] = {}
+_rate_limit_tasks: Final[dict[str, "asyncio.Task[None]"]] = {}
 
 
 async def rate_limit_inactive(endpoint: str) -> None:

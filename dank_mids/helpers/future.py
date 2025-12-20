@@ -8,7 +8,8 @@ from asyncio import (
     sleep,
 )
 from time import time
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING, Any
+from collections.abc import Generator
 from weakref import ProxyType, proxy
 
 from dank_mids._logging import DEBUG, getLogger

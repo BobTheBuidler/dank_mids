@@ -1,4 +1,5 @@
-from typing import Any, Dict, Iterator, List, Literal, NewType, Optional, Tuple, Union, overload
+from typing import Any, Literal, NewType, Optional, Union, overload
+from collections.abc import Iterator
 
 import brownie
 from brownie.network.contract import (
@@ -64,7 +65,7 @@ class Contract(brownie.Contract):
         cls,
         name: str,
         address: str,
-        abi: List[dict],
+        abi: list[dict],
         owner: Optional[AccountsType] = None,
         persist: bool = True,
     ) -> "Contract":
@@ -150,10 +151,10 @@ class Contract(brownie.Contract):
         )
         return Contract(persisted.address)
 
-    topics: Dict[str, str]
+    topics: dict[str, str]
     """A dictionary mapping event names to their corresponding topics."""
 
-    signatures: Dict[Method, Signature]
+    signatures: dict[Method, Signature]
     """A dictionary mapping method names to their corresponding signatures."""
 
     @retry_etherscan
@@ -230,7 +231,7 @@ class Contract(brownie.Contract):
             full_name = f"{self._name}.{name}"
             sig = build_function_signature(abi)
 
-            natspec: Dict[str, Any] = {}
+            natspec: dict[str, Any] = {}
             if self._build.get("natspec"):
                 natspec = self._build["natspec"]["methods"].get(sig, {})
 

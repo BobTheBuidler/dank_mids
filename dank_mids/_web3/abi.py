@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Final, List, Optional, Tuple, TypeVar, final
+from typing import Any, Callable, Final, Optional, TypeVar, final
 
 from eth_typing import TypeStr
 from faster_eth_abi import grammar
@@ -10,9 +10,9 @@ from faster_eth_abi.grammar import ABIType, TupleType
 _T = TypeVar("_T")
 
 
-Normalizer = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
-MapperKey = Tuple[Tuple[Normalizer, ...], Tuple[TypeStr, ...]]
-DataTreeFunc = Callable[[TypeStr, Any], Tuple[TypeStr, Any]]
+Normalizer = Callable[[TypeStr, Any], tuple[TypeStr, Any]]
+MapperKey = tuple[tuple[Normalizer, ...], tuple[TypeStr, ...]]
+DataTreeFunc = Callable[[TypeStr, Any], tuple[TypeStr, Any]]
 
 
 # cdef typing
@@ -27,15 +27,15 @@ parse: Final[Callable[[TypeStr], ABIType]] = grammar.parse
 class Formatter:
     def __init__(
         self,
-        normalizers: Tuple[Normalizer, ...],
-        types: Tuple[Optional[TypeStr], ...],
+        normalizers: tuple[Normalizer, ...],
+        types: tuple[Optional[TypeStr], ...],
     ):
         self.normalizers: Final = tuple(get_data_tree_map(n) for n in normalizers)
-        self.types: Final[Tuple[Optional[ABIType], ...]] = tuple(
+        self.types: Final[tuple[Optional[ABIType], ...]] = tuple(
             parse(t) if isinstance(t, str) else None for t in types
         )
 
-    def __call__(self, data: Any) -> List[Any]:
+    def __call__(self, data: Any) -> list[Any]:
         # 1. Decorating the data tree with types
         # TODO: vendor abi_sub_tree, its v wasteful
         data = map(abi_sub_tree, self.types, data)
@@ -46,13 +46,13 @@ class Formatter:
         return list(strip_abi_types(data))
 
 
-_formatters: Final[Dict[MapperKey, Formatter]] = {}
+_formatters: Final[dict[MapperKey, Formatter]] = {}
 
 
 # web3py builds the pipeline every call, we cache it here instead
 def get_formatter(
-    normalizers: Tuple[Normalizer, ...],
-    types: Tuple[TypeStr, ...],
+    normalizers: tuple[Normalizer, ...],
+    types: tuple[TypeStr, ...],
 ) -> Formatter:
     """Returns a cached :class:`~Formatter` for the unique combination of normalizers and types."""
     mapper = _formatters.get((normalizers, types))
@@ -61,7 +61,7 @@ def get_formatter(
     return mapper
 
 
-_data_tree_maps: Final[Dict[DataTreeFunc, "map_to_typed_data"]] = {}
+_data_tree_maps: Final[dict[DataTreeFunc, "map_to_typed_data"]] = {}
 
 
 def get_data_tree_map(
