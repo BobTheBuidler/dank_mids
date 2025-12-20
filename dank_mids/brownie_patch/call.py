@@ -3,17 +3,8 @@ from concurrent.futures.process import BrokenProcessPool
 from logging import Logger
 from pickle import PicklingError
 from types import MethodType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Final,
-    NewType,
-    Optional,
-    TypeVar,
-    Union,
-)
-from collections.abc import Callable
-from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, Final, NewType, TypeVar, Union
+from collections.abc import Callable, Sequence
 
 import brownie.convert.datatypes
 import brownie.convert.normalize
