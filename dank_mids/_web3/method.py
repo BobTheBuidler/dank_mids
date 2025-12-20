@@ -1,5 +1,4 @@
 from importlib.metadata import version
-from typing import Tuple, Type
 
 from typing_extensions import Self
 from web3.eth import BaseEth
