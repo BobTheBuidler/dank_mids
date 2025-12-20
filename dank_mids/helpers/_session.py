@@ -16,10 +16,12 @@ from aiohttp.typedefs import DEFAULT_JSON_DECODER
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
-from dank_mids.types import PartialRequest, T
+from dank_mids.types import PartialRequest, RateLimiters, T
 
 
 logger: Final = getLogger("dank_mids.session")
+
+limiters: RateLimiters | None = None
 
 
 # NOTE: You cannot subclass an IntEnum object so we have to do some hacky shit here.
@@ -149,12 +151,15 @@ class DankClientSession(ClientSession):
         elif isinstance(data, PartialRequest):
             kwargs["data"] = data.data
 
+        rate_limiters = _import_limiters() if limiters is None else limiters
+        rate_limiter = rate_limiters[endpoint]
+
         # Try the request until success or 5 failures.
         tried = 0
         resets = 0
         while True:
             try:
-                async with limiters[endpoint]:
+                async with rate_limiter:
                     async with ClientSession.post(self, endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
                         _logger_debug("received response %s", response_data)
@@ -256,5 +261,9 @@ _logger_debug: Final = logger.debug
 _logger_log: Final = logger._log
 
 
-# This has to go here for a circ import
-from dank_mids.helpers._rate_limit import limiters
+def _import_limiters() -> RateLimiters:
+    # This has to go here for a circ import
+    global limiters
+    from dank_mids.helpers import _rate_limit
+    limiters = _rate_limit.limiters
+    return limiters

@@ -1,7 +1,7 @@
 import asyncio
 import heapq
 from collections import defaultdict
-from typing import DefaultDict, Dict, Final
+from typing import Dict, Final
 
 import a_sync
 import a_sync.asyncio
@@ -9,6 +9,7 @@ from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._tasks import shield
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 from dank_mids.helpers._requester import _requester
+from dank_mids.types import RateLimiters
 
 
 CancelledError: Final = asyncio.CancelledError
@@ -23,8 +24,8 @@ sleep0: Final = a_sync.asyncio.sleep0
 
 
 # default is 50 requests/second
-limiters: Final[DefaultDict[str, AsyncLimiter]] = defaultdict(
-    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)  # type: ignore [has-type, operator]
+limiters: Final[RateLimiters] = defaultdict(
+    lambda: AsyncLimiter(1, 1 / ENVS.REQUESTS_PER_SECOND)
 )
 
 _rate_limit_waiters: Final[Dict[str, a_sync.Event]] = {}
