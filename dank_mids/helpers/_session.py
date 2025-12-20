@@ -16,7 +16,6 @@ from aiohttp.typedefs import DEFAULT_JSON_DECODER
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._logging import DEBUG, getLogger
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
-from dank_mids.helpers._rate_limit import limiters
 from dank_mids.types import PartialRequest, T
 
 
@@ -256,3 +255,7 @@ _logger_warning: Final = logger.warning
 _logger_info: Final = logger.info
 _logger_debug: Final = logger.debug
 _logger_log: Final = logger._log
+
+
+# This has to go here for a circ import
+from dank_mids.helpers._rate_limit import limiters
