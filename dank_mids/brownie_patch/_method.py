@@ -1,11 +1,5 @@
 from decimal import Decimal
-from typing import (
-    Any,
-    Callable,
-    Generic,
-    Optional,
-    TypeVar,
-)
+from typing import Any, Callable, Generic, Optional, TypeVar
 from collections.abc import Awaitable, Generator, Iterable
 
 from a_sync import igather
