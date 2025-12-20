@@ -122,7 +122,7 @@ Hashable.register(AttributeDict)
 
 def tupleize_lists_nested(
     d: AttributeDict[TKey, TValue] | Mapping[TKey, TValue],
-) -> AttributeDict[TKey, TValue]:
+) -> AttributeDict[TKey, TValue]:  # sourcery skip: merge-isinstance
     """
     Unhashable types inside dicts will throw an error if attempted to be hashed.
     This method converts lists to tuples, rendering them hashable.
@@ -131,7 +131,9 @@ def tupleize_lists_nested(
 
     ret = {}
     for k, v in d.items():
-        if isinstance(v, (list, tuple)):
+        if isinstance(v, list):
+            ret[k] = _to_tuple(v)
+        elif isinstance(v, tuple):
             ret[k] = _to_tuple(v)
         elif isinstance(v, dict) or isinstance(v, AttributeDict) or isinstance(v, Mapping):
             ret[k] = tupleize_lists_nested(v)
@@ -146,14 +148,38 @@ def tupleize_lists_nested(
 
 @functools.singledispatch
 def _to_tuple(value: list[Any] | tuple[Any, ...]) -> Any:
-    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+    # We split up the isinstance check because we generate
+    # faster C code by calling _to_tuple with specifc types
+    return tuple(
+        _to_tuple(i) if isinstance(i, list)
+        else _to_tuple(i) if isinstance(i, tuple)
+        else i for i in value
+    )
 
 
 @_to_tuple.register(list)
 def _(value: list[Any]) -> Any:
-    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+    # We split up the isinstance check because we generate
+    # faster C code by calling _to_tuple with specifc types
+    return tuple(
+        _to_tuple(i) if isinstance(i, list)
+        else _to_tuple(i) if isinstance(i, tuple)
+        else i for i in value
+    )
 
 
 @_to_tuple.register(tuple)
 def _(value: tuple[Any, ...]) -> Any:
-    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+    # We split up the isinstance check because we generate
+    # faster C code by calling _to_tuple with specifc types
+    return tuple(
+        _to_tuple(i) if isinstance(i, list)
+        else _to_tuple(i) if isinstance(i, tuple)
+        else i for i in value
+    )
+
+
+import web3.datastructures
+
+# TODO: rip this out once we have faster-web3.py implemented
+web3.datastructures.tupleize_lists_nested = tupleize_lists_nested
