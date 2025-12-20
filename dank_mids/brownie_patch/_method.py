@@ -1,7 +1,6 @@
 from decimal import Decimal
-from typing import Any, Generic, Optional, TypeVar
-from collections.abc import Callable
-from collections.abc import Awaitable, Generator, Iterable
+from typing import Any, Generic, TypeVar
+from collections.abc import Awaitable, Callable, Generator, Iterable
 
 from a_sync import igather
 from brownie.typing import AccountsType
