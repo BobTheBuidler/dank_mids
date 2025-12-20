@@ -1,13 +1,25 @@
-from threading import _RLock, _allocate_lock  # type: ignore [attr-defined]
+import threading
+import time as _time
+from _thread import LockType
+from types import TracebackType
+from typing import Callable, Final, TypeVar, final
 
 from dank_mids._logging import getLogger
 
 
-logger = getLogger("dank_mids.AlertingRLock")
-acquire_lock = _RLock.acquire
+E = TypeVar("E", bound=Exception)
+
+logger: Final = getLogger("dank_mids.AlertingRLock")
+
+get_ident: Final = threading.get_ident
+acquire_lock = threading._RLock.acquire
+allocate_lock: Final[Callable[[], LockType]] = threading._allocate_lock()  # type: ignore [attr-defined]
+
+time: Final = _time.time
 
 
-class AlertingRLock(_RLock):  # type: ignore [misc]
+@final
+class AlertingRLock(threading._RLock):  # type: ignore [misc]
     __slots__ = "_block", "_owner", "_count", "_name"
 
     def __init__(self, name: str) -> None:
@@ -24,45 +36,92 @@ class AlertingRLock(_RLock):  # type: ignore [misc]
         See Also:
             :class:`UIDGenerator`
         """
-        self._block = _allocate_lock()
+        self._block: Final[LockType] = allocate_lock()
         self._owner = None
         self._count = 0
-        self._name = name
+        self._name: Final = name
 
-    def acquire(self, blocking: bool = True, timeout: float = -1.0) -> bool:  # type: ignore [override]
+    def __enter__(self) -> bool:
+        return self.acquire()
+    
+    def __exit__(self, t: type[E] | None, v: E | None, tb: TracebackType | None) -> None:
+        self.release()
+    
+    def acquire(self, blocking: bool = True, timeout: float = -1.0) -> bool:
         """
-        Attempts to acquire the lock with an initial fixed timeout.
+        Acquire a lock, blocking or non-blocking, with alerting if not acquired within 5 seconds.
 
-        This method first attempts to acquire the lock in a non-blocking manner with a timeout
-        of 5 seconds. If this initial attempt is unsuccessful, a warning message is logged and
-        a secondary acquisition attempt is made using the provided `blocking` and `timeout`
-        parameters. Note that the return value of the secondary attempt is not captured or returned;
-        this method always returns the result of the initial lock acquisition attempt.
+        When invoked, this method first attempts to acquire the lock with a 5-second timeout.
+        If the lock is not acquired within 5 seconds, a warning is logged, and the method
+        proceeds to acquire the lock using the provided `blocking` and `timeout` arguments,
+        matching the semantics of the builtin RLock.
 
         Parameters:
-            blocking: Whether to block during the secondary acquisition attempt.
-            timeout: The maximum time to wait during the secondary acquisition attempt.
+            blocking: Whether to block during the acquisition attempt.
+            timeout: The maximum time to wait during the acquisition attempt.
 
         Returns:
-            bool: The result from the initial lock acquisition attempt.
-
-        Examples:
-            >>> lock = AlertingRLock("example")
-            >>> # Attempt to acquire the lock. If the initial 5-second attempt fails,
-            >>> # a warning is logged and a secondary attempt is made.
-            >>> result = lock.acquire(blocking=True, timeout=10)
-            >>> isinstance(result, bool)
-            True
+            bool: True if the lock is acquired, False otherwise.
 
         See Also:
             :meth:`_RLock.acquire`
         """
-        acquired = acquire_lock(self, blocking=False, timeout=5)
-        if not acquired:
-            # NOTE: I havent seen this log in a very long time, maybe we should remove the lock soon
+        me = get_ident()
+        if self._owner == me:
+            self._count += 1
+            return True
+
+        # Try to acquire with repeated 5-second timeouts, logging every 5 seconds if not acquired
+
+        endtime: Final = None if timeout is None or timeout < 0 else (time() + timeout)
+
+        while True:
+            # Calculate the timeout for this attempt
+            this_timeout = 5.0
+            if endtime is not None:
+                remaining = endtime - time()
+                if remaining <= 0:
+                    this_timeout = 0
+                elif remaining < 5.0:
+                    this_timeout = remaining
+
+            if self._block.acquire(timeout=this_timeout):
+                self._owner = me
+                self._count = 1
+                return True
+
             logger.warning("wtf?! %s with name %s is locked!", self, self._name)
-            acquire_lock(self, blocking=blocking, timeout=timeout)
-        return acquired
+
+            # If not blocking, or timeout expired, return False
+            if not blocking:
+                return False
+            if endtime is None:
+                continue
+            if endtime - time() <= 0:
+                return False
+
+    def release(self) -> None:
+        """Release a lock, decrementing the recursion level.
+
+        If after the decrement it is zero, reset the lock to unlocked (not owned
+        by any thread), and if any other threads are blocked waiting for the
+        lock to become unlocked, allow exactly one of them to proceed. If after
+        the decrement the recursion level is still nonzero, the lock remains
+        locked and owned by the calling thread.
+
+        Only call this method when the calling thread owns the lock. A
+        RuntimeError is raised if this method is called when the lock is
+        unlocked.
+
+        There is no return value.
+
+        """
+        if self._owner != get_ident():
+            raise RuntimeError("cannot release un-acquired lock")
+        self._count = count = self._count - 1
+        if not count:
+            self._owner = None
+            self._block.release()
 
 
 __all__ = ["AlertingRLock"]
