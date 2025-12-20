@@ -15,6 +15,7 @@ from dank_mids.types import RateLimiters
 TASKS: Final[set[asyncio.Task[None]]] = set()
 
 CancelledError: Final = asyncio.CancelledError
+InvalidStateError: Final = asyncio.InvalidStateError
 create_task: Final = asyncio.create_task
 get_running_loop: Final = asyncio.get_running_loop
 
@@ -53,12 +54,18 @@ async def rate_limit_inactive(endpoint: str) -> None:
         try:
             await _rate_limit_inactive(endpoint)
         except Exception as e:
-            caller_loop.call_soon_threadsafe(caller_future.set_exception, e)
+            try:
+                caller_loop.call_soon_threadsafe(caller_future.set_exception, e)
+            except InvalidStateError:
+                return
         else:
-            caller_loop.call_soon_threadsafe(caller_future.set_result, None)
+            try:
+                caller_loop.call_soon_threadsafe(caller_future.set_result, None)
+            except InvalidStateError:
+                return
 
     def start_check() -> None:
-        task = create_task(check(endpoint))
+        task = create_task(check())
         tasks = TASKS  # one globals lookup is better than two
         tasks.add(task)
         task.add_done_callback(tasks.discard)
