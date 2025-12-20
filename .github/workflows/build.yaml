@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - good-master
     paths-ignore:
       - '.github/workflows/**'
       - '!.github/workflows/build.yaml'
