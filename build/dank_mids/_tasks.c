@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit__tasks(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("e7b95fc71f7e12c4f724__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("52f83421bfd09ca3d5a6__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____tasks");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "e7b95fc71f7e12c4f724__mypyc.init_dank_mids____tasks");
+    void *init_func = PyCapsule_GetPointer(capsule, "52f83421bfd09ca3d5a6__mypyc.init_dank_mids____tasks");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
