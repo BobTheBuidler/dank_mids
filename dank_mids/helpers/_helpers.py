@@ -3,15 +3,14 @@ from importlib.metadata import version
 from typing import (
     TYPE_CHECKING,
     Any,
-    Awaitable,
     Callable,
-    Coroutine,
     List,
     Literal,
     Optional,
     TypeVar,
     Union,
 )
+from collections.abc import Awaitable, Coroutine
 
 from faster_eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map
 from faster_eth_utils.toolz import assoc, compose, merge
@@ -35,13 +34,13 @@ if TYPE_CHECKING:
 else:
     Batch = Union["Multicall", "JSONRPCBatch"]
 
-dank_w3s: List[Web3] = []
+dank_w3s: list[Web3] = []
 """
 A list that stores instances of :class:`Web3` objects that have been set up with Dank Middleware.
 This list is used to keep track of all Dank-enabled Web3 instances created in the application.
 """
 
-sync_w3s: List[Web3] = []
+sync_w3s: list[Web3] = []
 """
 A list that stores instances of synchronous Web3 objects.
 This list is used to keep track of all synchronous Web3 instances that have been created or modified.

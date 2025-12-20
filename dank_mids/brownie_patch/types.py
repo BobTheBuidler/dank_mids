@@ -52,14 +52,14 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ign
     You can await instances of this class directly to call the contract method without arguments at the latest block.
     """
 
-    methods: Dict[Tuple[str, ...], _NonOverloaded]
+    methods: dict[tuple[str, ...], _NonOverloaded]
 
     async def coroutine(
         self,
         *args: Any,
         block_identifier: Optional[int] = None,
         decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        override: Optional[dict[str, str]] = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method using dank mids and await the result.
@@ -77,7 +77,7 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ign
             *args, block_identifier=block_identifier, decimals=decimals, override=override
         )
 
-    def _add_fn(self, abi: Dict, natspec: Dict) -> None:  # type: ignore [type-arg]
+    def _add_fn(self, abi: dict, natspec: dict) -> None:  # type: ignore [type-arg]
         """
         Add a function to the overloaded method.
 
@@ -106,10 +106,10 @@ Instances of this class can be awaited directly to call the contract method with
 
 def _get_method_object(
     address: ChecksumAddress,
-    abi: Dict[str, Any],
+    abi: dict[str, Any],
     name: str,
     owner: Optional[AccountsType],
-    natspec: Dict[str, Any],
+    natspec: dict[str, Any],
 ) -> Union[DankContractCall, DankContractTx]:
     # sourcery skip: default-get
     """

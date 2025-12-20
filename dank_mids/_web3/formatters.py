@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict, Final, Iterator, List, Sequence, Tuple, TypeVar, Union
+from typing import Any, Callable, Dict, Final, List, Tuple, TypeVar, Union
+from collections.abc import Iterator, Sequence
 
 from eth_typing import TypeStr
 from faster_eth_utils.curried import apply_formatter_at_index  # type: ignore [attr-defined]
@@ -25,9 +26,9 @@ def return_as_is(x: _T) -> _T:
 
 
 def abi_request_formatters(
-    normalizers: Sequence[Callable[[TypeStr, Any], Tuple[TypeStr, Any]]],
-    abis: Dict[RPCEndpoint, Union[List[Any], Dict[str, Any]]],
-) -> Iterator[Tuple[RPCEndpoint, Callable[..., Any]]]:
+    normalizers: Sequence[Callable[[TypeStr, Any], tuple[TypeStr, Any]]],
+    abis: dict[RPCEndpoint, Union[list[Any], dict[str, Any]]],
+) -> Iterator[tuple[RPCEndpoint, Callable[..., Any]]]:
     for method, abi_types in abis.items():
         if isinstance(abi_types, list):
             yield method, get_formatter(tuple(normalizers), tuple(abi_types))
@@ -76,9 +77,9 @@ SuccessFormatter = Callable[[RPCResponse], Any]
 ErrorFormatter = Callable[[RPCResponse], Any]
 NullFormatter = Callable[[RPCResponse], Any]
 
-ResponseFormatters = Tuple[SuccessFormatter, ErrorFormatter, NullFormatter]
+ResponseFormatters = tuple[SuccessFormatter, ErrorFormatter, NullFormatter]
 
-_response_formatters: Final[Dict[RPCEndpoint, ResponseFormatters]] = {}
+_response_formatters: Final[dict[RPCEndpoint, ResponseFormatters]] = {}
 
 
 def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:

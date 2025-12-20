@@ -5,10 +5,8 @@ from typing import (
     Callable,
     Dict,
     Final,
-    Iterable,
     List,
     Literal,
-    Mapping,
     Optional,
     Union,
     Tuple,
@@ -18,6 +16,7 @@ from typing import (
     final,
     overload,
 )
+from collections.abc import Iterable, Mapping
 
 import faster_hexbytes
 import msgspec
@@ -33,9 +32,9 @@ if TYPE_CHECKING:
 
 
 # due to a circ import issue we will import these later
-PartialResponse: Optional[Type["types.PartialResponse"]] = None
-Request: Optional[Type["types.Request"]] = None
-Response: Optional[Type["types.Response"]] = None
+PartialResponse: Optional[type["types.PartialResponse"]] = None
+Request: Optional[type["types.Request"]] = None
+Response: Optional[type["types.Response"]] = None
 better_decode: Optional[Callable[..., Any]] = None  # type: ignore [type-arg]
 
 
@@ -45,23 +44,23 @@ __T = TypeVar("__T")
 StrEncodable = Union[ChecksumAddress, HexStr, Address]
 Encodable = Union[int, StrEncodable, faster_hexbytes.HexBytes, bytes]
 
-RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
+RpcThing = Union[HexStr, list[HexStr], dict[str, HexStr]]
 
 
 MulticallChunk = Union[
-    Tuple[ChecksumAddress, faster_hexbytes.HexBytes],
-    List[Union[ChecksumAddress, faster_hexbytes.HexBytes]],
+    tuple[ChecksumAddress, faster_hexbytes.HexBytes],
+    list[Union[ChecksumAddress, faster_hexbytes.HexBytes]],
 ]
-MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
+MulticallEncoder = Callable[[tuple[bool, Iterable[MulticallChunk]]], bytes]
 
-DecodedMulticall = Tuple[int, int, Tuple[Tuple["Success", bytes], ...]]
+DecodedMulticall = tuple[int, int, tuple[tuple["Success", bytes], ...]]
 MulticallDecoder = Callable[..., DecodedMulticall]
 
 
-JSONRPCBatchRequest = List["types.Request"]
+JSONRPCBatchRequest = list["types.Request"]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
-JSONRPCBatchResponse = Union[List["RawResponse"], "types.PartialResponse"]
-BatchDecoder = Callable[[Union[str, bytes]], Union[List[msgspec.Raw], "types.PartialResponse"]]
+JSONRPCBatchResponse = Union[list["RawResponse"], "types.PartialResponse"]
+BatchDecoder = Callable[[Union[str, bytes]], Union[list[msgspec.Raw], "types.PartialResponse"]]
 
 # these compile to C constants
 HexBytes: Final = faster_hexbytes.HexBytes
@@ -117,7 +116,7 @@ def decode_raw(data: AnyStr) -> RawResponse:
         raise
 
 
-def decode_jsonrpc_batch(data: AnyStr) -> Union["types.PartialResponse", List[RawResponse]]:
+def decode_jsonrpc_batch(data: AnyStr) -> Union["types.PartialResponse", list[RawResponse]]:
     """
     Decode json-encoded bytes into a list of response structs, or a single error response struct if applicable.
 
@@ -213,7 +212,7 @@ def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
 Success = bool
 
 
-def mcall_decode(data: "types.PartialResponse") -> Union[List[bytes], Exception]:
+def mcall_decode(data: "types.PartialResponse") -> Union[list[bytes], Exception]:
     try:
         decoded = _mcall_decoder(ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type]
     except Exception as e:
@@ -236,4 +235,4 @@ def __make_decode_batch() -> None:
     from dank_mids.types import PartialResponse
 
     global _decode_batch
-    _decode_batch = Decoder(type=Union[List[msgspec.Raw], PartialResponse]).decode
+    _decode_batch = Decoder(type=Union[list[msgspec.Raw], PartialResponse]).decode

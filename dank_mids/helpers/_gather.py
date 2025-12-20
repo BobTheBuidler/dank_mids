@@ -1,11 +1,10 @@
 import asyncio
 from typing import (
     Any,
-    Coroutine,
     Final,
-    Iterable,
     TypeVar,
 )
+from collections.abc import Coroutine, Iterable
 
 import a_sync.asyncio
 

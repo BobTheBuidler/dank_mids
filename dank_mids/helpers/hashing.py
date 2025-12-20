@@ -5,20 +5,15 @@ from typing import (
     Dict,
     Final,
     Generic,
-    ItemsView,
-    Iterator,
-    KeysView,
     List,
-    Mapping,
     Optional,
-    Sequence,
     Tuple,
     TypeVar,
     Union,
-    ValuesView,
     cast,
     final,
 )
+from collections.abc import ItemsView, Iterator, KeysView, Mapping, Sequence, ValuesView
 
 from mypy_extensions import mypyc_attr
 
@@ -51,7 +46,7 @@ class AttributeDict(Generic[TKey, TValue]):
     Provides superficial immutability, someone could hack around it
     """
 
-    def __init__(self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
+    def __init__(self, dictionary: dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
         self_dict = dict(dictionary)
         if args or kwargs:
             self_dict.update(dict(*args, **kwargs))  # type: ignore [arg-type]
@@ -162,15 +157,15 @@ def tupleize_lists_nested(
 
 
 @functools.singledispatch
-def _to_tuple(value: Union[List[Any], Tuple[Any, ...]]) -> Any:
+def _to_tuple(value: Union[list[Any], tuple[Any, ...]]) -> Any:
     return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
 
 
 @_to_tuple.register(list)
-def _(value: List[Any]) -> Any:
+def _(value: list[Any]) -> Any:
     return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
 
 
 @_to_tuple.register(tuple)
-def _(value: Tuple[Any, ...]) -> Any:
+def _(value: tuple[Any, ...]) -> Any:
     return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
