@@ -451,7 +451,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___brownie_patch___call___coroutine_gen___3_144Object;
+} dank_mids___brownie_patch___call___coroutine_gen___3_135Object;
 
 typedef struct {
     PyObject_HEAD
@@ -793,7 +793,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___run_and_set_result_gen___3_59Object;
+} dank_mids___helpers____requester___run_and_set_result_gen___3_60Object;
 
 typedef struct {
     PyObject_HEAD
@@ -837,7 +837,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___close_session_and_stop_gen___3_78Object;
+} dank_mids___helpers____requester___close_session_and_stop_gen___3_79Object;
 
 typedef struct {
     PyObject_HEAD
