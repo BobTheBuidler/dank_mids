@@ -45,6 +45,7 @@ try:
 except ImportError:
     pass
 
+
 def __getattr__(name: str):
     """
     Handles custom attribute access for the 'dank_mids' module.
