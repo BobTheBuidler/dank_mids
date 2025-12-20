@@ -698,9 +698,12 @@ typedef struct {
     PyObject *_arg;
     PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_generator_attribute__do_post;
-    PyObject *___mypyc_temp__2;
-    tuple_T3OOO ___mypyc_temp__3;
+    PyObject *___mypyc_generator_attribute__caller_future;
+    PyObject *___mypyc_generator_attribute__caller_loop;
+    PyObject *___mypyc_generator_attribute__run_and_set_result;
+    PyObject *___mypyc_generator_attribute__start_request;
+    PyObject *___mypyc_temp__3;
+    tuple_T3OOO ___mypyc_temp__4;
 } dank_mids___helpers____requester___post_HTTPRequesterThread_envObject;
 
 typedef struct {
@@ -722,20 +725,30 @@ typedef struct {
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__0;
     tuple_T3OOO ___mypyc_temp__1;
-} dank_mids___helpers____requester___do_post_post_HTTPRequesterThread_envObject;
+    PyObject *___mypyc_generator_attribute__result;
+    tuple_T3OOO ___mypyc_temp__2;
+    PyObject *___mypyc_generator_attribute__exc;
+} dank_mids___helpers____requester___run_and_set_result_post_HTTPRequesterThread_envObject;
 
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___do_post_post_HTTPRequesterThread_objObject;
+} dank_mids___helpers____requester___run_and_set_result_post_HTTPRequesterThread_objObject;
 
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___do_post_gen___3_54Object;
+} dank_mids___helpers____requester___run_and_set_result_gen___3_56Object;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers____requester___start_request_post_HTTPRequesterThread_objObject;
 
 typedef struct {
     PyObject_HEAD
@@ -757,8 +770,8 @@ typedef struct {
     PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__session;
-    PyObject *___mypyc_temp__4;
-    tuple_T3OOO ___mypyc_temp__5;
+    PyObject *___mypyc_temp__5;
+    tuple_T3OOO ___mypyc_temp__6;
 } dank_mids___helpers____requester___close_session_and_stop_shutdown_http_requester_envObject;
 
 typedef struct {
@@ -772,7 +785,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___close_session_and_stop_gen___3_62Object;
+} dank_mids___helpers____requester___close_session_and_stop_gen___3_73Object;
 
 typedef struct {
     PyObject_HEAD
