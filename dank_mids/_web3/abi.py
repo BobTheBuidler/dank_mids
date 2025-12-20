@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from typing import Any, Final, Optional, TypeVar, final
+from typing import Any, Final, TypeVar, final
 from collections.abc import Callable
 
 from eth_typing import TypeStr
