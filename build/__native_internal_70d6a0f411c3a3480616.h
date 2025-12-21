@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1389];
+extern PyObject *CPyStatics[1391];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -1436,6 +1436,7 @@ extern tuple_T10OOOOOOOOOO CPyStatic_constants___BAD_HEXES;
 extern tuple_T2OO CPyStatic_constants___REVERT_SELECTORS;
 extern char CPyDef_constants_____top_level__(void);
 extern PyObject *CPyStatic_controller___instances;
+extern PyObject *CPyStatic_controller___cgather;
 extern PyTypeObject *CPyType_controller___DankMiddlewareController;
 extern PyObject *CPyDef_controller___DankMiddlewareController(PyObject *cpy_r_w3);
 extern PyTypeObject *CPyType_controller_____init___3_DankMiddlewareController_env;
