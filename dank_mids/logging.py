@@ -52,8 +52,7 @@ def _checkLevel(level: Level | str) -> Level:
             raise ValueError("Unknown level: %r" % level)
         rv = _nameToLevel[level]
     else:
-        raise TypeError("Level not an integer or a valid string: %r"
-                        % (level,))
+        raise TypeError("Level not an integer or a valid string: %r" % (level,))
     return rv
 
 
@@ -294,5 +293,16 @@ class CLogger(logging.Logger):
                 exc_info = (type(exc_info), exc_info, exc_info.__traceback__)
             elif not isinstance(exc_info, tuple):
                 exc_info = sys.exc_info()
-        record = self.makeRecord(self.name, level, fn, lno, msg, args, cast(logging._SysExcInfoType, exc_info), func, extra, sinfo)
+        record = self.makeRecord(
+            self.name,
+            level,
+            fn,
+            lno,
+            msg,
+            args,
+            cast(logging._SysExcInfoType, exc_info),
+            func,
+            extra,
+            sinfo,
+        )
         self.handle(record)
