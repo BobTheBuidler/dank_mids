@@ -10,6 +10,7 @@ from typing import Any, Final, cast
 
 
 Level = int
+CallerInfo = tuple[str, int, str, str | None]
 
 CRITICAL: Final = logging.CRITICAL
 FATAL: Final = logging.FATAL
@@ -198,12 +199,15 @@ class CLogger(logging.Logger):
 
     def findCaller(
         self, stack_info: bool = False, stacklevel: int = 1
-    ) -> tuple[str, int, str, str | None]:
+    ) -> CallerInfo:
         """
         Find the stack frame of the caller so that we can note the source
         file name, line number and function name.
         """
-        f: FrameType | None = logging.currentframe()
+        f: FrameType | None
+        rv: CallerInfo
+        
+        f = logging.currentframe()
         # On some versions of IronPython, currentframe() returns None if
         # IronPython isn't run with -X:Frames.
         if f is not None:
