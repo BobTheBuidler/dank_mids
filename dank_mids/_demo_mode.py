@@ -4,6 +4,9 @@ from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids.logging import get_c_logger
 
 
+DEMO_MODE: Final = bool(ENVIRONMENT_VARIABLES.DEMO_MODE)
+
+
 @final
 class DummyLogger:
     """
@@ -27,9 +30,8 @@ class DummyLogger:
 
 
 # Choose between a real logger and a dummy logger based on the demo mode setting
-if ENVIRONMENT_VARIABLES.DEMO_MODE:  # type: ignore [has-type]
-    _logger = get_c_logger("dank_mids.demo")
-else:
-    _logger = DummyLogger()  # type: ignore [assignment]
-
-demo_logger: Final = _logger
+demo_logger: Final = (
+    get_c_logger("dank_mids.demo")
+    if ENVIRONMENT_VARIABLES.DEMO_MODE
+    else DummyLogger()
+)
