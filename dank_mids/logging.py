@@ -3,10 +3,10 @@ import logging
 import os
 import sys
 import traceback
-from collections.abc import Mapping
+from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from types import FrameType
-from typing import Any, Final, Iterator, cast
+from typing import Any, Final, cast
 
 
 Level = int
@@ -21,8 +21,14 @@ DEBUG: Final = logging.DEBUG
 NOTSET: Final = logging.NOTSET
 
 
+StringIO: Final = io.StringIO
+
+print_stack: Final = traceback.print_stack
+
+_nameToLevel: Final = logging._nameToLevel
 _acquireLock: Final = logging._acquireLock  # type: ignore [attr-defined]
 _releaseLock: Final = logging._releaseLock  # type: ignore [attr-defined]
+_srcfile: Final = logging._srcfile
 
 
 @contextmanager
@@ -38,14 +44,27 @@ def get_c_logger(name: str) -> "CLogger":
         return cast(CLogger, logging.getLogger(name))
 
 
+def _checkLevel(level: Level | str) -> Level:
+    if isinstance(level, int):
+        rv = level
+    elif str(level) == level:
+        if level not in _nameToLevel:
+            raise ValueError("Unknown level: %r" % level)
+        rv = _nameToLevel[level]
+    else:
+        raise TypeError("Level not an integer or a valid string: %r"
+                        % (level,))
+    return rv
+
+
 class CLogger(logging.Logger):
-    def __init__(self, name: str, level: Level = logging.NOTSET) -> None:
+    def __init__(self, name: str, level: Level | str = logging.NOTSET) -> None:
         """
         Initialize the logger with a name and an optional level.
         """
         logging.Filterer.__init__(self)
         self.name: Final = name
-        self.level: Level = logging._checkLevel(level)
+        self.level: Level = _checkLevel(level)
         self.parent: logging.Logger | None = None
         self.propagate: bool = True
         self.handlers: list[logging.Handler] = []
@@ -166,7 +185,7 @@ class CLogger(logging.Logger):
         """
         self.critical(msg, *args, **kwargs)
 
-    def log(self, level, msg: object, *args: Any, **kwargs: Any) -> None:
+    def log(self, level: Level, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Log 'msg % args' with the integer severity 'level'.
 
@@ -175,11 +194,6 @@ class CLogger(logging.Logger):
 
         logger.log(level, "We have a %s", "mysterious problem", exc_info=1)
         """
-        if not isinstance(level, int):
-            if logging.raiseExceptions:
-                raise TypeError("level must be an integer")
-            else:
-                return
         if self.isEnabledFor(level):
             self._log(level, msg, args, **kwargs)
 
@@ -195,7 +209,7 @@ class CLogger(logging.Logger):
         # IronPython isn't run with -X:Frames.
         if f is not None:
             f = f.f_back
-        orig_f = f
+        orig_f = cast(FrameType, f)
         while f and stacklevel > 1:
             f = f.f_back
             stacklevel -= 1
@@ -203,21 +217,22 @@ class CLogger(logging.Logger):
             f = orig_f
         rv = "(unknown file)", 0, "(unknown function)", None
         while hasattr(f, "f_code"):
-            co = f.f_code
+            frame = cast(FrameType, f)
+            co = frame.f_code
             filename = os.path.normcase(co.co_filename)
-            if filename == logging._srcfile:
-                f = f.f_back
+            if filename == _srcfile:
+                f = frame.f_back
                 continue
             sinfo = None
             if stack_info:
-                sio = io.StringIO()
+                sio = StringIO()
                 sio.write("Stack (most recent call last):\n")
-                traceback.print_stack(f, file=sio)
+                print_stack(frame, file=sio)
                 sinfo = sio.getvalue()
                 if sinfo[-1] == "\n":
                     sinfo = sinfo[:-1]
                 sio.close()
-            rv = (co.co_filename, f.f_lineno, co.co_name, sinfo)
+            rv = (co.co_filename, frame.f_lineno, co.co_name, sinfo)
             break
         return rv
 
@@ -264,7 +279,7 @@ class CLogger(logging.Logger):
         all the handlers of this logger to handle the record.
         """
         sinfo = None
-        if logging._srcfile:
+        if _srcfile:
             # IronPython doesn't track Python frames, so findCaller raises an
             # exception on some versions of IronPython. We trap it here so that
             # IronPython can use logging.
@@ -279,5 +294,5 @@ class CLogger(logging.Logger):
                 exc_info = (type(exc_info), exc_info, exc_info.__traceback__)
             elif not isinstance(exc_info, tuple):
                 exc_info = sys.exc_info()
-        record = self.makeRecord(self.name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
+        record = self.makeRecord(self.name, level, fn, lno, msg, args, cast(logging._SysExcInfoType, exc_info), func, extra, sinfo)
         self.handle(record)
