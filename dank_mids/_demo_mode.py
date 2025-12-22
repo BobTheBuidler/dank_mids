@@ -4,9 +4,6 @@ from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids.logging import get_c_logger
 
 
-DEMO_MODE: Final = bool(ENVIRONMENT_VARIABLES.DEMO_MODE)
-
-
 @final
 class DummyLogger:
     """
