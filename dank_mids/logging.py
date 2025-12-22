@@ -222,7 +222,8 @@ class CLogger(logging.Logger):
         while hasattr(f, "f_code"):
             frame = cast(FrameType, f)
             co = frame.f_code
-            filename = os.path.normcase(co.co_filename)
+            co_filename = co.co_filename
+            filename = os.path.normcase(co_filename)
             if filename == _srcfile:
                 f = frame.f_back
                 continue
@@ -235,14 +236,14 @@ class CLogger(logging.Logger):
                 if sinfo[-1] == "\n":
                     sinfo = sinfo[:-1]
                 sio.close()
-            rv = (co.co_filename, cast(int, frame.f_lineno), co.co_name, sinfo)
+            rv = (co_filename, cast(int, frame.f_lineno), co.co_name, sinfo)
             break
         return rv
 
     def makeRecord(
         self,
         name: str,
-        level: int,
+        level: Level,
         fn: str,
         lno: int,
         msg: object,
@@ -269,7 +270,7 @@ class CLogger(logging.Logger):
 
     def _log(
         self,
-        level: int,
+        level: Level,
         msg: object,
         args: logging._ArgsType,
         exc_info: logging._ExcInfoType = None,
