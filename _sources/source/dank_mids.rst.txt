@@ -62,6 +62,14 @@ dank\_mids.lock module
    :undoc-members:
    :show-inheritance:
 
+dank\_mids.logging module
+-------------------------
+
+.. automodule:: dank_mids.logging
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dank\_mids.middleware module
 ----------------------------
 
