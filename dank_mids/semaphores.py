@@ -1,7 +1,6 @@
 from decimal import Decimal
 from typing import Final, Literal, Optional, Type, Union
 
-import a_sync
 from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,
     _PrioritySemaphoreContextManager,
