@@ -1,7 +1,7 @@
 from typing import Any, Final, final
 
 from dank_mids import ENVIRONMENT_VARIABLES
-from dank_mids._logging import getLogger
+from dank_mids.logging import get_c_logger
 
 
 @final
@@ -28,7 +28,7 @@ class DummyLogger:
 
 # Choose between a real logger and a dummy logger based on the demo mode setting
 if ENVIRONMENT_VARIABLES.DEMO_MODE:  # type: ignore [has-type]
-    _logger = getLogger("dank_mids.demo")
+    _logger = get_c_logger("dank_mids.demo")
 else:
     _logger = DummyLogger()  # type: ignore [assignment]
 

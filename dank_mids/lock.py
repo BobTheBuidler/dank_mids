@@ -6,12 +6,12 @@ from asyncio import AbstractEventLoop, Future, events, mixins
 from types import TracebackType
 from typing import Deque, Final, Literal, TypeVar, final
 
-from dank_mids._logging import getLogger
+from dank_mids.logging import get_c_logger
 
 
 E = TypeVar("E", bound=Exception)
 
-logger: Final = getLogger("dank_mids.AlertingRLock")
+logger: Final = get_c_logger("dank_mids.AlertingRLock")
 
 
 CancelledError: Final = asyncio.CancelledError

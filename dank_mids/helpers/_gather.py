@@ -4,7 +4,7 @@ from collections.abc import Coroutine, Iterable
 
 import a_sync.asyncio
 
-from dank_mids._logging import getLogger
+from dank_mids.logging import get_c_logger
 
 
 __T = TypeVar("__T")
@@ -13,7 +13,7 @@ FinishedTasks = set["asyncio.Future[__T]"]
 PendingTasks = set["asyncio.Future[__T]"]
 
 
-logger: Final = getLogger("dank_mids.gather")
+logger: Final = get_c_logger("dank_mids.gather")
 
 # These compile to C constants
 CancelledError: Final = asyncio.CancelledError

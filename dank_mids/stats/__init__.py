@@ -39,11 +39,12 @@ from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
 from web3.types import RPCEndpoint
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids.logging import CLogger
 from dank_mids.stats import _nocompile
 
 if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch
-    from dank_mids.types import Request
+
 
 _LogLevel = int
 
@@ -103,7 +104,7 @@ def log_duration(work_descriptor: str, start: float, *, level: _LogLevel = STATS
 
 
 @final
-class _StatsLogger(logging.Logger):
+class _StatsLogger(CLogger):
     """
     A custom logger class for collecting and logging statistics about RPC method calls and responses.
 

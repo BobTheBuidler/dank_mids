@@ -1,12 +1,12 @@
 from asyncio import Future
-from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, Union, cast, final
+from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, cast, final
 
 import a_sync
 
-from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall
 from dank_mids._tasks import create_batch_task, shield
 from dank_mids.helpers._codec import RawResponse
+from dank_mids.logging import get_c_logger
 from dank_mids.types import Multicalls
 
 if TYPE_CHECKING:
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 __T = TypeVar("__T")
 
-Coro = Union[Multicall, JSONRPCBatch, Awaitable[RawResponse]]
+Coro = Multicall | JSONRPCBatch | Awaitable[RawResponse]
 
 
 MIN_SIZE: Final = 1  # TODO: Play with this
@@ -25,7 +25,7 @@ CHECK: Final = MIN_SIZE - 1
 """A constant used for checking batch sizes."""
 
 
-logger: Final = getLogger(__name__)
+logger: Final = get_c_logger(__name__)
 
 igather: Final = a_sync.igather
 

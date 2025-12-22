@@ -27,9 +27,9 @@ from web3.types import BlockIdentifier
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import exceptions
-from dank_mids._logging import getLogger
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
+from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:
     from dank_mids.brownie_patch.types import ContractMethod
@@ -64,7 +64,7 @@ _check_array: Final = brownie.convert.normalize._check_array
 _get_abi_types: Final = brownie.convert.normalize._get_abi_types
 
 
-logger: Final[Logger] = getLogger(__name__)
+logger: Final = get_c_logger(__name__)
 
 
 encode: Final = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]

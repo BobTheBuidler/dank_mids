@@ -7,7 +7,7 @@ from typing import (
     Literal,
     Optional,
     Sequence,
-    Tuple,
+    tuple,
     Type,
     TypedDict,
     Union,
@@ -343,7 +343,7 @@ class DankEth(AsyncEth):
     async def get_logs(
         self,
         *args,
-        decode_to: Type[T] = Tuple[Log, ...],  # type: ignore [assignment]
+        decode_to: Type[T] = tuple[Log, ...],  # type: ignore [assignment]
         decode_hook: Optional[DecodeHook[T]] = _decode_hook,
         **kwargs,
     ) -> T:

@@ -1,6 +1,7 @@
 from asyncio import get_running_loop
 from collections import defaultdict
 from functools import lru_cache
+from logging import getLogger
 from time import time
 from typing import (
     Any,
@@ -30,7 +31,6 @@ from dank_mids import _debugging
 from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
-from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
 from dank_mids._uid import UIDGenerator
 from dank_mids.exceptions import GarbageCollectionError
@@ -40,11 +40,13 @@ from dank_mids.helpers._helpers import w3_version_major, _sync_w3_from_async
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._requester import _requester
+from dank_mids.logging import get_c_logger
 from dank_mids.lock import AlertingRLock
 from dank_mids.semaphores import BlockSemaphore
 from dank_mids.types import BlockId, PartialRequest, Request
 
-logger = getLogger(__name__)
+
+logger: Final = get_c_logger(__name__)
 # our new logger logs the same stuff plus more
 getLogger("web3.RequestManager").disabled = True
 getLogger("web3.RequestManager").propagate = False
@@ -207,14 +209,14 @@ class DankMiddlewareController:
             if method == "eth_call":
                 async with self.eth_call_semaphores[params[1]]:
                     # create a strong ref to the call that will be held until the caller completes or is cancelled
-                    _logger_debug(
+                    logger.debug(
                         "making %s %s with params %s", self.request_type.__name__, method, params
                     )
                     if params[0]["to"] in self.no_multicall:
                         return await RPCRequest(self, method, params)
                     return await eth_call(self, params)
 
-            _logger_debug("making %s %s with params %s", self.request_type.__name__, method, params)
+            logger.debug("making %s %s with params %s", self.request_type.__name__, method, params)
             return await RPCRequest(self, method, params)
         except GarbageCollectionError:
             # this exc shouldn't be exposed to the user so let's try this again
@@ -463,9 +465,3 @@ class DankMiddlewareController:
 @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)
 def _get_client_version(sync_w3: Web3) -> str:
     return sync_w3.client_version if w3_version_major >= 6 else cast(str, sync_w3.clientVersion)  # type: ignore [attr-defined]
-
-
-def _logger_debug(msg: str, *args: Any) -> None: ...
-
-
-_logger_debug = logger.debug

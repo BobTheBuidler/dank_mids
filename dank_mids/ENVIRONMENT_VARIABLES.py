@@ -7,12 +7,12 @@ import typed_envs
 from a_sync import AsyncProcessPoolExecutor
 
 from dank_mids import _envs
-from dank_mids._logging import INFO, getLogger
 from dank_mids._mode import OperationMode
+from dank_mids.logging import INFO, get_c_logger
 from dank_mids.semaphores import BlockSemaphore
 
 
-logger: Final = getLogger("dank_mids.envs")
+logger: Final = get_c_logger("dank_mids.envs")
 
 if not typed_envs.logger.disabled:
     if not logger.hasHandlers():

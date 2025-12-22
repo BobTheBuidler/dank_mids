@@ -1,0 +1,255 @@
+import io
+import logging
+import os
+import sys
+import traceback
+from collections.abc import Mapping
+from contextlib import contextmanager
+from typing import Any, Final, Iterator, cast, final
+
+
+Level = int
+
+CRITICAL: Final = logging.CRITICAL
+FATAL: Final = logging.FATAL
+ERROR: Final = logging.ERROR
+WARNING: Final = logging.WARNING
+WARN: Final = logging.WARN
+INFO: Final = logging.INFO
+DEBUG: Final = logging.DEBUG
+NOTSET: Final = logging.NOTSET
+
+
+_acquireLock: Final = logging._acquireLock
+_releaseLock: Final = logging._releaseLock
+
+
+@contextmanager
+def use_c_logger_class() -> Iterator[None]:
+    """Any logger created inside the `with` block will use our faster `CLogger` implementation."""
+    logging.setLoggerClass(CLogger)
+    yield
+    logging.setLoggerClass(logging.Logger)
+
+
+def get_c_logger(name: str) -> "CLogger":
+    with use_c_logger_class():
+        return cast(CLogger, logging.getLogger(name))
+
+@final
+class CLogger(logging.Logger):
+    def __init__(self, name: str, level: Level = logging.NOTSET) -> None:
+        """
+        Initialize the logger with a name and an optional level.
+        """
+        logging.Filterer.__init__(self)
+        self.name: Final = name
+        self.level: int = logging._checkLevel(level)
+        self.parent: logging.Logger | None = None
+        self.propagate: bool = True
+        self.handlers: list[logging.Handler] = []
+        self.disabled: bool = False
+        self._cache: Final[dict[Level, bool]] = {}
+
+    def getEffectiveLevel(self) -> int:
+        """
+        Get the effective level for this logger.
+
+        Loop through this logger and its parents in the logger hierarchy,
+        looking for a non-zero logging level. Return the first one found.
+        """
+        logger = self
+        while logger:
+            if logger.level:
+                return logger.level
+            logger = logger.parent
+        return logging.NOTSET
+
+    def isEnabledFor(self, level: Level) -> bool:
+        """
+        Is this logger enabled for level 'level'?
+        """
+        if self.disabled:
+            return False
+
+        try:
+            return self._cache[level]
+        except KeyError:
+            _acquireLock()
+            try:
+                if self.manager.disable >= level:
+                    is_enabled = self._cache[level] = False
+                else:
+                    is_enabled = self._cache[level] = (
+                        level >= self.getEffectiveLevel()
+                    )
+            finally:
+                _releaseLock()
+            return is_enabled
+
+
+    def debug(self, msg: str, *args: Any, **kwargs: Any) -> None:
+        """
+        Log 'msg % args' with severity 'DEBUG'.
+
+        To pass exception information, use the keyword argument exc_info with
+        a true value, e.g.
+
+        logger.debug("Houston, we have a %s", "thorny problem", exc_info=1)
+        """
+        if self.isEnabledFor(DEBUG):
+            self._log(DEBUG, msg, args, **kwargs)
+
+    def info(self, msg: str, *args: Any, **kwargs: Any) -> None:
+        """
+        Log 'msg % args' with severity 'INFO'.
+
+        To pass exception information, use the keyword argument exc_info with
+        a true value, e.g.
+
+        logger.info("Houston, we have a %s", "interesting problem", exc_info=1)
+        """
+        if self.isEnabledFor(INFO):
+            self._log(INFO, msg, args, **kwargs)
+
+    def warning(self, msg: str, *args: Any, **kwargs: Any) -> None:
+        """
+        Log 'msg % args' with severity 'WARNING'.
+
+        To pass exception information, use the keyword argument exc_info with
+        a true value, e.g.
+
+        logger.warning("Houston, we have a %s", "bit of a problem", exc_info=1)
+        """
+        if self.isEnabledFor(WARNING):
+            self._log(WARNING, msg, args, **kwargs)
+
+    def error(self, msg: str, *args: Any, **kwargs: Any) -> None:
+        """
+        Log 'msg % args' with severity 'ERROR'.
+
+        To pass exception information, use the keyword argument exc_info with
+        a true value, e.g.
+
+        logger.error("Houston, we have a %s", "major problem", exc_info=1)
+        """
+        if self.isEnabledFor(ERROR):
+            self._log(ERROR, msg, args, **kwargs)
+
+    def exception(self, msg, *args, exc_info=True, **kwargs):
+        """
+        Convenience method for logging an ERROR with exception information.
+        """
+        self.error(msg, *args, exc_info=exc_info, **kwargs)
+
+    def critical(self, msg: str, *args: Any, **kwargs: Any) -> None:
+        """
+        Log 'msg % args' with severity 'CRITICAL'.
+
+        To pass exception information, use the keyword argument exc_info with
+        a true value, e.g.
+
+        logger.critical("Houston, we have a %s", "major disaster", exc_info=1)
+        """
+        if self.isEnabledFor(CRITICAL):
+            self._log(CRITICAL, msg, args, **kwargs)
+
+    def fatal(self, msg: str, *args: Any, **kwargs: Any) -> None:
+        """
+        Don't use this method, use critical() instead.
+        """
+        self.critical(msg, *args, **kwargs)
+
+    def log(self, level, msg: str, *args: Any, **kwargs: Any) -> None:
+        """
+        Log 'msg % args' with the integer severity 'level'.
+
+        To pass exception information, use the keyword argument exc_info with
+        a true value, e.g.
+
+        logger.log(level, "We have a %s", "mysterious problem", exc_info=1)
+        """
+        if not isinstance(level, int):
+            if logging.raiseExceptions:
+                raise TypeError("level must be an integer")
+            else:
+                return
+        if self.isEnabledFor(level):
+            self._log(level, msg, args, **kwargs)
+
+    def findCaller(self, stack_info: bool=False, stacklevel: int=1) -> tuple[str, int, str, str | None]:
+        """
+        Find the stack frame of the caller so that we can note the source
+        file name, line number and function name.
+        """
+        f = logging.currentframe()
+        #On some versions of IronPython, currentframe() returns None if
+        #IronPython isn't run with -X:Frames.
+        if f is not None:
+            f = f.f_back
+        orig_f = f
+        while f and stacklevel > 1:
+            f = f.f_back
+            stacklevel -= 1
+        if not f:
+            f = orig_f
+        rv = "(unknown file)", 0, "(unknown function)", None
+        while hasattr(f, "f_code"):
+            co = f.f_code
+            filename = os.path.normcase(co.co_filename)
+            if filename == logging._srcfile:
+                f = f.f_back
+                continue
+            sinfo = None
+            if stack_info:
+                sio = io.StringIO()
+                sio.write('Stack (most recent call last):\n')
+                traceback.print_stack(f, file=sio)
+                sinfo = sio.getvalue()
+                if sinfo[-1] == '\n':
+                    sinfo = sinfo[:-1]
+                sio.close()
+            rv = (co.co_filename, f.f_lineno, co.co_name, sinfo)
+            break
+        return rv
+
+    def makeRecord(self, name: str, level: int, fn: str, lno: int, msg: str, args: logging._ArgsType, exc_info: logging._SysExcInfoType | None,
+                   func: str | None=None, extra: Mapping[str, object] | None=None, sinfo: str | None=None) -> logging.LogRecord:
+        """
+        A factory method which can be overridden in subclasses to create
+        specialized LogRecords.
+        """
+        rv = logging._logRecordFactory(name, level, fn, lno, msg, args, exc_info, func,
+                             sinfo)
+        if extra is not None:
+            for key in extra:
+                if (key in ["message", "asctime"]) or (key in rv.__dict__):
+                    raise KeyError("Attempt to overwrite %r in LogRecord" % key)
+                rv.__dict__[key] = extra[key]
+        return rv
+
+    def _log(self, level: int, msg: str, args: tuple[Any, ...], exc_info: logging._ExcInfoType = None, extra: Mapping[str, object] | None = None, stack_info: bool = False,
+             stacklevel: int=1) -> None:
+        """
+        Low-level logging routine which creates a LogRecord and then calls
+        all the handlers of this logger to handle the record.
+        """
+        sinfo = None
+        if logging._srcfile:
+            #IronPython doesn't track Python frames, so findCaller raises an
+            #exception on some versions of IronPython. We trap it here so that
+            #IronPython can use logging.
+            try:
+                fn, lno, func, sinfo = self.findCaller(stack_info, stacklevel)
+            except ValueError: # pragma: no cover
+                fn, lno, func = "(unknown file)", 0, "(unknown function)"
+        else: # pragma: no cover
+            fn, lno, func = "(unknown file)", 0, "(unknown function)"
+        if exc_info:
+            if isinstance(exc_info, BaseException):
+                exc_info = (type(exc_info), exc_info, exc_info.__traceback__)
+            elif not isinstance(exc_info, tuple):
+                exc_info = sys.exc_info()
+        record = self.makeRecord(self.name, level, fn, lno, msg, args,
+                                 exc_info, func, extra, sinfo)
+        self.handle(record)

@@ -18,16 +18,13 @@ from typing import (
     Any,
     Callable,
     DefaultDict,
-    Dict,
     Final,
     Generator,
     Generic,
     Iterable,
     Iterator,
-    List,
     Optional,
     Sequence,
-    Tuple,
     TypeVar,
     Union,
     final,
@@ -66,7 +63,6 @@ from dank_mids._exceptions import (
     RateLimitError,
     internal_err_types,
 )
-from dank_mids._logging import DEBUG, getLogger
 from dank_mids._nocompile import try_for_result, try_for_result_quick
 from dank_mids._tasks import (
     BATCH_TASKS,
@@ -104,6 +100,7 @@ from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._requester import _requester
 from dank_mids.helpers._weaklist import WeakList
+from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
 from dank_mids.lock import AlertingRLock, Lock
@@ -124,16 +121,16 @@ if TYPE_CHECKING:
 
 EXECUTION_LOCK: Final = Lock()
 
-logger: Final = getLogger(__name__)
+logger: Final = get_c_logger(__name__)
 
 _Response = TypeVar(
-    "_Response", Response, List[Response], RPCResponse, List[RPCResponse], RawResponse
+    "_Response", Response, list[Response], RPCResponse, list[RPCResponse], RawResponse
 )
 
 
 @final
 class RPCError(_RPCError, total=False):
-    dankmids_added_context: Dict[str, Any]
+    dankmids_added_context: dict[str, Any]
 
 
 _super_init: Final = a_sync.Event.__init__
@@ -217,7 +214,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
     raw: Final[bool]
     _fut: Final[DebuggableFuture[RPCResponse]]
     _daemon: Final[Task[None] | None]
-    __dict__: Final[Dict[str, Any]]
+    __dict__: Final[dict[str, Any]]
 
     __slots__ = "method", "params", "raw", "_daemon", "__dict__"
 
@@ -297,7 +294,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 fut.exception()
 
     @property
-    def request(self) -> Union[Request, PartialRequest]:
+    def request(self) -> Request | PartialRequest:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
 
     @stuck_coro_debugger
@@ -434,7 +431,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             else decoded.to_dict(self.method)
         )
 
-    async def spoof_response(self, data: Union[RawResponse, bytes, Exception]) -> None:
+    async def spoof_response(self, data: RawResponse | bytes | Exception) -> None:
         # sourcery skip: merge-duplicate-blocks
         """
         `Raw` type data comes from rpc calls executed in a jsonrpc batch
@@ -572,7 +569,7 @@ class eth_call(RPCRequest):
         return self.target not in self.controller.no_multicall
 
     @stuck_coro_debugger
-    async def spoof_response(self, data: Union[bytes, Exception, RawResponse]) -> None:  # type: ignore
+    async def spoof_response(self, data: bytes | Exception | RawResponse) -> None:  # type: ignore
         """Sets and returns a spoof rpc response for this BatchedCall instance using data provided by the worker."""
 
         # NOTE: If `type(data)` is `bytes`, it is a result from a multicall. If not, `data` comes from a jsonrpc batch.
@@ -617,7 +614,7 @@ class eth_call(RPCRequest):
 _Request = TypeVar("_Request", bound=_RequestBase)
 
 
-class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
+class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
     calls: Final[WeakList[_Request]]
     _done: Final[_RequestEvent]
 
@@ -640,7 +637,7 @@ class _Batch(_RequestBase[List[_Response]], Iterable[_Request]):
         return self._task.__await__()
 
     @property
-    def bisected(self) -> Generator[Tuple[_Request, ...], None, None]:
+    def bisected(self) -> Generator[tuple[_Request, ...], None, None]:
         # set `self.calls` output to var so its only computed once
         calls = tuple(self.calls)
         half = len(calls) // 2
@@ -839,7 +836,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         return params  # type: ignore [return-value]
 
     @property
-    def request(self) -> Union[Request, PartialRequest]:
+    def request(self) -> Request | PartialRequest:
         return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
 
     @property
@@ -987,7 +984,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         else:
             raise NotImplementedError(f"type {type(data)} not supported.", data)
 
-    async def decode(self, data: PartialResponse) -> List[bytes]:
+    async def decode(self, data: PartialResponse) -> list[bytes]:
         start = time()
         if ENVS.OPERATION_MODE.infura or len(self) < 100:
             # decode synchronously
@@ -1062,7 +1059,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
 
 @final
-class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
+class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
     """
     Represents a batch of JSON-RPC requests.
 
@@ -1076,7 +1073,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
     def __init__(
         self,
         controller: "DankMiddlewareController",
-        calls: Iterable[Union[Multicall, RPCRequest]] = [],
+        calls: Iterable[Multicall | RPCRequest] = [],
         jid: BatchId | None = None,
     ) -> None:  # sourcery skip: default-mutable-arg
         """
@@ -1095,7 +1092,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
         batch_info = "" if batch is None else f" batch={batch}"
         return f"<JSONRPCBatch jid={self.jid} len={len(self)}{batch_info} awaited={self._awaited}>"
 
-    def __iter__(self) -> Iterator[Union[Multicall, eth_call, RPCRequest]]:
+    def __iter__(self) -> Iterator[Multicall | eth_call | RPCRequest]:
         return filter(None, self.calls)
 
     def __bool__(self) -> bool:
@@ -1136,7 +1133,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
             return len(self) == 1 and self.is_multicalls_only
 
     @property
-    def method_counts(self) -> Dict[RPCEndpoint, int]:
+    def method_counts(self) -> dict[RPCEndpoint, int]:
         """
         Count the occurrences of each method in the batch.
 
@@ -1266,7 +1263,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
 
     @stuck_coro_debugger
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1, suppress_logs=2)
-    async def post(self) -> Tuple[List[RawResponse], List[Union[Multicall, RPCRequest]]]:
+    async def post(self) -> tuple[list[RawResponse], list[Multicall | RPCRequest]]:
         """
         Send the batch of requests to the Ethereum node and process the responses.
 
@@ -1358,7 +1355,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Union[Multicall, eth_call, RPCRequest]]):
     @set_done
     @stuck_coro_debugger
     async def spoof_response(
-        self, response: List[RawResponse], calls: Tuple[RPCRequest, ...]
+        self, response: list[RawResponse], calls: tuple[RPCRequest, ...]
     ) -> None:
         """
         Process the responses from the Ethereum node and set the results for each call.

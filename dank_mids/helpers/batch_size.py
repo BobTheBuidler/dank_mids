@@ -1,9 +1,9 @@
-from logging import getLogger
 from typing import Final, Literal
 
+from dank_mids.logging import get_c_logger
 
-batch_size_logger: Final = getLogger("dank_mids.batch_size")
-_log_info: Final = batch_size_logger.info
+
+batch_size_logger: Final = get_c_logger("dank_mids.batch_size")
 
 
 def log_check(
@@ -11,6 +11,6 @@ def log_check(
     member_type: Literal["calls", "requests"],
     num_calls: int,
 ) -> None:
-    _log_info(
+    batch_size_logger.info(
         "checking if we should reduce %s batch size... (%s %s)", batch_type, num_calls, member_type
     )
