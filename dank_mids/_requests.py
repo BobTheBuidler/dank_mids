@@ -2,6 +2,7 @@ from asyncio import (
     Future,
     Task,
     TimeoutError,
+    as_completed,
     create_task,
     current_task,
     get_running_loop,
@@ -1290,10 +1291,12 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             post_coro = _requester.post(
                 self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
             )
-            response: JSONRPCBatchResponse = await wait_for(post_coro, timeout=30)
+            task = create_task(post_coro, name=f"JSONRPCBatch-{self.uid}")
+            response: JSONRPCBatchResponse = await wait_for(shield(task), timeout=30)
         except TimeoutError:
             timeout_logger_warning("JSONRPCBatch.post timed out (30s). Retrying.")
-            return await self.post()
+            for fut in as_completed([task, self.post()]):
+                return await fut
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 _log_warning("Payload too large: %s", self.method_counts)
