@@ -197,16 +197,14 @@ class CLogger(logging.Logger):
         if self.isEnabledFor(level):
             self._log(level, msg, args, **kwargs)
 
-    def findCaller(
-        self, stack_info: bool = False, stacklevel: int = 1
-    ) -> CallerInfo:
+    def findCaller(self, stack_info: bool = False, stacklevel: int = 1) -> CallerInfo:
         """
         Find the stack frame of the caller so that we can note the source
         file name, line number and function name.
         """
         f: FrameType | None
         rv: CallerInfo
-        
+
         f = logging.currentframe()
         # On some versions of IronPython, currentframe() returns None if
         # IronPython isn't run with -X:Frames.
