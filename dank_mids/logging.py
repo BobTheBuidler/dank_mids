@@ -5,7 +5,8 @@ import sys
 import traceback
 from collections.abc import Mapping
 from contextlib import contextmanager
-from typing import Any, Final, Iterator, cast, final
+from types import FrameType
+from typing import Any, Final, Iterator, cast
 
 
 Level = int
@@ -36,7 +37,7 @@ def get_c_logger(name: str) -> "CLogger":
     with use_c_logger_class():
         return cast(CLogger, logging.getLogger(name))
 
-@final
+
 class CLogger(logging.Logger):
     def __init__(self, name: str, level: Level = logging.NOTSET) -> None:
         """
@@ -44,7 +45,7 @@ class CLogger(logging.Logger):
         """
         logging.Filterer.__init__(self)
         self.name: Final = name
-        self.level: int = logging._checkLevel(level)
+        self.level: Level = logging._checkLevel(level)
         self.parent: logging.Logger | None = None
         self.propagate: bool = True
         self.handlers: list[logging.Handler] = []
@@ -58,12 +59,14 @@ class CLogger(logging.Logger):
         Loop through this logger and its parents in the logger hierarchy,
         looking for a non-zero logging level. Return the first one found.
         """
+        logger: logging.Logger | None
+        
         logger = self
         while logger:
             if logger.level:
                 return logger.level
             logger = logger.parent
-        return logging.NOTSET
+        return NOTSET
 
     def isEnabledFor(self, level: Level) -> bool:
         """
@@ -87,8 +90,7 @@ class CLogger(logging.Logger):
                 _releaseLock()
             return is_enabled
 
-
-    def debug(self, msg: str, *args: Any, **kwargs: Any) -> None:
+    def debug(self, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Log 'msg % args' with severity 'DEBUG'.
 
@@ -100,7 +102,7 @@ class CLogger(logging.Logger):
         if self.isEnabledFor(DEBUG):
             self._log(DEBUG, msg, args, **kwargs)
 
-    def info(self, msg: str, *args: Any, **kwargs: Any) -> None:
+    def info(self, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Log 'msg % args' with severity 'INFO'.
 
@@ -112,7 +114,7 @@ class CLogger(logging.Logger):
         if self.isEnabledFor(INFO):
             self._log(INFO, msg, args, **kwargs)
 
-    def warning(self, msg: str, *args: Any, **kwargs: Any) -> None:
+    def warning(self, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Log 'msg % args' with severity 'WARNING'.
 
@@ -124,7 +126,7 @@ class CLogger(logging.Logger):
         if self.isEnabledFor(WARNING):
             self._log(WARNING, msg, args, **kwargs)
 
-    def error(self, msg: str, *args: Any, **kwargs: Any) -> None:
+    def error(self, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Log 'msg % args' with severity 'ERROR'.
 
@@ -136,13 +138,19 @@ class CLogger(logging.Logger):
         if self.isEnabledFor(ERROR):
             self._log(ERROR, msg, args, **kwargs)
 
-    def exception(self, msg, *args, exc_info=True, **kwargs):
+    def exception(
+        self,
+        msg: object,
+        *args: Any,
+        exc_info: logging._ExcInfoType = True,
+        **kwargs: Any,
+    ) -> None:
         """
         Convenience method for logging an ERROR with exception information.
         """
         self.error(msg, *args, exc_info=exc_info, **kwargs)
 
-    def critical(self, msg: str, *args: Any, **kwargs: Any) -> None:
+    def critical(self, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Log 'msg % args' with severity 'CRITICAL'.
 
@@ -154,13 +162,13 @@ class CLogger(logging.Logger):
         if self.isEnabledFor(CRITICAL):
             self._log(CRITICAL, msg, args, **kwargs)
 
-    def fatal(self, msg: str, *args: Any, **kwargs: Any) -> None:
+    def fatal(self, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Don't use this method, use critical() instead.
         """
         self.critical(msg, *args, **kwargs)
 
-    def log(self, level, msg: str, *args: Any, **kwargs: Any) -> None:
+    def log(self, level, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Log 'msg % args' with the integer severity 'level'.
 
@@ -182,7 +190,7 @@ class CLogger(logging.Logger):
         Find the stack frame of the caller so that we can note the source
         file name, line number and function name.
         """
-        f = logging.currentframe()
+        f: FrameType | None = logging.currentframe()
         #On some versions of IronPython, currentframe() returns None if
         #IronPython isn't run with -X:Frames.
         if f is not None:
@@ -213,22 +221,24 @@ class CLogger(logging.Logger):
             break
         return rv
 
-    def makeRecord(self, name: str, level: int, fn: str, lno: int, msg: str, args: logging._ArgsType, exc_info: logging._SysExcInfoType | None,
+    def makeRecord(self, name: str, level: Level, fn: str, lno: int, msg: object, args: logging._ArgsType, exc_info: logging._SysExcInfoType | None,
                    func: str | None=None, extra: Mapping[str, object] | None=None, sinfo: str | None=None) -> logging.LogRecord:
         """
         A factory method which can be overridden in subclasses to create
         specialized LogRecords.
         """
-        rv = logging._logRecordFactory(name, level, fn, lno, msg, args, exc_info, func,
-                             sinfo)
+        # TODO: set a C-based LogRecord to the logging module
+        rv = logging._logRecordFactory(  # type: ignore [attr-defined]
+            name, level, fn, lno, msg, args, exc_info, func, sinfo
+        )
         if extra is not None:
             for key in extra:
                 if (key in ["message", "asctime"]) or (key in rv.__dict__):
                     raise KeyError("Attempt to overwrite %r in LogRecord" % key)
                 rv.__dict__[key] = extra[key]
-        return rv
+        return rv  # type: ignore [no-any-return]
 
-    def _log(self, level: int, msg: str, args: tuple[Any, ...], exc_info: logging._ExcInfoType = None, extra: Mapping[str, object] | None = None, stack_info: bool = False,
+    def _log(self, level: Level, msg: object, args: tuple[Any, ...], exc_info: logging._ExcInfoType = None, extra: Mapping[str, object] | None = None, stack_info: bool = False,
              stacklevel: int=1) -> None:
         """
         Low-level logging routine which creates a LogRecord and then calls
