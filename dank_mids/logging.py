@@ -79,7 +79,7 @@ class CLogger(logging.Logger):
         looking for a non-zero logging level. Return the first one found.
         """
         logger: logging.Logger | None
-        
+
         logger = self
         while logger:
             if logger.level:
