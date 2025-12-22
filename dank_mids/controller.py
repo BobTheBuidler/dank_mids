@@ -15,6 +15,7 @@ from typing import (
     final,
 )
 
+import a_sync
 import eth_retry
 from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress, HexStr
@@ -49,6 +50,8 @@ getLogger("web3.RequestManager").disabled = True
 getLogger("web3.RequestManager").propagate = False
 
 instances: Final[DefaultDict[ChainId, List["DankMiddlewareController"]]] = defaultdict(list)
+
+cgather: Final = a_sync.cgather
 
 
 @final
@@ -285,7 +288,13 @@ class DankMiddlewareController:
         demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)
         batch = DankBatch(self, multicalls, rpc_calls)
         # I think this unnecessary assignment might help fix a mypyc compiler bug
-        _ = await batch
+        try:
+            await batch
+        except AttributeError as e:
+            if "__mypyc_temp__" not in str(e):
+                raise
+            # This is a mypyc compiler bug that we can work around. It's worth it for fast C.
+            await cgather(*multicalls.values(), *rpc_calls)
         demo_logger.info("%s done", batch)
 
     @property

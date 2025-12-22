@@ -1245,7 +1245,10 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__batch;
     PyObject *___mypyc_temp__29;
     tuple_T3OOO ___mypyc_temp__30;
-    PyObject *___mypyc_generator_attribute___;
+    tuple_T3OOO ___mypyc_temp__31;
+    PyObject *___mypyc_generator_attribute__e;
+    PyObject *___mypyc_temp__32;
+    tuple_T3OOO ___mypyc_temp__33;
 } dank_mids___controller___execute_batch_DankMiddlewareController_genObject;
 
 #endif
