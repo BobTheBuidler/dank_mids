@@ -1,7 +1,6 @@
 import abc
-import logging
 import os
-from typing import Any, Literal
+from typing import Any, Final, Literal
 from collections.abc import Iterable
 
 import aiofiles
@@ -10,9 +9,10 @@ from aiofiles.base import AiofilesContextManager
 from aiofiles.threadpool.text import AsyncTextIOWrapper
 from async_lru import alru_cache
 
+from dank_mids.logging import get_c_logger
 from dank_mids.helpers.lru_cache import lru_cache_lite
 
-logger = logging.getLogger("dank_mids.debugging")
+logger: Final = get_c_logger("dank_mids.debugging")
 
 Mode = Literal["a"]
 

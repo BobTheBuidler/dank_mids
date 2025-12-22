@@ -11,12 +11,13 @@ from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids._logging import DEBUG, getLogger
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
+from dank_mids.helpers._rate_limit import limiters
+from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.types import PartialRequest, RateLimiters, T
 
 
-logger: Final = getLogger("dank_mids.session")
+logger: Final = get_c_logger("dank_mids.session")
 
 limiters: RateLimiters | None = None
 

@@ -1,10 +1,10 @@
 import asyncio
-from logging import getLogger
 from typing import Any, Awaitable, Final
 
 import a_sync
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids.logging import get_c_logger
 from dank_mids.types import T
 
 
@@ -14,8 +14,7 @@ TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg
 BATCH_TASKS: Final[set[asyncio.Task[Any]]] = set()
 
 
-logger: Final = getLogger("dank_mids.tasks")
-log_task_exception: Final = logger.exception
+logger: Final = get_c_logger("dank_mids.tasks")
 
 CancelledError: Final = asyncio.CancelledError
 ensure_future: Final = asyncio.tasks.ensure_future
@@ -36,7 +35,7 @@ def create_batch_task(a: Awaitable[T], name: str) -> asyncio.Task[T]:
 
 def batch_done_callback(t: asyncio.Task[Any]) -> None:
     if t._exception is not None:
-        log_task_exception("exception in batch task %s", t)
+        logger.exception("exception in batch task %s", t)
     elif t.cancelled():
         # Make the CancelledError so we can get the cancel message, if any.
         try:
@@ -45,7 +44,7 @@ def batch_done_callback(t: asyncio.Task[Any]) -> None:
             cancel_message = e.args[0] if e.args else None
 
         # Now log the exception because something is fucked up and the user needs to know.
-        log_task_exception("batch task %s is cancelled???\nreason: %s", t, cancel_message)
+        logger.exception("batch task %s is cancelled???\nreason: %s", t, cancel_message)
     else:
         BATCH_TASKS.discard(t)
 

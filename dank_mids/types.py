@@ -1,6 +1,5 @@
 import re
 from functools import cached_property
-from logging import getLogger
 from time import time
 from typing import (
     TYPE_CHECKING,
@@ -48,6 +47,7 @@ from dank_mids._exceptions import (
 from dank_mids.helpers._codec import decode_string, encode
 from dank_mids.helpers.hashing import AttributeDict
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
+from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:
     from dank_mids._requests import Multicall
@@ -155,7 +155,7 @@ _getattribute = object.__getattribute__
 class ChainstackRateLimitContext(DictStruct, frozen=True):  # type: ignore [call-arg]
     """Chainstack doesn't use status code 429 for rate limiting, they attach one of these objects to a 200 response."""
 
-    logger: ClassVar = getLogger("dank_mids.chainstack")
+    logger: ClassVar = get_c_logger("dank_mids.chainstack")
     _try_again_in: str = field(name="try_again_in")
 
     @property

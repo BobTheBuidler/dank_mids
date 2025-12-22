@@ -1,8 +1,9 @@
-import logging
 import re
 from typing import TYPE_CHECKING, Final, List, Sequence, Union, final
 
 from aiohttp.client_exceptions import ClientResponseError
+
+from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:
     from dank_mids._requests import RPCRequest
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     from dank_mids.types import PartialRequest, PartialResponse
 
 
-logger: Final = logging.getLogger("dank_mids.exceptions")
+logger: Final = get_c_logger("dank_mids.exceptions")
 
 
 class BadResponse(ValueError):

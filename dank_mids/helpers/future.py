@@ -8,29 +8,30 @@ from asyncio import (
     sleep,
 )
 from time import time
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final, final
 from collections.abc import Generator
 from weakref import ProxyType, proxy
 
-from dank_mids._logging import DEBUG, getLogger
 from dank_mids.helpers._errors import error_logger_debug
+from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.types import T
 
 if TYPE_CHECKING:
     from dank_mids._requests import _RequestBase, _Response
 
 
-logger = getLogger("dank_mids.future")
+logger: Final = get_c_logger("dank_mids.future")
 
-_logger_is_enabled_for = logger.isEnabledFor
-_logger_log = logger._log
+_logger_is_enabled_for: Final = logger.isEnabledFor
+_logger_log: Final = logger._log
 
-_future_init = Future.__init__
-_future_await = Future.__await__
-_future_set_result = Future.set_result
-_future_set_exc = Future.set_exception
+_future_init: Final = Future.__init__
+_future_await: Final = Future.__await__
+_future_set_result: Final = Future.set_result
+_future_set_exc: Final = Future.set_exception
 
 
+@final
 class DebuggableFuture(Future[T]):
     # default values
     _debug_logs_enabled: bool = False
