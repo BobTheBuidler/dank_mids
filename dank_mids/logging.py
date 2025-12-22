@@ -21,8 +21,8 @@ DEBUG: Final = logging.DEBUG
 NOTSET: Final = logging.NOTSET
 
 
-_acquireLock: Final = logging._acquireLock
-_releaseLock: Final = logging._releaseLock
+_acquireLock: Final = logging._acquireLock  # type: ignore [attr-defined]
+_releaseLock: Final = logging._releaseLock  # type: ignore [attr-defined]
 
 
 @contextmanager
@@ -83,9 +83,7 @@ class CLogger(logging.Logger):
                 if self.manager.disable >= level:
                     is_enabled = self._cache[level] = False
                 else:
-                    is_enabled = self._cache[level] = (
-                        level >= self.getEffectiveLevel()
-                    )
+                    is_enabled = self._cache[level] = level >= self.getEffectiveLevel()
             finally:
                 _releaseLock()
             return is_enabled
@@ -185,14 +183,16 @@ class CLogger(logging.Logger):
         if self.isEnabledFor(level):
             self._log(level, msg, args, **kwargs)
 
-    def findCaller(self, stack_info: bool=False, stacklevel: int=1) -> tuple[str, int, str, str | None]:
+    def findCaller(
+        self, stack_info: bool = False, stacklevel: int = 1
+    ) -> tuple[str, int, str, str | None]:
         """
         Find the stack frame of the caller so that we can note the source
         file name, line number and function name.
         """
         f: FrameType | None = logging.currentframe()
-        #On some versions of IronPython, currentframe() returns None if
-        #IronPython isn't run with -X:Frames.
+        # On some versions of IronPython, currentframe() returns None if
+        # IronPython isn't run with -X:Frames.
         if f is not None:
             f = f.f_back
         orig_f = f
@@ -211,23 +211,34 @@ class CLogger(logging.Logger):
             sinfo = None
             if stack_info:
                 sio = io.StringIO()
-                sio.write('Stack (most recent call last):\n')
+                sio.write("Stack (most recent call last):\n")
                 traceback.print_stack(f, file=sio)
                 sinfo = sio.getvalue()
-                if sinfo[-1] == '\n':
+                if sinfo[-1] == "\n":
                     sinfo = sinfo[:-1]
                 sio.close()
             rv = (co.co_filename, f.f_lineno, co.co_name, sinfo)
             break
         return rv
 
-    def makeRecord(self, name: str, level: Level, fn: str, lno: int, msg: object, args: logging._ArgsType, exc_info: logging._SysExcInfoType | None,
-                   func: str | None=None, extra: Mapping[str, object] | None=None, sinfo: str | None=None) -> logging.LogRecord:
+    def makeRecord(
+        self,
+        name: str,
+        level: int,
+        fn: str,
+        lno: int,
+        msg: object,
+        args: logging._ArgsType,
+        exc_info: logging._SysExcInfoType | None,
+        func: str | None = None,
+        extra: Mapping[str, object] | None = None,
+        sinfo: str | None = None,
+    ) -> logging.LogRecord:
         """
         A factory method which can be overridden in subclasses to create
         specialized LogRecords.
         """
-        # TODO: set a C-based LogRecord to the logging module
+        # TODO: set a C-based LogRecord to the logging module, dont use it here
         rv = logging._logRecordFactory(  # type: ignore [attr-defined]
             name, level, fn, lno, msg, args, exc_info, func, sinfo
         )
@@ -238,28 +249,35 @@ class CLogger(logging.Logger):
                 rv.__dict__[key] = extra[key]
         return rv  # type: ignore [no-any-return]
 
-    def _log(self, level: Level, msg: object, args: tuple[Any, ...], exc_info: logging._ExcInfoType = None, extra: Mapping[str, object] | None = None, stack_info: bool = False,
-             stacklevel: int=1) -> None:
+    def _log(
+        self,
+        level: int,
+        msg: object,
+        args: logging._ArgsType,
+        exc_info: logging._ExcInfoType = None,
+        extra: Mapping[str, object] | None = None,
+        stack_info: bool = False,
+        stacklevel: int = 1,
+    ) -> None:
         """
         Low-level logging routine which creates a LogRecord and then calls
         all the handlers of this logger to handle the record.
         """
         sinfo = None
         if logging._srcfile:
-            #IronPython doesn't track Python frames, so findCaller raises an
-            #exception on some versions of IronPython. We trap it here so that
-            #IronPython can use logging.
+            # IronPython doesn't track Python frames, so findCaller raises an
+            # exception on some versions of IronPython. We trap it here so that
+            # IronPython can use logging.
             try:
                 fn, lno, func, sinfo = self.findCaller(stack_info, stacklevel)
-            except ValueError: # pragma: no cover
+            except ValueError:  # pragma: no cover
                 fn, lno, func = "(unknown file)", 0, "(unknown function)"
-        else: # pragma: no cover
+        else:  # pragma: no cover
             fn, lno, func = "(unknown file)", 0, "(unknown function)"
         if exc_info:
             if isinstance(exc_info, BaseException):
                 exc_info = (type(exc_info), exc_info, exc_info.__traceback__)
             elif not isinstance(exc_info, tuple):
                 exc_info = sys.exc_info()
-        record = self.makeRecord(self.name, level, fn, lno, msg, args,
-                                 exc_info, func, extra, sinfo)
+        record = self.makeRecord(self.name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
         self.handle(record)
