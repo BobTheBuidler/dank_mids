@@ -1,4 +1,3 @@
-import functools
 from collections.abc import Hashable
 from typing import Any, Final, Generic, TypeVar, cast, final
 from collections.abc import ItemsView, Iterator, KeysView, Mapping, Sequence, ValuesView

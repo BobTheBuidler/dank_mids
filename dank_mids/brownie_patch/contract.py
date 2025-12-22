@@ -220,7 +220,6 @@ class Contract(brownie.Contract):
         Returns:
             The initialized contract method object.
         """
-        from dank_mids import web3
 
         overloaded = list(self.__method_names__).count(name) > 1
 
