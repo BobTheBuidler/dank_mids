@@ -231,7 +231,7 @@ class CLogger(logging.Logger):
                 if sinfo[-1] == "\n":
                     sinfo = sinfo[:-1]
                 sio.close()
-            rv = (co.co_filename, frame.f_lineno, co.co_name, sinfo)
+            rv = (co.co_filename, cast(int, frame.f_lineno), co.co_name, sinfo)
             break
         return rv
 
