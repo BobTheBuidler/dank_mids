@@ -11,9 +11,7 @@ from asyncio import (
     wait_for,
 )
 from collections import defaultdict
-from concurrent.futures.process import BrokenProcessPool
 from itertools import chain, filterfalse, groupby
-from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -35,7 +33,7 @@ from weakref import proxy as weak_proxy
 
 import a_sync
 import eth_retry
-from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
+from a_sync import PruningThreadPoolExecutor, igather
 from a_sync.asyncio import sleep0 as yield_to_loop
 from a_sync.debugging import stuck_coro_debugger
 from a_sync.functools import cached_property_unsafe as cached_property
@@ -110,7 +108,6 @@ from dank_mids.types import (
     BlockId,
     JsonrpcParams,
     PartialRequest,
-    PartialResponse,
     Request,
     Response,
 )
@@ -970,7 +967,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 calls = tuple(self.calls)
 
             to_gather = []
-            for call, result in zip(calls, await self.decode(response)):
+            for call, result in zip(calls, mcall_decode(response)):
                 if is_revert_bytes(result):
                     # We will asynchronously handle this revert
                     to_gather.append(eth_call.spoof_response(call, result))
@@ -982,30 +979,6 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
         else:
             raise NotImplementedError(f"type {type(data)} not supported.", data)
-
-    async def decode(self, data: PartialResponse) -> list[bytes]:
-        start = time()
-        if ENVS.OPERATION_MODE.infura or len(self) < 100:
-            # decode synchronously
-            retval = mcall_decode(data)
-        else:
-            try:
-                retval = await ENVS.MULTICALL_DECODER_PROCESSES.run(mcall_decode, data)  # type: ignore [attr-defined]
-            except BrokenProcessPool:
-                # TODO: Move this somewhere else
-                logger.critical("Oh fuck, you broke the %s while decoding %s", ENVS.MULTICALL_DECODER_PROCESSES, data)  # type: ignore [attr-defined]
-                ENVS.MULTICALL_DECODER_PROCESSES = AsyncProcessPoolExecutor(ENVS.MULTICALL_DECODER_PROCESSES._max_workers)  # type: ignore [attr-defined,assignment]
-                retval = mcall_decode(data)
-
-        stats.log_duration(f"multicall decoding for {len(self)} calls", start)
-        # Raise any Exceptions that may have come out of the process pool.
-        if isinstance(retval, Exception):
-            raise retval.__class__(
-                *retval.args,
-                self.request,
-                f"response: {data}",
-            )
-        return retval
 
     @set_done
     @stuck_coro_debugger

@@ -188,7 +188,7 @@ class _StatsLogger(CLogger):
         Example:
             >>> _logger.log_subprocess_stats()
         """
-        for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:  # type: ignore [attr-defined]
+        for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES}:  # type: ignore [attr-defined]
             self._log_fn_result(level, _Writer.queue, pool)  # type: ignore [arg-type]
 
     # Internal helpers
@@ -459,19 +459,6 @@ class _Collector:
             >>> decoder_length = collector.decoder_queue_len
         """
         return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
-
-    @property
-    def mcall_decoder_queue_len(self) -> int:
-        """
-        Returns the current length of the multicall decoder queue.
-
-        Returns:
-            The number of items in the multicall decoder queue.
-
-        Example:
-            >>> mcall_length = collector.mcall_decoder_queue_len
-        """
-        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
 
 
 @final
