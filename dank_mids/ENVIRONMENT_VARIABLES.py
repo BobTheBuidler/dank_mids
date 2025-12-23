@@ -122,19 +122,6 @@ See Also:
     :class:`a_sync.AsyncProcessPoolExecutor`: The executor class used for managing asynchronous processes.
 """
 
-MULTICALL_DECODER_PROCESSES = _envs.create_env(
-    "MULTICALL_DECODER_PROCESSES",
-    AsyncProcessPoolExecutor,
-    default=0 if OPERATION_MODE.infura else 1,
-    verbose=not OPERATION_MODE.infura,
-)
-"""
-Process pool for Multicall decoding operations.
-
-See Also:
-    :class:`a_sync.AsyncProcessPoolExecutor`: The executor class used for managing asynchronous processes.
-"""
-
 COLLECTION_FACTOR: Final = _envs.create_env(
     "COLLECTION_FACTOR",
     int,
@@ -187,7 +174,6 @@ if not OPERATION_MODE.infura:
 
 if OPERATION_MODE.infura:
     for process_pool in {
-        MULTICALL_DECODER_PROCESSES,
         BROWNIE_DECODER_PROCESSES,
         BROWNIE_ENCODER_PROCESSES,
     }:
