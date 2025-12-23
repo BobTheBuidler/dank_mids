@@ -209,7 +209,7 @@ class _StatsLogger(CLogger):
             self,
             level: Level,
             msg: str,
-            args: logging._ArgsType,
+            args: logging._ArgsType = (),
             kwargs: dict[str, Any] | None = None,
         ) -> None:
         """
