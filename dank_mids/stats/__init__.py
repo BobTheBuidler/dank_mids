@@ -136,7 +136,7 @@ class _StatsLogger(CLogger):
             >>> _logger.stats("Operation took %s seconds", 3.14)
         """
         if self.enabled:
-            self._log_nocheck(STATS, msg, args, **kwargs)
+            self._log_nocheck(STATS, msg, args, kwargs)
 
     def devhint(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """
@@ -203,9 +203,9 @@ class _StatsLogger(CLogger):
             **kwargs: Additional keyword arguments for the logger.
         """
         if self.isEnabledFor(level):
-            return self._log_nocheck(level, msg, *args, **kwargs)
+            return self._log_nocheck(level, msg, args, kwargs)
 
-    def _log_nocheck(self, level: Level, msg: str, *args: Any, **kwargs: Any) -> None:
+    def _log_nocheck(self, level: Level, msg: str, args: logging._ArgsType, kwargs: dict[str, Any] | None = None) -> None:
         """
         Perform logging without checking whether the logger is enabled for the level.
 
@@ -217,7 +217,10 @@ class _StatsLogger(CLogger):
         Raises:
             ValueError: If no message is provided.
         """
-        return super()._log(level, msg, args, **kwargs)
+        if kwargs is None:
+            super()._log(level, msg, args)
+        else:
+            super()._log(level, msg, args, **kwargs)
 
     def _log_fn_result(
         self,
@@ -236,7 +239,7 @@ class _StatsLogger(CLogger):
             **logging_kwargs: Additional keyword arguments for logging.
         """
         if self.isEnabledFor(level):
-            return self._log_nocheck(level, callable(*callable_args), (), **logging_kwargs)
+            return self._log_nocheck(level, callable(*callable_args), (), logging_kwargs)
 
     # Daemon
 
