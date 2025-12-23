@@ -320,9 +320,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
             # NOTE: If current_batch is not None, that means we filled a batch. Let's await it now so we can send something to the node.
             await wait((current_batch._task, fut), return_when="FIRST_COMPLETED")
 
-        if self._batch is None:
-
-            batch_coro = self.controller.execute_batch()
+        controller = self.controller
+        if self._batch is None and (controller.pending_eth_calls or controller.pending_rpc_calls):
+            # self._batch used to be set earlier but now we need to check the controller because the batch might have been initialized but not started
+            batch_coro = controller.execute_batch()
             batch_task = create_batch_task(batch_coro, name="batch task execute_batch")
 
             try:
@@ -345,7 +346,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 # Create the duplicate before checking the rate limiter
                 # so it can be added to any pending batch that might exist
                 duplicate = self.create_duplicate()
-                await rate_limit_inactive(self.controller.endpoint)
+                await rate_limit_inactive(controller.endpoint)
                 return await duplicate.get_response()
 
         try:
@@ -368,7 +369,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                     duplicate = self.create_duplicate()
 
                     # don't start counting for the timeout while we still have a queue of requests to send
-                    await rate_limit_inactive(self.controller.endpoint)
+                    await rate_limit_inactive(controller.endpoint)
 
                     # The the original request and the duplicate request share the same underlying future so we can just await the duplicate
                     return await duplicate.get_response()
@@ -390,9 +391,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 return {"result": response.result}
             return response.to_dict(self.method)
 
-        if needs_full_request_spec(response) and self.controller._check_request_type():
+        if needs_full_request_spec(response) and controller._check_request_type():
             method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
-            return await self.controller(method, self.params)
+            return await controller(method, self.params)
         elif revert_logger.isEnabledFor(DEBUG) and type(response.exception) is ExecutionReverted:
             revert_logger_log_debug("%s for %s", response.exception, self)
         elif error_logger.isEnabledFor(DEBUG) and type(response.exception) is not ExecutionReverted:
