@@ -320,8 +320,8 @@ class RPCRequest(_RequestBase[RPCResponse]):
             # NOTE: If current_batch is not None, that means we filled a batch. Let's await it now so we can send something to the node.
             await wait((current_batch._task, fut), return_when="FIRST_COMPLETED")
 
-        if self._batch is None:
-
+        if self._batch is None and (self.controller.pending_eth_calls or self.controller.pending_rpc_calls):
+            # self._batch used to be set earlier but now we need to check the controller because the batch might have been initialized but not started
             batch_coro = self.controller.execute_batch()
             batch_task = create_batch_task(batch_coro, name="batch task execute_batch")
 
