@@ -205,7 +205,13 @@ class _StatsLogger(CLogger):
         if self.isEnabledFor(level):
             return self._log_nocheck(level, msg, args, kwargs)
 
-    def _log_nocheck(self, level: Level, msg: str, args: logging._ArgsType, kwargs: dict[str, Any] | None = None) -> None:
+    def _log_nocheck(
+            self,
+            level: Level,
+            msg: str,
+            args: logging._ArgsType,
+            kwargs: dict[str, Any] | None = None,
+        ) -> None:
         """
         Perform logging without checking whether the logger is enabled for the level.
 
