@@ -11,9 +11,7 @@ from asyncio import (
     wait_for,
 )
 from collections import defaultdict
-from concurrent.futures.process import BrokenProcessPool
 from itertools import chain, filterfalse, groupby
-from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -35,7 +33,7 @@ from weakref import proxy as weak_proxy
 
 import a_sync
 import eth_retry
-from a_sync import AsyncProcessPoolExecutor, PruningThreadPoolExecutor, igather
+from a_sync import PruningThreadPoolExecutor, igather
 from a_sync.asyncio import sleep0 as yield_to_loop
 from a_sync.debugging import stuck_coro_debugger
 from a_sync.functools import cached_property_unsafe as cached_property
@@ -110,7 +108,6 @@ from dank_mids.types import (
     BlockId,
     JsonrpcParams,
     PartialRequest,
-    PartialResponse,
     Request,
     Response,
 )
