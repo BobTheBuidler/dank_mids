@@ -501,12 +501,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
     def create_duplicate(self) -> Union["RPCRequest", "eth_call"]:
         dupe_uid = f"{self.uid}_copy"
         if type(self) is eth_call:
-            duplicate = eth_call(self.controller, self.params, dupe_uid, self._fut)
-        else:
-            method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
-            duplicate = RPCRequest(self.controller, method, self.params, dupe_uid, self._fut)
-
-        return duplicate
+            return eth_call(self.controller, self.params, dupe_uid, self._fut)
+        method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
+        return RPCRequest(self.controller, method, self.params, dupe_uid, self._fut)
 
     def __set_exception(self, data: Exception) -> None:
         if revert_logger.isEnabledFor(DEBUG) and type(data) in _REVERT_EXC_TYPES:
@@ -891,6 +888,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 calls,
             )
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
+            raise
             stre = str(e)
             if "invalid argument" in stre:
                 raise

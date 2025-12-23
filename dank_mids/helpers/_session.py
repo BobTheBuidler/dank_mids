@@ -12,7 +12,6 @@ from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
-from dank_mids.helpers._rate_limit import limiters
 from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.types import PartialRequest, RateLimiters, T
 
