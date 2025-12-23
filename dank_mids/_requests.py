@@ -888,6 +888,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 calls,
             )
         except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
+            raise
             stre = str(e)
             if "invalid argument" in stre:
                 raise
