@@ -29,6 +29,7 @@ mypyc:
 		dank_mids/brownie_patch/overloaded.py \
 		dank_mids/brownie_patch/types.py \
 		dank_mids/constants.py \
+		dank_mids/controller.py \
 		dank_mids/ENVIRONMENT_VARIABLES.py \
 		dank_mids/helpers/__init__.py \
 		dank_mids/helpers/_codec.py \
