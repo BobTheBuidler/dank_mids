@@ -224,9 +224,9 @@ class _StatsLogger(CLogger):
             ValueError: If no message is provided.
         """
         if kwargs is None:
-            super()._log(level, msg, args)
+            CLogger._log(self, level, msg, args)
         else:
-            super()._log(level, msg, args, **kwargs)
+            CLogger._log(self, level, msg, args, **kwargs)
 
     def _log_fn_result(
         self,

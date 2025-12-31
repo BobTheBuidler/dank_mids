@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_aiolimiter(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("69b73213a18ea35ebf2c__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("8a4082216e5922611c62__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids____vendor___aiolimiter___src___aiolimiter");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "69b73213a18ea35ebf2c__mypyc.init_dank_mids____vendor___aiolimiter___src___aiolimiter");
+    void *init_func = PyCapsule_GetPointer(capsule, "8a4082216e5922611c62__mypyc.init_dank_mids____vendor___aiolimiter___src___aiolimiter");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
