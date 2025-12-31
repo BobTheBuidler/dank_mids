@@ -1,0 +1,100 @@
+#!/bin/bash
+#
+# TaskStart Hook
+# 
+# Executes when a new task begins.
+# 
+# Input: { taskId, taskStart: { task: string }, clineVersion, timestamp, ... }
+# Output: { cancel: boolean, contextModification?: string, errorMessage?: string }
+# 
+# Use cases:
+# - Log task start time
+# - Add context about environment or project state
+# - Check prerequisites before starting
+# - Notify external systems (Slack, issue trackers, etc.)
+
+# Read JSON input from stdin
+INPUT=$(cat)
+
+# Parse input using jq (or fallback to basic parsing)
+if command -v jq &> /dev/null; then
+  TASK=$(echo "$INPUT" | jq -r '.taskStart.task')
+  TASK_ID=$(echo "$INPUT" | jq -r '.taskId')
+  TIMESTAMP=$(echo "$INPUT" | jq -r '.timestamp')
+else
+  # Fallback if jq is not available
+  TASK="<task>"
+  TASK_ID="<taskId>"
+  TIMESTAMP=$(date +%s%3N)
+fi
+
+# Example: Log task start
+echo "[TaskStart] Task started: $TASK" >&2
+echo "[TaskStart] Task ID: $TASK_ID" >&2
+
+# Ensure we are in the project root
+cd /home/ubuntu/projects/github-dashboard
+
+# Detect README files in the project root (case-insensitive, common names)
+README_FILES=()
+while IFS= read -r -d '' file; do
+  README_FILES+=("$file")
+done < <(find . -maxdepth 1 -type f \( -iname "README" -o -iname "README.md" -o -iname "readme" -o -iname "readme.md" \) -print0)
+
+# Debug prints
+#echo "[TaskStart][DEBUG] PWD: $(pwd)" >&2
+#echo "[TaskStart][DEBUG] Files in PWD:" >&2
+#ls -l >&2
+#echo "[TaskStart][DEBUG] README_FILES: ${README_FILES[@]}" >&2
+
+if [ "${#README_FILES[@]}" -gt 1 ]; then
+  # Fail if multiple README files found
+  ERROR_MSG="Multiple README files found in project root: $(printf '%s, ' "${README_FILES[@]}" | sed 's/, $//')"
+  echo "{\"cancel\":true,\"contextModification\":\"\",\"errorMessage\":\"$ERROR_MSG\"}"
+  exit 0
+fi
+
+if [ "${#README_FILES[@]}" -eq 1 ]; then
+  # Read the single README file
+  README_CONTENT=$(cat "${README_FILES[0]}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')
+  README_SECTION="Project README:\n$(echo $README_CONTENT | sed 's/^"\(.*\)"$/\1/' | sed 's/\\n/\
+/g')"
+else
+  # No README found
+  README_SECTION="[No README file exists for the active project.]"
+fi
+
+# Generate file tree, excluding .gitignore'd files if possible
+if git rev-parse --is-inside-work-tree &> /dev/null; then
+  # Use git ls-files to get all non-ignored files, then format as a tree
+  FILE_TREE=$(git ls-files | awk '
+    {
+      n=split($0, a, "/");
+      path="";
+      for(i=1;i<=n;i++) {
+        path=(path==""?a[i]:path"/"a[i]);
+        if(!(path in seen)) {
+          indent="";
+          for(j=1;j<i;j++) indent=indent"  ";
+          print indent a[i];
+          seen[path]=1;
+        }
+      }
+    }
+  ')
+  FILE_TREE="(git ls-files, .gitignore respected)\n$FILE_TREE"
+else
+  if command -v tree &> /dev/null; then
+    FILE_TREE=$(tree -a --dirsfirst)
+  else
+    FILE_TREE=$(find . | sort)
+  fi
+fi
+
+CONTEXT_MOD="$README_SECTION
+
+Project File Tree:
+$FILE_TREE"
+
+# Return result as JSON
+echo "{\"cancel\":false,\"contextModification\":\"$CONTEXT_MOD\",\"errorMessage\":\"\"}"

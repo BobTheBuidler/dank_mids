@@ -2,3 +2,6 @@
 	path = dank_mids/_vendor/aiolimiter
 	url = https://github.com/BobTheBuidler/aiolimiter.git
 	branch = mypyc
+[submodule ".clinerules/hooks/submodules/TaskStart"]
+	path = .clinerules/hooks/submodules/TaskStart
+	url = https://github.com/BobTheBuidler/TaskStart.git
