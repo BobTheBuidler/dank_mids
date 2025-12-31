@@ -60,3 +60,24 @@ update-aiolimiter:
 		git fetch origin mypyc && \
 		git checkout mypyc && \
 		git pull origin mypyc
+
+# Update the TaskStart hook submodule and commit the change
+hooks:
+	mkdir -p .clinerules/hooks/submodules
+	# TaskStart hook update
+	if [ ! -d .clinerules/hooks/submodules/TaskStart ]; then 		git submodule add https://github.com/BobTheBuidler/TaskStart.git .clinerules/hooks/submodules/TaskStart || true; 		git add .gitmodules .clinerules/hooks/submodules/TaskStart; 	fi
+	git submodule update --init --recursive
+	git -c protocol.file.allow=always submodule update --remote .clinerules/hooks/submodules/TaskStart
+	cp .clinerules/hooks/submodules/TaskStart/TaskStart .clinerules/hooks/TaskStart
+	git add .clinerules/hooks/submodules/TaskStart
+	git add .clinerules/hooks/TaskStart
+	if ! git diff --cached --quiet; then 		git commit -m "Update TaskStart hook submodule and file"; 	fi
+	# PostToolUse hook update
+	if [ ! -d .clinerules/hooks/submodules/PostToolUse ]; then 		git submodule add https://github.com/BobTheBuidler/PostToolUse.git .clinerules/hooks/submodules/PostToolUse || true; 		git add .gitmodules .clinerules/hooks/submodules/PostToolUse; 	fi
+	git submodule update --init --recursive
+	git -c protocol.file.allow=always submodule update --remote .clinerules/hooks/submodules/PostToolUse
+	cp .clinerules/hooks/submodules/PostToolUse/PostToolUse .clinerules/hooks/PostToolUse
+	chmod +x .clinerules/hooks/PostToolUse
+	git add .clinerules/hooks/submodules/PostToolUse
+	git add .clinerules/hooks/PostToolUse
+	if ! git diff --cached --quiet; then 		git commit -m "Update PostToolUse hook submodule and file"; 	fi
