@@ -1,20 +1,10 @@
 from asyncio import get_running_loop
 from collections import defaultdict
+from collections.abc import Sequence
 from functools import lru_cache
 from logging import getLogger
 from time import time
-from typing import (
-    Any,
-    DefaultDict,
-    Final,
-    List,
-    Literal,
-    Sequence,
-    Set,
-    Union,
-    cast,
-    final,
-)
+from typing import Any, DefaultDict, Final, Literal, cast, final
 
 import a_sync
 import eth_retry
@@ -51,7 +41,7 @@ logger: Final = get_c_logger(__name__)
 getLogger("web3.RequestManager").disabled = True
 getLogger("web3.RequestManager").propagate = False
 
-instances: Final[DefaultDict[ChainId, List["DankMiddlewareController"]]] = defaultdict(list)
+instances: Final[DefaultDict[ChainId, list["DankMiddlewareController"]]] = defaultdict(list)
 
 cgather: Final = a_sync.cgather
 
@@ -138,7 +128,7 @@ class DankMiddlewareController:
                 "Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py"
             )
 
-        self.no_multicall: Final[Set[ChecksumAddress]] = set()
+        self.no_multicall: Final[set[ChecksumAddress]] = set()
         """A set of addresses that have issues when called from the multicall contract. Calls to these contracts will not be batched in multicalls."""
 
         if multicall := MULTICALL_ADDRESSES.get(chainid):
@@ -437,7 +427,7 @@ class DankMiddlewareController:
 
     @lru_cache(maxsize=1024)
     def _select_mcall_target_for_block(
-        self, block: Union[BlockNumber, Literal["latest"], HexStr]
+        self, block: BlockNumber | Literal["latest"] | HexStr
     ) -> MulticallContract:
         """
         Select the appropriate multicall contract for a given block.

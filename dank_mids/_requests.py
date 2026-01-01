@@ -11,23 +11,9 @@ from asyncio import (
     wait_for,
 )
 from collections import defaultdict
+from collections.abc import Callable, Generator, Iterable, Iterator, Sequence
 from itertools import chain, filterfalse, groupby
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    DefaultDict,
-    Final,
-    Generator,
-    Generic,
-    Iterable,
-    Iterator,
-    Optional,
-    Sequence,
-    TypeVar,
-    Union,
-    final,
-)
+from typing import TYPE_CHECKING, Any, DefaultDict, Final, Generic, Optional, TypeVar, Union, final
 from weakref import ProxyType
 from weakref import proxy as weak_proxy
 
@@ -843,7 +829,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     def needs_override_code(self) -> bool:
         return self.mcall.needs_override_code_for_block(self.block)
 
-    def start(self, batch: Optional[Union["_Batch", "DankBatch"]] = None, cleanup=True) -> None:
+    def start(self, batch: Union["_Batch", "DankBatch"] | None = None, cleanup=True) -> None:
         batch = batch or self
         if _logger_is_enabled_for(DEBUG):
             debug_daemon = create_task(self._debug_daemon(), name="Multicall debug daemon")
