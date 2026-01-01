@@ -1,5 +1,6 @@
 import asyncio
-from typing import Any, Awaitable, Final
+from typing import Any, Final
+from collections.abc import Awaitable
 
 import a_sync
 

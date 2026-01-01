@@ -1,5 +1,6 @@
 from asyncio import Future
-from typing import TYPE_CHECKING, Any, Awaitable, Final, Generator, TypeVar, cast, final
+from typing import TYPE_CHECKING, Any, Final, TypeVar, cast, final
+from collections.abc import Awaitable, Generator
 
 import a_sync
 

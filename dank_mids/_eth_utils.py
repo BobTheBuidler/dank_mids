@@ -6,7 +6,7 @@ This module lets us redefine those functions without the decorator so our script
 """
 
 import binascii
-from typing import Any, AnyStr, Final, Optional
+from typing import Any, AnyStr, Final
 
 from eth_typing import HexStr
 
@@ -65,9 +65,9 @@ def patch_eth_utils() -> None:
 
 
 def to_hex(
-    primitive: Optional[Any] = None,
-    hexstr: Optional[HexStr] = None,
-    text: Optional[str] = None,
+    primitive: Any | None = None,
+    hexstr: HexStr | None = None,
+    text: str | None = None,
 ) -> HexStr:
     """
     Auto converts any supported value into its hex representation.
@@ -105,9 +105,9 @@ def to_hex(
 
 
 def to_bytes(
-    primitive: Optional[Any] = None,
-    hexstr: Optional[HexStr] = None,
-    text: Optional[str] = None,
+    primitive: Any | None = None,
+    hexstr: HexStr | None = None,
+    text: str | None = None,
 ) -> bytes:
     if isinstance(primitive, bool):
         return b"\x01" if primitive else b"\x00"

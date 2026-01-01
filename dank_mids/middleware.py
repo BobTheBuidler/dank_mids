@@ -1,5 +1,6 @@
 import threading
-from typing import Any, Callable, Final
+from typing import Any, Final
+from collections.abc import Callable
 
 from web3 import Web3
 from web3.types import RPCEndpoint
