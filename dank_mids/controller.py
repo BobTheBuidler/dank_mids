@@ -1,17 +1,10 @@
 from asyncio import get_running_loop
 from collections import defaultdict
+from collections.abc import Sequence
 from functools import lru_cache
 from logging import getLogger
 from time import time
-from typing import (
-    Any,
-    DefaultDict,
-    Final,
-    Literal,
-    cast,
-    final,
-)
-from collections.abc import Sequence
+from typing import Any, DefaultDict, Final, Literal, cast, final
 
 import a_sync
 import eth_retry
