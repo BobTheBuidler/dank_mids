@@ -148,7 +148,7 @@ COLLECT_STATS: Final = _envs.create_env(
 STUCK_CALL_TIMEOUT: Final = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60 * 2)
 
 # Method-specific Semaphores
-method_semaphores: Final[Dict[str, a_sync.Semaphore]] = {
+method_semaphores: Final[dict[str, a_sync.Semaphore]] = {
     "eth_call": _envs.create_env(
         "ETH_CALL_SEMAPHORE",
         BlockSemaphore,
