@@ -98,7 +98,7 @@ async def _main() -> None:
 
 
 # Functions that we used to get the data from the pools and blocks:
-async def get_balances_for_blocks(pool: dank_mids.Contract, blocks: List[int]):
+async def get_balances_for_blocks(pool: dank_mids.Contract, blocks: list[int]):
     """Fetch balances for a pool across multiple blocks.
 
     This function asynchronously fetches balance (reserve) information for the

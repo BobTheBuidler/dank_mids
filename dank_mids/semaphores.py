@@ -25,8 +25,8 @@ class _BlockSemaphoreContextManager(_PrioritySemaphoreContextManager):
     def __init__(
         self,
         parent: "BlockSemaphore",
-        priority: Union[int, float, Decimal],
-        name: Optional[str] = None,
+        priority: int | float | Decimal,
+        name: str | None = None,
     ) -> None:
         if not isinstance(priority, (int, float, Decimal)):
             raise TypeError(priority)
@@ -48,7 +48,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
         :class:`_BlockSemaphoreContextManager`: The context manager used by this semaphore.
     """
 
-    _context_manager_class: Type[_BlockSemaphoreContextManager]
+    _context_manager_class: type[_BlockSemaphoreContextManager]
     """The context manager class used by this semaphore."""
 
     _top_priority: Literal[-1]
@@ -57,7 +57,7 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
     def __init__(self, value=1, *, name=None) -> None:
         super().__init__(_BlockSemaphoreContextManager, -1, int(value), name=name)
 
-    def __getitem__(self, block: Union[int, HexStr, Literal["latest", None]]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
+    def __getitem__(self, block: int | HexStr | Literal["latest", None]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
         if isinstance(block, int):
             priority = block
         elif isinstance(block, bytes):
