@@ -33,7 +33,28 @@ echo "[TaskStart] Task started: $TASK" >&2
 echo "[TaskStart] Task ID: $TASK_ID" >&2
 
 # Ensure we are in the project root
-cd /home/ubuntu/projects/github-dashboard
+# Get repo path from input JSON (expecting .workspaceRoots[0])
+if command -v jq &> /dev/null; then
+  REPO_PATH=$(echo "$INPUT" | jq -r '.workspaceRoots[0] // empty')
+else
+  REPO_PATH=""
+fi
+
+if [ -z "$REPO_PATH" ]; then
+  ESCAPED_INPUT=$(echo "$INPUT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')
+  ERROR_MSG="workspaceRoots[0] not provided in input JSON. Input was: $ESCAPED_INPUT"
+  echo "{\"cancel\":true,\"contextModification\":\"\",\"errorMessage\":$ERROR_MSG}"
+  exit 0
+fi
+
+if [ ! -d "$REPO_PATH" ]; then
+  ESCAPED_INPUT=$(echo "$INPUT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')
+  ERROR_MSG="workspaceRoots[0] does not exist or is not a directory: $REPO_PATH. Input was: $ESCAPED_INPUT"
+  echo "{\"cancel\":true,\"contextModification\":\"\",\"errorMessage\":$ERROR_MSG}"
+  exit 0
+fi
+
+cd "$REPO_PATH"
 
 # Detect README files in the project root (case-insensitive, common names)
 README_FILES=()
