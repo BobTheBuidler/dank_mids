@@ -48,6 +48,7 @@ class CallOverrideParams(TypedDict, total=False):
     state: Optional[Dict[HexStr, HexStr]]
     stateDiff: Optional[Dict[HexStr, HexStr]]
 
+
 CallOverride = dict[ChecksumAddress, CallOverrideParams]
 
 
@@ -98,9 +99,7 @@ class DankEth(AsyncEth):
         _get_block_number = MethodNoFormat(RPC.eth_blockNumber, mungers=None)
 
         _call: MethodNoFormat[
-            Callable[
-                [TxParams, BlockIdentifier | None, CallOverride | None], Awaitable[HexBytes]
-            ]
+            Callable[[TxParams, BlockIdentifier | None, CallOverride | None], Awaitable[HexBytes]]
         ]
         _call = MethodNoFormat(RPC.eth_call, mungers=[BaseEth.call_munger])
 
@@ -138,9 +137,7 @@ class DankEth(AsyncEth):
         else:
             return await self._get_transaction_count(account, block_identifier)
 
-    async def get_code(
-        self, account: ChecksumAddress, block_identifier: BlockNumber | None = None
-    ):
+    async def get_code(self, account: ChecksumAddress, block_identifier: BlockNumber | None = None):
         if isinstance(block_identifier, int):
             return await self._get_code(account, hex(block_identifier))
         else:

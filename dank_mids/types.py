@@ -70,9 +70,12 @@ See Also:
     :class:`dank_mids._requests.Multicall`: The Multicall class used in this mapping.
 """
 
+
 class eth_callParams(TypedDict):
     to: ChecksumAddress
     data: str
+
+
 """
 A typed dictionary representing the parameters for an eth_call.
 
@@ -80,8 +83,11 @@ See Also:
     :meth:`web3.eth.Eth.call`: Web3's method to perform a call without creating a transaction.
 """
 
+
 class OverrideParams(TypedDict):
     code: str
+
+
 """A typed dictionary representing override parameters."""
 
 JsonrpcParams = list[Union[eth_callParams, BlockId, OverrideParams]]
