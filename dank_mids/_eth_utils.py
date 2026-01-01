@@ -6,7 +6,7 @@ This module lets us redefine those functions without the decorator so our script
 """
 
 import binascii
-from typing import Any, AnyStr, Final, Optional
+from typing import Any, AnyStr, Final
 
 from eth_typing import HexStr
 

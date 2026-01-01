@@ -1,6 +1,6 @@
 # mypy: disable-error-code="attr-defined, has-type, dict-item"
 from logging import StreamHandler
-from typing import Dict, Final
+from typing import Final
 
 import a_sync
 import typed_envs
