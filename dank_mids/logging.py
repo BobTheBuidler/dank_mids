@@ -53,7 +53,7 @@ def _checkLevel(level: Level | str) -> Level:
             raise ValueError("Unknown level: %r" % level)
         rv = _nameToLevel[level]
     else:
-        raise TypeError("Level not an integer or a valid string: {!r}".format(level))
+        raise TypeError(f"Level not an integer or a valid string: {level!r}")
     return rv
 
 

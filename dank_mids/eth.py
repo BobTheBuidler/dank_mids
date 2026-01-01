@@ -40,11 +40,11 @@ from dank_mids.types import T, Error
 
 # These 2 type defs are in recent, but not all, web3.py versions
 class CallOverrideParams(TypedDict, total=False):
-    balance: Optional[Wei]
-    nonce: Optional[int]
-    code: Optional[Union[bytes, HexStr]]
-    state: Optional[Dict[HexStr, HexStr]]
-    stateDiff: Optional[Dict[HexStr, HexStr]]
+    balance: Wei | None
+    nonce: int | None
+    code: bytes | HexStr | None
+    state: dict[HexStr, HexStr] | None
+    stateDiff: dict[HexStr, HexStr] | None
 
 
 CallOverride = dict[ChecksumAddress, CallOverrideParams]
