@@ -1,4 +1,4 @@
-name: Lint
+name: Lint All The Things
 
 on:
   pull_request:
@@ -7,122 +7,21 @@ on:
     paths-ignore:
       - '.github/workflows/**'
       - '!.github/workflows/lint.yaml'
-      
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  pyupgrade:
+  lint-all-the-things:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-      with:
-        ref: ${{ github.head_ref }}  # Check out the PR branch
-
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.12'
-
-    - name: Install PyUpgrade
-      run: pip install pyupgrade
-
-    - name: Run PyUpgrade
-      run: pyupgrade --py310-plus --exit-zero-even-if-changed **/**/**.py
-
-    - name: Check for changes
-      id: changes
-      run: |
-        if [[ -n $(git status --porcelain) ]]; then
-          echo "changes_detected=true" >> $GITHUB_ENV
-        else
-          echo "changes_detected=false" >> $GITHUB_ENV
-        fi
-
-    - name: Commit changes
-      if: env.changes_detected == 'true'
-      run: |
-        git config --local user.name "github-actions[bot]"
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git add .
-        git commit -m "chore: run \`pyupgrade\` for Python3.10"
-        git push
-  
-  black:
-    runs-on: ubuntu-latest
-    needs: pyupgrade
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-      with:
-        ref: ${{ github.head_ref }}  # Check out the PR branch
-
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.12'
-
-    - name: Install Black
-      run: pip install black
-
-    - name: Run Black
-      run: black .
-
-    - name: Check for changes
-      id: changes
-      run: |
-        if [[ -n $(git status --porcelain) ]]; then
-          echo "changes_detected=true" >> $GITHUB_ENV
-        else
-          echo "changes_detected=false" >> $GITHUB_ENV
-        fi
-
-    - name: Commit changes
-      if: env.changes_detected == 'true'
-      run: |
-        git config --local user.name "github-actions[bot]"
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git add .
-        git commit -m "chore: \`black .\`"
-        git push
-  
-  autoflake:
-    runs-on: ubuntu-latest
-    needs: black
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-      with:
-        ref: ${{ github.head_ref }}  # Check out the PR branch
-
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.12'
-
-    - name: Install Autoflake
-      run: pip install autoflake
-
-    - name: Run Autoflake
-      run: autoflake --remove-all-unused-imports --in-place --expand-star-imports --ignore-init-module-imports -r .
-
-    - name: Check for changes
-      id: changes
-      run: |
-        if [[ -n $(git status --porcelain) ]]; then
-          echo "changes_detected=true" >> $GITHUB_ENV
-        else
-          echo "changes_detected=false" >> $GITHUB_ENV
-        fi
-    - name: Commit changes
-      if: env.changes_detected == 'true'
-      run: |
-        git config --local user.name "github-actions[bot]"
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git add .
-        git commit -m "chore: autoflake"
-        git push
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Lint All The Things
+        uses: BobTheBuidler/lint-all-the-things@v0.0.2
+        with:
+          python-version: 3.14
+          pyupgrade-target-version: py310
