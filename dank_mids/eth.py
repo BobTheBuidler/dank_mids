@@ -1,11 +1,5 @@
-from typing import (
-    Final,
-    Literal,
-    TypedDict,
-    cast,
-    overload,
-)
 from collections.abc import Awaitable, Callable, Sequence
+from typing import Final, Literal, TypedDict, cast, overload
 
 from a_sync import Semaphore, igather
 from async_lru import alru_cache
