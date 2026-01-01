@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Final, Literal, Optional, Type, Union
+from typing import Final, Literal
 
 from a_sync.primitives.locks.prio_semaphore import (
     _AbstractPrioritySemaphore,

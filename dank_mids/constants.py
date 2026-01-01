@@ -1,5 +1,5 @@
 # mypy: disable-error-code="attr-defined, dict-item"
-from typing import Dict, Final
+from typing import Final
 
 import multicall.constants
 from eth_typing import BlockNumber

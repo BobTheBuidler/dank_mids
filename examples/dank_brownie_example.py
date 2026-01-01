@@ -21,7 +21,6 @@ See Also:
 
 # Import your imports, including `asyncio` and `dank_mids`.
 import asyncio
-from typing import List
 
 import dank_mids
 from web3.types import Timestamp

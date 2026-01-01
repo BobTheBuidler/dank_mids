@@ -6,14 +6,10 @@ from typing import (
     Any,
     ClassVar,
     DefaultDict,
-    Dict,
     Final,
-    List,
     Literal,
     NewType,
     Optional,
-    Set,
-    Type,
     TypedDict,
     TypeVar,
     Union,
@@ -49,7 +45,6 @@ from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:
-    from dank_mids._requests import Multicall
     from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 
 
