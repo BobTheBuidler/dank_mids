@@ -11,19 +11,9 @@ from asyncio import (
     wait_for,
 )
 from collections import defaultdict
-from itertools import chain, filterfalse, groupby
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    DefaultDict,
-    Final,
-    Generic,
-    Optional,
-    TypeVar,
-    Union,
-    final,
-)
 from collections.abc import Callable, Generator, Iterable, Iterator, Sequence
+from itertools import chain, filterfalse, groupby
+from typing import TYPE_CHECKING, Any, DefaultDict, Final, Generic, Optional, TypeVar, Union, final
 from weakref import ProxyType
 from weakref import proxy as weak_proxy
 
