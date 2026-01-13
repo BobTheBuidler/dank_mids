@@ -1,5 +1,6 @@
 from collections.abc import Callable, Iterable, Mapping
-from typing import TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeVar, Union, final, overload
+from typing import (TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeVar, Union,
+                    final, overload)
 
 import faster_hexbytes
 import msgspec
@@ -210,7 +211,8 @@ def mcall_decode(data: "types.PartialResponse") -> list[bytes] | Exception:
 def __import_from_types() -> None:
     """This helper function is called once to import PartialResponse, Request, Response, and better_decode."""
     global PartialResponse, Request, Response, better_decode
-    from dank_mids.types import PartialResponse, Request, Response, better_decode
+    from dank_mids.types import (PartialResponse, Request, Response,
+                                 better_decode)
 
 
 def __make_decode_batch() -> None:

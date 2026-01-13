@@ -1,11 +1,7 @@
 # sourcery skip: use-contextlib-suppress
 from dank_mids._eth_utils import patch_eth_utils
-from dank_mids.brownie_patch import (
-    DankContractCall,
-    DankContractMethod,
-    DankContractTx,
-    DankOverloadedMethod,
-)
+from dank_mids.brownie_patch import (DankContractCall, DankContractMethod,
+                                     DankContractTx, DankOverloadedMethod)
 from dank_mids.controller import instances
 from dank_mids.exceptions import BrownieNotConnectedError
 from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
@@ -36,7 +32,8 @@ _configure_concurrent_future_work_queue_size()
 # Import brownie objects
 __brownie_objects = ["Contract", "dank_web3", "web3", "dank_eth", "eth", "patch_contract"]
 try:
-    from dank_mids.brownie_patch import Contract, dank_eth, dank_web3, patch_contract
+    from dank_mids.brownie_patch import (Contract, dank_eth, dank_web3,
+                                         patch_contract)
 
     __all__ += __brownie_objects
     # aliased for cleanliness and convenience

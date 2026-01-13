@@ -6,7 +6,8 @@ from async_lru import alru_cache
 from async_property import async_cached_property
 from eth_typing import Address, BlockNumber, ChecksumAddress, HexStr
 from eth_utils.toolz import concat
-from evmspec import AnyTransaction, FilterTrace, Transaction, TransactionReceipt, TransactionRLP
+from evmspec import (AnyTransaction, FilterTrace, Transaction,
+                     TransactionReceipt, TransactionRLP)
 from evmspec.data import TransactionHash, UnixTimestamp, _decode_hook
 from evmspec.data._main import DecodeHook
 from evmspec.structs.block import TinyBlock
@@ -20,12 +21,8 @@ from web3.eth import AsyncEth, BaseEth
 from web3.method import default_root_munger
 from web3.types import ENS, BlockIdentifier, RPCEndpoint, TxParams, Wei
 
-from dank_mids._web3.method import (
-    WEB3_MAJOR_VERSION,
-    MethodNoFormat,
-    _block_selectors,
-    bypass_formatters,
-)
+from dank_mids._web3.method import (WEB3_MAJOR_VERSION, MethodNoFormat,
+                                    _block_selectors, bypass_formatters)
 from dank_mids.types import Error, T
 
 

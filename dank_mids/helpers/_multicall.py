@@ -7,12 +7,10 @@ from eth_typing import BlockNumber, ChecksumAddress, HexStr
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES
 
-from dank_mids.constants import (
-    MULTICALL2_DEPLOY_BLOCKS,
-    MULTICALL2_OVERRIDE_CODE,
-    MULTICALL3_DEPLOY_BLOCKS,
-    MULTICALL3_OVERRIDE_CODE,
-)
+from dank_mids.constants import (MULTICALL2_DEPLOY_BLOCKS,
+                                 MULTICALL2_OVERRIDE_CODE,
+                                 MULTICALL3_DEPLOY_BLOCKS,
+                                 MULTICALL3_OVERRIDE_CODE)
 
 try:
     from multicall.constants import MULTICALL3_ADDRESSES

@@ -27,7 +27,8 @@ from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers._codec import RawResponse, decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import _sync_w3_from_async, w3_version_major
-from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
+from dank_mids.helpers._multicall import (MulticallContract, _get_multicall2,
+                                          _get_multicall3)
 from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._requester import _requester
 from dank_mids.lock import AlertingRLock

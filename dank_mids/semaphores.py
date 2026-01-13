@@ -2,9 +2,7 @@ from decimal import Decimal
 from typing import Final, Literal
 
 from a_sync.primitives.locks.prio_semaphore import (
-    _AbstractPrioritySemaphore,
-    _PrioritySemaphoreContextManager,
-)
+    _AbstractPrioritySemaphore, _PrioritySemaphoreContextManager)
 from eth_typing import HexStr
 
 _TOP_PRIORITY: Final = -1

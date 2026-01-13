@@ -2,15 +2,14 @@ from collections.abc import Callable, Iterator, Sequence
 from typing import Any, Final, TypeVar
 
 from eth_typing import TypeStr
-from faster_eth_utils.curried import apply_formatter_at_index  # type: ignore [attr-defined]
+from faster_eth_utils.curried import \
+    apply_formatter_at_index  # type: ignore [attr-defined]
 from faster_eth_utils.toolz import compose
-from web3._utils.method_formatters import (
-    ERROR_FORMATTERS,
-    METHOD_NORMALIZERS,
-    NULL_RESULT_FORMATTERS,
-    PYTHONIC_REQUEST_FORMATTERS,
-    STANDARD_NORMALIZERS,
-)
+from web3._utils.method_formatters import (ERROR_FORMATTERS,
+                                           METHOD_NORMALIZERS,
+                                           NULL_RESULT_FORMATTERS,
+                                           PYTHONIC_REQUEST_FORMATTERS,
+                                           STANDARD_NORMALIZERS)
 from web3._utils.rpc_abi import RPC_ABIS, apply_abi_formatters_to_dict
 from web3.types import Formatters, RPCEndpoint, RPCResponse
 

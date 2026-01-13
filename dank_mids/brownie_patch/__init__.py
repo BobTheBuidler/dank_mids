@@ -1,10 +1,7 @@
 # sourcery skip: use-contextlib-suppress
-from dank_mids.brownie_patch.types import (
-    DankContractCall,
-    DankContractMethod,
-    DankContractTx,
-    DankOverloadedMethod,
-)
+from dank_mids.brownie_patch.types import (DankContractCall,
+                                           DankContractMethod, DankContractTx,
+                                           DankOverloadedMethod)
 from dank_mids.helpers import setup_dank_w3_from_sync
 
 __all__ = ["DankContractCall", "DankContractMethod", "DankContractTx", "DankOverloadedMethod"]

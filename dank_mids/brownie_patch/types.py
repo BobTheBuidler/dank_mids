@@ -4,7 +4,8 @@ from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from brownie.typing import AccountsType
 from eth_typing import ChecksumAddress
 
-from dank_mids.brownie_patch._method import _DankMethod, _DankMethodMixin, _EVMType
+from dank_mids.brownie_patch._method import (_DankMethod, _DankMethodMixin,
+                                             _EVMType)
 
 _T = TypeVar("_T")
 
