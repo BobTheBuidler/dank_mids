@@ -1,8 +1,9 @@
 from functools import lru_cache
-from typing import Callable, Optional
+from typing import Literal, Union
+from collections.abc import Callable
 
 from cchecksum import to_checksum_address
-from eth_typing import BlockNumber, ChecksumAddress
+from eth_typing import BlockNumber, ChecksumAddress, HexStr
 from msgspec import Struct
 from multicall.constants import MULTICALL2_ADDRESSES
 
@@ -19,6 +20,9 @@ except ImportError:
     MULTICALL3_ADDRESSES = {}
 
 
+BlockIdentifier = Union[BlockNumber, Literal["latest"], HexStr]
+
+
 class MulticallContract(Struct):
     """
     Represents a multicall contract with its address, deployment block, and bytecode.
@@ -29,7 +33,7 @@ class MulticallContract(Struct):
     The Ethereum address of the multicall contract.
     """
 
-    deploy_block: Optional[BlockNumber]
+    deploy_block: BlockNumber | None
     """
     The block number at which the multicall contract was deployed.
     If None, it means the deployment block is unknown.
@@ -41,7 +45,7 @@ class MulticallContract(Struct):
     This is used for state override if necessary.
     """
 
-    needs_override_code_for_block: Callable[[BlockNumber], bool] = None  # type: ignore [assignment]
+    needs_override_code_for_block: Callable[[BlockIdentifier], bool] = None  # type: ignore [assignment]
     """
     A cached function that, when called, determines if the contract needs override code for a specific block.
 
@@ -58,7 +62,7 @@ class MulticallContract(Struct):
             self.__needs_override_code_for_block
         )
 
-    def __needs_override_code_for_block(self, block: BlockNumber) -> bool:
+    def __needs_override_code_for_block(self, block: BlockIdentifier) -> bool:
         """
         Determine if the contract needs override code for a specific block.
 
@@ -77,7 +81,7 @@ class MulticallContract(Struct):
         return block < self.deploy_block
 
 
-def _get_multicall2(chainid: int) -> Optional[MulticallContract]:
+def _get_multicall2(chainid: int) -> MulticallContract | None:
     if multicall2 := MULTICALL2_ADDRESSES.get(chainid):
         return MulticallContract(
             address=to_checksum_address(multicall2),
@@ -87,7 +91,7 @@ def _get_multicall2(chainid: int) -> Optional[MulticallContract]:
         )
 
 
-def _get_multicall3(chainid: int) -> Optional[MulticallContract]:
+def _get_multicall3(chainid: int) -> MulticallContract | None:
     if multicall3 := MULTICALL3_ADDRESSES.get(chainid):
         return MulticallContract(
             address=to_checksum_address(multicall3),

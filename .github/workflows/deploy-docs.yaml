@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -31,7 +31,7 @@ jobs:
 
       - name: Load cached Poetry installation
         id: cached-poetry
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.local  # the path depends on the OS
           key: poetry-${{ runner.os }}-3.10-0 # increment to reset cache
@@ -72,7 +72,7 @@ jobs:
           publish_dir: ./docs/_build/html
           
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: gh-pages
           persist-credentials: false

@@ -1,19 +1,5 @@
-from typing import (
-    Awaitable,
-    Callable,
-    Dict,
-    Final,
-    List,
-    Literal,
-    Optional,
-    Sequence,
-    Tuple,
-    Type,
-    TypedDict,
-    Union,
-    cast,
-    overload,
-)
+from collections.abc import Awaitable, Callable, Sequence
+from typing import Final, Literal, TypedDict, cast, overload
 
 from a_sync import Semaphore, igather
 from async_lru import alru_cache
@@ -44,27 +30,23 @@ from dank_mids.types import T, Error
 
 
 # These 2 type defs are in recent, but not all, web3.py versions
-CallOverrideParams = TypedDict(
-    "CallOverrideParams",
-    {
-        "balance": Optional[Wei],
-        "nonce": Optional[int],
-        "code": Optional[Union[bytes, HexStr]],
-        "state": Optional[Dict[HexStr, HexStr]],
-        "stateDiff": Optional[Dict[HexStr, HexStr]],
-    },
-    total=False,
-)
+class CallOverrideParams(TypedDict, total=False):
+    balance: Wei | None
+    nonce: int | None
+    code: bytes | HexStr | None
+    state: dict[HexStr, HexStr] | None
+    stateDiff: dict[HexStr, HexStr] | None
 
-CallOverride = Dict[ChecksumAddress, CallOverrideParams]
+
+CallOverride = dict[ChecksumAddress, CallOverrideParams]
 
 
 class TraceFilterParams(TypedDict, total=False):  # type: ignore [call-arg]
     after: int
     count: int
-    fromAddress: Sequence[Union[Address, ChecksumAddress, ENS]]
+    fromAddress: Sequence[Address | ChecksumAddress | ENS]
     fromBlock: BlockIdentifier
-    toAddress: Sequence[Union[Address, ChecksumAddress, ENS]]
+    toAddress: Sequence[Address | ChecksumAddress | ENS]
     toBlock: BlockIdentifier
 
 
@@ -106,9 +88,7 @@ class DankEth(AsyncEth):
         _get_block_number = MethodNoFormat(RPC.eth_blockNumber, mungers=None)
 
         _call: MethodNoFormat[
-            Callable[
-                [TxParams, Optional[BlockIdentifier], Optional[CallOverride]], Awaitable[HexBytes]
-            ]
+            Callable[[TxParams, BlockIdentifier | None, CallOverride | None], Awaitable[HexBytes]]
         ]
         _call = MethodNoFormat(RPC.eth_call, mungers=[BaseEth.call_munger])
 
@@ -131,7 +111,7 @@ class DankEth(AsyncEth):
             return decode_timestamped(block_bytes).timestamp
 
     async def get_balance(
-        self, account: ChecksumAddress, block_identifier: Optional[BlockNumber] = None
+        self, account: ChecksumAddress, block_identifier: BlockNumber | None = None
     ):
         if isinstance(block_identifier, int):
             return await self._get_balance(account, hex(block_identifier))
@@ -139,34 +119,32 @@ class DankEth(AsyncEth):
             return await self._get_balance(account, block_identifier)
 
     async def get_transaction_count(
-        self, account: ChecksumAddress, block_identifier: Optional[BlockNumber] = None
+        self, account: ChecksumAddress, block_identifier: BlockNumber | None = None
     ):
         if isinstance(block_identifier, int):
             return await self._get_transaction_count(account, hex(block_identifier))
         else:
             return await self._get_transaction_count(account, block_identifier)
 
-    async def get_code(
-        self, account: ChecksumAddress, block_identifier: Optional[BlockNumber] = None
-    ):
+    async def get_code(self, account: ChecksumAddress, block_identifier: BlockNumber | None = None):
         if isinstance(block_identifier, int):
             return await self._get_code(account, hex(block_identifier))
         else:
             return await self._get_code(account, block_identifier)
 
     @overload
-    async def get_transactions(self, block_identifier: Union[int, HexStr]) -> List[Transaction]: ...
+    async def get_transactions(self, block_identifier: int | HexStr) -> list[Transaction]: ...
     @overload
     async def get_transactions(
-        self, block_identifier: Union[int, HexStr], hashes_only: Literal[True]
-    ) -> List[TransactionHash]: ...
+        self, block_identifier: int | HexStr, hashes_only: Literal[True]
+    ) -> list[TransactionHash]: ...
     @overload
     async def get_transactions(
-        self, block_identifier: Union[int, HexStr], hashes_only: Literal[False]
-    ) -> List[Transaction]: ...
+        self, block_identifier: int | HexStr, hashes_only: Literal[False]
+    ) -> list[Transaction]: ...
     async def get_transactions(
-        self, block_identifier: Union[int, HexStr], hashes_only: bool = False
-    ) -> Union[List[Transaction], List[TransactionHash]]:
+        self, block_identifier: int | HexStr, hashes_only: bool = False
+    ) -> list[Transaction] | list[TransactionHash]:
         """
         Retrieves only the transactions from a specific block.
 
@@ -188,8 +166,8 @@ class DankEth(AsyncEth):
     async def get_transaction_receipt(
         self,
         *args,
-        decode_to: Type[T] = TransactionReceipt,
-        decode_hook: Optional[DecodeHook[T]] = _decode_hook,
+        decode_to: type[T] = TransactionReceipt,
+        decode_hook: DecodeHook[T] | None = _decode_hook,
         **kwargs,
     ) -> T:
         """
@@ -224,8 +202,8 @@ class DankEth(AsyncEth):
     async def trace_filter(
         self,
         filter_params: TraceFilterParams,
-        decode_to: Type[T] = List[FilterTrace],
-        decode_hook: Optional[DecodeHook[T]] = _decode_hook,
+        decode_to: type[T] = list[FilterTrace],
+        decode_hook: DecodeHook[T] | None = _decode_hook,
     ) -> T:
         """
         Returns all traces matching a filter. If the decoding to the specified
@@ -281,7 +259,7 @@ class DankEth(AsyncEth):
                     ranges = [[i, i + summand] for i in range(from_block, to_block, max_range_size)]
                     last_chunk = ranges[-1]
                     last_chunk[1] = min(last_chunk[1], to_block)
-                    traces: List[List[FilterTrace]] = await igather(
+                    traces: list[list[FilterTrace]] = await igather(
                         get_chunk({**template, "fromBlock": start, "toBlock": end})
                         for start, end in ranges
                     )
@@ -294,7 +272,7 @@ class DankEth(AsyncEth):
             if decode_to.__origin__ is not list:  # type: ignore [attr-defined]
                 raise
 
-            traces_raw = json.decode(traces_bytes, type=List[Raw])
+            traces_raw = json.decode(traces_bytes, type=list[Raw])
             traces = []
             trace_cls = decode_to.__args__[0]  # type: ignore [attr-defined]
             decode = json.Decoder(type=trace_cls, dec_hook=decode_hook).decode
@@ -305,7 +283,7 @@ class DankEth(AsyncEth):
                     e.args = *e.args, json.decode(raw)
                     raise
 
-    async def trace_transaction(self, transaction_hash: str) -> List[FilterTrace]:
+    async def trace_transaction(self, transaction_hash: str) -> list[FilterTrace]:
         """
         Returns all traces produced by a transaction.
 
@@ -343,8 +321,8 @@ class DankEth(AsyncEth):
     async def get_logs(
         self,
         *args,
-        decode_to: Type[T] = Tuple[Log, ...],  # type: ignore [assignment]
-        decode_hook: Optional[DecodeHook[T]] = _decode_hook,
+        decode_to: type[T] = tuple[Log, ...],  # type: ignore [assignment]
+        decode_hook: DecodeHook[T] | None = _decode_hook,
         **kwargs,
     ) -> T:
         """

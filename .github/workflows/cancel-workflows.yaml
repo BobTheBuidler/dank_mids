@@ -1,0 +1,44 @@
+name: Cancel Actions on PR Close
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cancel-running-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel running 'PyTest', 'MyPy', 'Build Mypyc' and 'Black Formatter' workflows for this PR
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prBranch = pr.head.ref;
+            const workflowNames = ["PyTest", "MyPy", "Build Mypyc", "Black Formatter"];
+
+            // List all workflow runs for this branch
+            const runs = await github.rest.actions.listWorkflowRunsForRepo({
+              owner,
+              repo,
+              branch: prBranch,
+              status: "in_progress"
+            });
+
+            for (const run of runs.data.workflow_runs) {
+              // Only cancel runs triggered by this PR and with the correct workflow name
+              if (
+                run.event === "pull_request" &&
+                run.head_branch === prBranch &&
+                workflowNames.includes(run.name)
+              ) {
+                await github.rest.actions.cancelWorkflowRun({
+                  owner,
+                  repo,
+                  run_id: run.id
+                });
+                console.log(`Cancelled workflow run ${run.id} (${run.name}) for PR branch ${prBranch}`);
+              }
+            }

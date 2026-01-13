@@ -19,23 +19,11 @@ This module is crucial for debugging, performance monitoring, and optimization o
 import logging
 from asyncio import create_task
 from collections import defaultdict, deque
+from collections.abc import Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor
 from copy import deepcopy
 from time import time
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    DefaultDict,
-    Deque,
-    Final,
-    Iterable,
-    Set,
-    Tuple,
-    Type,
-    TypeVar,
-    final,
-)
+from typing import TYPE_CHECKING, Any, DefaultDict, Deque, Final, TypeVar, final
 
 import msgspec
 from a_sync.asyncio import sleep0
@@ -43,13 +31,12 @@ from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
 from web3.types import RPCEndpoint
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids.logging import CLogger, Level
 from dank_mids.stats import _nocompile
 
 if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch
-    from dank_mids.types import Request
 
-_LogLevel = int
 
 T = TypeVar("T")
 
@@ -87,7 +74,7 @@ def log_errd_batch(batch: "JSONRPCBatch") -> None:
     )
 
 
-def log_duration(work_descriptor: str, start: float, *, level: _LogLevel = STATS) -> None:
+def log_duration(work_descriptor: str, start: float, *, level: Level = STATS) -> None:
     """
     Log the duration of a specific operation.
 
@@ -107,7 +94,7 @@ def log_duration(work_descriptor: str, start: float, *, level: _LogLevel = STATS
 
 
 @final
-class _StatsLogger(logging.Logger):
+class _StatsLogger(CLogger):
     """
     A custom logger class for collecting and logging statistics about RPC method calls and responses.
 
@@ -149,7 +136,7 @@ class _StatsLogger(logging.Logger):
             >>> _logger.stats("Operation took %s seconds", 3.14)
         """
         if self.enabled:
-            self._log_nocheck(STATS, msg, args, **kwargs)
+            self._log_nocheck(STATS, msg, args, kwargs)
 
     def devhint(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """
@@ -167,7 +154,7 @@ class _StatsLogger(logging.Logger):
 
     # Functions to print stats to your logs.
 
-    def log_brownie_stats(self, *, level: _LogLevel = STATS) -> None:
+    def log_brownie_stats(self, *, level: Level = STATS) -> None:
         """
         Log statistics related to Brownie operations.
 
@@ -179,7 +166,7 @@ class _StatsLogger(logging.Logger):
         """
         self._log_fn_result(level, _Writer.brownie)
 
-    def log_event_loop_stats(self, *, level: _LogLevel = STATS) -> None:
+    def log_event_loop_stats(self, *, level: Level = STATS) -> None:
         """
         Log statistics about the event loop performance.
 
@@ -191,7 +178,7 @@ class _StatsLogger(logging.Logger):
         """
         self._log_fn_result(level, _Writer.event_loop)
 
-    def log_subprocess_stats(self, *, level: _LogLevel = STATS) -> None:
+    def log_subprocess_stats(self, *, level: Level = STATS) -> None:
         """
         Log statistics about subprocess pools and queues.
 
@@ -201,12 +188,12 @@ class _StatsLogger(logging.Logger):
         Example:
             >>> _logger.log_subprocess_stats()
         """
-        for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES, ENVS.MULTICALL_DECODER_PROCESSES}:  # type: ignore [attr-defined]
+        for pool in {ENVS.BROWNIE_ENCODER_PROCESSES, ENVS.BROWNIE_DECODER_PROCESSES}:  # type: ignore [attr-defined]
             self._log_fn_result(level, _Writer.queue, pool)  # type: ignore [arg-type]
 
     # Internal helpers
 
-    def _log(self, level: _LogLevel, msg: str, args: Tuple[Any, ...] = (), **kwargs: Any) -> None:  # type: ignore [override]
+    def _log(self, level: Level, msg: str, args: logging._ArgsType = (), **kwargs: Any) -> None:  # type: ignore [override]
         """
         Wrapper around the standard logging method to simplify custom log level checks.
 
@@ -216,9 +203,15 @@ class _StatsLogger(logging.Logger):
             **kwargs: Additional keyword arguments for the logger.
         """
         if self.isEnabledFor(level):
-            return self._log_nocheck(level, msg, *args, **kwargs)
+            return self._log_nocheck(level, msg, args, kwargs)
 
-    def _log_nocheck(self, level: _LogLevel, msg: str, *args: Any, **kwargs: Any) -> None:
+    def _log_nocheck(
+        self,
+        level: Level,
+        msg: str,
+        args: logging._ArgsType = (),
+        kwargs: dict[str, Any] | None = None,
+    ) -> None:
         """
         Perform logging without checking whether the logger is enabled for the level.
 
@@ -230,11 +223,14 @@ class _StatsLogger(logging.Logger):
         Raises:
             ValueError: If no message is provided.
         """
-        return super()._log(level, msg, args, **kwargs)
+        if kwargs is None:
+            CLogger._log(self, level, msg, args)
+        else:
+            CLogger._log(self, level, msg, args, **kwargs)
 
     def _log_fn_result(
         self,
-        level: _LogLevel,
+        level: Level,
         callable: Callable[[T], str],
         *callable_args: T,
         **logging_kwargs: Any,
@@ -249,7 +245,7 @@ class _StatsLogger(logging.Logger):
             **logging_kwargs: Additional keyword arguments for logging.
         """
         if self.isEnabledFor(level):
-            return self._log_nocheck(level, callable(*callable_args), (), **logging_kwargs)
+            return self._log_nocheck(level, callable(*callable_args), (), logging_kwargs)
 
     # Daemon
 
@@ -335,7 +331,7 @@ class _StatsLogger(logging.Logger):
             self._log_list_types(decoded.values())
         collector.types.update(types)
 
-    def _log_list_types(self, values: Iterable[Any], level: _LogLevel = DEVHINT) -> None:
+    def _log_list_types(self, values: Iterable[Any], level: Level = DEVHINT) -> None:
         """
         Log the types of items in a list.
 
@@ -377,7 +373,7 @@ class _Collector:
         representing durations. Each deque has a maximum length of 50,000.
         """
 
-        self.types: Set[Type[Any]] = set()
+        self.types: set[type[Any]] = set()
         """
         A set that stores all the types encountered during data collection.
         This is used for debugging and analysis purposes.
@@ -463,19 +459,6 @@ class _Collector:
             >>> decoder_length = collector.decoder_queue_len
         """
         return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
-
-    @property
-    def mcall_decoder_queue_len(self) -> int:
-        """
-        Returns the current length of the multicall decoder queue.
-
-        Returns:
-            The number of items in the multicall decoder queue.
-
-        Example:
-            >>> mcall_length = collector.mcall_decoder_queue_len
-        """
-        return ENVS.MULTICALL_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
 
 
 @final

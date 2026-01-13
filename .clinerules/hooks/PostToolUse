@@ -1,0 +1,52 @@
+#!/bin/bash
+# PostToolUse: Run isort on Python files after tool use
+# Usage: Cline pipes a JSON object to stdin. Extract file path from postToolUse.parameters.path, resolve relative to workspaceRoots[0].
+
+set -e
+
+if ! command -v isort &> /dev/null; then
+  echo "Error: isort is not installed. Please install it with 'pip install isort'."
+  exit 1
+fi
+
+if ! command -v jq &> /dev/null; then
+  echo "Error: jq is not installed. Please install it with 'apt install jq' or 'brew install jq'."
+  exit 1
+fi
+
+# Read JSON from stdin
+files_json=$(cat)
+toolname=$(echo "$files_json" | jq -r '.postToolUse.toolName // empty')
+if [[ "$toolname" != "write_to_file" && "$toolname" != "replace_in_file" ]]; then
+  echo "No hooks for tool $toolname"
+  exit 0
+fi
+path=$(echo "$files_json" | jq -r '.postToolUse.parameters.path // empty')
+workspace_root=$(echo "$files_json" | jq -r '.workspaceRoots[0] // empty')
+
+# If path is not absolute, resolve relative to workspace_root
+if [[ -n "$path" && "$path" != /* && -n "$workspace_root" ]]; then
+  abs_path="$workspace_root/$path"
+else
+  abs_path="$path"
+fi
+
+if [[ -z "$abs_path" || ! -f "$abs_path" ]]; then
+  echo "No valid file path found in JSON input (postToolUse.parameters.path)."
+  echo "Extracted path: $path"
+  echo "Resolved absolute path: $abs_path"
+  echo "Current working directory: $(pwd)"
+  echo "Here is the input received:"
+  echo "$files_json"
+  exit 0
+fi
+
+if [[ "$abs_path" == *.py ]]; then
+  echo "Using postToolUse.parameters.path: $abs_path"
+  echo "Checking file: $abs_path"
+  echo "Running isort on $abs_path"
+  isort "$abs_path"
+else
+  echo "File $abs_path is not a Python file."
+  exit 0
+fi

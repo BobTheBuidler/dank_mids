@@ -1,12 +1,15 @@
 from asyncio import get_running_loop
 from collections import defaultdict
+from collections.abc import Sequence
 from functools import lru_cache
+from logging import getLogger
 from time import time
-from typing import Any, Callable, DefaultDict, Final, List, Literal, Optional, Set, final
+from typing import Any, DefaultDict, Final, Literal, cast, final
 
+import a_sync
 import eth_retry
 from cchecksum import to_checksum_address
-from eth_typing import ChecksumAddress
+from eth_typing import BlockNumber, ChecksumAddress, HexStr
 from evmspec.data import ChainId
 from multicall.constants import MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
@@ -18,25 +21,29 @@ from dank_mids import _debugging
 from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
-from dank_mids._logging import getLogger
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
-from dank_mids._uid import UIDGenerator, AlertingRLock
+from dank_mids._uid import UIDGenerator
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers._codec import decode_raw
+from dank_mids.helpers._codec import RawResponse, decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
 from dank_mids.helpers._helpers import w3_version_major, _sync_w3_from_async
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
-from dank_mids.helpers._session import post, rate_limit_inactive
-from dank_mids.helpers.hashing import make_hashable
-from dank_mids.semaphores import _MethodQueues, BlockSemaphore
-from dank_mids.types import BlockId, PartialRequest, RawResponse, Request
+from dank_mids.helpers._rate_limit import rate_limit_inactive
+from dank_mids.helpers._requester import _requester
+from dank_mids.logging import get_c_logger
+from dank_mids.lock import AlertingRLock
+from dank_mids.semaphores import BlockSemaphore
+from dank_mids.types import BlockId, PartialRequest, Request
 
-logger = getLogger(__name__)
+
+logger: Final = get_c_logger(__name__)
 # our new logger logs the same stuff plus more
 getLogger("web3.RequestManager").disabled = True
 getLogger("web3.RequestManager").propagate = False
 
-instances: Final[DefaultDict[ChainId, List["DankMiddlewareController"]]] = defaultdict(list)
+instances: Final[DefaultDict[ChainId, list["DankMiddlewareController"]]] = defaultdict(list)
+
+cgather: Final = a_sync.cgather
 
 
 @final
@@ -54,9 +61,6 @@ class DankMiddlewareController:
     pending_rpc_calls: JSONRPCBatch
     """A :class:`~JSONRPCBatch` containing all pending rpc requests."""
 
-    _pending_rpc_calls_append: Callable
-    """An alias for `controller.pending_rpc_calls.append`, intended to minimize attr lookups."""
-
     def __init__(self, w3: Web3) -> None:
         """
         Initialize the DankMiddlewareController.
@@ -71,7 +75,7 @@ class DankMiddlewareController:
         self.w3: Final[Web3] = w3
         """The Web3 instance used to make rpc requests."""
 
-        self.max_jsonrpc_batch_size = int(ENVS.MAX_JSONRPC_BATCH_SIZE)  # type: ignore [call-overload]
+        self.max_jsonrpc_batch_size = int(ENVS.MAX_JSONRPC_BATCH_SIZE)
 
         self.sync_w3: Final = _sync_w3_from_async(w3)
         """A sync Web3 instance connected to the same rpc, used to make calls during init."""
@@ -96,7 +100,7 @@ class DankMiddlewareController:
         """The time at which the request type was automatically updated by dank's internals. Zero if never updated after init."""
 
         # NOTE: Ganache does not support state override. Neither does Gnosis Chain.
-        self.state_override_not_supported: Final[bool] = ENVS.GANACHE_FORK or chainid == 100  # type: ignore [assignment]
+        self.state_override_not_supported: Final = bool(ENVS.GANACHE_FORK or chainid == 100)
         """A boolean that indicates whether the connected rpc supports state override functionality."""
 
         self.endpoint: Final[str] = self.w3.provider.endpoint_uri  # type: ignore [attr-defined]
@@ -110,12 +114,12 @@ class DankMiddlewareController:
         self._sort_response: bool = using_tenderly_client or using_chainstack_rpc
         """A boolean that indicates whether a jsonrpc batch response must be sorted by id in order for dank to work with the connected rpc."""
 
-        if using_tenderly_client and ENVS.MAX_JSONRPC_BATCH_SIZE > 10:  # type: ignore [operator]
+        if using_tenderly_client and self.max_jsonrpc_batch_size > 10:
             logger.info("max jsonrpc batch size for Tenderly is 10, overriding existing max")
             self.set_batch_size_limit(10)
 
         self._instance: Final = sum(map(len, instances.values()))
-        instances[chainid].append(self)  # type: ignore
+        instances[chainid].append(self)
 
         self.mc2: Final = _get_multicall2(chainid)
         self.mc3: Final = _get_multicall3(chainid)
@@ -124,7 +128,7 @@ class DankMiddlewareController:
                 "Dank Mids currently does not support this network.\nTo add support, you just need to submit a PR adding the appropriate multicall contract addresses to this file:\nhttps://github.com/banteg/multicall.py/blob/master/multicall/constants.py"
             )
 
-        self.no_multicall: Final[Set[ChecksumAddress]] = set()
+        self.no_multicall: Final[set[ChecksumAddress]] = set()
         """A set of addresses that have issues when called from the multicall contract. Calls to these contracts will not be batched in multicalls."""
 
         if multicall := MULTICALL_ADDRESSES.get(chainid):
@@ -140,40 +144,27 @@ class DankMiddlewareController:
         )
         """Used for managing concurrency of eth_calls."""
 
-        # semaphores soon to be deprecated for smart queue
-        self.method_queues: Final = _MethodQueues(self)
-        """Queues for different method types."""
-
         self.batcher: Final[NotSoBrightBatcher] = NotSoBrightBatcher()
         """Batcher for RPC calls."""
 
-        self.batcher.step = ENVS.MAX_MULTICALL_SIZE  # type: ignore [attr-defined]
+        self.batcher.step = int(ENVS.MAX_MULTICALL_SIZE)
 
         self.call_uid: Final[UIDGenerator] = UIDGenerator()
         """Unique identifier generator for individual calls."""
 
-        self.multicall_uid: Final[UIDGenerator] = UIDGenerator()
+        self.multicall_uid: Final = UIDGenerator()
         """Unique identifier generator for multicall operations."""
 
-        self.request_uid: Final[UIDGenerator] = UIDGenerator()
+        self.request_uid: Final = UIDGenerator()
         """Unique identifier generator for RPC requests."""
 
-        self.jsonrpc_batch_uid: Final[UIDGenerator] = UIDGenerator()
-        self.pools_closed_lock: Final[AlertingRLock] = AlertingRLock(name="pools closed")
+        self.jsonrpc_batch_uid: Final = UIDGenerator()
+        self.pools_closed_lock: Final = AlertingRLock(name="pools closed")
 
         self.pending_eth_calls: Final[DefaultDict[BlockId, Multicall]] = defaultdict(
             lambda: Multicall(self)
         )
         """A dictionary of pending :class:`~Multicall` objects by block. The Multicalls hold all pending eth_calls."""
-
-        self._pending_eth_calls_pop = self.pending_eth_calls.pop
-        """An alias for `controller.pending_eth_calls.pop`, intended to minimize attr lookups."""
-        self._pending_eth_calls_copy = self.pending_eth_calls.copy
-        """An alias for `controller.pending_eth_calls.copy`, intended to minimize attr lookups."""
-        self._pending_eth_calls_clear = self.pending_eth_calls.clear
-        """An alias for `controller.pending_eth_calls.clear`, intended to minimize attr lookups."""
-        self._pending_eth_calls_values = self.pending_eth_calls.values
-        """An alias for `controller.pending_eth_calls.values`, intended to minimize attr lookups."""
 
         self._start_new_batch()
 
@@ -208,36 +199,22 @@ class DankMiddlewareController:
             if method == "eth_call":
                 async with self.eth_call_semaphores[params[1]]:
                     # create a strong ref to the call that will be held until the caller completes or is cancelled
-                    _logger_debug(
-                        f"making {self.request_type.__name__} {method} with params {params}"
+                    logger.debug(
+                        "making %s %s with params %s", self.request_type.__name__, method, params
                     )
                     if params[0]["to"] in self.no_multicall:
                         return await RPCRequest(self, method, params)
                     return await eth_call(self, params)
 
-            # some methods go thru a SmartProcessingQueue, we check those next
-            queue = self.method_queues[method]
-            _logger_debug(f"making {self.request_type.__name__} {method} with params {params}")
-
-            # no queue, we can make the request normally
-            if queue is None:
-                return await RPCRequest(self, method, params)
-
-            # queue found, queue up the call and await the future
-            try:
-                # NOTE: is this a strong enough ref?
-                return await queue(self, method, params)  # type: ignore [return-type]
-            except TypeError as e:
-                if "unhashable type" not in str(e):
-                    raise
-            return await queue(self, method, make_hashable(params))
+            logger.debug("making %s %s with params %s", self.request_type.__name__, method, params)
+            return await RPCRequest(self, method, params)
         except GarbageCollectionError:
             # this exc shouldn't be exposed to the user so let's try this again
             return await self(method, params)
 
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)
     async def make_request(
-        self, method: str, params: List[Any], request_id: Optional[int] = None
+        self, method: str, params: Sequence[Any], request_id: int | str | None = None
     ) -> RawResponse:
         """
         Makes an RPC request to the Ethereum node.
@@ -260,7 +237,7 @@ class DankMiddlewareController:
             method=method, params=params, id=request_id or self.call_uid.next
         )
         try:
-            return await post(self.endpoint, data=request, loads=decode_raw)
+            return await _requester.post(self.endpoint, data=request, loads=decode_raw)
         except Exception as e:
             if ENVS.DEBUG:
                 _debugging.failures.record(
@@ -280,14 +257,36 @@ class DankMiddlewareController:
         This method collects all pending eth calls and RPC calls, clears the pending queues,
         and executes them as a single batch.
         """
+        multicalls: dict[BlockId, Multicall]
+        pending_eth_calls = self.pending_eth_calls
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
-            multicalls = self._pending_eth_calls_copy()
-            self._pending_eth_calls_clear()
+            if pending_eth_calls:
+                multicalls = pending_eth_calls.copy()
+                pending_eth_calls.clear()
+            else:
+                multicalls = {}
             rpc_calls = self.pending_rpc_calls
-        self._start_new_batch()
-        demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)  # type: ignore
+            self._start_new_batch()
+        if not multicalls and not rpc_calls:
+            try:
+                # make an exception so we can print the traceback with exc_info
+                raise Exception("empty batch!")  # sourcery skip: raise-specific-error
+            except Exception:
+                logger.warning(
+                    "For some reason we're creating an empty batch. Here's the traceback:",
+                    exc_info=True,
+                )
+                return
+        demo_logger.info("executing dank batch (current cid: %s)", self.call_uid.latest)
         batch = DankBatch(self, multicalls, rpc_calls)
-        await batch
+        # I think this unnecessary assignment might help fix a mypyc compiler bug
+        try:
+            await batch
+        except AttributeError as e:
+            if "__mypyc_temp__" not in str(e):
+                raise
+            # This is a mypyc compiler bug that we can work around. It's worth it for fast C.
+            await cgather(*multicalls.values(), *rpc_calls)
         demo_logger.info("%s done", batch)
 
     @property
@@ -299,11 +298,11 @@ class DankMiddlewareController:
             True if the queue is full, False otherwise.
         """
         with self.pools_closed_lock:
-            if ENVS.OPERATION_MODE.infura:  # type: ignore [attr-defined]
+            if ENVS.OPERATION_MODE.infura:
                 return sum(map(len, self.pending_rpc_calls)) >= self.max_jsonrpc_batch_size
-            eth_calls = sum(map(len, self._pending_eth_calls_values()))
+            eth_calls = sum(map(len, self.pending_eth_calls.values()))
             other_calls = sum(map(len, self.pending_rpc_calls))
-            return eth_calls + other_calls >= self.batcher.step
+            return eth_calls + other_calls >= cast(int, self.batcher.step)
 
     def _check_request_type(self) -> bool:
         """
@@ -329,8 +328,8 @@ class DankMiddlewareController:
         are queued to form a full batch.
         """
         with self.pools_closed_lock:
-            self.pending_rpc_calls.extend(self._pending_eth_calls_values(), skip_check=True)
-            self._pending_eth_calls_clear()
+            self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
+            self.pending_eth_calls.clear()
             self.pending_rpc_calls.start()
 
     def reduce_multicall_size(self, num_calls: int) -> None:
@@ -427,7 +426,9 @@ class DankMiddlewareController:
             )
 
     @lru_cache(maxsize=1024)
-    def _select_mcall_target_for_block(self, block) -> MulticallContract:
+    def _select_mcall_target_for_block(
+        self, block: BlockNumber | Literal["latest"] | HexStr
+    ) -> MulticallContract:
         """
         Select the appropriate multicall contract for a given block.
 
@@ -438,27 +439,19 @@ class DankMiddlewareController:
             The selected multicall contract.
         """
         if block == "latest":
-            return self._latest_mc  # type: ignore [return-value]
+            return cast(MulticallContract, self._latest_mc)
         mc3 = self.mc3
         if mc3 and not mc3.needs_override_code_for_block(block):
             return mc3
         # We don't care if mc2 needs override code, mc2 override code is shorter
-        return self.mc2 or mc3  # type: ignore [return-value]
+        return cast(MulticallContract, self.mc2 or mc3)
 
     def _start_new_batch(self) -> None:
-        """Creates a new :class:`~JSONRPCBatch` and updates the :meth:`_pending_rpc_calls_append` alias accordingly."""
+        """Creates a new :class:`~JSONRPCBatch`."""
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
-            batch = JSONRPCBatch(self)
-            self.pending_rpc_calls = batch
-            self._pending_rpc_calls_append = batch.append
+            self.pending_rpc_calls = JSONRPCBatch(self)
 
 
 @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)
 def _get_client_version(sync_w3: Web3) -> str:
-    return sync_w3.client_version if w3_version_major >= 6 else sync_w3.clientVersion  # type: ignore [attr-defined]
-
-
-def _logger_debug(msg: str, *args: Any) -> None: ...
-
-
-_logger_debug = logger.debug
+    return sync_w3.client_version if w3_version_major >= 6 else cast(str, sync_w3.clientVersion)  # type: ignore [attr-defined]

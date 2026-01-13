@@ -1,8 +1,10 @@
-import logging
 import re
-from typing import TYPE_CHECKING, Final, List, Sequence, Union, final
+from typing import TYPE_CHECKING, Final, Union, final
+from collections.abc import Sequence
 
 from aiohttp.client_exceptions import ClientResponseError
+
+from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:
     from dank_mids._requests import RPCRequest
@@ -11,7 +13,7 @@ if TYPE_CHECKING:
     from dank_mids.types import PartialRequest, PartialResponse
 
 
-logger: Final = logging.getLogger("dank_mids.exceptions")
+logger: Final = get_c_logger("dank_mids.exceptions")
 
 
 class BadResponse(ValueError):
@@ -100,7 +102,7 @@ internal_err_types: Final = _internal_err_types
 class DankMidsInternalError(Exception):
     """Exception raised for unhandled internal errors within Dank Mids."""
 
-    def __init__(self, exc: Union[ValueError, _internal_err_types]) -> None:
+    def __init__(self, exc: ValueError | _internal_err_types) -> None:
         logger.warning(f"unhandled exception inside dank mids internals: {exc}", exc_info=True)
 
         self._original_exception: Final = exc
@@ -123,7 +125,7 @@ class BatchResponseSortError(Exception):
         self,
         controller: "DankMiddlewareController",
         calls: Sequence["RPCRequest"],
-        response: List["RawResponse"],
+        response: list["RawResponse"],
     ) -> None:
         self.calls: Final = calls
         """

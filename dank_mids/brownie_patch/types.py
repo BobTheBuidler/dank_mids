@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple, TypeVar, Union, final
+from typing import Any, TypeVar, Union, final
 
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
 from brownie.typing import AccountsType
@@ -52,14 +52,14 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ign
     You can await instances of this class directly to call the contract method without arguments at the latest block.
     """
 
-    methods: Dict[Tuple[str, ...], _NonOverloaded]
+    methods: dict[tuple[str, ...], _NonOverloaded]
 
     async def coroutine(
         self,
         *args: Any,
-        block_identifier: Optional[int] = None,
-        decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        block_identifier: int | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method using dank mids and await the result.
@@ -72,12 +72,12 @@ class DankOverloadedMethod(OverloadedMethod, _DankMethodMixin[_T]):  # type: ign
         Returns:
             Whatever the node sends back as the output for this contract method.
         """
-        call: Union[DankContractCall, DankContractTx] = self._get_fn_from_args(args)
+        call: DankContractCall | DankContractTx = self._get_fn_from_args(args)
         return await call.coroutine(
             *args, block_identifier=block_identifier, decimals=decimals, override=override
         )
 
-    def _add_fn(self, abi: Dict, natspec: Dict) -> None:  # type: ignore [type-arg]
+    def _add_fn(self, abi: dict, natspec: dict) -> None:  # type: ignore [type-arg]
         """
         Add a function to the overloaded method.
 
@@ -106,11 +106,11 @@ Instances of this class can be awaited directly to call the contract method with
 
 def _get_method_object(
     address: ChecksumAddress,
-    abi: Dict[str, Any],
+    abi: dict[str, Any],
     name: str,
-    owner: Optional[AccountsType],
-    natspec: Dict[str, Any],
-) -> Union[DankContractCall, DankContractTx]:
+    owner: AccountsType | None,
+    natspec: dict[str, Any],
+) -> DankContractCall | DankContractTx:
     # sourcery skip: default-get
     """
     Retrieve an appropriate method object based on the ABI.

@@ -2,30 +2,20 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AnyStr,
-    Callable,
-    Dict,
     Final,
-    Iterable,
-    List,
     Literal,
-    Mapping,
-    Optional,
-    Union,
-    Tuple,
-    Type,
     TypeVar,
     Union,
     final,
     overload,
 )
+from collections.abc import Callable, Iterable, Mapping
 
-import hexbytes
 import faster_hexbytes
 import msgspec
 from eth_typing import ChecksumAddress, HexStr
 from faster_eth_abi import decoding
 from faster_eth_abi.abi import default_codec
-from faster_eth_abi.encoding import DynamicArrayEncoder, TupleEncoder
 from evmspec.data import Address
 from msgspec.json import Decoder, Encoder
 
@@ -34,10 +24,10 @@ if TYPE_CHECKING:
 
 
 # due to a circ import issue we will import these later
-PartialResponse: Optional[Type["types.PartialResponse"]] = None
-Request: Optional[Type["types.Request"]] = None
-Response: Optional[Type["types.Response"]] = None
-better_decode: Optional[Callable[..., Any]] = None  # type: ignore [type-arg]
+PartialResponse: type["types.PartialResponse"] | None = None
+Request: type["types.Request"] | None = None
+Response: type["types.Response"] | None = None
+better_decode: Callable[..., Any] | None = None  # type: ignore [type-arg]
 
 
 __T = TypeVar("__T")
@@ -46,26 +36,26 @@ __T = TypeVar("__T")
 StrEncodable = Union[ChecksumAddress, HexStr, Address]
 Encodable = Union[int, StrEncodable, faster_hexbytes.HexBytes, bytes]
 
-RpcThing = Union[HexStr, List[HexStr], Dict[str, HexStr]]
+RpcThing = Union[HexStr, list[HexStr], dict[str, HexStr]]
 
 
 MulticallChunk = Union[
-    Tuple[ChecksumAddress, faster_hexbytes.HexBytes],
-    List[Union[ChecksumAddress, faster_hexbytes.HexBytes]],
+    tuple[ChecksumAddress, faster_hexbytes.HexBytes],
+    list[Union[ChecksumAddress, faster_hexbytes.HexBytes]],
 ]
-MulticallEncoder = Callable[[Tuple[bool, Iterable[MulticallChunk]]], bytes]
+MulticallEncoder = Callable[[tuple[bool, Iterable[MulticallChunk]]], bytes]
 
-DecodedMulticall = Tuple[int, int, Tuple[Tuple["Success", bytes], ...]]
+DecodedMulticall = tuple[int, int, tuple[tuple["Success", bytes], ...]]
 MulticallDecoder = Callable[..., DecodedMulticall]
 
 
-JSONRPCBatchRequest = List["types.Request"]
+JSONRPCBatchRequest = list["types.Request"]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
-JSONRPCBatchResponse = Union[List["RawResponse"], "types.PartialResponse"]
-BatchDecoder = Callable[[Union[str, bytes]], Union[List[msgspec.Raw], "types.PartialResponse"]]
+JSONRPCBatchResponse = Union[list["RawResponse"], "types.PartialResponse"]
+BatchDecoder = Callable[[Union[str, bytes]], Union[list[msgspec.Raw], "types.PartialResponse"]]
 
 # these compile to C constants
-HexBytes: Final = hexbytes.HexBytes  # this should be slow hexbytes for isinstance purposes
+HexBytes: Final = faster_hexbytes.HexBytes
 Raw: Final = msgspec.Raw
 ContextFramesBytesIO: Final = decoding.ContextFramesBytesIO
 DecodeError: Final = msgspec.DecodeError
@@ -73,7 +63,7 @@ DecodeError: Final = msgspec.DecodeError
 decode_string: Final = Decoder(type=str).decode
 _decode_raw: Final = Decoder(type=Raw).decode
 # due to a forward reference issue we will populate this later
-_decode_batch: Optional[BatchDecoder] = None
+_decode_batch: BatchDecoder | None = None
 
 
 @final
@@ -118,7 +108,7 @@ def decode_raw(data: AnyStr) -> RawResponse:
         raise
 
 
-def decode_jsonrpc_batch(data: AnyStr) -> Union["types.PartialResponse", List[RawResponse]]:
+def decode_jsonrpc_batch(data: AnyStr) -> Union["types.PartialResponse", list[RawResponse]]:
     """
     Decode json-encoded bytes into a list of response structs, or a single error response struct if applicable.
 
@@ -173,7 +163,7 @@ def _encode_hook(obj: Encodable) -> RpcThing:
 def _rudimentary_encode_dict_value(value: int) -> HexStr: ...
 @overload
 def _rudimentary_encode_dict_value(value: __T) -> __T: ...
-def _rudimentary_encode_dict_value(value: Union[int, __T]) -> Union[HexStr, __T]:
+def _rudimentary_encode_dict_value(value: int | __T) -> HexStr | __T:
     # I dont think this needs to be robust, time will tell
     return hex(value) if isinstance(value, int) else value  # type: ignore [return-value]
 
@@ -200,43 +190,6 @@ See Also:
 _mcall_encoder: Final[MulticallEncoder] = default_codec._registry.get_encoder(
     "(bool,(address,bytes)[])"
 )
-_array_encoder: Final[DynamicArrayEncoder] = _mcall_encoder.encoders[-1]  # type: ignore [attr-defined]
-_item_encoder: Final[TupleEncoder] = _array_encoder.item_encoder
-
-# We don't need to follow the validation code from eth-abi since we guarantee the input types
-_mcall_encoder.validate_value = _array_encoder.validate_value = _item_encoder.validate_value = lambda *_: ...  # type: ignore [attr-defined, method-assign]
-
-
-def _int_to_big_endian(value: int) -> bytes:
-    return value.to_bytes((value.bit_length() + 7) // 8 or 1, "big")
-
-
-def _encode_uint_256(i: int) -> bytes:
-    big_endian = _int_to_big_endian(i)
-    return big_endian.rjust(32, b"\x00")
-
-
-def __encode_new(values: Iterable[MulticallChunk]) -> bytes:
-    encoded_elements, num_elements = __encode_elements_new(values)
-    return _encode_uint_256(num_elements) + encoded_elements  # type: ignore [no-any-return]
-
-
-def __encode_elements_new(values: Iterable[MulticallChunk]) -> Tuple[bytes, int]:
-    tail_chunks = [_item_encoder(v) for v in values]
-    count = len(tail_chunks)
-    head_length = 32 * count
-    tail_offsets = [0]
-    offset = 0
-    for chunk in tail_chunks[:-1]:
-        offset += len(chunk)
-        tail_offsets.append(offset)
-    head_chunks = (_encode_uint_256(head_length + tail_offset) for tail_offset in tail_offsets)
-    return b"".join((*head_chunks, *tail_chunks)), count
-
-
-_array_encoder.encode = __encode_new  # type: ignore [method-assign]
-_array_encoder.encode_elements = __encode_elements_new  # type: ignore [method-assign]
-
 
 _mcall_decoder: Final[MulticallDecoder] = default_codec._registry.get_decoder(
     "(uint256,uint256,(bool,bytes)[])"
@@ -244,14 +197,14 @@ _mcall_decoder: Final[MulticallDecoder] = default_codec._registry.get_decoder(
 
 
 def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
-    return _mcall_encoder((False, data))
+    return _mcall_encoder((False, list(data)))
 
 
 # maybe use this success flag to do something later
 Success = bool
 
 
-def mcall_decode(data: "types.PartialResponse") -> Union[List[bytes], Exception]:
+def mcall_decode(data: "types.PartialResponse") -> list[bytes] | Exception:
     try:
         decoded = _mcall_decoder(ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type]
     except Exception as e:
@@ -274,4 +227,4 @@ def __make_decode_batch() -> None:
     from dank_mids.types import PartialResponse
 
     global _decode_batch
-    _decode_batch = Decoder(type=Union[List[msgspec.Raw], PartialResponse]).decode
+    _decode_batch = Decoder(type=Union[list[msgspec.Raw], PartialResponse]).decode

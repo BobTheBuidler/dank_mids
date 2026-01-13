@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict, Final, Generic, Iterable, Iterator, Optional, TypeVar, final
+from typing import Any, Final, Generic, TypeVar, final
+from collections.abc import Callable, Iterable, Iterator
 from weakref import ref
 
 
@@ -9,9 +10,9 @@ GCCallback = Callable[[Any], None]
 
 @final
 class WeakList(Generic[_T]):
-    def __init__(self, data: Optional[Iterable[_T]] = None) -> None:
+    def __init__(self, data: Iterable[_T] | None = None) -> None:
         # Mapping from object ID to weak reference
-        self._refs: Final[Dict[int, "ref[_T]"]] = {}
+        self._refs: Final[dict[int, "ref[_T]"]] = {}
         if data is not None:
             self.extend(data)
 

@@ -1,29 +1,15 @@
-import functools
 from collections.abc import Hashable
-from typing import (
-    Any,
-    Dict,
-    Final,
-    ItemsView,
-    Iterator,
-    KeysView,
-    List,
-    Mapping,
-    Optional,
-    Sequence,
-    Tuple,
-    TypeVar,
-    Union,
-    ValuesView,
-    final,
-)
+from typing import Any, Final, Generic, TypeVar, cast, final
+from collections.abc import ItemsView, Iterator, KeysView, Mapping, Sequence, ValuesView
+
+from mypy_extensions import mypyc_attr
 
 
 TKey = TypeVar("TKey", bound=Hashable)
 TValue = TypeVar("TValue")
 
 
-def make_hashable(obj: Any) -> Any:
+def make_hashable(obj: Any) -> Hashable:
     """
     Converts an object into a hashable type if possible.
 
@@ -34,27 +20,30 @@ def make_hashable(obj: Any) -> Any:
         obj: The object to make hashable.
     """
     if isinstance(obj, (list, tuple)):
-        return tuple(make_hashable(o) for o in obj)
+        return tuple(map(make_hashable, obj))
     elif isinstance(obj, dict):
         return AttributeDict({key: make_hashable(obj[key]) for key in obj})
-    return obj
+    return cast(Hashable, obj)
 
 
 @final
-class AttributeDict(Mapping[TKey, TValue], Hashable):
+@mypyc_attr(native_class=False)
+class AttributeDict(Generic[TKey, TValue]):
     """
     Provides superficial immutability, someone could hack around it
     """
 
-    def __init__(self, dictionary: Dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
-        self.__dict__: Final = dict(dictionary)  # type: ignore [arg-type]
-        self.__dict__.update(dict(*args, **kwargs))
-        self.__hash: Optional[int] = None
+    def __init__(self, dictionary: dict[TKey, TValue], *args: TKey, **kwargs: TValue) -> None:
+        self_dict = dict(dictionary)
+        if args or kwargs:
+            self_dict.update(dict(*args, **kwargs))  # type: ignore [arg-type]
+        self.__dict__: Final = self_dict  # type: ignore [assignment]
+        self.__hash: int | None = None
 
     def __hash__(self) -> int:
         retval = self.__hash
         if retval is None:
-            retval = hash(tuple(sorted(tupleize_lists_nested(self).items())))
+            retval = hash(tuple(sorted(_tupleize_attrdict_lists_nested(self).items())))
             self.__hash = retval
         return retval
 
@@ -67,9 +56,10 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
             return False
 
     def __setattr__(self, attr: str, val: TValue) -> None:
-        if attr == "__dict__":
+        if attr in ("__dict__", "__hash"):
             super().__setattr__(attr, val)
-        raise TypeError("This data is immutable -- create a copy instead of modifying")
+        else:
+            raise TypeError("This data is immutable -- create a copy instead of modifying")
 
     def __delattr__(self, key: str) -> None:
         raise TypeError("This data is immutable -- create a copy instead of modifying")
@@ -84,7 +74,7 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         return len(self.__dict__)
 
     def __repr__(self) -> str:
-        return self.__class__.__name__ + f"({self.__dict__!r})"
+        return f"{self.__class__.__name__}({self.__dict__!r})"
 
     def _repr_pretty_(self, builder: Any, cycle: bool) -> None:
         """
@@ -113,7 +103,7 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         elif isinstance(value, set):
             return {AttributeDict.recursive(v) for v in value}
         elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-            return type(value)(AttributeDict.recursive(v) for v in value)  # type: ignore [call-arg]
+            return type(value)(map(AttributeDict.recursive, value))  # type: ignore [call-arg]
         return value
 
     def keys(self) -> KeysView[TKey]:
@@ -126,36 +116,119 @@ class AttributeDict(Mapping[TKey, TValue], Hashable):
         return self.__dict__.items()  # type: ignore [return-value]
 
 
-def tupleize_lists_nested(d: Mapping[TKey, TValue]) -> AttributeDict[TKey, TValue]:
+Hashable.register(AttributeDict)
+
+
+def tupleize_lists_nested(
+    d: AttributeDict[TKey, TValue] | Mapping[TKey, TValue],
+) -> AttributeDict[TKey, TValue]:  # sourcery skip: merge-isinstance
     """
     Unhashable types inside dicts will throw an error if attempted to be hashed.
     This method converts lists to tuples, rendering them hashable.
     Other unhashable types found will raise a TypeError
     """
-
-    ret = dict()
+    ret = {}
     for k, v in d.items():
-        if isinstance(v, (list, tuple)):
-            ret[k] = _to_tuple(v)
-        elif isinstance(v, dict) or isinstance(v, Mapping):
-            ret[k] = tupleize_lists_nested(v)
-        elif not isinstance(v, Hashable):
-            raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}")
+        if isinstance(v, list):
+            hashable_v = _list_to_tuple(v)
+        elif isinstance(v, tuple):
+            hashable_v = _tuple_to_tuple(v)
+        elif isinstance(v, AttributeDict):
+            hashable_v = _tupleize_attrdict_lists_nested(v)
+        elif isinstance(v, dict):
+            hashable_v = _tupleize_dict_lists_nested(v)
+        elif isinstance(v, Mapping):
+            hashable_v = tupleize_lists_nested(v)
+        elif isinstance(v, Hashable):
+            hashable_v = v
         else:
-            ret[k] = v
+            raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}") from None
+
+        ret[k] = hashable_v
+
     return AttributeDict(ret)
 
 
-@functools.singledispatch
-def _to_tuple(value: Union[List[Any], Tuple[Any, ...]]) -> Any:
-    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+# NOTE: These functions are specialized by input type to generate more optimized C code:
 
 
-@_to_tuple.register(list)
-def _(value: List[Any]) -> Any:
-    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+def _tupleize_dict_lists_nested(
+    d: dict[TKey, TValue],
+) -> AttributeDict[TKey, TValue]:  # sourcery skip: merge-isinstance
+    ret = {}
+    for k, v in d.items():
+        if isinstance(v, list):
+            hashable_v = _list_to_tuple(v)
+        elif isinstance(v, tuple):
+            hashable_v = _tuple_to_tuple(v)
+        elif isinstance(v, AttributeDict):
+            hashable_v = _tupleize_attrdict_lists_nested(v)
+        elif isinstance(v, dict):
+            hashable_v = _tupleize_dict_lists_nested(v)
+        elif isinstance(v, Mapping):
+            hashable_v = tupleize_lists_nested(v)
+        elif isinstance(v, Hashable):
+            hashable_v = v
+        else:
+            raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}") from None
+
+        ret[k] = hashable_v
+
+    return AttributeDict(ret)
 
 
-@_to_tuple.register(tuple)
-def _(value: Tuple[Any, ...]) -> Any:
-    return tuple(_to_tuple(i) if isinstance(i, (list, tuple)) else i for i in value)
+def _tupleize_attrdict_lists_nested(
+    d: AttributeDict[TKey, TValue],
+) -> AttributeDict[TKey, TValue]:  # sourcery skip: merge-isinstance
+    ret = {}
+    for k, v in d.items():
+        if isinstance(v, list):
+            hashable_v = _list_to_tuple(v)
+        elif isinstance(v, tuple):
+            hashable_v = _tuple_to_tuple(v)
+        elif isinstance(v, AttributeDict):
+            hashable_v = _tupleize_attrdict_lists_nested(v)
+        elif isinstance(v, dict):
+            hashable_v = _tupleize_dict_lists_nested(v)
+        elif isinstance(v, Mapping):
+            hashable_v = tupleize_lists_nested(v)
+        elif isinstance(v, Hashable):
+            hashable_v = v
+        else:
+            raise TypeError(f"Found unhashable type '{type(v).__name__}': {v}") from None
+
+        ret[k] = hashable_v
+
+    return AttributeDict(ret)
+
+
+def _list_to_tuple(value: list[Any]) -> Any:
+    # We split up the isinstance check because we generate
+    # faster C code by calling _to_tuple with specifc types
+    return tuple(
+        (
+            _list_to_tuple(i)
+            if isinstance(i, list)
+            else _tuple_to_tuple(i) if isinstance(i, tuple) else i
+        )
+        for i in value
+    )
+
+
+def _tuple_to_tuple(value: tuple[Any, ...]) -> Any:
+    # We split up the isinstance check because we generate
+    # faster C code by calling _to_tuple with specifc types
+    return tuple(
+        (
+            _list_to_tuple(i)
+            if isinstance(i, list)
+            else _tuple_to_tuple(i) if isinstance(i, tuple) else i
+        )
+        for i in value
+    )
+
+
+import web3.datastructures
+
+# TODO: rip this out once we have faster-web3.py implemented
+web3.datastructures.tupleize_lists_nested = tupleize_lists_nested

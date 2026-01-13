@@ -12,6 +12,7 @@ __pycache__
 build/**/*.o
 build/**/*.so
 build/**/*.pyd
+build/ops.txt
 # build stuff
 build/setup.py
 # windows build stuff

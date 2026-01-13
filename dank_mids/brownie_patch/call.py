@@ -1,22 +1,9 @@
 import decimal
 from concurrent.futures.process import BrokenProcessPool
-from logging import Logger
 from pickle import PicklingError
 from types import MethodType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Dict,
-    Final,
-    List,
-    NewType,
-    Optional,
-    Sequence,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Final, NewType, TypeVar, Union
+from collections.abc import Callable, Sequence
 
 import brownie.convert.datatypes
 import brownie.convert.normalize
@@ -29,8 +16,8 @@ from brownie.convert.normalize import ABIType
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import VirtualMachineError
 from brownie.network.contract import ContractCall
-from brownie.project.compiler.solidity import SOLIDITY_ERROR_CODES
-from faster_eth_abi.exceptions import DecodingError, InsufficientDataBytes
+from brownie.exceptions import SOLIDITY_ERROR_CODES
+from eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
 from hexbytes.main import BytesLike
@@ -39,9 +26,9 @@ from web3.types import BlockIdentifier
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import exceptions
-from dank_mids._logging import getLogger
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
+from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:
     from dank_mids.brownie_patch.types import ContractMethod
@@ -52,9 +39,9 @@ APPLICATION_MODE: Final[bool] = ENVS.OPERATION_MODE.application
 
 _T = TypeVar("_T")
 TypeStr = NewType("TypeStr", str)
-TypeStrs = List[TypeStr]
-ListOrTuple = Union[List[_T], Tuple[_T, ...]]
-AbiDict = NewType("AbiDict", Dict[str, Any])
+TypeStrs = list[TypeStr]
+ListOrTuple = Union[list[_T], tuple[_T, ...]]
+AbiDict = NewType("AbiDict", dict[str, Any])
 
 
 # these compile to C constants to avoid global name lookups
@@ -76,7 +63,7 @@ _check_array: Final = brownie.convert.normalize._check_array
 _get_abi_types: Final = brownie.convert.normalize._get_abi_types
 
 
-logger: Final[Logger] = getLogger(__name__)
+logger: Final = get_c_logger(__name__)
 
 
 encode: Final = lambda self, *args: ENVS.BROWNIE_ENCODER_PROCESSES.run(__encode_input, self.abi, self.signature, *args)  # type: ignore [attr-defined]
@@ -147,9 +134,10 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
     async def coroutine(
         self: ContractCall,
         *args: Any,
-        block_identifier: Optional[BlockIdentifier] = None,
-        decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        block_identifier: BlockIdentifier | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
+        _attempt_number: int = 1,
     ) -> Any:
         if override:
             raise ValueError("Cannot use state override with `coroutine`.")
@@ -159,17 +147,34 @@ def _get_coroutine_fn(w3: DankWeb3, len_inputs: int) -> Callable[..., Any]:
                 output = await w3.eth.call({"to": self._address, "data": data}, block_identifier)
         try:
             decoded = await decode_output(self, output)
-        except InsufficientDataBytes as e:
-            raise InsufficientDataBytes(
-                {
-                    "error": f"{e} when decoding response",
-                    "method": self,
-                    "contract": self._address,
-                    "args": args,
-                    "block": block_identifier,
-                    "response": output,
-                }
-            ) from e
+        except DecodingError as e:
+            # I'm not convinced that this Exception is deterministic
+            # I also don't know for sure that it isn't
+            # We're going to retry a few times before we give up
+            if _attempt_number < 5:
+                return await self.coroutine(
+                    *args,
+                    block_identifier=block_identifier,
+                    decimals=decimals,
+                    override=override,
+                    _attempt_number=_attempt_number + 1,
+                )
+            else:
+                # We gave up.
+                if type(e) is not InsufficientDataBytes:
+                    raise
+
+                # TODO: check api for other exc types and add this context to them as well
+                raise InsufficientDataBytes(
+                    {
+                        "error": f"{e} when decoding response",
+                        "method": self,
+                        "contract": self._address,
+                        "args": args,
+                        "block": block_identifier,
+                        "response": output,
+                    }
+                ) from e
 
         return decoded if decimals is None else decoded / 10 ** Decimal(decimals)
 
@@ -232,7 +237,7 @@ async def decode_output(call: ContractCall, data: bytes) -> Any:
         if isinstance(decoded, Exception):
             raise decoded
         return decoded
-    except InsufficientDataBytes as e:
+    except DecodingError as e:
         # Add some context to the exception for the sake of the end-user.
         e.args = *e.args, call, call._address, data
         raise
@@ -249,13 +254,13 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
     return call.signature  # type: ignore [return-value, no-any-return]
 
 
-__eth_abi_encode: Final[Callable[[TypeStrs, List[Any]], bytes]] = faster_eth_abi.encode
-__eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], Tuple[Any, ...]]] = (
+__eth_abi_encode: Final[Callable[[TypeStrs, list[Any]], bytes]] = faster_eth_abi.encode
+__eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], tuple[Any, ...]]] = (
     faster_eth_abi.decode
 )
 
 
-def __encode_input(abi: AbiDict, signature: str, *args: Any) -> Union[HexStr, Exception]:
+def __encode_input(abi: AbiDict, signature: str, *args: Any) -> HexStr | Exception:
     try:
         data = format_input_but_cache_checksums(abi, args)
         types_list = get_type_strings(abi["inputs"])
@@ -317,7 +322,7 @@ def __validate_output(abi: AbiDict, hexstr: BytesLike) -> None:
 # NOTE: We do a little monkey patching to save cpu cycles on checksums
 
 
-def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> List[Any]:
+def format_input_but_cache_checksums(abi: AbiDict, inputs: ListOrTuple[Any]) -> list[Any]:
     # Format contract inputs based on ABI types
     if len(inputs) and not len(abi["inputs"]):
         raise TypeError(f"{abi['name']} requires no arguments")
@@ -343,7 +348,7 @@ brownie.network.contract.format_output = format_output_but_cache_checksums
 
 def _format_tuple_but_cache_checksums(
     abi_types: Sequence[ABIType], values: ListOrTuple[Any]
-) -> List[Any]:
+) -> list[Any]:
     result = []
     _check_array(values, len(abi_types))
     for type_, value in zip(abi_types, values):
@@ -359,7 +364,7 @@ def _format_tuple_but_cache_checksums(
     return result
 
 
-def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any]) -> List[Any]:
+def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any]) -> list[Any]:
     _check_array(values, abi_type.arrlist[-1][0] if len(abi_type.arrlist[-1]) else None)
     item_type = abi_type.item_type
     if item_type.is_array:

@@ -1,16 +1,6 @@
 from decimal import Decimal
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Generator,
-    Generic,
-    Iterable,
-    List,
-    Optional,
-    TypeVar,
-)
+from typing import Any, Generic, TypeVar
+from collections.abc import Awaitable, Callable, Generator, Iterable
 
 from a_sync import igather
 from brownie.typing import AccountsType
@@ -66,11 +56,11 @@ class _DankMethodMixin(Generic[_EVMType]):
     async def map(
         self,
         args: Iterable[Any],
-        block_identifier: Optional[int] = None,
+        block_identifier: int | None = None,
         *,
         iter_args: bool = False,
-        decimals: Optional[int] = None,
-    ) -> List[_EVMType]:
+        decimals: int | None = None,
+    ) -> list[_EVMType]:
         """
         Asynchronously call the contract method with multiple sets of arguments.
 
@@ -116,9 +106,9 @@ class _DankMethodMixin(Generic[_EVMType]):
     async def coroutine(
         self,
         *args: Any,
-        block_identifier: Optional[int] = None,
-        decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        block_identifier: int | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method with the given arguments.
@@ -148,10 +138,10 @@ class _DankMethod(_DankMethodMixin):
     def __init__(
         self,
         address: ChecksumAddress,
-        abi: Dict,
+        abi: dict,
         name: str,
-        owner: Optional[AccountsType],
-        natspec: Optional[Dict] = None,
+        owner: AccountsType | None,
+        natspec: dict | None = None,
     ) -> None:
         self._address = address
         self._abi = get_function_abi(**abi)
@@ -173,9 +163,9 @@ class _DankMethod(_DankMethodMixin):
     async def coroutine(
         self,
         *args: Any,
-        block_identifier: Optional[int] = None,
-        decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        block_identifier: int | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
     ) -> _EVMType:
         """
         Asynchronously call the contract method via dank mids and await the result.
