@@ -68,10 +68,6 @@ jobs:
       - name: Install Poetry
         if: steps.cached-poetry.outputs.cache-hit != 'true' && matrix.pyversion != '3.8'
         uses: snok/install-poetry@v1
-
-      - name: Add Poetry to PATH on Windows
-        if: runner.os == 'Windows'
-        run: echo "##[add-path]C:\Users\runneradmin\.local\bin"
         
       - name: Load cached venv
         id: cached-poetry-dependencies
@@ -83,14 +79,16 @@ jobs:
       - name: Install Dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
+        shell: bash
       
       - name: Upgrade Setuptools
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry run pip install -U "setuptools<81"
+        run: poetry run python -m pip install -U "setuptools<81"
+        shell: bash
       
       - name: Setup brownie networks
-        run: |
-          poetry run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
+        run: poetry run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
+        shell: bash
         continue-on-error: true
 
       - name: Run test suite
@@ -100,6 +98,6 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
-        run: |
-          poetry run pytest -s -v --asyncio-task-timeout=3600
+        run: poetry run pytest -s -v --asyncio-task-timeout=3600
+        shell: bash
       
