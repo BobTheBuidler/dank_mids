@@ -36,9 +36,6 @@ jobs:
           pyversion: "3.8"
         - os: macos-latest
           pyversion: "3.9"
-    defaults:
-      run:
-        shell: bash
 
     steps:
       - name: Check out repository code
@@ -82,14 +79,16 @@ jobs:
       - name: Install Dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
+        shell: bash
       
       - name: Upgrade Setuptools
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry run python -m pip install -U "setuptools<81"
+        shell: bash
       
       - name: Setup brownie networks
-        run: |
-          poetry run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
+        run: poetry run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
+        shell: bash
         continue-on-error: true
 
       - name: Run test suite
@@ -99,6 +98,6 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
-        run: |
-          poetry run pytest -s -v --asyncio-task-timeout=3600
+        run: poetry run pytest -s -v --asyncio-task-timeout=3600
+        shell: bash
       
