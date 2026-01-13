@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1430];
+extern PyObject *CPyStatics[1426];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -20,6 +20,7 @@ extern PyObject *CPyStatic__batch___globals;
 extern CPyModule *CPyModule_builtins;
 extern CPyModule *CPyModule_asyncio;
 extern CPyModule *CPyModule_typing;
+extern CPyModule *CPyModule_collections___abc;
 extern CPyModule *CPyModule_a_sync;
 extern CPyModule *CPyModule_dank_mids____requests;
 extern CPyModule *CPyModule_dank_mids____tasks__internal;
@@ -81,7 +82,6 @@ extern CPyModule *CPyModule_pathlib;
 extern CPyModule *CPyModule_dank_mids____web3___abi__internal;
 extern CPyModule *CPyModule_dank_mids____web3___abi;
 extern PyObject *CPyStatic_abi___globals;
-extern CPyModule *CPyModule_collections___abc;
 extern CPyModule *CPyModule_dataclasses;
 extern CPyModule *CPyModule_faster_eth_abi;
 extern CPyModule *CPyModule_faster_eth_abi___grammar;
