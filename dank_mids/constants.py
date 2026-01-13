@@ -1,5 +1,5 @@
 # mypy: disable-error-code="attr-defined, dict-item"
-from typing import Dict, Final
+from typing import Final
 
 import multicall.constants
 from eth_typing import BlockNumber
@@ -22,6 +22,7 @@ RETRY_ERRS: Final = {
     "execution aborted (timeout =",
     "batch limit exceeded",
     "request timed out",
+    "request timeout",
     "evm timeout",
     "evm error",
 }
@@ -53,7 +54,7 @@ except AttributeError:
 finally:
     MULTICALL3_OVERRIDE_CODE: Final = __MULTICALL3_OVERRIDE_CODE
 
-MULTICALL2_DEPLOY_BLOCKS: Final[Dict[Network, BlockNumber]] = {
+MULTICALL2_DEPLOY_BLOCKS: Final[dict[Network, BlockNumber]] = {
     Network.Mainnet: 12336033,
     Network.Fantom: 16572242,
     Network.Arbitrum: 821923,
@@ -61,7 +62,7 @@ MULTICALL2_DEPLOY_BLOCKS: Final[Dict[Network, BlockNumber]] = {
 }
 """A dictionary mapping networks to the block numbers where Multicall2 was deployed."""
 
-MULTICALL3_DEPLOY_BLOCKS: Final[Dict[Network, BlockNumber]] = {
+MULTICALL3_DEPLOY_BLOCKS: Final[dict[Network, BlockNumber]] = {
     Network.Mainnet: 14353601,
     Network.Fantom: 33001987,
     Network.Arbitrum: 7654707,

@@ -1,9 +1,10 @@
 from functools import wraps
 from types import MethodType
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from brownie import Contract
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
+
 from dank_mids.brownie_patch.call import _get_coroutine_fn, _skip_proc_pool
 from dank_mids.helpers._helpers import DankWeb3
 
@@ -23,9 +24,9 @@ def _patch_overloaded_method(call: OverloadedMethod, w3: DankWeb3) -> None:
     async def coroutine(
         self: Contract,
         *args: Any,
-        block_identifier: Optional[Union[int, str, bytes]] = None,
-        decimals: Optional[int] = None,
-        override: Optional[Dict[str, str]] = None,
+        block_identifier: int | str | bytes | None = None,
+        decimals: int | None = None,
+        override: dict[str, str] | None = None,
     ) -> Any:
         """
         Coroutine to call the overloaded contract method.

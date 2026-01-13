@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dank-mids"
-version = "4.20.183"
+version = "4.20.192"
 description = "Multicall batching middleware for asynchronous scripts using web3.py"
 authors = ["BobTheBuidler <bobthebuidlerdefi@gmail.com>"]
 homepage = "https://github.com/BobTheBuidler/dank_mids"
@@ -10,21 +10,21 @@ license = "MIT"
 readme = "README.md"
 include = [
     { path = "dank_mids/_vendor/**", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-39-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-39-darwin.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cp39-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-310-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-310-darwin.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cp310-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-311-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-311-darwin.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cp311-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-312-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-312-darwin.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cp312-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-313-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cpython-313-darwin.so", format = ["sdist", "wheel"] },
-    { path = "0bf4c1c413ed1d8eb97f__mypyc.cp313-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-39-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-39-darwin.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cp39-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-310-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-310-darwin.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cp310-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-311-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-311-darwin.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cp311-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-312-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-312-darwin.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cp312-win_amd64.pyd", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-313-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cpython-313-darwin.so", format = ["sdist", "wheel"] },
+    { path = "8a4082216e5922611c62__mypyc.cp313-win_amd64.pyd", format = ["sdist", "wheel"] },
 ]
 exclude = ["tests", "tests.*"]
 
@@ -36,12 +36,12 @@ cchecksum = ">=0.0.3,<1"
 eth-retry = ">=0.3.1,<1"
 eth-typing = ">=4.2.0"
 evmspec = ">=0.4.6,<1"
-ez-a-sync = ">=0.33.6,<1"
+ez-a-sync = ">=0.33.10,<1"
 faster-eth-abi = ">=5.2.12"
 faster-eth-utils = ">=5.3.11"
 faster-hexbytes = ">1,<2"
 multicall = ">=0.6.2,<1"
-typed-envs = ">=0.2,<0.3"
+typed-envs = ">=0.2.1,<0.3"
 web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<8"
 
 [tool.poetry.group.dev.dependencies]

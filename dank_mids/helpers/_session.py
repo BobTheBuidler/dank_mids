@@ -1,26 +1,23 @@
 import http
 from asyncio import sleep
+from collections.abc import Callable
 from enum import IntEnum
 from itertools import chain
 from random import random
-from threading import get_ident
 from time import time
-from typing import Any, Callable, Final, Tuple, final, overload
+from typing import Any, Final, cast, final
 
-from aiohttp import ClientSession, ClientTimeout, TCPConnector
-from aiohttp.client_exceptions import ClientResponseError
-from aiohttp.typedefs import DEFAULT_JSON_DECODER, JSONDecoder
-from async_lru import alru_cache
+from aiohttp import ClientError, ClientResponseError, ClientSession
+from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
-from dank_mids._logging import DEBUG, getLogger
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
-from dank_mids.helpers._codec import JSONRPCBatchResponse, RawResponse
-from dank_mids.helpers._rate_limit import limiters
-from dank_mids.types import PartialRequest
+from dank_mids.logging import DEBUG, get_c_logger
+from dank_mids.types import PartialRequest, RateLimiters, T
 
+logger: Final = get_c_logger("dank_mids.session")
 
-logger: Final = getLogger("dank_mids.session")
+limiters: RateLimiters | None = None
 
 
 # NOTE: You cannot subclass an IntEnum object so we have to do some hacky shit here.
@@ -116,24 +113,6 @@ def _get_status_enum(error: ClientResponseError) -> HTTPStatusExtended:
         raise
 
 
-@overload
-async def post(
-    endpoint: str, *args, loads: Callable[[Any], RawResponse], **kwargs
-) -> RawResponse: ...
-@overload
-async def post(
-    endpoint: str, *args, loads: Callable[[Any], JSONRPCBatchResponse], **kwargs
-) -> JSONRPCBatchResponse: ...
-async def post(endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> Any:
-    """Returns decoded json data from `endpoint`"""
-    session = await get_session()
-    return await session.post(endpoint, *args, loads=loads, **kwargs)
-
-
-async def get_session() -> "DankClientSession":
-    return await _get_session_for_thread(get_ident())
-
-
 _last_throttled_at: Final[dict[AsyncLimiter, float]] = {}
 
 
@@ -143,7 +122,14 @@ class DankClientSession(ClientSession):
     _last_rate_limited_at = 0
     _continue_requests_at = 0
 
-    async def post(self, endpoint: str, *args, loads: JSONDecoder = DEFAULT_JSON_DECODER, **kwargs) -> bytes:  # type: ignore [override]
+    async def post(
+        self,
+        endpoint: str,
+        *args: Any,
+        loads: Callable[[str], T] = DEFAULT_JSON_DECODER,
+        **kwargs: Any,
+    ) -> T:
+        # This should only be called in the HTTPRequesterThread
         if (now := time()) < self._continue_requests_at:
             await sleep(self._continue_requests_at - now)
 
@@ -161,15 +147,28 @@ class DankClientSession(ClientSession):
         elif isinstance(data, PartialRequest):
             kwargs["data"] = data.data
 
+        rate_limiters = _import_limiters() if limiters is None else limiters
+        rate_limiter = rate_limiters[endpoint]
+
         # Try the request until success or 5 failures.
         tried = 0
+        resets = 0
         while True:
             try:
-                async with limiters[endpoint]:
+                async with rate_limiter:
                     async with ClientSession.post(self, endpoint, *args, **kwargs) as response:
                         response_data = await response.json(loads=loads, content_type=None)
                         _logger_debug("received response %s", response_data)
                         return response_data
+
+            except (ConnectionResetError, ClientError):
+                if resets < 10:
+                    # Who cares, run it again!
+                    resets += 1
+                else:
+                    # Ehh this is too many, something is wrong.
+                    raise
+
             except ClientResponseError as ce:
                 status = ce.status
                 if status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
@@ -199,7 +198,7 @@ class DankClientSession(ClientSession):
 
     async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
         now = time()
-        limiter = limiters[endpoint]
+        limiter = cast(AsyncLimiter, limiters[endpoint])
         if now > _last_throttled_at.get(limiter, 0) + 10:
             current_rate = limiter._rate_per_sec
             new_rate = current_rate * 0.97
@@ -244,31 +243,11 @@ class DankClientSession(ClientSession):
             _logger_info("rate limited: retrying after %.3fs", try_after)
 
 
-@alru_cache(maxsize=None)
-async def _get_session_for_thread(thread_ident: int) -> DankClientSession:
-    """
-    This makes our ClientSession threadsafe just in case.
-    Most everything should be run in main thread though.
-    """
-    # I'm testing the value to use for limit, eventually will make an env var for this with an appropriate default
-    connector = TCPConnector(limit=0, enable_cleanup_closed=True)
-    client_timeout = ClientTimeout(  # type: ignore [arg-type, attr-defined]
-        int(ENVS.AIOHTTP_TIMEOUT)
-    )
-    return DankClientSession(
-        connector=connector,
-        headers={"content-type": "application/json"},
-        timeout=client_timeout,
-        raise_for_status=True,
-        read_bufsize=2**20,  # 1mb
-    )
-
-
 def _logger_is_enabled_for(level: int) -> bool: ...
 def _logger_warning(msg: str, *args: Any) -> None: ...
 def _logger_info(msg: str, *args: Any) -> None: ...
 def _logger_debug(msg: str, *args: Any) -> None: ...
-def _logger_log(level: int, msg: str, args: Tuple[Any, ...]) -> None: ...
+def _logger_log(level: int, msg: str, args: tuple[Any, ...]) -> None: ...
 
 
 _logger_is_enabled_for: Final = logger.isEnabledFor
@@ -276,3 +255,12 @@ _logger_warning: Final = logger.warning
 _logger_info: Final = logger.info
 _logger_debug: Final = logger.debug
 _logger_log: Final = logger._log
+
+
+def _import_limiters() -> RateLimiters:
+    # This has to go here for a circ import
+    global limiters
+    from dank_mids.helpers import _rate_limit
+
+    limiters = _rate_limit.limiters
+    return limiters

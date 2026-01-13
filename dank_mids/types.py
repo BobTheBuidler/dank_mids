@@ -1,22 +1,16 @@
 import re
+from collections.abc import Callable, Coroutine
 from functools import cached_property
-from logging import getLogger
 from time import time
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
-    Coroutine,
-    Dict,
+    DefaultDict,
     Final,
-    List,
     Literal,
     NewType,
     Optional,
-    Set,
-    Tuple,
-    Type,
     TypedDict,
     TypeVar,
     Union,
@@ -26,7 +20,7 @@ from typing import (
 import evmspec
 from dictstruct import DictStruct
 from eth_typing import ChecksumAddress
-from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
+from evmspec.data import Address, BlockNumber, ChainId, Wei, _decode_hook, uint
 from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
 from evmspec.structs.log import Log
 from faster_hexbytes import HexBytes
@@ -45,12 +39,13 @@ from dank_mids._exceptions import (
     PayloadTooLarge,
     QuiknodeRateLimitError,
 )
-from dank_mids.helpers._codec import RawResponse, decode_string, encode
+from dank_mids.helpers._codec import decode_string, encode
 from dank_mids.helpers.hashing import AttributeDict
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
+from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:
-    from dank_mids._requests import Multicall
+    from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 
 
 T = TypeVar("T")
@@ -62,7 +57,7 @@ BlockId = NewType("BlockId", str)
 BatchId = Union[int, str]
 """A type representing the identifier for a batch of operations, which can be either an integer or a string."""
 
-Multicalls = Dict[BlockId, "Multicall"]
+Multicalls = dict[BlockId, "Multicall"]
 """
 A dictionary mapping BlockId to Multicall objects.
 
@@ -70,7 +65,12 @@ See Also:
     :class:`dank_mids._requests.Multicall`: The Multicall class used in this mapping.
 """
 
-eth_callParams = TypedDict("eth_callParams", {"to": ChecksumAddress, "data": str})
+
+class eth_callParams(TypedDict):
+    to: ChecksumAddress
+    data: str
+
+
 """
 A typed dictionary representing the parameters for an eth_call.
 
@@ -78,10 +78,14 @@ See Also:
     :meth:`web3.eth.Eth.call`: Web3's method to perform a call without creating a transaction.
 """
 
-OverrideParams = TypedDict("OverrideParams", {"code": str})
+
+class OverrideParams(TypedDict):
+    code: str
+
+
 """A typed dictionary representing override parameters."""
 
-JsonrpcParams = List[Union[eth_callParams, BlockId, OverrideParams]]
+JsonrpcParams = list[Union[eth_callParams, BlockId, OverrideParams]]
 """A list of parameters for JSON-RPC calls, which should be eth_callParams, BlockId, and OverrideParams, in that order."""
 
 
@@ -89,13 +93,13 @@ JsonrpcParams = List[Union[eth_callParams, BlockId, OverrideParams]]
 AsyncMiddleware = Callable[[RPCEndpoint, Any], Coroutine[Any, Any, RPCResponse]]
 """A type alias for asynchronous middleware functions."""
 
-_list_of_stuff = List[Union[str, None, dict, list]]
+_list_of_stuff = list[Union[str, None, dict, list]]
 """A type alias for a list that can contain strings, None, dictionaries, or lists."""
 
-_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, Dict[str, Optional[Any]]]]
+_dict_of_stuff = dict[str, Union[str, None, _list_of_stuff, dict[str, Optional[Any]]]]
 """A type alias for a dictionary with string keys and values that can be strings, None, :obj:`_list_of_stuff`, or dictionaries with optional values."""
 
-_nested_dict_of_stuff = Dict[str, Union[str, None, _list_of_stuff, _dict_of_stuff]]
+_nested_dict_of_stuff = dict[str, Union[str, None, _list_of_stuff, _dict_of_stuff]]
 """A type alias for a nested dictionary structure."""
 
 
@@ -116,10 +120,10 @@ class PartialRequest(DictStruct, frozen=True, omit_defaults=True, repr_omit_defa
     method: str
     """The RPC method to be called."""
 
-    id: Union[str, int]
+    id: str | int
     """The request identifier."""
 
-    params: Optional[list] = None
+    params: list | None = None
     """The parameters for the RPC method call."""
 
     @property
@@ -154,7 +158,7 @@ _getattribute = object.__getattribute__
 class ChainstackRateLimitContext(DictStruct, frozen=True):  # type: ignore [call-arg]
     """Chainstack doesn't use status code 429 for rate limiting, they attach one of these objects to a 200 response."""
 
-    logger: ClassVar = getLogger("dank_mids.chainstack")
+    logger: ClassVar = get_c_logger("dank_mids.chainstack")
     _try_again_in: str = field(name="try_again_in")
 
     @property
@@ -192,7 +196,7 @@ class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True
     """The error message."""
 
     # evm spec
-    data: Optional[Union[str, ChainstackRateLimitContext]] = UNSET  # type: ignore [assignment]
+    data: str | ChainstackRateLimitContext | None = UNSET  # type: ignore [assignment]
     """
     Additional error data, if any.
     
@@ -203,7 +207,7 @@ class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True
     def to_dict(self, *, context: None = None) -> RPCError: ...
     @overload
     def to_dict(self, *, context: PartialRequest) -> RPCErrorWithContext: ...
-    def to_dict(self, *, context: Optional[PartialRequest] = None) -> RPCError:
+    def to_dict(self, *, context: PartialRequest | None = None) -> RPCError:
         data = _getattribute(self, "data")
         if context is None:
             if data is UNSET:
@@ -221,25 +225,25 @@ class Error(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True
 
 
 # some devving tools that will go away eventually
-_dict_responses: Set[str] = set()
-_str_responses: Set[str] = set()
+_dict_responses: set[str] = set()
+_str_responses: set[str] = set()
 
 
 _RETURN_TYPES = {
     "eth_call": HexBytes,
     "eth_chainId": ChainId,
     "eth_getCode": HexBytes,
-    "eth_getLogs": List[Log],
+    "eth_getLogs": list[Log],
     "eth_getBalance": Wei,
     "eth_blockNumber": BlockNumber,
-    "eth_accounts": List[Address],
+    "eth_accounts": list[Address],
     "eth_getBlockByNumber": Block,
     "eth_getTransactionCount": uint,
     "eth_getTransactionByHash": evmspec.Transaction,
     "eth_getTransactionReceipt": evmspec.FullTransactionReceipt,
     "erigon_getHeaderByNumber": evmspec.ErigonBlockHeader,
-    "trace_filter": List[evmspec.FilterTrace],
-    "trace_transaction": List[evmspec.FilterTrace],
+    "trace_filter": list[evmspec.FilterTrace],
+    "trace_transaction": list[evmspec.FilterTrace],
 }
 """
 A dictionary mapping RPC method names to their expected return types.
@@ -264,7 +268,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
     result: Raw = None  # type: ignore
     """The result of the RPC call, if successful."""
 
-    error: Optional[Error] = None
+    error: Error | None = None
     """The error object, if the call failed."""
 
     @cached_property
@@ -303,7 +307,7 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
     def payload_too_large(self) -> bool:
         return any(map(self.error.message.__contains__, constants.TOO_MUCH_DATA_ERRS))
 
-    def to_dict(self, method: Optional[RPCEndpoint] = None) -> RPCResponse:  # type: ignore [override]
+    def to_dict(self, method: RPCEndpoint | None = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
         data: RPCResponse = {
             key: self.decode_result(method=method, caller=self) if key == "result" else value
@@ -313,8 +317,8 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
         return data
 
     def decode_result(
-        self, method: Optional[RPCEndpoint] = None, *, caller=None
-    ) -> Union[HexBytes, Wei, uint, ChainId, BlockNumber, AttributeDict, str]:
+        self, method: RPCEndpoint | None = None, *, caller=None
+    ) -> HexBytes | Wei | uint | ChainId | BlockNumber | AttributeDict | str:
         # NOTE: These must be added to the `_RETURN_TYPES` constant above manually
         if method and (typ := _RETURN_TYPES.get(method)):
             if method in (
@@ -416,7 +420,7 @@ class Response(PartialResponse, omit_defaults=True, repr_omit_defaults=True):  #
     Inherits from PartialResponse and adds the response identifier and JSON-RPC version.
     """
 
-    id: Optional[Union[str, int]] = None
+    id: str | int | None = None
     """The response identifier, matching the request."""
 
     jsonrpc: Literal["2.0"] = "2.0"
@@ -426,9 +430,9 @@ class Response(PartialResponse, omit_defaults=True, repr_omit_defaults=True):  #
 def better_decode(
     data: Raw,
     *,
-    type: Optional[Type[T]] = None,
-    dec_hook: Optional[Callable[[Type, object], T]] = None,
-    method: Optional[str] = None,
+    type: type[T] | None = None,
+    dec_hook: Callable[[type, object], T] | None = None,
+    method: str | None = None,
 ) -> T:
     decode = _get_decode_func(type, dec_hook)  # type: ignore [arg-type]
     try:
@@ -446,7 +450,10 @@ def better_decode(
 
 @lru_cache_lite_nonull
 def _get_decode_func(
-    type: Type[T],
-    dec_hook: Callable[[Type[T], Union[str, bytes]], T],
-) -> Callable[[Union[str, bytes]], T]:
+    type: type[T],
+    dec_hook: Callable[[type[T], str | bytes], T],
+) -> Callable[[str | bytes], T]:
     return Decoder(type=type, dec_hook=dec_hook).decode
+
+
+RateLimiters = DefaultDict[str, "AsyncLimiter"]

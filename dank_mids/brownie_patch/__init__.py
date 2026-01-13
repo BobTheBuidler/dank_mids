@@ -1,14 +1,11 @@
-from contextlib import suppress
-
-from web3.eth import AsyncEth
-
-from dank_mids.helpers import setup_dank_w3_from_sync
+# sourcery skip: use-contextlib-suppress
 from dank_mids.brownie_patch.types import (
     DankContractCall,
     DankContractMethod,
     DankContractTx,
     DankOverloadedMethod,
 )
+from dank_mids.helpers import setup_dank_w3_from_sync
 
 __all__ = ["DankContractCall", "DankContractMethod", "DankContractTx", "DankOverloadedMethod"]
 
@@ -30,7 +27,7 @@ If Brownie is not installed or not connected to an RPC, this instance will not b
 """
 
 # If using dank_mids with brownie, and brownie is connected when this file executes, you will get a 'dank_w3' async web3 instance with Dank Middleware here.
-with suppress(ImportError):
+try:
     from brownie import network, web3
 
     if network.is_connected():
@@ -39,3 +36,5 @@ with suppress(ImportError):
         dank_web3 = setup_dank_w3_from_sync(web3)
         dank_eth = dank_web3.eth
         __all__ += ["Contract", "patch_contract", "dank_web3", "dank_eth"]
+except ImportError:
+    pass

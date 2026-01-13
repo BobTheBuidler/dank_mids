@@ -10,7 +10,6 @@ from web3._utils.rpc_abi import RPC
 
 from dank_mids import dank_web3, instances
 
-
 CHAI = "0x06AF07097C9Eeb7fD685c692751D5C66dB49c215"
 
 

@@ -1,16 +1,20 @@
-import logging
-from threading import Thread, current_thread
-from typing import Any, Callable, Dict, Tuple
+import threading
+from collections.abc import Callable
+from typing import Any, Final
 
 from web3 import Web3
 from web3.types import RPCEndpoint
 
 from dank_mids.controller import DankMiddlewareController
+from dank_mids.logging import get_c_logger
 from dank_mids.types import AsyncMiddleware
 
-_controllers: Dict[Tuple[Web3, Thread], DankMiddlewareController] = {}
+logger: Final = get_c_logger(__name__)
 
-logger = logging.getLogger(__name__)
+# Each web3 + thread pair gets its own controller
+_controllers: Final[dict[tuple[Web3, threading.Thread], DankMiddlewareController]] = {}
+
+_current_thread: Final = threading.current_thread
 
 
 async def dank_middleware(
@@ -55,4 +59,9 @@ async def dank_middleware(
         :class:`dank_mids.controller.DankMiddlewareController`: Manages batched JSON-RPC requests.
         :class:`~web3.AsyncWeb3`: The asynchronous Web3 class.
     """
-    return DankMiddlewareController(web3)
+    controller_key = web3, _current_thread()
+    controller = _controllers.get(controller_key)
+    if controller is None:
+        controller = DankMiddlewareController(web3)
+        _controllers[controller_key] = controller
+    return controller

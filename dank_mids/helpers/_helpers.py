@@ -1,23 +1,13 @@
+from collections.abc import Awaitable, Callable, Coroutine
 from functools import wraps
 from importlib.metadata import version
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Awaitable,
-    Callable,
-    Coroutine,
-    List,
-    Literal,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Concatenate, Literal, TypeVar, Union
 
 from faster_eth_utils.curried import apply_formatter_if, apply_formatters_to_dict, apply_key_map
 from faster_eth_utils.toolz import assoc, compose, merge
 from faster_hexbytes import HexBytes
 from multicall.utils import get_async_w3
-from typing_extensions import Concatenate, ParamSpec
+from typing_extensions import ParamSpec
 from web3 import Web3
 from web3._utils.rpc_abi import RPC
 from web3.providers import HTTPProvider
@@ -35,13 +25,13 @@ if TYPE_CHECKING:
 else:
     Batch = Union["Multicall", "JSONRPCBatch"]
 
-dank_w3s: List[Web3] = []
+dank_w3s: list[Web3] = []
 """
 A list that stores instances of :class:`Web3` objects that have been set up with Dank Middleware.
 This list is used to keep track of all Dank-enabled Web3 instances created in the application.
 """
 
-sync_w3s: List[Web3] = []
+sync_w3s: list[Web3] = []
 """
 A list that stores instances of synchronous Web3 objects.
 This list is used to keep track of all synchronous Web3 instances that have been created or modified.
@@ -205,9 +195,9 @@ async def geth_poa_middleware(
 
 
 async def async_construct_formatting_middleware(
-    request_formatters: Optional[Formatters] = None,
-    result_formatters: Optional[Formatters] = None,
-    error_formatters: Optional[Formatters] = None,
+    request_formatters: Formatters | None = None,
+    result_formatters: Formatters | None = None,
+    error_formatters: Formatters | None = None,
 ) -> AsyncMiddleware:
     async def ignore_web3_in_standard_formatters(
         _w3: "Web3",

@@ -1,4 +1,5 @@
-from typing import Any, Dict, Iterator, List, Literal, NewType, Optional, Tuple, Union, overload
+from collections.abc import Iterator
+from typing import Any, Literal, NewType, overload
 
 import brownie
 from brownie.network.contract import (
@@ -19,7 +20,6 @@ from dank_mids.brownie_patch.types import (
     _get_method_object,
 )
 from dank_mids.helpers._helpers import DankWeb3
-
 
 EventName = NewType("EventName", str)
 """A type representing the name of an event in a smart contract.
@@ -64,8 +64,8 @@ class Contract(brownie.Contract):
         cls,
         name: str,
         address: str,
-        abi: List[dict],
-        owner: Optional[AccountsType] = None,
+        abi: list[dict],
+        owner: AccountsType | None = None,
         persist: bool = True,
     ) -> "Contract":
         """
@@ -94,8 +94,8 @@ class Contract(brownie.Contract):
         cls,
         name: str,
         manifest_uri: str,
-        address: Optional[str] = None,
-        owner: Optional[AccountsType] = None,
+        address: str | None = None,
+        owner: AccountsType | None = None,
         persist: bool = True,
     ) -> "Contract":
         """
@@ -124,8 +124,8 @@ class Contract(brownie.Contract):
     def from_explorer(
         cls,
         address: str,
-        as_proxy_for: Optional[str] = None,
-        owner: Optional[AccountsType] = None,
+        as_proxy_for: str | None = None,
+        owner: AccountsType | None = None,
         silent: bool = False,
         persist: bool = True,
     ) -> "Contract":
@@ -150,10 +150,10 @@ class Contract(brownie.Contract):
         )
         return Contract(persisted.address)
 
-    topics: Dict[str, str]
+    topics: dict[str, str]
     """A dictionary mapping event names to their corresponding topics."""
 
-    signatures: Dict[Method, Signature]
+    signatures: dict[Method, Signature]
     """A dictionary mapping method names to their corresponding signatures."""
 
     @retry_etherscan
@@ -219,7 +219,7 @@ class Contract(brownie.Contract):
         Returns:
             The initialized contract method object.
         """
-        from dank_mids import web3
+        from dank_mids import web3  # noqa
 
         overloaded = list(self.__method_names__).count(name) > 1
 
@@ -230,7 +230,7 @@ class Contract(brownie.Contract):
             full_name = f"{self._name}.{name}"
             sig = build_function_signature(abi)
 
-            natspec: Dict[str, Any] = {}
+            natspec: dict[str, Any] = {}
             if self._build.get("natspec"):
                 natspec = self._build["natspec"]["methods"].get(sig, {})
 
@@ -251,14 +251,14 @@ def _is_function_abi(abi: dict) -> bool:
 
 
 @overload
-def patch_contract(contract: Contract, w3: Optional[DankWeb3] = None) -> Contract: ...
+def patch_contract(contract: Contract, w3: DankWeb3 | None = None) -> Contract: ...
 @overload
 def patch_contract(
-    contract: Union[brownie.Contract, str], w3: Optional[DankWeb3] = None
+    contract: brownie.Contract | str, w3: DankWeb3 | None = None
 ) -> brownie.Contract: ...
 def patch_contract(
-    contract: Union[Contract, brownie.Contract, str], w3: Optional[DankWeb3] = None
-) -> Union[Contract, brownie.Contract]:
+    contract: Contract | brownie.Contract | str, w3: DankWeb3 | None = None
+) -> Contract | brownie.Contract:
     """
     Patch a contract with async and call batching functionalities.
 

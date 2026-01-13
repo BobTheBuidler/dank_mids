@@ -1,18 +1,17 @@
 # mypy: disable-error-code="attr-defined, has-type, dict-item"
 from logging import StreamHandler
-from typing import Dict, Final
+from typing import Final
 
 import a_sync
 import typed_envs
 from a_sync import AsyncProcessPoolExecutor
 
 from dank_mids import _envs
-from dank_mids._logging import INFO, getLogger
 from dank_mids._mode import OperationMode
+from dank_mids.logging import INFO, get_c_logger
 from dank_mids.semaphores import BlockSemaphore
 
-
-logger: Final = getLogger("dank_mids.envs")
+logger: Final = get_c_logger("dank_mids.envs")
 
 if not typed_envs.logger.disabled:
     if not logger.hasHandlers():
@@ -122,19 +121,6 @@ See Also:
     :class:`a_sync.AsyncProcessPoolExecutor`: The executor class used for managing asynchronous processes.
 """
 
-MULTICALL_DECODER_PROCESSES = _envs.create_env(
-    "MULTICALL_DECODER_PROCESSES",
-    AsyncProcessPoolExecutor,
-    default=0 if OPERATION_MODE.infura else 1,
-    verbose=not OPERATION_MODE.infura,
-)
-"""
-Process pool for Multicall decoding operations.
-
-See Also:
-    :class:`a_sync.AsyncProcessPoolExecutor`: The executor class used for managing asynchronous processes.
-"""
-
 COLLECTION_FACTOR: Final = _envs.create_env(
     "COLLECTION_FACTOR",
     int,
@@ -161,7 +147,7 @@ COLLECT_STATS: Final = _envs.create_env(
 STUCK_CALL_TIMEOUT: Final = _envs.create_env("STUCK_CALL_TIMEOUT", int, default=60 * 2)
 
 # Method-specific Semaphores
-method_semaphores: Final[Dict[str, a_sync.Semaphore]] = {
+method_semaphores: Final[dict[str, a_sync.Semaphore]] = {
     "eth_call": _envs.create_env(
         "ETH_CALL_SEMAPHORE",
         BlockSemaphore,
@@ -187,7 +173,6 @@ if not OPERATION_MODE.infura:
 
 if OPERATION_MODE.infura:
     for process_pool in {
-        MULTICALL_DECODER_PROCESSES,
         BROWNIE_DECODER_PROCESSES,
         BROWNIE_ENCODER_PROCESSES,
     }:

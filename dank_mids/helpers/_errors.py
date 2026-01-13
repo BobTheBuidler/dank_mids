@@ -4,37 +4,35 @@ from typing import TYPE_CHECKING, Any, Final
 from web3.exceptions import ContractLogicError
 
 from dank_mids._exceptions import BadResponse
-from dank_mids._logging import DEBUG, getLogger
 from dank_mids.constants import REVERT_SELECTORS
+from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.types import PartialResponse
 
 if TYPE_CHECKING:
     from dank_mids._requests import _Batch
 
 
-error_logger: Final = getLogger("dank_mids.errors")
+error_logger: Final = get_c_logger("dank_mids.errors")
 error_logger_debug: Final = error_logger.debug
-error_logger_log: Final = error_logger._log
 
 
 def error_logger_log_debug(msg: str, *args: Any) -> None:
-    error_logger_log(DEBUG, msg, args)
+    error_logger._log(DEBUG, msg, args)
 
 
-revert_logger: Final = error_logger.getChild("reverts")
-revert_logger_log: Final = revert_logger._log
+revert_logger: Final = get_c_logger(f"{error_logger.name}.reverts")
 
 
 def revert_logger_log_debug(msg: str, *args: Any) -> None:
-    revert_logger_log(DEBUG, msg, args)
+    revert_logger._log(DEBUG, msg, args)
 
 
-timeout_logger: Final = error_logger.getChild("timeouts")
+timeout_logger: Final = get_c_logger(f"{error_logger.name}.timeouts")
 timeout_logger_debug: Final = timeout_logger.debug
 timeout_logger_warning: Final = timeout_logger.warning
 
 
-gas_logger: Final = error_logger.getChild("gas")
+gas_logger: Final = get_c_logger(f"{error_logger.name}.gas")
 gas_logger_debug: Final = gas_logger.debug
 
 INDIVIDUAL_CALL_REVERT_STRINGS: Final = {

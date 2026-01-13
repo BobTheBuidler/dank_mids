@@ -7,37 +7,38 @@ from asyncio import (
     get_running_loop,
     sleep,
 )
+from collections.abc import Generator
 from time import time
-from typing import TYPE_CHECKING, Any, Generator, Optional, Union
+from typing import TYPE_CHECKING, Any, Final, final
 from weakref import ProxyType, proxy
 
-from web3.types import RPCResponse
-
-from dank_mids._logging import DEBUG, getLogger
 from dank_mids.helpers._errors import error_logger_debug
+from dank_mids.logging import DEBUG, get_c_logger
+from dank_mids.types import T
 
 if TYPE_CHECKING:
     from dank_mids._requests import _RequestBase, _Response
 
 
-logger = getLogger("dank_mids.future")
+logger: Final = get_c_logger("dank_mids.future")
 
-_logger_is_enabled_for = logger.isEnabledFor
-_logger_log = logger._log
+_logger_is_enabled_for: Final = logger.isEnabledFor
+_logger_log: Final = logger._log
 
-_future_init = Future.__init__
-_future_await = Future.__await__
-_future_set_result = Future.set_result
-_future_set_exc = Future.set_exception
+_future_init: Final = Future.__init__
+_future_await: Final = Future.__await__
+_future_set_result: Final = Future.set_result
+_future_set_exc: Final = Future.set_exception
 
 
-class DebuggableFuture(Future):
+@final
+class DebuggableFuture(Future[T]):
     # default values
     _debug_logs_enabled: bool = False
-    __debug_daemon_task: Optional["Task[None]"] = None
+    __debug_daemon_task: Task[None] | None = None
 
     # type hints
-    _result: Optional[RPCResponse]
+    _result: T | None
 
     def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:
         _future_init(self, loop=loop)
@@ -45,7 +46,7 @@ class DebuggableFuture(Future):
             self._debug_logs_enabled = True
             self._owner: ProxyType["_RequestBase[_Response]"] = proxy(owner)
 
-    def __await__(self) -> Generator[Any, None, RPCResponse]:
+    def __await__(self) -> Generator[Any, None, T]:
         if self._debug_logs_enabled and self.__debug_daemon_task is None:
             self.__debug_daemon_task = create_task(
                 coro=self.__debug_daemon(),
@@ -53,7 +54,7 @@ class DebuggableFuture(Future):
             )
         return _future_await(self)
 
-    def set_result(self, value: RPCResponse) -> None:
+    def set_result(self, value: T) -> None:
         # sourcery skip: merge-duplicate-blocks, remove-redundant-if
         if self._loop is get_running_loop():
             try:
@@ -89,7 +90,7 @@ class DebuggableFuture(Future):
         else:
             raise NotImplementedError(f"{self._state} is not a valid state")
 
-    def set_exception(self, exc: Union[type, BaseException]) -> None:
+    def set_exception(self, exc: type | BaseException) -> None:
         if self._loop is get_running_loop():
             try:
                 _future_set_exc(self, exc)

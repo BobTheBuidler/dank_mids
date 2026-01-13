@@ -2,9 +2,10 @@
 from decimal import Decimal
 
 import brownie
-import dank_mids
 import pytest
 from a_sync import igather
+
+import dank_mids
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.contract import retry_etherscan
 

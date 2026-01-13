@@ -21,10 +21,10 @@ See Also:
 
 # Import your imports, including `asyncio` and `dank_mids`.
 import asyncio
-from typing import List
+
+from web3.types import Timestamp
 
 import dank_mids
-from web3.types import Timestamp
 
 # For the purpose of this example, we will define the Uniswap pools we want to get data from
 # and the blocks at which we wish to fetch data.
@@ -98,7 +98,7 @@ async def _main() -> None:
 
 
 # Functions that we used to get the data from the pools and blocks:
-async def get_balances_for_blocks(pool: dank_mids.Contract, blocks: List[int]):
+async def get_balances_for_blocks(pool: dank_mids.Contract, blocks: list[int]):
     """Fetch balances for a pool across multiple blocks.
 
     This function asynchronously fetches balance (reserve) information for the
