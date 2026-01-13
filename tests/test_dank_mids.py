@@ -30,7 +30,7 @@ MULTIBLOCK_WORK = (call_chai(i, height - i) for i in range(1000))
 
 
 @pytest.mark.asyncio_cooperative
-async def test_dank_middleware():
+async def test_dank_middleware() -> None:
     await igather(BIG_WORK)
     controller = instances[chain.id][0]
     cid = controller.call_uid.latest
@@ -56,7 +56,7 @@ async def test_dank_middleware():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_bad_hex_handling():
+async def test_bad_hex_handling() -> None:
     """
     Test the handling of bad hex values in contract calls.
 
@@ -68,7 +68,7 @@ async def test_bad_hex_handling():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_json_batch():
+async def test_json_batch() -> None:
     """
     Test the JSON batch processing functionality.
 
@@ -78,7 +78,7 @@ async def test_json_batch():
     await igather(MULTIBLOCK_WORK)
 
 
-def test_next_cid():
+def test_next_cid() -> None:
     """
     Test the generation of the next call ID.
 
@@ -89,7 +89,7 @@ def test_next_cid():
     assert controller.call_uid.next + 1 == controller.call_uid.next
 
 
-def test_next_mid():
+def test_next_mid() -> None:
     """
     Test the generation of the next request ID.
 
@@ -100,7 +100,7 @@ def test_next_mid():
     assert controller.request_uid.next + 1 == controller.request_uid.next
 
 
-def test_next_bid():
+def test_next_bid() -> None:
     """
     Test the generation of the next multicall ID.
 
@@ -112,7 +112,7 @@ def test_next_bid():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_other_methods():
+async def test_other_methods() -> None:
     """
     Test various other RPC methods.
     """
@@ -127,7 +127,7 @@ async def test_other_methods():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_AttributeDict():
+async def test_AttributeDict() -> None:
     """
     Test the AttributeDict functionality.
 
@@ -139,13 +139,13 @@ async def test_AttributeDict():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_string_block():
+async def test_string_block() -> None:
     with pytest.raises(TypeError):
         await Call(CHAI, "totalSupply()(uint)", block_id="14000000")
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransaction_1559():
+async def test_eth_getTransaction_1559() -> None:
     tx_1559 = await dank_web3.eth.get_transaction(
         "0x1540ea6e443ff81570624fe19220507a1d949464b5a012ac110c7e91205c456a"
     )
@@ -153,7 +153,7 @@ async def test_eth_getTransaction_1559():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransaction_2930():
+async def test_eth_getTransaction_2930() -> None:
     tx_2930 = await dank_web3.eth.get_transaction(
         "0x3ea6b560065dabfac5218c64fd076ef62ff9d6c08817101e7dbece460eb2c8a5"
     )
@@ -161,7 +161,7 @@ async def test_eth_getTransaction_2930():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransaction_7702():
+async def test_eth_getTransaction_7702() -> None:
     tx_7702 = await dank_web3.eth.get_transaction(
         "0xad5cdaffa0901bf3abb63c7bfa0307035aeeb94a2ff27d01d6dc33c3d1b40c8a"
     )
@@ -169,60 +169,60 @@ async def test_eth_getTransaction_7702():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getBalance_no_block():
+async def test_eth_getBalance_no_block() -> None:
     assert isinstance(await dank_web3.eth.get_balance(CHAI), int)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getBalance_int_block():
+async def test_eth_getBalance_int_block() -> None:
     assert isinstance(await dank_web3.eth.get_balance(CHAI, 20_000_000), int)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getBalance_hex_block():
+async def test_eth_getBalance_hex_block() -> None:
     assert isinstance(await dank_web3.eth.get_balance(CHAI, hex(20_000_000)), int)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getBalance_latest():
+async def test_eth_getBalance_latest() -> None:
     assert isinstance(await dank_web3.eth.get_balance(CHAI, "latest"), int)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransactionCount_no_block():
+async def test_eth_getTransactionCount_no_block() -> None:
     assert isinstance(await dank_web3.eth.get_transaction_count(CHAI), int)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransactionCount_int_block():
+async def test_eth_getTransactionCount_int_block() -> None:
     assert isinstance(await dank_web3.eth.get_transaction_count(CHAI, 20_000_000), int)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransactionCount_hex_block():
+async def test_eth_getTransactionCount_hex_block() -> None:
     assert isinstance(await dank_web3.eth.get_transaction_count(CHAI, hex(20_000_000)), int)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getTransactionCount_latest():
+async def test_eth_getTransactionCount_latest() -> None:
     assert isinstance(await dank_web3.eth.get_transaction_count(CHAI, "latest"), int)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getCode_no_block():
+async def test_eth_getCode_no_block() -> None:
     assert isinstance(await dank_web3.eth.get_code(CHAI), HexBytes)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getCode_int_block():
+async def test_eth_getCode_int_block() -> None:
     assert isinstance(await dank_web3.eth.get_code(CHAI, 20_000_000), HexBytes)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getCode_hex_block():
+async def test_eth_getCode_hex_block() -> None:
     assert isinstance(await dank_web3.eth.get_code(CHAI, hex(20_000_000)), HexBytes)
 
 
 @pytest.mark.asyncio_cooperative
-async def test_eth_getCode_latest():
+async def test_eth_getCode_latest() -> None:
     assert isinstance(await dank_web3.eth.get_code(CHAI, "latest"), HexBytes)

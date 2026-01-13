@@ -17,7 +17,7 @@ get_dank_contract = dank_mids.Contract.from_explorer
 
 
 @pytest.mark.asyncio_cooperative
-async def test_patch_call():
+async def test_patch_call() -> None:
     # must use from_explorer for gh testing workflow
     weth = get_contract("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2")
     _patch_call(weth.totalSupply, dank_mids.web3)
@@ -28,7 +28,7 @@ async def test_patch_call():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_gather():
+async def test_gather() -> None:
     # must use from_explorer for gh testing workflow
     weth = get_contract("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2")
     _patch_call(weth.totalSupply, dank_mids.web3)
@@ -40,7 +40,7 @@ async def test_gather():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_patch_contract_call():
+async def test_patch_contract_call() -> None:
     # specify w3
     weth = dank_mids.patch_contract(
         get_contract("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"), dank_mids.web3
@@ -55,7 +55,7 @@ async def test_patch_contract_call():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_patch_contract_tx():
+async def test_patch_contract_tx() -> None:
     # must use from_explorer for gh testing workflow
     # dont specify w3
     uni_v3_quoter = dank_mids.patch_contract(
@@ -79,7 +79,7 @@ async def test_patch_contract_tx():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_dank_contract_call():
+async def test_dank_contract_call() -> None:
     dank_weth = get_dank_contract("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2")
     assert isinstance(dank_weth, dank_mids.Contract)
     assert isinstance(dank_weth.totalSupply, dank_mids.DankContractCall)
@@ -95,7 +95,7 @@ async def test_dank_contract_call():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_dank_contract_tx():
+async def test_dank_contract_tx() -> None:
     # ContractTx
     # must use from_explorer for gh testing workflow
     uni_v3_quoter = get_dank_contract("0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6")
@@ -116,7 +116,7 @@ async def test_dank_contract_tx():
     ) == Decimal("31.69438072")
 
 
-def test_call_setup_twice_on_same_web3():
+def test_call_setup_twice_on_same_web3() -> None:
     w3_a = dank_mids.setup_dank_w3_from_sync(brownie.web3)
     w3_a.test = True
     w3_b = dank_mids.setup_dank_w3_from_sync(brownie.web3)
@@ -124,7 +124,7 @@ def test_call_setup_twice_on_same_web3():
 
 
 @pytest.mark.asyncio_cooperative
-async def test_dank_overloaded_method():
+async def test_dank_overloaded_method() -> None:
     curve_factory = dank_mids.Contract.from_abi(
         "Vyper_contract", "0xF98B45FA17DE75FB1aD0e7aFD971b0ca00e379fC", abi=_CURVE_FACTORY_ABI
     )
