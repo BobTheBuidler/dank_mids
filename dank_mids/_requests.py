@@ -1,10 +1,19 @@
-from asyncio import (Future, Task, TimeoutError, as_completed, create_task,
-                     current_task, get_running_loop, sleep, wait, wait_for)
+from asyncio import (
+    Future,
+    Task,
+    TimeoutError,
+    as_completed,
+    create_task,
+    current_task,
+    get_running_loop,
+    sleep,
+    wait,
+    wait_for,
+)
 from collections import defaultdict
 from collections.abc import Callable, Generator, Iterable, Iterator, Sequence
 from itertools import chain, filterfalse, groupby
-from typing import (TYPE_CHECKING, Any, DefaultDict, Final, Generic, Optional,
-                    TypeVar, Union, final)
+from typing import TYPE_CHECKING, Any, DefaultDict, Final, Generic, Optional, TypeVar, Union, final
 from weakref import ProxyType
 from weakref import proxy as weak_proxy
 
@@ -27,28 +36,51 @@ from web3.types import RPCResponse
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import _debugging, constants, stats
 from dank_mids._demo_mode import demo_logger
-from dank_mids._exceptions import (BadResponse, BatchResponseSortError,
-                                   ChainstackRateLimitError,
-                                   DankMidsInternalError, EmptyBatch,
-                                   ExceedsMaxBatchSize, ExecutionReverted,
-                                   OutOfGas, PayloadTooLarge, RateLimitError,
-                                   internal_err_types)
+from dank_mids._exceptions import (
+    BadResponse,
+    BatchResponseSortError,
+    ChainstackRateLimitError,
+    DankMidsInternalError,
+    EmptyBatch,
+    ExceedsMaxBatchSize,
+    ExecutionReverted,
+    OutOfGas,
+    PayloadTooLarge,
+    RateLimitError,
+    internal_err_types,
+)
 from dank_mids._nocompile import try_for_result, try_for_result_quick
-from dank_mids._tasks import (BATCH_TASKS, TIMEOUT_SECONDS_BIG,
-                              TIMEOUT_SECONDS_SMALL, create_batch_task, shield)
+from dank_mids._tasks import (
+    BATCH_TASKS,
+    TIMEOUT_SECONDS_BIG,
+    TIMEOUT_SECONDS_SMALL,
+    create_batch_task,
+    shield,
+)
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers import DebuggableFuture, _codec, batch_size, gatherish
-from dank_mids.helpers._codec import (JSONRPCBatchResponse, MulticallChunk,
-                                      RawResponse, mcall_decode, mcall_encode)
-from dank_mids.helpers._errors import (INDIVIDUAL_CALL_REVERT_STRINGS,
-                                       error_logger, error_logger_debug,
-                                       error_logger_log_debug,
-                                       gas_logger_debug, is_call_revert,
-                                       is_revert_bytes, log_internal_error,
-                                       needs_full_request_spec, revert_logger,
-                                       revert_logger_log_debug,
-                                       timeout_logger_debug,
-                                       timeout_logger_warning)
+from dank_mids.helpers._codec import (
+    JSONRPCBatchResponse,
+    MulticallChunk,
+    RawResponse,
+    mcall_decode,
+    mcall_encode,
+)
+from dank_mids.helpers._errors import (
+    INDIVIDUAL_CALL_REVERT_STRINGS,
+    error_logger,
+    error_logger_debug,
+    error_logger_log_debug,
+    gas_logger_debug,
+    is_call_revert,
+    is_revert_bytes,
+    log_internal_error,
+    needs_full_request_spec,
+    revert_logger,
+    revert_logger_log_debug,
+    timeout_logger_debug,
+    timeout_logger_warning,
+)
 from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._rate_limit import rate_limit_inactive
@@ -58,8 +90,7 @@ from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
 from dank_mids.lock import AlertingRLock, Lock
 from dank_mids.logging import DEBUG, get_c_logger
-from dank_mids.types import (BatchId, BlockId, JsonrpcParams, PartialRequest,
-                             Request, Response)
+from dank_mids.types import BatchId, BlockId, JsonrpcParams, PartialRequest, Request, Response
 
 if TYPE_CHECKING:
     from dank_mids._batch import DankBatch
