@@ -2,7 +2,6 @@ from typing import Final, Literal
 
 from dank_mids.logging import get_c_logger
 
-
 batch_size_logger: Final = get_c_logger("dank_mids.batch_size")
 
 

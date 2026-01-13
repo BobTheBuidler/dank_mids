@@ -9,7 +9,6 @@ from typing import Final
 from dank_mids._tasks import TIMEOUT_SECONDS_BIG, TIMEOUT_SECONDS_SMALL, shield
 from dank_mids.types import T
 
-
 CancelledError: Final = asyncio.CancelledError
 current_task: Final = asyncio.current_task
 wait_for: Final = asyncio.wait_for

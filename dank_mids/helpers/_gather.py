@@ -1,11 +1,10 @@
 import asyncio
-from typing import Any, Final, TypeVar
 from collections.abc import Coroutine, Iterable
+from typing import Any, Final, TypeVar
 
 import a_sync.asyncio
 
 from dank_mids.logging import get_c_logger
-
 
 __T = TypeVar("__T")
 

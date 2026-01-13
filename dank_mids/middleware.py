@@ -1,6 +1,6 @@
 import threading
-from typing import Any, Final
 from collections.abc import Callable
+from typing import Any, Final
 
 from web3 import Web3
 from web3.types import RPCEndpoint
@@ -8,7 +8,6 @@ from web3.types import RPCEndpoint
 from dank_mids.controller import DankMiddlewareController
 from dank_mids.logging import get_c_logger
 from dank_mids.types import AsyncMiddleware
-
 
 logger: Final = get_c_logger(__name__)
 

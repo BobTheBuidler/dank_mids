@@ -1,5 +1,5 @@
-from typing import Any, Literal, NewType, overload
 from collections.abc import Iterator
+from typing import Any, Literal, NewType, overload
 
 import brownie
 from brownie.network.contract import (
@@ -20,7 +20,6 @@ from dank_mids.brownie_patch.types import (
     _get_method_object,
 )
 from dank_mids.helpers._helpers import DankWeb3
-
 
 EventName = NewType("EventName", str)
 """A type representing the name of an event in a smart contract.

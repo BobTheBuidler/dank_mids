@@ -29,8 +29,9 @@ from eth_utils.toolz import concat
 from faster_hexbytes import HexBytes
 from requests.exceptions import ReadTimeout
 from web3.exceptions import ContractLogicError
-from web3.types import RPCEndpoint, RPCResponse
+from web3.types import RPCEndpoint
 from web3.types import RPCError as _RPCError
+from web3.types import RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import _debugging, constants, stats
@@ -85,18 +86,11 @@ from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._requester import _requester
 from dank_mids.helpers._weaklist import WeakList
-from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
 from dank_mids.lock import AlertingRLock, Lock
-from dank_mids.types import (
-    BatchId,
-    BlockId,
-    JsonrpcParams,
-    PartialRequest,
-    Request,
-    Response,
-)
+from dank_mids.logging import DEBUG, get_c_logger
+from dank_mids.types import BatchId, BlockId, JsonrpcParams, PartialRequest, Request, Response
 
 if TYPE_CHECKING:
     from dank_mids._batch import DankBatch

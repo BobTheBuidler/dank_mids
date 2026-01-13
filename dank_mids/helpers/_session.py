@@ -1,11 +1,11 @@
 import http
 from asyncio import sleep
+from collections.abc import Callable
 from enum import IntEnum
 from itertools import chain
 from random import random
 from time import time
 from typing import Any, Final, cast, final
-from collections.abc import Callable
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
 from aiohttp.typedefs import DEFAULT_JSON_DECODER
@@ -14,7 +14,6 @@ from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.types import PartialRequest, RateLimiters, T
-
 
 logger: Final = get_c_logger("dank_mids.session")
 

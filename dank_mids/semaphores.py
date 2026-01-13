@@ -7,7 +7,6 @@ from a_sync.primitives.locks.prio_semaphore import (
 )
 from eth_typing import HexStr
 
-
 _TOP_PRIORITY: Final = -1
 
 

@@ -1,9 +1,8 @@
+from collections.abc import Callable
 from functools import wraps
 from typing import TypeVar
-from collections.abc import Callable
 
 from typing_extensions import ParamSpec
-
 
 __P = ParamSpec("__P")
 __T = TypeVar("__T")

@@ -1,5 +1,5 @@
-from typing import Any, Final, TypeVar
 from collections.abc import Callable, Iterator, Sequence
+from typing import Any, Final, TypeVar
 
 from eth_typing import TypeStr
 from faster_eth_utils.curried import apply_formatter_at_index  # type: ignore [attr-defined]
@@ -14,9 +14,7 @@ from web3._utils.method_formatters import (
 from web3._utils.rpc_abi import RPC_ABIS, apply_abi_formatters_to_dict
 from web3.types import Formatters, RPCEndpoint, RPCResponse
 
-
 from dank_mids._web3.abi import get_formatter
-
 
 _T = TypeVar("_T")
 

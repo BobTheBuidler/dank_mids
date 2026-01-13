@@ -1,22 +1,12 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AnyStr,
-    Final,
-    Literal,
-    TypeVar,
-    Union,
-    final,
-    overload,
-)
 from collections.abc import Callable, Iterable, Mapping
+from typing import TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeVar, Union, final, overload
 
 import faster_hexbytes
 import msgspec
 from eth_typing import ChecksumAddress, HexStr
+from evmspec.data import Address
 from faster_eth_abi import decoding
 from faster_eth_abi.abi import default_codec
-from evmspec.data import Address
 from msgspec.json import Decoder, Encoder
 
 if TYPE_CHECKING:

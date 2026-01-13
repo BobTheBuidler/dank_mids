@@ -1,6 +1,6 @@
 import re
-from typing import TYPE_CHECKING, Final, Union, final
 from collections.abc import Sequence
+from typing import TYPE_CHECKING, Final, Union, final
 
 from aiohttp.client_exceptions import ClientResponseError
 

@@ -1,4 +1,5 @@
 import re
+from collections.abc import Callable, Coroutine
 from functools import cached_property
 from time import time
 from typing import (
@@ -15,12 +16,11 @@ from typing import (
     Union,
     overload,
 )
-from collections.abc import Callable, Coroutine
 
 import evmspec
 from dictstruct import DictStruct
 from eth_typing import ChecksumAddress
-from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
+from evmspec.data import Address, BlockNumber, ChainId, Wei, _decode_hook, uint
 from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
 from evmspec.structs.log import Log
 from faster_hexbytes import HexBytes

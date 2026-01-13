@@ -11,7 +11,6 @@ from dank_mids._mode import OperationMode
 from dank_mids.logging import INFO, get_c_logger
 from dank_mids.semaphores import BlockSemaphore
 
-
 logger: Final = get_c_logger("dank_mids.envs")
 
 if not typed_envs.logger.disabled:

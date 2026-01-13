@@ -8,7 +8,6 @@ from contextlib import contextmanager
 from types import FrameType
 from typing import Any, Final, cast
 
-
 Level = int
 CallerInfo = tuple[str, int, str, str | None]
 
