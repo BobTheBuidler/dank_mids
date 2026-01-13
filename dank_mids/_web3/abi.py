@@ -1,12 +1,11 @@
 import collections.abc
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Final, TypeVar, final
-from collections.abc import Callable
 
 from eth_typing import TypeStr
 from faster_eth_abi import grammar
 from faster_eth_abi.grammar import ABIType, TupleType
-
 
 _T = TypeVar("_T")
 

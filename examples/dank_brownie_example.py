@@ -22,8 +22,9 @@ See Also:
 # Import your imports, including `asyncio` and `dank_mids`.
 import asyncio
 
-import dank_mids
 from web3.types import Timestamp
+
+import dank_mids
 
 # For the purpose of this example, we will define the Uniswap pools we want to get data from
 # and the blocks at which we wish to fetch data.

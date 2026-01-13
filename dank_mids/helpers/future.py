@@ -7,9 +7,9 @@ from asyncio import (
     get_running_loop,
     sleep,
 )
+from collections.abc import Generator
 from time import time
 from typing import TYPE_CHECKING, Any, Final, final
-from collections.abc import Generator
 from weakref import ProxyType, proxy
 
 from dank_mids.helpers._errors import error_logger_debug

@@ -5,6 +5,7 @@ from typing import DefaultDict, Final
 
 import a_sync
 import a_sync.asyncio
+
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._tasks import shield
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
@@ -12,7 +13,6 @@ from dank_mids.helpers._requester import _requester
 from dank_mids.lock import Lock
 from dank_mids.logging import get_c_logger
 from dank_mids.types import RateLimiters
-
 
 TASKS: Final[set[asyncio.Task[None]]] = set()
 

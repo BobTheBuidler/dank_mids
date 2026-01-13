@@ -2,7 +2,6 @@ from typing import Final
 
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 
-
 BYPASS_METHODS: Final = "eth_blockNumber", "eth_getLogs", "trace_", "debug_"
 """
 A tuple of method names that should bypass batching.

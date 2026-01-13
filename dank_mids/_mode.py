@@ -1,7 +1,5 @@
 from a_sync.functools import cached_property_unsafe as cached_property
-
 from typing_extensions import Self
-
 
 MODES = "default", "application", "infura"
 

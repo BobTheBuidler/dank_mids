@@ -1,13 +1,12 @@
 import asyncio
-from typing import Any, Final
 from collections.abc import Awaitable
+from typing import Any, Final
 
 import a_sync
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.logging import get_c_logger
 from dank_mids.types import T
-
 
 TIMEOUT_SECONDS_SMALL: Final = 30.0
 TIMEOUT_SECONDS_BIG: Final = float(ENVS.STUCK_CALL_TIMEOUT)  # type: ignore [arg-type]

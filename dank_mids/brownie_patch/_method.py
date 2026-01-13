@@ -1,6 +1,6 @@
+from collections.abc import Awaitable, Callable, Generator, Iterable
 from decimal import Decimal
 from typing import Any, Generic, TypeVar
-from collections.abc import Awaitable, Callable, Generator, Iterable
 
 from a_sync import igather
 from brownie.typing import AccountsType
@@ -10,7 +10,6 @@ from faster_hexbytes.main import BytesLike
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.brownie_patch import call
 from dank_mids.brownie_patch._abi import FunctionABI
-
 
 _EVMType = TypeVar("_EVMType")
 

@@ -1,8 +1,8 @@
 import asyncio
 import atexit
 import threading
-from typing import Any, Final, final
 from collections.abc import Callable
+from typing import Any, Final, final
 
 import a_sync
 from aiohttp import ClientTimeout, TCPConnector
@@ -11,7 +11,6 @@ from aiohttp.typedefs import DEFAULT_JSON_DECODER
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.helpers._session import DankClientSession
 from dank_mids.types import T
-
 
 get_running_loop: Final = asyncio.get_running_loop
 
