@@ -1,5 +1,12 @@
-from asyncio import (AbstractEventLoop, Future, InvalidStateError, Task,
-                     create_task, get_running_loop, sleep)
+from asyncio import (
+    AbstractEventLoop,
+    Future,
+    InvalidStateError,
+    Task,
+    create_task,
+    get_running_loop,
+    sleep,
+)
 from collections.abc import Generator
 from time import time
 from typing import TYPE_CHECKING, Any, Final, final

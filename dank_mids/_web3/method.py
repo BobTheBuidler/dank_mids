@@ -7,9 +7,11 @@ from web3.eth import BaseEth
 from web3.method import Method, TFunc, default_root_munger
 from web3.types import BlockIdentifier, RPCEndpoint
 
-from dank_mids._web3.formatters import (_get_response_formatters,
-                                        _response_formatters,
-                                        get_request_formatters)
+from dank_mids._web3.formatters import (
+    _get_response_formatters,
+    _response_formatters,
+    get_request_formatters,
+)
 
 WEB3_MAJOR_VERSION = int(version("web3").split(".")[0])
 
