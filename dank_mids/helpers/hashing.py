@@ -1,5 +1,4 @@
-from collections.abc import (Hashable, ItemsView, Iterator, KeysView, Mapping,
-                             Sequence, ValuesView)
+from collections.abc import Hashable, ItemsView, Iterator, KeysView, Mapping, Sequence, ValuesView
 from typing import Any, Final, Generic, TypeVar, cast, final
 
 from mypy_extensions import mypyc_attr
