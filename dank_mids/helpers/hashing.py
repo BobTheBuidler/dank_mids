@@ -1,9 +1,8 @@
-from collections.abc import Hashable
+from collections.abc import (Hashable, ItemsView, Iterator, KeysView, Mapping,
+                             Sequence, ValuesView)
 from typing import Any, Final, Generic, TypeVar, cast, final
-from collections.abc import ItemsView, Iterator, KeysView, Mapping, Sequence, ValuesView
 
 from mypy_extensions import mypyc_attr
-
 
 TKey = TypeVar("TKey", bound=Hashable)
 TValue = TypeVar("TValue")

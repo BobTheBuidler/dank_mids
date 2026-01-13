@@ -1,27 +1,16 @@
 import re
+from collections.abc import Callable, Coroutine
 from functools import cached_property
 from time import time
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    ClassVar,
-    DefaultDict,
-    Final,
-    Literal,
-    NewType,
-    Optional,
-    TypedDict,
-    TypeVar,
-    Union,
-    overload,
-)
-from collections.abc import Callable, Coroutine
+from typing import (TYPE_CHECKING, Any, ClassVar, DefaultDict, Final, Literal,
+                    NewType, Optional, TypedDict, TypeVar, Union, overload)
 
 import evmspec
 from dictstruct import DictStruct
 from eth_typing import ChecksumAddress
-from evmspec.data import Address, BlockNumber, ChainId, Wei, uint, _decode_hook
-from evmspec.structs.block import BaseBlock, Block, MinedBlock, ShanghaiCapellaBlock
+from evmspec.data import Address, BlockNumber, ChainId, Wei, _decode_hook, uint
+from evmspec.structs.block import (BaseBlock, Block, MinedBlock,
+                                   ShanghaiCapellaBlock)
 from evmspec.structs.log import Log
 from faster_hexbytes import HexBytes
 from msgspec import UNSET, Raw, ValidationError, field
@@ -30,15 +19,10 @@ from msgspec.json import decode as json_decode
 from web3.types import RPCEndpoint, RPCError, RPCResponse
 
 from dank_mids import constants, stats
-from dank_mids._exceptions import (
-    BadResponse,
-    ChainstackRateLimitError,
-    ExceedsMaxBatchSize,
-    ExecutionReverted,
-    OutOfGas,
-    PayloadTooLarge,
-    QuiknodeRateLimitError,
-)
+from dank_mids._exceptions import (BadResponse, ChainstackRateLimitError,
+                                   ExceedsMaxBatchSize, ExecutionReverted,
+                                   OutOfGas, PayloadTooLarge,
+                                   QuiknodeRateLimitError)
 from dank_mids.helpers._codec import decode_string, encode
 from dank_mids.helpers.hashing import AttributeDict
 from dank_mids.helpers.lru_cache import lru_cache_lite_nonull

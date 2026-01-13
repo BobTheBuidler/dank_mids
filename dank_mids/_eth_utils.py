@@ -10,7 +10,6 @@ from typing import Any, AnyStr, Final
 
 from eth_typing import HexStr
 
-
 hexlify: Final = binascii.hexlify
 unhexlify: Final = binascii.unhexlify
 

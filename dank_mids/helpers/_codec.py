@@ -1,22 +1,13 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AnyStr,
-    Final,
-    Literal,
-    TypeVar,
-    Union,
-    final,
-    overload,
-)
 from collections.abc import Callable, Iterable, Mapping
+from typing import (TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeVar, Union,
+                    final, overload)
 
 import faster_hexbytes
 import msgspec
 from eth_typing import ChecksumAddress, HexStr
+from evmspec.data import Address
 from faster_eth_abi import decoding
 from faster_eth_abi.abi import default_codec
-from evmspec.data import Address
 from msgspec.json import Decoder, Encoder
 
 if TYPE_CHECKING:
@@ -220,7 +211,8 @@ def mcall_decode(data: "types.PartialResponse") -> list[bytes] | Exception:
 def __import_from_types() -> None:
     """This helper function is called once to import PartialResponse, Request, Response, and better_decode."""
     global PartialResponse, Request, Response, better_decode
-    from dank_mids.types import PartialResponse, Request, Response, better_decode
+    from dank_mids.types import (PartialResponse, Request, Response,
+                                 better_decode)
 
 
 def __make_decode_batch() -> None:

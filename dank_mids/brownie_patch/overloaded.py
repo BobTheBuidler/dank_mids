@@ -4,6 +4,7 @@ from typing import Any
 
 from brownie import Contract
 from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
+
 from dank_mids.brownie_patch.call import _get_coroutine_fn, _skip_proc_pool
 from dank_mids.helpers._helpers import DankWeb3
 

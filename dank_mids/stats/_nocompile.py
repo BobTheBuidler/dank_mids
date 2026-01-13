@@ -5,9 +5,8 @@ based on whether or not the user has `sentry_sdk` installed.
 Mypyc does not currently handle conditional imports like this well.
 """
 
-from typing import Any
 from collections.abc import Callable
-
+from typing import Any
 
 set_tag: Callable[[str, Any], None] | None
 """

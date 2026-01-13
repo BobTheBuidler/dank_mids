@@ -7,7 +7,6 @@ from tqdm import tqdm
 
 import dank_mids
 
-
 brownie.config["autofetch_sources"] = True
 
 

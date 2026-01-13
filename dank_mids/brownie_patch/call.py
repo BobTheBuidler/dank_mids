@@ -1,9 +1,9 @@
 import decimal
+from collections.abc import Callable, Sequence
 from concurrent.futures.process import BrokenProcessPool
 from pickle import PicklingError
 from types import MethodType
 from typing import TYPE_CHECKING, Any, Final, NewType, TypeVar, Union
-from collections.abc import Callable, Sequence
 
 import brownie.convert.datatypes
 import brownie.convert.normalize
@@ -14,9 +14,8 @@ from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
 from brownie.convert.normalize import ABIType
 from brownie.convert.utils import get_type_strings
-from brownie.exceptions import VirtualMachineError
+from brownie.exceptions import SOLIDITY_ERROR_CODES, VirtualMachineError
 from brownie.network.contract import ContractCall
-from brownie.exceptions import SOLIDITY_ERROR_CODES
 from eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
@@ -26,8 +25,8 @@ from web3.types import BlockIdentifier
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import exceptions
-from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.helpers._helpers import DankWeb3
+from dank_mids.helpers.lru_cache import lru_cache_lite_nonull
 from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:

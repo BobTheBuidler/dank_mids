@@ -23,7 +23,8 @@ from collections.abc import Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor
 from copy import deepcopy
 from time import time
-from typing import TYPE_CHECKING, Any, DefaultDict, Deque, Final, TypeVar, final
+from typing import (TYPE_CHECKING, Any, DefaultDict, Deque, Final, TypeVar,
+                    final)
 
 import msgspec
 from a_sync.asyncio import sleep0

@@ -1,7 +1,6 @@
-from typing import Any, Final, Generic, TypeVar, final
 from collections.abc import Callable, Iterable, Iterator
+from typing import Any, Final, Generic, TypeVar, final
 from weakref import ref
-
 
 _T = TypeVar("_T")
 

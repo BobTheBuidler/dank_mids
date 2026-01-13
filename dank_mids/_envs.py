@@ -5,7 +5,6 @@ from typed_envs import EnvVarFactory
 
 from dank_mids.semaphores import BlockSemaphore
 
-
 _factory: Final = EnvVarFactory("DANKMIDS")
 
 # TODO: maybe have ez-a-sync do this natively for its own classes?

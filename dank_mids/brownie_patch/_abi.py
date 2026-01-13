@@ -1,5 +1,5 @@
-from typing import Any, Final, final
 from collections.abc import Sequence
+from typing import Any, Final, final
 from weakref import WeakValueDictionary
 
 from eth_hash import auto
@@ -8,7 +8,6 @@ from mypy_extensions import mypyc_attr
 from typing_extensions import Unpack
 
 from dank_mids.helpers.hashing import make_hashable
-
 
 SingletonKey = tuple[tuple[str, Any], ...]
 

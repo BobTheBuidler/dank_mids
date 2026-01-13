@@ -1,26 +1,19 @@
-from typing import Any, Literal, NewType, overload
 from collections.abc import Iterator
+from typing import Any, Literal, NewType, overload
 
 import brownie
-from brownie.network.contract import (
-    ContractCall,
-    ContractTx,
-    OverloadedMethod,
-    build_function_signature,
-)
+from brownie.network.contract import (ContractCall, ContractTx,
+                                      OverloadedMethod,
+                                      build_function_signature)
 from brownie.typing import AccountsType
 from eth_retry import auto_retry
 
 from dank_mids.brownie_patch.call import _patch_call
 from dank_mids.brownie_patch.overloaded import _patch_overloaded_method
-from dank_mids.brownie_patch.types import (
-    ContractMethod,
-    DankContractMethod,
-    DankOverloadedMethod,
-    _get_method_object,
-)
+from dank_mids.brownie_patch.types import (ContractMethod, DankContractMethod,
+                                           DankOverloadedMethod,
+                                           _get_method_object)
 from dank_mids.helpers._helpers import DankWeb3
-
 
 EventName = NewType("EventName", str)
 """A type representing the name of an event in a smart contract.

@@ -1,7 +1,7 @@
 import abc
 import os
-from typing import Any, Final, Literal
 from collections.abc import Iterable
+from typing import Any, Final, Literal
 
 import aiofiles
 from a_sync.functools import cached_property_unsafe as cached_property
@@ -9,8 +9,8 @@ from aiofiles.base import AiofilesContextManager
 from aiofiles.threadpool.text import AsyncTextIOWrapper
 from async_lru import alru_cache
 
-from dank_mids.logging import get_c_logger
 from dank_mids.helpers.lru_cache import lru_cache_lite
+from dank_mids.logging import get_c_logger
 
 logger: Final = get_c_logger("dank_mids.debugging")
 

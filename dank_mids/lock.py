@@ -8,7 +8,6 @@ from typing import Deque, Final, Literal, TypeVar, final
 
 from dank_mids.logging import get_c_logger
 
-
 E = TypeVar("E", bound=Exception)
 
 logger: Final = get_c_logger("dank_mids.AlertingRLock")
