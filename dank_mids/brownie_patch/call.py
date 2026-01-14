@@ -9,16 +9,17 @@ import brownie.convert.datatypes
 import brownie.convert.normalize
 import brownie.network.contract
 import faster_eth_abi
+import faster_eth_abi.grammar
 import faster_hexbytes
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
-from brownie.convert.normalize import ABIType
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import SOLIDITY_ERROR_CODES, VirtualMachineError
 from brownie.network.contract import ContractCall
 from eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
+from faster_eth_abi.grammar import ABIType
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
 from web3.types import BlockIdentifier
@@ -48,16 +49,17 @@ Decimal: Final[Callable[[Any], decimal.Decimal]] = decimal.Decimal
 HexBytes: Final = faster_hexbytes.HexBytes
 Contract: Final = brownie.network.contract.Contract
 ReturnValue: Final = brownie.convert.datatypes.ReturnValue
-HexString: Final = brownie.convert.normalize.HexString
-TupleType: Final = brownie.convert.normalize.TupleType
+HexString: Final = brownie.convert.datatypes.HexString
+
+TupleType: Final = faster_eth_abi.grammar.TupleType
 
 Revert: Final = exceptions.Revert
 
-to_bool: Final = brownie.convert.normalize.to_bool
-to_decimal: Final = brownie.convert.normalize.to_decimal
-to_int: Final = brownie.convert.normalize.to_int
-to_string: Final = brownie.convert.normalize.to_string
-to_uint: Final = brownie.convert.normalize.to_uint
+to_bool: Final = brownie.convert.main.to_bool
+to_decimal: Final = brownie.convert.main.to_decimal
+to_int: Final = brownie.convert.main.to_int
+to_string: Final = brownie.convert.main.to_string
+to_uint: Final = brownie.convert.main.to_uint
 _check_array: Final = brownie.convert.normalize._check_array
 _get_abi_types: Final = brownie.convert.normalize._get_abi_types
 
@@ -253,9 +255,9 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
     return call.signature  # type: ignore [return-value, no-any-return]
 
 
-__eth_abi_encode: Final[Callable[[TypeStrs, list[Any]], bytes]] = faster_eth_abi.encode
+__eth_abi_encode: Final[Callable[[TypeStrs, list[Any]], bytes]] = faster_eth_abi.encode  # type: ignore [attr-defined]
 __eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], tuple[Any, ...]]] = (
-    faster_eth_abi.decode
+    faster_eth_abi.decode  # type: ignore [attr-defined]
 )
 
 
