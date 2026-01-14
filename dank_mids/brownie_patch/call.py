@@ -3,9 +3,10 @@ from collections.abc import Callable, Sequence
 from concurrent.futures.process import BrokenProcessPool
 from pickle import PicklingError
 from types import MethodType
-from typing import TYPE_CHECKING, Any, Final, NewType, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Final, NewType, TypeAlias, TypeVar
 
 import brownie.convert.datatypes
+import brownie.convert.main
 import brownie.convert.normalize
 import brownie.network.contract
 import faster_eth_abi
@@ -40,7 +41,7 @@ APPLICATION_MODE: Final[bool] = ENVS.OPERATION_MODE.application
 _T = TypeVar("_T")
 TypeStr = NewType("TypeStr", str)
 TypeStrs = list[TypeStr]
-ListOrTuple = Union[list[_T], tuple[_T, ...]]
+ListOrTuple: TypeAlias = list[_T] | tuple[_T, ...]
 AbiDict = NewType("AbiDict", dict[str, Any])
 
 
