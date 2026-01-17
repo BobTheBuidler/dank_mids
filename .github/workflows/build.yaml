@@ -9,6 +9,7 @@ on:
       - '.github/workflows/**'
       - '!.github/workflows/build.yaml'
       - 'tests/**'
+      - '**/*.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
