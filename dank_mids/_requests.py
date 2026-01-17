@@ -230,7 +230,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             with controller.pools_closed_lock:
                 if isinstance(self, eth_call) and self.multicall_compatible:
                     controller.pending_eth_calls[self.block].append(self)
-                elif self.method.startswith("trace") or self.method.startswith("debug"):
+                elif self.method.startswith(("trace", "debug")):
                     raise NotImplementedError("we should not get here", self)
                 else:
                     controller.pending_rpc_calls.append(self)
