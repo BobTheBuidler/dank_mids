@@ -599,9 +599,7 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
 
     __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
 
-    def __init__(
-        self, controller: "DankMiddlewareController", calls: Iterable[_Request]
-    ) -> None:
+    def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]) -> None:
         _request_base_init(self, controller)
         self.calls = WeakList(calls)
         self._batcher = controller.batcher
