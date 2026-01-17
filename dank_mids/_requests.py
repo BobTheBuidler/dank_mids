@@ -263,7 +263,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         f"{self} was garbage collected before finishing.\n"
                         "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
                     )
-                )
             except RuntimeError as e:
                 if str(e) != "no running event loop":
                     raise
@@ -572,190 +571,260 @@ class eth_call(RPCRequest):
                         failures += 1
                     else:
                         break
-                else:
-                    raise RuntimeError("call failed 5 times", self)
-            except ContractLogicError:
-                # revert error, it will be handled just below
-                pass
+                # The single call was successful. We don't want to include this contract in more multicalls
+                controller.no_multicall.add(target)
             except Exception as e:
-                error_logger_debug("error handling multicall failure for %s", self, exc_info=True)
-                raise e
+                # NOTE: The call still returns a revert when it's not packed in a multicall
+                data = e
 
-        if isinstance(data, RawResponse):
-            # NOTE: `type(data)` is `RawResponse`, it means the multicall itself has reverted, we need to bissect and retry
-            if type(data) is BadResponse and data.response.error.message == "Invalid method 'eth_call'":
-                # Quicknode does not support multicall
-                self.controller.no_multicall.add(self.target)
-                return await self.create_duplicate().make_request()
-            # NOTE: we keep the response in raw form so any errors can be handled by the request
-            # if this is not a multicall we have to decode it asap to see if it is an error
-            if data.exception:
-                # We use this logger instead of `error_logger` to avoid storing exception info in memory
-                # It will be logged only if needed
-                error_logger_log_debug("%s for %s", data.error, self)
+        # The above revert catching logic fails to account for pre-decoding RawResponse objects.
+        await RPCRequest.spoof_response(self, data)
 
-            # NOTE: We call `mcall_decode` here so we can handle errors on the fly
-            # This is not currently used for multicall2 errors, just for individual eth_call errors
-            # mcall_decode just makes sure we have bytes from each call
-            results = mcall_decode(data)
-            if not results:
-                # NOTE: If this happens, it means the multicall reverted with no data (or maybe it returned empty data, not sure)
-                # We will retry the call, probably without multicall2
-                return await self.create_duplicate().make_request()
+    def _get_mc_data(self) -> MulticallChunk:
+        return self.target, self.calldata
 
-            # We write some ugly code to separate successes from reverts
-            # For successful calls, we can set the result right away
-            # For reverts, we asynchronously attempt to handle the revert
-            to_gather = []
-            for call, result in zip(self.calls, results):
-                if is_revert_bytes(result):
-                    # We will asynchronously handle this revert
-                    to_gather.append(eth_call.spoof_response(call, result))
-                else:
-                    # `spoof_response` with a successful call result will complete synchronously
-                    await eth_call.spoof_response(call, result)
-            await gatherish(to_gather, name="Multicall.spoof_response gatherish")
 
-        elif isinstance(data, bytes):
-            # NOTE: `type(data)` is `bytes`, it means the multicall succeeded and we have the return data for the specific call
-            # We should set the result immediately, but first handle any errors
-            if is_revert_bytes(data):
-                # Revert error, use exception handling below
-                pass
-            else:
-                # NOTE: this is a successful call, set the result and return
-                self._fut.set_result({"result": data})
-                return
+### Batch requests:
 
-        # NOTE: The code below handles revert errors for both RawResponse and bytes
-        if is_revert_bytes(data):
-            # NOTE: This is a revert error, we need to handle it based on the status of the call
-            # We already tried to execute the call with multicall, so now we need to
-            # execute it directly to get a revert reason
-            # We should also add the target to the no_multicall list so future calls to this contract are not batched into multicalls
-            self.controller.no_multicall.add(self.target)
-            try:
-                data = await self.revert_threads.run(
-                    self.controller.sync_w3.eth.call,
-                    {"to": self.target, "data": self.calldata},
-                    self.block,
+_Request = TypeVar("_Request", bound=_RequestBase)
+
+
+class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
+    calls: Final[WeakList[_Request]]
+    _done: Final[_RequestEvent]
+
+    _awaited: bool = False
+    """A flag indicating whether the batch has been awaited."""
+
+    __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
+
+    def __init__(
+        self, controller: "DankMiddlewareController", calls: Iterable[_Request]
+    ) -> None:
+        _request_base_init(self, controller)
+        self.calls = WeakList(calls)
+        self._batcher = controller.batcher
+        self._lock = AlertingRLock(name=self.__class__.__name__)
+        self._done = _RequestEvent(self)
+
+    def __len__(self) -> int:
+        return len(self.calls)
+
+    def __await__(self) -> Generator[Any, None, _Response]:
+        return self._task.__await__()
+
+    @property
+    def bisected(self) -> Generator[tuple[_Request, ...], None, None]:
+        # set `self.calls` output to var so its only computed once
+        calls = tuple(self.calls)
+        half = len(calls) // 2
+        yield calls[:half]
+        yield calls[half:]
+
+    @property
+    def is_full(self) -> bool:
+        raise NotImplementedError(type(self).__name__)
+
+    @property
+    def _task(self) -> Future[None]:
+        """Shield the actual Task from cancellation if the caller is cancelled."""
+        return shield(self.__task)
+
+    @cached_property
+    def __task(self) -> Task[None]:
+        self._awaited = True
+        return create_batch_task(
+            self.get_response(), name=f"{type(self).__name__} {self.uid} get_response"
+        )
+
+    def append(self, call: _Request, skip_check: bool = False) -> None:
+        if self._awaited is True:
+            raise RuntimeError(f"{self} was already awaited")
+        with self._lock:
+            self.calls.append(call)
+            # self._len += 1
+            if not skip_check:
+                if self.is_full:
+                    self.start()
+                elif self.controller.queue_is_full:
+                    self.controller.early_start()
+
+    def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
+        if self._awaited is True:
+            raise RuntimeError(f"{self} was already awaited")
+        with self._lock:
+            self.calls.extend(calls)
+            if not skip_check:
+                if self.is_full:
+                    self.start()
+                elif self.controller.queue_is_full:
+                    self.controller.early_start()
+
+    def should_retry(self, e: Exception) -> bool:
+        """Should the _Batch be retried based on `e`?"""
+        if type(e) is OutOfGas:
+            # TODO Remember which contracts/calls are gas guzzlers
+            if len(self) > 1:
+                gas_logger_debug("%s out of gas. cut in half, trying again...", self)
+                return True
+            return False
+
+        str_e = f"{e}".lower()
+        if any(err in str_e for err in constants.RETRY_ERRS):
+            # TODO: use these exceptions to optimize for the user's node
+            if len(self) > 1 and error_logger.isEnabledFor(DEBUG):
+                error_logger_log_debug(
+                    "Dank too loud. Bisecting %s and retrying.", type(self).__name__
                 )
-            except ContractLogicError as e:
-                # NOTE: If we get a ContractLogicError, it means the call reverted. We'll pass this error up to the user.
-                # NOTE: The ContractLogicError includes the revert reason, so we just need to raise it.
-                self._fut.set_exception(e)
-                return
-            except Exception as e:
-                # NOTE: If we get any other exception, we'll wrap it in a DankMidsInternalError and raise it.
-                self._fut.set_exception(DankMidsInternalError(e))
-                return
-            else:
-                # NOTE: If we get a successful response, it means the target contract does not support multicall2
-                self._fut.set_result({"result": data})
-                return
+        elif "429" in str_e or isinstance(e, ChainstackRateLimitError):
+            pass
+        elif isinstance(e, BadResponse) and (
+            needs_full_request_spec(e.response) or is_call_revert(e)
+        ):
+            pass
+        elif all(err not in str_e for err in constants.TOO_MUCH_DATA_ERRS):
+            _log_warning("unexpected %s in a %s: %s", type(e).__name__, type(self).__name__, e)
+        return len(self) > 1
 
-        if isinstance(data, Exception):
-            self.__set_exception(data)
-        else:
-            dtype = type(data)
-            exc = TypeError(f"{dtype.__name__} not supported for spoofing.", dtype, data)
-            self.__set_exception(exc)
+    def _record_failure(self, e: Exception, data: str) -> None:
+        _debugging.failures.record(
+            self.controller.chain_id,
+            e,
+            type(self).__name__,
+            self.uid,
+            len(self),
+            data,
+        )
 
-    @stuck_coro_debugger
-    async def make_request(self, num_previous_timeouts: int = 0) -> RawResponse:  # type: ignore [override]
-        # NOTE: We override this method so we can log multicall-specific info in case of failure
-        if not self._tiny_batches and self._debug_logs_enabled:
-            _log_debug(
-                "%s making request for block %s with calldata %s",
-                self,
-                self.block,
-                self.calldata.hex(),
-            )
-
-        response = await super().make_request(num_previous_timeouts)
-        response.bytes = bytes(self.calldata)  # type: ignore [attr-defined]
-        return response
-
-    def create_duplicate(self) -> "eth_call":  # type: ignore [override]
-        return eth_call(self.controller, self.params, f"{self.uid}_copy", self._fut)
-
-    def __log_set_exception(self, log_func: Callable[..., None], exc: Exception) -> None:  # type: ignore [override]
-        exc_type = type(exc).__name__
-        log_func("%s for %s", exc_type, self)
-        log_func("exception set: %s", repr(exc))
+    async def _debug_daemon(self) -> None:
+        done = self._done.is_set
+        # NOTE: _resonse works for RPCRequst and eth_call, _done works for _Batch classes
+        i = 1
+        while self and not done():
+            await sleep(60)
+            if self and not done():
+                _log_debug(
+                    "%s has not received data after %s minute%s", self, i, "" if i == 1 else "s"
+                )
+                i += 1
 
 
-_multicall_init: Final = Multicall.__init__
+_batch_init: Final = _Batch.__init__
 
 
 @final
-class Multicall(_Batch[bytes, eth_call]):
-    """
-    A batch of eth_call requests that are executed as a single multicall.
+class Multicall(_Batch[RPCResponse, eth_call]):
+    method: Final = "eth_call"
 
-    This class manages a collection of eth_call requests and executes them
-    as a single multicall, which can improve efficiency by reducing the
-    number of separate network calls.
-    """
+    # NOTE: value comes from eth_utils.function_signature_to_4byte_selector("tryBlockAndAggregate(bool,(address,bytes)[])")
+    fourbyte: Final = b"9\x95B\xe9"
 
-    __slots__ = "_metadata", "_size", "_strong_refs"
+    _awaited: bool
+    """A flag indicating whether the Multicall has been awaited."""
+
+    __slots__ = ("bid",)
 
     def __init__(
         self,
         controller: "DankMiddlewareController",
-        calls: Iterable[eth_call],
+        calls: Iterable[eth_call] = [],
         bid: BatchId | None = None,
-        size: int | None = None,
-    ) -> None:  # sourcery skip: default-mutable-arg
+    ) -> None:
+        # sourcery skip: default-mutable-arg
         _batch_init(self, controller, calls)
-        self.bid = bid or self.controller.multicall_uid.next
-        self._size = size
-        self._metadata = MulticallContract.abi  # type: ignore [assignment]
-        self._strong_refs = tuple(self.calls)
+        self.bid: Final = bid or self.controller.multicall_uid.next
 
     def __repr__(self) -> str:
+        block = self.block
+        if block.startswith("0x"):
+            block = int(block, 16)
         batch = self._batch
         batch_info = "" if batch is None else f" batch={batch}"
-        if self._awaited:
-            status = "awaited"
-        else:
-            status = "open"
-        return f"<{self.__class__.__name__} bid={self.bid} len={len(self)} status={status}{batch_info}>"
+        return f"<Multicall mid={self.bid} block={block} len={len(self)}{batch_info} awaited={self._awaited}>"
 
     def __iter__(self) -> Iterator[eth_call]:
-        return filter(None, self.calls)
+        return iter(self.calls)
 
     def __bool__(self) -> bool:
-        """Return True if the batch contains at least one active request, False if complete."""
+        """Return True if the multicall contains at least one active request, False if complete."""
         return any(self.calls)
 
     def __del__(self) -> None:
-        """Log an error if any call in this batch is not complete when the batch is deleted."""
-        if self and not self._done.is_set():
-            if any(filterfalse(Future.done, (call._fut for call in self.calls))):
-                error_logger.error("%s was garbage collected before finishing", self)
-                return
+        """Log an error if any call in this multicall is not complete when the multicall is deleted."""
+        calls = list(self.calls)
+        if not calls or self._done.is_set():
+            return
+
+        # The Multicall still has calls that haven't been garbage collected
+        loop_is_closed = None
+        logged = False
+        for call in calls:
+            if not call._fut.done():
+                if loop_is_closed is None:
+                    loop_is_closed = call._fut._loop.is_closed()
+
+                if loop_is_closed:
+                    return
+
+                if logged is False:
+                    error_logger.error("%s was garbage collected before finishing", self)
+                    logged = True
+
+                try:
+                    call._fut.set_exception(
+                        GarbageCollectionError(
+                            f"{self} was garbage collected before finishing.",
+                            f"{call} might hang indefinitely if I don't raise this exception, "
+                            "which only exists to help debug an issue inside of dank mids. "
+                            "Please show it to Bob.",
+                        )
+                    )
+                except RuntimeError as e:
+                    if str(e) != "no running event loop":
+                        raise
+
+    @cached_property
+    def block(self) -> BlockId:
+        try:
+            return next(iter(self.calls)).block
+        except StopIteration as e:
+            raise EmptyBatch(
+                f"{type(self).__name__} {self.uid} is empty and should not be processed."
+            ) from e.__cause__
 
     @property
-    def data(self) -> bytes:
-        try:
-            return mcall_encode(self.calls)
-        except TypeError as e0:
-            # If we can't encode one of the calls, lets figure out which one and pass some useful info downstream
-            for call in self.calls:
-                try:
-                    call.calldata
-                except TypeError as e1:
-                    raise TypeError(e1, call) from e0.__cause__
-            raise
+    def calldata(self) -> str:
+        return (self.fourbyte + mcall_encode(map(eth_call._get_mc_data, self.calls))).hex()  # type: ignore [misc]
+
+    @cached_property
+    def mcall(self) -> MulticallContract:
+        return self.controller._select_mcall_target_for_block(self.block)
+
+    @property
+    def target(self) -> ChecksumAddress:
+        return self.mcall.address
+
+    @property
+    def params(self) -> JsonrpcParams:
+        target = self.target
+        params = [{"to": target, "data": f"0x{self.calldata}"}, self.block]
+        if self.needs_override_code and not self.controller.state_override_not_supported:
+            params.append({target: {"code": self.mcall.bytecode}})
+        return params  # type: ignore [return-value]
+
+    @property
+    def request(self) -> Request | PartialRequest:
+        return self.controller.request_type(method=self.method, params=self.params, id=self.uid)
 
     @property
     def is_full(self) -> bool:
-        with self._lock:
-            return len(self) >= self._batcher.step
+        return len(self) >= self._batcher.step
 
-    def start(self, batch: Optional["DankBatch"] = None, cleanup=True) -> None:
-        # sourcery skip: hoist-loop-from-if
+    @property
+    def needs_override_code(self) -> bool:
+        return self.mcall.needs_override_code_for_block(self.block)
+
+    def start(self, batch: Union["_Batch", "DankBatch"] | None = None, cleanup=True) -> None:
         batch = batch or self
         if _logger_is_enabled_for(DEBUG):
             debug_daemon = create_task(self._debug_daemon(), name="Multicall debug daemon")
@@ -767,152 +836,101 @@ class Multicall(_Batch[bytes, eth_call]):
             for call in self.calls:
                 call._batch = self
             if cleanup:
-                self.controller._start_new_batch()
+                controller = self.controller
+                with controller.pools_closed_lock:
+                    controller.pending_eth_calls.pop(self.block, None)
 
     @stuck_coro_debugger
     async def get_response(self) -> None:  # type: ignore [override]
-        if not self.calls:
-            # TODO: figure out why this can happen and prevent it upstream
+        # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
+        calls = tuple(self.calls)
+
+        if not calls:
+            # TODO: figure out how we get into this function without any calls
             self._done.set()
             return
 
-        rid = self.controller.request_uid.next
-        if ENVS.DEMO_MODE:  # type: ignore [attr-defined]
-            # When demo mode is disabled, we can save some CPU time by skipping this sum
-            _demo_logger_info("request %s for multicall %s (%s calls) starting", rid, self.bid, len(self))
-        try:
-            while True:
-                try:
-                    await self.spoof_response(await self.post())
-                    break
-                except ChainstackRateLimitError as e:
-                    # Chainstack doesn't use 429 for rate limiting, it sends a successful response back to the rpc with an error
-                    # message so our usual rate-limiting handlers don't work and we need to handle that case with bespoke logic.
-                    await sleep(e.try_again_in)
-                except RateLimitError:
-                    # Quiknode doesn't use 429 for rate limiting, it sends a successful response back to the rpc with an error
-                    # message so our usual rate-limiting handlers don't work and we need to handle that case with bespoke logic.
-                    logger.warning("rate limited by quiknode")
-                    await sleep(5)
-
-        # I want to see these asap when working on the lib.
-        except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
-            raise e if "invalid argument" in str(e) else DankMidsInternalError(e) from e
-        except EmptyBatch:
+        elif len(calls) == 1:
+            await self._exec_single_call()
             self._done.set()
-        except PayloadTooLarge as e:
-            # TODO: track too large payloads and do some better optimizations for batch sizing
-            self.adjust_batch_size()
-            await self.bisect_and_retry(e)
-        except ExceedsMaxBatchSize as e:
-            _log_warning("exceeded max batch size for your node")
-            self.adjust_batch_size()
-            await self.bisect_and_retry(e)
-        except Exception as e:
-            if _log_exception(e):
-                self._record_failure(e, self.data)
+            return
 
-            stats.log_errd_mcall(self)
+        # elif l < 50: # TODO play with later
+        #    return await JSONRPCBatch(self.controller, self.calls)
 
-            if self.should_retry(e):
-                await self.bisect_and_retry(e)
-
-            else:
-                # NOTE: This means an exception occurred during the post request
-                # AND that the multicall is made of just one eth_call.
-                error_logger_debug("%s had exception %s, aborting and sending Exception to waiters", self, e)
-                await igather(call.spoof_response(e) for call in self.calls)
-
-        _demo_logger_info("request %s for multicall %s complete", rid, self.bid)  # type: ignore
-
-    @stuck_coro_debugger
-    @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1, suppress_logs=2)
-    async def post(self) -> RawResponse:
-        """
-        Send the batch of requests to the Ethereum node and process the response.
-
-        This method sends the batch of requests to the Ethereum node and
-        processes the response.
-
-        Returns:
-            The raw response from the node.
-
-        Raises:
-            BadResponse: If a successful 'error' response was received from the rpc.
-            ClientResponseError: If there was an error with the HTTP request.
-            Exception: For other unexpected errors.
-        """
+        controller = self.controller
+        rid = controller.request_uid.next
+        _demo_logger_info("request %s for multicall %s starting", rid, self.bid)
         try:
-            post_coro = _requester.post(self.controller.endpoint, data=self.data)
-            task = create_task(post_coro, name=f"Multicall-{self.uid}")
-            response: RawResponse = await wait_for(shield(task), timeout=30)
-        except TimeoutError:
-            timeout_logger_warning("Multicall.post timed out (30s). Retrying.")
-            new_post_coro = _requester.post(self.controller.endpoint, data=self.data)
-            for fut in as_completed([task, new_post_coro]):
-                return await fut
-        except ClientResponseError as e:
-            if e.message == "Payload Too Large":
-                _log_warning("Payload too large for multicall: %s", self.method_counts)
-                self.adjust_batch_size()
-            elif "broken pipe" in str(e).lower():
-                _log_warning("This is what broke the pipe: %s", self.method_counts)
-            error_logger_debug("caught %s for %s, reraising", e, self)
-            if ENVS.DEBUG:  # type: ignore [attr-defined]
-                self._record_failure(e, self.data.decode())
+            await self.spoof_response(
+                await controller.make_request(self.method, self.params, request_id=self.uid),
+                calls,
+            )
+        except internal_err_types.__args__ as e:  # type: ignore [attr-defined]
             raise
+            stre = str(e)
+            if "invalid argument" in stre:
+                raise
+            elif "iteration" in stre:
+                error_logger.error("ERROR: stop iteration in dank mids:")
+                error_logger.exception(e)
+            raise DankMidsInternalError(e) from e
         except Exception as e:
-            if "broken pipe" in str(e).lower():
-                _log_warning("This is what broke the pipe: %s", self.method_counts)
-            if ENVS.DEBUG:  # type: ignore [attr-defined]
-                self._record_failure(e, self.data.decode())
-            raise
+            if isinstance(e, ClientResponseError) and e.message == "Payload Too Large":
+                _log_info("Payload too large. response headers: %s", e.headers)
+                controller.reduce_multicall_size(len(self))
+                self._record_failure(e, self.request.data.decode())
+            elif _log_exception(e):
+                self._record_failure(e, self.request.data.decode())
 
-        if response.exception:
-            # NOTE: If the response is an error, we need to raise it so it can be handled by the caller
-            raise response.exception
+            if len(calls) == 1:
+                await self._exec_single_call()
+                self._done.set()
+            elif self.should_retry(e):
+                await self.bisect_and_retry(e)
+            else:
+                await self.spoof_response(e)
 
-        return response
+        _demo_logger_info("request %s for multicall %s complete", rid, self.bid)
 
     def should_retry(self, e: Exception) -> bool:
-        """
-        Determine whether the multicall should be retried based on the exception.
-
-        Args:
-            e: The exception that occurred during the multicall request.
-
-        Returns:
-            True if the multicall should be retried, False otherwise.
-        """
-        # We retry multicalls on out of gas, errors, and error responses from the rpc.
-        return type(e) in (OutOfGas, BadResponse)
+        """Should the Multicall be retried based on `e`?"""
+        # NOTE: While it might look weird, f-string is faster than `str(e)`.
+        if any(map(f"{e}".lower().__contains__, constants.RETRY_ERRS)):
+            msg = "dank too loud, multicall %s got exc%s\ntrying again..."
+            error_logger_debug(msg, self.bid, e)
+            return True
+        elif "No state available for block" in f"{e}":
+            note = "You're not using an archive node, and you need one for the application you are attempting to run."
+            e.args[0]["dankmids_note"] = note
+            return False
+        elif _Batch.should_retry(self, e):
+            return True
+        return len(self) > 1
 
     @set_done
     @stuck_coro_debugger
-    async def spoof_response(self, response: RawResponse, calls: tuple[eth_call, ...] | None = None) -> None:
-        """
-        Process the response from the Ethereum node and set the results for each call.
+    async def spoof_response(
+        self, data: RawResponse | Exception, calls: Sequence[eth_call] | None = None
+    ) -> None:
+        # This happens if an Exception takes place during a non-batched Multicall request.
+        if isinstance(data, Exception):
+            if error_logger.isEnabledFor(DEBUG):
+                exc_type = type(data).__name__
+                error_logger_log_debug("%s had %s %s", self, exc_type, data)
+                error_logger_log_debug("propagating the %s to all %s's calls", exc_type, self)
 
-        This method processes the response from the Ethereum node and sets the results
-        for each call in the batch. It also handles any exceptions that occurred during
-        the processing.
+            # No need to gather this, `spoof_response` with an Exception input will complete synchronously
+            for call in calls or self.calls:
+                await call.spoof_response(data)
 
-        Args:
-            response: The raw response from the node.
-            calls: A tuple of eth_call objects that were included in the batch.
-        """
-        # Reaching this point means we made a batch call and we got results. That doesn't mean they're good, but we got 'em.
-
-        if response.exception:
-            exc = response.exception
-            if isinstance(exc, PayloadTooLarge):
-                self.adjust_batch_size()
-            elif isinstance(exc, BadResponse) and exc.response.error.message == "Invalid method 'eth_call'":
-                # Quicknode does not support multicall
-                self.controller.no_multicall.add(self.target)
-                return await self.create_duplicate().make_request()
-            else:
-                if error_logger.isEnabledFor(DEBUG):
+        # A `RawResponse` represents either a successful or a failed response, stored as pre-decoded bytes.
+        # It was either received as a response to a single rpc call or as a part of a batch response.
+        elif isinstance(data, RawResponse):
+            response = data.decode(partial=True)
+            if response.error is not None:
+                exc = response.exception
+                if error_logger.isEnabledFor(DEBUG) and type(exc) is not OutOfGas:
                     error_logger_log_debug(
                         "%s for %s",
                         response.error if type(exc) is BadResponse else repr(exc),
