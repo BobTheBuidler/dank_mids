@@ -8,11 +8,9 @@ All agents must follow these rules:
    - Support titles: `fix(docs):`, `fix(benchmarks):`, `fix(cicd):`
 3) Commit messages must follow the same Conventional Commits-style prefixes and include a short functional description plus a user-facing value proposition.
 4) PR descriptions must include Summary, Rationale, and Details sections.
+5) Run relevant Python tests for changes (pytest/unittest or the repo's configured runner).
+6) Follow formatting/linting configured in pyproject.toml, setup.cfg, tox.ini, or ruff.toml.
+7) Update dependency lockfiles when adding or removing Python dependencies.
+8) If the repo uses mypyc, verify tests run against compiled extensions (not interpreted Python) and note how you confirmed.
 
 Reference: https://www.conventionalcommits.org/en/v1.0.0/
-
-## Condition: repo contains Python files
-Rules:
-- Run relevant Python tests for changes (pytest/unittest or the repo's configured runner).
-- Follow formatting/linting configured in pyproject.toml, setup.cfg, tox.ini, or ruff.toml.
-- Update dependency lockfiles when adding or removing Python dependencies.
