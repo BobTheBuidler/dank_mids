@@ -263,6 +263,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                         f"{self} was garbage collected before finishing.\n"
                         "This exception exists to help debug an issue inside of dank mids. Please show it to Bob."
                     )
+                )
             except RuntimeError as e:
                 if str(e) != "no running event loop":
                     raise
