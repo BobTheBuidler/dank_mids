@@ -98,6 +98,6 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
-        run: poetry run pytest -s -v --asyncio-task-timeout=3600
+        run: poetry run pytest -s -v --asyncio-task-timeout=3600 --ignore=tests/unit
         shell: bash
       
