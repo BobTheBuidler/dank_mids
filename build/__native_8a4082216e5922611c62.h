@@ -1031,6 +1031,22 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_self;
+    CPyTagged _obj_id;
+    PyObject *__remove;
+} dank_mids___helpers____weaklist____gc_callback_WeakList_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+} dank_mids___helpers____weaklist____remove__gc_callback_WeakList_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
 } dank_mids___helpers___hashing_____init___3_AttributeDict_objObject;
 
