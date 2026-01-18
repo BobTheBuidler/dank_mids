@@ -37,11 +37,14 @@ class WeakList(Generic[_T]):
 
     def append(self, item: _T) -> None:
         # Keep a weak reference with a callback for when the item is collected
-        self._refs[id(item)] = ref(item, self._gc_callback)
+        obj_id = id(item)
+        self._refs[obj_id] = ref(item, self._gc_callback(obj_id))
 
     def extend(self, items: Iterable[_T]) -> None:
-        callback = self._gc_callback
-        self._refs.update((id(obj), ref(obj, callback)) for obj in items)
+        make_callback = self._gc_callback
+        for obj in items:
+            obj_id = id(obj)
+            self._refs[obj_id] = ref(obj, make_callback(obj_id))
 
     def remove(self, item: _T) -> None:
         obj_id = id(item)
@@ -50,6 +53,9 @@ class WeakList(Generic[_T]):
             raise ValueError("list.remove(x): x not in list")
         del self._refs[obj_id]
 
-    def _gc_callback(self, item: Any) -> None:
-        # Callback when a weakly-referenced object is garbage collected
-        self._refs.pop(id(item), None)  # Safely remove the item if it exists
+    def _gc_callback(self, obj_id: int) -> GCCallback:
+        # Callback factory so we can remove entries by the original object id.
+        def _remove(_ref: Any) -> None:
+            self._refs.pop(obj_id, None)
+
+        return _remove
