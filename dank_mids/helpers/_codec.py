@@ -1,5 +1,5 @@
 from collections.abc import Callable, Iterable, Mapping
-from typing import TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeVar, Union, final, overload
+from typing import TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeVar, Union, cast, final, overload
 
 import faster_hexbytes
 import msgspec
