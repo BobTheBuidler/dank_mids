@@ -12,6 +12,7 @@ on:
       - 'pyproject.toml'
       - 'poetry.lock'
       - 'dank_mids/**/*.py'
+      - 'dank_mids/_vendor/aiolimiter'
       - 'dank_mids/_vendor/aiolimiter/**'
 
 concurrency:
