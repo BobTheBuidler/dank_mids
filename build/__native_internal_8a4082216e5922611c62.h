@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1424];
+extern PyObject *CPyStatics[1422];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -1136,6 +1136,12 @@ extern PyObject *CPyDef__weaklist___WeakList(PyObject *cpy_r_data);
 extern PyTypeObject *CPyType__weaklist_____iter___3_WeakList_gen;
 extern PyObject *CPyDef__weaklist_____iter___3_WeakList_gen(void);
 extern CPyThreadLocal dank_mids___helpers____weaklist_____iter___3_WeakList_genObject *_weaklist_____iter___3_WeakList_gen_free_instance;
+extern PyTypeObject *CPyType__weaklist____make_ref_WeakList_env;
+extern PyObject *CPyDef__weaklist____make_ref_WeakList_env(void);
+extern CPyThreadLocal dank_mids___helpers____weaklist____make_ref_WeakList_envObject *_weaklist____make_ref_WeakList_env_free_instance;
+extern PyTypeObject *CPyType__weaklist____gc_callback__make_ref_WeakList_obj;
+extern PyObject *CPyDef__weaklist____gc_callback__make_ref_WeakList_obj(void);
+extern CPyThreadLocal dank_mids___helpers____weaklist____gc_callback__make_ref_WeakList_objObject *_weaklist____gc_callback__make_ref_WeakList_obj_free_instance;
 extern char CPyDef__weaklist___WeakList_____init__(PyObject *cpy_r_self, PyObject *cpy_r_data);
 extern PyObject *CPyPy__weaklist___WeakList_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern PyObject *CPyDef__weaklist___WeakList_____repr__(PyObject *cpy_r_self);
@@ -1165,8 +1171,12 @@ extern char CPyDef__weaklist___WeakList___extend(PyObject *cpy_r_self, PyObject 
 extern PyObject *CPyPy__weaklist___WeakList___extend(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist___WeakList___remove(PyObject *cpy_r_self, PyObject *cpy_r_item);
 extern PyObject *CPyPy__weaklist___WeakList___remove(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef__weaklist___WeakList____gc_callback(PyObject *cpy_r_self, PyObject *cpy_r_item);
-extern PyObject *CPyPy__weaklist___WeakList____gc_callback(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__weaklist____gc_callback__make_ref_WeakList_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
+extern PyObject *CPyPy__weaklist____gc_callback__make_ref_WeakList_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__weaklist____gc_callback__make_ref_WeakList_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r__ref, CPyTagged cpy_r_key);
+extern PyObject *CPyPy__weaklist____gc_callback__make_ref_WeakList_obj_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__weaklist___WeakList____make_ref(PyObject *cpy_r_self, PyObject *cpy_r_item);
+extern PyObject *CPyPy__weaklist___WeakList____make_ref(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist_____top_level__(void);
 extern PyObject *CPyStatic_batch_size___batch_size_logger;
 extern char CPyDef_batch_size___log_check(PyObject *cpy_r_batch_type, PyObject *cpy_r_member_type, CPyTagged cpy_r_num_calls);
