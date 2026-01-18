@@ -114,6 +114,14 @@ typedef struct tuple_T3IIO {
 } tuple_T3IIO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T2IO
+#define MYPYC_DECLARED_tuple_T2IO
+typedef struct tuple_T2IO {
+    CPyTagged f0;
+    PyObject *f1;
+} tuple_T2IO;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T4OOOO
 #define MYPYC_DECLARED_tuple_T4OOOO
 typedef struct tuple_T4OOOO {
@@ -122,14 +130,6 @@ typedef struct tuple_T4OOOO {
     PyObject *f2;
     PyObject *f3;
 } tuple_T4OOOO;
-#endif
-
-#ifndef MYPYC_DECLARED_tuple_T2IO
-#define MYPYC_DECLARED_tuple_T2IO
-typedef struct tuple_T2IO {
-    CPyTagged f0;
-    PyObject *f1;
-} tuple_T2IO;
 #endif
 
 #ifndef MYPYC_DECLARED_tuple_T4OIOC
@@ -471,7 +471,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___brownie_patch___call___coroutine_gen___3_133Object;
+} dank_mids___brownie_patch___call___coroutine_gen___3_137Object;
 
 typedef struct {
     PyObject_HEAD

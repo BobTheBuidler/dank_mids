@@ -51,7 +51,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.10)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -63,7 +63,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.11)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -75,7 +75,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.12)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -87,7 +87,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install Mypyc (3.13)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.13)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -99,7 +99,7 @@ jobs:
         with:
           python-version: "3.14"
       - name: Install Mypyc (3.14)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.14)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -178,7 +178,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.10)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -190,7 +190,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.11)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -202,7 +202,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.12)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -214,7 +214,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install Mypyc (3.13)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.13)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -226,7 +226,7 @@ jobs:
         with:
           python-version: "3.14"
       - name: Install Mypyc (3.14)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.14)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -274,7 +274,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install Mypyc (3.10)
-        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.10)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -286,7 +286,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Mypyc (3.11)
-        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.11)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -298,7 +298,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Mypyc (3.12)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.12)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -310,7 +310,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install Mypyc (3.13)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.13)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1
@@ -322,7 +322,7 @@ jobs:
         with:
           python-version: "3.14"
       - name: Install Mypyc (3.14)
-        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-utils==5.3.20 faster-hexbytes==1.3.4 typed-envs==0.2.1
+        run: pip install mypy[mypyc]==1.19.1 setuptools types-requests eth-typing==5.2.1 eth-retry==0.3.5 ez-a-sync==0.33.9 faster-eth-abi==5.2.22 faster-eth-utils==5.3.20 faster-hexbytes==1.3.5 typed-envs==0.2.1
       - name: Run Mypyc (3.14)
         env:
           MYPYC_STRICT_DUNDER_TYPING: 1

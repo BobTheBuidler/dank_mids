@@ -3,22 +3,25 @@ from collections.abc import Callable, Sequence
 from concurrent.futures.process import BrokenProcessPool
 from pickle import PicklingError
 from types import MethodType
-from typing import TYPE_CHECKING, Any, Final, NewType, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Final, NewType, TypeAlias, TypeVar, cast
 
 import brownie.convert.datatypes
+import brownie.convert.main
 import brownie.convert.normalize
 import brownie.network.contract
 import faster_eth_abi
+import faster_eth_abi.grammar
 import faster_hexbytes
 from a_sync import AsyncProcessPoolExecutor
 from brownie import chain
-from brownie.convert.normalize import ABIType
 from brownie.convert.utils import get_type_strings
 from brownie.exceptions import SOLIDITY_ERROR_CODES, VirtualMachineError
 from brownie.network.contract import ContractCall
 from eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
+from faster_eth_abi._grammar import Arrlist
+from faster_eth_abi.grammar import ABIType
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
 from web3.types import BlockIdentifier
@@ -39,7 +42,7 @@ APPLICATION_MODE: Final[bool] = ENVS.OPERATION_MODE.application
 _T = TypeVar("_T")
 TypeStr = NewType("TypeStr", str)
 TypeStrs = list[TypeStr]
-ListOrTuple = Union[list[_T], tuple[_T, ...]]
+ListOrTuple: TypeAlias = list[_T] | tuple[_T, ...]
 AbiDict = NewType("AbiDict", dict[str, Any])
 
 
@@ -48,16 +51,17 @@ Decimal: Final[Callable[[Any], decimal.Decimal]] = decimal.Decimal
 HexBytes: Final = faster_hexbytes.HexBytes
 Contract: Final = brownie.network.contract.Contract
 ReturnValue: Final = brownie.convert.datatypes.ReturnValue
-HexString: Final = brownie.convert.normalize.HexString
-TupleType: Final = brownie.convert.normalize.TupleType
+HexString: Final = brownie.convert.datatypes.HexString
+
+TupleType: Final = faster_eth_abi.grammar.TupleType
 
 Revert: Final = exceptions.Revert
 
-to_bool: Final = brownie.convert.normalize.to_bool
-to_decimal: Final = brownie.convert.normalize.to_decimal
-to_int: Final = brownie.convert.normalize.to_int
-to_string: Final = brownie.convert.normalize.to_string
-to_uint: Final = brownie.convert.normalize.to_uint
+to_bool: Final = brownie.convert.main.to_bool
+to_decimal: Final = brownie.convert.main.to_decimal
+to_int: Final = brownie.convert.main.to_int
+to_string: Final = brownie.convert.main.to_string
+to_uint: Final = brownie.convert.main.to_uint
 _check_array: Final = brownie.convert.normalize._check_array
 _get_abi_types: Final = brownie.convert.normalize._get_abi_types
 
@@ -253,9 +257,9 @@ async def _request_data_no_args(call: ContractCall) -> HexStr:
     return call.signature  # type: ignore [return-value, no-any-return]
 
 
-__eth_abi_encode: Final[Callable[[TypeStrs, list[Any]], bytes]] = faster_eth_abi.encode
+__eth_abi_encode: Final[Callable[[TypeStrs, list[Any]], bytes]] = faster_eth_abi.encode  # type: ignore [attr-defined]
 __eth_abi_decode: Final[Callable[[TypeStrs, faster_hexbytes.HexBytes], tuple[Any, ...]]] = (
-    faster_eth_abi.decode
+    faster_eth_abi.decode  # type: ignore [attr-defined]
 )
 
 
@@ -364,7 +368,9 @@ def _format_tuple_but_cache_checksums(
 
 
 def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any]) -> list[Any]:
-    _check_array(values, abi_type.arrlist[-1][0] if len(abi_type.arrlist[-1]) else None)
+    arrlist = cast(Arrlist, abi_type.arrlist)
+    arrlist_last = cast(tuple[int, ...], arrlist[-1])
+    _check_array(values, arrlist_last[0] if len(arrlist_last) else None)
     item_type = abi_type.item_type
     if item_type.is_array:
         return [_format_array_but_cache_checksums(item_type, v) for v in values]
