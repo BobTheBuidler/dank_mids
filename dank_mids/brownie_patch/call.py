@@ -369,7 +369,7 @@ def _format_tuple_but_cache_checksums(
 
 def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any]) -> list[Any]:
     arrlist = cast(Arrlist, abi_type.arrlist)
-    arrlist_last = cast(tuple[int, ...], arrlist[-1]
+    arrlist_last = cast(tuple[int, ...], arrlist[-1])
     _check_array(values, arrlist_last[0] if len(arrlist_last) else None)
     item_type = abi_type.item_type
     if item_type.is_array:
