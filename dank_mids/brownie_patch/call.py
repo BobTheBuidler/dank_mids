@@ -20,6 +20,7 @@ from brownie.network.contract import ContractCall
 from eth_abi.exceptions import DecodingError, InsufficientDataBytes
 from eth_typing import HexStr
 from evmspec.data import Address
+from faster_eth_abi._grammar import ArrList
 from faster_eth_abi.grammar import ABIType
 from hexbytes.main import BytesLike
 from multicall.constants import MULTICALL2_ADDRESSES
