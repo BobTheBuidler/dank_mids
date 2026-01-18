@@ -5,7 +5,7 @@ import faster_hexbytes
 import msgspec
 from eth_typing import ChecksumAddress, HexStr
 from evmspec.data import Address
-from faster_eth_abi import decoding
+from faster_eth_abi import io
 from faster_eth_abi.abi import default_codec
 from msgspec.json import Decoder, Encoder
 
@@ -47,7 +47,7 @@ BatchDecoder = Callable[[Union[str, bytes]], Union[list[msgspec.Raw], "types.Par
 # these compile to C constants
 HexBytes: Final = faster_hexbytes.HexBytes
 Raw: Final = msgspec.Raw
-ContextFramesBytesIO: Final = decoding.ContextFramesBytesIO
+ContextFramesBytesIO: Final = io.ContextFramesBytesIO
 DecodeError: Final = msgspec.DecodeError
 
 decode_string: Final = Decoder(type=str).decode
