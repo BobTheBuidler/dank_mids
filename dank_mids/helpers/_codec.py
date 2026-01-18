@@ -177,13 +177,15 @@ See Also:
 
 # multicall specific stuff
 
-_mcall_encoder: Final[MulticallEncoder] = default_codec._registry.get_encoder(
-    "(bool,(address,bytes)[])"
+_mcall_encoder: Final = cast(
+    MulticallEncoder,
+    default_codec._registry.get_encoder("(bool,(address,bytes)[])"),
 )
 
-_mcall_decoder: Final[MulticallDecoder] = default_codec._registry.get_decoder(
-    "(uint256,uint256,(bool,bytes)[])"
-).decode
+_mcall_decoder: Final = cast(
+    MulticallDecoder,
+    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
+)
 
 
 def mcall_encode(data: Iterable[MulticallChunk]) -> bytes:
