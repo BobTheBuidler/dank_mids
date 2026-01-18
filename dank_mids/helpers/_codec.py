@@ -1,5 +1,5 @@
 from collections.abc import Callable, Iterable, Mapping
-from typing import TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeVar, Union, cast, final, overload
+from typing import TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeAlias, TypeVar, Union, cast, final, overload
 
 import faster_hexbytes
 import msgspec
@@ -23,26 +23,23 @@ better_decode: Callable[..., Any] | None = None  # type: ignore [type-arg]
 __T = TypeVar("__T")
 
 
-StrEncodable = Union[ChecksumAddress, HexStr, Address]
-Encodable = Union[int, StrEncodable, faster_hexbytes.HexBytes, bytes]
+StrEncodable: TypeAlias = ChecksumAddress | HexStr | Address
+Encodable: TypeAlias = int | StrEncodable | faster_hexbytes.HexBytes | bytes
 
-RpcThing = Union[HexStr, list[HexStr], dict[str, HexStr]]
-
-
-MulticallChunk = Union[
-    tuple[ChecksumAddress, faster_hexbytes.HexBytes],
-    list[Union[ChecksumAddress, faster_hexbytes.HexBytes]],
-]
-MulticallEncoder = Callable[[tuple[bool, Iterable[MulticallChunk]]], bytes]
-
-DecodedMulticall = tuple[int, int, tuple[tuple["Success", bytes], ...]]
-MulticallDecoder = Callable[..., DecodedMulticall]
+RpcThing: TypeAlias = HexStr | list[HexStr] | dict[str, HexStr]
 
 
-JSONRPCBatchRequest = list["types.Request"]
+MulticallChunk: TypeAlias = tuple[ChecksumAddress, faster_hexbytes.HexBytes] | list[ChecksumAddress | faster_hexbytes.HexBytes]
+MulticallEncoder: TypeAlias = Callable[[tuple[bool, Iterable[MulticallChunk]]], bytes]
+
+DecodedMulticall: TypeAlias = tuple[int, int, tuple[tuple["Success", bytes], ...]]
+MulticallDecoder: TypeAlias = Callable[..., DecodedMulticall]
+
+
+JSONRPCBatchRequest: TypeAlias = list["types.Request"]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
-JSONRPCBatchResponse = Union[list["RawResponse"], "types.PartialResponse"]
-BatchDecoder = Callable[[Union[str, bytes]], Union[list[msgspec.Raw], "types.PartialResponse"]]
+JSONRPCBatchResponse: TypeAlias = list["RawResponse"] | "types.PartialResponse"
+BatchDecoder: TypeAlias = Callable[[str | bytes], Union[list[msgspec.Raw], "types.PartialResponse"]]
 
 # these compile to C constants
 HexBytes: Final = faster_hexbytes.HexBytes
@@ -219,4 +216,4 @@ def __make_decode_batch() -> None:
     from dank_mids.types import PartialResponse
 
     global _decode_batch
-    _decode_batch = Decoder(type=Union[list[msgspec.Raw], PartialResponse]).decode
+    _decode_batch = Decoder(type=list[msgspec.Raw] | PartialResponse).decode
