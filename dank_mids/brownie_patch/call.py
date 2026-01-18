@@ -3,7 +3,7 @@ from collections.abc import Callable, Sequence
 from concurrent.futures.process import BrokenProcessPool
 from pickle import PicklingError
 from types import MethodType
-from typing import TYPE_CHECKING, Any, Final, NewType, TypeAlias, TypeVar
+from typing import TYPE_CHECKING, Any, Final, NewType, TypeAlias, TypeVar, cast
 
 import brownie.convert.datatypes
 import brownie.convert.main
@@ -367,7 +367,7 @@ def _format_tuple_but_cache_checksums(
 
 
 def _format_array_but_cache_checksums(abi_type: ABIType, values: ListOrTuple[Any]) -> list[Any]:
-    arrlist_last = abi_type.arrlist[-1]
+    arrlist_last = cast(tuple[int, ...], abi_type.arrlist[-1])
     _check_array(values, arrlist_last[0] if len(arrlist_last) else None)
     item_type = abi_type.item_type
     if item_type.is_array:
