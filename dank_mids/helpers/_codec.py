@@ -181,7 +181,7 @@ _mcall_encoder: Final = cast(
 
 _mcall_decoder: Final = cast(
     MulticallDecoder,
-    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode
+    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode  # type: ignore [union-attr]
 )
 
 
