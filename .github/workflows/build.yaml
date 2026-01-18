@@ -5,10 +5,14 @@ on:
     branches:
       - master
       - good-master
-    paths-ignore:
-      - '.github/workflows/**'
-      - '!.github/workflows/build.yaml'
-      - 'tests/**'
+    paths:
+      - '.github/workflows/build.yaml'
+      - '.gitmodules'
+      - 'Makefile'
+      - 'pyproject.toml'
+      - 'poetry.lock'
+      - 'dank_mids/**/*.py'
+      - 'dank_mids/_vendor/aiolimiter/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
