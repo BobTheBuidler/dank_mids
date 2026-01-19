@@ -20,3 +20,4 @@ build/setup.py
 *.obj
 *.exp
 *.lib
+.worktrees/
