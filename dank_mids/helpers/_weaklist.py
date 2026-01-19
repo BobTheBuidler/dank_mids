@@ -1,10 +1,8 @@
-from collections.abc import Callable, Iterable, Iterator
-from typing import Any, Final, Generic, TypeVar, final
+from collections.abc import Iterable, Iterator
+from typing import Final, Generic, TypeVar, final
 from weakref import ref
 
 _T = TypeVar("_T")
-
-GCCallback = Callable[[Any], None]
 
 
 @final
@@ -37,11 +35,14 @@ class WeakList(Generic[_T]):
 
     def append(self, item: _T) -> None:
         # Keep a weak reference with a callback for when the item is collected
-        self._refs[id(item)] = ref(item, self._gc_callback)
+        item_id = id(item)
+        self._refs[item_id] = self._make_ref(item_id, item)
 
     def extend(self, items: Iterable[_T]) -> None:
-        callback = self._gc_callback
-        self._refs.update((id(obj), ref(obj, callback)) for obj in items)
+        refs = self._refs
+        for item in items:
+            item_id = id(item)
+            refs[item_id] = self._make_ref(item_id, item)
 
     def remove(self, item: _T) -> None:
         obj_id = id(item)
@@ -50,6 +51,8 @@ class WeakList(Generic[_T]):
             raise ValueError("list.remove(x): x not in list")
         del self._refs[obj_id]
 
-    def _gc_callback(self, item: Any) -> None:
-        # Callback when a weakly-referenced object is garbage collected
-        self._refs.pop(id(item), None)  # Safely remove the item if it exists
+    def _make_ref(self, item_id: int, item: _T) -> "ref[_T]":
+        def _gc_callback(_ref: "ref[_T]", item_id: int = item_id) -> None:
+            self._refs.pop(item_id, None)
+
+        return ref(item, _gc_callback)
