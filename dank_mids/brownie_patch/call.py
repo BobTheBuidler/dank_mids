@@ -276,12 +276,16 @@ _skip_proc_pool = {"0xcA11bde05977b3631167028862bE2a173976CA11"}  # multicall3
 # NOTE: retry 429 errors if running multiple services on same rpc
 while True:
     try:
-        chainid = chain.id
+        chainid: int | None = chain.id
+        break
+    except AttributeError:  # brownie not connected
+        chainid = None
         break
     except Exception as e:
         if "429" not in str(e):
             raise
-if multicall2 := MULTICALL2_ADDRESSES.get(chainid, None):
+
+if multicall2 := MULTICALL2_ADDRESSES.get(chainid, None):  # type: ignore [arg-type]
     _skip_proc_pool.add(to_checksum_address(multicall2))
 
 
