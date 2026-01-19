@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/dank-mids.svg?logo=Python&logoColor=white)](https://pypi.org/project/dank-mids)
 [![Monthly Downloads](https://img.shields.io/pypi/dm/dank-mids)](https://pypistats.org/packages/dank-mids)
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/BobTheBuidler/dank_mids?utm_source=badge)
 
 Dank Mids is a EVM RPC batching library that helps reduce the number of HTTP requests to a node, saving time and resources. It automatically collects eth_call calls into [multicalls](https://github.com/makerdao/multicall#multicall-) and bundles all RPC calls together in [jsonrpc](https://www.jsonrpc.org/specification#batch) [batch](https://geth.ethereum.org/docs/interacting-with-geth/rpc/batch) calls. 
 
