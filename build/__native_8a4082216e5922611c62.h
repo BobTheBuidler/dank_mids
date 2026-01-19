@@ -114,14 +114,6 @@ typedef struct tuple_T3IIO {
 } tuple_T3IIO;
 #endif
 
-#ifndef MYPYC_DECLARED_tuple_T2IO
-#define MYPYC_DECLARED_tuple_T2IO
-typedef struct tuple_T2IO {
-    CPyTagged f0;
-    PyObject *f1;
-} tuple_T2IO;
-#endif
-
 #ifndef MYPYC_DECLARED_tuple_T4OOOO
 #define MYPYC_DECLARED_tuple_T4OOOO
 typedef struct tuple_T4OOOO {
@@ -130,6 +122,14 @@ typedef struct tuple_T4OOOO {
     PyObject *f2;
     PyObject *f3;
 } tuple_T4OOOO;
+#endif
+
+#ifndef MYPYC_DECLARED_tuple_T2IO
+#define MYPYC_DECLARED_tuple_T2IO
+typedef struct tuple_T2IO {
+    CPyTagged f0;
+    PyObject *f1;
+} tuple_T2IO;
 #endif
 
 #ifndef MYPYC_DECLARED_tuple_T4OIOC
@@ -1027,6 +1027,24 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__reference;
     PyObject *___mypyc_generator_attribute__obj;
 } dank_mids___helpers____weaklist_____iter___3_WeakList_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_self__;
+    PyObject *_self;
+    CPyTagged _item_id;
+    PyObject *__gc_callback;
+    PyObject *_item;
+} dank_mids___helpers____weaklist____make_ref_WeakList_envObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+    PyObject *___mypyc_env__;
+    CPyTagged _item_id;
+} dank_mids___helpers____weaklist____gc_callback__make_ref_WeakList_objObject;
 
 typedef struct {
     PyObject_HEAD
