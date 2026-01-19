@@ -38,7 +38,7 @@ MulticallDecoder: TypeAlias = Callable[..., DecodedMulticall]
 
 JSONRPCBatchRequest: TypeAlias = list["types.Request"]
 # NOTE: A PartialResponse result implies a failure response from the rpc.
-JSONRPCBatchResponse: TypeAlias = list["RawResponse"] | "types.PartialResponse"
+JSONRPCBatchResponse: TypeAlias = Union[list["RawResponse"], "types.PartialResponse"]
 BatchDecoder: TypeAlias = Callable[[str | bytes], Union[list[msgspec.Raw], "types.PartialResponse"]]
 
 # these compile to C constants
