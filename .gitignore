@@ -15,4 +15,8 @@ build/**/*.so
 build/**/*.pyd
 build/ops.txt
 # build stuff
-build/se
+build/setup.py
+# windows build stuff
+*.obj
+*.exp
+*.lib
