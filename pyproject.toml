@@ -44,7 +44,7 @@ faster-eth-abi = ">=5.2.12"
 faster-eth-utils = ">=5.3.11"
 faster-hexbytes = ">1,<2"
 multicall = ">=0.6.2,<1"
-typed-envs = ">=0.2.1,<0.3"
+typed-envs = "==0.2.4"
 web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<8"
 
 [tool.poetry.group.dev.dependencies]
@@ -58,7 +58,7 @@ types-aiofiles = "*"
 importlib-resources = ">=6.4.0"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core", "typed-envs==0.2.4"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
