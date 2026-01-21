@@ -25,9 +25,6 @@ include = [
     { path = "8a4082216e5922611c62__mypyc.cpython-313-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
     { path = "8a4082216e5922611c62__mypyc.cpython-313-darwin.so", format = ["sdist", "wheel"] },
     { path = "8a4082216e5922611c62__mypyc.cp313-win_amd64.pyd", format = ["sdist", "wheel"] },
-    { path = "8a4082216e5922611c62__mypyc.cpython-314-x86_64-linux-gnu.so", format = ["sdist", "wheel"] },
-    { path = "8a4082216e5922611c62__mypyc.cpython-314-darwin.so", format = ["sdist", "wheel"] },
-    { path = "8a4082216e5922611c62__mypyc.cp314-win_amd64.pyd", format = ["sdist", "wheel"] },
 ]
 exclude = ["tests", "tests.*"]
 
@@ -68,6 +65,11 @@ check_untyped_defs = true
 disable_error_code = ["return"]
 plugins = ["typed_envs.mypy_plugin"]
 
+files = ["dank_mids"]
+pretty = true
+show_error_codes = true
+show_error_context = true
+warn_no_return = false
 [tool.black]
 line-length = 100
 target-version = ['py310']
