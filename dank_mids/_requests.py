@@ -455,10 +455,20 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         try:
             response = await try_for_result_quick(task)
+        except ClientResponseError as e:
+            if e.status != 408:  # request timeout
+                raise
+            log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
+            log_func(
+                "`make_request` server timeout (code 408) %s times for %s, trying again...",
+                num_previous_timeouts + 1,
+                self,
+            )
+            return await self.make_request(num_previous_timeouts + 1)
         except TimeoutError:
             log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
-                "`make_request` timed out (%ss) %s times for %s, trying again...",
+                "`make_request` timed out in dank_mids (%ss) %s times for %s, trying again...",
                 TIMEOUT_SECONDS_SMALL,
                 num_previous_timeouts + 1,
                 self,
