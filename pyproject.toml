@@ -46,7 +46,7 @@ web3 = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<8"
 
 [tool.poetry.group.dev.dependencies]
 eth-brownie = "1.22.0.dev2"
-pytest = "6.2.5"
+pytest = "9.0.2"
 pytest-asyncio-cooperative = "0.40.0"
 pytest-cov = "6.3.0"
 pytest-sugar = "1.1.1"
