@@ -205,7 +205,7 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch --no-tags origin "${GITHUB_REF}"
+          git fetch --no-tags origin "${GITHUB_HEAD_REF}"
           git merge --ff-only "FETCH_HEAD"
           git add .
           git commit -m "chore: compile to C for macOS with mypyc"
