@@ -71,6 +71,7 @@ from dank_mids.helpers._errors import (
     error_logger,
     error_logger_debug,
     error_logger_log_debug,
+    format_with_errors,
     gas_logger_debug,
     is_call_revert,
     is_revert_bytes,
@@ -367,9 +368,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         response = response.decode(partial=True)
 
         if response.error is None:
-            if self.raw and response.result:
-                return {"result": response.result}
-            return response.to_dict(self.method)
+            return format_with_errors(response, self.method, raw_mode=self.raw)
 
         if needs_full_request_spec(response) and controller._check_request_type():
             method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
@@ -379,9 +378,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         elif error_logger.isEnabledFor(DEBUG) and type(response.exception) is not ExecutionReverted:
             error_logger_log_debug("%s for %s", response.error, self)
 
-        response = response.to_dict(self.method)
-        response["error"] = dict(response["error"].items(), dankmids_added_context=self.request)
-        return response
+        return format_with_errors(response, self.method, raw_mode=self.raw, request=self.request)
 
     @stuck_coro_debugger
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
@@ -404,11 +401,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
-        return (
-            {"result": decoded.result}
-            if self.raw and decoded.result
-            else decoded.to_dict(self.method)
-        )
+        return decode_rpc_response(decoded, self.method, raw_mode=self.raw)
 
     async def spoof_response(self, data: RawResponse | bytes | Exception) -> None:
         # sourcery skip: merge-duplicate-blocks
