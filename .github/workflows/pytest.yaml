@@ -82,7 +82,8 @@ jobs:
       - name: Run unit tests
         env:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
-        run: poetry run pytest -s -v tests/unit
+          PYTEST_ADDOPTS: "-s -v tests/unit"
+        run: poetry run pytest
         shell: bash
 
   integration:
@@ -168,6 +169,7 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
-        run: poetry run pytest tests/integration -s -v --asyncio-task-timeout=3600
+          PYTEST_ADDOPTS: "-s -v --asyncio-task-timeout=3600 tests/integration"
+        run: poetry run pytest
         shell: bash
       
