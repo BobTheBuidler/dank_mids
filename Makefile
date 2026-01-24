@@ -1,16 +1,7 @@
 .PHONY: docs mypy mypyc mypyc-deps
 
 PYTHON ?= python
-MYPYC_DEPS = mypy[mypyc]==1.19.1 \
-	setuptools \
-	types-requests \
-	eth-typing==5.2.1 \
-	eth-retry==0.3.6 \
-	ez-a-sync==0.33.9 \
-	faster-eth-abi==5.2.22 \
-	faster-eth-utils==5.3.20 \
-	faster-hexbytes==1.3.5 \
-	typed-envs==0.2.4
+MYPYC_DEPS_FILE = requirements-build.txt
 
 mypy:
 	mypy ./dank_mids --pretty --ignore-missing-imports --show-error-codes --show-error-context --no-warn-no-return
@@ -25,7 +16,7 @@ benchmark:
 	poetry run brownie run examples/benchmark
 
 mypyc-deps:
-	$(PYTHON) -m pip install $(MYPYC_DEPS)
+	$(PYTHON) -m pip install -r $(MYPYC_DEPS_FILE)
 
 mypyc: mypyc-deps
 	MYPYC_STRICT_DUNDER_TYPING=1 mypyc dank_mids/_batch.py \
