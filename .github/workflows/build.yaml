@@ -20,9 +20,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-ubuntu:
-    needs: [build-macos, build-windows]
-    runs-on: ubuntu-latest
+  build-mypyc:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - os: ubuntu-latest
+            artifact_suffix: linux
+            artifact_glob: "**/*.so"
+          - os: macos-latest
+            artifact_suffix: macos
+            artifact_glob: "**/*.so"
+          - os: windows-latest
+            artifact_suffix: windows
+            artifact_glob: "**/*.pyd"
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -33,68 +47,74 @@ jobs:
       - name: Update aiolimiter submodule
         run: make update-aiolimiter
 
-      - name: Download aiolimiter artifacts (macOS)
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-build.txt
+      - name: Run Mypyc (${{ matrix.python-version }})
+        run: make mypyc
+
+      - name: Remove non-latest Linux C/H outputs
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version != '3.14'
+        run: rm -f build/**/*.c build/**/*.h
+
+      - name: Archive dank-mids artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: dank-mids-${{ matrix.artifact_suffix }}-artifacts-${{ matrix.python-version }}
+          path: dank_mids/_vendor/aiolimiter/src/${{ matrix.artifact_glob }}
+
+      - name: Archive Linux C/H sources
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'
+        uses: actions/upload-artifact@v6
+        with:
+          name: dank-mids-linux-c-headers
+          path: |
+            build/**/*.c
+            build/**/*.h
+
+  finalize-ubuntu:
+    needs: [build-mypyc]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          # Check out the PR branch
+          ref: ${{ github.head_ref }}
+
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
+
+      - name: Download dank-mids artifacts (macOS)
         uses: actions/download-artifact@v7
         with:
-          name: aiolimiter-macos-artifacts
+          pattern: dank-mids-macos-artifacts-*
           path: dank_mids/_vendor/aiolimiter/src/
+          merge-multiple: true
 
-      - name: Download aiolimiter artifacts (Windows)
+      - name: Download dank-mids artifacts (Windows)
         uses: actions/download-artifact@v7
         with:
-          name: aiolimiter-windows-artifacts
+          pattern: dank-mids-windows-artifacts-*
           path: dank_mids/_vendor/aiolimiter/src/
+          merge-multiple: true
 
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v6
+      - name: Download dank-mids artifacts (Linux)
+        uses: actions/download-artifact@v7
         with:
-          python-version: "3.10"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.10)
-        run: make mypyc
+          pattern: dank-mids-linux-artifacts-*
+          path: dank_mids/_vendor/aiolimiter/src/
+          merge-multiple: true
 
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
+      - name: Download Linux C/H sources (dank-mids)
+        uses: actions/download-artifact@v7
         with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.11)
-        run: make mypyc
+          name: dank-mids-linux-c-headers
+          path: .
 
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.12)
-        run: make mypyc
-
-      # Python 3.13
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.13)
-        run: make mypyc
-
-      # Python 3.14
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.14"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.14)
-        run: make mypyc
-          
       - name: Normalize C files for diffchecking
         # This makes it much easier to diffcheck changes in the C files
         shell: bash
@@ -150,181 +170,8 @@ jobs:
           git pull --rebase
           git push origin HEAD:mypyc
 
-  build-macos:
-    needs: build-windows
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
-
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
-
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.10)
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.11)
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.12)
-        run: make mypyc
-
-      # Python 3.13
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.13)
-        run: make mypyc
-
-      # Python 3.14
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.14"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.14)
-        run: make mypyc
-
-      - name: Check for changes (macOS)
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes (macOS)
-        if: env.changes_detected == 'true'
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch --no-tags origin "${GITHUB_HEAD_REF}"
-          git merge --ff-only "FETCH_HEAD"
-          git add .
-          git commit -m "chore: compile to C for macOS with mypyc"
-          git push
-
-      - name: Archive aiolimiter artifacts (macOS)
-        uses: actions/upload-artifact@v6
-        with:
-          name: aiolimiter-macos-artifacts
-          path: dank_mids/_vendor/aiolimiter/src/**/*.so
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
-      
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
-
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.10)
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.11)
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.12)
-        run: make mypyc
-
-      # Python 3.13
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.13)
-        run: make mypyc
-
-      # Python 3.14
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.14"
-          cache: pip
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.14)
-        run: make mypyc
-
-      - name: Check for changes (Windows)
-        shell: bash
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes (Windows)
-        if: env.changes_detected == 'true'
-        shell: bash
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: compile to C for Windows AMD64 with mypyc"
-          git push
-
-      - name: Archive aiolimiter artifacts (Windows)
-        uses: actions/upload-artifact@v6
-        with:
-          name: aiolimiter-windows-artifacts
-          path: dank_mids/_vendor/aiolimiter/src/**/*.pyd
-
   update-submodule-pointer:
-    needs: [build-ubuntu, build-macos, build-windows]
+    needs: [finalize-ubuntu]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
