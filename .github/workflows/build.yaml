@@ -27,16 +27,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-        include:
-          - os: ubuntu-latest
-            artifact_suffix: linux
-            artifact_glob: "**/*.so"
-          - os: macos-latest
-            artifact_suffix: macos
-            artifact_glob: "**/*.so"
-          - os: windows-latest
-            artifact_suffix: windows
-            artifact_glob: "**/*.pyd"
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -63,8 +53,8 @@ jobs:
       - name: Archive dank-mids artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: dank-mids-${{ matrix.artifact_suffix }}-artifacts-${{ matrix.python-version }}
-          path: dank_mids/_vendor/aiolimiter/src/${{ matrix.artifact_glob }}
+          name: dank-mids-${{ matrix.os }}-artifacts-${{ matrix.python-version }}
+          path: dank_mids/_vendor/aiolimiter/src/${{ matrix.os == 'windows-latest' && '**/*.pyd' || '**/*.so' }}
 
       - name: Archive Linux C/H sources
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'
