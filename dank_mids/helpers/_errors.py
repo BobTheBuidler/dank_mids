@@ -2,11 +2,12 @@ from logging import Logger
 from typing import TYPE_CHECKING, Any, Final
 
 from web3.exceptions import ContractLogicError
+from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids._exceptions import BadResponse
 from dank_mids.constants import REVERT_SELECTORS
 from dank_mids.logging import DEBUG, get_c_logger
-from dank_mids.types import PartialResponse
+from dank_mids.types import Request, PartialRequest, PartialResponse
 
 if TYPE_CHECKING:
     from dank_mids._requests import _Batch
@@ -118,3 +119,22 @@ def log_request_type_switch() -> None:
     error_logger_debug(
         "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
     )
+
+
+def format_with_errors(
+    decoded: PartialResponse,
+    method: RPCEndpoint,
+    *,
+    raw_mode: bool,
+    request: Request| PartialRequest | None = None,
+) -> RPCResponse:
+    """Decode a PartialResponse struct to a response dict, attaching request context for errors."""
+    if decoded.error is None:
+        if raw_mode and decoded.result:
+            return {"result": decoded.result}
+        return decoded.to_dict(method)
+
+    response = decoded.to_dict(method)
+    if request is not None:
+        response["error"] = dict(response["error"].items(), dankmids_added_context=request)
+    return response
