@@ -5,7 +5,7 @@ MYPYC_DEPS = mypy[mypyc]==1.19.1 \
 	setuptools \
 	types-requests \
 	eth-typing==5.2.1 \
-	eth-retry==0.3.5 \
+	eth-retry==0.3.6 \
 	ez-a-sync==0.33.9 \
 	faster-eth-abi==5.2.22 \
 	faster-eth-utils==5.3.20 \
