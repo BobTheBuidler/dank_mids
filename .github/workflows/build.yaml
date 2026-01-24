@@ -11,6 +11,7 @@ on:
       - 'Makefile'
       - 'pyproject.toml'
       - 'poetry.lock'
+      - 'requirements-build.txt'
       - 'dank_mids/**/*.py'
       - 'dank_mids/_vendor/aiolimiter'
       - 'dank_mids/_vendor/aiolimiter/**'
