@@ -1529,14 +1529,14 @@ typing_extensions = ">=4.8.0,<5"
 
 [[package]]
 name = "eth-retry"
-version = "0.3.6"
+version = "0.3.7"
 description = "Provides a decorator that automatically catches known transient exceptions that are common in the Ethereum/EVM ecosystem and reattempts to evaluate your decorated function"
 optional = false
 python-versions = "<4,>=3.10"
 groups = ["main"]
 files = [
-    {file = "eth_retry-0.3.6-py3-none-any.whl", hash = "sha256:ba0e353ece9b8f22d9d6f4596a7eb760668c4ad3b72b81ccc65adb34b30f6c13"},
-    {file = "eth_retry-0.3.6.tar.gz", hash = "sha256:970d53ecb7592122dc25ea252eebfd033d307a8e28aae3d20884d06422edf9b7"},
+    {file = "eth_retry-0.3.7-py3-none-any.whl", hash = "sha256:3155584bf6a178b95aa959d344dd077851295ceecba263b97a733cc9c1b1629c"},
+    {file = "eth_retry-0.3.7.tar.gz", hash = "sha256:0a0d7efbdd2f986e965e5bc8f6698d4efc001387b74d509b16216fc165d5aa5f"},
 ]
 
 [package.dependencies]
