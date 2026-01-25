@@ -2,7 +2,7 @@ mypy[mypyc]==1.19.1
 setuptools
 types-requests
 eth-typing==5.2.1
-eth-retry==0.3.6
+eth-retry==0.3.7
 ez-a-sync==0.33.9
 faster-eth-abi==5.2.25
 faster-hexbytes==1.3.6
