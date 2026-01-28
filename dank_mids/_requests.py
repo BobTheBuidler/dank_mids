@@ -1065,9 +1065,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
                     return
 
     @property
-    def data(self) -> bytes:
+    def data(self) -> bytes | None:
         try:
-            return b"[" + b",".join(call.request.data for call in self) + b"]"
+            joined = b",".join(call.request.data for call in self)
         except TypeError as e0:
             # If we can't encode one of the calls, lets figure out which one and pass some useful info downstream
             for call in self:
@@ -1076,6 +1076,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
                 except TypeError as e1:
                     raise TypeError(e1, call.request) from e0.__cause__
             raise
+        else:
+            return b"[" + joined + b"]" if joined else None
 
     @property
     def is_multicalls_only(self) -> bool:
@@ -1171,7 +1173,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             while True:
                 try:
                     # NOTE: We do this inline so we never have to allocate the response to memory
-                    await self.spoof_response(*await self.post())
+                    await self.spoof_response(await self.post())
                     break
                 except ChainstackRateLimitError as e:
                     # Chainstack doesn't use 429 for rate limiting, it sends a successful response back to the rpc with an error
@@ -1218,7 +1220,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
 
     @stuck_coro_debugger
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1, suppress_logs=2)
-    async def post(self) -> tuple[list[RawResponse], list[Multicall | RPCRequest]]:
+    async def post(self) -> list[RawResponse]:
         """
         Send the batch of requests to the Ethereum node and process the responses.
 
@@ -1233,28 +1235,25 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             ClientResponseError: If there was an error with the HTTP request.
             Exception: For other unexpected errors.
         """
+        # If all calls in the batch were GC'ed, bail out
         data = self.data
-        if data == b"[]":
-            # All calls in the batch were GC'ed, bail out
-            return [], []
+        if not data:
+            return []
                 
         endpoint = self.controller.endpoint
         try:
-                
             post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
             task = create_task(post_coro, name=f"JSONRPCBatch-{self.uid}")
             response: JSONRPCBatchResponse = await wait_for(shield(task), timeout=30)
         except TimeoutError:
             timeout_logger_warning("JSONRPCBatch.post timed out (30s). Retrying.")
-            
+            # If all calls in the batch were GC'ed, bail out
             data = self.data
-            if data == b"[]":
-                # All calls in the batch were GC'ed, bail out
-                return [], []
-                
+            if not data:
+                return []
             new_post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
             for fut in as_completed([task, new_post_coro]):
-                return await fut, calls
+                return await fut
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 _log_warning("Payload too large: %s", self.method_counts)
@@ -1275,7 +1274,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
         if isinstance(response, list):
-            return response, calls
+            return response
 
         # Oops, we failed.
         errmsg = response.error.message
@@ -1313,10 +1312,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             )
         return _Batch.should_retry(self, e)
 
-    async def _spoof_response_by_id(
-        self, response: list[RawResponse], calls: tuple[RPCRequest, ...]
-    ) -> list[Coroutine[Any, Any, None]]:
-        call_by_id = {str(call.uid): call for call in calls}
+    async def _spoof_response_by_id(self, response: list[RawResponse]) -> list[Coroutine[Any, Any, None]]:
+        call_by_id = {str(call.uid): call for call in self}
         mcall_coros = []
         for raw in response:
             key = str(raw.decode().id)
@@ -1333,9 +1330,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
 
     @set_done
     @stuck_coro_debugger
-    async def spoof_response(
-        self, response: list[RawResponse], calls: tuple[RPCRequest, ...]
-    ) -> None:
+    async def spoof_response(self, response: list[RawResponse]) -> None:
         """
         Process the responses from the Ethereum node and set the results for each call.
 
@@ -1345,11 +1340,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
 
         Args:
             response: A list of RawResponse objects containing the responses from the node.
-            calls: A list of RPCRequest objects that were included in the batch.
         """
         # Reaching this point means we made a batch call and we got results. That doesn't mean they're good, but we got 'em.
 
-        mcall_coros = await self._spoof_response_by_id(response, calls)
+        mcall_coros = await self._spoof_response_by_id(response)
 
         if mcall_coros:
             await gatherish(mcall_coros, name="JSONRPCBatch.spoof_response gatherish")
