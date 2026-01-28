@@ -11,7 +11,7 @@ from asyncio import (
     wait_for,
 )
 from collections import defaultdict
-from collections.abc import Callable, Generator, Iterable, Iterator, Sequence
+from collections.abc import Callable, Coroutine, Generator, Iterable, Iterator, Sequence
 from itertools import chain, filterfalse, groupby
 from typing import TYPE_CHECKING, Any, DefaultDict, Final, Generic, Optional, TypeVar, Union, final
 from weakref import ProxyType
@@ -1312,6 +1312,24 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
                 "pretty sure we can't get here anymore now that I check this in the beginning of JSONRPCBatch.get_response"
             )
         return _Batch.should_retry(self, e)
+
+    async def _spoof_response_by_id(
+        self, response: list[RawResponse], calls: tuple[RPCRequest, ...]
+    ) -> list[Coroutine[Any, Any, None]]:
+        call_by_id = {str(call.uid): call for call in calls}
+        mcall_coros = []
+        for raw in response:
+            key = str(raw.decode().id)
+            call = call_by_id.pop(key, None)
+            if call is None or not call:
+                continue
+            if isinstance(call, Multicall):
+                mcall_coros.append(Multicall._spoof_or_retry(call, raw))
+            else:
+                # These do not need to be delegated to tasks since they
+                # will always complete synchronously when called here
+                await call.spoof_response(raw)
+        return mcall_coros
 
     @set_done
     @stuck_coro_debugger
