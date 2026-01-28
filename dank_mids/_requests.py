@@ -597,6 +597,7 @@ _Request = TypeVar("_Request", bound=_RequestBase)
 class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
     calls: Final[WeakList[_Request]]
     _done: Final[_RequestEvent]
+
     _awaited: bool = False
     """A flag indicating whether the batch has been awaited."""
 
@@ -742,7 +743,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             block = int(block, 16)
         batch = self._batch
         batch_info = "" if batch is None else f" batch={batch}"
-        return f"<{self.__class__.__name__} mid={self.bid} block={block} len={len(self)}{batch_info} awaited={self._awaited}>"
+        return f"<Multicall mid={self.bid} block={block} len={len(self)}{batch_info} awaited={self._awaited}>"
 
     def __iter__(self) -> Iterator[eth_call]:
         return iter(self.calls)
@@ -956,7 +957,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                     # We will asynchronously handle this revert
                     to_gather.append(eth_call.spoof_response(call, result))
                 else:
-                    # `spoof_response` with a successful call result will complete synchronously
+                    # `spoof_response` with a successful call result will always complete synchronously when called here
                     await eth_call.spoof_response(call, result)
 
             await gatherish(to_gather, name="Multicall.spoof_response gatherish")
@@ -1046,7 +1047,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
     def __repr__(self) -> str:
         batch = self._batch
         batch_info = "" if batch is None else f" batch={batch}"
-        return f"<{self.__class__.__name__} jid={self.jid} len={len(self)}{batch_info} awaited={self._awaited}>"
+        return f"<JSONRPCBatch jid={self.jid} len={len(self)}{batch_info} awaited={self._awaited}>"
 
     def __iter__(self) -> Iterator[Multicall | eth_call | RPCRequest]:
         return filter(None, self.calls)
