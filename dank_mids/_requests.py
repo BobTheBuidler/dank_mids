@@ -1233,27 +1233,26 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             ClientResponseError: If there was an error with the HTTP request.
             Exception: For other unexpected errors.
         """
+        data = self.data
+        if data == b"[]":
+            # All calls in the batch were GC'ed, bail out
+            return [], []
+                
+        endpoint = self.controller.endpoint
         try:
-            # we need strong refs so the results all get to the right place
-            calls = tuple(self)
-            if not calls:
-                # TODO: figure out why this can happen and prevent it elsewhere
-                return [], []
-
-            # for the multicalls too
-            _keepalive_multicall_calls = tuple(
-                tuple(call.calls) for call in calls if type(call) is Multicall  # type: ignore [union-attr]
-            )
-            post_coro = _requester.post(
-                self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
-            )
+                
+            post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
             task = create_task(post_coro, name=f"JSONRPCBatch-{self.uid}")
             response: JSONRPCBatchResponse = await wait_for(shield(task), timeout=30)
         except TimeoutError:
             timeout_logger_warning("JSONRPCBatch.post timed out (30s). Retrying.")
-            new_post_coro = _requester.post(
-                self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
-            )
+            
+            data = self.data
+            if data == b"[]":
+                # All calls in the batch were GC'ed, bail out
+                return [], []
+                
+            new_post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
             for fut in as_completed([task, new_post_coro]):
                 return await fut, calls
         except ClientResponseError as e:
