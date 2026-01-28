@@ -241,11 +241,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-} dank_mids____exceptions___BatchResponseSortErrorObject;
-
-typedef struct {
-    PyObject_HEAD
-    CPyVTableItem *vtable;
 } dank_mids____exceptions___RateLimitErrorObject;
 
 typedef struct {
