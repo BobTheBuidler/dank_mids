@@ -399,6 +399,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             # NOTE: Now that this has been refactored do we actually even need the duplicate task?
             return await self.create_duplicate().get_response_unbatched()
 
+
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
         return format_with_errors(decoded, self.method, raw_mode=self.raw)
@@ -1235,23 +1236,23 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             Exception: For other unexpected errors.
         """
         try:
-            # we need strong refs so the results all get to the right place
-            calls = tuple(self)
-            if not calls:
-                # TODO: figure out why this can happen and prevent it elsewhere
+            # We need strong refs so the results all get to the right place.
+            calls, data = self._calls_and_data()
+            if not calls or data == b"[]":
+                # Avoid sending an empty JSON-RPC batch payload.
                 return [], []
 
-            # for the multicalls too
+            # For the multicalls too.
             mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
             post_coro = _requester.post(
-                self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
+                self.controller.endpoint, data=data, loads=_codec.decode_jsonrpc_batch
             )
             task = create_task(post_coro, name=f"JSONRPCBatch-{self.uid}")
             response: JSONRPCBatchResponse = await wait_for(shield(task), timeout=30)
         except TimeoutError:
             timeout_logger_warning("JSONRPCBatch.post timed out (30s). Retrying.")
             new_post_coro = _requester.post(
-                self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
+                self.controller.endpoint, data=data, loads=_codec.decode_jsonrpc_batch
             )
             for fut in as_completed([task, new_post_coro]):
                 return await fut, calls
@@ -1312,6 +1313,27 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
                 "pretty sure we can't get here anymore now that I check this in the beginning of JSONRPCBatch.get_response"
             )
         return _Batch.should_retry(self, e)
+
+    def _calls_and_data(
+        self,
+    ) -> tuple[tuple[Multicall | eth_call | RPCRequest, ...], bytes]:
+        calls = []
+        data_parts = []
+        try:
+            for call in self.calls:
+                if not call:
+                    continue
+                calls.append(call)
+                data_parts.append(call.request.data)
+            data = b"[" + b",".join(data_parts) + b"]"
+        except TypeError as e0:
+            for call in calls:
+                try:
+                    call.request.data
+                except TypeError as e1:
+                    raise TypeError(e1, call.request) from e0.__cause__
+            raise
+        return tuple(calls), data
 
     async def _spoof_response_by_id(
         self, response: list[RawResponse], calls: tuple[RPCRequest, ...]
