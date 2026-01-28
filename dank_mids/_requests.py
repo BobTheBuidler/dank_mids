@@ -523,7 +523,7 @@ class eth_call(RPCRequest):
         """The rpc method for this request."""
 
         self.params = params
-        """The parameters to send with this request."""
+        """The parameters to send with this request, if any."""
 
         self.block = params[1]
         self._failures = {}
@@ -1213,7 +1213,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
 
         try:
             # For the multicalls too.
-            mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
+            _keepalive_multicall_calls = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
             post_coro = _requester.post(
                 self.controller.endpoint, data=data, loads=_codec.decode_jsonrpc_batch
             )
