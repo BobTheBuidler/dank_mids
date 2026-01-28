@@ -1242,8 +1242,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
 
             # for the multicalls too
             _keepalive_multicall_calls = tuple(
-                tuple(call.calls) for call in calls if type(call) is Multicall
-            )  # type: ignore [union-attr]
+                tuple(call.calls) for call in calls if type(call) is Multicall  # type: ignore [union-attr]
+            )
             post_coro = _requester.post(
                 self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
             )
