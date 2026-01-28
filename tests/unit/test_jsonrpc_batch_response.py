@@ -83,15 +83,16 @@ def test_calls_and_data_snapshot_filters_falsey_and_handles_empty() -> None:
         call1 = _DummyDataCall(1, b"{}")
         call2 = _DummyDataCall(2, b"{}", truthy=False)
         batch = JSONRPCBatch(controller, [call1, call2], jid="batch-1")
-        calls, data = batch._calls_and_data()
+        calls = tuple(batch)
+        data = batch.data
         empty_call = _DummyDataCall(3, b"{}", truthy=False)
         empty_batch = JSONRPCBatch(controller, [empty_call], jid="batch-2")
-        empty_calls, empty_data = empty_batch._calls_and_data()
-        return call1, calls, data, empty_calls, empty_data
+        empty_response, empty_calls = await empty_batch.post()
+        return call1, calls, data, empty_calls, empty_response
 
-    call1, calls, data, empty_calls, empty_data = asyncio.run(run())
+    call1, calls, data, empty_calls, empty_response = asyncio.run(run())
 
     assert calls == (call1,)
     assert data == b"[{}]"
-    assert empty_calls == ()
-    assert empty_data == b"[]"
+    assert empty_calls == []
+    assert empty_response == []
