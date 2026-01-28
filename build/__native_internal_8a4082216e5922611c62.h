@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1430];
+extern PyObject *CPyStatics[1423];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -281,7 +281,6 @@ extern PyTypeObject *CPyType__exceptions___ExceedsMaxBatchSize;
 extern PyTypeObject *CPyType__exceptions___DankMidsClientResponseError;
 extern PyObject *CPyDef__exceptions___DankMidsClientResponseError(PyObject *cpy_r_exc, PyObject *cpy_r_request);
 extern PyTypeObject *CPyType__exceptions___DankMidsInternalError;
-extern PyTypeObject *CPyType__exceptions___BatchResponseSortError;
 extern PyTypeObject *CPyType__exceptions___RateLimitError;
 extern PyTypeObject *CPyType__exceptions___ChainstackRateLimitError;
 extern PyTypeObject *CPyType__exceptions___QuiknodeRateLimitError;
@@ -295,8 +294,6 @@ extern char CPyDef__exceptions___DankMidsClientResponseError_____init__(PyObject
 extern PyObject *CPyPy__exceptions___DankMidsClientResponseError_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern char CPyDef__exceptions___DankMidsInternalError_____init__(PyObject *cpy_r_self, PyObject *cpy_r_exc);
 extern PyObject *CPyPy__exceptions___DankMidsInternalError_____init__(PyObject *self, PyObject *args, PyObject *kw);
-extern char CPyDef__exceptions___BatchResponseSortError_____init__(PyObject *cpy_r_self, PyObject *cpy_r_controller, PyObject *cpy_r_calls, PyObject *cpy_r_response);
-extern PyObject *CPyPy__exceptions___BatchResponseSortError_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern double CPyDef__exceptions___ChainstackRateLimitError___try_again_in(PyObject *cpy_r_self);
 extern PyObject *CPyPy__exceptions___ChainstackRateLimitError___try_again_in(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__exceptions_____top_level__(void);

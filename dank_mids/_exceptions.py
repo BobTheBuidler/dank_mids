@@ -1,5 +1,4 @@
 import re
-from collections.abc import Sequence
 from typing import TYPE_CHECKING, Final, Union, final
 
 from aiohttp.client_exceptions import ClientResponseError
@@ -7,9 +6,6 @@ from aiohttp.client_exceptions import ClientResponseError
 from dank_mids.logging import get_c_logger
 
 if TYPE_CHECKING:
-    from dank_mids._requests import RPCRequest
-    from dank_mids.controller import DankMiddlewareController
-    from dank_mids.helpers._codec import RawResponse
     from dank_mids.types import PartialRequest, PartialResponse
 
 
@@ -112,40 +108,6 @@ class DankMidsInternalError(Exception):
         """
 
         super().__init__(repr(exc))
-
-
-@final
-class BatchResponseSortError(Exception):
-    """
-    Exception raised when there is an issue with sorting batch responses.
-    Indicates special handling is needed for batch calls/responses in your RPC.
-    """
-
-    def __init__(
-        self,
-        controller: "DankMiddlewareController",
-        calls: Sequence["RPCRequest"],
-        response: list["RawResponse"],
-    ) -> None:
-        self.calls: Final = calls
-        """
-        A list of RPCRequest objects representing the calls that were made in the batch.
-        This can be used to analyze which calls were included in the problematic batch.
-        """
-
-        self.results: Final = [raw.decode() for raw in response]
-        """
-        A list of Response objects representing the decoded results from the RPC call.
-        This can be used to analyze the responses that couldn't be properly sorted.
-        """
-
-        super().__init__(
-            f"This will not mess up your run but will make things needlessly slow. Please show this to Bob.\n"
-            f"endpoint={controller.endpoint}\n"
-            f"client_version={controller.client_version}\n"
-            f"calls={[call.uid for call in calls]}\n"
-            f"response={self.results}"
-        )
 
 
 class RateLimitError(BadResponse): ...
