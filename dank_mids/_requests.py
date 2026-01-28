@@ -399,7 +399,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
             # NOTE: Now that this has been refactored do we actually even need the duplicate task?
             return await self.create_duplicate().get_response_unbatched()
 
-
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
         return format_with_errors(decoded, self.method, raw_mode=self.raw)
@@ -957,7 +956,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                     # We will asynchronously handle this revert
                     to_gather.append(eth_call.spoof_response(call, result))
                 else:
-                    # `spoof_response` with a successful call result will always complete synchronously when called here
+                    # `spoof_response` with a successful call result will complete synchronously
                     await eth_call.spoof_response(call, result)
 
             await gatherish(to_gather, name="Multicall.spoof_response gatherish")
@@ -1241,16 +1240,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             # Avoid sending an empty JSON-RPC batch payload.
             return [], []
 
-        try:
-            data = b"[" + b",".join(call.request.data for call in calls) + b"]"
-        except TypeError as e0:
-            for call in calls:
-                try:
-                    call.request.data
-                except TypeError as e1:
-                    raise TypeError(e1, call.request) from e0.__cause__
-            raise
-
+        data = self.data
         if data == b"[]":
             # Avoid sending an empty JSON-RPC batch payload.
             return [], []
