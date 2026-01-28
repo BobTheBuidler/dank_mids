@@ -38,7 +38,6 @@ from dank_mids import _debugging, constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import (
     BadResponse,
-    BatchResponseSortError,
     ChainstackRateLimitError,
     DankMidsInternalError,
     EmptyBatch,
@@ -1320,8 +1319,6 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             calls: A list of RPCRequest or Multicall objects that were included in the batch.
         """
         # Reaching this point means we made a batch call and we got results. That doesn't mean they're good, but we got 'em.
-
-        controller = self.controller
 
         # Route by id so dropped calls are skipped safely.
         mcall_coros = await self._spoof_response_by_id(response, calls)
