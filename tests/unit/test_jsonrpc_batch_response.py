@@ -40,6 +40,23 @@ class _DummyCall:
         self.responses.append(raw)
 
 
+class _DummyRequest:
+    def __init__(self, data: bytes) -> None:
+        self.data = data
+
+
+class _DummyDataCall:
+    def __init__(self, uid: int, data: bytes, truthy: bool = True) -> None:
+        self.uid = uid
+        self._truthy = truthy
+        self.request = _DummyRequest(data)
+        self._fut = asyncio.get_running_loop().create_future()
+        self._fut.set_result(None)
+
+    def __bool__(self) -> bool:
+        return self._truthy
+
+
 def test_spoof_response_by_id_matches_and_skips_falsey() -> None:
     async def run():
         controller = _DummyController()
@@ -58,3 +75,23 @@ def test_spoof_response_by_id_matches_and_skips_falsey() -> None:
     assert call1.responses == [response[1]]
     assert call2.responses == []
     assert mcall_coros == []
+
+
+def test_calls_and_data_snapshot_filters_falsey_and_handles_empty() -> None:
+    async def run():
+        controller = _DummyController()
+        call1 = _DummyDataCall(1, b"{}")
+        call2 = _DummyDataCall(2, b"{}", truthy=False)
+        batch = JSONRPCBatch(controller, [call1, call2], jid="batch-1")
+        calls, data = batch._calls_and_data()
+        empty_call = _DummyDataCall(3, b"{}", truthy=False)
+        empty_batch = JSONRPCBatch(controller, [empty_call], jid="batch-2")
+        empty_calls, empty_data = empty_batch._calls_and_data()
+        return call1, calls, data, empty_calls, empty_data
+
+    call1, calls, data, empty_calls, empty_data = asyncio.run(run())
+
+    assert calls == (call1,)
+    assert data == b"[{}]"
+    assert empty_calls == ()
+    assert empty_data == b"[]"
