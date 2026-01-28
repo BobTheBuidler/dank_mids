@@ -1,54 +1,5 @@
 import asyncio
 import atexit
-import logging
-import sys
-import types
-
-if "pkg_resources" not in sys.modules:
-    pkg_resources = types.ModuleType("pkg_resources")
-
-    def get_distribution(name: str):
-        class _Dist:
-            version = "0"
-
-        return _Dist()
-
-    pkg_resources.get_distribution = get_distribution
-    sys.modules["pkg_resources"] = pkg_resources
-
-if not hasattr(logging, "_acquireLock"):
-    _lock = getattr(logging, "_lock", None)
-
-    def _acquireLock() -> None:
-        if _lock is not None:
-            _lock.acquire()
-
-    def _releaseLock() -> None:
-        if _lock is not None:
-            _lock.release()
-
-    setattr(logging, "_acquireLock", _acquireLock)
-    setattr(logging, "_releaseLock", _releaseLock)
-
-if "dank_mids._vendor.aiolimiter.src.aiolimiter" not in sys.modules:
-    vendor_pkg = types.ModuleType("dank_mids._vendor")
-    vendor_pkg.__path__ = []
-    aiolimiter_pkg = types.ModuleType("dank_mids._vendor.aiolimiter")
-    aiolimiter_pkg.__path__ = []
-    src_pkg = types.ModuleType("dank_mids._vendor.aiolimiter.src")
-    src_pkg.__path__ = []
-    aiolimiter_mod = types.ModuleType("dank_mids._vendor.aiolimiter.src.aiolimiter")
-
-    class AsyncLimiter:
-        def __init__(self, *args, **kwargs) -> None:
-            self._waiters = []
-
-    aiolimiter_mod.AsyncLimiter = AsyncLimiter
-
-    sys.modules["dank_mids._vendor"] = vendor_pkg
-    sys.modules["dank_mids._vendor.aiolimiter"] = aiolimiter_pkg
-    sys.modules["dank_mids._vendor.aiolimiter.src"] = src_pkg
-    sys.modules["dank_mids._vendor.aiolimiter.src.aiolimiter"] = aiolimiter_mod
 
 from dank_mids._requests import JSONRPCBatch
 from dank_mids._uid import UIDGenerator
