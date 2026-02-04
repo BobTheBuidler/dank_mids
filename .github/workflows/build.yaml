@@ -50,7 +50,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.10)
@@ -60,7 +60,7 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.11)
@@ -70,7 +70,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.12)
@@ -80,7 +80,7 @@ jobs:
       - name: Set up Python 3.13
         uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.13)
@@ -167,7 +167,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.10)
@@ -177,7 +177,7 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.11)
@@ -187,7 +187,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.12)
@@ -197,7 +197,7 @@ jobs:
       - name: Set up Python 3.13
         uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.13)
@@ -253,7 +253,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.10)
@@ -263,7 +263,7 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.11)
@@ -273,7 +273,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.12)
@@ -283,7 +283,7 @@ jobs:
       - name: Set up Python 3.13
         uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
           cache: pip
           cache-dependency-path: requirements-build.txt
       - name: Run Mypyc (3.13)
