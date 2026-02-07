@@ -29,32 +29,32 @@ This diagram shows how requests move from user calls into Dank Mids queues, then
 
 ```mermaid
 flowchart TD
-    A[User code\nawait w3.eth.call / other RPC] --> B[DankMiddlewareController.__call__]
+    A[User code<br/>await w3.eth.call / other RPC] --> B[DankMiddlewareController.__call__]
 
     B -->|eth_call| C[eth_call request]
     B -->|other RPC| D[RPCRequest]
 
-    C -->|multicall compatible| E[pending_eth_calls\n(block -> Multicall)]
+    C -->|multicall compatible| E[pending_eth_calls<br/>(block to Multicall)]
     C -->|no multicall| D
-    D --> F[pending_rpc_calls\n(JSONRPCBatch queue)]
+    D --> F[pending_rpc_calls<br/>(JSONRPCBatch queue)]
 
-    E --> G[RPCRequest.get_response\ntriggers execute_batch when needed]
+    E --> G[RPCRequest.get_response<br/>triggers execute_batch when needed]
     F --> G
 
     G --> H[DankMiddlewareController.execute_batch]
-    H --> I[DankBatch\n(multicalls + rpc_calls)]
+    H --> I[DankBatch<br/>(multicalls + rpc_calls)]
     I --> J[DankBatch.coroutines]
 
     J -->|large multicall| K[Multicall.get_response]
     J -->|small multicall split| L[JSONRPCBatch]
     J -->|rpc calls| L
 
-    K --> M[_requester.post\neth_call to multicall contract]
-    M --> N[Multicall.spoof_response\nsplit results to eth_call futures]
+    K --> M[_requester.post<br/>eth_call to multicall contract]
+    M --> N[Multicall.spoof_response<br/>split results to eth_call futures]
 
-    L --> O[JSONRPCBatch.post\nbuild JSON-RPC batch payload]
-    O --> P[_requester.post batch\n+ decode responses]
-    P --> Q[JSONRPCBatch.spoof_response\nmatch by id, resolve futures]
+    L --> O[JSONRPCBatch.post<br/>build JSON-RPC batch payload]
+    O --> P[_requester.post batch<br/>+ decode responses]
+    P --> Q[JSONRPCBatch.spoof_response<br/>match by id, resolve futures]
 
     N --> R[User awaiters resolve]
     Q --> R
