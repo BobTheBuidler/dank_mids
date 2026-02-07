@@ -34,15 +34,15 @@ flowchart TD
     B -->|eth_call| C[eth_call request]
     B -->|other RPC| D[RPCRequest]
 
-    C -->|multicall compatible| E[pending_eth_calls<br/>(block to Multicall)]
+    C -->|multicall compatible| E[pending_eth_calls<br/>block to Multicall]
     C -->|no multicall| D
-    D --> F[pending_rpc_calls<br/>(JSONRPCBatch queue)]
+    D --> F[pending_rpc_calls<br/>JSONRPCBatch queue]
 
     E --> G[RPCRequest.get_response<br/>triggers execute_batch when needed]
     F --> G
 
     G --> H[DankMiddlewareController.execute_batch]
-    H --> I[DankBatch<br/>(multicalls + rpc_calls)]
+    H --> I[DankBatch<br/>multicalls + rpc_calls]
     I --> J[DankBatch.coroutines]
 
     J -->|large multicall| K[Multicall.get_response]
