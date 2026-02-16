@@ -1,3 +1,4 @@
+import ast
 import json
 import os
 import subprocess
@@ -61,7 +62,7 @@ import dank_mids
 from dank_mids import BrownieNotConnectedError
 
 web3_before = "web3" in sys.modules
-block_semaphore = dank_mids.BlockSemaphore
+error_cls = dank_mids.BrownieNotConnectedError
 web3_after = "web3" in sys.modules
 after = cfp.EXTRA_QUEUED_CALLS
 
@@ -71,7 +72,7 @@ print(json.dumps({
     "queued_before": before,
     "queued_after": after,
     "error_name": BrownieNotConnectedError.__name__,
-    "block_semaphore_name": block_semaphore.__name__,
+    "error_attr_name": error_cls.__name__,
 }))
 """
     )
@@ -79,10 +80,33 @@ print(json.dumps({
     assert payload["web3_after"] is False
     assert payload["queued_after"] == payload["queued_before"]
     assert payload["error_name"] == "BrownieNotConnectedError"
-    assert payload["block_semaphore_name"] == "BlockSemaphore"
+    assert payload["error_attr_name"] == "BrownieNotConnectedError"
 
 
-def test_helpers_import_triggers_side_effects() -> None:
-    helpers_source = (REPO_ROOT / "dank_mids" / "helpers" / "_helpers.py").read_text()
-    assert "from dank_mids import _ensure_side_effects" in helpers_source
+def test_helpers_import_is_lazy() -> None:
+    helpers_source = (REPO_ROOT / "dank_mids" / "helpers" / "__init__.py").read_text()
+    tree = ast.parse(helpers_source)
+    top_level_calls = [
+        node
+        for node in tree.body
+        if isinstance(node, ast.Expr)
+        and isinstance(node.value, ast.Call)
+        and isinstance(node.value.func, ast.Name)
+        and node.value.func.id == "_ensure_side_effects"
+    ]
+    top_level_imports = [
+        node
+        for node in tree.body
+        if isinstance(node, ast.ImportFrom)
+        and node.module == "dank_mids.helpers._helpers"
+    ]
+    assert top_level_calls == []
+    assert top_level_imports == []
+
+
+def test_helpers_access_triggers_side_effects() -> None:
+    helpers_source = (REPO_ROOT / "dank_mids" / "helpers" / "__init__.py").read_text()
+    assert "_NEEDS_SIDE_EFFECTS" in helpers_source
+    assert "setup_dank_w3" in helpers_source
+    assert "setup_dank_w3_from_sync" in helpers_source
     assert "_ensure_side_effects()" in helpers_source
