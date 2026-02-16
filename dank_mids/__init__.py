@@ -1,19 +1,86 @@
-# sourcery skip: use-contextlib-suppress
-from dank_mids._eth_utils import patch_eth_utils
-from dank_mids.brownie_patch import get_brownie_patch_status
-from dank_mids.controller import instances
-from dank_mids.exceptions import (
-    BrownieNotConnectedError,
-    BrowniePatchImportError,
-    BrowniePatchNotInitializedError,
-)
-from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
-from dank_mids.middleware import dank_middleware
-from dank_mids.semaphores import BlockSemaphore
+from __future__ import annotations
+
+from importlib import import_module
+from typing import TYPE_CHECKING, Any, Final
 
 __all__ = ["dank_middleware", "BlockSemaphore", "setup_dank_w3", "setup_dank_w3_from_sync"]
 
-patch_eth_utils()
+_BROWNIE_OBJECTS: Final[tuple[str, ...]] = (
+    "Contract",
+    "dank_web3",
+    "web3",
+    "dank_eth",
+    "eth",
+    "patch_contract",
+)
+
+_BROWNIE_TYPE_OBJECTS: Final[tuple[str, ...]] = (
+    "DankContractCall",
+    "DankContractMethod",
+    "DankContractTx",
+    "DankOverloadedMethod",
+)
+
+_ALIASES: Final[dict[str, str]] = {
+    "web3": "dank_web3",
+    "eth": "dank_eth",
+}
+
+_LAZY_IMPORTS: Final[dict[str, tuple[str, str]]] = {
+    "patch_eth_utils": ("dank_mids._eth_utils", "patch_eth_utils"),
+    "DankContractCall": ("dank_mids.brownie_patch.types", "DankContractCall"),
+    "DankContractMethod": ("dank_mids.brownie_patch.types", "DankContractMethod"),
+    "DankContractTx": ("dank_mids.brownie_patch.types", "DankContractTx"),
+    "DankOverloadedMethod": ("dank_mids.brownie_patch.types", "DankOverloadedMethod"),
+    "instances": ("dank_mids.controller", "instances"),
+    "BrownieNotConnectedError": ("dank_mids.exceptions", "BrownieNotConnectedError"),
+    "setup_dank_w3": ("dank_mids.helpers", "setup_dank_w3"),
+    "setup_dank_w3_from_sync": ("dank_mids.helpers", "setup_dank_w3_from_sync"),
+    "dank_middleware": ("dank_mids.middleware", "dank_middleware"),
+    "BlockSemaphore": ("dank_mids.semaphores", "BlockSemaphore"),
+    "Contract": ("dank_mids.brownie_patch", "Contract"),
+    "dank_web3": ("dank_mids.brownie_patch", "dank_web3"),
+    "dank_eth": ("dank_mids.brownie_patch", "dank_eth"),
+    "patch_contract": ("dank_mids.brownie_patch", "patch_contract"),
+}
+
+_NEEDS_SIDE_EFFECTS: Final[set[str]] = {
+    "DankContractCall",
+    "DankContractMethod",
+    "DankContractTx",
+    "DankOverloadedMethod",
+    "instances",
+    "setup_dank_w3",
+    "setup_dank_w3_from_sync",
+    "dank_middleware",
+    "Contract",
+    "dank_web3",
+    "dank_eth",
+    "patch_contract",
+    "web3",
+    "eth",
+}
+
+_lazy_initialized = False
+
+if TYPE_CHECKING:
+    from dank_mids._eth_utils import patch_eth_utils as patch_eth_utils
+    from dank_mids.brownie_patch import Contract, dank_eth, dank_web3, patch_contract
+    from dank_mids.brownie_patch.types import (
+        DankContractCall,
+        DankContractMethod,
+        DankContractTx,
+        DankOverloadedMethod,
+    )
+    from dank_mids.controller import instances
+    from dank_mids.exceptions import (
+        BrownieNotConnectedError,
+        BrowniePatchImportError,
+        BrowniePatchNotInitializedError,
+    )
+    from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
+    from dank_mids.middleware import dank_middleware
+    from dank_mids.semaphores import BlockSemaphore
 
 
 def _configure_concurrent_future_work_queue_size() -> None:
@@ -29,63 +96,116 @@ def _configure_concurrent_future_work_queue_size() -> None:
     _cfp.EXTRA_QUEUED_CALLS = 50_000
 
 
-_configure_concurrent_future_work_queue_size()
+def _ensure_side_effects() -> None:
+    global _lazy_initialized
+    if _lazy_initialized:
+        return
+    from dank_mids._eth_utils import patch_eth_utils
+
+    patch_eth_utils()
+    _configure_concurrent_future_work_queue_size()
+    _lazy_initialized = True
 
 
-# Import brownie objects
-__brownie_objects = ["Contract", "dank_web3", "web3", "dank_eth", "eth", "patch_contract"]
-__brownie_type_objects = [
-    "DankContractCall",
-    "DankContractMethod",
-    "DankContractTx",
-    "DankOverloadedMethod",
-]
-try:
-    from dank_mids.brownie_patch import Contract, dank_eth, dank_web3, patch_contract
+def _raise_brownie_not_connected(name: str, exc: BaseException) -> None:
+    from dank_mids.brownie_patch import get_brownie_patch_status
+    from dank_mids.exceptions import (
+        BrownieNotConnectedError,
+        BrowniePatchImportError,
+        BrowniePatchNotInitializedError,
+    )
 
-    __all__ += __brownie_objects
-    # aliased for cleanliness and convenience
-    web3 = dank_web3
-    eth = dank_eth
-except ImportError:
-    pass
+    status = get_brownie_patch_status(refresh_connection=True)
+    if status.import_error is not None:
+        raise BrowniePatchImportError(name, status.import_error) from status.import_error
+    if not status.connected:
+        raise BrownieNotConnectedError(name) from exc
+    if not status.initialized:
+        raise BrowniePatchNotInitializedError(name) from exc
+    raise AttributeError(
+        f"brownie patch was initialized but `dank_mids.{name}` was not found"
+    ) from exc
 
 
-def __getattr__(name: str):
+def _expose_brownie_objects() -> None:
+    for obj in _BROWNIE_OBJECTS:
+        if obj not in __all__:
+            __all__.append(obj)
+
+
+def _load_attribute(name: str, *, alias: str | None = None) -> Any:
+    if name in _NEEDS_SIDE_EFFECTS:
+        _ensure_side_effects()
+    module_name, attr_name = _LAZY_IMPORTS[name]
+    try:
+        module = import_module(module_name)
+        value = getattr(module, attr_name)
+    except (ImportError, AttributeError) as exc:
+        if name in _BROWNIE_TYPE_OBJECTS and isinstance(exc, ImportError):
+            from dank_mids.exceptions import BrowniePatchImportError
+
+            raise BrowniePatchImportError(alias or name, exc) from exc
+        if name in _BROWNIE_OBJECTS:
+            _raise_brownie_not_connected(alias or name, exc)
+        raise
+    globals()[name] = value
+    if alias:
+        globals()[alias] = value
+    if name in _BROWNIE_OBJECTS:
+        _expose_brownie_objects()
+    return value
+
+
+_ensure_side_effects()
+
+
+def __getattr__(name: str) -> Any:
     """
     Handles custom attribute access for the 'dank_mids' module.
 
-    This function is called when an attribute that is not found in the module's namespace
-    is accessed. If the attribute is one of the brownie-specific objects listed in
-    `__brownie_objects`, it raises a specific brownie integration error. For all other attributes,
-    it raises a standard AttributeError.
-
-    Args:
-        name: The name of the attribute being accessed.
+    This function lazily imports attributes on first access to avoid importing heavy
+    dependencies or triggering side effects during `import dank_mids`.
 
     Raises:
         BrowniePatchImportError: If brownie integration failed to import.
         BrownieNotConnectedError: If brownie is not connected.
         BrowniePatchNotInitializedError: If brownie is connected but patch is not initialized.
-        AttributeError: If the attribute is not found and is not one of `__brownie_objects`.
+        AttributeError: If the attribute is not found.
     """
-    if name in __brownie_type_objects:
-        try:
-            from dank_mids.brownie_patch import types as _types
-        except ImportError as exc:
-            raise BrowniePatchImportError(name, exc) from exc
-        value = getattr(_types, name)
-        globals()[name] = value
-        return value
-    if name in __brownie_objects:
-        status = get_brownie_patch_status(refresh_connection=True)
-        if status.import_error is not None:
-            raise BrowniePatchImportError(name, status.import_error) from status.import_error
-        if not status.connected:
-            raise BrownieNotConnectedError(name)
-        if not status.initialized:
-            raise BrowniePatchNotInitializedError(name)
-        raise AttributeError(
-            f"brownie patch was initialized but `dank_mids.{name}` was not found"
-        )
+    if name in _ALIASES:
+        return _load_attribute(_ALIASES[name], alias=name)
+    if name in _LAZY_IMPORTS:
+        return _load_attribute(name)
+    if name in _BROWNIE_OBJECTS:
+        _raise_brownie_not_connected(name, AttributeError(name))
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | set(_LAZY_IMPORTS) | set(_ALIASES))
+
+
+def _install_alias_guard() -> None:
+    import sys
+    import types
+
+    module = sys.modules.get(__name__)
+    if module is None:
+        return
+
+    class _DankModule(types.ModuleType):
+        def __getattribute__(self, name: str) -> Any:  # type: ignore[override]
+            if name in _ALIASES:
+                try:
+                    value = types.ModuleType.__getattribute__(self, name)
+                except AttributeError:
+                    return types.ModuleType.__getattribute__(self, "__getattr__")(name)
+                if getattr(value, "__name__", None) == f"{__name__}.{name}":
+                    return types.ModuleType.__getattribute__(self, "__getattr__")(name)
+                return value
+            return types.ModuleType.__getattribute__(self, name)
+
+    module.__class__ = _DankModule
+
+
+_install_alias_guard()
