@@ -1,4 +1,3 @@
-import ast
 import json
 import os
 import subprocess
@@ -84,29 +83,70 @@ print(json.dumps({
 
 
 def test_helpers_import_is_lazy() -> None:
-    helpers_source = (REPO_ROOT / "dank_mids" / "helpers" / "__init__.py").read_text()
-    tree = ast.parse(helpers_source)
-    top_level_calls = [
-        node
-        for node in tree.body
-        if isinstance(node, ast.Expr)
-        and isinstance(node.value, ast.Call)
-        and isinstance(node.value.func, ast.Name)
-        and node.value.func.id == "_ensure_side_effects"
-    ]
-    top_level_imports = [
-        node
-        for node in tree.body
-        if isinstance(node, ast.ImportFrom)
-        and node.module == "dank_mids.helpers._helpers"
-    ]
-    assert top_level_calls == []
-    assert top_level_imports == []
+    payload = _run(
+        """
+import json
+import sys
+import concurrent.futures.process as cfp
+import importlib.util
+from pathlib import Path
+
+repo_root = Path.cwd()
+helpers_path = repo_root / "dank_mids" / "helpers" / "__init__.py"
+spec = importlib.util.spec_from_file_location("dank_mids.helpers", helpers_path)
+module = importlib.util.module_from_spec(spec)
+sys.modules["dank_mids.helpers"] = module
+
+before = cfp.EXTRA_QUEUED_CALLS
+spec.loader.exec_module(module)
+after = cfp.EXTRA_QUEUED_CALLS
+
+print(json.dumps({
+    "web3_loaded": "web3" in sys.modules,
+    "brownie_loaded": "brownie" in sys.modules,
+    "queued_before": before,
+    "queued_after": after,
+}))
+"""
+    )
+    assert payload["web3_loaded"] is False
+    assert payload["brownie_loaded"] is False
+    assert payload["queued_before"] == payload["queued_after"]
 
 
 def test_helpers_access_triggers_side_effects() -> None:
-    helpers_source = (REPO_ROOT / "dank_mids" / "helpers" / "__init__.py").read_text()
-    assert "_NEEDS_SIDE_EFFECTS" in helpers_source
-    assert "setup_dank_w3" in helpers_source
-    assert "setup_dank_w3_from_sync" in helpers_source
-    assert "_ensure_side_effects()" in helpers_source
+    payload = _run(
+        """
+import json
+import sys
+import types
+import importlib.util
+from pathlib import Path
+
+import dank_mids
+
+called = {"value": False}
+def fake_side_effects():
+    called["value"] = True
+dank_mids._ensure_side_effects = fake_side_effects
+
+helpers_stub = types.ModuleType("dank_mids.helpers._helpers")
+helpers_stub.setup_dank_w3 = lambda *args, **kwargs: None
+helpers_stub.setup_dank_w3_from_sync = lambda *args, **kwargs: None
+sys.modules["dank_mids.helpers._helpers"] = helpers_stub
+
+repo_root = Path.cwd()
+helpers_path = repo_root / "dank_mids" / "helpers" / "__init__.py"
+spec = importlib.util.spec_from_file_location("dank_mids.helpers", helpers_path)
+module = importlib.util.module_from_spec(spec)
+sys.modules["dank_mids.helpers"] = module
+spec.loader.exec_module(module)
+
+_ = module.setup_dank_w3
+
+print(json.dumps({
+    "called": called["value"],
+}))
+"""
+    )
+    assert payload["called"] is True
