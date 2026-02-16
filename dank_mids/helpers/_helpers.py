@@ -15,11 +15,8 @@ from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 
-from dank_mids import _ensure_side_effects as _ensure_side_effects
 from dank_mids.eth import DankEth
 from dank_mids.types import AsyncMiddleware
-
-_ensure_side_effects()
 
 if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch, Multicall
@@ -81,6 +78,9 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
         A new DankWeb3 instance with Dank Middleware injected.
     """
     assert async_w3.eth.is_async and isinstance(async_w3.provider, AsyncBaseProvider)
+    from dank_mids import _ensure_side_effects
+
+    _ensure_side_effects()
     # NOTE: We use this lookup to prevent errs where 2 project dependencies both depend on dank_mids and eth-brownie.
     if async_w3 not in dank_w3s:
         # NOTE: We import here to prevent a circular import
@@ -105,6 +105,9 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
         A new DankWeb3 instance with Dank Middleware injected, supporting batched asynchronous operations.
     """
     assert not sync_w3.eth.is_async and isinstance(sync_w3.provider, BaseProvider)
+    from dank_mids import _ensure_side_effects
+
+    _ensure_side_effects()
     if sync_w3 not in sync_w3s:
         if w3_version_major >= 6:
             # this was default in prior versions but now optional. We want it.
