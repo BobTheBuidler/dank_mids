@@ -21,5 +21,6 @@ All agents must follow these rules:
 ## Repo Behavior Notes
 - `WeakList` uses weakrefs on purpose to avoid keeping abandoned calls alive; empty batches or empty JSON-RPC posts can happen when all queued calls are GC'd or drained, and that is expected. Don't "fix" this by switching to strong refs unless we explicitly change the design.
 - Generated artifacts (`.pyd`, `.so`, `build/**/*.c`, `build/**/*.h`) are produced by mypycify/CI; keep them out of PRs unless explicitly requested. If they show up dirty, discard local changes rather than deleting tracked files.
+- `dank_mids/_vendor/aiolimiter` is updated by CI alongside the mypyc artifacts; ignore it in PRs unless explicitly requested.
 
 Reference: https://www.conventionalcommits.org/en/v1.0.0/
