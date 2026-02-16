@@ -5,9 +5,14 @@ from dank_mids.brownie_patch import (
     DankContractMethod,
     DankContractTx,
     DankOverloadedMethod,
+    get_brownie_patch_status,
 )
 from dank_mids.controller import instances
-from dank_mids.exceptions import BrownieNotConnectedError
+from dank_mids.exceptions import (
+    BrownieNotConnectedError,
+    BrowniePatchImportError,
+    BrowniePatchNotInitializedError,
+)
 from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
 from dank_mids.middleware import dank_middleware
 from dank_mids.semaphores import BlockSemaphore
@@ -52,16 +57,27 @@ def __getattr__(name: str):
 
     This function is called when an attribute that is not found in the module's namespace
     is accessed. If the attribute is one of the brownie-specific objects listed in
-    `__brownie_objects`, it raises a `BrownieNotConnectedError`. For all other attributes,
+    `__brownie_objects`, it raises a specific brownie integration error. For all other attributes,
     it raises a standard AttributeError.
 
     Args:
         name: The name of the attribute being accessed.
 
     Raises:
-        BrownieNotConnectedError: If the attribute is one of `__brownie_objects`.
+        BrowniePatchImportError: If brownie integration failed to import.
+        BrownieNotConnectedError: If brownie is not connected.
+        BrowniePatchNotInitializedError: If brownie is connected but patch is not initialized.
         AttributeError: If the attribute is not found and is not one of `__brownie_objects`.
     """
     if name in __brownie_objects:
-        raise BrownieNotConnectedError(name)
+        status = get_brownie_patch_status(refresh_connection=True)
+        if status.import_error is not None:
+            raise BrowniePatchImportError(name, status.import_error) from status.import_error
+        if not status.connected:
+            raise BrownieNotConnectedError(name)
+        if not status.initialized:
+            raise BrowniePatchNotInitializedError(name)
+        raise AttributeError(
+            f"brownie patch was initialized but `dank_mids.{name}` was not found"
+        )
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
