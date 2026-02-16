@@ -95,6 +95,8 @@ def initialize_brownie_patch() -> BrowniePatchStatus:
     except ImportError as exc:
         return _STATE.set_patch_import_error(exc)
 
+    globals()["Contract"] = Contract
+    globals()["patch_contract"] = patch_contract
     dank_web3 = setup_dank_w3_from_sync(web3)
     dank_eth = dank_web3.eth
     __all__ += ["Contract", "patch_contract", "dank_web3", "dank_eth"]
