@@ -150,3 +150,60 @@ print(json.dumps({
 """
     )
     assert payload["called"] is True
+
+
+def test_eth_alias_survives_submodule_import() -> None:
+    payload = _run(
+        """
+import json
+import sys
+import types
+import importlib
+from importlib.machinery import ModuleSpec
+
+class StubEth:
+    async def get_code(self, *args, **kwargs):
+        return b""
+
+stub = StubEth()
+stub_module = types.ModuleType("dank_mids.brownie_patch")
+stub_module.dank_eth = stub
+sys.modules["dank_mids.brownie_patch"] = stub_module
+
+import dank_mids
+dank_mids._ensure_side_effects = lambda: None
+
+resolved = dank_mids.dank_eth
+
+class _EthLoader:
+    def create_module(self, spec):
+        return None
+
+    def exec_module(self, module):
+        module.__dict__["__test_stub__"] = True
+
+
+class _EthFinder:
+    def find_spec(self, fullname, path, target=None):
+        if fullname == "dank_mids.eth":
+            return ModuleSpec(fullname, _EthLoader())
+        return None
+
+
+sys.meta_path.insert(0, _EthFinder())
+
+importlib.import_module("dank_mids.eth")
+
+eth_attr = getattr(dank_mids, "eth", None)
+get_code = getattr(eth_attr, "get_code", None)
+
+print(json.dumps({
+    "same_object": eth_attr is resolved,
+    "get_code_callable": callable(get_code),
+    "get_code_is_bound": getattr(get_code, "__self__", None) is resolved,
+}))
+"""
+    )
+    assert payload["same_object"] or (
+        payload["get_code_callable"] and payload["get_code_is_bound"]
+    )
