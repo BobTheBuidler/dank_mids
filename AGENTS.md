@@ -18,4 +18,7 @@ All agents must follow these rules:
 12) Centralize pytest settings (flags, markers, ignore patterns, and targets) in pyproject.toml, pytest.ini, setup.cfg, or tox.ini; workflows/hooks should call pytest without inline args.
 13) If the branch you're assigned to work on is from a remote (ie origin/master or upstream/awesome-feature) you must ensure you fetch and pull from the remote before you begin your work.
 
+## Repo Behavior Notes
+- `WeakList` uses weakrefs on purpose to avoid keeping abandoned calls alive; empty batches or empty JSON-RPC posts can happen when all queued calls are GC'd or drained, and that is expected. Don't "fix" this by switching to strong refs unless we explicitly change the design.
+
 Reference: https://www.conventionalcommits.org/en/v1.0.0/
