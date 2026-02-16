@@ -3,6 +3,8 @@ from __future__ import annotations
 from importlib import import_module
 from typing import TYPE_CHECKING, Any, Final
 
+from dank_mids import _ensure_side_effects as _ensure_side_effects
+
 __all__ = [
     "setup_dank_w3",
     "setup_dank_w3_from_sync",
@@ -36,10 +38,11 @@ if TYPE_CHECKING:
     from dank_mids.helpers.lru_cache import lru_cache_lite, lru_cache_lite_nonull
 
 
+_ensure_side_effects()
+
+
 def _load_attribute(name: str) -> Any:
     if name in _NEEDS_SIDE_EFFECTS:
-        from dank_mids import _ensure_side_effects
-
         _ensure_side_effects()
     module_name, attr_name = _LAZY_IMPORTS[name]
     module = import_module(module_name)
