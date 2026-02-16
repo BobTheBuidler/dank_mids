@@ -14,6 +14,13 @@ _BROWNIE_OBJECTS: Final[tuple[str, ...]] = (
     "patch_contract",
 )
 
+_BROWNIE_TYPE_OBJECTS: Final[tuple[str, ...]] = (
+    "DankContractCall",
+    "DankContractMethod",
+    "DankContractTx",
+    "DankOverloadedMethod",
+)
+
 _ALIASES: Final[dict[str, str]] = {
     "web3": "dank_web3",
     "eth": "dank_eth",
@@ -66,7 +73,11 @@ if TYPE_CHECKING:
         DankOverloadedMethod,
     )
     from dank_mids.controller import instances
-    from dank_mids.exceptions import BrownieNotConnectedError
+    from dank_mids.exceptions import (
+        BrownieNotConnectedError,
+        BrowniePatchImportError,
+        BrowniePatchNotInitializedError,
+    )
     from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
     from dank_mids.middleware import dank_middleware
     from dank_mids.semaphores import BlockSemaphore
@@ -97,9 +108,23 @@ def _ensure_side_effects() -> None:
 
 
 def _raise_brownie_not_connected(name: str, exc: BaseException) -> None:
-    from dank_mids.exceptions import BrownieNotConnectedError
+    from dank_mids.brownie_patch import get_brownie_patch_status
+    from dank_mids.exceptions import (
+        BrownieNotConnectedError,
+        BrowniePatchImportError,
+        BrowniePatchNotInitializedError,
+    )
 
-    raise BrownieNotConnectedError(name) from exc
+    status = get_brownie_patch_status(refresh_connection=True)
+    if status.import_error is not None:
+        raise BrowniePatchImportError(name, status.import_error) from status.import_error
+    if not status.connected:
+        raise BrownieNotConnectedError(name) from exc
+    if not status.initialized:
+        raise BrowniePatchNotInitializedError(name) from exc
+    raise AttributeError(
+        f"brownie patch was initialized but `dank_mids.{name}` was not found"
+    ) from exc
 
 
 def _expose_brownie_objects() -> None:
@@ -116,6 +141,10 @@ def _load_attribute(name: str, *, alias: str | None = None) -> Any:
         module = import_module(module_name)
         value = getattr(module, attr_name)
     except (ImportError, AttributeError) as exc:
+        if name in _BROWNIE_TYPE_OBJECTS and isinstance(exc, ImportError):
+            from dank_mids.exceptions import BrowniePatchImportError
+
+            raise BrowniePatchImportError(alias or name, exc) from exc
         if name in _BROWNIE_OBJECTS:
             _raise_brownie_not_connected(alias or name, exc)
         raise
@@ -136,6 +165,12 @@ def __getattr__(name: str) -> Any:
 
     This function lazily imports attributes on first access to avoid importing heavy
     dependencies or triggering side effects during `import dank_mids`.
+
+    Raises:
+        BrowniePatchImportError: If brownie integration failed to import.
+        BrownieNotConnectedError: If brownie is not connected.
+        BrowniePatchNotInitializedError: If brownie is connected but patch is not initialized.
+        AttributeError: If the attribute is not found.
     """
     if name in _ALIASES:
         return _load_attribute(_ALIASES[name], alias=name)
