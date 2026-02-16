@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import io
 import logging
 import os
@@ -26,8 +28,12 @@ StringIO: Final = io.StringIO
 print_stack: Final = traceback.print_stack
 
 _nameToLevel: Final = logging._nameToLevel
-_acquireLock: Final = logging._acquireLock  # type: ignore [attr-defined]
-_releaseLock: Final = logging._releaseLock  # type: ignore [attr-defined]
+_acquireLock = getattr(logging, "_acquireLock", None)
+_releaseLock = getattr(logging, "_releaseLock", None)
+if _acquireLock is None or _releaseLock is None:
+    _lock = getattr(logging, "_lock")
+    _acquireLock = _lock.acquire
+    _releaseLock = _lock.release
 _srcfile: Final = logging._srcfile
 
 
