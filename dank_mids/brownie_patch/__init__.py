@@ -22,9 +22,42 @@ class BrowniePatchStatus:
     import_error: Optional[ImportError]
 
 
-_brownie_import_error: Optional[ImportError] = None
-_brownie_connected: bool = False
-_brownie_initialized: bool = False
+@dataclass
+class _BrowniePatchState:
+    import_error: Optional[ImportError] = None
+    connected: bool = False
+    initialized: bool = False
+
+    def status(self) -> BrowniePatchStatus:
+        return BrowniePatchStatus(
+            connected=self.connected,
+            initialized=self.initialized,
+            import_error=self.import_error,
+        )
+
+    def set_brownie_import_error(self, exc: ImportError) -> BrowniePatchStatus:
+        self.import_error = exc
+        self.connected = False
+        self.initialized = False
+        return self.status()
+
+    def set_patch_import_error(self, exc: ImportError) -> BrowniePatchStatus:
+        self.import_error = exc
+        self.initialized = False
+        return self.status()
+
+    def refresh_connection(self) -> None:
+        if self.import_error is not None:
+            return
+        try:
+            from brownie import network
+        except ImportError as exc:
+            self.set_brownie_import_error(exc)
+        else:
+            self.connected = network.is_connected()
+
+
+_STATE = _BrowniePatchState()
 
 dank_web3: DankWeb3
 """
@@ -41,60 +74,38 @@ If Brownie is not installed or not connected to an RPC, this instance will not b
 """
 
 def initialize_brownie_patch() -> BrowniePatchStatus:
-    global _brownie_import_error
-    global _brownie_connected
-    global _brownie_initialized
     global dank_web3
     global dank_eth
 
-    if _brownie_initialized or _brownie_import_error is not None:
-        return get_brownie_patch_status()
+    if _STATE.initialized or _STATE.import_error is not None:
+        return _STATE.status()
 
     try:
         from brownie import network, web3
     except ImportError as exc:
-        _brownie_import_error = exc
-        _brownie_connected = False
-        _brownie_initialized = False
-        return get_brownie_patch_status()
+        return _STATE.set_brownie_import_error(exc)
 
-    _brownie_connected = network.is_connected()
-    if not _brownie_connected:
-        _brownie_initialized = False
-        return get_brownie_patch_status()
+    _STATE.connected = network.is_connected()
+    if not _STATE.connected:
+        _STATE.initialized = False
+        return _STATE.status()
 
     try:
         from dank_mids.brownie_patch.contract import Contract, patch_contract
     except ImportError as exc:
-        _brownie_import_error = exc
-        _brownie_initialized = False
-        return get_brownie_patch_status()
+        return _STATE.set_patch_import_error(exc)
 
     dank_web3 = setup_dank_w3_from_sync(web3)
     dank_eth = dank_web3.eth
     __all__ += ["Contract", "patch_contract", "dank_web3", "dank_eth"]
-    _brownie_initialized = True
-    return get_brownie_patch_status()
+    _STATE.initialized = True
+    return _STATE.status()
 
 
 def get_brownie_patch_status(refresh_connection: bool = False) -> BrowniePatchStatus:
-    global _brownie_import_error
-    global _brownie_connected
-
-    if refresh_connection and _brownie_import_error is None:
-        try:
-            from brownie import network
-        except ImportError as exc:
-            _brownie_import_error = exc
-            _brownie_connected = False
-        else:
-            _brownie_connected = network.is_connected()
-
-    return BrowniePatchStatus(
-        connected=_brownie_connected,
-        initialized=_brownie_initialized,
-        import_error=_brownie_import_error,
-    )
+    if refresh_connection:
+        _STATE.refresh_connection()
+    return _STATE.status()
 
 
 # If using dank_mids with brownie, and brownie is connected when this file executes, you will get a 'dank_w3' async web3 instance with Dank Middleware here.
