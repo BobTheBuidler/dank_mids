@@ -1,12 +1,6 @@
 # sourcery skip: use-contextlib-suppress
 from dank_mids._eth_utils import patch_eth_utils
-from dank_mids.brownie_patch import (
-    DankContractCall,
-    DankContractMethod,
-    DankContractTx,
-    DankOverloadedMethod,
-    get_brownie_patch_status,
-)
+from dank_mids.brownie_patch import get_brownie_patch_status
 from dank_mids.controller import instances
 from dank_mids.exceptions import (
     BrownieNotConnectedError,
@@ -40,6 +34,12 @@ _configure_concurrent_future_work_queue_size()
 
 # Import brownie objects
 __brownie_objects = ["Contract", "dank_web3", "web3", "dank_eth", "eth", "patch_contract"]
+__brownie_type_objects = [
+    "DankContractCall",
+    "DankContractMethod",
+    "DankContractTx",
+    "DankOverloadedMethod",
+]
 try:
     from dank_mids.brownie_patch import Contract, dank_eth, dank_web3, patch_contract
 
@@ -69,6 +69,14 @@ def __getattr__(name: str):
         BrowniePatchNotInitializedError: If brownie is connected but patch is not initialized.
         AttributeError: If the attribute is not found and is not one of `__brownie_objects`.
     """
+    if name in __brownie_type_objects:
+        try:
+            from dank_mids.brownie_patch import types as _types
+        except ImportError as exc:
+            raise BrowniePatchImportError(name, exc) from exc
+        value = getattr(_types, name)
+        globals()[name] = value
+        return value
     if name in __brownie_objects:
         status = get_brownie_patch_status(refresh_connection=True)
         if status.import_error is not None:

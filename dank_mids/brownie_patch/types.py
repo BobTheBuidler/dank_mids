@@ -1,25 +1,10 @@
-from typing import Any, Generic, TypeVar, Union, final
+from typing import Any, TypeVar, Union, final
 
+from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
+from brownie.typing import AccountsType
 from eth_typing import ChecksumAddress
 
-try:
-    from brownie.network.contract import ContractCall, ContractTx, OverloadedMethod
-    from brownie.typing import AccountsType
-except ImportError:
-    class ContractCall: ...
-
-    class ContractTx: ...
-
-    class OverloadedMethod: ...
-
-    AccountsType = Any
-    _EVMType = TypeVar("_EVMType")
-
-    class _DankMethod: ...
-
-    class _DankMethodMixin(Generic[_EVMType]): ...
-else:
-    from dank_mids.brownie_patch._method import _DankMethod, _DankMethodMixin, _EVMType
+from dank_mids.brownie_patch._method import _DankMethod, _DankMethodMixin, _EVMType
 
 _T = TypeVar("_T")
 

@@ -10,7 +10,7 @@ import pytest
 
 def _clear_modules() -> None:
     for name in list(sys.modules):
-        if name == "brownie" or name.startswith("dank_mids"):
+        if name == "brownie" or name.startswith("brownie.") or name.startswith("dank_mids"):
             sys.modules.pop(name, None)
 
 
@@ -106,6 +106,20 @@ def _install_dank_mids_stubs() -> None:
     semaphores.BlockSemaphore = BlockSemaphore
     sys.modules["dank_mids.semaphores"] = semaphores
 
+    brownie_method = types.ModuleType("dank_mids.brownie_patch._method")
+    from typing import Generic, TypeVar
+
+    _EVMType = TypeVar("_EVMType")
+
+    class _DankMethod: ...
+
+    class _DankMethodMixin(Generic[_EVMType]): ...
+
+    brownie_method._DankMethod = _DankMethod
+    brownie_method._DankMethodMixin = _DankMethodMixin
+    brownie_method._EVMType = _EVMType
+    sys.modules["dank_mids.brownie_patch._method"] = brownie_method
+
 
 def _make_import_blocker(block_name: str):
     original_import = builtins.__import__
@@ -118,25 +132,48 @@ def _make_import_blocker(block_name: str):
     return _blocked
 
 
-class _ToggleNetwork:
-    def __init__(self, connected: bool) -> None:
-        self.connected = connected
+def _install_brownie_package(connected: bool) -> types.ModuleType:
+    brownie = types.ModuleType("brownie")
+    network_mod = types.ModuleType("brownie.network")
+    contract_mod = types.ModuleType("brownie.network.contract")
+    typing_mod = types.ModuleType("brownie.typing")
 
-    def is_connected(self) -> bool:
-        return self.connected
+    network_mod.connected = connected
+
+    def is_connected() -> bool:
+        return network_mod.connected
+
+    network_mod.is_connected = is_connected
+
+    class ContractCall: ...
+
+    class ContractTx: ...
+
+    class OverloadedMethod: ...
+
+    contract_mod.ContractCall = ContractCall
+    contract_mod.ContractTx = ContractTx
+    contract_mod.OverloadedMethod = OverloadedMethod
+
+    typing_mod.AccountsType = object
+
+    network_mod.contract = contract_mod
+    brownie.network = network_mod
+    brownie.web3 = object()
+    brownie.typing = typing_mod
+
+    sys.modules["brownie"] = brownie
+    sys.modules["brownie.network"] = network_mod
+    sys.modules["brownie.network.contract"] = contract_mod
+    sys.modules["brownie.typing"] = typing_mod
+    return network_mod
 
 
-def _make_brownie_module(network: _ToggleNetwork) -> types.ModuleType:
-    module = types.ModuleType("brownie")
-    module.network = network
-    module.web3 = object()
-    return module
-
-
-def _reload_dank_mids(monkeypatch, brownie_module=None, import_hook=None):
+def _reload_dank_mids(monkeypatch, brownie_connected: bool | None = None, import_hook=None):
     _clear_modules()
-    if brownie_module is not None:
-        sys.modules["brownie"] = brownie_module
+    network_mod = None
+    if brownie_connected is not None:
+        network_mod = _install_brownie_package(brownie_connected)
     if import_hook is not None:
         monkeypatch.setattr(builtins, "__import__", import_hook)
 
@@ -157,14 +194,13 @@ def _reload_dank_mids(monkeypatch, brownie_module=None, import_hook=None):
     sys.modules["dank_mids.brownie_patch"] = brownie_pkg
 
     _load_module("dank_mids.exceptions", package_root / "exceptions.py")
-    _load_module("dank_mids.brownie_patch.types", brownie_patch_root / "types.py")
     _load_package("dank_mids.brownie_patch", brownie_patch_root)
-    return _load_package("dank_mids", package_root)
+    return _load_package("dank_mids", package_root), network_mod
 
 
 def test_getattr_raises_import_error_for_missing_brownie(monkeypatch) -> None:
     import_hook = _make_import_blocker("brownie")
-    dank_mids = _reload_dank_mids(monkeypatch, import_hook=import_hook)
+    dank_mids, _ = _reload_dank_mids(monkeypatch, import_hook=import_hook)
     exc_types = importlib.import_module("dank_mids.exceptions")
 
     with pytest.raises(exc_types.BrowniePatchImportError) as excinfo:
@@ -174,9 +210,7 @@ def test_getattr_raises_import_error_for_missing_brownie(monkeypatch) -> None:
 
 
 def test_getattr_raises_not_connected(monkeypatch) -> None:
-    network = _ToggleNetwork(connected=False)
-    brownie_module = _make_brownie_module(network)
-    dank_mids = _reload_dank_mids(monkeypatch, brownie_module=brownie_module)
+    dank_mids, _ = _reload_dank_mids(monkeypatch, brownie_connected=False)
     exc_types = importlib.import_module("dank_mids.exceptions")
 
     with pytest.raises(exc_types.BrownieNotConnectedError):
@@ -184,11 +218,10 @@ def test_getattr_raises_not_connected(monkeypatch) -> None:
 
 
 def test_getattr_raises_not_initialized_when_connected_after_import(monkeypatch) -> None:
-    network = _ToggleNetwork(connected=False)
-    brownie_module = _make_brownie_module(network)
-    dank_mids = _reload_dank_mids(monkeypatch, brownie_module=brownie_module)
+    dank_mids, network = _reload_dank_mids(monkeypatch, brownie_connected=False)
     exc_types = importlib.import_module("dank_mids.exceptions")
 
+    assert network is not None
     network.connected = True
 
     with pytest.raises(exc_types.BrowniePatchNotInitializedError):
@@ -196,12 +229,10 @@ def test_getattr_raises_not_initialized_when_connected_after_import(monkeypatch)
 
 
 def test_getattr_raises_import_error_when_patch_import_fails(monkeypatch) -> None:
-    network = _ToggleNetwork(connected=True)
-    brownie_module = _make_brownie_module(network)
     import_hook = _make_import_blocker("dank_mids.brownie_patch.contract")
-    dank_mids = _reload_dank_mids(
+    dank_mids, _ = _reload_dank_mids(
         monkeypatch,
-        brownie_module=brownie_module,
+        brownie_connected=True,
         import_hook=import_hook,
     )
     exc_types = importlib.import_module("dank_mids.exceptions")
@@ -210,3 +241,20 @@ def test_getattr_raises_import_error_when_patch_import_fails(monkeypatch) -> Non
         _ = dank_mids.dank_web3
 
     assert isinstance(excinfo.value.__cause__, ImportError)
+
+
+def test_getattr_raises_import_error_for_missing_brownie_types(monkeypatch) -> None:
+    import_hook = _make_import_blocker("brownie")
+    dank_mids, _ = _reload_dank_mids(monkeypatch, import_hook=import_hook)
+    exc_types = importlib.import_module("dank_mids.exceptions")
+
+    with pytest.raises(exc_types.BrowniePatchImportError) as excinfo:
+        _ = dank_mids.DankContractCall
+
+    assert isinstance(excinfo.value.__cause__, ImportError)
+
+
+def test_getattr_resolves_brownie_types(monkeypatch) -> None:
+    dank_mids, _ = _reload_dank_mids(monkeypatch, brownie_connected=False)
+
+    assert isinstance(dank_mids.DankContractCall, type)

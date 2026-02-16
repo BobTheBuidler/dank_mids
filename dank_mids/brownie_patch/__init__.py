@@ -2,15 +2,15 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from dank_mids.brownie_patch.types import (
-    DankContractCall,
-    DankContractMethod,
-    DankContractTx,
-    DankOverloadedMethod,
-)
 from dank_mids.helpers import setup_dank_w3_from_sync
 
-__all__ = ["DankContractCall", "DankContractMethod", "DankContractTx", "DankOverloadedMethod"]
+_BROWNIE_TYPE_NAMES = (
+    "DankContractCall",
+    "DankContractMethod",
+    "DankContractTx",
+    "DankOverloadedMethod",
+)
+__all__ = list(_BROWNIE_TYPE_NAMES)
 
 from dank_mids.eth import DankEth
 from dank_mids.helpers._helpers import DankWeb3
@@ -106,6 +106,21 @@ def get_brownie_patch_status(refresh_connection: bool = False) -> BrowniePatchSt
     if refresh_connection:
         _STATE.refresh_connection()
     return _STATE.status()
+
+
+def _load_types():
+    from dank_mids.brownie_patch import types as _types
+
+    return _types
+
+
+def __getattr__(name: str):
+    if name in _BROWNIE_TYPE_NAMES:
+        _types = _load_types()
+        value = getattr(_types, name)
+        globals()[name] = value
+        return value
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
 # If using dank_mids with brownie, and brownie is connected when this file executes, you will get a 'dank_w3' async web3 instance with Dank Middleware here.
