@@ -25,11 +25,10 @@ def _run(code: str) -> dict[str, object]:
     return json.loads(result.stdout)
 
 
-def test_import_is_lazy() -> None:
+def test_import_applies_side_effects() -> None:
     payload = _run(
         """
 import json
-import sys
 import concurrent.futures.process as cfp
 
 before = cfp.EXTRA_QUEUED_CALLS
@@ -37,52 +36,35 @@ import dank_mids
 after = cfp.EXTRA_QUEUED_CALLS
 
 print(json.dumps({
-    "web3_loaded": "web3" in sys.modules,
-    "brownie_loaded": "brownie" in sys.modules,
     "queued_before": before,
     "queued_after": after,
 }))
 """
     )
-    assert payload["web3_loaded"] is False
-    assert payload["brownie_loaded"] is False
-    assert payload["queued_before"] == payload["queued_after"]
+    assert payload["queued_after"] == 50_000
 
 
-def test_symbol_access_is_lazy() -> None:
+def test_brownie_error_accessible() -> None:
     payload = _run(
         """
 import json
-import sys
-import concurrent.futures.process as cfp
 
-before = cfp.EXTRA_QUEUED_CALLS
 import dank_mids
 from dank_mids import BrownieNotConnectedError
 
-web3_before = "web3" in sys.modules
 error_cls = dank_mids.BrownieNotConnectedError
-web3_after = "web3" in sys.modules
-after = cfp.EXTRA_QUEUED_CALLS
 
 print(json.dumps({
-    "web3_before": web3_before,
-    "web3_after": web3_after,
-    "queued_before": before,
-    "queued_after": after,
     "error_name": BrownieNotConnectedError.__name__,
     "error_attr_name": error_cls.__name__,
 }))
 """
     )
-    assert payload["web3_before"] is False
-    assert payload["web3_after"] is False
-    assert payload["queued_after"] == payload["queued_before"]
     assert payload["error_name"] == "BrownieNotConnectedError"
     assert payload["error_attr_name"] == "BrownieNotConnectedError"
 
 
-def test_helpers_import_is_lazy() -> None:
+def test_helpers_import_applies_side_effects() -> None:
     payload = _run(
         """
 import json
@@ -102,19 +84,15 @@ spec.loader.exec_module(module)
 after = cfp.EXTRA_QUEUED_CALLS
 
 print(json.dumps({
-    "web3_loaded": "web3" in sys.modules,
-    "brownie_loaded": "brownie" in sys.modules,
     "queued_before": before,
     "queued_after": after,
 }))
 """
     )
-    assert payload["web3_loaded"] is False
-    assert payload["brownie_loaded"] is False
-    assert payload["queued_before"] == payload["queued_after"]
+    assert payload["queued_after"] == 50_000
 
 
-def test_helpers_access_triggers_side_effects() -> None:
+def test_helpers_import_triggers_side_effects() -> None:
     payload = _run(
         """
 import json
@@ -142,8 +120,6 @@ module = importlib.util.module_from_spec(spec)
 sys.modules["dank_mids.helpers"] = module
 spec.loader.exec_module(module)
 
-_ = module.setup_dank_w3
-
 print(json.dumps({
     "called": called["value"],
 }))
@@ -167,6 +143,10 @@ class StubEth:
 
 stub = StubEth()
 stub_module = types.ModuleType("dank_mids.brownie_patch")
+stub_module.DankContractCall = object()
+stub_module.DankContractMethod = object()
+stub_module.DankContractTx = object()
+stub_module.DankOverloadedMethod = object()
 stub_module.dank_eth = stub
 sys.modules["dank_mids.brownie_patch"] = stub_module
 

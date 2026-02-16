@@ -155,7 +155,7 @@ class DankEth(AsyncEth):
             hashes_only: If True, only transaction hashes will be returned.
 
         Example:
-            >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678)]
+            >>> [print(tx.hash) for tx in await dank_mids.eth.get_transactions(12345678))
         """
         try:  # TypeError: 'str' object cannot be interpreted as an integer
             block_identifier = hex(block_identifier)  # type: ignore [arg-type, assignment]
@@ -381,3 +381,24 @@ decode_timestamped: Final = json.Decoder(
 ).decode
 decode_transaction: Final = json.Decoder(type=Transaction, dec_hook=_decode_hook).decode
 decode_transaction_rlp: Final = json.Decoder(type=TransactionRLP, dec_hook=_decode_hook).decode
+
+
+def _restore_eth_alias() -> None:
+    import sys
+
+    parent = sys.modules.get("dank_mids")
+    if parent is None:
+        return
+    try:
+        dank_eth = parent.dank_eth
+    except Exception:
+        if getattr(parent, "eth", None) is sys.modules.get(__name__):
+            try:
+                delattr(parent, "eth")
+            except AttributeError:
+                pass
+        return
+    parent.eth = dank_eth
+
+
+_restore_eth_alias()

@@ -127,6 +127,9 @@ def _load_attribute(name: str, *, alias: str | None = None) -> Any:
     return value
 
 
+_ensure_side_effects()
+
+
 def __getattr__(name: str) -> Any:
     """
     Handles custom attribute access for the 'dank_mids' module.
@@ -145,3 +148,29 @@ def __getattr__(name: str) -> Any:
 
 def __dir__() -> list[str]:
     return sorted(set(globals()) | set(_LAZY_IMPORTS) | set(_ALIASES))
+
+
+def _install_alias_guard() -> None:
+    import sys
+    import types
+
+    module = sys.modules.get(__name__)
+    if module is None:
+        return
+
+    class _DankModule(types.ModuleType):
+        def __getattribute__(self, name: str) -> Any:  # type: ignore[override]
+            if name in _ALIASES:
+                try:
+                    value = types.ModuleType.__getattribute__(self, name)
+                except AttributeError:
+                    return types.ModuleType.__getattribute__(self, "__getattr__")(name)
+                if getattr(value, "__name__", None) == f"{__name__}.{name}":
+                    return types.ModuleType.__getattribute__(self, "__getattr__")(name)
+                return value
+            return types.ModuleType.__getattribute__(self, name)
+
+    module.__class__ = _DankModule
+
+
+_install_alias_guard()
