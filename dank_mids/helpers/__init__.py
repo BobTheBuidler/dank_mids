@@ -1,8 +1,11 @@
-from dank_mids.helpers._gather import gatherish
+from dank_mids import _ensure_side_effects as _ensure_side_effects
 from dank_mids.helpers._helpers import setup_dank_w3, setup_dank_w3_from_sync
+from dank_mids.helpers._gather import gatherish
 from dank_mids.helpers.future import DebuggableFuture
 from dank_mids.helpers.hashing import make_hashable
 from dank_mids.helpers.lru_cache import lru_cache_lite, lru_cache_lite_nonull
+
+_ensure_side_effects()
 
 __all__ = [
     "setup_dank_w3",

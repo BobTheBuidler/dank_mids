@@ -80,3 +80,9 @@ print(json.dumps({
     assert payload["queued_after"] == payload["queued_before"]
     assert payload["error_name"] == "BrownieNotConnectedError"
     assert payload["block_semaphore_name"] == "BlockSemaphore"
+
+
+def test_helpers_import_triggers_side_effects() -> None:
+    helpers_source = (REPO_ROOT / "dank_mids" / "helpers" / "_helpers.py").read_text()
+    assert "from dank_mids import _ensure_side_effects" in helpers_source
+    assert "_ensure_side_effects()" in helpers_source
