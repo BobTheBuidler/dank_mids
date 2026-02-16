@@ -28,9 +28,8 @@ StringIO: Final = io.StringIO
 print_stack: Final = traceback.print_stack
 
 _nameToLevel: Final = logging._nameToLevel
-_logging_any: Any = logging
-_acquireLock: Final = _logging_any._lock.acquire
-_releaseLock: Final = _logging_any._lock.release
+_acquireLock: Final = logging._lock.acquire  # type: ignore[attr-defined]
+_releaseLock: Final = logging._lock.release  # type: ignore[attr-defined]
 _srcfile: Final = logging._srcfile
 
 
