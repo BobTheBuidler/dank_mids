@@ -18,5 +18,30 @@ class BrownieNotConnectedError(RuntimeError):
         )
 
 
+class BrowniePatchImportError(ImportError):
+    """
+    :class:`ImportError` raised when brownie integration cannot be imported or initialized.
+    """
+
+    def __init__(self, obj_name: str, exc: ImportError) -> None:
+        super().__init__(
+            f"Failed to import brownie integration while accessing `dank_mids.{obj_name}`: {exc}"
+        )
+        self._original_exception = exc
+
+
+class BrowniePatchNotInitializedError(RuntimeError):
+    """
+    :class:`RuntimeError` raised when brownie is connected but brownie patch was not initialized.
+    """
+
+    def __init__(self, obj_name: str) -> None:
+        super().__init__(
+            "Brownie is connected but dank_mids brownie patch was not initialized. "
+            f"This can happen if `dank_mids` was imported before connecting. "
+            f"Restart the process after connecting to access `dank_mids.{obj_name}`."
+        )
+
+
 class GarbageCollectionError(RuntimeError):
     """Exception raised when an object is garbage collected prematurely."""
