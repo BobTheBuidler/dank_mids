@@ -390,9 +390,13 @@ def _restore_eth_alias() -> None:
     if parent is None:
         return
     try:
-        dank_eth = parent.dank_eth
-    except Exception:
-        if getattr(parent, "eth", None) is sys.modules.get(__name__):
+        parent_dict = parent.__dict__
+    except AttributeError:
+        return
+
+    dank_eth = parent_dict.get("dank_eth")
+    if dank_eth is None:
+        if parent_dict.get("eth") is sys.modules.get(__name__):
             try:
                 delattr(parent, "eth")
             except AttributeError:
