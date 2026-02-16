@@ -15,8 +15,11 @@ from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
 from web3.types import Formatters, FormattersDict, RPCEndpoint, RPCResponse
 
+from dank_mids import _ensure_side_effects as _ensure_side_effects
 from dank_mids.eth import DankEth
 from dank_mids.types import AsyncMiddleware
+
+_ensure_side_effects()
 
 if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch, Multicall
