@@ -1200,6 +1200,8 @@ extern char CPyDef__weaklist___WeakList___extend(PyObject *cpy_r_self, PyObject 
 extern PyObject *CPyPy__weaklist___WeakList___extend(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist___WeakList___remove(PyObject *cpy_r_self, PyObject *cpy_r_item);
 extern PyObject *CPyPy__weaklist___WeakList___remove(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__weaklist___WeakList___snapshot(PyObject *cpy_r_self);
+extern PyObject *CPyPy__weaklist___WeakList___snapshot(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__weaklist____gc_callback__make_ref_WeakList_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 extern PyObject *CPyPy__weaklist____gc_callback__make_ref_WeakList_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__weaklist____gc_callback__make_ref_WeakList_obj_____call__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r__ref, CPyTagged cpy_r_key);

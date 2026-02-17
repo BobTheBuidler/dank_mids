@@ -47,6 +47,10 @@ class WeakList(Generic[_T]):
             raise ValueError("list.remove(x): x not in list")
         del self._refs[obj_id]
 
+    def snapshot(self) -> tuple[_T, ...]:
+        """Return a strong-reference snapshot of current items."""
+        return tuple(self)
+
     def _make_ref(self, item: _T) -> "ref[_T]":
         key = id(item)
 
