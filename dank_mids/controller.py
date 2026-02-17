@@ -260,9 +260,7 @@ class DankMiddlewareController:
         pending_eth_calls = self.pending_eth_calls
         with self.pools_closed_lock:  # Do we really need this?  # NOTE: yes we do
             if pending_eth_calls:
-                multicalls = {
-                    block: call for block, call in pending_eth_calls.copy().items() if call
-                }
+                multicalls = {block: call for block, call in pending_eth_calls.items() if call}
                 pending_eth_calls.clear()
             else:
                 multicalls = {}
