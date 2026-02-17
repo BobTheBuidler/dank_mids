@@ -5,11 +5,6 @@ from weakref import ref
 _T = TypeVar("_T")
 
 
-def strong_snapshot(items: Iterable[_T]) -> tuple[_T, ...]:
-    """Return a strong-reference snapshot of current items."""
-    return tuple(items)
-
-
 @final
 class WeakList(Generic[_T]):
     def __init__(self, data: Iterable[_T] | None = None) -> None:
@@ -52,6 +47,10 @@ class WeakList(Generic[_T]):
             raise ValueError("list.remove(x): x not in list")
         del self._refs[obj_id]
 
+    def snapshot(self) -> tuple[_T, ...]:
+        """Return a strong-reference snapshot of current items."""
+        return tuple(self)
+
     def _make_ref(self, item: _T) -> "ref[_T]":
         key = id(item)
 
@@ -59,3 +58,8 @@ class WeakList(Generic[_T]):
             self._refs.pop(key, None)
 
         return ref(item, _gc_callback)
+
+
+def strong_snapshot(items: "WeakList[_T]") -> tuple[_T, ...]:
+    """Return a strong-reference snapshot of a WeakList's current items."""
+    return items.snapshot()
