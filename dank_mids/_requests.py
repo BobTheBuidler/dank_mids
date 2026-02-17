@@ -350,8 +350,6 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
                     # don't start counting for the timeout while we still have a queue of requests to send
                     await rate_limit_inactive(controller.endpoint)
-
-                    # The the original request and the duplicate request share the same underlying future so we can just await the duplicate
                     return await duplicate.get_response()
 
         except Exception as e:
@@ -697,6 +695,14 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
             data,
         )
 
+    def _start_debug_daemon(self, task_name: str, cancel_reason: str) -> None:
+        if _logger_is_enabled_for(DEBUG):
+            debug_daemon = create_task(self._debug_daemon(), name=task_name)
+            self._daemon = debug_daemon
+            waiter = current_task()
+            if waiter is not None:
+                waiter.add_done_callback(lambda: debug_daemon.cancel(cancel_reason))
+
     async def _debug_daemon(self) -> None:
         done = self._done.is_set
         # NOTE: _resonse works for RPCRequst and eth_call, _done works for _Batch classes
@@ -827,12 +833,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
     def start(self, batch: Union["_Batch", "DankBatch"] | None = None, cleanup=True) -> None:
         batch = batch or self
-        if _logger_is_enabled_for(DEBUG):
-            debug_daemon = create_task(self._debug_daemon(), name="Multicall debug daemon")
-            self._daemon = debug_daemon
-            waiter = current_task()
-            if waiter is not None:
-                waiter.add_done_callback(lambda: debug_daemon.cancel("Multicall complete"))
+        self._start_debug_daemon("Multicall debug daemon", "Multicall complete")
         with self._lock:
             for call in self.calls:
                 call._batch = self
@@ -1130,12 +1131,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
     def start(self, batch: Optional["DankBatch"] = None, cleanup=True) -> None:
         # sourcery skip: hoist-loop-from-if
         batch = batch or self
-        if _logger_is_enabled_for(DEBUG):
-            debug_daemon = create_task(self._debug_daemon(), name="JSONRPCBatch debug daemon")
-            self._daemon = debug_daemon
-            waiter = current_task()
-            if waiter is not None:
-                waiter.add_done_callback(lambda: debug_daemon.cancel("JSONRPCBatch complete"))
+        self._start_debug_daemon("JSONRPCBatch debug daemon", "JSONRPCBatch complete")
         with self._lock:
             for typ, calls in groupby(self.calls, type):
                 if typ is Multicall:
