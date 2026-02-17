@@ -50,7 +50,7 @@ def test_spoof_response_by_id_matches_and_skips_falsey() -> None:
             decode_raw(b'{"jsonrpc":"2.0","id":2,"result":"0x02"}'),
             decode_raw(b'{"jsonrpc":"2.0","id":1,"result":"0x01"}'),
         ]
-        mcall_coros = await batch._spoof_response_by_id(response, (call1, call2))
+        mcall_coros = await batch._spoof_response_by_id(response)
         return call1, call2, mcall_coros, response
 
     call1, call2, mcall_coros, response = asyncio.run(run())
