@@ -85,7 +85,7 @@ from dank_mids.helpers._helpers import set_done
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._requester import _requester
-from dank_mids.helpers._weaklist import WeakList
+from dank_mids.helpers._weaklist import WeakList, strong_snapshot
 from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
 from dank_mids.lock import AlertingRLock, Lock
@@ -617,7 +617,7 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
     @property
     def bisected(self) -> Generator[tuple[_Request, ...], None, None]:
         # set `self.calls` output to var so its only computed once
-        calls = tuple(self.calls)
+        calls = strong_snapshot(self.calls)
         half = len(calls) // 2
         yield calls[:half]
         yield calls[half:]
@@ -844,7 +844,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     @stuck_coro_debugger
     async def get_response(self) -> None:  # type: ignore [override]
         # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
-        calls = tuple(self.calls)
+        calls = strong_snapshot(self.calls)
 
         if not calls:
             # TODO: figure out how we get into this function without any calls
@@ -947,7 +947,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
             # NOTE: we pass in the calls to create a strong reference so when we zip up the results everything gets to the right place
             if calls is None:
-                calls = tuple(self.calls)
+                calls = strong_snapshot(self.calls)
 
             to_gather = []
             for call, result in zip(calls, mcall_decode(response)):

@@ -5,6 +5,11 @@ from weakref import ref
 _T = TypeVar("_T")
 
 
+def strong_snapshot(items: Iterable[_T]) -> tuple[_T, ...]:
+    """Return a strong-reference snapshot of current items."""
+    return tuple(items)
+
+
 @final
 class WeakList(Generic[_T]):
     def __init__(self, data: Iterable[_T] | None = None) -> None:
