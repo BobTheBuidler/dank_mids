@@ -81,6 +81,16 @@ typedef struct tuple_T4CIOO {
 } tuple_T4CIOO;
 #endif
 
+#ifndef MYPYC_DECLARED_tuple_T4OOOO
+#define MYPYC_DECLARED_tuple_T4OOOO
+typedef struct tuple_T4OOOO {
+    PyObject *f0;
+    PyObject *f1;
+    PyObject *f2;
+    PyObject *f3;
+} tuple_T4OOOO;
+#endif
+
 #ifndef MYPYC_DECLARED_tuple_T10OOOOOOOOOO
 #define MYPYC_DECLARED_tuple_T10OOOOOOOOOO
 typedef struct tuple_T10OOOOOOOOOO {
@@ -120,16 +130,6 @@ typedef struct tuple_T2IO {
     CPyTagged f0;
     PyObject *f1;
 } tuple_T2IO;
-#endif
-
-#ifndef MYPYC_DECLARED_tuple_T4OOOO
-#define MYPYC_DECLARED_tuple_T4OOOO
-typedef struct tuple_T4OOOO {
-    PyObject *f0;
-    PyObject *f1;
-    PyObject *f2;
-    PyObject *f3;
-} tuple_T4OOOO;
 #endif
 
 #ifndef MYPYC_DECLARED_tuple_T4OIOC
@@ -368,6 +368,22 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__abi_types;
     PyObject *___mypyc_generator_attribute__single_dict_formatter;
 } dank_mids____web3___formatters___abi_request_formatters_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    char _connected;
+    char _initialized;
+    PyObject *_import_error;
+} dank_mids___brownie_patch___BrowniePatchStatusObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *_import_error;
+    char _connected;
+    char _initialized;
+} dank_mids___brownie_patch____BrowniePatchStateObject;
 
 typedef struct {
     PyObject_HEAD
