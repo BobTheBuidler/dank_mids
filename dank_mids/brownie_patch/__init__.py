@@ -1,5 +1,6 @@
 # sourcery skip: use-contextlib-suppress
 from dataclasses import dataclass
+from types import ModuleType
 from typing import Optional
 
 from dank_mids.helpers import setup_dank_w3_from_sync
@@ -110,13 +111,13 @@ def get_brownie_patch_status(refresh_connection: bool = False) -> BrowniePatchSt
     return _STATE.status()
 
 
-def _load_types():
+def _load_types() -> ModuleType:
     from dank_mids.brownie_patch import types as _types
 
     return _types
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> object:
     if name in _BROWNIE_TYPE_NAMES:
         _types = _load_types()
         value = getattr(_types, name)
