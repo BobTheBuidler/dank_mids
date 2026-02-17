@@ -735,16 +735,23 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__pending_eth_calls;
     PyObject *___mypyc_temp__25;
     char ___mypyc_temp__26;
+    PyObject *___mypyc_temp__27;
+    PyObject *___mypyc_temp__28;
+    CPyTagged ___mypyc_temp__29;
+    int64_t ___mypyc_temp__30;
+    PyObject *___mypyc_temp__31;
+    PyObject *___mypyc_generator_attribute__block;
+    PyObject *___mypyc_generator_attribute__call;
     PyObject *___mypyc_generator_attribute__rpc_calls;
-    tuple_T3OOO ___mypyc_temp__27;
-    tuple_T3OOO ___mypyc_temp__28;
-    PyObject *___mypyc_generator_attribute__batch;
-    PyObject *___mypyc_temp__29;
-    tuple_T3OOO ___mypyc_temp__30;
-    tuple_T3OOO ___mypyc_temp__31;
-    PyObject *___mypyc_generator_attribute__e;
-    PyObject *___mypyc_temp__32;
+    tuple_T3OOO ___mypyc_temp__32;
     tuple_T3OOO ___mypyc_temp__33;
+    PyObject *___mypyc_generator_attribute__batch;
+    PyObject *___mypyc_temp__34;
+    tuple_T3OOO ___mypyc_temp__35;
+    tuple_T3OOO ___mypyc_temp__36;
+    PyObject *___mypyc_generator_attribute__e;
+    PyObject *___mypyc_temp__37;
+    tuple_T3OOO ___mypyc_temp__38;
 } dank_mids___controller___execute_batch_DankMiddlewareController_genObject;
 
 typedef struct {
