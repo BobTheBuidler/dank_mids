@@ -11,7 +11,7 @@ from asyncio import (
     wait_for,
 )
 from collections import defaultdict
-from collections.abc import Callable, Generator, Iterable, Iterator, Sequence
+from collections.abc import Callable, Coroutine, Generator, Iterable, Iterator, Sequence
 from itertools import chain, filterfalse, groupby
 from typing import TYPE_CHECKING, Any, DefaultDict, Final, Generic, Optional, TypeVar, Union, final
 from weakref import ProxyType
@@ -38,7 +38,6 @@ from dank_mids import _debugging, constants, stats
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import (
     BadResponse,
-    BatchResponseSortError,
     ChainstackRateLimitError,
     DankMidsInternalError,
     EmptyBatch,
@@ -71,6 +70,7 @@ from dank_mids.helpers._errors import (
     error_logger,
     error_logger_debug,
     error_logger_log_debug,
+    format_with_errors,
     gas_logger_debug,
     is_call_revert,
     is_revert_bytes,
@@ -365,9 +365,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         response = response.decode(partial=True)
 
         if response.error is None:
-            if self.raw and response.result:
-                return {"result": response.result}
-            return response.to_dict(self.method)
+            return format_with_errors(response, self.method, raw_mode=self.raw)
 
         if needs_full_request_spec(response) and controller._check_request_type():
             method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
@@ -377,9 +375,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         elif error_logger.isEnabledFor(DEBUG) and type(response.exception) is not ExecutionReverted:
             error_logger_log_debug("%s for %s", response.error, self)
 
-        response = response.to_dict(self.method)
-        response["error"] = dict(response["error"].items(), dankmids_added_context=self.request)
-        return response
+        return format_with_errors(response, self.method, raw_mode=self.raw, request=self.request)
 
     @stuck_coro_debugger
     async def get_response_unbatched(self) -> RPCResponse:  # type: ignore [override]
@@ -402,11 +398,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
-        return (
-            {"result": decoded.result}
-            if self.raw and decoded.result
-            else decoded.to_dict(self.method)
-        )
+        return format_with_errors(decoded, self.method, raw_mode=self.raw)
 
     async def spoof_response(self, data: RawResponse | bytes | Exception) -> None:
         # sourcery skip: merge-duplicate-blocks
@@ -453,10 +445,20 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         try:
             response = await try_for_result_quick(task)
+        except ClientResponseError as e:
+            if e.status != 408:  # request timeout
+                raise
+            log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
+            log_func(
+                "`make_request` server timeout (code 408) %s times for %s, trying again...",
+                num_previous_timeouts + 1,
+                self,
+            )
+            return await self.make_request(num_previous_timeouts + 1)
         except TimeoutError:
             log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
-                "`make_request` timed out (%ss) %s times for %s, trying again...",
+                "`make_request` timed out in dank_mids (%ss) %s times for %s, trying again...",
                 TIMEOUT_SECONDS_SMALL,
                 num_previous_timeouts + 1,
                 self,
@@ -613,7 +615,7 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
     @property
     def bisected(self) -> Generator[tuple[_Request, ...], None, None]:
         # set `self.calls` output to var so its only computed once
-        calls = tuple(self.calls)
+        calls = self.calls.snapshot()
         half = len(calls) // 2
         yield calls[:half]
         yield calls[half:]
@@ -843,7 +845,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
     @stuck_coro_debugger
     async def get_response(self) -> None:  # type: ignore [override]
         # create a strong ref to all calls we will execute so they cant get gced mid execution and mess up response ordering
-        calls = tuple(self.calls)
+        calls = self.calls.snapshot()
 
         if not calls:
             # TODO: figure out how we get into this function without any calls
@@ -946,7 +948,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
             # NOTE: we pass in the calls to create a strong reference so when we zip up the results everything gets to the right place
             if calls is None:
-                calls = tuple(self.calls)
+                calls = self.calls.snapshot()
 
             to_gather = []
             for call, result in zip(calls, mcall_decode(response)):
@@ -1064,9 +1066,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
                     return
 
     @property
-    def data(self) -> bytes:
+    def data(self) -> bytes | None:
         try:
-            return b"[" + b",".join(call.request.data for call in self) + b"]"
+            joined = b",".join(call.request.data for call in self)
         except TypeError as e0:
             # If we can't encode one of the calls, lets figure out which one and pass some useful info downstream
             for call in self:
@@ -1075,6 +1077,8 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
                 except TypeError as e1:
                     raise TypeError(e1, call.request) from e0.__cause__
             raise
+        else:
+            return b"[" + joined + b"]" if joined else None
 
     @property
     def is_multicalls_only(self) -> bool:
@@ -1165,7 +1169,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             while True:
                 try:
                     # NOTE: We do this inline so we never have to allocate the response to memory
-                    await self.spoof_response(*await self.post())
+                    await self.spoof_response(await self.post())
                     break
                 except ChainstackRateLimitError as e:
                     # Chainstack doesn't use 429 for rate limiting, it sends a successful response back to the rpc with an error
@@ -1212,7 +1216,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
 
     @stuck_coro_debugger
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1, suppress_logs=2)
-    async def post(self) -> tuple[list[RawResponse], list[Multicall | RPCRequest]]:
+    async def post(self) -> list[RawResponse]:
         """
         Send the batch of requests to the Ethereum node and process the responses.
 
@@ -1227,27 +1231,25 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             ClientResponseError: If there was an error with the HTTP request.
             Exception: For other unexpected errors.
         """
+        # If all calls in the batch were GC'ed, bail out
+        data = self.data
+        if not data:
+            return []
+                
+        endpoint = self.controller.endpoint
         try:
-            # we need strong refs so the results all get to the right place
-            calls = tuple(self)
-            if not calls:
-                # TODO: figure out why this can happen and prevent it elsewhere
-                return [], []
-
-            # for the multicalls too
-            mcall_calls_strong_refs = tuple(tuple(call.calls) for call in calls if type(call) is Multicall)  # type: ignore [union-attr]
-            post_coro = _requester.post(
-                self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
-            )
+            post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
             task = create_task(post_coro, name=f"JSONRPCBatch-{self.uid}")
             response: JSONRPCBatchResponse = await wait_for(shield(task), timeout=30)
         except TimeoutError:
             timeout_logger_warning("JSONRPCBatch.post timed out (30s). Retrying.")
-            new_post_coro = _requester.post(
-                self.controller.endpoint, data=self.data, loads=_codec.decode_jsonrpc_batch
-            )
+            # If all calls in the batch were GC'ed, bail out
+            data = self.data
+            if not data:
+                return []
+            new_post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
             for fut in as_completed([task, new_post_coro]):
-                return await fut, calls
+                return await fut
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 _log_warning("Payload too large: %s", self.method_counts)
@@ -1268,7 +1270,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
         # NOTE: A successful response will be a list of `RawResponse` objects.
         #       A single `PartialResponse` implies an error.
         if isinstance(response, list):
-            return response, calls
+            return response
 
         # Oops, we failed.
         errmsg = response.error.message
@@ -1306,11 +1308,25 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             )
         return _Batch.should_retry(self, e)
 
+    async def _spoof_response_by_id(self, response: list[RawResponse]) -> list[Coroutine[Any, Any, None]]:
+        call_by_id = {str(call.uid): call for call in self}
+        mcall_coros = []
+        for raw in response:
+            key = str(raw.decode().id)
+            call = call_by_id.pop(key, None)
+            if call is None or not call:
+                continue
+            if isinstance(call, Multicall):
+                mcall_coros.append(Multicall._spoof_or_retry(call, raw))
+            else:
+                # These do not need to be delegated to tasks since they
+                # will always complete synchronously when called here
+                await call.spoof_response(raw)
+        return mcall_coros
+
     @set_done
     @stuck_coro_debugger
-    async def spoof_response(
-        self, response: list[RawResponse], calls: tuple[RPCRequest, ...]
-    ) -> None:
+    async def spoof_response(self, response: list[RawResponse]) -> None:
         """
         Process the responses from the Ethereum node and set the results for each call.
 
@@ -1320,50 +1336,10 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
 
         Args:
             response: A list of RawResponse objects containing the responses from the node.
-            calls: A list of RPCRequest objects that were included in the batch.
         """
         # Reaching this point means we made a batch call and we got results. That doesn't mean they're good, but we got 'em.
 
-        controller = self.controller
-
-        if controller._sort_calls:
-            # NOTE: these providers don't always return batch results in the correct ordering
-            # NOTE: is it maybe because they
-            try:
-                calls = sorted(calls, key=lambda call: call.uid)  # type: ignore [assignment]
-            except TypeError:
-                # '<' not supported between instances of 'int' and 'str'
-                # This happens when a multicall or jsonrpc batch was split in half.
-                # Those bisected batches have a string uid to associate them with
-                # the original.
-                calls = sorted(calls, key=lambda call: str(call.uid))
-
-        if controller._sort_response:
-            try:
-                response.sort(key=lambda raw: raw.decode().id)
-            except TypeError:
-                # '<' not supported between instances of 'int' and 'str'
-                # This happens when a multicall or jsonrpc batch was split in half.
-                # Those bisected batches have a string uid to associate them with
-                # the original.
-                response.sort(key=lambda raw: str(raw.decode().id))
-        else:
-            for call, raw in zip(calls, response):
-                # TODO: make sure this doesn't ever raise and then delete it
-                if call.uid != raw.decode().id:
-                    # Not sure why it works this way
-                    raise BatchResponseSortError(controller, calls, response)
-
-        responses = iter(response)
-        mcall_coros = []
-        for request_type, requests in groupby(calls, type):
-            if request_type is Multicall:
-                mcall_coros.extend(map(Multicall._spoof_or_retry, requests, responses))
-            else:
-                # These do not need to be delegated to asks since they
-                # will always complete synchronously when called here
-                for coro in map(request_type.spoof_response, requests, responses):
-                    await coro
+        mcall_coros = await self._spoof_response_by_id(response)
 
         if mcall_coros:
             await gatherish(mcall_coros, name="JSONRPCBatch.spoof_response gatherish")
