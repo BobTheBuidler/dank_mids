@@ -58,8 +58,3 @@ class WeakList(Generic[_T]):
             self._refs.pop(key, None)
 
         return ref(item, _gc_callback)
-
-
-def strong_snapshot(items: "WeakList[_T]") -> tuple[_T, ...]:
-    """Return a strong-reference snapshot of a WeakList's current items."""
-    return items.snapshot()
