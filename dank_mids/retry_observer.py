@@ -5,6 +5,7 @@ from time import time
 from typing import Final, Protocol
 
 from dank_mids.helpers._weaklist import WeakList
+from dank_mids.logging import get_c_logger
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,6 +49,7 @@ class RetryObserver(Protocol):
 
 
 _RETRY_OBSERVERS: Final[WeakList[RetryObserver]] = WeakList()
+logger: Final = get_c_logger("dank_mids.retry_observer")
 
 
 def register_retry_observer(observer: RetryObserver) -> None:
@@ -87,7 +89,10 @@ def emit_retry_event(event: RetryEvent) -> None:
     """
 
     for observer in _RETRY_OBSERVERS.snapshot():
-        observer(event)
+        try:
+            observer(event)
+        except Exception:
+            logger.exception("Retry observer %r failed", observer)
 
 
 __all__ = [

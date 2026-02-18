@@ -8,9 +8,23 @@ into logs or metrics backends. Observers are callables that accept a
 :class:`dank_mids.retry_observer.RetryEvent`.
 
 .. note::
-   Internal retry logic does not emit events yet. Emit points are planned for a
-   follow-up PR. For now, emit from your own wrappers using
-   :func:`dank_mids.retry_observer.emit_retry_event`.
+   Internal retry logic emits events for built-in retry paths. You can still
+   emit from your own wrappers using :func:`dank_mids.retry_observer.emit_retry_event`.
+
+Internal emit points
+--------------------
+Retry events are emitted in the following internal locations:
+
+- RPC request timeouts and 408 responses (``RPCRequest.make_request``)
+- Multicall bisect retries (``Multicall.bisect_and_retry``)
+- JSON-RPC batch bisect retries (``JSONRPCBatch.bisect_and_retry``)
+- HTTP 429 and retryable status codes (``DankClientSession.post``)
+
+Attempt semantics
+-----------------
+``attempt`` is 1-based. For batch retries, the attempt number increments each
+time a batch is bisected and retried. For ``will_retry=False`` events, the
+attempt number reflects the retry decision that would have occurred next.
 
 RetryEvent
 ----------

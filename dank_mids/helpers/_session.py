@@ -13,6 +13,7 @@ from aiohttp.typedefs import DEFAULT_JSON_DECODER
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
 from dank_mids.logging import DEBUG, get_c_logger
+from dank_mids.retry_observer import RetryEvent, emit_retry_event
 from dank_mids.types import PartialRequest, RateLimiters, T
 
 logger: Final = get_c_logger("dank_mids.session")
@@ -153,6 +154,7 @@ class DankClientSession(ClientSession):
         # Try the request until success or 5 failures.
         tried = 0
         resets = 0
+        rate_limit_attempts = 0
         while True:
             try:
                 async with rate_limiter:
@@ -161,7 +163,7 @@ class DankClientSession(ClientSession):
                         _logger_debug("received response %s", response_data)
                         return response_data
 
-            except (ConnectionResetError, ClientError):
+            except ConnectionResetError:
                 if resets < 10:
                     # Who cares, run it again!
                     resets += 1
@@ -172,20 +174,33 @@ class DankClientSession(ClientSession):
             except ClientResponseError as ce:
                 status = ce.status
                 if status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
-                    await self._handle_too_many_requests(endpoint, ce)
+                    rate_limit_attempts += 1
+                    await self._handle_too_many_requests(
+                        endpoint,
+                        ce,
+                        attempt=rate_limit_attempts,
+                    )
 
                 elif status in RETRY_FOR_CODES and tried < 5:
                     tried += 1
+                    sleep_for = random()
+                    emit_retry_event(
+                        RetryEvent(
+                            operation="http_post",
+                            attempt=tried,
+                            delay=sleep_for,
+                            error=ce,
+                            component="session",
+                            metadata={"status": str(status)},
+                        )
+                    )
                     if debug_logs_enabled:
-                        sleep_for = random()
                         _logger_log(
                             DEBUG,
                             "response failed with status %s, retrying in %.f2s",
                             (HTTPStatusExtended(status), sleep_for),
                         )
-                        await sleep(sleep_for)
-                    else:
-                        await sleep(random())
+                    await sleep(sleep_for)
 
                 else:
                     if debug_logs_enabled:
@@ -196,7 +211,21 @@ class DankClientSession(ClientSession):
                         )
                     raise
 
-    async def _handle_too_many_requests(self, endpoint: str, error: ClientResponseError) -> None:
+            except ClientError:
+                if resets < 10:
+                    # Who cares, run it again!
+                    resets += 1
+                else:
+                    # Ehh this is too many, something is wrong.
+                    raise
+
+    async def _handle_too_many_requests(
+        self,
+        endpoint: str,
+        error: ClientResponseError,
+        *,
+        attempt: int | None = None,
+    ) -> None:
         now = time()
         limiter = cast(AsyncLimiter, limiters[endpoint])
         if now > _last_throttled_at.get(limiter, 0) + 10:
@@ -224,6 +253,16 @@ class DankClientSession(ClientSession):
         retry_after = resume_at - now
         self._continue_requests_at = resume_at
 
+        emit_retry_event(
+            RetryEvent(
+                operation="http_post",
+                attempt=attempt or 1,
+                delay=retry_after,
+                error=error,
+                component="session",
+                metadata={"status": "429"},
+            )
+        )
         self._log_rate_limited(retry_after)
         if retry_after > 30:
             _logger_warning("severe rate limiting from your provider")

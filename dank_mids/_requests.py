@@ -90,6 +90,7 @@ from dank_mids.helpers.method import get_len as get_len_for_method
 from dank_mids.helpers.method import should_batch as should_batch_method
 from dank_mids.lock import AlertingRLock, Lock
 from dank_mids.logging import DEBUG, get_c_logger
+from dank_mids.retry_observer import RetryEvent, emit_retry_event
 from dank_mids.types import BatchId, BlockId, JsonrpcParams, PartialRequest, Request, Response
 
 if TYPE_CHECKING:
@@ -384,7 +385,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         task = create_task(self.make_request(), name="RPCRequest.get_response_unbatched")
         try:
             await try_for_result(task)
-        except TimeoutError:
+        except TimeoutError as e:
             # looks like its stuck for some reason, let's try another one
             _log_debug(
                 "%s got stuck in `get_response_unbatched`, we're creating a new one...",
@@ -456,14 +457,32 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 num_previous_timeouts + 1,
                 self,
             )
+            emit_retry_event(
+                RetryEvent(
+                    operation=self.method,
+                    attempt=num_previous_timeouts + 1,
+                    error=e,
+                    component="rpc_request",
+                    metadata={"status": "408"},
+                )
+            )
             return await self.make_request(num_previous_timeouts + 1)
-        except TimeoutError:
+        except TimeoutError as e:
             log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
             log_func(
                 "`make_request` timed out in dank_mids (%ss) %s times for %s, trying again...",
                 TIMEOUT_SECONDS_SMALL,
                 num_previous_timeouts + 1,
                 self,
+            )
+            emit_retry_event(
+                RetryEvent(
+                    operation=self.method,
+                    attempt=num_previous_timeouts + 1,
+                    error=e,
+                    component="rpc_request",
+                    metadata={"timeout_seconds": str(TIMEOUT_SECONDS_SMALL)},
+                )
             )
             next_attempt_coro = self.make_request(num_previous_timeouts + 1)
             next_attempt_task = create_task(next_attempt_coro, name="next attempt task")
@@ -599,7 +618,7 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
     _awaited: bool = False
     """A flag indicating whether the batch has been awaited."""
 
-    __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "__dict__"
+    __slots__ = "calls", "_batcher", "_lock", "_done", "_daemon", "_retry_attempts", "__dict__"
 
     def __init__(self, controller: "DankMiddlewareController", calls: Iterable[_Request]) -> None:
         _request_base_init(self, controller)
@@ -607,6 +626,7 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
         self._batcher = controller.batcher
         self._lock = AlertingRLock(name=self.__class__.__name__)
         self._done = _RequestEvent(self)
+        self._retry_attempts = 0
 
     def __len__(self) -> int:
         return len(self.calls)
@@ -893,6 +913,19 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             elif self.should_retry(e):
                 await self.bisect_and_retry(e)
             else:
+                emit_retry_event(
+                    RetryEvent(
+                        operation=self.method,
+                        attempt=self._retry_attempts + 1,
+                        error=e,
+                        component="multicall",
+                        will_retry=False,
+                        metadata={
+                            "batch_id": str(self.bid),
+                            "batch_size": str(len(self)),
+                        },
+                    )
+                )
                 await self.spoof_response(e)
 
         _demo_logger_info("request %s for multicall %s complete", rid, self.bid)
@@ -977,6 +1010,19 @@ class Multicall(_Batch[RPCResponse, eth_call]):
         Args:
             e: The Exception that occured to cause the retry.
         """
+        self._retry_attempts += 1
+        emit_retry_event(
+            RetryEvent(
+                operation=self.method,
+                attempt=self._retry_attempts,
+                error=e,
+                component="multicall",
+                metadata={
+                    "batch_id": str(self.bid),
+                    "batch_size": str(len(self)),
+                },
+            )
+        )
         if error_logger.isEnabledFor(DEBUG) and type(e) is not OutOfGas:
             error_logger_log_debug(
                 "%s had %s, bisecting and retrying...",
@@ -1209,6 +1255,20 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             else:
                 # NOTE: This means an exception occurred during the post request
                 # AND that the json batch is made of just one rpc request that is not a multicall.
+                emit_retry_event(
+                    RetryEvent(
+                        operation="jsonrpc_batch",
+                        attempt=self._retry_attempts + 1,
+                        error=e,
+                        component="jsonrpc_batch",
+                        will_retry=False,
+                        metadata={
+                            "batch_id": str(self.jid),
+                            "batch_size": str(len(self)),
+                            "total_calls": str(self.total_calls),
+                        },
+                    )
+                )
                 error_logger_debug(
                     "%s had exception %s, aborting and sending Exception to waiters", self, e
                 )
@@ -1361,6 +1421,20 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
         Args:
             e: The exception that occurred during the batch request.
         """
+        self._retry_attempts += 1
+        emit_retry_event(
+            RetryEvent(
+                operation="jsonrpc_batch",
+                attempt=self._retry_attempts,
+                error=e,
+                component="jsonrpc_batch",
+                metadata={
+                    "batch_id": str(self.jid),
+                    "batch_size": str(len(self)),
+                    "total_calls": str(self.total_calls),
+                },
+            )
+        )
         if error_logger.isEnabledFor(DEBUG):
             exc_str = e.response.error if type(e) is BadResponse else repr(e)
             error_logger_log_debug("%s had %s", self, exc_str)
