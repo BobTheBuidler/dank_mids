@@ -35,13 +35,26 @@ def load_mypyc_targets() -> list[str]:
     if not after:
         raise SystemExit("Mypyc command has no targets")
     tokens = shlex.split(after)
-    targets: list[str] = []
+    targets: set[str] = set()
     for tok in tokens:
         if tok.startswith("-"):
             continue
-        if tok.endswith(".py"):
-            targets.append(tok.replace("\\", "/"))
-    return targets
+        norm = tok.replace("\\", "/")
+        path = ROOT / norm
+        if norm.endswith(".py"):
+            if not path.is_file():
+                raise SystemExit(f"Mypyc target not found: {norm}")
+            targets.add(norm)
+            continue
+        if path.is_dir():
+            py_files = sorted(p for p in path.rglob("*.py") if p.is_file())
+            if not py_files:
+                raise SystemExit(f"Mypyc directory target has no .py files: {norm}")
+            for py_file in py_files:
+                targets.add(py_file.relative_to(ROOT).as_posix())
+            continue
+        raise SystemExit(f"Unsupported mypyc target: {norm}")
+    return sorted(targets)
 
 
 def check_wheel(wheel_path: pathlib.Path, targets: list[str]) -> list[str]:
