@@ -3,7 +3,19 @@ from __future__ import annotations
 from importlib import import_module
 from typing import TYPE_CHECKING, Any, Final
 
-__all__ = ["dank_middleware", "BlockSemaphore", "setup_dank_w3", "setup_dank_w3_from_sync"]
+__all__ = [
+    "dank_middleware",
+    "BlockSemaphore",
+    "setup_dank_w3",
+    "setup_dank_w3_from_sync",
+    "RetryEvent",
+    "RetryObserver",
+    "emit_retry_event",
+    "get_retry_observers",
+    "register_retry_observer",
+    "unregister_retry_observer",
+    "StatsRetryObserver",
+]
 
 _BROWNIE_OBJECTS: Final[tuple[str, ...]] = (
     "Contract",
@@ -38,6 +50,13 @@ _LAZY_IMPORTS: Final[dict[str, tuple[str, str]]] = {
     "setup_dank_w3_from_sync": ("dank_mids.helpers", "setup_dank_w3_from_sync"),
     "dank_middleware": ("dank_mids.middleware", "dank_middleware"),
     "BlockSemaphore": ("dank_mids.semaphores", "BlockSemaphore"),
+    "RetryEvent": ("dank_mids.retry_observer", "RetryEvent"),
+    "RetryObserver": ("dank_mids.retry_observer", "RetryObserver"),
+    "emit_retry_event": ("dank_mids.retry_observer", "emit_retry_event"),
+    "get_retry_observers": ("dank_mids.retry_observer", "get_retry_observers"),
+    "register_retry_observer": ("dank_mids.retry_observer", "register_retry_observer"),
+    "unregister_retry_observer": ("dank_mids.retry_observer", "unregister_retry_observer"),
+    "StatsRetryObserver": ("dank_mids.stats.retry", "StatsRetryObserver"),
     "Contract": ("dank_mids.brownie_patch", "Contract"),
     "dank_web3": ("dank_mids.brownie_patch", "dank_web3"),
     "dank_eth": ("dank_mids.brownie_patch", "dank_eth"),
@@ -80,7 +99,16 @@ if TYPE_CHECKING:
     )
     from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
     from dank_mids.middleware import dank_middleware
+    from dank_mids.retry_observer import (
+        RetryEvent,
+        RetryObserver,
+        emit_retry_event,
+        get_retry_observers,
+        register_retry_observer,
+        unregister_retry_observer,
+    )
     from dank_mids.semaphores import BlockSemaphore
+    from dank_mids.stats.retry import StatsRetryObserver
 
 
 def _configure_concurrent_future_work_queue_size() -> None:

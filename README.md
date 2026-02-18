@@ -119,6 +119,13 @@ random_block = await dank_web3.eth.get_block(123)
 
 - COMING SOON: Dank Mids will also work with [ape](https://github.com/ApeWorX/ape).
 
+### Observability (Retry Events)
+
+Dank Mids exposes a retry observer API for capturing retry decisions, plus a stats
+observer for collector metrics. Internal emit points are deferred to a follow-up PR.
+For the full explanation and examples (structured logging, Prometheus, Sentry/Stats),
+see `docs/retry_observer.rst`.
+
 ### Testimonials
 
 [Yearn](https://yearn.finance) big brain [Tonkers Kuma](https://github.com/tonkers-kuma) had this to say:
@@ -128,5 +135,3 @@ random_block = await dank_web3.eth.get_block(123)
 ### Notes
 
 You can also set `DANK_MIDS_DEMO_MODE=True` to see a visual representation of the batching in real time on your console.
-
-

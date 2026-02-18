@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1443];
+extern PyObject *CPyStatics[1450];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -1638,6 +1638,8 @@ extern CPyTagged CPyDef_stats____Collector___encoder_queue_len(PyObject *cpy_r_s
 extern PyObject *CPyPy_stats____Collector___encoder_queue_len(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern CPyTagged CPyDef_stats____Collector___decoder_queue_len(PyObject *cpy_r_self);
 extern PyObject *CPyPy_stats____Collector___decoder_queue_len(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern CPyTagged CPyDef_stats____Collector___retry_error_types(PyObject *cpy_r_self);
+extern PyObject *CPyPy_stats____Collector___retry_error_types(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_stats____Writer___event_loop(PyObject *cpy_r_self);
 extern PyObject *CPyPy_stats____Writer___event_loop(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_stats____Writer___brownie(PyObject *cpy_r_self);
