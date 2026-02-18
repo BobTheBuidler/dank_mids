@@ -36,6 +36,7 @@ from dank_mids.stats import _nocompile
 
 if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch
+    from dank_mids.retry_observer import RetryEvent
 
 
 T = TypeVar("T")
@@ -395,6 +396,21 @@ class _Collector:
         Each deque has a maximum length of 100.
         """
 
+        self.retry_total: int = 0
+        """Total number of retry events recorded."""
+
+        self.retry_counts: DefaultDict[str, int] = defaultdict(int)
+        """Counts of retry events grouped by operation name."""
+
+        self.retry_error_counts: DefaultDict[str, int] = defaultdict(int)
+        """Counts of retry events grouped by exception type name."""
+
+        self.retry_events: Deque["RetryEvent"] = deque(maxlen=1000)
+        """Bounded deque of recently recorded retry events."""
+
+        self.retry_delays: Deque[float] = deque(maxlen=50_000)
+        """Bounded deque of retry delays (seconds)."""
+
     @property
     def avg_loop_time(self) -> float:
         """
@@ -459,6 +475,16 @@ class _Collector:
             >>> decoder_length = collector.decoder_queue_len
         """
         return ENVS.BROWNIE_DECODER_PROCESSES._queue_count  # type: ignore [attr-defined, no-any-return]
+
+    @property
+    def retry_error_types(self) -> int:
+        """
+        Returns the number of distinct exception types observed in retry events.
+
+        Returns:
+            The count of unique exception type names recorded by the collector.
+        """
+        return len(self.retry_error_counts)
 
 
 @final
@@ -529,6 +555,8 @@ class _SentryExporter:
         "encoder_queue": "encoder_queue_len",
         "decoder_queue": "decoder_queue_len",
         "loop_time": "avg_loop_time",
+        "retry_total": "retry_total",
+        "retry_error_types": "retry_error_types",
     }
     units: Final = {"loop_time": "seconds"}
 
