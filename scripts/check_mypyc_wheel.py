@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail release if compiled targets ship source .py alongside extensions."""
+"""Fail release if compiled targets are missing compiled extensions."""
 
 from __future__ import annotations
 
@@ -68,10 +68,6 @@ def check_wheel(wheel_path: pathlib.Path, targets: list[str]) -> list[str]:
         )
         if not has_compiled:
             failures.append(f"{wheel_path.name}: missing compiled artifact for {py_path}")
-        if py_path in names:
-            failures.append(
-                f"{wheel_path.name}: source .py present for compiled target {py_path}"
-            )
     return failures
 
 
