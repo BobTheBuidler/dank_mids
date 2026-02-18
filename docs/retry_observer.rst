@@ -103,7 +103,8 @@ Sentry + stats collector
    from dank_mids import StatsRetryObserver, register_retry_observer
    from dank_mids import stats
 
-   register_retry_observer(StatsRetryObserver())
+   observer = StatsRetryObserver()
+   register_retry_observer(observer)
 
    # When you want to push metrics to Sentry.
    stats.sentry.push_measurements()
