@@ -598,10 +598,6 @@ class eth_call(RPCRequest):
             except Exception as e:
                 # NOTE: The call still returns a revert when it's not packed in a multicall
                 data = e
-        # NOTE: If we don't need to split, we can shortcut the rest of this function
-        if type(data) is bytes:
-            self._fut.set_result({"result": data})
-            return
 
         # The above revert catching logic fails to account for pre-decoding RawResponse objects.
         await RPCRequest.spoof_response(self, data)
@@ -802,6 +798,7 @@ class Multicall(_Batch[RPCResponse, eth_call]):
                 if logged is False:
                     error_logger.error("%s was garbage collected before finishing", self)
                     logged = True
+
                 try:
                     call._fut.set_exception(
                         GarbageCollectionError(
