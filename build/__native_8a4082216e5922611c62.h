@@ -1280,6 +1280,11 @@ typedef struct {
     PyObject *_types;
     PyObject *_event_loop_times;
     PyObject *_validation_errors;
+    CPyTagged _retry_total;
+    PyObject *_retry_counts;
+    PyObject *_retry_error_counts;
+    PyObject *_retry_events;
+    PyObject *_retry_delays;
 } dank_mids___stats____CollectorObject;
 
 typedef struct {
