@@ -40,7 +40,13 @@ jobs:
       if: steps.cached-poetry.outputs.cache-hit != 'true'
       uses: snok/install-poetry@v1
 
-    - name: Build and Publish
+    - name: Build dist
+      run: poetry build
+
+    - name: Verify compiled wheel targets
+      run: python scripts/check_mypyc_wheel.py dist/*.whl
+
+    - name: Publish
       run: |
         poetry config pypi-token.pypi ${{ secrets.PYPI_PASSWORD }}
-        poetry publish --build --no-interaction
+        poetry publish --no-interaction
