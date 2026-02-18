@@ -8,6 +8,7 @@ on:
     branches:
       - master
     types: [published]
+  workflow_dispatch:
 
 jobs:
   deploy:
