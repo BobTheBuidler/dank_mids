@@ -163,7 +163,7 @@ class DankClientSession(ClientSession):
                         _logger_debug("received response %s", response_data)
                         return response_data
 
-            except (ConnectionResetError, ClientError):
+            except ConnectionResetError:
                 if resets < 10:
                     # Who cares, run it again!
                     resets += 1
@@ -209,6 +209,14 @@ class DankClientSession(ClientSession):
                             "response failed with status %s  request data: %s",
                             (_get_status_enum(ce), data),
                         )
+                    raise
+
+            except ClientError:
+                if resets < 10:
+                    # Who cares, run it again!
+                    resets += 1
+                else:
+                    # Ehh this is too many, something is wrong.
                     raise
 
     async def _handle_too_many_requests(
