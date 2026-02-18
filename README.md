@@ -119,6 +119,77 @@ random_block = await dank_web3.eth.get_block(123)
 
 - COMING SOON: Dank Mids will also work with [ape](https://github.com/ApeWorX/ape).
 
+### Observability (Retry Events)
+
+Dank Mids exposes a retry observer API for capturing retry decisions. Emit points are
+not wired into internal retry logic yet; those will land in a follow-up PR. You can
+register observers now and emit events from your own retry wrappers or integrations.
+
+Structured logging:
+
+```python
+import logging
+
+from dank_mids import RetryEvent, emit_retry_event, register_retry_observer
+
+logger = logging.getLogger("dank_mids.retry")
+
+def log_retry(event: RetryEvent) -> None:
+    logger.warning(
+        "retrying %s attempt=%s delay=%s error=%s",
+        event.operation,
+        event.attempt,
+        event.delay,
+        event.error,
+    )
+
+register_retry_observer(log_retry)
+
+# Example manual emit (internal emit points are not wired yet).
+emit_retry_event(
+    RetryEvent(
+        operation="eth_call",
+        attempt=1,
+        delay=0.5,
+        error=RuntimeError("rate limited"),
+        component="jsonrpc",
+    )
+)
+```
+
+Prometheus (custom counters):
+
+```python
+from prometheus_client import Counter
+
+from dank_mids import RetryEvent, register_retry_observer
+
+retry_total = Counter(
+    "dank_mids_retry_total",
+    "Retry events emitted by Dank Mids",
+    ["operation", "error_type"],
+)
+
+def record_retry(event: RetryEvent) -> None:
+    retry_total.labels(event.operation, type(event.error).__name__).inc()
+
+register_retry_observer(record_retry)
+```
+
+Sentry + stats collector:
+
+```python
+from dank_mids import StatsRetryObserver, register_retry_observer
+from dank_mids import stats
+
+register_retry_observer(StatsRetryObserver())
+
+# When you want to push metrics to Sentry.
+stats.sentry.push_measurements()
+
+# New metrics include: retry_total, retry_error_types
+```
+
 ### Testimonials
 
 [Yearn](https://yearn.finance) big brain [Tonkers Kuma](https://github.com/tonkers-kuma) had this to say:
@@ -128,5 +199,4 @@ random_block = await dank_web3.eth.get_block(123)
 ### Notes
 
 You can also set `DANK_MIDS_DEMO_MODE=True` to see a visual representation of the batching in real time on your console.
-
 
