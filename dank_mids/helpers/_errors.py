@@ -7,7 +7,7 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids._exceptions import BadResponse
 from dank_mids.constants import REVERT_SELECTORS
 from dank_mids.logging import DEBUG, get_c_logger
-from dank_mids.types import Request, PartialRequest, PartialResponse
+from dank_mids.types import PartialRequest, PartialResponse, Request
 
 if TYPE_CHECKING:
     from dank_mids._requests import _Batch
@@ -126,7 +126,7 @@ def format_with_errors(
     method: RPCEndpoint,
     *,
     raw_mode: bool,
-    request: Request| PartialRequest | None = None,
+    request: Request | PartialRequest | None = None,
 ) -> RPCResponse:
     """Decode a PartialResponse struct to a response dict, attaching request context for errors."""
     if decoded.error is None:

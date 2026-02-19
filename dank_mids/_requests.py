@@ -1297,7 +1297,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
         data = self.data
         if not data:
             return []
-                
+
         endpoint = self.controller.endpoint
         try:
             post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
@@ -1370,7 +1370,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             )
         return _Batch.should_retry(self, e)
 
-    async def _spoof_response_by_id(self, response: list[RawResponse]) -> list[Coroutine[Any, Any, None]]:
+    async def _spoof_response_by_id(
+        self, response: list[RawResponse]
+    ) -> list[Coroutine[Any, Any, None]]:
         call_by_id = {str(call.uid): call for call in self}
         mcall_coros = []
         for raw in response:
