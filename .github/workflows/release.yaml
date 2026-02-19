@@ -1,9 +1,6 @@
 name: Upload Python Package
 
 on:
-  push:
-    branches:
-      - dev
   release:
     branches:
       - master
@@ -47,7 +44,12 @@ jobs:
     - name: Verify compiled wheel targets
       run: python scripts/check_mypyc_wheel.py dist/*.whl
 
+    - name: Skip publish on workflow_dispatch
+      if: github.event_name == 'workflow_dispatch'
+      run: echo "workflow_dispatch: skipping PyPI publish."
+
     - name: Publish
+      if: github.event_name != 'workflow_dispatch'
       run: |
         poetry config pypi-token.pypi ${{ secrets.PYPI_PASSWORD }}
         poetry publish --no-interaction
