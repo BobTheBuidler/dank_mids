@@ -1,7 +1,50 @@
-.PHONY: docs mypy mypyc mypyc-deps
+.PHONY: docs mypy mypyc mypyc-deps mypyc-venv test-unit test-unit-mypyc
 
 PYTHON ?= python
 MYPYC_DEPS_FILE = requirements-build.txt
+MYPYC_VENV ?= env/mypyc
+MYPYC_VENV_PYTHON ?= $(PYTHON)
+MYPYC_VENV_BIN = $(MYPYC_VENV)/bin
+MYPYC_VENV_PIP = $(MYPYC_VENV_BIN)/pip
+MYPYC_VENV_PY = $(MYPYC_VENV_BIN)/python
+MYPYC_VENV_DEPS = $(MYPYC_VENV)/.deps
+
+MYPYC_TARGETS = \
+	dank_mids/_batch.py \
+	dank_mids/_demo_mode.py \
+	dank_mids/_envs.py \
+	dank_mids/_eth_utils.py \
+	dank_mids/_exceptions.py \
+	dank_mids/_tasks.py \
+	dank_mids/_uid.py \
+	dank_mids/_vendor/aiolimiter/src \
+	dank_mids/_web3/abi.py \
+	dank_mids/_web3/formatters.py \
+	dank_mids/brownie_patch/__init__.py \
+	dank_mids/brownie_patch/_abi.py \
+	dank_mids/brownie_patch/call.py \
+	dank_mids/brownie_patch/overloaded.py \
+	dank_mids/brownie_patch/types.py \
+	dank_mids/constants.py \
+	dank_mids/controller.py \
+	dank_mids/ENVIRONMENT_VARIABLES.py \
+	dank_mids/helpers/__init__.py \
+	dank_mids/helpers/_codec.py \
+	dank_mids/helpers/_errors.py \
+	dank_mids/helpers/_gather.py \
+	dank_mids/helpers/_rate_limit.py \
+	dank_mids/helpers/_requester.py \
+	dank_mids/helpers/_weaklist.py \
+	dank_mids/helpers/batch_size.py \
+	dank_mids/helpers/hashing.py \
+	dank_mids/helpers/lru_cache.py \
+	dank_mids/helpers/method.py \
+	dank_mids/lock.py \
+	dank_mids/logging.py \
+	dank_mids/middleware.py \
+	dank_mids/stats/__init__.py
+
+MYPYC_FLAGS = --strict --pretty --disable-error-code=unused-ignore
 
 mypy:
 	mypy ./dank_mids --pretty --ignore-missing-imports --show-error-codes --show-error-context --no-warn-no-return
@@ -19,40 +62,27 @@ mypyc-deps:
 	$(PYTHON) -m pip install -r $(MYPYC_DEPS_FILE)
 
 mypyc: mypyc-deps
-	MYPYC_STRICT_DUNDER_TYPING=1 mypyc dank_mids/_batch.py \
-		dank_mids/_demo_mode.py \
-		dank_mids/_envs.py \
-		dank_mids/_eth_utils.py \
-		dank_mids/_exceptions.py \
-		dank_mids/_tasks.py \
-		dank_mids/_uid.py \
-		dank_mids/_vendor/aiolimiter/src \
-		dank_mids/_web3/abi.py \
-		dank_mids/_web3/formatters.py \
-		dank_mids/brownie_patch/__init__.py \
-		dank_mids/brownie_patch/_abi.py \
-		dank_mids/brownie_patch/call.py \
-		dank_mids/brownie_patch/overloaded.py \
-		dank_mids/brownie_patch/types.py \
-		dank_mids/constants.py \
-		dank_mids/controller.py \
-		dank_mids/ENVIRONMENT_VARIABLES.py \
-		dank_mids/helpers/__init__.py \
-		dank_mids/helpers/_codec.py \
-		dank_mids/helpers/_errors.py \
-		dank_mids/helpers/_gather.py \
-		dank_mids/helpers/_rate_limit.py \
-		dank_mids/helpers/_requester.py \
-		dank_mids/helpers/_weaklist.py \
-		dank_mids/helpers/batch_size.py \
-		dank_mids/helpers/hashing.py \
-		dank_mids/helpers/lru_cache.py \
-		dank_mids/helpers/method.py \
-		dank_mids/lock.py \
-		dank_mids/logging.py \
-		dank_mids/middleware.py \
-		dank_mids/stats/__init__.py \
-		--strict --pretty --disable-error-code=unused-ignore
+	MYPYC_STRICT_DUNDER_TYPING=1 mypyc $(MYPYC_TARGETS) $(MYPYC_FLAGS)
+
+$(MYPYC_VENV_PY):
+	$(MYPYC_VENV_PYTHON) -m venv $(MYPYC_VENV)
+	$(MYPYC_VENV_PIP) install --upgrade pip setuptools wheel
+
+$(MYPYC_VENV_DEPS): $(MYPYC_VENV_PY) $(MYPYC_DEPS_FILE)
+	$(MYPYC_VENV_PIP) install -r $(MYPYC_DEPS_FILE)
+	touch $(MYPYC_VENV_DEPS)
+
+mypyc-venv: $(MYPYC_VENV_DEPS)
+	MYPYC_STRICT_DUNDER_TYPING=1 $(MYPYC_VENV_PY) -m mypyc $(MYPYC_TARGETS) $(MYPYC_FLAGS)
+
+
+# Tests
+
+test-unit:
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 $(PYTHON) -m pytest tests/unit
+
+test-unit-mypyc: mypyc-venv
+	DANK_MIDS_REQUIRE_COMPILED=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 $(PYTHON) -m pytest tests/unit
 
 
 # Vendoring

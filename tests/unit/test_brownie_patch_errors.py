@@ -14,6 +14,13 @@ def _clear_modules() -> None:
             sys.modules.pop(name, None)
 
 
+@pytest.fixture(autouse=True)
+def _reset_modules():
+    _clear_modules()
+    yield
+    _clear_modules()
+
+
 def _load_package(name: str, package_dir: Path) -> types.ModuleType:
     init_path = package_dir / "__init__.py"
     spec = importlib.util.spec_from_file_location(
