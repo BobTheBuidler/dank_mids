@@ -34,7 +34,38 @@ def load_mypyc_targets() -> list[str]:
     after = joined.split(marker, 1)[1].strip()
     if not after:
         raise SystemExit("Mypyc command has no targets")
+
+    def load_makefile_list(var_name: str) -> list[str]:
+        prefix = f"{var_name} ="
+        for idx, line in enumerate(lines):
+            if not line.startswith(prefix):
+                continue
+            value_lines = [line.split("=", 1)[1].strip()]
+            for next_line in lines[idx + 1 :]:
+                if not next_line.startswith(("\t", " ")):
+                    break
+                value_lines.append(next_line.strip())
+                if not next_line.rstrip().endswith("\\"):
+                    break
+            value_joined = " ".join(part.rstrip("\\") for part in value_lines).strip()
+            if not value_joined:
+                return []
+            return shlex.split(value_joined)
+        return []
+
     tokens = shlex.split(after)
+    expanded_tokens: list[str] = []
+    for token in tokens:
+        if token in {"$(MYPYC_TARGETS)", "${MYPYC_TARGETS}"}:
+            expanded = load_makefile_list("MYPYC_TARGETS")
+            if not expanded:
+                raise SystemExit("Makefile MYPYC_TARGETS is empty")
+            expanded_tokens.extend(expanded)
+            continue
+        if token in {"$(MYPYC_FLAGS)", "${MYPYC_FLAGS}"}:
+            continue
+        expanded_tokens.append(token)
+    tokens = expanded_tokens
     targets: set[str] = set()
     for tok in tokens:
         if tok.startswith("-"):
