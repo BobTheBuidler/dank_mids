@@ -46,7 +46,8 @@ jobs:
 
       - name: Skip publish on workflow_dispatch
         if: github.event_name == 'workflow_dispatch'
-        run: echo "workflow_dispatch: skipping PyPI publish."
+        run: |
+          echo "workflow_dispatch: skipping PyPI publish."
 
       - name: Publish
         if: github.event_name != 'workflow_dispatch'
