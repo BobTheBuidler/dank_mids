@@ -257,6 +257,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Update aiolimiter submodule
         run: make update-aiolimiter
@@ -302,10 +303,11 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git pull
+          branch="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git pull --ff-only origin "$branch"
           git add .
           git commit -m "chore: compile to C for Linux x64 with mypyc"
-          git push
+          git push origin "HEAD:${branch}"
 
       - name: Check for changes (aiolimiter)
         run: |
@@ -339,6 +341,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
       - name: Update aiolimiter submodule pointer in main repo
         run: |
           git config --local user.name "github-actions[bot]"
@@ -346,4 +349,5 @@ jobs:
           make update-aiolimiter
           git add dank_mids/_vendor/aiolimiter
           git commit -m "chore: update aiolimiter submodule pointer"
-          git push
+          branch="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git push origin "HEAD:${branch}"
