@@ -16,82 +16,83 @@ on:
       - 'dank_mids/**/*.py'
       - 'dank_mids/_vendor/aiolimiter'
       - 'dank_mids/_vendor/aiolimiter/**'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-ubuntu:
-    needs: [build-macos, build-windows]
+  build-matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements-build.txt
+            pyproject.toml
+            poetry.lock
+
+      - name: Run Mypyc
+        run: make mypyc
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: mypyc-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: |
+            ./*__mypyc*.so
+            ./*__mypyc*.pyd
+            ./build/**/*.c
+            ./build/**/*.h
+            ./build/lib.*/**/*.so
+            ./dank_mids/**/*.so
+            ./dank_mids/**/*.pyd
+
+  aggregate-ubuntu:
+    needs: build-matrix
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          # Check out the PR branch
-          ref: ${{ github.head_ref }}
-          
+          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
+
       - name: Update aiolimiter submodule
         run: make update-aiolimiter
 
-      - name: Download aiolimiter artifacts (macOS)
+      - name: Download all build artifacts
         uses: actions/download-artifact@v7
         with:
-          name: aiolimiter-macos-artifacts
-          path: dank_mids/_vendor/aiolimiter/src/
+          pattern: mypyc-*
+          path: .
+          merge-multiple: true
 
-      - name: Download aiolimiter artifacts (Windows)
+      - name: Re-apply Ubuntu 3.14 artifacts (canonical)
         uses: actions/download-artifact@v7
         with:
-          name: aiolimiter-windows-artifacts
-          path: dank_mids/_vendor/aiolimiter/src/
+          pattern: mypyc-ubuntu-latest-py3.14
+          path: .
+          merge-multiple: true
 
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.10"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.10)
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.11"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.11)
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.12"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.12)
-        run: make mypyc
-
-      # Python 3.13
-      - name: Set up Python 3.13
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.13"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.13)
-        run: make mypyc
-
-      # Python 3.14
-      - name: Set up Python 3.14
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.14"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.14)
-        run: make mypyc
-          
       - name: Normalize C files for diffchecking
         # This makes it much easier to diffcheck changes in the C files
         shell: bash
@@ -116,7 +117,7 @@ jobs:
           fi
 
       - name: Commit changes (Ubuntu)
-        if: env.changes_detected == 'true'
+        if: env.changes_detected == 'true' && github.event_name != 'pull_request'
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -134,7 +135,7 @@ jobs:
           fi
 
       - name: Commit and push aiolimiter changes
-        if: env.aiolimiter_changes_detected == 'true'
+        if: env.aiolimiter_changes_detected == 'true' && github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
@@ -147,177 +148,15 @@ jobs:
           git pull --rebase
           git push origin HEAD:mypyc
 
-  build-macos:
-    needs: build-windows
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
-
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
-
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.10"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.10)
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.11"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.11)
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.12"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.12)
-        run: make mypyc
-
-      # Python 3.13
-      - name: Set up Python 3.13
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.13"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.13)
-        run: make mypyc
-
-      # Python 3.14
-      - name: Set up Python 3.14
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.14"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.14)
-        run: make mypyc
-
-      - name: Check for changes (macOS)
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes (macOS)
-        if: env.changes_detected == 'true'
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch --no-tags origin "${GITHUB_HEAD_REF}"
-          git merge --ff-only "FETCH_HEAD"
-          git add .
-          git commit -m "chore: compile to C for macOS with mypyc"
-          git push
-
-      - name: Archive aiolimiter artifacts (macOS)
-        uses: actions/upload-artifact@v6
-        with:
-          name: aiolimiter-macos-artifacts
-          path: dank_mids/_vendor/aiolimiter/src/**/*.so
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
-      
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
-
-      # Python 3.10
-      - name: Set up Python 3.10
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.10"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.10)
-        run: make mypyc
-
-      # Python 3.11
-      - name: Set up Python 3.11
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.11"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.11)
-        run: make mypyc
-
-      # Python 3.12
-      - name: Set up Python 3.12
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.12"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.12)
-        run: make mypyc
-
-      # Python 3.13
-      - name: Set up Python 3.13
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.13"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.13)
-        run: make mypyc
-
-      # Python 3.14
-      - name: Set up Python 3.14
-        uses: ./.github/actions/setup-python-cache
-        with:
-          python-version: "3.14"
-          cache-dependency-path: requirements-build.txt
-      - name: Run Mypyc (3.14)
-        run: make mypyc
-
-      - name: Check for changes (Windows)
-        shell: bash
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes (Windows)
-        if: env.changes_detected == 'true'
-        shell: bash
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: compile to C for Windows AMD64 with mypyc"
-          git push
-
-      - name: Archive aiolimiter artifacts (Windows)
-        uses: actions/upload-artifact@v6
-        with:
-          name: aiolimiter-windows-artifacts
-          path: dank_mids/_vendor/aiolimiter/src/**/*.pyd
-
   update-submodule-pointer:
-    needs: [build-ubuntu, build-macos, build-windows]
+    needs: aggregate-ubuntu
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
       - name: Update aiolimiter submodule pointer in main repo
         run: |
           git config --local user.name "github-actions[bot]"
