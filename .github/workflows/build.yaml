@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/actions/setup-python-cache/action.yml'
       - '.github/workflows/build.yaml'
+      - 'scripts/run_mypyc_build.py'
       - '.gitmodules'
       - 'Makefile'
       - 'pyproject.toml'
@@ -51,7 +52,7 @@ jobs:
             poetry.lock
 
       - name: Run Mypyc
-        run: make mypyc
+        run: python scripts/run_mypyc_build.py
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
