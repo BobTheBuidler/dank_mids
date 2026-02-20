@@ -332,7 +332,6 @@ jobs:
           git push origin HEAD:mypyc
 
   update-submodule-pointer:
-    if: github.event_name == 'workflow_dispatch'
     needs: aggregate-ubuntu
     runs-on: ubuntu-latest
     permissions:
