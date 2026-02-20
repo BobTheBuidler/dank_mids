@@ -1,7 +1,17 @@
-.PHONY: docs mypy mypyc mypyc-deps
+.PHONY: docs mypy mypyc mypyc-deps pytest test test-deps
 
 PYTHON ?= python
 MYPYC_DEPS_FILE = requirements-build.txt
+PYTEST_CMD ?= pytest
+TEST_DEPS = \
+	"eth-brownie==1.22.0.dev2" \
+	"pytest==6.2.5" \
+	"pytest-asyncio-cooperative==0.40.0" \
+	"pytest-cov==6.3.0" \
+	"pytest-sugar==1.1.1" \
+	"types-aiofiles==25.1.0.20251011" \
+	"importlib-resources>=6.4.0" \
+	"setuptools<81"
 
 mypy:
 	mypy ./dank_mids --pretty --ignore-missing-imports --show-error-codes --show-error-context --no-warn-no-return
@@ -53,6 +63,19 @@ mypyc: mypyc-deps
 		dank_mids/middleware.py \
 		dank_mids/stats/__init__.py \
 		--strict --pretty --disable-error-code=unused-ignore
+
+test-deps:
+	$(PYTHON) -m pip install -U $(TEST_DEPS)
+
+pytest: test-deps
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 $(PYTEST_CMD)
+
+test:
+	@set -e; \
+	trap 'git submodule update --init --recursive --checkout --force dank_mids/_vendor/aiolimiter >/dev/null 2>&1 || true' EXIT; \
+	$(MAKE) update-aiolimiter; \
+	$(MAKE) mypyc; \
+	$(MAKE) pytest
 
 
 # Vendoring
