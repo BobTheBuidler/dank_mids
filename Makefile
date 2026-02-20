@@ -68,6 +68,12 @@ pytest:
 	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
 
 test:
+	@set -eu; \
+	cleanup() { \
+		git submodule update --init --recursive dank_mids/_vendor/aiolimiter >/dev/null 2>&1 ||:; \
+	}; \
+	trap cleanup EXIT INT TERM; \
+	$(MAKE) update-aiolimiter; \
 	$(MAKE) mypyc pytest
 
 
