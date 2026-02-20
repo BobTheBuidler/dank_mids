@@ -33,6 +33,7 @@ jobs:
       with:
         python-version: ${{ matrix.pyversion }}
         cache-dependency-path: |
+            requirements-build.txt
             pyproject.toml
             poetry.lock
 

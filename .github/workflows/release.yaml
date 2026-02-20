@@ -23,6 +23,7 @@ jobs:
         with:
           python-version: "3.12"
           cache-dependency-path: |
+            requirements-build.txt
             pyproject.toml
             poetry.lock
 
