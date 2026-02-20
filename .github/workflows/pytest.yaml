@@ -42,6 +42,7 @@ jobs:
           python-version: ${{ matrix.pyversion }}
           cache: pip
           cache-dependency-path: |
+              requirements-build.txt
               pyproject.toml
               poetry.lock
 
@@ -119,6 +120,7 @@ jobs:
           python-version: ${{ matrix.pyversion }}
           cache: pip
           cache-dependency-path: |
+              requirements-build.txt
               pyproject.toml
               poetry.lock
 
