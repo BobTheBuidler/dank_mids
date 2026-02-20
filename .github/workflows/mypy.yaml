@@ -3,6 +3,7 @@ name: MyPy
 on:
   pull_request:
     paths:
+      - '.github/actions/setup-python-cache/action.yml'
       - '**.py'
       - '**/mypy.yaml'
       - 'poetry.lock'

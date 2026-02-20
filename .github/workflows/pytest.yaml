@@ -4,6 +4,7 @@ on:
   pull_request:
     branch: master
     paths:
+      - '.github/actions/setup-python-cache/action.yml'
       - '**.py'
       - '**.so'
       - '**/pytest.yaml'
@@ -168,4 +169,3 @@ jobs:
           MAX_SLEEP_TIME: 3
         run: poetry run pytest tests/integration -s -v --asyncio-task-timeout=3600
         shell: bash
-      
