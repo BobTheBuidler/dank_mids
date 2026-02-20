@@ -1,0 +1,18 @@
+name: Setup Python With Pip Cache
+description: Set up Python with pip caching and dependency-based cache keys.
+inputs:
+  python-version:
+    description: Python version to install.
+    required: true
+  cache-dependency-path:
+    description: Paths used to compute the pip cache key.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: pip
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
