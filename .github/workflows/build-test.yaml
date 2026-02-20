@@ -249,7 +249,6 @@ jobs:
         shell: bash
 
   aggregate-ubuntu:
-    if: github.event_name != 'pull_request'
     needs: build-matrix
     runs-on: ubuntu-latest
     permissions:
@@ -332,7 +331,6 @@ jobs:
           git push origin HEAD:mypyc
 
   update-submodule-pointer:
-    if: github.event_name != 'pull_request'
     needs: aggregate-ubuntu
     runs-on: ubuntu-latest
     permissions:
