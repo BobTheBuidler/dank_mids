@@ -6,6 +6,7 @@ on:
       - master
       - good-master
     paths:
+      - '.github/actions/setup-python-cache/action.yml'
       - '.github/workflows/build.yaml'
       - '.gitmodules'
       - 'Makefile'
