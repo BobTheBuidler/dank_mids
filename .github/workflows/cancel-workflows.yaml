@@ -3,6 +3,8 @@ name: Cancel Actions on PR Close
 on:
   pull_request:
     types: [closed]
+    paths-ignore:
+      - '.github/___paths-ignore-placeholder__'
 
 jobs:
   cancel-running-workflows:
@@ -17,7 +19,7 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const prBranch = pr.head.ref;
-            const workflowNames = ["PyTest", "MyPy", "Build Mypyc", "Black Formatter"];
+            const workflowNames = ["PyTest", "MyPy", "Build Mypyc", "Build and Test Mypyc", "Black Formatter"];
 
             // List all workflow runs for this branch
             const runs = await github.rest.actions.listWorkflowRunsForRepo({

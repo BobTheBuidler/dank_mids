@@ -1,0 +1,352 @@
+name: Build and Test Mypyc
+
+on:
+  pull_request:
+    branches:
+      - master
+      - good-master
+    paths:
+      - '.github/actions/setup-python-cache/action.yml'
+      - '.github/workflows/build-test.yaml'
+      - '.gitmodules'
+      - 'Makefile'
+      - 'pyproject.toml'
+      - 'poetry.lock'
+      - 'requirements-build.txt'
+      - 'dank_mids/**/*.py'
+      - 'dank_mids/_vendor/aiolimiter'
+      - 'dank_mids/_vendor/aiolimiter/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements-build.txt
+            pyproject.toml
+            poetry.lock
+
+      - name: Run Mypyc
+        run: make mypyc
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: mypyc-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: |
+            ./*__mypyc*.so
+            ./*__mypyc*.pyd
+            ./build/**/*.c
+            ./build/**/*.h
+            ./build/lib.*/**/*.so
+            ./dank_mids/**/*.so
+            ./dank_mids/**/*.pyd
+
+  unit:
+    if: github.event_name == 'pull_request'
+    needs: build-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13" ]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Python (faster than using Python container)
+        uses: ./.github/actions/setup-python-cache
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-dependency-path: |
+            requirements-build.txt
+            pyproject.toml
+            poetry.lock
+
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v5
+        with:
+          path: ~/.local
+          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-0
+
+      - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v5
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}-0
+
+      - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
+        shell: bash
+
+      - name: Upgrade Setuptools
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry run python -m pip install -U "setuptools<81"
+        shell: bash
+
+      - name: Download mypyc artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: mypyc-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: .
+
+      - name: Verify compiled extensions
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+
+          spec = importlib.util.find_spec("dank_mids.helpers._weaklist")
+          if spec is None or not spec.origin:
+              raise SystemExit("Could not locate dank_mids.helpers._weaklist")
+          origin = Path(spec.origin)
+          print(f"dank_mids.helpers._weaklist origin: {origin}")
+          if origin.suffix not in {".so", ".pyd"}:
+              raise SystemExit("Expected compiled extension for dank_mids.helpers._weaklist")
+          PY
+        shell: bash
+
+      - name: Run unit tests
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
+          PYTHONPATH: ${{ github.workspace }}
+        run: poetry run pytest
+        working-directory: tests/unit
+        shell: bash
+
+  integration:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
+    needs: build-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13" ]
+        provider: [ "TENDERLY_PROVIDER", "LLAMA_ETH_RPC", "INFURA_PROVIDER", "ALCHEMY_PROVIDER", "RETH_PROVIDER", "CHAINSTACK_PROVIDER" ]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Python (faster than using Python container)
+        uses: ./.github/actions/setup-python-cache
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-dependency-path: |
+            requirements-build.txt
+            pyproject.toml
+            poetry.lock
+
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v5
+        with:
+          path: ~/.local
+          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-0
+
+      - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v5
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}-0
+
+      - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
+        shell: bash
+
+      - name: Upgrade Setuptools
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry run python -m pip install -U "setuptools<81"
+        shell: bash
+
+      - name: Download mypyc artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: mypyc-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: .
+
+      - name: Verify compiled extensions
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+
+          spec = importlib.util.find_spec("dank_mids.helpers._weaklist")
+          if spec is None or not spec.origin:
+              raise SystemExit("Could not locate dank_mids.helpers._weaklist")
+          origin = Path(spec.origin)
+          print(f"dank_mids.helpers._weaklist origin: {origin}")
+          if origin.suffix not in {".so", ".pyd"}:
+              raise SystemExit("Expected compiled extension for dank_mids.helpers._weaklist")
+          PY
+        shell: bash
+
+      - name: Setup brownie networks
+        run: poetry run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
+        shell: bash
+        continue-on-error: true
+
+      - name: Run integration tests
+        env:
+          PYTEST_NETWORK: mainnet
+          ETHERSCAN_TOKEN: ${{ secrets.ETHERSCAN_TOKEN  }}
+          MAX_RETRIES: 2
+          MIN_SLEEP_TIME: 1
+          MAX_SLEEP_TIME: 3
+          PYTHONPATH: ${{ github.workspace }}
+        run: poetry run pytest
+        working-directory: tests/integration
+        shell: bash
+
+  aggregate-ubuntu:
+    if: github.event_name != 'pull_request'
+    needs: build-matrix
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Update aiolimiter submodule
+        run: make update-aiolimiter
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          pattern: mypyc-*
+          path: .
+          merge-multiple: true
+
+      - name: Re-apply Ubuntu 3.14 artifacts (canonical)
+        uses: actions/download-artifact@v7
+        with:
+          pattern: mypyc-ubuntu-latest-py3.14
+          path: .
+          merge-multiple: true
+
+      - name: Normalize C files for diffchecking
+        shell: bash
+        run: |
+          # Insert DIFFCHECK_PLACEHOLDER macro at the top if not present
+          for f in build/*.c; do
+            if ! grep -q 'DIFFCHECK_PLACEHOLDER' "$f"; then
+              sed -i '1i#ifndef DIFFCHECK_PLACEHOLDER\n#define DIFFCHECK_PLACEHOLDER 0\n#endif' "$f"
+            fi
+          done
+          # Replace line number in CPy_AddTraceback with macro
+          sed -i 's/\(CPy_AddTraceback([^,]*, *[^,]*, *\)[0-9]\+\(, *[^)]*)\)/\1DIFFCHECK_PLACEHOLDER\2/g' build/*.c
+          # Replace index in CPyStatics[...] with macro
+          sed -i 's/CPyStatics\[[0-9]\+\]/CPyStatics[DIFFCHECK_PLACEHOLDER]/g' build/*.c
+
+      - name: Check for changes (Ubuntu)
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "changes_detected=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit changes (Ubuntu)
+        if: env.changes_detected == 'true'
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
+          git add .
+          git commit -m "chore: compile to C for Linux x64 with mypyc"
+          git push
+
+      - name: Check for changes (aiolimiter)
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit and push aiolimiter changes
+        if: env.aiolimiter_changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
+        run: |
+          cd dank_mids/_vendor/aiolimiter
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
+          git add .
+          git commit -m "chore: add artifacts for dank-mids"
+          git pull --rebase
+          git push origin HEAD:mypyc
+
+  update-submodule-pointer:
+    if: github.event_name != 'pull_request'
+    needs: aggregate-ubuntu
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Update aiolimiter submodule pointer in main repo
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          make update-aiolimiter
+          git add dank_mids/_vendor/aiolimiter
+          git commit -m "chore: update aiolimiter submodule pointer"
+          git push
