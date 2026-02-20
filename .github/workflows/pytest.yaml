@@ -37,10 +37,9 @@ jobs:
           persist-credentials: false
 
       - name: Setup Python (faster than using Python container)
-        uses: actions/setup-python@v6
+        uses: ./.github/actions/setup-python-cache
         with:
           python-version: ${{ matrix.pyversion }}
-          cache: pip
           cache-dependency-path: |
               pyproject.toml
               poetry.lock
@@ -114,10 +113,9 @@ jobs:
           persist-credentials: false
 
       - name: Setup Python (faster than using Python container)
-        uses: actions/setup-python@v6
+        uses: ./.github/actions/setup-python-cache
         with:
           python-version: ${{ matrix.pyversion }}
-          cache: pip
           cache-dependency-path: |
               pyproject.toml
               poetry.lock

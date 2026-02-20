@@ -19,10 +19,9 @@ jobs:
           submodules: true
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: ./.github/actions/setup-python-cache
         with:
           python-version: "3.12"
-          cache: pip
           cache-dependency-path: |
             pyproject.toml
             poetry.lock
