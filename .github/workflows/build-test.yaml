@@ -248,7 +248,6 @@ jobs:
         shell: bash
 
   aggregate-ubuntu:
-    if: github.event_name == 'workflow_dispatch'
     needs: build-matrix
     runs-on: ubuntu-latest
     permissions:
@@ -300,7 +299,7 @@ jobs:
           fi
 
       - name: Commit changes (Ubuntu)
-        if: env.changes_detected == 'true'
+        if: github.event_name == 'workflow_dispatch' && env.changes_detected == 'true'
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -319,7 +318,7 @@ jobs:
           fi
 
       - name: Commit and push aiolimiter changes
-        if: env.aiolimiter_changes_detected == 'true'
+        if: github.event_name == 'workflow_dispatch' && env.aiolimiter_changes_detected == 'true'
         env:
           GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
