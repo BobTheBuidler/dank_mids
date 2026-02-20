@@ -135,7 +135,7 @@ jobs:
           fi
 
       - name: Commit and push aiolimiter changes
-        if: env.aiolimiter_changes_detected == 'true' && github.event_name != 'pull_request'
+        if: env.aiolimiter_changes_detected == 'true'
         env:
           GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
         run: |
