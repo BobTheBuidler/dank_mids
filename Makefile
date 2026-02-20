@@ -25,7 +25,8 @@ benchmark:
 	poetry run brownie run examples/benchmark
 
 mypyc-deps:
-	$(PYTHON) -m pip install -U -r $(MYPYC_DEPS_FILE) $(MYPYC_DEV_DEPS)
+	$(PYTHON) -m pip install -U -r $(MYPYC_DEPS_FILE)
+	$(PYTHON) -m pip install -U $(MYPYC_DEV_DEPS)
 
 mypyc: mypyc-deps
 	MYPYC_STRICT_DUNDER_TYPING=1 mypyc dank_mids/_batch.py \
