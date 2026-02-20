@@ -154,7 +154,6 @@ jobs:
         shell: bash
 
   integration:
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
     needs: build-matrix
     runs-on: ${{ matrix.os }}
     strategy:
