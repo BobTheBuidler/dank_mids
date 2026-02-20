@@ -3,8 +3,6 @@ name: Cancel Actions on PR Close
 on:
   pull_request:
     types: [closed]
-    paths-ignore:
-      - '.github/___paths-ignore-placeholder__'
 
 jobs:
   cancel-running-workflows:
