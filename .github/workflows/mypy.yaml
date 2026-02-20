@@ -3,6 +3,7 @@ name: MyPy
 on:
   pull_request:
     paths:
+      - '.github/actions/setup-python-cache/action.yml'
       - '**.py'
       - '**/mypy.yaml'
       - 'poetry.lock'
@@ -28,10 +29,9 @@ jobs:
         persist-credentials: false
         
     - name: Setup Python (faster than using Python container)
-      uses: actions/setup-python@v6
+      uses: ./.github/actions/setup-python-cache
       with:
         python-version: ${{ matrix.pyversion }}
-        cache: pip
         cache-dependency-path: |
             requirements-build.txt
             pyproject.toml
