@@ -143,7 +143,10 @@ def _raise_brownie_not_connected(name: str, exc: BaseException) -> None:
         BrowniePatchNotInitializedError,
     )
 
-    status = get_brownie_patch_status(refresh_connection=True)
+    try:
+        status = get_brownie_patch_status(refresh_connection=True)
+    except TypeError as state_error:
+        raise BrowniePatchNotInitializedError(name) from state_error
     if status.import_error is not None:
         raise BrowniePatchImportError(name, status.import_error) from status.import_error
     if not status.connected:

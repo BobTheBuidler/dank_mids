@@ -78,37 +78,57 @@ def initialize_brownie_patch() -> BrowniePatchStatus:
     global dank_web3
     global dank_eth
 
-    if _STATE.initialized or _STATE.import_error is not None:
-        return _STATE.status()
+    state = _coerce_state()
+    if state.initialized or state.import_error is not None:
+        return state.status()
 
     try:
         from brownie import network, web3
     except ImportError as exc:
-        return _STATE.set_brownie_import_error(exc)
+        return state.set_brownie_import_error(exc)
 
-    _STATE.connected = network.is_connected()
-    if not _STATE.connected:
-        _STATE.initialized = False
-        return _STATE.status()
+    state.connected = network.is_connected()
+    if not state.connected:
+        state.initialized = False
+        return state.status()
 
     try:
         from dank_mids.brownie_patch.contract import Contract, patch_contract
     except ImportError as exc:
-        return _STATE.set_patch_import_error(exc)
+        return state.set_patch_import_error(exc)
 
     globals()["Contract"] = Contract
     globals()["patch_contract"] = patch_contract
     dank_web3 = setup_dank_w3_from_sync(web3)
     dank_eth = dank_web3.eth
     __all__ += ["Contract", "patch_contract", "dank_web3", "dank_eth"]
-    _STATE.initialized = True
-    return _STATE.status()
+    state.initialized = True
+    return state.status()
 
 
 def get_brownie_patch_status(refresh_connection: bool = False) -> BrowniePatchStatus:
+    state = _coerce_state()
     if refresh_connection:
-        _STATE.refresh_connection()
-    return _STATE.status()
+        state.refresh_connection()
+    return state.status()
+
+
+def _coerce_state() -> _BrowniePatchState:
+    raw_state = globals().get("_STATE")
+    if type(raw_state) is _BrowniePatchState:
+        return raw_state
+
+    # mypyc methods require exact native-class identity for `self`.
+    state = _BrowniePatchState()
+    if raw_state is not None:
+        import_error = getattr(raw_state, "import_error", None)
+        if isinstance(import_error, ImportError):
+            state.import_error = import_error
+        state.connected = bool(getattr(raw_state, "connected", False))
+        state.initialized = bool(getattr(raw_state, "initialized", False))
+
+    globals()["_STATE"] = state
+    return state
 
 
 def _load_types() -> ModuleType:
