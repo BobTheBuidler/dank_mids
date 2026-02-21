@@ -306,7 +306,28 @@ def test_get_brownie_patch_status_coerces_state_identity_mismatch(monkeypatch) -
     assert isinstance(brownie_patch._STATE, brownie_patch._BrowniePatchState)
     assert status.import_error is spoof.import_error
     assert status.connected is True
-    assert status.initialized is True
+    assert status.initialized is False
+
+
+def test_getattr_foreign_initialized_state_raises_public_exception(monkeypatch) -> None:
+    dank_mids, network = _reload_dank_mids(monkeypatch, brownie_connected=False)
+    exc_types = importlib.import_module("dank_mids.exceptions")
+    brownie_patch = importlib.import_module("dank_mids.brownie_patch")
+
+    assert network is not None
+    network.connected = True
+
+    brownie_patch._STATE = types.SimpleNamespace(
+        import_error=None,
+        connected=True,
+        initialized=True,
+    )
+
+    with pytest.raises(exc_types.BrowniePatchNotInitializedError):
+        _ = dank_mids.dank_web3
+
+    assert isinstance(brownie_patch._STATE, brownie_patch._BrowniePatchState)
+    assert brownie_patch._STATE.initialized is False
 
 
 def test_compiled_import_path_normalizes_state_identity_mismatch() -> None:

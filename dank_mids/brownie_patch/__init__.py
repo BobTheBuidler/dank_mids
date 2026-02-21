@@ -125,7 +125,8 @@ def _coerce_state() -> _BrowniePatchState:
         if isinstance(import_error, ImportError):
             state.import_error = import_error
         state.connected = bool(getattr(raw_state, "connected", False))
-        state.initialized = bool(getattr(raw_state, "initialized", False))
+        # A foreign state object cannot prove patch exports are initialized.
+        state.initialized = False
 
     globals()["_STATE"] = state
     return state
