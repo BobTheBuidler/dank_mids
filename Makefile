@@ -1,7 +1,8 @@
-.PHONY: docs mypy mypyc mypyc-deps
+.PHONY: docs mypy mypyc mypyc-deps pytest test test-clean
 
 PYTHON ?= python
 MYPYC_DEPS_FILE = requirements-build.txt
+PYTEST_CMD ?= PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
 
 mypy:
 	mypy ./dank_mids --pretty --ignore-missing-imports --show-error-codes --show-error-context --no-warn-no-return
@@ -53,6 +54,25 @@ mypyc: mypyc-deps
 		dank_mids/middleware.py \
 		dank_mids/stats/__init__.py \
 		--strict --pretty --disable-error-code=unused-ignore
+
+pytest:
+	$(PYTEST_CMD)
+
+test:
+	@set -e; \
+	trap '$(MAKE) --no-print-directory test-clean' EXIT; \
+	$(MAKE) --no-print-directory update-aiolimiter; \
+	$(MAKE) --no-print-directory mypyc; \
+	$(MAKE) --no-print-directory pytest
+
+test-clean:
+	git submodule update --init --recursive --checkout --force dank_mids/_vendor/aiolimiter ||:
+	git ls-files -z -- 'dank_mids/**/*.so' 'dank_mids/**/*.pyd' 'build/**/*.c' 'build/**/*.h' \
+		| xargs -0r git restore --source=HEAD --worktree --staged -- ||:
+	git clean -fd -- build ||:
+	find dank_mids -type f \( -name '*.so' -o -name '*.pyd' \) ! -path 'dank_mids/_vendor/*' -print0 \
+		| xargs -0r sh -c 'for f do git ls-files --error-unmatch "$$f" >/dev/null 2>&1 || rm -f "$$f"; done' _ ||:
+	git clean -f -- '*__mypyc*.so' '*__mypyc*.pyd' ||:
 
 
 # Vendoring
