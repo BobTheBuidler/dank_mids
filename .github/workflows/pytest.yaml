@@ -7,6 +7,7 @@ on:
       - '.github/actions/setup-python-cache/action.yml'
       - '**.py'
       - '**.so'
+      - '**/pytest.ini'
       - '**/pytest.yaml'
       - 'poetry.lock'
   workflow_dispatch:
@@ -83,7 +84,7 @@ jobs:
       - name: Run unit tests
         env:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
-        run: poetry run pytest -s -v tests/unit
+        run: poetry run pytest tests/unit
         shell: bash
 
   integration:
@@ -169,5 +170,5 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
-        run: poetry run pytest tests/integration -s -v --asyncio-task-timeout=3600
+        run: poetry run pytest tests/integration
         shell: bash
