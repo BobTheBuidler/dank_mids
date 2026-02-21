@@ -129,7 +129,7 @@ jobs:
 
       - name: Check for changes (aiolimiter)
         run: |
-          if [[ -n $(git status --porcelain) ]]; then
+          if [[ -n $(git -C dank_mids/_vendor/aiolimiter status --porcelain) ]]; then
             echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
           else
             echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
@@ -145,6 +145,10 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
           git add .
+          if git diff --cached --quiet; then
+            echo "No aiolimiter changes to commit."
+            exit 0
+          fi
           git commit -m "chore: add artifacts for dank-mids"
           git pull --rebase
           git push origin HEAD:mypyc
@@ -164,5 +168,9 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           make update-aiolimiter
           git add dank_mids/_vendor/aiolimiter
+          if git diff --cached --quiet; then
+            echo "No aiolimiter submodule pointer changes to commit."
+            exit 0
+          fi
           git commit -m "chore: update aiolimiter submodule pointer"
           git push
