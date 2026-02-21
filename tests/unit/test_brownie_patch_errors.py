@@ -198,6 +198,19 @@ def _reload_dank_mids(monkeypatch, brownie_connected: bool | None = None, import
     return _load_package("dank_mids", package_root), network_mod
 
 
+def _import_compiled_dank_mids() -> tuple[types.ModuleType, types.ModuleType]:
+    _clear_modules()
+    _install_dank_mids_stubs()
+
+    root = Path(__file__).resolve().parents[2]
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+
+    dank_mids = importlib.import_module("dank_mids")
+    brownie_patch = importlib.import_module("dank_mids.brownie_patch")
+    return dank_mids, brownie_patch
+
+
 def test_getattr_raises_import_error_for_missing_brownie(monkeypatch) -> None:
     import_hook = _make_import_blocker("brownie")
     dank_mids, _ = _reload_dank_mids(monkeypatch, import_hook=import_hook)
@@ -258,3 +271,82 @@ def test_getattr_resolves_brownie_types(monkeypatch) -> None:
     dank_mids, _ = _reload_dank_mids(monkeypatch, brownie_connected=False)
 
     assert isinstance(dank_mids.DankContractCall, type)
+
+
+def test_getattr_converts_state_type_error_to_public_exception(monkeypatch) -> None:
+    dank_mids, _ = _reload_dank_mids(monkeypatch, brownie_connected=False)
+    exc_types = importlib.import_module("dank_mids.exceptions")
+    brownie_patch = importlib.import_module("dank_mids.brownie_patch")
+
+    def _raise_state_type_error(*args, **kwargs):
+        raise TypeError(
+            "dank_mids.brownie_patch._BrowniePatchState object expected; got "
+            "dank_mids.brownie_patch._BrowniePatchState"
+        )
+
+    monkeypatch.setattr(brownie_patch, "get_brownie_patch_status", _raise_state_type_error)
+
+    with pytest.raises(exc_types.BrowniePatchNotInitializedError):
+        _ = dank_mids.dank_web3
+
+
+def test_get_brownie_patch_status_coerces_state_identity_mismatch(monkeypatch) -> None:
+    _reload_dank_mids(monkeypatch, brownie_connected=False)
+    brownie_patch = importlib.import_module("dank_mids.brownie_patch")
+
+    spoof = types.SimpleNamespace(
+        import_error=ImportError("spoofed error"),
+        connected=True,
+        initialized=True,
+    )
+    brownie_patch._STATE = spoof
+
+    status = brownie_patch.get_brownie_patch_status(refresh_connection=True)
+
+    assert isinstance(brownie_patch._STATE, brownie_patch._BrowniePatchState)
+    assert status.import_error is spoof.import_error
+    assert status.connected is True
+    assert status.initialized is False
+
+
+def test_getattr_foreign_initialized_state_raises_public_exception(monkeypatch) -> None:
+    dank_mids, network = _reload_dank_mids(monkeypatch, brownie_connected=False)
+    exc_types = importlib.import_module("dank_mids.exceptions")
+    brownie_patch = importlib.import_module("dank_mids.brownie_patch")
+
+    assert network is not None
+    network.connected = True
+
+    brownie_patch._STATE = types.SimpleNamespace(
+        import_error=None,
+        connected=True,
+        initialized=True,
+    )
+
+    with pytest.raises(exc_types.BrowniePatchNotInitializedError):
+        _ = dank_mids.dank_web3
+
+    assert isinstance(brownie_patch._STATE, brownie_patch._BrowniePatchState)
+    assert brownie_patch._STATE.initialized is False
+
+
+def test_compiled_import_path_normalizes_state_identity_mismatch() -> None:
+    dank_mids, brownie_patch = _import_compiled_dank_mids()
+    try:
+        module_file = getattr(brownie_patch, "__file__", "")
+        if not module_file.endswith((".so", ".pyd")):
+            pytest.skip("compiled brownie_patch extension not available for this interpreter")
+
+        spoof_cls = type("_BrowniePatchState", (), {"__module__": "dank_mids.brownie_patch"})
+        spoof = spoof_cls()
+        spoof.import_error = None
+        spoof.connected = True
+        spoof.initialized = True
+        brownie_patch._STATE = spoof
+
+        exc_types = importlib.import_module("dank_mids.exceptions")
+
+        with pytest.raises(exc_types.BrowniePatchNotInitializedError):
+            _ = dank_mids.dank_web3
+    finally:
+        _clear_modules()

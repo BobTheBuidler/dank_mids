@@ -143,16 +143,18 @@ def _raise_brownie_not_connected(name: str, exc: BaseException) -> None:
         BrowniePatchNotInitializedError,
     )
 
-    status = get_brownie_patch_status(refresh_connection=True)
+    try:
+        status = get_brownie_patch_status(refresh_connection=True)
+    except TypeError as state_error:
+        raise BrowniePatchNotInitializedError(name) from state_error
     if status.import_error is not None:
         raise BrowniePatchImportError(name, status.import_error) from status.import_error
     if not status.connected:
         raise BrownieNotConnectedError(name) from exc
     if not status.initialized:
         raise BrowniePatchNotInitializedError(name) from exc
-    raise AttributeError(
-        f"brownie patch was initialized but `dank_mids.{name}` was not found"
-    ) from exc
+    # If brownie objects are still missing, state is stale or inconsistent.
+    raise BrowniePatchNotInitializedError(name) from exc
 
 
 def _expose_brownie_objects() -> None:
