@@ -6,6 +6,7 @@ on:
       - '.github/actions/setup-python-cache/action.yml'
       - '**.py'
       - '**/mypy.yaml'
+      - 'requirements-build.txt'
       - 'poetry.lock'
 
 concurrency:
