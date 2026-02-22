@@ -63,7 +63,7 @@ exclude = ["build/","cache/","env/","tests/"]
 ignore_missing_imports = true
 check_untyped_defs = true
 disable_error_code = ["return"]
-plugins = ["typed_envs.mypy_plugin"]
+plugins = ["typed_envs.mypy_plugin", "a_sync_mypy_plugin"]
 
 files = ["dank_mids"]
 pretty = true
