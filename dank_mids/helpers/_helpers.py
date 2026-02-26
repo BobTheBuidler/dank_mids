@@ -306,13 +306,16 @@ def __add_sync_attrdict_middleware(sync_w3: Web3) -> None:
     Raises:
         ValueError: If the provided Web3 instance is asynchronous.
     """
-    # we do the import here because it is only present in web3 >= 6
-    from web3.middleware import attrdict_middleware
+    # web3 v6 exposes `attrdict_middleware`; v7 renamed this to `AttributeDictMiddleware`.
+    try:
+        from web3.middleware import attrdict_middleware as attrdict
+    except ImportError:
+        from web3.middleware import AttributeDictMiddleware as attrdict
 
     if sync_w3.eth.is_async:
         raise ValueError("You must pass in a sync Web3 instance.")
     try:
-        sync_w3.middleware_onion.add(attrdict_middleware)
+        sync_w3.middleware_onion.add(attrdict)
     except ValueError as e:
         if str(e) != "You can't add the same un-named instance twice":
             raise
