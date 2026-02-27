@@ -288,8 +288,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
         async with EXECUTION_LOCK:
             fut = self._fut
             if self._batch is None:
-                # We want to pause here to let the event loop start any batches that have been queued up
-                # We don't want to start tiny batches or start the same batch more than 1x, that's waste
+                # Gate A (request-driven path): always yield at least one loop tick before dispatch.
                 await yield_to_loop()
 
         current_batch = self._batch
@@ -658,6 +657,16 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
             self.get_response(), name=f"{type(self).__name__} {self.uid} get_response"
         )
 
+    def _dispatch_when_capacity_gate_hits(self) -> None:
+        if self.is_full:
+            # Gate B: this batch is full and cannot accept more calls, dispatch now.
+            self.start()
+            # Materialize the task immediately so no-waiter full batches still dispatch.
+            self._task
+        elif self.controller.queue_is_full:
+            # Gate B: combined pending queues are full, force early dispatch now.
+            self.controller.early_start()
+
     def append(self, call: _Request, skip_check: bool = False) -> None:
         if self._awaited is True:
             raise RuntimeError(f"{self} was already awaited")
@@ -665,10 +674,7 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
             self.calls.append(call)
             # self._len += 1
             if not skip_check:
-                if self.is_full:
-                    self.start()
-                elif self.controller.queue_is_full:
-                    self.controller.early_start()
+                self._dispatch_when_capacity_gate_hits()
 
     def extend(self, calls: Iterable[_Request], skip_check: bool = False) -> None:
         if self._awaited is True:
@@ -676,10 +682,7 @@ class _Batch(_RequestBase[list[_Response]], Iterable[_Request]):
         with self._lock:
             self.calls.extend(calls)
             if not skip_check:
-                if self.is_full:
-                    self.start()
-                elif self.controller.queue_is_full:
-                    self.controller.early_start()
+                self._dispatch_when_capacity_gate_hits()
 
     def should_retry(self, e: Exception) -> bool:
         """Should the _Batch be retried based on `e`?"""

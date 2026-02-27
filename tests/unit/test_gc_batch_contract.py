@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 
 import dank_mids.controller as controller_module
-from dank_mids._requests import JSONRPCBatch, Multicall
+from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest
 from dank_mids._tasks import BATCH_TASKS, create_batch_task
 from dank_mids._uid import UIDGenerator
 from dank_mids.controller import DankMiddlewareController
@@ -43,6 +43,9 @@ class _InactiveCall:
 
 
 class _RPCBatchCall:
+    def __len__(self) -> int:
+        return 1
+
     def __bool__(self) -> bool:
         return True
 
@@ -198,5 +201,69 @@ def test_early_start_dispatches_existing_rpc_calls_without_waiters() -> None:
 
         assert batch._awaited is True
         assert rpc_call._batch is batch
+
+    asyncio.run(run())
+
+
+def test_batch_full_gate_dispatches_without_waiters() -> None:
+    async def run() -> None:
+        controller = _build_controller_for_early_start()
+        controller.max_jsonrpc_batch_size = 1
+        batch = controller.pending_rpc_calls
+        rpc_call = _RPCBatchCall()
+        dispatched = asyncio.Event()
+
+        async def patched_get_response(self) -> None:
+            dispatched.set()
+            self._done.set()
+
+        with patch.object(JSONRPCBatch, "get_response", patched_get_response):
+            batch.append(rpc_call)
+            await asyncio.wait_for(dispatched.wait(), timeout=1)
+
+        assert batch._awaited is True
+        assert rpc_call._batch is batch
+
+    asyncio.run(run())
+
+
+def test_request_gate_waits_for_one_loop_tick_before_dispatch() -> None:
+    async def run() -> None:
+        controller = _build_controller_for_early_start()
+        request = RPCRequest(controller, "web3_clientVersion", [])
+        first_tick = asyncio.Event()
+        release_first_tick = asyncio.Event()
+        yield_calls = 0
+        execute_batch_calls = 0
+
+        async def patched_yield_to_loop() -> None:
+            nonlocal yield_calls
+            yield_calls += 1
+            if yield_calls == 1:
+                first_tick.set()
+                await release_first_tick.wait()
+            else:
+                await asyncio.sleep(0)
+
+        async def patched_execute_batch(self) -> None:
+            nonlocal execute_batch_calls
+            execute_batch_calls += 1
+            if not request._fut.done():
+                request._fut.set_result(
+                    {"jsonrpc": "2.0", "id": request.uid, "result": "0x1"}
+                )
+
+        with patch("dank_mids._requests.yield_to_loop", patched_yield_to_loop), patch.object(
+            type(controller), "execute_batch", patched_execute_batch
+        ):
+            response_task = asyncio.create_task(request.get_response())
+            await asyncio.wait_for(first_tick.wait(), timeout=1)
+            assert execute_batch_calls == 0
+            release_first_tick.set()
+            response = await asyncio.wait_for(response_task, timeout=1)
+
+        assert yield_calls >= 1
+        assert execute_batch_calls == 1
+        assert response["result"] == "0x1"
 
     asyncio.run(run())

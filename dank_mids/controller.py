@@ -45,8 +45,19 @@ instances: Final[DefaultDict[ChainId, list["DankMiddlewareController"]]] = defau
 cgather: Final = a_sync.cgather
 
 
-def _noop_batch_task_callback(_task: object) -> None:
-    return
+@final
+class _EarlyStartHandoff:
+    """
+    Keep moved multicalls alive until the already-started JSON-RPC batch finishes.
+    """
+
+    __slots__ = ("multicalls",)
+
+    def __init__(self, multicalls: tuple[Multicall, ...]) -> None:
+        self.multicalls = multicalls
+
+    def release(self, _task: object) -> None:
+        self.multicalls = ()
 
 
 def _dispatch_early_started_batch(
@@ -54,10 +65,10 @@ def _dispatch_early_started_batch(
 ) -> None:
     rpc_calls.start()
     task = rpc_calls._task
-    # Ensure we materialize the task and keep a bounded handoff window for moved multicalls.
-    task.add_done_callback(_noop_batch_task_callback)
+    # Keep handoff multicalls alive while this no-waiter early dispatch is in flight.
     if multicalls:
-        len(multicalls)
+        handoff = _EarlyStartHandoff(multicalls)
+        task.add_done_callback(handoff.release)
 
 
 @final
@@ -334,12 +345,12 @@ class DankMiddlewareController:
 
     def early_start(self) -> None:
         """
-        Initiate processing of queued calls when a full batch is available.
+        Initiate processing of queued calls once the capacity gate is hit.
 
         This method combines pending eth_calls and other RPC calls into a single batch,
         clears the pending Ethereum calls queue, and starts processing the combined
-        batch. It's used to optimize processing by starting as soon as enough calls
-        are queued to form a full batch.
+        batch. This is the immediate-dispatch gate used when the queue is full and
+        we should not wait for another event-loop tick.
         """
         with self.pools_closed_lock:
             multicalls = tuple(call for call in self.pending_eth_calls.values() if call)
