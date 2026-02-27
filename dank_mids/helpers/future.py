@@ -8,6 +8,7 @@ from asyncio import (
     sleep,
 )
 from collections.abc import Generator
+from threading import Lock
 from time import time
 from typing import TYPE_CHECKING, Any, Final, final
 from weakref import ProxyType, proxy
@@ -35,13 +36,16 @@ _future_set_exc: Final = Future.set_exception
 class DebuggableFuture(Future[T]):
     # default values
     _debug_logs_enabled: bool = False
+    _waiter_count: int = 0
     __debug_daemon_task: Task[None] | None = None
 
     # type hints
     _result: T | None
+    _waiter_count_lock: Lock
 
     def __init__(self, owner: "_RequestBase", loop: AbstractEventLoop) -> None:
         _future_init(self, loop=loop)
+        self._waiter_count_lock = Lock()
         if _logger_is_enabled_for(DEBUG):
             self._debug_logs_enabled = True
             self._owner: ProxyType["_RequestBase[_Response]"] = proxy(owner)
@@ -52,7 +56,32 @@ class DebuggableFuture(Future[T]):
                 coro=self.__debug_daemon(),
                 name="DebuggableFuture debug daemon",
             )
-        return _future_await(self)
+        return self.__await_with_waiter_tracking(_future_await(self))
+
+    @property
+    def waiter_count(self) -> int:
+        with self._waiter_count_lock:
+            return self._waiter_count
+
+    @property
+    def has_waiters(self) -> bool:
+        return self.waiter_count > 0
+
+    def __await_with_waiter_tracking(self, awaiter: Generator[Any, None, T]) -> Generator[Any, None, T]:
+        self.__increment_waiters()
+        try:
+            return (yield from awaiter)
+        finally:
+            self.__decrement_waiters()
+
+    def __increment_waiters(self) -> None:
+        with self._waiter_count_lock:
+            self._waiter_count += 1
+
+    def __decrement_waiters(self) -> None:
+        with self._waiter_count_lock:
+            if self._waiter_count > 0:
+                self._waiter_count -= 1
 
     def set_result(self, value: T) -> None:
         # sourcery skip: merge-duplicate-blocks, remove-redundant-if
