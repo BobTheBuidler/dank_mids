@@ -45,6 +45,21 @@ instances: Final[DefaultDict[ChainId, list["DankMiddlewareController"]]] = defau
 cgather: Final = a_sync.cgather
 
 
+def _noop_batch_task_callback(_task: object) -> None:
+    return
+
+
+def _dispatch_early_started_batch(
+    rpc_calls: JSONRPCBatch, multicalls: tuple[Multicall, ...]
+) -> None:
+    rpc_calls.start()
+    task = rpc_calls._task
+    # Ensure we materialize the task and keep a bounded handoff window for moved multicalls.
+    task.add_done_callback(_noop_batch_task_callback)
+    if multicalls:
+        len(multicalls)
+
+
 @final
 class DankMiddlewareController:
     """
@@ -327,9 +342,13 @@ class DankMiddlewareController:
         are queued to form a full batch.
         """
         with self.pools_closed_lock:
-            self.pending_rpc_calls.extend(self.pending_eth_calls.values(), skip_check=True)
-            self.pending_eth_calls.clear()
-            self.pending_rpc_calls.start()
+            multicalls = tuple(call for call in self.pending_eth_calls.values() if call)
+            rpc_calls = self.pending_rpc_calls
+            if multicalls:
+                rpc_calls.extend(multicalls, skip_check=True)
+                self.pending_eth_calls.clear()
+            if rpc_calls:
+                _dispatch_early_started_batch(rpc_calls, multicalls)
 
     def reduce_multicall_size(self, num_calls: int) -> None:
         """
