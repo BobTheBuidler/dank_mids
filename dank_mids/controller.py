@@ -72,32 +72,6 @@ def _dispatch_early_started_batch(
 
 
 @final
-class _EarlyStartHandoff:
-    """
-    Keep moved multicalls alive until the already-started JSON-RPC batch finishes.
-    """
-
-    __slots__ = ("multicalls",)
-
-    def __init__(self, multicalls: tuple[Multicall, ...]) -> None:
-        self.multicalls = multicalls
-
-    def release(self, _task: object) -> None:
-        self.multicalls = ()
-
-
-def _dispatch_early_started_batch(
-    rpc_calls: JSONRPCBatch, multicalls: tuple[Multicall, ...]
-) -> None:
-    rpc_calls.start()
-    task = rpc_calls._task
-    # Keep handoff multicalls alive while this no-waiter early dispatch is in flight.
-    if multicalls:
-        handoff = _EarlyStartHandoff(multicalls)
-        task.add_done_callback(handoff.release)
-
-
-@final
 class DankMiddlewareController:
     """
     Controller for managing Dank Middleware operations.
