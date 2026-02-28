@@ -107,6 +107,10 @@ _Response = TypeVar(
 )
 
 
+def _future_has_waiters(fut: Future[Any]) -> bool:
+    return bool(getattr(fut, "has_waiters", False))
+
+
 @final
 class RPCError(_RPCError, total=False):
     dankmids_added_context: dict[str, Any]
@@ -258,6 +262,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
         """Log an error if this call is not complete it is deleted."""
         fut = self._fut
         if not fut.done() and not fut._loop.is_closed():
+            # If nobody is waiting anymore, treat this as abandoned work and keep noise low.
+            if not _future_has_waiters(fut):
+                _log_debug("%s was garbage collected with no waiters; treating as abandoned work", self)
+                return
             try:
                 fut.set_exception(
                     GarbageCollectionError(
@@ -789,21 +797,33 @@ class Multicall(_Batch[RPCResponse, eth_call]):
 
         # The Multicall still has calls that haven't been garbage collected
         loop_is_closed = None
-        logged = False
+        logged_waiter_impact = False
+        logged_abandoned = False
         for call in calls:
-            if not call._fut.done():
+            fut = call._fut
+            if not fut.done():
                 if loop_is_closed is None:
-                    loop_is_closed = call._fut._loop.is_closed()
+                    loop_is_closed = fut._loop.is_closed()
 
                 if loop_is_closed:
                     return
 
-                if logged is False:
+                if not _future_has_waiters(fut):
+                    # This call no longer has a consumer, so failing it just adds noise.
+                    if logged_abandoned is False:
+                        _log_debug(
+                            "%s was garbage collected with unfinished calls but no waiters; treating as abandoned work",
+                            self,
+                        )
+                        logged_abandoned = True
+                    continue
+
+                if logged_waiter_impact is False:
                     error_logger.error("%s was garbage collected before finishing", self)
-                    logged = True
+                    logged_waiter_impact = True
 
                 try:
-                    call._fut.set_exception(
+                    fut.set_exception(
                         GarbageCollectionError(
                             f"{self} was garbage collected before finishing.",
                             f"{call} might hang indefinitely if I don't raise this exception, "
@@ -1108,13 +1128,24 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
 
     def __del__(self) -> None:
         """Log an error if any call in this batch is not complete when the batch is deleted."""
+        saw_abandoned_work = False
         if self and not self._done.is_set():
             for cls, calls in groupby(self.calls, type):
                 if cls is Multicall:
                     calls = concat(filter(None, calls))
-                if any(filterfalse(Future.done, (call._fut for call in calls))):
-                    error_logger.error("%s was garbage collected before finishing", self)
-                    return
+                for call in calls:
+                    fut = call._fut
+                    if fut.done():
+                        continue
+                    if _future_has_waiters(fut):
+                        error_logger.error("%s was garbage collected before finishing", self)
+                        return
+                    saw_abandoned_work = True
+        if saw_abandoned_work:
+            _log_debug(
+                "%s was garbage collected with unfinished calls but no waiters; treating as abandoned work",
+                self,
+            )
 
     @property
     def data(self) -> bytes | None:
