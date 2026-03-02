@@ -1058,14 +1058,10 @@ class Multicall(_Batch[RPCResponse, eth_call]):
             Multicall(controller, chunk, f"{self.bid}_{i}") for i, chunk in enumerate(self.bisected)
         ]
         if controller.pending_rpc_calls:
-            controller.pending_rpc_calls.append(batch0)
-            if batch1:
-                if controller.pending_rpc_calls:
-                    controller.pending_rpc_calls.append(batch1)
-                else:
-                    await batch1
-            await controller.pending_rpc_calls._done.wait()
-        elif batch1:
+            if await controller.dispatch_pending_rpc_batch_and_wait(bisected):
+                return
+
+        if batch1:
             batch = JSONRPCBatch(controller, bisected, f"{self.uid}_bisected")
             batch.start(self, cleanup=False)
             await batch
