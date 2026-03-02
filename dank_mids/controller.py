@@ -1,6 +1,6 @@
-from asyncio import get_running_loop
+from asyncio import CancelledError, Future, TimeoutError, get_running_loop, wait_for
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from functools import lru_cache
 from logging import getLogger
 from time import time
@@ -22,6 +22,7 @@ from dank_mids._batch import DankBatch
 from dank_mids._demo_mode import demo_logger
 from dank_mids._exceptions import DankMidsInternalError
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest, eth_call
+from dank_mids._tasks import TIMEOUT_SECONDS_BIG
 from dank_mids._uid import UIDGenerator
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers._codec import RawResponse, decode_raw
@@ -369,6 +370,74 @@ class DankMiddlewareController:
                 self.pending_eth_calls.clear()
             if rpc_calls:
                 _dispatch_early_started_batch(rpc_calls, multicalls)
+
+    def _append_calls_and_dispatch_pending_batches(
+        self, calls: Iterable[Multicall]
+    ) -> tuple[JSONRPCBatch, ...]:
+        """
+        Append calls through normal batch gates and collect dispatched batches.
+
+        This preserves the existing size-gate behavior by using per-call append checks.
+        """
+        dispatched: list[JSONRPCBatch] = []
+        with self.pools_closed_lock:
+            for call in calls:
+                pending_batch = self.pending_rpc_calls
+                pending_batch.append(call)
+                if pending_batch._awaited:
+                    dispatched.append(pending_batch)
+
+            tail_batch = self.pending_rpc_calls
+            if tail_batch and not tail_batch._awaited:
+                tail_batch.start()
+                dispatched.append(tail_batch)
+
+        return tuple(dispatched)
+
+    @staticmethod
+    def _dispatched_batch_tasks(batches: Sequence[JSONRPCBatch]) -> tuple[Future[None], ...]:
+        return tuple(batch._task for batch in batches)
+
+    async def dispatch_pending_rpc_batch_and_wait(
+        self,
+        calls: Iterable[Multicall],
+        timeout: float = TIMEOUT_SECONDS_BIG,
+    ) -> bool:
+        """
+        Append calls to the current pending JSON-RPC batch, dispatch it, and wait with a timeout.
+
+        Returns:
+            True if the dispatched batch completed before timeout and without errors, otherwise False.
+        """
+        try:
+            dispatched_batches = self._append_calls_and_dispatch_pending_batches(calls)
+        except Exception:
+            logger.exception("failed to dispatch pending jsonrpc batch")
+            return False
+
+        if not dispatched_batches:
+            return True
+
+        try:
+            await wait_for(cgather(*self._dispatched_batch_tasks(dispatched_batches)), timeout=timeout)
+            return True
+        except CancelledError:
+            raise
+        except TimeoutError:
+            logger.warning(
+                "pending jsonrpc batch did not complete within %ss, waiting for in-flight dispatch to finish",
+                timeout,
+            )
+            try:
+                await cgather(*self._dispatched_batch_tasks(dispatched_batches))
+                return True
+            except CancelledError:
+                raise
+            except Exception:
+                logger.exception("pending jsonrpc batch failed after timeout")
+        except Exception:
+            logger.exception("pending jsonrpc batch failed")
+        return False
 
     def reduce_multicall_size(self, num_calls: int) -> None:
         """
