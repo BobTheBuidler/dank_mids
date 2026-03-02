@@ -57,7 +57,7 @@ from dank_mids._tasks import (
     shield,
 )
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers import DebuggableFuture, _codec, batch_size, gatherish
+from dank_mids.helpers import DebuggableFuture, _codec, _errors as _errors_mod, batch_size, gatherish
 from dank_mids.helpers._codec import (
     JSONRPCBatchResponse,
     MulticallChunk,
@@ -1508,38 +1508,32 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             )
 
 
-# NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
-_DONT_NEED_TO_SEE_ERRS = [
-    "non_empty_data",
-    "exceeding --rpc.returndata.limit",
-    "'code': 429",
-]
-
-
 def _log_exception(e: Exception) -> bool:
     """
-    Log exceptions that occur during a multicall or batch.
+    Log unexpected batch exceptions.
 
-    This function logs exceptions that are unexpected and considered errors,
-    allowing for better debugging and monitoring.
-
-    Args:
-        e: The exception to log.
-
-    Returns:
-        True if the exception should be logged, False otherwise.
+    We prefer the centralized helper in `helpers._errors`, but this local fallback
+    keeps source+compiled mixed environments working until mypyc artifacts are refreshed.
     """
-    # NOTE: These errors are expected during normal use and are not indicative of any problem(s). No need to log them.
-    if type(e) is OutOfGas:
-        return ENVS.DEBUG
+    if errors_log_exception := getattr(_errors_mod, "_log_exception", None):
+        return errors_log_exception(e)
 
-    # TODO: Better filter what we choose to log here
+    if type(e) is OutOfGas:
+        return bool(ENVS.DEBUG)
 
     dont_need_to_see_errs = [
-        *_DONT_NEED_TO_SEE_ERRS,
-        # We catch and correct these
+        *getattr(
+            _errors_mod,
+            "_DONT_NEED_TO_SEE_ERRS",
+            (
+                "non_empty_data",
+                "exceeding --rpc.returndata.limit",
+                "'code': 429",
+            ),
+        ),
+        # We catch and correct these.
         "invalid request",
-        # We pass these down to the call they originated from
+        # We pass these down to the call they originated from.
         *INDIVIDUAL_CALL_REVERT_STRINGS,
     ]
 
@@ -1552,7 +1546,7 @@ def _log_exception(e: Exception) -> bool:
             "The following exception is being logged for informational purposes and does not indicate failure:"
         )
         _log_warning(e, exc_info=True)
-    return ENVS.DEBUG  # type: ignore [attr-defined,return-value]
+    return bool(ENVS.DEBUG)
 
 
 _log_debug: Final = logger.debug

@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1459];
+extern PyObject *CPyStatics[1465];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -926,6 +926,7 @@ extern PyObject *CPyStatic__errors___timeout_logger_warning;
 extern PyObject *CPyStatic__errors___gas_logger;
 extern PyObject *CPyStatic__errors___gas_logger_debug;
 extern PyObject *CPyStatic__errors___INDIVIDUAL_CALL_REVERT_STRINGS;
+extern PyObject *CPyStatic__errors____DONT_NEED_TO_SEE_ERRS;
 extern char CPyDef__errors___error_logger_log_debug(PyObject *cpy_r_msg, PyObject *cpy_r_args);
 extern PyObject *CPyPy__errors___error_logger_log_debug(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors___revert_logger_log_debug(PyObject *cpy_r_msg, PyObject *cpy_r_args);
@@ -940,6 +941,8 @@ extern char CPyDef__errors___is_revert_bytes(PyObject *cpy_r_data);
 extern PyObject *CPyPy__errors___is_revert_bytes(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors___log_request_type_switch(void);
 extern PyObject *CPyPy__errors___log_request_type_switch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__errors____log_exception(PyObject *cpy_r_e);
+extern PyObject *CPyPy__errors____log_exception(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__errors___format_with_errors(PyObject *cpy_r_decoded, PyObject *cpy_r_method, char cpy_r_raw_mode, PyObject *cpy_r_request);
 extern PyObject *CPyPy__errors___format_with_errors(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__errors_____top_level__(void);
