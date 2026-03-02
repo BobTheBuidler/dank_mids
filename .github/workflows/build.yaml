@@ -96,8 +96,9 @@ jobs:
             ./build/lib.*/**/*cp${{ matrix.python.abi }}-win_amd64.pyd
             ./dank_mids/**/*cp${{ matrix.python.abi }}-win_amd64.pyd
 
-  aggregate-ubuntu:
+  aggregate-build-files:
     needs: build-matrix
+    # Cross-platform artifact verification/aggregation runs on Linux for speed and tooling simplicity.
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -175,7 +176,7 @@ jobs:
           # Replace index in CPyStatics[...] with macro
           sed -i 's/CPyStatics\[[0-9]\+\]/CPyStatics[DIFFCHECK_PLACEHOLDER]/g' build/*.c
 
-      - name: Check for changes (Ubuntu)
+      - name: Check for changes (build files)
         run: |
           if [[ -n $(git status --porcelain) ]]; then
             echo "changes_detected=true" >> $GITHUB_ENV
@@ -183,7 +184,7 @@ jobs:
             echo "changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit changes (Ubuntu)
+      - name: Commit build file changes
         if: env.changes_detected == 'true'
         run: |
           git config --local user.name "github-actions[bot]"
@@ -220,7 +221,7 @@ jobs:
           git push origin HEAD:mypyc
 
   update-submodule-pointer:
-    needs: aggregate-ubuntu
+    needs: aggregate-build-files
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
