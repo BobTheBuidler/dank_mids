@@ -763,6 +763,25 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    uint32_t bitmap;
+    PyObject *___mypyc_generator_attribute__self;
+    PyObject *___mypyc_generator_attribute__calls;
+    double ___mypyc_generator_attribute__timeout;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_temp__39;
+    char ___mypyc_temp__40;
+    PyObject *___mypyc_generator_attribute__pending_batch;
+    PyObject *___mypyc_generator_attribute__pending_task;
+    tuple_T3OOO ___mypyc_temp__41;
+    tuple_T3OOO ___mypyc_temp__42;
+    PyObject *___mypyc_temp__43;
+    tuple_T3OOO ___mypyc_temp__44;
+    tuple_T3OOO ___mypyc_temp__45;
+} dank_mids___controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     PyObject *__raw;
 } dank_mids___helpers____codec___RawResponseObject;
 

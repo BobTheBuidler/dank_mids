@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1452];
+extern PyObject *CPyStatics[1458];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -748,6 +748,9 @@ extern CPyThreadLocal dank_mids___controller___make_request_DankMiddlewareContro
 extern PyTypeObject *CPyType_controller___execute_batch_DankMiddlewareController_gen;
 extern PyObject *CPyDef_controller___execute_batch_DankMiddlewareController_gen(void);
 extern CPyThreadLocal dank_mids___controller___execute_batch_DankMiddlewareController_genObject *controller___execute_batch_DankMiddlewareController_gen_free_instance;
+extern PyTypeObject *CPyType_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen;
+extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen(void);
+extern CPyThreadLocal dank_mids___controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_genObject *controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_free_instance;
 extern char CPyDef_controller____EarlyStartHandoff_____init__(PyObject *cpy_r_self, PyObject *cpy_r_multicalls);
 extern PyObject *CPyPy_controller____EarlyStartHandoff_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern char CPyDef_controller____EarlyStartHandoff___release(PyObject *cpy_r_self, PyObject *cpy_r__task);
@@ -815,6 +818,21 @@ extern char CPyDef_controller___DankMiddlewareController____check_request_type(P
 extern PyObject *CPyPy_controller___DankMiddlewareController____check_request_type(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_controller___DankMiddlewareController___early_start(PyObject *cpy_r_self);
 extern PyObject *CPyPy_controller___DankMiddlewareController___early_start(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
+extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____next__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+extern PyObject *CPyPy_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen___send(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____iter__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen___throw(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+extern PyObject *CPyPy_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen___throw(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen___close(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____await__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___DankMiddlewareController___dispatch_pending_rpc_batch_and_wait(PyObject *cpy_r_self, PyObject *cpy_r_calls, double cpy_r_timeout, uint32_t cpy_r___bitmap);
+extern PyObject *CPyPy_controller___DankMiddlewareController___dispatch_pending_rpc_batch_and_wait(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_controller___DankMiddlewareController___reduce_multicall_size(PyObject *cpy_r_self, CPyTagged cpy_r_num_calls);
 extern PyObject *CPyPy_controller___DankMiddlewareController___reduce_multicall_size(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_controller___DankMiddlewareController___reduce_batch_size(PyObject *cpy_r_self, CPyTagged cpy_r_num_calls);
