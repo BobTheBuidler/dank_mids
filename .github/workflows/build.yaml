@@ -30,7 +30,17 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
+        python:
+          - version: "3.10"
+            abi: "310"
+          - version: "3.11"
+            abi: "311"
+          - version: "3.12"
+            abi: "312"
+          - version: "3.13"
+            abi: "313"
+          - version: "3.14"
+            abi: "314"
 
     steps:
       - name: Checkout code
@@ -44,7 +54,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python.version }}
           cache: pip
           cache-dependency-path: |
             requirements-build.txt
@@ -57,15 +67,16 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: mypyc-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: mypyc-${{ matrix.os }}-py${{ matrix.python.version }}
           path: |
-            ./*__mypyc*.so
-            ./*__mypyc*.pyd
+            ./*__mypyc*.cpython-${{ matrix.python.abi }}-*.so
+            ./*__mypyc*.cp${{ matrix.python.abi }}-*.pyd
             ./build/**/*.c
             ./build/**/*.h
-            ./build/lib.*/**/*.so
-            ./dank_mids/**/*.so
-            ./dank_mids/**/*.pyd
+            ./build/lib.*/**/*cpython-${{ matrix.python.abi }}-*.so
+            ./build/lib.*/**/*cp${{ matrix.python.abi }}-*.pyd
+            ./dank_mids/**/*cpython-${{ matrix.python.abi }}-*.so
+            ./dank_mids/**/*cp${{ matrix.python.abi }}-*.pyd
 
   aggregate-ubuntu:
     needs: build-matrix
