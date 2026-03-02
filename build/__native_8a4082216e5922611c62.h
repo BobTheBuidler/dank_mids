@@ -768,10 +768,9 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__calls;
     double ___mypyc_generator_attribute__timeout;
     int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_temp__39;
-    char ___mypyc_temp__40;
-    PyObject *___mypyc_generator_attribute__pending_batch;
-    PyObject *___mypyc_generator_attribute__pending_task;
+    PyObject *___mypyc_generator_attribute__dispatched_batches;
+    tuple_T3OOO ___mypyc_temp__39;
+    PyObject *___mypyc_temp__40;
     tuple_T3OOO ___mypyc_temp__41;
     tuple_T3OOO ___mypyc_temp__42;
     PyObject *___mypyc_temp__43;

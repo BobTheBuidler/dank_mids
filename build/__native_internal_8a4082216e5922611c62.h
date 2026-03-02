@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1458];
+extern PyObject *CPyStatics[1459];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -818,6 +818,10 @@ extern char CPyDef_controller___DankMiddlewareController____check_request_type(P
 extern PyObject *CPyPy_controller___DankMiddlewareController____check_request_type(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_controller___DankMiddlewareController___early_start(PyObject *cpy_r_self);
 extern PyObject *CPyPy_controller___DankMiddlewareController___early_start(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___DankMiddlewareController____append_calls_and_dispatch_pending_batches(PyObject *cpy_r_self, PyObject *cpy_r_calls);
+extern PyObject *CPyPy_controller___DankMiddlewareController____append_calls_and_dispatch_pending_batches(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___DankMiddlewareController____dispatched_batch_tasks(PyObject *cpy_r_batches);
+extern PyObject *CPyPy_controller___DankMiddlewareController____dispatched_batch_tasks(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
 extern PyObject *CPyDef_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
