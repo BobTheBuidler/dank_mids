@@ -417,3 +417,46 @@ def test_request_gate_waits_for_one_loop_tick_before_dispatch() -> None:
         assert response["result"] == "0x1"
 
     asyncio.run(run())
+
+
+def test_controller_has_pending_calls_ignores_stale_eth_entries() -> None:
+    async def run() -> None:
+        controller = _build_controller_for_early_start()
+
+        stale_multicall = Multicall(controller, [], bid="mc-stale")
+        controller.pending_eth_calls = {"latest": stale_multicall}
+        assert bool(controller.pending_eth_calls) is True
+        assert controller.has_pending_calls is False
+
+        live_call = _PendingEthCall()
+        live_multicall = Multicall(controller, [live_call], bid="mc-live")
+        controller.pending_eth_calls = {"latest": live_multicall}
+        assert controller.has_pending_calls is True
+
+    asyncio.run(run())
+
+
+def test_request_gate_skips_execute_batch_for_stale_eth_entries() -> None:
+    async def run() -> None:
+        controller = _build_controller_for_early_start()
+        request = RPCRequest(controller, "web3_clientVersion", [])
+        # Some other unit tests toggle global batching behavior; pin this test to the batched path.
+        request.should_batch = True
+        request._batch = None
+        request._fut.set_result({"jsonrpc": "2.0", "id": request.uid, "result": "0x1"})
+
+        # Remove the queued request from controller state so only stale eth entries remain.
+        controller.pending_rpc_calls = JSONRPCBatch(controller)
+        controller.pending_eth_calls = {"latest": Multicall(controller, [], bid="mc-stale")}
+        assert bool(controller.pending_eth_calls) is True
+        assert controller.has_pending_calls is False
+
+        async def patched_execute_batch(self) -> None:
+            raise AssertionError("execute_batch should not be scheduled for stale eth entries")
+
+        with patch.object(type(controller), "execute_batch", patched_execute_batch):
+            response = await asyncio.wait_for(request.get_response(), timeout=1)
+
+        assert response["result"] == "0x1"
+
+    asyncio.run(run())
