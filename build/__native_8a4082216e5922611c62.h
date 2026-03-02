@@ -618,6 +618,12 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *_multicalls;
+} dank_mids___controller____EarlyStartHandoffObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
     uint32_t bitmap;
     PyObject *_pending_rpc_calls;

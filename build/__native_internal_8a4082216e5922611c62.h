@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1450];
+extern PyObject *CPyStatics[1452];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -480,6 +480,8 @@ extern PyObject *CPyDef_brownie_patch___initialize_brownie_patch(void);
 extern PyObject *CPyPy_brownie_patch___initialize_brownie_patch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_brownie_patch___get_brownie_patch_status(char cpy_r_refresh_connection);
 extern PyObject *CPyPy_brownie_patch___get_brownie_patch_status(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_brownie_patch____coerce_state(void);
+extern PyObject *CPyPy_brownie_patch____coerce_state(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_brownie_patch____load_types(void);
 extern PyObject *CPyPy_brownie_patch____load_types(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_brownie_patch_____getattr__(PyObject *cpy_r_name);
@@ -724,6 +726,8 @@ extern char CPyDef_constants_____top_level__(void);
 extern PyObject *CPyStatic_controller___logger;
 extern PyObject *CPyStatic_controller___instances;
 extern PyObject *CPyStatic_controller___cgather;
+extern PyTypeObject *CPyType_controller____EarlyStartHandoff;
+extern PyObject *CPyDef_controller____EarlyStartHandoff(PyObject *cpy_r_multicalls);
 extern PyTypeObject *CPyType_controller___DankMiddlewareController;
 extern PyObject *CPyDef_controller___DankMiddlewareController(PyObject *cpy_r_w3);
 extern PyTypeObject *CPyType_controller_____init___3_DankMiddlewareController_env;
@@ -744,6 +748,12 @@ extern CPyThreadLocal dank_mids___controller___make_request_DankMiddlewareContro
 extern PyTypeObject *CPyType_controller___execute_batch_DankMiddlewareController_gen;
 extern PyObject *CPyDef_controller___execute_batch_DankMiddlewareController_gen(void);
 extern CPyThreadLocal dank_mids___controller___execute_batch_DankMiddlewareController_genObject *controller___execute_batch_DankMiddlewareController_gen_free_instance;
+extern char CPyDef_controller____EarlyStartHandoff_____init__(PyObject *cpy_r_self, PyObject *cpy_r_multicalls);
+extern PyObject *CPyPy_controller____EarlyStartHandoff_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern char CPyDef_controller____EarlyStartHandoff___release(PyObject *cpy_r_self, PyObject *cpy_r__task);
+extern PyObject *CPyPy_controller____EarlyStartHandoff___release(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_controller____dispatch_early_started_batch(PyObject *cpy_r_rpc_calls, PyObject *cpy_r_multicalls);
+extern PyObject *CPyPy_controller____dispatch_early_started_batch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_controller_____mypyc_lambda__0___3_init___3_DankMiddlewareController_obj_____get__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_instance, PyObject *cpy_r_owner);
 extern PyObject *CPyPy_controller_____mypyc_lambda__0___3_init___3_DankMiddlewareController_obj_____get__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_controller_____mypyc_lambda__0___3_init___3_DankMiddlewareController_obj_____call__(PyObject *cpy_r___mypyc_self__);
@@ -799,6 +809,8 @@ extern PyObject *CPyDef_controller___DankMiddlewareController___execute_batch(Py
 extern PyObject *CPyPy_controller___DankMiddlewareController___execute_batch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_controller___DankMiddlewareController___queue_is_full(PyObject *cpy_r_self);
 extern PyObject *CPyPy_controller___DankMiddlewareController___queue_is_full(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_controller___DankMiddlewareController___has_pending_calls(PyObject *cpy_r_self);
+extern PyObject *CPyPy_controller___DankMiddlewareController___has_pending_calls(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_controller___DankMiddlewareController____check_request_type(PyObject *cpy_r_self);
 extern PyObject *CPyPy_controller___DankMiddlewareController____check_request_type(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_controller___DankMiddlewareController___early_start(PyObject *cpy_r_self);
