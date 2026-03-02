@@ -118,7 +118,7 @@ jobs:
           fi
 
       - name: Commit changes (Ubuntu)
-        if: env.changes_detected == 'true' && github.event_name != 'pull_request'
+        if: env.changes_detected == 'true'
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
