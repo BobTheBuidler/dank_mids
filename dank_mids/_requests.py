@@ -1,8 +1,8 @@
 from asyncio import (
+    CancelledError,
     Future,
     Task,
     TimeoutError,
-    as_completed,
     create_task,
     current_task,
     get_running_loop,
@@ -101,6 +101,7 @@ if TYPE_CHECKING:
 EXECUTION_LOCK: Final = Lock()
 
 logger: Final = get_c_logger(__name__)
+MAX_RPC_TIMEOUT_RETRIES: Final = 10
 
 _Response = TypeVar(
     "_Response", Response, list[Response], RPCResponse, list[RPCResponse], RawResponse
@@ -109,6 +110,20 @@ _Response = TypeVar(
 
 def _future_has_waiters(fut: Future[Any]) -> bool:
     return bool(getattr(fut, "has_waiters", False))
+
+
+async def _cancel_and_drain_tasks(tasks: Iterable[Task[Any]]) -> None:
+    task_list = tuple(tasks)
+    for task in task_list:
+        if not task.done():
+            task.cancel()
+    for task in task_list:
+        try:
+            await task
+        except CancelledError:
+            pass
+        except Exception:
+            pass
 
 
 @final
@@ -448,9 +463,10 @@ class RPCRequest(_RequestBase[RPCResponse]):
         Args:
             num_previous_timeouts (optional): the number of times this request has already been attempted and timed out. Default 0.
         """
+        attempt = num_previous_timeouts + 1
         task = create_task(
             coro=self.controller.make_request(self.method, self.params, request_id=self.uid),
-            name=f"RPCRequest.make_request attempt {num_previous_timeouts+1}",
+            name=f"RPCRequest.make_request attempt {attempt}",
         )
 
         try:
@@ -458,45 +474,95 @@ class RPCRequest(_RequestBase[RPCResponse]):
         except ClientResponseError as e:
             if e.status != 408:  # request timeout
                 raise
-            log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
-            log_func(
-                "`make_request` server timeout (code 408) %s times for %s, trying again...",
-                num_previous_timeouts + 1,
-                self,
-            )
+            will_retry = attempt < MAX_RPC_TIMEOUT_RETRIES
+            log_func = timeout_logger_warning if attempt > 1 else timeout_logger_debug
+            if will_retry:
+                log_func(
+                    "`make_request` server timeout (code 408) %s times for %s, trying again...",
+                    attempt,
+                    self,
+                )
+            else:
+                timeout_logger_warning(
+                    "`make_request` server timeout (code 408) %s times for %s, aborting after %s attempts",
+                    attempt,
+                    self,
+                    MAX_RPC_TIMEOUT_RETRIES,
+                )
             emit_retry_event(
                 RetryEvent(
                     operation=self.method,
-                    attempt=num_previous_timeouts + 1,
+                    attempt=attempt,
                     error=e,
+                    max_attempts=MAX_RPC_TIMEOUT_RETRIES,
                     component="rpc_request",
+                    will_retry=will_retry,
                     metadata={"status": "408"},
                 )
             )
-            return await self.make_request(num_previous_timeouts + 1)
+            if not will_retry:
+                raise TimeoutError(
+                    f"`make_request` exhausted timeout retry budget ({MAX_RPC_TIMEOUT_RETRIES} attempts / ~{TIMEOUT_SECONDS_SMALL * MAX_RPC_TIMEOUT_RETRIES:g}s) for {self}"
+                ) from e
+            return await self.make_request(attempt)
         except TimeoutError as e:
-            log_func = timeout_logger_warning if num_previous_timeouts > 1 else timeout_logger_debug
-            log_func(
-                "`make_request` timed out in dank_mids (%ss) %s times for %s, trying again...",
-                TIMEOUT_SECONDS_SMALL,
-                num_previous_timeouts + 1,
-                self,
-            )
+            will_retry = attempt < MAX_RPC_TIMEOUT_RETRIES
+            log_func = timeout_logger_warning if attempt > 1 else timeout_logger_debug
+            if will_retry:
+                log_func(
+                    "`make_request` timed out in dank_mids (%ss) %s times for %s, trying again...",
+                    TIMEOUT_SECONDS_SMALL,
+                    attempt,
+                    self,
+                )
+            else:
+                timeout_logger_warning(
+                    "`make_request` timed out in dank_mids (%ss) %s times for %s, aborting after %s attempts",
+                    TIMEOUT_SECONDS_SMALL,
+                    attempt,
+                    self,
+                    MAX_RPC_TIMEOUT_RETRIES,
+                )
             emit_retry_event(
                 RetryEvent(
                     operation=self.method,
-                    attempt=num_previous_timeouts + 1,
+                    attempt=attempt,
                     error=e,
+                    max_attempts=MAX_RPC_TIMEOUT_RETRIES,
                     component="rpc_request",
+                    will_retry=will_retry,
                     metadata={"timeout_seconds": str(TIMEOUT_SECONDS_SMALL)},
                 )
             )
-            next_attempt_coro = self.make_request(num_previous_timeouts + 1)
-            next_attempt_task = create_task(next_attempt_coro, name="next attempt task")
-            done, _ = await wait((task, next_attempt_task), return_when="FIRST_COMPLETED")
-            first_done = done.pop()
-            response = first_done.result()
-            if first_done is not next_attempt_task:
+            if not will_retry:
+                await _cancel_and_drain_tasks((task,))
+                raise TimeoutError(
+                    f"`make_request` exhausted timeout retry budget ({MAX_RPC_TIMEOUT_RETRIES} attempts / ~{TIMEOUT_SECONDS_SMALL * MAX_RPC_TIMEOUT_RETRIES:g}s) for {self}"
+                ) from e
+
+            next_attempt_task = create_task(
+                self.make_request(attempt),
+                name=f"RPCRequest.make_request hedge attempt {attempt + 1}",
+            )
+            done, _ = await wait(
+                (task, next_attempt_task),
+                timeout=TIMEOUT_SECONDS_SMALL,
+                return_when="FIRST_COMPLETED",
+            )
+            if not done:
+                await _cancel_and_drain_tasks((task, next_attempt_task))
+                raise TimeoutError(
+                    f"`make_request` timed out waiting for timeout hedge ({TIMEOUT_SECONDS_SMALL}s) for {self}"
+                ) from e
+
+            winner = task if task in done else next_attempt_task
+            loser = next_attempt_task if winner is task else task
+            try:
+                response = await winner
+            finally:
+                await _cancel_and_drain_tasks((loser,))
+
+            if winner is not next_attempt_task and not self._fut.done():
                 # `next_attempt_task` would have already set the fut result, but `task` would not have
                 self._fut.set_result(response)
         else:
@@ -1327,21 +1393,39 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
         data = self.data
         if not data:
             return []
-                
+
         endpoint = self.controller.endpoint
         try:
             post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
             task = create_task(post_coro, name=f"JSONRPCBatch-{self.uid}")
-            response: JSONRPCBatchResponse = await wait_for(shield(task), timeout=30)
+            response: JSONRPCBatchResponse = await wait_for(shield(task), timeout=TIMEOUT_SECONDS_SMALL)
         except TimeoutError:
-            timeout_logger_warning("JSONRPCBatch.post timed out (30s). Retrying.")
+            timeout_logger_warning("JSONRPCBatch.post timed out (%ss). Retrying.", TIMEOUT_SECONDS_SMALL)
             # If all calls in the batch were GC'ed, bail out
             data = self.data
             if not data:
                 return []
-            new_post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
-            for fut in as_completed([task, new_post_coro]):
-                return await fut
+            retry_task = create_task(
+                _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch),
+                name=f"JSONRPCBatch-{self.uid}-retry",
+            )
+            done, _ = await wait(
+                (task, retry_task),
+                timeout=TIMEOUT_SECONDS_SMALL,
+                return_when="FIRST_COMPLETED",
+            )
+            if not done:
+                await _cancel_and_drain_tasks((task, retry_task))
+                raise TimeoutError(
+                    f"JSONRPCBatch.post timed out after retry ({TIMEOUT_SECONDS_SMALL}s)"
+                )
+
+            winner = task if task in done else retry_task
+            loser = retry_task if winner is task else task
+            try:
+                response = await winner
+            finally:
+                await _cancel_and_drain_tasks((loser,))
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 _log_warning("Payload too large: %s", self.method_counts)

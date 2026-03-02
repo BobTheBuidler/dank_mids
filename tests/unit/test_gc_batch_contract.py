@@ -56,6 +56,23 @@ class _RPCBatchCall:
         return True
 
 
+class _JSONRPCPostCall:
+    class _Request:
+        data = (
+            b'{"jsonrpc":"2.0","id":"1","method":"web3_clientVersion","params":[]}'
+        )
+
+    def __init__(self) -> None:
+        self.request = self._Request()
+        self._fut = asyncio.get_running_loop().create_future()
+
+    def __len__(self) -> int:
+        return 1
+
+    def __bool__(self) -> bool:
+        return True
+
+
 class _FutureOwner:
     pass
 
@@ -290,6 +307,79 @@ def test_jsonrpc_batch_post_bails_out_when_all_calls_are_collected() -> None:
 
         assert response == []
         post.assert_not_called()
+
+    asyncio.run(run())
+
+
+def test_jsonrpc_batch_post_timeout_retry_is_bounded() -> None:
+    async def run() -> None:
+        controller = _DummyController()
+        rpc_call = _JSONRPCPostCall()
+        batch = JSONRPCBatch(controller, [rpc_call], jid="batch-timeout-bounded")
+        stall = asyncio.Event()
+        post_once = requests_module.JSONRPCBatch.post.__wrapped__.__wrapped__
+
+        async def stalled_post(endpoint, data, loads):
+            del endpoint, data, loads
+            await stall.wait()
+            return []
+
+        async def fast_wait_for(awaitable, timeout):
+            del timeout
+            return await asyncio.wait_for(awaitable, timeout=0.01)
+
+        with patch("dank_mids._requests._requester.post", side_effect=stalled_post) as post, patch.object(
+            requests_module, "wait_for", fast_wait_for
+        ), patch.object(requests_module, "TIMEOUT_SECONDS_SMALL", 0.01):
+            with pytest.raises(asyncio.TimeoutError, match="timed out after retry"):
+                await asyncio.wait_for(post_once(batch), timeout=0.2)
+
+        await asyncio.sleep(0)
+        lingering = [
+            task
+            for task in asyncio.all_tasks()
+            if task is not asyncio.current_task()
+            and task.get_name().startswith(f"JSONRPCBatch-{batch.uid}")
+            and not task.done()
+        ]
+        assert lingering == []
+        assert post.call_count == 2
+
+    asyncio.run(run())
+
+
+def test_rpc_request_make_request_timeout_budget_is_bounded() -> None:
+    async def run() -> None:
+        controller = _build_controller_for_early_start()
+        request = RPCRequest(controller, "web3_clientVersion", [])
+        stall = asyncio.Event()
+
+        async def stalled_make_request(self, method, params, request_id):
+            del self, method, params, request_id
+            await stall.wait()
+            return {"jsonrpc": "2.0", "id": request.uid, "result": "0x1"}
+
+        async def fast_timeout(task):
+            del task
+            raise asyncio.TimeoutError()
+
+        with patch.object(type(controller), "make_request", stalled_make_request), patch.object(
+            requests_module, "try_for_result_quick", fast_timeout
+        ), patch.object(requests_module, "TIMEOUT_SECONDS_SMALL", 0.01), patch.object(
+            requests_module, "MAX_RPC_TIMEOUT_RETRIES", 2
+        ):
+            with pytest.raises(asyncio.TimeoutError, match="exhausted timeout retry budget"):
+                await asyncio.wait_for(request.make_request(), timeout=0.5)
+
+        await asyncio.sleep(0)
+        lingering = [
+            task
+            for task in asyncio.all_tasks()
+            if task is not asyncio.current_task()
+            and task.get_name().startswith("RPCRequest.make_request")
+            and not task.done()
+        ]
+        assert lingering == []
 
     asyncio.run(run())
 
