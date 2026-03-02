@@ -374,6 +374,25 @@ def test_batch_full_gate_dispatches_without_waiters() -> None:
     asyncio.run(run())
 
 
+def test_multicall_bisect_retry_does_not_wait_pending_done_directly() -> None:
+    async def run() -> None:
+        controller = _build_controller_for_early_start()
+        pending_batch = controller.pending_rpc_calls
+        rpc_call = _RPCBatchCall()
+        pending_batch.append(rpc_call, skip_check=True)
+        multicall = Multicall(controller, [_PendingEthCall()], bid="mc-bisect")
+
+        async def patched_get_response(self) -> None:
+            self._done.set()
+
+        with patch.object(pending_batch._done, "wait", side_effect=AssertionError("should not be called")), patch.object(
+            JSONRPCBatch, "get_response", patched_get_response
+        ):
+            await asyncio.wait_for(multicall.bisect_and_retry(RuntimeError("boom")), timeout=1)
+
+    asyncio.run(run())
+
+
 def test_request_gate_waits_for_one_loop_tick_before_dispatch() -> None:
     async def run() -> None:
         controller = _build_controller_for_early_start()
