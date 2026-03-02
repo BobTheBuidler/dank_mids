@@ -1,10 +1,13 @@
+from itertools import chain
 from logging import Logger
 from typing import TYPE_CHECKING, Any, Final
 
 from web3.exceptions import ContractLogicError
 from web3.types import RPCEndpoint, RPCResponse
 
-from dank_mids._exceptions import BadResponse
+from dank_mids import ENVIRONMENT_VARIABLES as ENVS
+from dank_mids import constants
+from dank_mids._exceptions import BadResponse, OutOfGas
 from dank_mids.constants import REVERT_SELECTORS
 from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.types import Request, PartialRequest, PartialResponse
@@ -43,6 +46,13 @@ INDIVIDUAL_CALL_REVERT_STRINGS: Final = {
     "invalid ether transfer",
     "error processing call revert",
 }
+
+# NOTE: These errors are expected during normal use and are not indicative of any problem(s).
+_DONT_NEED_TO_SEE_ERRS: Final = [
+    "non_empty_data",
+    "exceeding --rpc.returndata.limit",
+    "'code': 429",
+]
 
 
 def log_internal_error(logger: Logger, batch: "_Batch", exc: Exception) -> None:  # type: ignore [type-arg]
@@ -119,6 +129,43 @@ def log_request_type_switch() -> None:
     error_logger_debug(
         "your node says the partial request was invalid but its okay, we can use the full jsonrpc spec instead"
     )
+
+
+def _log_exception(e: Exception) -> bool:
+    """
+    Log exceptions that occur during a multicall or batch.
+
+    This function logs exceptions that are unexpected and considered errors,
+    allowing for better debugging and monitoring.
+
+    Args:
+        e: The exception to log.
+
+    Returns:
+        True if the exception should be logged, False otherwise.
+    """
+    if type(e) is OutOfGas:
+        return bool(ENVS.DEBUG)
+
+    # TODO: Better filter what we choose to log here.
+    dont_need_to_see_errs = [
+        *_DONT_NEED_TO_SEE_ERRS,
+        # We catch and correct these.
+        "invalid request",
+        # We pass these down to the call they originated from.
+        *INDIVIDUAL_CALL_REVERT_STRINGS,
+    ]
+
+    stre = str(e).lower()
+    if all(
+        err not in stre
+        for err in chain(dont_need_to_see_errs, constants.RETRY_ERRS, constants.TOO_MUCH_DATA_ERRS)
+    ):
+        error_logger.warning(
+            "The following exception is being logged for informational purposes and does not indicate failure:"
+        )
+        error_logger.warning(e, exc_info=True)
+    return bool(ENVS.DEBUG)
 
 
 def format_with_errors(
