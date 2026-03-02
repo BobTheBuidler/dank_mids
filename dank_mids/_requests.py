@@ -309,7 +309,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             await wait((current_batch._task, fut), return_when="FIRST_COMPLETED")
 
         controller = self.controller
-        if self._batch is None and (controller.pending_eth_calls or controller.pending_rpc_calls):
+        if self._batch is None and controller.has_pending_calls:
             # self._batch used to be set earlier but now we need to check the controller because the batch might have been initialized but not started
             batch_coro = controller.execute_batch()
             batch_task = create_batch_task(batch_coro, name="batch task execute_batch")

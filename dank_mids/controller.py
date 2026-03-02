@@ -329,6 +329,15 @@ class DankMiddlewareController:
             other_calls = sum(map(len, self.pending_rpc_calls))
             return eth_calls + other_calls >= cast(int, self.batcher.step)
 
+    @property
+    def has_pending_calls(self) -> bool:
+        with self.pools_closed_lock:
+            # JSONRPCBatch.__bool__ already evaluates live weakref-backed calls.
+            if self.pending_rpc_calls:
+                return True
+            # Don't use dict truthiness here; stale falsey multicalls can leave keys behind.
+            return any(call for call in self.pending_eth_calls.values() if call)
+
     def _check_request_type(self) -> bool:
         """
         If the controller is still using the PartialRequest type, it will change over to the Request type.
