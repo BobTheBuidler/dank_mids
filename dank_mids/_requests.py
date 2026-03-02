@@ -1,5 +1,4 @@
 from asyncio import (
-    CancelledError,
     Future,
     Task,
     TimeoutError,
@@ -81,7 +80,7 @@ from dank_mids.helpers._errors import (
     timeout_logger_debug,
     timeout_logger_warning,
 )
-from dank_mids.helpers._helpers import set_done
+from dank_mids.helpers._helpers import cancel_and_drain_tasks, set_done
 from dank_mids.helpers._multicall import MulticallContract
 from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._requester import _requester
@@ -110,20 +109,6 @@ _Response = TypeVar(
 
 def _future_has_waiters(fut: Future[Any]) -> bool:
     return bool(getattr(fut, "has_waiters", False))
-
-
-async def _cancel_and_drain_tasks(tasks: Iterable[Task[Any]]) -> None:
-    task_list = tuple(tasks)
-    for task in task_list:
-        if not task.done():
-            task.cancel()
-    for task in task_list:
-        try:
-            await task
-        except CancelledError:
-            pass
-        except Exception:
-            pass
 
 
 @final
@@ -535,7 +520,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 )
             )
             if not will_retry:
-                await _cancel_and_drain_tasks((task,))
+                await cancel_and_drain_tasks((task,))
                 raise TimeoutError(
                     f"`make_request` exhausted timeout retry budget ({MAX_RPC_TIMEOUT_RETRIES} attempts / ~{TIMEOUT_SECONDS_SMALL * MAX_RPC_TIMEOUT_RETRIES:g}s) for {self}"
                 ) from e
@@ -550,7 +535,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
                 return_when="FIRST_COMPLETED",
             )
             if not done:
-                await _cancel_and_drain_tasks((task, next_attempt_task))
+                await cancel_and_drain_tasks((task, next_attempt_task))
                 raise TimeoutError(
                     f"`make_request` timed out waiting for timeout hedge ({TIMEOUT_SECONDS_SMALL}s) for {self}"
                 ) from e
@@ -560,7 +545,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
             try:
                 response = await winner
             finally:
-                await _cancel_and_drain_tasks((loser,))
+                await cancel_and_drain_tasks((loser,))
 
             if winner is not next_attempt_task and not self._fut.done():
                 # `next_attempt_task` would have already set the fut result, but `task` would not have
@@ -1415,7 +1400,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
                 return_when="FIRST_COMPLETED",
             )
             if not done:
-                await _cancel_and_drain_tasks((task, retry_task))
+                await cancel_and_drain_tasks((task, retry_task))
                 raise TimeoutError(
                     f"JSONRPCBatch.post timed out after retry ({TIMEOUT_SECONDS_SMALL}s)"
                 )
@@ -1425,7 +1410,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             try:
                 response = await winner
             finally:
-                await _cancel_and_drain_tasks((loser,))
+                await cancel_and_drain_tasks((loser,))
         except ClientResponseError as e:
             if e.message == "Payload Too Large":
                 _log_warning("Payload too large: %s", self.method_counts)
