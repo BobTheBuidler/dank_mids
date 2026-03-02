@@ -59,13 +59,14 @@ jobs:
         with:
           name: mypyc-${{ matrix.os }}-py${{ matrix.python-version }}
           path: |
-            ./*__mypyc*.so
-            ./*__mypyc*.pyd
+            ./*__mypyc*.cpython-${{ replace(matrix.python-version, '.', '') }}-*.so
+            ./*__mypyc*.cp${{ replace(matrix.python-version, '.', '') }}-*.pyd
             ./build/**/*.c
             ./build/**/*.h
-            ./build/lib.*/**/*.so
-            ./dank_mids/**/*.so
-            ./dank_mids/**/*.pyd
+            ./build/lib.*/**/*cpython-${{ replace(matrix.python-version, '.', '') }}-*.so
+            ./build/lib.*/**/*cp${{ replace(matrix.python-version, '.', '') }}-*.pyd
+            ./dank_mids/**/*cpython-${{ replace(matrix.python-version, '.', '') }}-*.so
+            ./dank_mids/**/*cp${{ replace(matrix.python-version, '.', '') }}-*.pyd
 
   aggregate-ubuntu:
     needs: build-matrix
