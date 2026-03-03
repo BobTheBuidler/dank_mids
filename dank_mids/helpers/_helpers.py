@@ -1,4 +1,5 @@
-from collections.abc import Awaitable, Callable, Coroutine
+import asyncio
+from collections.abc import Awaitable, Callable, Coroutine, Iterable
 from functools import wraps
 from importlib.metadata import version
 from typing import TYPE_CHECKING, Any, Concatenate, Literal, TypeVar, Union
@@ -138,6 +139,20 @@ def set_done(
         return retval
 
     return set_done_wrap
+
+
+async def cancel_and_drain_tasks(tasks: Iterable[asyncio.Task[Any]]) -> None:
+    task_list = tuple(tasks)
+    for task in task_list:
+        if not task.done():
+            task.cancel()
+    for task in task_list:
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+        except Exception:
+            pass
 
 
 # Everything below is in web3.py now, but dank_mids currently needs a version that predates them.
