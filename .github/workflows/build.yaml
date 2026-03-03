@@ -1,5 +1,15 @@
 name: Build Mypyc
 
+# Workflow flow (intended end-to-end behavior):
+# 1) Trigger on pull_request for build-relevant paths (or via workflow_dispatch).
+# 2) Run a 15-job matrix build (3 OSes x 5 Python versions: 3.10-3.14) and compile with mypyc.
+# 3) Upload platform-specific compiled artifacts from each matrix leg.
+# 4) Run one aggregate gate job on Linux that downloads all artifacts into a single workspace.
+# 5) Re-apply Ubuntu 3.14 artifacts as the canonical baseline for generated C outputs.
+# 6) If dank_mids Python sources changed in the PR, enforce Windows .pyd ABI deltas for 310/311/312/313/314.
+# 7) Normalize generated C files to reduce line-number/index churn, then commit/push build-file deltas when present.
+# 8) If aiolimiter vendor content changed, commit/push those updates and then update the main-repo submodule pointer.
+
 on:
   pull_request:
     branches:
