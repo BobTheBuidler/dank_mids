@@ -1,5 +1,15 @@
 name: Build Mypyc
 
+# Workflow flow (intended end-to-end behavior):
+# 1) Trigger on pull_request for build-relevant paths (or via workflow_dispatch).
+# 2) Run a 15-job matrix build (3 OSes x 5 Python versions: 3.10-3.14) and compile with mypyc.
+# 3) Upload platform-specific compiled artifacts from each matrix leg.
+# 4) Run one aggregate gate job on Linux that downloads all artifacts into a single workspace.
+# 5) Re-apply Ubuntu 3.14 artifacts as the canonical baseline for generated C outputs.
+# 6) If dank_mids Python sources changed in the PR, enforce Windows .pyd ABI deltas for 310/311/312/313/314.
+# 7) Normalize generated C files to reduce line-number/index churn, then commit/push build-file deltas when present.
+# 8) If aiolimiter vendor content changed, commit/push those updates and then update the main-repo submodule pointer.
+
 on:
   pull_request:
     branches:
@@ -64,22 +74,41 @@ jobs:
       - name: Run Mypyc
         run: python scripts/run_mypyc_build.py
 
-      - name: Upload build artifacts
+      - name: Upload Linux build artifacts
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v6
         with:
           name: mypyc-${{ matrix.os }}-py${{ matrix.python.version }}
           path: |
-            ./*__mypyc*.cpython-${{ matrix.python.abi }}-*.so
-            ./*__mypyc*.cp${{ matrix.python.abi }}-*.pyd
+            ./*__mypyc*.cpython-${{ matrix.python.abi }}-x86_64-linux-gnu.so
             ./build/**/*.c
             ./build/**/*.h
-            ./build/lib.*/**/*cpython-${{ matrix.python.abi }}-*.so
-            ./build/lib.*/**/*cp${{ matrix.python.abi }}-*.pyd
-            ./dank_mids/**/*cpython-${{ matrix.python.abi }}-*.so
-            ./dank_mids/**/*cp${{ matrix.python.abi }}-*.pyd
+            ./build/lib.*/**/*cpython-${{ matrix.python.abi }}-x86_64-linux-gnu.so
+            ./dank_mids/**/*cpython-${{ matrix.python.abi }}-x86_64-linux-gnu.so
 
-  aggregate-ubuntu:
+      - name: Upload macOS build artifacts
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v6
+        with:
+          name: mypyc-${{ matrix.os }}-py${{ matrix.python.version }}
+          path: |
+            ./*__mypyc*.cpython-${{ matrix.python.abi }}-darwin.so
+            ./build/lib.*/**/*cpython-${{ matrix.python.abi }}-darwin.so
+            ./dank_mids/**/*cpython-${{ matrix.python.abi }}-darwin.so
+
+      - name: Upload Windows build artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v6
+        with:
+          name: mypyc-${{ matrix.os }}-py${{ matrix.python.version }}
+          path: |
+            ./*__mypyc*.cp${{ matrix.python.abi }}-win_amd64.pyd
+            ./build/lib.*/**/*cp${{ matrix.python.abi }}-win_amd64.pyd
+            ./dank_mids/**/*cp${{ matrix.python.abi }}-win_amd64.pyd
+
+  aggregate-build-files:
     needs: build-matrix
+    # Cross-platform artifact verification/aggregation runs on Linux for speed and tooling simplicity.
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -105,6 +134,43 @@ jobs:
           path: .
           merge-multiple: true
 
+      - name: Enforce Windows ABI artifact deltas
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [[ -z "${BASE_SHA:-}" ]]; then
+            echo "No pull_request base SHA; skipping Windows ABI delta gate."
+            exit 0
+          fi
+
+          if ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            git fetch --no-tags --depth=1 origin "${BASE_SHA}"
+          fi
+
+          python_changes="$(git diff --name-only "${BASE_SHA}...HEAD" -- dank_mids | grep -E '\.py$' ||:)"
+          if [[ -z "${python_changes}" ]]; then
+            echo "No dank_mids Python source deltas; skipping Windows ABI delta gate."
+            exit 0
+          fi
+
+          missing_abis=()
+          working_tree_diff_names="$(git diff --name-only "${BASE_SHA}" --)"
+          for abi in 310 311 312 313 314; do
+            if ! grep -Eq "cp${abi}-win_amd64\\.pyd$" <<< "${working_tree_diff_names}"; then
+              missing_abis+=("${abi}")
+            fi
+          done
+
+          if (( ${#missing_abis[@]} > 0 )); then
+            echo "Missing Windows .pyd deltas for ABIs: ${missing_abis[*]}"
+            echo "Python source deltas:"
+            printf '%s\n' "${python_changes}"
+            echo "Windows .pyd deltas found:"
+            grep -E "win_amd64\\.pyd$" <<< "${working_tree_diff_names}" ||:
+            exit 1
+          fi
+
       - name: Normalize C files for diffchecking
         # This makes it much easier to diffcheck changes in the C files
         shell: bash
@@ -120,7 +186,7 @@ jobs:
           # Replace index in CPyStatics[...] with macro
           sed -i 's/CPyStatics\[[0-9]\+\]/CPyStatics[DIFFCHECK_PLACEHOLDER]/g' build/*.c
 
-      - name: Check for changes (Ubuntu)
+      - name: Check for changes (build files)
         run: |
           if [[ -n $(git status --porcelain) ]]; then
             echo "changes_detected=true" >> $GITHUB_ENV
@@ -128,7 +194,7 @@ jobs:
             echo "changes_detected=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit changes (Ubuntu)
+      - name: Commit build file changes
         if: env.changes_detected == 'true'
         run: |
           git config --local user.name "github-actions[bot]"
@@ -165,7 +231,7 @@ jobs:
           git push origin HEAD:mypyc
 
   update-submodule-pointer:
-    needs: aggregate-ubuntu
+    needs: aggregate-build-files
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
