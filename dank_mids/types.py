@@ -256,6 +256,49 @@ _QUICKNODE_429_ERR_MSG: Final = (
     # the actual rate limit can vary but the err message always ends like this
     "/second request limit reached - reduce calls per second or upgrade your account at quicknode.com",
 )
+_UNKNOWN_FIELD_TOTAL_DIFFICULTY: Final = "Object contains unknown field `totalDifficulty`"
+_UNKNOWN_FIELD_BASE_FEE: Final = "Object contains unknown field `baseFeePerGas`"
+_UNKNOWN_FIELD_WITHDRAWALS: Final = "Object contains unknown field `withdrawals`"
+_UNKNOWN_FIELD_DIFFICULTY: Final = "Object contains unknown field `difficulty`"
+
+
+def _decode_eth_get_block_by_number_current_behavior(
+    result: Raw, *, typ: type[Any], method: RPCEndpoint
+) -> Any:
+    """
+    Decodes eth_getBlockByNumber responses using the existing compatibility branch logic.
+
+    This helper intentionally preserves current behavior and side effects.
+    """
+    try:
+        return better_decode(result, type=typ, dec_hook=_decode_hook, method=method)
+    except Exception as e:
+        if typ is not Block:
+            raise
+
+        if e.args[0] == _UNKNOWN_FIELD_TOTAL_DIFFICULTY:
+            try:
+                # NOTE should we do this??
+                # _RETURN_TYPES[method] = MinedBlock
+                return better_decode(result, type=MinedBlock, dec_hook=_decode_hook, method=method)
+            except ValidationError as e2:
+                if e2.args[0] != _UNKNOWN_FIELD_BASE_FEE:
+                    raise
+                decoded = better_decode(result, type=BaseBlock, dec_hook=_decode_hook, method=method)
+                _RETURN_TYPES[method] = BaseBlock  # all blocks on base are BaseBlocks
+                return decoded
+
+        elif e.args[0] == _UNKNOWN_FIELD_WITHDRAWALS:
+            typ = ShanghaiCapellaBlock
+
+        elif e.args[0] == _UNKNOWN_FIELD_DIFFICULTY:
+            # I've only seen this on OP stack so far, not sure what difficulty means for their chain
+            typ = BaseBlock
+
+        else:
+            raise
+
+        return better_decode(result, type=typ, dec_hook=_decode_hook, method=method)
 
 
 class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_defaults=True):
@@ -332,43 +375,11 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
                 "eth_chainId",
                 "erigon_getHeaderByNumber",
             ):
-                try:
-                    return better_decode(
-                        self.result, type=typ, dec_hook=_decode_hook, method=method
+                if method == "eth_getBlockByNumber":
+                    return _decode_eth_get_block_by_number_current_behavior(
+                        self.result, typ=typ, method=method
                     )
-                except Exception as e:
-                    if typ is not Block:
-                        raise
-
-                    if e.args[0] == "Object contains unknown field `totalDifficulty`":
-                        try:
-                            # NOTE should we do this??
-                            # _RETURN_TYPES[method] = MinedBlock
-                            return better_decode(
-                                self.result, type=MinedBlock, dec_hook=_decode_hook, method=method
-                            )
-                        except ValidationError as e2:
-                            if e2.args[0] != "Object contains unknown field `baseFeePerGas`":
-                                raise
-                            result = better_decode(
-                                self.result, type=BaseBlock, dec_hook=_decode_hook, method=method
-                            )
-                            _RETURN_TYPES[method] = BaseBlock  # all blocks on base are BaseBlocks
-                            return result
-
-                    elif e.args[0] == "Object contains unknown field `withdrawals`":
-                        typ = ShanghaiCapellaBlock
-
-                    elif e.args[0] == "Object contains unknown field `difficulty`":
-                        # I've only seen this on OP stack so far, not sure what difficulty means for their chain
-                        typ = BaseBlock
-
-                    else:
-                        raise
-
-                    return better_decode(
-                        self.result, type=typ, dec_hook=_decode_hook, method=method
-                    )
+                return better_decode(self.result, type=typ, dec_hook=_decode_hook, method=method)
 
             start = time()
             try:
