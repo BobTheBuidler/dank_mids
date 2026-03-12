@@ -24,6 +24,7 @@ def test_build_mypyc_command_contains_targets_and_flags() -> None:
 
     assert command[0] == "mypyc"
     assert "dank_mids/_batch.py" in command
+    assert "dank_mids/helpers/_retry_mechanics.py" in command
     assert "dank_mids/stats/__init__.py" in command
     assert "--strict" in command
     assert "--pretty" in command

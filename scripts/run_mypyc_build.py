@@ -37,6 +37,7 @@ MYPYC_TARGETS = [
     "dank_mids/helpers/_errors.py",
     "dank_mids/helpers/_gather.py",
     "dank_mids/helpers/_rate_limit.py",
+    "dank_mids/helpers/_retry_mechanics.py",
     "dank_mids/helpers/_requester.py",
     "dank_mids/helpers/_weaklist.py",
     "dank_mids/helpers/batch_size.py",
