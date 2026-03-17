@@ -118,10 +118,19 @@ def _configure_concurrent_future_work_queue_size() -> None:
     This function increases the EXTRA_QUEUED_CALLS value to 50,000, which allows for more
     concurrent operations to be queued in the process pool. This can significantly improve
     performance for applications that make heavy use of brownie.
+
+    The value is capped so that ProcessPoolExecutor's internal queue
+    (queue_size = max_workers + EXTRA_QUEUED_CALLS) does not create a
+    BoundedSemaphore that exceeds the system's SEM_VALUE_MAX.  We reserve
+    os.cpu_count() slots for max_workers since that is the default.
     """
     import concurrent.futures.process as _cfp
+    import os
 
-    _cfp.EXTRA_QUEUED_CALLS = 50_000
+    from multiprocessing.synchronize import SEM_VALUE_MAX
+
+    max_workers_headroom = os.cpu_count() or 1
+    _cfp.EXTRA_QUEUED_CALLS = min(50_000, SEM_VALUE_MAX - max_workers_headroom)
 
 
 def _ensure_side_effects() -> None:
