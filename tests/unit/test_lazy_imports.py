@@ -29,7 +29,9 @@ def test_import_applies_side_effects() -> None:
     payload = _run(
         """
 import json
+import os
 import concurrent.futures.process as cfp
+from multiprocessing.synchronize import SEM_VALUE_MAX
 
 before = cfp.EXTRA_QUEUED_CALLS
 import dank_mids
@@ -38,10 +40,14 @@ after = cfp.EXTRA_QUEUED_CALLS
 print(json.dumps({
     "queued_before": before,
     "queued_after": after,
+    "sem_value_max": SEM_VALUE_MAX,
+    "cpu_count": os.cpu_count(),
 }))
 """
     )
-    assert payload["queued_after"] == 50_000
+    headroom = payload["cpu_count"] or 1
+    expected = min(50_000, payload["sem_value_max"] - headroom)
+    assert payload["queued_after"] == expected
 
 
 def test_brownie_error_accessible() -> None:
@@ -68,9 +74,11 @@ def test_helpers_import_applies_side_effects() -> None:
     payload = _run(
         """
 import json
+import os
 import sys
 import concurrent.futures.process as cfp
 import importlib.util
+from multiprocessing.synchronize import SEM_VALUE_MAX
 from pathlib import Path
 
 repo_root = Path.cwd()
@@ -86,10 +94,14 @@ after = cfp.EXTRA_QUEUED_CALLS
 print(json.dumps({
     "queued_before": before,
     "queued_after": after,
+    "sem_value_max": SEM_VALUE_MAX,
+    "cpu_count": os.cpu_count(),
 }))
 """
     )
-    assert payload["queued_after"] == 50_000
+    headroom = payload["cpu_count"] or 1
+    expected = min(50_000, payload["sem_value_max"] - headroom)
+    assert payload["queued_after"] == expected
 
 
 def test_helpers_import_triggers_side_effects() -> None:
