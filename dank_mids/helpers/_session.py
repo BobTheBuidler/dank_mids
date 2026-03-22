@@ -3,7 +3,6 @@ from asyncio import sleep
 from collections.abc import Callable
 from enum import IntEnum
 from itertools import chain
-from random import random
 from time import time
 from typing import Any, Final, cast, final
 
@@ -12,6 +11,12 @@ from aiohttp.typedefs import DEFAULT_JSON_DECODER
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
+from dank_mids.helpers._retry_mechanics import (
+    RetryAction,
+    RetryBudget,
+    choose_http_status_retry,
+    consume_retry,
+)
 from dank_mids.logging import DEBUG, get_c_logger
 from dank_mids.retry_observer import RetryEvent, emit_retry_event
 from dank_mids.types import PartialRequest, RateLimiters, T
@@ -96,11 +101,11 @@ An extension of :class:`http.HTTPStatus`, supporting both standard HTTP status c
 This enum includes status codes and descriptions for server errors that are not part of the standard HTTP specification.
 """
 
-RETRY_FOR_CODES: Final = {
-    HTTPStatusExtended.BAD_GATEWAY,  # type: ignore [attr-defined]
-    HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR,  # type: ignore [attr-defined]
-    HTTPStatusExtended.CLOUDFLARE_CONNECTION_TIMEOUT,  # type: ignore [attr-defined]
-    HTTPStatusExtended.CLOUDFLARE_TIMEOUT,  # type: ignore [attr-defined]
+RETRY_FOR_CODES: Final[set[int]] = {
+    int(HTTPStatusExtended.BAD_GATEWAY),  # type: ignore [attr-defined]
+    int(HTTPStatusExtended.WEB_SERVER_IS_RETURNING_AN_UNKNOWN_ERROR),  # type: ignore [attr-defined]
+    int(HTTPStatusExtended.CLOUDFLARE_CONNECTION_TIMEOUT),  # type: ignore [attr-defined]
+    int(HTTPStatusExtended.CLOUDFLARE_TIMEOUT),  # type: ignore [attr-defined]
 }
 
 
@@ -152,9 +157,9 @@ class DankClientSession(ClientSession):
         rate_limiter = rate_limiters[endpoint]
 
         # Try the request until success or 5 failures.
-        tried = 0
-        resets = 0
-        rate_limit_attempts = 0
+        status_retry_budget = RetryBudget(max_attempts=5)
+        reset_budget = RetryBudget(max_attempts=10)
+        rate_limit_budget = RetryBudget()
         while True:
             try:
                 async with rate_limiter:
@@ -164,30 +169,30 @@ class DankClientSession(ClientSession):
                         return response_data
 
             except ConnectionResetError:
-                if resets < 10:
-                    # Who cares, run it again!
-                    resets += 1
-                else:
-                    # Ehh this is too many, something is wrong.
+                if consume_retry(reset_budget, RetryAction.RETRY_NOW).action is RetryAction.RAISE:
                     raise
 
             except ClientResponseError as ce:
                 status = ce.status
-                if status == HTTPStatusExtended.TOO_MANY_REQUESTS:  # type: ignore [attr-defined]
-                    rate_limit_attempts += 1
+                decision = choose_http_status_retry(
+                    status=status,
+                    too_many_requests_status=int(HTTPStatusExtended.TOO_MANY_REQUESTS),  # type: ignore [attr-defined]
+                    retry_for_codes=RETRY_FOR_CODES,
+                    rate_limit_budget=rate_limit_budget,
+                    status_retry_budget=status_retry_budget,
+                )
+                if decision.action is RetryAction.HANDLE_RATE_LIMIT:
                     await self._handle_too_many_requests(
                         endpoint,
                         ce,
-                        attempt=rate_limit_attempts,
+                        attempt=decision.attempt,
                     )
-
-                elif status in RETRY_FOR_CODES and tried < 5:
-                    tried += 1
-                    sleep_for = random()
+                elif decision.action is RetryAction.RETRY_AFTER_DELAY:
+                    sleep_for = decision.delay
                     emit_retry_event(
                         RetryEvent(
                             operation="http_post",
-                            attempt=tried,
+                            attempt=decision.attempt,
                             delay=sleep_for,
                             error=ce,
                             component="session",
@@ -212,11 +217,7 @@ class DankClientSession(ClientSession):
                     raise
 
             except ClientError:
-                if resets < 10:
-                    # Who cares, run it again!
-                    resets += 1
-                else:
-                    # Ehh this is too many, something is wrong.
+                if consume_retry(reset_budget, RetryAction.RETRY_NOW).action is RetryAction.RAISE:
                     raise
 
     async def _handle_too_many_requests(
