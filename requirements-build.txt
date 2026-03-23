@@ -4,6 +4,6 @@ types-requests
 eth-typing==5.2.1
 eth-retry==0.3.7
 ez-a-sync==0.34.2
-faster-eth-abi==5.2.25
+faster-eth-abi==5.2.26
 faster-hexbytes==1.3.6
 typed-envs==0.2.4
