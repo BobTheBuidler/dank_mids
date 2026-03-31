@@ -416,7 +416,7 @@ typedef struct {
     PyObject *_w3;
     CPyTagged _len_inputs;
     PyObject *_get_request_data;
-    PyObject *_coroutine;
+    PyObject *___mypyc_generator_attribute__coroutine;
 } dank_mids___brownie_patch___call____get_coroutine_fn_envObject;
 
 typedef struct {
@@ -476,6 +476,7 @@ typedef struct {
     CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
     PyObject *___mypyc_env__;
+    PyObject *___cpyfunction__;
 } dank_mids___brownie_patch___call___coroutine__get_coroutine_fn_objObject;
 
 typedef struct {
@@ -531,7 +532,7 @@ typedef struct {
     CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *_call;
-    PyObject *_coroutine;
+    PyObject *___mypyc_generator_attribute__coroutine;
     PyObject *_w3;
 } dank_mids___brownie_patch___overloaded____patch_overloaded_method_envObject;
 
@@ -577,6 +578,7 @@ typedef struct {
     CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
     PyObject *___mypyc_env__;
+    PyObject *___cpyfunction__;
 } dank_mids___brownie_patch___overloaded___coroutine__patch_overloaded_method_objObject;
 
 typedef struct {
@@ -891,6 +893,7 @@ typedef struct {
     CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
     PyObject *___mypyc_env__;
+    PyObject *___cpyfunction__;
 } dank_mids___helpers____rate_limit___check_rate_limit_inactive_objObject;
 
 typedef struct {
@@ -1015,6 +1018,7 @@ typedef struct {
     CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
     PyObject *___mypyc_env__;
+    PyObject *___cpyfunction__;
 } dank_mids___helpers____requester___run_and_set_result_post_HTTPRequesterThread_objObject;
 
 typedef struct {
@@ -1035,7 +1039,7 @@ typedef struct {
     CPyVTableItem *vtable;
     PyObject *___mypyc_self__;
     PyObject *__requester;
-    PyObject *_close_session_and_stop;
+    PyObject *___mypyc_generator_attribute__close_session_and_stop;
 } dank_mids___helpers____requester___shutdown_http_requester_envObject;
 
 typedef struct {
@@ -1059,6 +1063,7 @@ typedef struct {
     CPyVTableItem *vtable;
     vectorcallfunc vectorcall;
     PyObject *___mypyc_env__;
+    PyObject *___cpyfunction__;
 } dank_mids___helpers____requester___close_session_and_stop_shutdown_http_requester_objObject;
 
 typedef struct {
