@@ -1,4 +1,4 @@
-mypy[mypyc]==1.19.1
+mypy[mypyc]==1.20.0
 setuptools
 types-requests
 eth-typing==5.2.1
