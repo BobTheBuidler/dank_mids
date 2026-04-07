@@ -26,8 +26,7 @@ def _run(code: str) -> dict[str, object]:
 
 
 def test_import_applies_side_effects() -> None:
-    payload = _run(
-        """
+    payload = _run("""
 import json
 import os
 import concurrent.futures.process as cfp
@@ -43,16 +42,14 @@ print(json.dumps({
     "sem_value_max": SEM_VALUE_MAX,
     "cpu_count": os.cpu_count(),
 }))
-"""
-    )
+""")
     headroom = payload["cpu_count"] or 1
     expected = min(50_000, payload["sem_value_max"] - headroom)
     assert payload["queued_after"] == expected
 
 
 def test_brownie_error_accessible() -> None:
-    payload = _run(
-        """
+    payload = _run("""
 import json
 
 import dank_mids
@@ -64,15 +61,13 @@ print(json.dumps({
     "error_name": BrownieNotConnectedError.__name__,
     "error_attr_name": error_cls.__name__,
 }))
-"""
-    )
+""")
     assert payload["error_name"] == "BrownieNotConnectedError"
     assert payload["error_attr_name"] == "BrownieNotConnectedError"
 
 
 def test_helpers_import_applies_side_effects() -> None:
-    payload = _run(
-        """
+    payload = _run("""
 import json
 import os
 import sys
@@ -97,16 +92,14 @@ print(json.dumps({
     "sem_value_max": SEM_VALUE_MAX,
     "cpu_count": os.cpu_count(),
 }))
-"""
-    )
+""")
     headroom = payload["cpu_count"] or 1
     expected = min(50_000, payload["sem_value_max"] - headroom)
     assert payload["queued_after"] == expected
 
 
 def test_helpers_import_triggers_side_effects() -> None:
-    payload = _run(
-        """
+    payload = _run("""
 import json
 import sys
 import types
@@ -135,14 +128,12 @@ spec.loader.exec_module(module)
 print(json.dumps({
     "called": called["value"],
 }))
-"""
-    )
+""")
     assert payload["called"] is True
 
 
 def test_eth_alias_survives_submodule_import() -> None:
-    payload = _run(
-        """
+    payload = _run("""
 import json
 import sys
 import types
@@ -194,8 +185,5 @@ print(json.dumps({
     "get_code_callable": callable(get_code),
     "get_code_is_bound": getattr(get_code, "__self__", None) is resolved,
 }))
-"""
-    )
-    assert payload["same_object"] or (
-        payload["get_code_callable"] and payload["get_code_is_bound"]
-    )
+""")
+    assert payload["same_object"] or (payload["get_code_callable"] and payload["get_code_is_bound"])

@@ -8,7 +8,7 @@ import os
 import pathlib
 import shlex
 import subprocess
-from typing import Iterable
+from collections.abc import Iterable
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MYPYC_DEPS_FILE = ROOT / "requirements-build.txt"
@@ -66,7 +66,7 @@ def run_checked(command: list[str], *, env: dict[str, str] | None = None) -> Non
 
 
 def format_command(command: Iterable[str]) -> str:
-    return " ".join(shlex.quote(part) for part in command)
+    return shlex.join(command)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

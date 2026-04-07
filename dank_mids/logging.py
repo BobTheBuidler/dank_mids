@@ -41,7 +41,7 @@ def use_c_logger_class() -> Iterator[None]:
     logging.setLoggerClass(logging.Logger)
 
 
-def get_c_logger(name: str) -> "CLogger":
+def get_c_logger(name: str) -> CLogger:
     with use_c_logger_class():
         return cast(CLogger, logging.getLogger(name))
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict, deque
-from typing import DefaultDict, Deque, Final, Protocol, Tuple
+from typing import DefaultDict, Deque, Final, Protocol
 
 from dank_mids.retry_observer import RetryEvent
 
@@ -33,7 +33,7 @@ class _RetryStats:
         return len(self.retry_error_counts)
 
 
-def _ensure_retry_collector(collector: _RetryCollector) -> Tuple[_RetryCollector, bool]:
+def _ensure_retry_collector(collector: _RetryCollector) -> tuple[_RetryCollector, bool]:
     """
     Ensure a collector has retry fields.
 

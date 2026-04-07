@@ -419,7 +419,9 @@ class DankMiddlewareController:
             return True
 
         try:
-            await wait_for(cgather(*self._dispatched_batch_tasks(dispatched_batches)), timeout=timeout)
+            await wait_for(
+                cgather(*self._dispatched_batch_tasks(dispatched_batches)), timeout=timeout
+            )
             return True
         except CancelledError:
             raise

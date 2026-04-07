@@ -284,7 +284,9 @@ def _decode_eth_get_block_by_number_current_behavior(
             except ValidationError as e2:
                 if e2.args[0] != _UNKNOWN_FIELD_BASE_FEE:
                     raise
-                decoded = better_decode(result, type=BaseBlock, dec_hook=_decode_hook, method=method)
+                decoded = better_decode(
+                    result, type=BaseBlock, dec_hook=_decode_hook, method=method
+                )
                 _RETURN_TYPES[method] = BaseBlock  # all blocks on base are BaseBlocks
                 return decoded
 

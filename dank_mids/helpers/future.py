@@ -67,7 +67,9 @@ class DebuggableFuture(Future[T]):
     def has_waiters(self) -> bool:
         return self.waiter_count > 0
 
-    def __await_with_waiter_tracking(self, awaiter: Generator[Any, None, T]) -> Generator[Any, None, T]:
+    def __await_with_waiter_tracking(
+        self, awaiter: Generator[Any, None, T]
+    ) -> Generator[Any, None, T]:
         self.__increment_waiters()
         try:
             return (yield from awaiter)

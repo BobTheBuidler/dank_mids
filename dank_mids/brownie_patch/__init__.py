@@ -16,16 +16,17 @@ __all__ = list(_BROWNIE_TYPE_NAMES)
 from dank_mids.eth import DankEth
 from dank_mids.helpers._helpers import DankWeb3
 
+
 @dataclass(frozen=True)
 class BrowniePatchStatus:
     connected: bool
     initialized: bool
-    import_error: Optional[ImportError]
+    import_error: ImportError | None
 
 
 @dataclass
 class _BrowniePatchState:
-    import_error: Optional[ImportError] = None
+    import_error: ImportError | None = None
     connected: bool = False
     initialized: bool = False
 
@@ -73,6 +74,7 @@ An instance of :py:class:`~DankEth`, providing access to Ethereum blockchain met
 This is initialized if Brownie is installed and connected when this module is loaded.
 If Brownie is not installed or not connected to an RPC, this instance will not be available.
 """
+
 
 def initialize_brownie_patch() -> BrowniePatchStatus:
     global dank_web3

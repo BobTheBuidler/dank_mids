@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import importlib.util
-from pathlib import Path
 import sys
+from pathlib import Path
 
 MODULE_PATH = Path(__file__).resolve().parents[2] / "dank_mids" / "helpers" / "_retry_mechanics.py"
 SPEC = importlib.util.spec_from_file_location("retry_mechanics", MODULE_PATH)

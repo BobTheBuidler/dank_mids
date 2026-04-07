@@ -126,7 +126,6 @@ def _configure_concurrent_future_work_queue_size() -> None:
     """
     import concurrent.futures.process as _cfp
     import os
-
     from multiprocessing.synchronize import SEM_VALUE_MAX
 
     max_workers_headroom = os.cpu_count() or 1
