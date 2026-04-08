@@ -50,7 +50,7 @@ pytest = "6.2.5"
 pytest-asyncio-cooperative = "0.40.0"
 pytest-cov = "6.3.0"
 pytest-sugar = "1.1.1"
-types-aiofiles = "25.1.0.20251011"
+types-aiofiles = "25.1.0.20260408"
 # need this to resolve brownie locally, didn't before
 importlib-resources = ">=6.4.0"
 
