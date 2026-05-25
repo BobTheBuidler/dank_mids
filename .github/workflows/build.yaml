@@ -1,29 +1,20 @@
 name: Build Mypyc
 
-# Workflow flow (intended end-to-end behavior):
-# 1) Trigger on pull_request for build-relevant paths (or via workflow_dispatch).
-# 2) Run a 15-job matrix build (3 OSes x 5 Python versions: 3.10-3.14) and compile with mypyc.
-# 3) Upload platform-specific compiled artifacts from each matrix leg.
-# 4) Run one aggregate gate job on Linux that downloads all artifacts into a single workspace.
-# 5) Re-apply Ubuntu 3.14 artifacts as the canonical baseline for generated C outputs.
-# 6) If dank_mids Python sources changed in the PR, enforce Windows .pyd ABI deltas for 310/311/312/313/314.
-# 7) Normalize generated C files to reduce line-number/index churn, then commit/push build-file deltas when present.
-# 8) If aiolimiter vendor content changed, commit/push those updates and then update the main-repo submodule pointer.
-
 on:
   pull_request:
     branches:
       - master
       - good-master
     paths:
-      - '.github/actions/setup-python-cache/action.yml'
       - '.github/workflows/build.yaml'
+      - 'hatch_build.py'
       - 'scripts/run_mypyc_build.py'
+      - 'scripts/check_mypyc_wheel.py'
+      - 'scripts/ci/mypyc_targets.py'
       - '.gitmodules'
       - 'Makefile'
       - 'pyproject.toml'
-      - 'poetry.lock'
-      - 'requirements-build.txt'
+      - 'uv.lock'
       - 'dank_mids/**/*.py'
       - 'dank_mids/_vendor/aiolimiter'
       - 'dank_mids/_vendor/aiolimiter/**'
@@ -34,81 +25,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-matrix:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python:
-          - version: "3.10"
-            abi: "310"
-          - version: "3.11"
-            abi: "311"
-          - version: "3.12"
-            abi: "312"
-          - version: "3.13"
-            abi: "313"
-          - version: "3.14"
-            abi: "314"
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref || github.ref }}
-
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python.version }}
-          cache: pip
-          cache-dependency-path: |
-            requirements-build.txt
-            pyproject.toml
-            poetry.lock
-
-      - name: Run Mypyc
-        run: python scripts/run_mypyc_build.py
-
-      - name: Upload Linux build artifacts
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v6
-        with:
-          name: mypyc-${{ matrix.os }}-py${{ matrix.python.version }}
-          path: |
-            ./*__mypyc*.cpython-${{ matrix.python.abi }}-x86_64-linux-gnu.so
-            ./build/**/*.c
-            ./build/**/*.h
-            ./build/lib.*/**/*cpython-${{ matrix.python.abi }}-x86_64-linux-gnu.so
-            ./dank_mids/**/*cpython-${{ matrix.python.abi }}-x86_64-linux-gnu.so
-
-      - name: Upload macOS build artifacts
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v6
-        with:
-          name: mypyc-${{ matrix.os }}-py${{ matrix.python.version }}
-          path: |
-            ./*__mypyc*.cpython-${{ matrix.python.abi }}-darwin.so
-            ./build/lib.*/**/*cpython-${{ matrix.python.abi }}-darwin.so
-            ./dank_mids/**/*cpython-${{ matrix.python.abi }}-darwin.so
-
-      - name: Upload Windows build artifacts
-        if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v6
-        with:
-          name: mypyc-${{ matrix.os }}-py${{ matrix.python.version }}
-          path: |
-            ./*__mypyc*.cp${{ matrix.python.abi }}-win_amd64.pyd
-            ./build/lib.*/**/*cp${{ matrix.python.abi }}-win_amd64.pyd
-            ./dank_mids/**/*cp${{ matrix.python.abi }}-win_amd64.pyd
-
-  aggregate-build-files:
-    needs: build-matrix
-    # Cross-platform artifact verification/aggregation runs on Linux for speed and tooling simplicity.
+  generated-c:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -116,138 +33,51 @@ jobs:
         with:
           ref: ${{ github.head_ref || github.ref }}
           fetch-depth: 0
+          submodules: recursive
 
-      - name: Update aiolimiter submodule
-        run: make update-aiolimiter
-
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v7
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
-          pattern: mypyc-*
-          path: .
-          merge-multiple: true
+          python-version: "3.13"
 
-      - name: Re-apply Ubuntu 3.14 artifacts (canonical)
-        uses: actions/download-artifact@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8
         with:
-          pattern: mypyc-ubuntu-latest-py3.14
-          path: .
-          merge-multiple: true
+          enable-cache: true
 
-      - name: Enforce Windows ABI artifact deltas
-        shell: bash
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: |
-          if [[ -z "${BASE_SHA:-}" ]]; then
-            echo "No pull_request base SHA; skipping Windows ABI delta gate."
-            exit 0
-          fi
+      - name: Install build dependencies
+        run: uv sync --only-group build
 
-          if ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
-            git fetch --no-tags --depth=1 origin "${BASE_SHA}"
-          fi
-
-          python_changes="$(git diff --name-only "${BASE_SHA}...HEAD" -- dank_mids | grep -E '\.py$' ||:)"
-          if [[ -z "${python_changes}" ]]; then
-            echo "No dank_mids Python source deltas; skipping Windows ABI delta gate."
-            exit 0
-          fi
-
-          missing_abis=()
-          working_tree_diff_names="$(git diff --name-only "${BASE_SHA}" --)"
-          for abi in 310 311 312 313 314; do
-            if ! grep -Eq "cp${abi}-win_amd64\\.pyd$" <<< "${working_tree_diff_names}"; then
-              missing_abis+=("${abi}")
-            fi
-          done
-
-          if (( ${#missing_abis[@]} > 0 )); then
-            echo "Missing Windows .pyd deltas for ABIs: ${missing_abis[*]}"
-            echo "Python source deltas:"
-            printf '%s\n' "${python_changes}"
-            echo "Windows .pyd deltas found:"
-            grep -E "win_amd64\\.pyd$" <<< "${working_tree_diff_names}" ||:
-            exit 1
-          fi
+      - name: Run Mypyc
+        run: uv run --no-sync python scripts/run_mypyc_build.py
 
       - name: Normalize C files for diffchecking
-        # This makes it much easier to diffcheck changes in the C files
         shell: bash
         run: |
-          # Insert DIFFCHECK_PLACEHOLDER macro at the top if not present
           for f in build/*.c; do
             if ! grep -q 'DIFFCHECK_PLACEHOLDER' "$f"; then
               sed -i '1i#ifndef DIFFCHECK_PLACEHOLDER\n#define DIFFCHECK_PLACEHOLDER 0\n#endif' "$f"
             fi
           done
-          # Replace line number in CPy_AddTraceback with macro
           sed -i 's/\(CPy_AddTraceback([^,]*, *[^,]*, *\)[0-9]\+\(, *[^)]*)\)/\1DIFFCHECK_PLACEHOLDER\2/g' build/*.c
-          # Replace index in CPyStatics[...] with macro
           sed -i 's/CPyStatics\[[0-9]\+\]/CPyStatics[DIFFCHECK_PLACEHOLDER]/g' build/*.c
 
-      - name: Check for changes (build files)
+      - name: Check for generated C changes
+        shell: bash
         run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
+          if [[ -n $(git status --porcelain -- build) ]]; then
+            echo "changes_detected=true" >> "$GITHUB_ENV"
           else
-            echo "changes_detected=false" >> $GITHUB_ENV
+            echo "changes_detected=false" >> "$GITHUB_ENV"
           fi
 
-      - name: Commit build file changes
+      - name: Commit generated C changes
         if: env.changes_detected == 'true'
+        shell: bash
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git pull
-          git add .
+          git add build
           git commit -m "chore: compile to C for Linux x64 with mypyc"
-          git push
-
-      - name: Check for changes (aiolimiter)
-        run: |
-          if [[ -n $(git -C dank_mids/_vendor/aiolimiter status --porcelain) ]]; then
-            echo "aiolimiter_changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "aiolimiter_changes_detected=false" >> $GITHUB_ENV
-          fi
-
-      - name: Commit and push aiolimiter changes
-        if: env.aiolimiter_changes_detected == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.AIOLIMITER_TOKEN }}
-        run: |
-          cd dank_mids/_vendor/aiolimiter
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/BobTheBuidler/aiolimiter.git
-          git add .
-          if git diff --cached --quiet; then
-            echo "No aiolimiter changes to commit."
-            exit 0
-          fi
-          git commit -m "chore: add artifacts for dank-mids"
-          git pull --rebase
-          git push origin HEAD:mypyc
-
-  update-submodule-pointer:
-    needs: aggregate-build-files
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref || github.ref }}
-          fetch-depth: 0
-      - name: Update aiolimiter submodule pointer in main repo
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          make update-aiolimiter
-          git add dank_mids/_vendor/aiolimiter
-          if git diff --cached --quiet; then
-            echo "No aiolimiter submodule pointer changes to commit."
-            exit 0
-          fi
-          git commit -m "chore: update aiolimiter submodule pointer"
           git push

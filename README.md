@@ -77,7 +77,7 @@ Setup and usage instructions live in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ### Benchmark
 
-We've included a [benchmark script](./examples/benchmark.py) that compares the time it takes to fetch the pool tokens (token0 and token1) for each pool on Sushiswap on Ethereum mainnet. To run it, first install the repo with `poetry install` and then run the benchmark with `brownie run examples/benchmark`.
+We've included a [benchmark script](./examples/benchmark.py) that compares the time it takes to fetch the pool tokens (token0 and token1) for each pool on Sushiswap on Ethereum mainnet. To run it, first install the repo with `uv sync` and then run the benchmark with `uv run brownie run examples/benchmark`.
 
 ```
 Running 'examples/benchmark.py::main'...
