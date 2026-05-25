@@ -6,10 +6,26 @@ from __future__ import annotations
 import pathlib
 import sys
 import zipfile
+from glob import glob
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.ci.mypyc_targets import expand_mypyc_targets  # noqa: E402
+
+
+def resolve_wheels(patterns: list[str]) -> list[pathlib.Path]:
+    wheels: list[pathlib.Path] = []
+    for pattern in patterns:
+        matches = sorted(glob(pattern))
+        if matches:
+            wheels.extend(pathlib.Path(path) for path in matches if pathlib.Path(path).is_file())
+            continue
+        path = pathlib.Path(pattern)
+        if path.is_file():
+            wheels.append(path)
+            continue
+        print(f"FAIL: no wheels matched {pattern!r}")
+    return wheels
 
 
 def check_wheel(wheel_path: pathlib.Path, targets: list[str]) -> list[str]:
@@ -32,8 +48,11 @@ def main(argv: list[str]) -> int:
         return 2
     targets = expand_mypyc_targets(ROOT)
     failures: list[str] = []
-    for wheel in argv[1:]:
-        failures.extend(check_wheel(pathlib.Path(wheel), targets))
+    wheels = resolve_wheels(argv[1:])
+    if not wheels:
+        return 1
+    for wheel in wheels:
+        failures.extend(check_wheel(wheel, targets))
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}")

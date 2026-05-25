@@ -304,7 +304,7 @@ class CLogger(logging.Logger):
             lno,
             msg,
             args,
-            cast(logging._SysExcInfoType | None, exc_info),
+            cast("logging._SysExcInfoType | None", exc_info),
             func,
             extra,
             sinfo,

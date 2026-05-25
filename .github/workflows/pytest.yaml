@@ -45,13 +45,17 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync --group dev --no-install-project
+        shell: bash
+
+      - name: Remove source-tree extension artifacts
+        run: uv run --no-sync python scripts/ci/clean_source_extensions.py
         shell: bash
 
       - name: Run unit tests
         env:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
-        run: uv run pytest tests/unit
+        run: uv run --no-sync pytest tests/unit
         shell: bash
 
   integration:
@@ -89,11 +93,15 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync --group dev --no-install-project
+        shell: bash
+
+      - name: Remove source-tree extension artifacts
+        run: uv run --no-sync python scripts/ci/clean_source_extensions.py
         shell: bash
 
       - name: Setup brownie networks
-        run: uv run brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
+        run: uv run --no-sync brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
         shell: bash
         continue-on-error: true
 
@@ -104,5 +112,5 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
-        run: uv run pytest tests/integration
+        run: uv run --no-sync pytest tests/integration
         shell: bash

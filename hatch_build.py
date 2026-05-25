@@ -31,4 +31,4 @@ class CustomBuildHook(BuildHookInterface):
         run_mypyc(root)
         build_data["pure_python"] = False
         build_data["infer_tag"] = True
-        build_data.setdefault("artifacts", []).extend(compiled_artifact_patterns())
+        build_data.setdefault("artifacts", []).extend(compiled_artifact_patterns(root))
