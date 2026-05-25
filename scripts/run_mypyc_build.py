@@ -14,7 +14,7 @@ from scripts.ci.mypyc_targets import build_mypyc_command, run_mypyc  # noqa: E40
 
 
 def format_command(command: list[str]) -> str:
-    return " ".join(shlex.quote(part) for part in command)
+    return shlex.join(command)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

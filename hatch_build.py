@@ -8,8 +8,8 @@ from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-from scripts.ci.mypyc_targets import (  # noqa: E402
-    BUILD_DEPENDENCIES,
+from scripts.ci.mypyc_targets import BUILD_DEPENDENCIES  # noqa: E402
+from scripts.ci.mypyc_targets import (
     clean_compiled_artifacts,
     compiled_artifact_patterns,
     expand_mypyc_targets,

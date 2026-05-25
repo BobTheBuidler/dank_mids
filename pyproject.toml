@@ -141,3 +141,7 @@ exclude = '''
   | env
 )/
 '''
+
+[tool.isort]
+profile = "black"
+line_length = 100

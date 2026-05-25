@@ -26,7 +26,7 @@ jobs:
           python-version: "3.12"
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v8
+        uses: astral-sh/setup-uv@v8.1.0
         with:
           enable-cache: true
 
@@ -81,7 +81,7 @@ jobs:
           python-version: "3.12"
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v8
+        uses: astral-sh/setup-uv@v8.1.0
         with:
           enable-cache: true
 
@@ -128,4 +128,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Skip publish on workflow_dispatch
-        run: echo "workflow_dispatch: built distributions without publishing."
+        run: |
+          echo "workflow_dispatch: built distributions without publishing."

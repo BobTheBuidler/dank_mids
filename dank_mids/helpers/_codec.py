@@ -1,5 +1,17 @@
 from collections.abc import Callable, Iterable, Mapping
-from typing import TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeAlias, TypeVar, Union, cast, final, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AnyStr,
+    Final,
+    Literal,
+    TypeAlias,
+    TypeVar,
+    Union,
+    cast,
+    final,
+    overload,
+)
 
 import faster_hexbytes
 import msgspec
@@ -29,7 +41,10 @@ Encodable: TypeAlias = int | StrEncodable | faster_hexbytes.HexBytes | bytes
 RpcThing: TypeAlias = HexStr | list[HexStr] | dict[str, HexStr]
 
 
-MulticallChunk: TypeAlias = tuple[ChecksumAddress, faster_hexbytes.HexBytes] | list[ChecksumAddress | faster_hexbytes.HexBytes]
+MulticallChunk: TypeAlias = (
+    tuple[ChecksumAddress, faster_hexbytes.HexBytes]
+    | list[ChecksumAddress | faster_hexbytes.HexBytes]
+)
 MulticallEncoder: TypeAlias = Callable[[tuple[bool, Iterable[MulticallChunk]]], bytes]
 
 DecodedMulticall: TypeAlias = tuple[int, int, tuple[tuple["Success", bytes], ...]]
@@ -181,7 +196,7 @@ _mcall_encoder: Final = cast(
 
 _mcall_decoder: Final = cast(
     MulticallDecoder,
-    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode  # type: ignore [union-attr]
+    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode,  # type: ignore [union-attr]
 )
 
 
