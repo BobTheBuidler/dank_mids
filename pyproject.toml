@@ -50,7 +50,7 @@ dev = [
     "importlib-resources>=6.4.0",
     "pytest==9.0.3",
     "pytest-asyncio-cooperative==0.40.0",
-    "pytest-cov==6.3.0",
+    "pytest-cov==7.1.0",
     "pytest-sugar==1.1.1",
     "setuptools<81",
     "types-aiofiles==25.1.0.20251011",
