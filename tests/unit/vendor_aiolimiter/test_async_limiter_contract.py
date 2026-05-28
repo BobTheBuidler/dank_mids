@@ -4,10 +4,9 @@ from pathlib import Path
 
 import pytest
 
-aiolimiter = pytest.importorskip("dank_mids._vendor.aiolimiter.src.aiolimiter")
-AsyncLimiter = aiolimiter.AsyncLimiter
-
-from dank_mids.helpers import _rate_limit  # noqa: E402
+import dank_mids._vendor.aiolimiter.src.aiolimiter as aiolimiter
+from dank_mids._vendor.aiolimiter.src.aiolimiter import AsyncLimiter
+from dank_mids.helpers import _rate_limit
 
 
 def _queued_futures(limiter: AsyncLimiter) -> list[asyncio.Future[None]]:
