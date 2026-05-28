@@ -4,57 +4,28 @@
 from __future__ import annotations
 
 import pathlib
-import shlex
 import sys
 import zipfile
+from glob import glob
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-MAKEFILE = ROOT / "Makefile"
+sys.path.insert(0, str(ROOT))
+from scripts.ci.mypyc_targets import expand_mypyc_targets  # noqa: E402
 
 
-def load_mypyc_targets() -> list[str]:
-    marker = "MYPYC_STRICT_DUNDER_TYPING=1 mypyc"
-    lines = MAKEFILE.read_text().splitlines()
-    cmd_lines: list[str] = []
-    in_cmd = False
-    for line in lines:
-        if marker in line:
-            in_cmd = True
-            cmd_lines.append(line)
+def resolve_wheels(patterns: list[str]) -> list[pathlib.Path]:
+    wheels: list[pathlib.Path] = []
+    for pattern in patterns:
+        matches = sorted(glob(pattern))
+        if matches:
+            wheels.extend(pathlib.Path(path) for path in matches if pathlib.Path(path).is_file())
             continue
-        if in_cmd:
-            if not line.startswith(("\t", " ")):
-                break
-            cmd_lines.append(line)
-            if not line.strip():
-                break
-    if not cmd_lines:
-        raise SystemExit("Could not find mypyc command in Makefile")
-    joined = " ".join(part.strip().rstrip("\\") for part in cmd_lines)
-    after = joined.split(marker, 1)[1].strip()
-    if not after:
-        raise SystemExit("Mypyc command has no targets")
-    tokens = shlex.split(after)
-    targets: set[str] = set()
-    for tok in tokens:
-        if tok.startswith("-"):
+        path = pathlib.Path(pattern)
+        if path.is_file():
+            wheels.append(path)
             continue
-        norm = tok.replace("\\", "/")
-        path = ROOT / norm
-        if norm.endswith(".py"):
-            if not path.is_file():
-                raise SystemExit(f"Mypyc target not found: {norm}")
-            targets.add(norm)
-            continue
-        if path.is_dir():
-            py_files = sorted(p for p in path.rglob("*.py") if p.is_file())
-            if not py_files:
-                raise SystemExit(f"Mypyc directory target has no .py files: {norm}")
-            for py_file in py_files:
-                targets.add(py_file.relative_to(ROOT).as_posix())
-            continue
-        raise SystemExit(f"Unsupported mypyc target: {norm}")
-    return sorted(targets)
+        print(f"FAIL: no wheels matched {pattern!r}")
+    return wheels
 
 
 def check_wheel(wheel_path: pathlib.Path, targets: list[str]) -> list[str]:
@@ -75,10 +46,13 @@ def main(argv: list[str]) -> int:
     if len(argv) < 2:
         print("usage: check_mypyc_wheel.py dist/*.whl")
         return 2
-    targets = load_mypyc_targets()
+    targets = expand_mypyc_targets(ROOT)
     failures: list[str] = []
-    for wheel in argv[1:]:
-        failures.extend(check_wheel(pathlib.Path(wheel), targets))
+    wheels = resolve_wheels(argv[1:])
+    if not wheels:
+        return 1
+    for wheel in wheels:
+        failures.extend(check_wheel(wheel, targets))
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}")

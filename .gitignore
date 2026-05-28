@@ -20,3 +20,7 @@ build/setup.py
 *.obj
 *.exp
 *.lib
+*.pyd
+*.so
+dank_mids/**/*.pyd
+dank_mids/**/*.so

@@ -12,7 +12,7 @@ from asyncio import (
 )
 from collections import defaultdict
 from collections.abc import Callable, Coroutine, Generator, Iterable, Iterator, Sequence
-from itertools import chain, filterfalse, groupby
+from itertools import chain, groupby
 from typing import TYPE_CHECKING, Any, DefaultDict, Final, Generic, Optional, TypeVar, Union, final
 from weakref import ProxyType
 from weakref import proxy as weak_proxy
@@ -57,7 +57,9 @@ from dank_mids._tasks import (
     shield,
 )
 from dank_mids.exceptions import GarbageCollectionError
-from dank_mids.helpers import DebuggableFuture, _codec, _errors as _errors_mod, batch_size, gatherish
+from dank_mids.helpers import DebuggableFuture, _codec
+from dank_mids.helpers import _errors as _errors_mod
+from dank_mids.helpers import batch_size, gatherish
 from dank_mids.helpers._codec import (
     JSONRPCBatchResponse,
     MulticallChunk,
@@ -264,7 +266,9 @@ class RPCRequest(_RequestBase[RPCResponse]):
         if not fut.done() and not fut._loop.is_closed():
             # If nobody is waiting anymore, treat this as abandoned work and keep noise low.
             if not _future_has_waiters(fut):
-                _log_debug("%s was garbage collected with no waiters; treating as abandoned work", self)
+                _log_debug(
+                    "%s was garbage collected with no waiters; treating as abandoned work", self
+                )
                 return
             try:
                 fut.set_exception(
@@ -1327,7 +1331,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
         data = self.data
         if not data:
             return []
-                
+
         endpoint = self.controller.endpoint
         try:
             post_coro = _requester.post(endpoint, data=data, loads=_codec.decode_jsonrpc_batch)
@@ -1400,7 +1404,9 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
             )
         return _Batch.should_retry(self, e)
 
-    async def _spoof_response_by_id(self, response: list[RawResponse]) -> list[Coroutine[Any, Any, None]]:
+    async def _spoof_response_by_id(
+        self, response: list[RawResponse]
+    ) -> list[Coroutine[Any, Any, None]]:
         call_by_id = {str(call.uid): call for call in self}
         mcall_coros = []
         for raw in response:

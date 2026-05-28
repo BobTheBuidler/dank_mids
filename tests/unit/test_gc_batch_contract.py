@@ -1,16 +1,16 @@
 import asyncio
 import gc
 import importlib.util
-from functools import lru_cache
-from pathlib import Path
 import sys
 import weakref
+from functools import lru_cache
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
-import dank_mids.controller as controller_module
 import dank_mids._requests as requests_module
+import dank_mids.controller as controller_module
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest
 from dank_mids._tasks import BATCH_TASKS, create_batch_task
 from dank_mids._uid import UIDGenerator
@@ -89,10 +89,11 @@ class _DummyMulticall:
 
 def _build_controller_for_early_start() -> DankMiddlewareController:
     module = _controller_module_for_tests()
-    with patch.object(module, "_sync_w3_from_async", return_value=_DummySyncW3()), patch.object(
-        module, "_get_client_version", return_value="dummy-client"
-    ), patch.object(module, "_get_multicall2", return_value=_DummyMulticall()), patch.object(
-        module, "_get_multicall3", return_value=None
+    with (
+        patch.object(module, "_sync_w3_from_async", return_value=_DummySyncW3()),
+        patch.object(module, "_get_client_version", return_value="dummy-client"),
+        patch.object(module, "_get_multicall2", return_value=_DummyMulticall()),
+        patch.object(module, "_get_multicall3", return_value=None),
     ):
         return module.DankMiddlewareController(_DummyW3())
 
@@ -314,8 +315,9 @@ def test_early_start_keeps_multicalls_alive_through_handoff_and_dispatches() -> 
             dispatched.set()
             self._done.set()
 
-        with patch.object(type(batch), "start", patched_start), patch.object(
-            type(batch), "get_response", patched_get_response
+        with (
+            patch.object(type(batch), "start", patched_start),
+            patch.object(type(batch), "get_response", patched_get_response),
         ):
             controller.pending_eth_calls = {"latest": multicall}
             del multicall
@@ -384,8 +386,11 @@ def test_multicall_bisect_retry_does_not_wait_pending_done_directly() -> None:
         async def patched_get_response(self) -> None:
             self._done.set()
 
-        with patch.object(pending_batch._done, "wait", side_effect=AssertionError("should not be called")), patch.object(
-            JSONRPCBatch, "get_response", patched_get_response
+        with (
+            patch.object(
+                pending_batch._done, "wait", side_effect=AssertionError("should not be called")
+            ),
+            patch.object(JSONRPCBatch, "get_response", patched_get_response),
         ):
             await asyncio.wait_for(multicall.bisect_and_retry(RuntimeError("boom")), timeout=1)
 
@@ -428,10 +433,10 @@ def test_multicall_bisect_retry_timeout_does_not_dispatch_duplicate_batch() -> N
                 fallback_starts.append(self.jid)
             return original_start(self, batch=batch, cleanup=cleanup)
 
-        with patch.object(
-            controller_cls, "dispatch_pending_rpc_batch_and_wait", patched_dispatch
-        ), patch.object(JSONRPCBatch, "get_response", patched_get_response), patch.object(
-            JSONRPCBatch, "start", patched_start
+        with (
+            patch.object(controller_cls, "dispatch_pending_rpc_batch_and_wait", patched_dispatch),
+            patch.object(JSONRPCBatch, "get_response", patched_get_response),
+            patch.object(JSONRPCBatch, "start", patched_start),
         ):
             releaser = asyncio.create_task(release_later())
             await asyncio.wait_for(multicall.bisect_and_retry(RuntimeError("boom")), timeout=1)
@@ -467,8 +472,9 @@ def test_dispatch_pending_rpc_batch_respects_capacity_gate_for_bisect_retries() 
             started_sizes.append(len(self.calls.snapshot()))
             return original_start(self, batch=batch, cleanup=cleanup)
 
-        with patch.object(JSONRPCBatch, "get_response", patched_get_response), patch.object(
-            JSONRPCBatch, "start", patched_start
+        with (
+            patch.object(JSONRPCBatch, "get_response", patched_get_response),
+            patch.object(JSONRPCBatch, "start", patched_start),
         ):
             completed = await asyncio.wait_for(
                 controller.dispatch_pending_rpc_batch_and_wait(bisected, timeout=1),
@@ -506,12 +512,11 @@ def test_request_gate_waits_for_one_loop_tick_before_dispatch() -> None:
             nonlocal execute_batch_calls
             execute_batch_calls += 1
             if not request._fut.done():
-                request._fut.set_result(
-                    {"jsonrpc": "2.0", "id": request.uid, "result": "0x1"}
-                )
+                request._fut.set_result({"jsonrpc": "2.0", "id": request.uid, "result": "0x1"})
 
-        with patch.object(requests_module, "yield_to_loop", patched_yield_to_loop), patch.object(
-            type(controller), "execute_batch", patched_execute_batch
+        with (
+            patch.object(requests_module, "yield_to_loop", patched_yield_to_loop),
+            patch.object(type(controller), "execute_batch", patched_execute_batch),
         ):
             response_task = asyncio.create_task(request.get_response())
             await asyncio.wait_for(first_tick.wait(), timeout=1)

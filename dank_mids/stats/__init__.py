@@ -14,6 +14,8 @@ Key components:
 This module is crucial for debugging, performance monitoring, and optimization of the Dank Mids library.
 """
 
+from __future__ import annotations
+
 # TODO: Robust and Refactor
 
 import logging

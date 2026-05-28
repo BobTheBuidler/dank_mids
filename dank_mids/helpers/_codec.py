@@ -1,5 +1,17 @@
 from collections.abc import Callable, Iterable, Mapping
-from typing import TYPE_CHECKING, Any, AnyStr, Final, Literal, TypeAlias, TypeVar, Union, cast, final, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AnyStr,
+    Final,
+    Literal,
+    TypeAlias,
+    TypeVar,
+    Union,
+    cast,
+    final,
+    overload,
+)
 
 import faster_hexbytes
 import msgspec
@@ -29,7 +41,10 @@ Encodable: TypeAlias = int | StrEncodable | faster_hexbytes.HexBytes | bytes
 RpcThing: TypeAlias = HexStr | list[HexStr] | dict[str, HexStr]
 
 
-MulticallChunk: TypeAlias = tuple[ChecksumAddress, faster_hexbytes.HexBytes] | list[ChecksumAddress | faster_hexbytes.HexBytes]
+MulticallChunk: TypeAlias = (
+    tuple[ChecksumAddress, faster_hexbytes.HexBytes]
+    | list[ChecksumAddress | faster_hexbytes.HexBytes]
+)
 MulticallEncoder: TypeAlias = Callable[[tuple[bool, Iterable[MulticallChunk]]], bytes]
 
 DecodedMulticall: TypeAlias = tuple[int, int, tuple[tuple["Success", bytes], ...]]
@@ -72,7 +87,7 @@ class RawResponse:
     def decode(self, partial: bool = False) -> Union["types.Response", "types.PartialResponse"]:
         """Decode the wrapped :class:`Raw` object into a :class:`Response` or a :class:`PartialResponse`."""
         if better_decode is None:
-            __import_from_types()
+            _import_from_types()
         return better_decode(self._raw, type=PartialResponse if partial else Response)  # type: ignore [no-any-return, misc]
 
     __slots__ = ("_raw",)
@@ -181,7 +196,7 @@ _mcall_encoder: Final = cast(
 
 _mcall_decoder: Final = cast(
     MulticallDecoder,
-    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode  # type: ignore [union-attr]
+    default_codec._registry.get_decoder("(uint256,uint256,(bool,bytes)[])").decode,  # type: ignore [union-attr]
 )
 
 
@@ -198,7 +213,7 @@ def mcall_decode(data: "types.PartialResponse") -> list[bytes] | Exception:
         decoded = _mcall_decoder(ContextFramesBytesIO(data.decode_result("eth_call")))[2]  # type: ignore [arg-type]
     except Exception as e:
         if PartialResponse is None:
-            __import_from_types()
+            _import_from_types()
         # NOTE: We need to safely bring any Exceptions back out of the ProcessPool
         e.args = (*e.args, data.decode_result() if isinstance(data, PartialResponse) else data)  # type: ignore [arg-type]
         return e
@@ -206,7 +221,7 @@ def mcall_decode(data: "types.PartialResponse") -> list[bytes] | Exception:
         return [tup[1] for tup in decoded]
 
 
-def __import_from_types() -> None:
+def _import_from_types() -> None:
     """This helper function is called once to import PartialResponse, Request, Response, and better_decode."""
     global PartialResponse, Request, Response, better_decode
     from dank_mids.types import PartialResponse, Request, Response, better_decode

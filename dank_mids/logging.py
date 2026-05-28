@@ -41,7 +41,7 @@ def use_c_logger_class() -> Iterator[None]:
     logging.setLoggerClass(logging.Logger)
 
 
-def get_c_logger(name: str) -> "CLogger":
+def get_c_logger(name: str) -> CLogger:
     with use_c_logger_class():
         return cast(CLogger, logging.getLogger(name))
 
@@ -304,7 +304,7 @@ class CLogger(logging.Logger):
             lno,
             msg,
             args,
-            cast(logging._SysExcInfoType | None, exc_info),
+            cast("logging._SysExcInfoType | None", exc_info),
             func,
             extra,
             sinfo,

@@ -7,50 +7,126 @@ on:
     types: [published]
   workflow_dispatch:
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+permissions:
+  contents: read
 
+jobs:
+  sdist:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-          submodules: true
+          submodules: recursive
 
-      - name: Setup Python
-        uses: ./.github/actions/setup-python-cache
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-          cache-dependency-path: |
-            requirements-build.txt
-            pyproject.toml
-            poetry.lock
 
-      - name: Load cached Poetry installation
-        id: cached-poetry
-        uses: actions/cache@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
         with:
-          path: ~/.local  # the path depends on the OS
-          key: poetry-${{ runner.os }}-3.9-0  # increment to reset cache
+          enable-cache: true
 
-      - name: Install Poetry
-        if: steps.cached-poetry.outputs.cache-hit != 'true'
-        uses: snok/install-poetry@v1
+      - name: Build sdist
+        run: uv build --sdist --out-dir dist
 
-      - name: Build dist
-        run: poetry build
+      - name: Verify sdist excludes generated binaries
+        shell: bash
+        run: |
+          python - <<'PY'
+          import tarfile
+          from pathlib import Path
+
+          sdist, = Path("dist").glob("*.tar.gz")
+          with tarfile.open(sdist) as tf:
+              names = tf.getnames()
+          generated = [
+              name
+              for name in names
+              if (
+                  name.endswith((".so", ".pyd", "/.git"))
+                  or "/build/" in name
+                  or "/.git/" in name
+              )
+          ]
+          if generated:
+              raise SystemExit("sdist includes generated artifacts:\n" + "\n".join(generated))
+          PY
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@v6
+        with:
+          name: dist-sdist
+          path: dist/*.tar.gz
+
+  wheels:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3.4.1
+        env:
+          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
+          CIBW_SKIP: "pp* *-musllinux_* *-win32"
+          CIBW_TEST_COMMAND: "python -c \"import dank_mids\""
+        with:
+          output-dir: wheelhouse
 
       - name: Verify compiled wheel targets
-        run: python scripts/check_mypyc_wheel.py dist/*.whl
+        shell: bash
+        run: uv run --only-group build python scripts/check_mypyc_wheel.py wheelhouse/*.whl
 
-      - name: Skip publish on workflow_dispatch
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          echo "workflow_dispatch: skipping PyPI publish."
+      - name: Upload wheels
+        uses: actions/upload-artifact@v6
+        with:
+          name: dist-wheels-${{ matrix.os }}
+          path: wheelhouse/*.whl
+
+  publish:
+    if: github.event_name != 'workflow_dispatch'
+    needs: [sdist, wheels]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v7
+        with:
+          pattern: dist-*
+          path: dist
+          merge-multiple: true
 
       - name: Publish
-        if: github.event_name != 'workflow_dispatch'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
+          password: ${{ secrets.PYPI_PASSWORD }}
+
+  dry-run:
+    if: github.event_name == 'workflow_dispatch'
+    needs: [sdist, wheels]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip publish on workflow_dispatch
         run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_PASSWORD }}
-          poetry publish --no-interaction
+          echo "workflow_dispatch: built distributions without publishing."
