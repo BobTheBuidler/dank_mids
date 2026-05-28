@@ -78,6 +78,14 @@ dank\_mids.middleware module
    :undoc-members:
    :show-inheritance:
 
+dank\_mids.retry\_observer module
+---------------------------------
+
+.. automodule:: dank_mids.retry_observer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 dank\_mids.semaphores module
 ----------------------------
 

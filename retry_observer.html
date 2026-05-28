@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retry Observer &mdash; dank_mids  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="dank_mids" href="source/modules.html" />
+    <link rel="prev" title="Welcome to dank_mids’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            dank_mids
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Retry Observer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#internal-emit-points">Internal emit points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#attempt-semantics">Attempt semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#retryevent">RetryEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#registration">Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-examples">Usage Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#structured-logging">Structured logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prometheus-counters">Prometheus counters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sentry-stats-collector">Sentry + stats collector</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/modules.html">dank_mids</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">dank_mids</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Retry Observer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/retry_observer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="retry-observer">
+<h1>Retry Observer<a class="headerlink" href="#retry-observer" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Dank Mids exposes a retry observer API so applications can record retry decisions
+into logs or metrics backends. Observers are callables that accept a
+<a class="reference internal" href="source/dank_mids.html#dank_mids.retry_observer.RetryEvent" title="dank_mids.retry_observer.RetryEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">dank_mids.retry_observer.RetryEvent</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Internal retry logic emits events for built-in retry paths. You can still
+emit from your own wrappers using <a class="reference internal" href="source/dank_mids.html#dank_mids.retry_observer.emit_retry_event" title="dank_mids.retry_observer.emit_retry_event"><code class="xref py py-func docutils literal notranslate"><span class="pre">dank_mids.retry_observer.emit_retry_event()</span></code></a>.</p>
+</div>
+</section>
+<section id="internal-emit-points">
+<h2>Internal emit points<a class="headerlink" href="#internal-emit-points" title="Link to this heading"></a></h2>
+<p>Retry events are emitted in the following internal locations:</p>
+<ul class="simple">
+<li><p>RPC request timeouts and 408 responses (<code class="docutils literal notranslate"><span class="pre">RPCRequest.make_request</span></code>)</p></li>
+<li><p>Multicall bisect retries (<code class="docutils literal notranslate"><span class="pre">Multicall.bisect_and_retry</span></code>)</p></li>
+<li><p>JSON-RPC batch bisect retries (<code class="docutils literal notranslate"><span class="pre">JSONRPCBatch.bisect_and_retry</span></code>)</p></li>
+<li><p>HTTP 429 and retryable status codes (<code class="docutils literal notranslate"><span class="pre">DankClientSession.post</span></code>)</p></li>
+</ul>
+</section>
+<section id="attempt-semantics">
+<h2>Attempt semantics<a class="headerlink" href="#attempt-semantics" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">attempt</span></code> is 1-based. For batch retries, the attempt number increments each
+time a batch is bisected and retried. For <code class="docutils literal notranslate"><span class="pre">will_retry=False</span></code> events, the
+attempt number reflects the retry decision that would have occurred next.</p>
+</section>
+<section id="retryevent">
+<h2>RetryEvent<a class="headerlink" href="#retryevent" title="Link to this heading"></a></h2>
+<p>Fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">operation</span></code> (str): Human-readable identifier for the retried operation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attempt</span></code> (int): 1-based retry attempt number.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error</span></code> (BaseException): Exception that triggered the retry.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_attempts</span></code> (int | None): Optional configured limit.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delay</span></code> (float | None): Optional delay before next attempt.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">component</span></code> (str | None): Optional subsystem name.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">will_retry</span></code> (bool): Whether the caller intends to retry.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code> (dict[str, str] | None): Optional key/value tags.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code> (float): Unix timestamp when the event was created.</p></li>
+</ul>
+</section>
+<section id="registration">
+<h2>Registration<a class="headerlink" href="#registration" title="Link to this heading"></a></h2>
+<p>Register observers with <a class="reference internal" href="source/dank_mids.html#dank_mids.retry_observer.register_retry_observer" title="dank_mids.retry_observer.register_retry_observer"><code class="xref py py-func docutils literal notranslate"><span class="pre">dank_mids.retry_observer.register_retry_observer()</span></code></a> and
+remove them with <a class="reference internal" href="source/dank_mids.html#dank_mids.retry_observer.unregister_retry_observer" title="dank_mids.retry_observer.unregister_retry_observer"><code class="xref py py-func docutils literal notranslate"><span class="pre">dank_mids.retry_observer.unregister_retry_observer()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dank_mids</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryEvent</span><span class="p">,</span> <span class="n">emit_retry_event</span><span class="p">,</span> <span class="n">register_retry_observer</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">log_retry</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">RetryEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;retrying </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">operation</span><span class="si">}</span><span class="s2"> attempt=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">attempt</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;delay=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">delay</span><span class="si">}</span><span class="s2"> error=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+<span class="n">register_retry_observer</span><span class="p">(</span><span class="n">log_retry</span><span class="p">)</span>
+
+<span class="n">emit_retry_event</span><span class="p">(</span>
+    <span class="n">RetryEvent</span><span class="p">(</span>
+        <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;eth_call&quot;</span><span class="p">,</span>
+        <span class="n">attempt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">delay</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">error</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;rate limited&quot;</span><span class="p">),</span>
+        <span class="n">component</span><span class="o">=</span><span class="s2">&quot;jsonrpc&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="usage-examples">
+<h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
+<section id="structured-logging">
+<h3>Structured logging<a class="headerlink" href="#structured-logging" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dank_mids</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryEvent</span><span class="p">,</span> <span class="n">register_retry_observer</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;dank_mids.retry&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">log_retry</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">RetryEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="s2">&quot;retrying </span><span class="si">%s</span><span class="s2"> attempt=</span><span class="si">%s</span><span class="s2"> delay=</span><span class="si">%s</span><span class="s2"> error=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">operation</span><span class="p">,</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">attempt</span><span class="p">,</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">register_retry_observer</span><span class="p">(</span><span class="n">log_retry</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="prometheus-counters">
+<h3>Prometheus counters<a class="headerlink" href="#prometheus-counters" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">prometheus_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dank_mids</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryEvent</span><span class="p">,</span> <span class="n">register_retry_observer</span>
+
+<span class="n">retry_total</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span>
+    <span class="s2">&quot;dank_mids_retry_total&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Retry events emitted by Dank Mids&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;operation&quot;</span><span class="p">,</span> <span class="s2">&quot;error_type&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">record_retry</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">RetryEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">retry_total</span><span class="o">.</span><span class="n">labels</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">operation</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">inc</span><span class="p">()</span>
+
+<span class="n">register_retry_observer</span><span class="p">(</span><span class="n">record_retry</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sentry-stats-collector">
+<h3>Sentry + stats collector<a class="headerlink" href="#sentry-stats-collector" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dank_mids</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatsRetryObserver</span><span class="p">,</span> <span class="n">register_retry_observer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dank_mids</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+<span class="n">observer</span> <span class="o">=</span> <span class="n">StatsRetryObserver</span><span class="p">()</span>
+<span class="n">register_retry_observer</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span>
+
+<span class="c1"># When you want to push metrics to Sentry.</span>
+<span class="n">stats</span><span class="o">.</span><span class="n">sentry</span><span class="o">.</span><span class="n">push_measurements</span><span class="p">()</span>
+
+<span class="c1"># New metrics include: retry_total, retry_error_types</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to dank_mids’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="source/modules.html" class="btn btn-neutral float-right" title="dank_mids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, BobTheBuidler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

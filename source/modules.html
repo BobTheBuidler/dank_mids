@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="dank_mids package" href="dank_mids.html" />
-    <link rel="prev" title="Welcome to dank_mids’s documentation!" href="../index.html" /> 
+    <link rel="prev" title="Retry Observer" href="../retry_observer.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../retry_observer.html">Retry Observer</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">dank_mids</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dank_mids.html">dank_mids package</a></li>
 </ul>
@@ -86,7 +87,7 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch.contract">dank_mids.brownie_patch.contract module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch.overloaded">dank_mids.brownie_patch.overloaded module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch.types">dank_mids.brownie_patch.types module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#module-dank_mids.brownie_patch">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.brownie_patch.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.helpers.html">dank_mids.helpers package</a><ul>
@@ -100,14 +101,35 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.stats.html">dank_mids.stats package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.stats.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.stats.html#module-dank_mids.stats.retry">dank_mids.stats.retry module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.stats.html#module-dank_mids.stats">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dank_mids.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#dank-mids-environment-variables-module">dank_mids.ENVIRONMENT_VARIABLES module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids.constants">dank_mids.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids.ENVIRONMENT_VARIABLES">dank_mids.ENVIRONMENT_VARIABLES module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">AIOHTTP_TIMEOUT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.BROWNIE_CALL_SEMAPHORE"><code class="docutils literal notranslate"><span class="pre">BROWNIE_CALL_SEMAPHORE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.BROWNIE_DECODER_PROCESSES"><code class="docutils literal notranslate"><span class="pre">BROWNIE_DECODER_PROCESSES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.BROWNIE_ENCODER_PROCESSES"><code class="docutils literal notranslate"><span class="pre">BROWNIE_ENCODER_PROCESSES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.BROWNIE_ENCODER_SEMAPHORE"><code class="docutils literal notranslate"><span class="pre">BROWNIE_ENCODER_SEMAPHORE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.COLLECTION_FACTOR"><code class="docutils literal notranslate"><span class="pre">COLLECTION_FACTOR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.GANACHE_FORK"><code class="docutils literal notranslate"><span class="pre">GANACHE_FORK</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.USE_FULL_REQUEST"><code class="docutils literal notranslate"><span class="pre">USE_FULL_REQUEST</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids.constants">dank_mids.constants module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.constants.GAS_LIMIT"><code class="docutils literal notranslate"><span class="pre">GAS_LIMIT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.constants.MULTICALL2_DEPLOY_BLOCKS"><code class="docutils literal notranslate"><span class="pre">MULTICALL2_DEPLOY_BLOCKS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.constants.MULTICALL2_OVERRIDE_CODE"><code class="docutils literal notranslate"><span class="pre">MULTICALL2_OVERRIDE_CODE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.constants.MULTICALL3_DEPLOY_BLOCKS"><code class="docutils literal notranslate"><span class="pre">MULTICALL3_DEPLOY_BLOCKS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.constants.RETRY_ERRS"><code class="docutils literal notranslate"><span class="pre">RETRY_ERRS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.constants.REVERT_SELECTORS"><code class="docutils literal notranslate"><span class="pre">REVERT_SELECTORS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.constants.TOO_MUCH_DATA_ERRS"><code class="docutils literal notranslate"><span class="pre">TOO_MUCH_DATA_ERRS</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="dank_mids.html#dank-mids-controller-module">dank_mids.controller module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids.eth">dank_mids.eth module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.eth.CallOverrideParams"><code class="docutils literal notranslate"><span class="pre">CallOverrideParams</span></code></a><ul>
@@ -139,6 +161,8 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.call"><code class="docutils literal notranslate"><span class="pre">DankEth.call()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.call_munger"><code class="docutils literal notranslate"><span class="pre">DankEth.call_munger()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.contract"><code class="docutils literal notranslate"><span class="pre">DankEth.contract()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.create_access_list"><code class="docutils literal notranslate"><span class="pre">DankEth.create_access_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.create_access_list_munger"><code class="docutils literal notranslate"><span class="pre">DankEth.create_access_list_munger()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.estimate_gas"><code class="docutils literal notranslate"><span class="pre">DankEth.estimate_gas()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.estimate_gas_munger"><code class="docutils literal notranslate"><span class="pre">DankEth.estimate_gas_munger()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.fee_history"><code class="docutils literal notranslate"><span class="pre">DankEth.fee_history()</span></code></a></li>
@@ -148,6 +172,7 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_block"><code class="docutils literal notranslate"><span class="pre">DankEth.get_block()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_block_munger"><code class="docutils literal notranslate"><span class="pre">DankEth.get_block_munger()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_block_number"><code class="docutils literal notranslate"><span class="pre">DankEth.get_block_number()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_block_receipts"><code class="docutils literal notranslate"><span class="pre">DankEth.get_block_receipts()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_block_timestamp"><code class="docutils literal notranslate"><span class="pre">DankEth.get_block_timestamp()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_code"><code class="docutils literal notranslate"><span class="pre">DankEth.get_code()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_logs"><code class="docutils literal notranslate"><span class="pre">DankEth.get_logs()</span></code></a></li>
@@ -175,6 +200,7 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.sign_munger"><code class="docutils literal notranslate"><span class="pre">DankEth.sign_munger()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.sign_transaction"><code class="docutils literal notranslate"><span class="pre">DankEth.sign_transaction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.sign_typed_data"><code class="docutils literal notranslate"><span class="pre">DankEth.sign_typed_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.simulate_v1"><code class="docutils literal notranslate"><span class="pre">DankEth.simulate_v1()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.subscribe"><code class="docutils literal notranslate"><span class="pre">DankEth.subscribe()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.trace_filter"><code class="docutils literal notranslate"><span class="pre">DankEth.trace_filter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.trace_transaction"><code class="docutils literal notranslate"><span class="pre">DankEth.trace_transaction()</span></code></a></li>
@@ -183,10 +209,10 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.wait_for_transaction_receipt"><code class="docutils literal notranslate"><span class="pre">DankEth.wait_for_transaction_receipt()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.account"><code class="docutils literal notranslate"><span class="pre">DankEth.account</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.accounts"><code class="docutils literal notranslate"><span class="pre">DankEth.accounts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.blob_base_fee"><code class="docutils literal notranslate"><span class="pre">DankEth.blob_base_fee</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.block_number"><code class="docutils literal notranslate"><span class="pre">DankEth.block_number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.chain_id"><code class="docutils literal notranslate"><span class="pre">DankEth.chain_id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.codec"><code class="docutils literal notranslate"><span class="pre">DankEth.codec</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.coinbase"><code class="docutils literal notranslate"><span class="pre">DankEth.coinbase</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.default_account"><code class="docutils literal notranslate"><span class="pre">DankEth.default_account</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.default_block"><code class="docutils literal notranslate"><span class="pre">DankEth.default_block</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.filter"><code class="docutils literal notranslate"><span class="pre">DankEth.filter</span></code></a></li>
@@ -194,11 +220,9 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_block_transaction_count"><code class="docutils literal notranslate"><span class="pre">DankEth.get_block_transaction_count</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_filter_changes"><code class="docutils literal notranslate"><span class="pre">DankEth.get_filter_changes</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.get_filter_logs"><code class="docutils literal notranslate"><span class="pre">DankEth.get_filter_logs</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.hashrate"><code class="docutils literal notranslate"><span class="pre">DankEth.hashrate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.is_async"><code class="docutils literal notranslate"><span class="pre">DankEth.is_async</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.max_priority_fee"><code class="docutils literal notranslate"><span class="pre">DankEth.max_priority_fee</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.meth"><code class="docutils literal notranslate"><span class="pre">DankEth.meth</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.mining"><code class="docutils literal notranslate"><span class="pre">DankEth.mining</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.syncing"><code class="docutils literal notranslate"><span class="pre">DankEth.syncing</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.eth.DankEth.w3"><code class="docutils literal notranslate"><span class="pre">DankEth.w3</span></code></a></li>
 </ul>
@@ -237,11 +261,38 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.BrownieNotConnectedError.__init__"><code class="docutils literal notranslate"><span class="pre">BrownieNotConnectedError.__init__()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.BrowniePatchImportError"><code class="docutils literal notranslate"><span class="pre">BrowniePatchImportError</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.BrowniePatchImportError.__init__"><code class="docutils literal notranslate"><span class="pre">BrowniePatchImportError.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.BrowniePatchImportError.msg"><code class="docutils literal notranslate"><span class="pre">BrowniePatchImportError.msg</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.BrowniePatchImportError.name"><code class="docutils literal notranslate"><span class="pre">BrowniePatchImportError.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.BrowniePatchImportError.path"><code class="docutils literal notranslate"><span class="pre">BrowniePatchImportError.path</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.BrowniePatchNotInitializedError"><code class="docutils literal notranslate"><span class="pre">BrowniePatchNotInitializedError</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.BrowniePatchNotInitializedError.__init__"><code class="docutils literal notranslate"><span class="pre">BrowniePatchNotInitializedError.__init__()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.GarbageCollectionError"><code class="docutils literal notranslate"><span class="pre">GarbageCollectionError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.exceptions.Revert"><code class="docutils literal notranslate"><span class="pre">Revert</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#dank-mids-lock-module">dank_mids.lock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids.lock">dank_mids.lock module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.lock.AlertingRLock"><code class="docutils literal notranslate"><span class="pre">AlertingRLock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.lock.AlertingRLock.__init__"><code class="docutils literal notranslate"><span class="pre">AlertingRLock.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.lock.AlertingRLock.acquire"><code class="docutils literal notranslate"><span class="pre">AlertingRLock.acquire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.lock.AlertingRLock.locked"><code class="docutils literal notranslate"><span class="pre">AlertingRLock.locked()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.lock.AlertingRLock.release"><code class="docutils literal notranslate"><span class="pre">AlertingRLock.release()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.lock.Lock"><code class="docutils literal notranslate"><span class="pre">Lock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.lock.Lock.__init__"><code class="docutils literal notranslate"><span class="pre">Lock.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.lock.Lock.acquire"><code class="docutils literal notranslate"><span class="pre">Lock.acquire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.lock.Lock.locked"><code class="docutils literal notranslate"><span class="pre">Lock.locked()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.lock.Lock.release"><code class="docutils literal notranslate"><span class="pre">Lock.release()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids.logging">dank_mids.logging module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger"><code class="docutils literal notranslate"><span class="pre">CLogger</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.__init__"><code class="docutils literal notranslate"><span class="pre">CLogger.__init__()</span></code></a></li>
@@ -268,13 +319,7 @@
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.setLevel"><code class="docutils literal notranslate"><span class="pre">CLogger.setLevel()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.warn"><code class="docutils literal notranslate"><span class="pre">CLogger.warn()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.warning"><code class="docutils literal notranslate"><span class="pre">CLogger.warning()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.disabled"><code class="docutils literal notranslate"><span class="pre">CLogger.disabled</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.handlers"><code class="docutils literal notranslate"><span class="pre">CLogger.handlers</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.level"><code class="docutils literal notranslate"><span class="pre">CLogger.level</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.manager"><code class="docutils literal notranslate"><span class="pre">CLogger.manager</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.name"><code class="docutils literal notranslate"><span class="pre">CLogger.name</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.parent"><code class="docutils literal notranslate"><span class="pre">CLogger.parent</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.propagate"><code class="docutils literal notranslate"><span class="pre">CLogger.propagate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.logging.CLogger.root"><code class="docutils literal notranslate"><span class="pre">CLogger.root</span></code></a></li>
 </ul>
 </li>
@@ -283,6 +328,40 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dank_mids.html#dank-mids-middleware-module">dank_mids.middleware module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids.retry_observer">dank_mids.retry_observer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent"><code class="docutils literal notranslate"><span class="pre">RetryEvent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.operation"><code class="docutils literal notranslate"><span class="pre">RetryEvent.operation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.attempt"><code class="docutils literal notranslate"><span class="pre">RetryEvent.attempt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.error"><code class="docutils literal notranslate"><span class="pre">RetryEvent.error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.max_attempts"><code class="docutils literal notranslate"><span class="pre">RetryEvent.max_attempts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.delay"><code class="docutils literal notranslate"><span class="pre">RetryEvent.delay</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.component"><code class="docutils literal notranslate"><span class="pre">RetryEvent.component</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.will_retry"><code class="docutils literal notranslate"><span class="pre">RetryEvent.will_retry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.metadata"><code class="docutils literal notranslate"><span class="pre">RetryEvent.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.timestamp"><code class="docutils literal notranslate"><span class="pre">RetryEvent.timestamp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryEvent.__init__"><code class="docutils literal notranslate"><span class="pre">RetryEvent.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id0"><code class="docutils literal notranslate"><span class="pre">RetryEvent.attempt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id7"><code class="docutils literal notranslate"><span class="pre">RetryEvent.component</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id8"><code class="docutils literal notranslate"><span class="pre">RetryEvent.delay</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id9"><code class="docutils literal notranslate"><span class="pre">RetryEvent.error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id10"><code class="docutils literal notranslate"><span class="pre">RetryEvent.max_attempts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id11"><code class="docutils literal notranslate"><span class="pre">RetryEvent.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id12"><code class="docutils literal notranslate"><span class="pre">RetryEvent.operation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id13"><code class="docutils literal notranslate"><span class="pre">RetryEvent.timestamp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id14"><code class="docutils literal notranslate"><span class="pre">RetryEvent.will_retry</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryObserver"><code class="docutils literal notranslate"><span class="pre">RetryObserver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryObserver.__call__"><code class="docutils literal notranslate"><span class="pre">RetryObserver.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.RetryObserver.__init__"><code class="docutils literal notranslate"><span class="pre">RetryObserver.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.emit_retry_event"><code class="docutils literal notranslate"><span class="pre">emit_retry_event()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.get_retry_observers"><code class="docutils literal notranslate"><span class="pre">get_retry_observers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.register_retry_observer"><code class="docutils literal notranslate"><span class="pre">register_retry_observer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.retry_observer.unregister_retry_observer"><code class="docutils literal notranslate"><span class="pre">unregister_retry_observer()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids.semaphores">dank_mids.semaphores module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.semaphores.BlockSemaphore"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.semaphores.BlockSemaphore.__call__"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.__call__()</span></code></a></li>
@@ -452,7 +531,60 @@
 <li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.types.BatchId"><code class="docutils literal notranslate"><span class="pre">BatchId</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dank_mids.html#module-dank_mids">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.__call__"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.__getitem__"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.__getitem__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.__init__"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.acquire"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.acquire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.decorate"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.decorate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.locked"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.locked()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.release"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.release()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.debug_logs_enabled"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.debug_logs_enabled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.logger"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.logger</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.BlockSemaphore.name"><code class="docutils literal notranslate"><span class="pre">BlockSemaphore.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent"><code class="docutils literal notranslate"><span class="pre">RetryEvent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.operation"><code class="docutils literal notranslate"><span class="pre">RetryEvent.operation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.attempt"><code class="docutils literal notranslate"><span class="pre">RetryEvent.attempt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.error"><code class="docutils literal notranslate"><span class="pre">RetryEvent.error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.max_attempts"><code class="docutils literal notranslate"><span class="pre">RetryEvent.max_attempts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.delay"><code class="docutils literal notranslate"><span class="pre">RetryEvent.delay</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.component"><code class="docutils literal notranslate"><span class="pre">RetryEvent.component</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.will_retry"><code class="docutils literal notranslate"><span class="pre">RetryEvent.will_retry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.metadata"><code class="docutils literal notranslate"><span class="pre">RetryEvent.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.timestamp"><code class="docutils literal notranslate"><span class="pre">RetryEvent.timestamp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryEvent.__init__"><code class="docutils literal notranslate"><span class="pre">RetryEvent.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id15"><code class="docutils literal notranslate"><span class="pre">RetryEvent.attempt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id16"><code class="docutils literal notranslate"><span class="pre">RetryEvent.component</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id17"><code class="docutils literal notranslate"><span class="pre">RetryEvent.delay</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id18"><code class="docutils literal notranslate"><span class="pre">RetryEvent.error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id19"><code class="docutils literal notranslate"><span class="pre">RetryEvent.max_attempts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id20"><code class="docutils literal notranslate"><span class="pre">RetryEvent.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id21"><code class="docutils literal notranslate"><span class="pre">RetryEvent.operation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id22"><code class="docutils literal notranslate"><span class="pre">RetryEvent.timestamp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#id23"><code class="docutils literal notranslate"><span class="pre">RetryEvent.will_retry</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.RetryObserver"><code class="docutils literal notranslate"><span class="pre">RetryObserver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryObserver.__call__"><code class="docutils literal notranslate"><span class="pre">RetryObserver.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.RetryObserver.__init__"><code class="docutils literal notranslate"><span class="pre">RetryObserver.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.StatsRetryObserver"><code class="docutils literal notranslate"><span class="pre">StatsRetryObserver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.StatsRetryObserver.__call__"><code class="docutils literal notranslate"><span class="pre">StatsRetryObserver.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dank_mids.html#dank_mids.StatsRetryObserver.__init__"><code class="docutils literal notranslate"><span class="pre">StatsRetryObserver.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.emit_retry_event"><code class="docutils literal notranslate"><span class="pre">emit_retry_event()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.get_retry_observers"><code class="docutils literal notranslate"><span class="pre">get_retry_observers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.register_retry_observer"><code class="docutils literal notranslate"><span class="pre">register_retry_observer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.setup_dank_w3"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.setup_dank_w3_from_sync"><code class="docutils literal notranslate"><span class="pre">setup_dank_w3_from_sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dank_mids.html#dank_mids.unregister_retry_observer"><code class="docutils literal notranslate"><span class="pre">unregister_retry_observer()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -463,7 +595,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to dank_mids’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../retry_observer.html" class="btn btn-neutral float-left" title="Retry Observer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="dank_mids.html" class="btn btn-neutral float-right" title="dank_mids package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
