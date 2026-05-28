@@ -105,7 +105,7 @@ BUILD_DEPENDENCIES = [
     "eth-typing==5.2.1",
     "ez-a-sync==0.34.2",
     "faster-eth-abi==5.2.27",
-    "faster-hexbytes==1.3.6",
+    "faster-hexbytes==1.3.8",
     "mypy[mypyc]==1.20.2",
     "setuptools",
     "typed-envs==0.2.4",
