@@ -58,6 +58,52 @@ jobs:
         run: uv run --no-sync python -m pytest tests/unit
         shell: bash
 
+  compiled-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Install runtime and build dependencies
+        run: uv sync --group dev --group build --no-install-project
+        shell: bash
+
+      - name: Remove stale compiled artifacts
+        run: |
+          uv run --no-sync python - <<'PY'
+          from pathlib import Path
+          from scripts.ci.mypyc_targets import clean_compiled_artifacts
+
+          clean_compiled_artifacts(Path(".").resolve())
+          PY
+        shell: bash
+
+      - name: Run Mypyc
+        run: uv run --no-sync python scripts/run_mypyc_build.py
+        shell: bash
+
+      - name: Run compiled import tests
+        env:
+          DANK_MIDS_EXPECT_COMPILED: 1
+          PYTHONFAULTHANDLER: 1
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
+          TYPEDENVS_SHUTUP: 1
+        run: uv run --no-sync python -m pytest tests/unit/test_compiled_imports.py
+        shell: bash
+
   integration:
     runs-on: ${{ matrix.os }}
     strategy:

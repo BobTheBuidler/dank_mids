@@ -5,7 +5,7 @@ from typing import Literal, Union
 from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress, HexStr
 from msgspec import Struct
-from multicall.constants import MULTICALL2_ADDRESSES
+from multicall.constants import MULTICALL2_ADDRESSES, Network
 
 from dank_mids.constants import (
     MULTICALL2_DEPLOY_BLOCKS,
@@ -81,21 +81,30 @@ class MulticallContract(Struct):
         return block < self.deploy_block
 
 
+def _network_for_chainid(chainid: int) -> Network | None:
+    try:
+        return Network(chainid)
+    except ValueError:
+        return None
+
+
 def _get_multicall2(chainid: int) -> MulticallContract | None:
-    if multicall2 := MULTICALL2_ADDRESSES.get(chainid):
+    network = _network_for_chainid(chainid)
+    if network is not None and (multicall2 := MULTICALL2_ADDRESSES.get(network)):
         return MulticallContract(
             address=to_checksum_address(multicall2),
             # TODO: copypasta deploy block dict
-            deploy_block=MULTICALL2_DEPLOY_BLOCKS.get(chainid),
+            deploy_block=MULTICALL2_DEPLOY_BLOCKS.get(network),
             bytecode=MULTICALL2_OVERRIDE_CODE,
         )
 
 
 def _get_multicall3(chainid: int) -> MulticallContract | None:
-    if multicall3 := MULTICALL3_ADDRESSES.get(chainid):
+    network = _network_for_chainid(chainid)
+    if network is not None and (multicall3 := MULTICALL3_ADDRESSES.get(network)):
         return MulticallContract(
             address=to_checksum_address(multicall3),
             # TODO: copypasta deploy block dict
-            deploy_block=MULTICALL3_DEPLOY_BLOCKS.get(chainid),
+            deploy_block=MULTICALL3_DEPLOY_BLOCKS.get(network),
             bytecode=MULTICALL3_OVERRIDE_CODE,
         )
