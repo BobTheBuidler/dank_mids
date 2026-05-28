@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1489];
+extern PyObject *CPyStatics[1491];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -594,8 +594,8 @@ extern PyObject *CPyDef_brownie_patch____coerce_state(void);
 extern PyObject *CPyPy_brownie_patch____coerce_state(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_brownie_patch____load_types(void);
 extern PyObject *CPyPy_brownie_patch____load_types(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_brownie_patch_____getattr__(PyObject *cpy_r_name);
-extern PyObject *CPyPy_brownie_patch_____getattr__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_brownie_patch____module_getattr(PyObject *cpy_r_name);
+extern PyObject *CPyPy_brownie_patch____module_getattr(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_brownie_patch_____top_level__(void);
 extern PyObject *CPyStatic__abi____singletons;
 extern PyObject *CPyStatic__abi___keccak;
@@ -1004,8 +1004,8 @@ extern PyObject *CPyStatic_helpers____LAZY_IMPORTS;
 extern PyObject *CPyStatic_helpers____NEEDS_SIDE_EFFECTS;
 extern PyObject *CPyDef_helpers____load_attribute(PyObject *cpy_r_name);
 extern PyObject *CPyPy_helpers____load_attribute(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_helpers_____getattr__(PyObject *cpy_r_name);
-extern PyObject *CPyPy_helpers_____getattr__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_helpers____module_getattr(PyObject *cpy_r_name);
+extern PyObject *CPyPy_helpers____module_getattr(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_helpers_____dir__(void);
 extern PyObject *CPyPy_helpers_____dir__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_helpers_____top_level__(void);

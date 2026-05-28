@@ -51,7 +51,7 @@ def _load_attribute(name: str) -> Any:
     return value
 
 
-def __getattr__(name: str) -> Any:
+def _module_getattr(name: str) -> Any:
     if name in _LAZY_IMPORTS:
         return _load_attribute(name)
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
@@ -59,3 +59,7 @@ def __getattr__(name: str) -> Any:
 
 def __dir__() -> list[str]:
     return sorted(set(globals()) | set(_LAZY_IMPORTS))
+
+
+# TODO: Remove this workaround once https://github.com/mypyc/mypyc/issues/1198 is resolved.
+__getattr__ = _module_getattr
