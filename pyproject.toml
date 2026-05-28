@@ -57,7 +57,7 @@ dev = [
 ]
 docs = [
     { include-group = "dev" },
-    "Cython<3",
+    "Cython<4",
     "sphinx",
     "sphinx-rtd-theme",
     "wheel",
