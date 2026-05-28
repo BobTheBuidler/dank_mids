@@ -140,13 +140,17 @@ def _load_types() -> ModuleType:
     return _types
 
 
-def __getattr__(name: str) -> object:
+def _module_getattr(name: str) -> object:
     if name in _BROWNIE_TYPE_NAMES:
         _types = _load_types()
         value = getattr(_types, name)
         globals()[name] = value
         return value
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+
+# TODO: Remove this workaround once https://github.com/mypyc/mypyc/issues/1198 is resolved.
+__getattr__ = _module_getattr
 
 
 # If using dank_mids with brownie, and brownie is connected when this file executes, you will get a 'dank_w3' async web3 instance with Dank Middleware here.
