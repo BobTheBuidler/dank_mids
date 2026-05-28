@@ -55,7 +55,7 @@ jobs:
       - name: Run unit tests
         env:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
-        run: uv run --no-sync pytest tests/unit
+        run: uv run --no-sync python -m pytest tests/unit
         shell: bash
 
   integration:
@@ -112,5 +112,5 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
-        run: uv run --no-sync pytest tests/integration
+        run: uv run --no-sync python -m pytest tests/integration
         shell: bash
