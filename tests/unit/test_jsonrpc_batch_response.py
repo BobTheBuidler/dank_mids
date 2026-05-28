@@ -1,12 +1,8 @@
 import asyncio
-import atexit
 
 from dank_mids._requests import JSONRPCBatch
 from dank_mids._uid import UIDGenerator
 from dank_mids.helpers._codec import decode_raw
-from dank_mids.helpers._requester import shutdown_http_requester
-
-atexit.unregister(shutdown_http_requester)
 
 
 class _DummyBatcher:
