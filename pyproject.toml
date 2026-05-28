@@ -53,7 +53,7 @@ dev = [
     "pytest-cov==6.3.0",
     "pytest-sugar==1.1.1",
     "setuptools<81",
-    "types-aiofiles==25.1.0.20251011",
+    "types-aiofiles==25.1.0.20260518",
 ]
 docs = [
     { include-group = "dev" },
@@ -64,7 +64,7 @@ docs = [
 ]
 mypy = [
     { include-group = "build" },
-    "types-aiofiles==25.1.0.20251011",
+    "types-aiofiles==25.1.0.20260518",
 ]
 
 [tool.uv]
