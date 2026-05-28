@@ -134,6 +134,21 @@ def expand_mypyc_targets(root: pathlib.Path) -> list[str]:
     return sorted(targets)
 
 
+def module_name_from_target(target: str) -> str:
+    path = pathlib.PurePosixPath(target)
+    if path.suffix != ".py":
+        raise ValueError(f"Mypyc target is not a Python file: {target}")
+    module_path = path.with_suffix("")
+    parts = module_path.parts
+    if parts[-1] == "__init__":
+        parts = parts[:-1]
+    return ".".join(parts)
+
+
+def compiled_module_names(root: pathlib.Path) -> list[str]:
+    return [module_name_from_target(target) for target in expand_mypyc_targets(root)]
+
+
 def build_mypyc_command() -> list[str]:
     return [sys.executable, "build/setup.py", "build_ext", "--inplace"]
 

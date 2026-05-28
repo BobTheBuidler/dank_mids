@@ -90,7 +90,13 @@ jobs:
         env:
           CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
           CIBW_SKIP: "pp* *-musllinux_* *-win32"
-          CIBW_TEST_COMMAND: "python -c \"import dank_mids\""
+          CIBW_TEST_COMMAND: "pytest {project}/tests/unit/test_compiled_imports.py"
+          CIBW_TEST_ENVIRONMENT: >
+            DANK_MIDS_COMPILED_IMPORT_MODE=installed-wheel
+            PYTHONFAULTHANDLER=1
+            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+            TYPEDENVS_SHUTUP=1
+          CIBW_TEST_REQUIRES: "pytest"
         with:
           output-dir: wheelhouse
 

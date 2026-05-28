@@ -45,16 +45,28 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --group dev --no-install-project
+        run: uv sync --group dev --group build --no-install-project
         shell: bash
 
-      - name: Remove source-tree extension artifacts
-        run: uv run --no-sync python scripts/ci/clean_source_extensions.py
+      - name: Remove stale compiled artifacts
+        run: |
+          uv run --no-sync python - <<'PY'
+          from pathlib import Path
+          from scripts.ci.mypyc_targets import clean_compiled_artifacts
+
+          clean_compiled_artifacts(Path(".").resolve())
+          PY
+        shell: bash
+
+      - name: Run Mypyc
+        run: uv run --no-sync python scripts/run_mypyc_build.py
         shell: bash
 
       - name: Run unit tests
         env:
+          PYTHONFAULTHANDLER: 1
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
+          TYPEDENVS_SHUTUP: 1
         run: uv run --no-sync python -m pytest tests/unit
         shell: bash
 
@@ -93,11 +105,21 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --group dev --no-install-project
+        run: uv sync --group dev --group build --no-install-project
         shell: bash
 
-      - name: Remove source-tree extension artifacts
-        run: uv run --no-sync python scripts/ci/clean_source_extensions.py
+      - name: Remove stale compiled artifacts
+        run: |
+          uv run --no-sync python - <<'PY'
+          from pathlib import Path
+          from scripts.ci.mypyc_targets import clean_compiled_artifacts
+
+          clean_compiled_artifacts(Path(".").resolve())
+          PY
+        shell: bash
+
+      - name: Run Mypyc
+        run: uv run --no-sync python scripts/run_mypyc_build.py
         shell: bash
 
       - name: Setup brownie networks
@@ -112,5 +134,7 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
+          PYTHONFAULTHANDLER: 1
+          TYPEDENVS_SHUTUP: 1
         run: uv run --no-sync python -m pytest tests/integration
         shell: bash
