@@ -45,39 +45,6 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --group dev --no-install-project
-        shell: bash
-
-      - name: Remove source-tree extension artifacts
-        run: uv run --no-sync python scripts/ci/clean_source_extensions.py
-        shell: bash
-
-      - name: Run unit tests
-        env:
-          PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
-        run: uv run --no-sync python -m pytest tests/unit
-        shell: bash
-
-  compiled-unit:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-          submodules: recursive
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v8.1.0
-        with:
-          enable-cache: true
-
-      - name: Install runtime and build dependencies
         run: uv sync --group dev --group build --no-install-project
         shell: bash
 
@@ -95,13 +62,12 @@ jobs:
         run: uv run --no-sync python scripts/run_mypyc_build.py
         shell: bash
 
-      - name: Run compiled import tests
+      - name: Run unit tests
         env:
-          DANK_MIDS_EXPECT_COMPILED: 1
           PYTHONFAULTHANDLER: 1
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
           TYPEDENVS_SHUTUP: 1
-        run: uv run --no-sync python -m pytest tests/unit/test_compiled_imports.py
+        run: uv run --no-sync python -m pytest tests/unit
         shell: bash
 
   integration:
@@ -139,11 +105,21 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --group dev --no-install-project
+        run: uv sync --group dev --group build --no-install-project
         shell: bash
 
-      - name: Remove source-tree extension artifacts
-        run: uv run --no-sync python scripts/ci/clean_source_extensions.py
+      - name: Remove stale compiled artifacts
+        run: |
+          uv run --no-sync python - <<'PY'
+          from pathlib import Path
+          from scripts.ci.mypyc_targets import clean_compiled_artifacts
+
+          clean_compiled_artifacts(Path(".").resolve())
+          PY
+        shell: bash
+
+      - name: Run Mypyc
+        run: uv run --no-sync python scripts/run_mypyc_build.py
         shell: bash
 
       - name: Setup brownie networks
@@ -158,5 +134,7 @@ jobs:
           MAX_RETRIES: 2
           MIN_SLEEP_TIME: 1
           MAX_SLEEP_TIME: 3
+          PYTHONFAULTHANDLER: 1
+          TYPEDENVS_SHUTUP: 1
         run: uv run --no-sync python -m pytest tests/integration
         shell: bash
