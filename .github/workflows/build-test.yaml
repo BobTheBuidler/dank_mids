@@ -1,0 +1,238 @@
+name: Build And Test
+
+on:
+  pull_request:
+    branches:
+      - master
+      - good-master
+    paths:
+      - '.github/actions/setup-python-cache/action.yml'
+      - '.github/workflows/build-test.yaml'
+      - '**/pytest.ini'
+      - '**/pytest.yaml'
+      - '.gitmodules'
+      - 'Makefile'
+      - 'hatch_build.py'
+      - 'pyproject.toml'
+      - 'scripts/check_mypyc_wheel.py'
+      - 'scripts/ci/build_source_extensions.py'
+      - 'scripts/ci/mypyc_targets.py'
+      - 'scripts/run_mypyc_build.py'
+      - 'uv.lock'
+      - 'dank_mids/**/*.py'
+      - 'dank_mids/_vendor/aiolimiter'
+      - 'dank_mids/_vendor/aiolimiter/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generated-c:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Install build dependencies
+        run: uv sync --only-group build
+
+      - name: Run Mypyc
+        run: uv run --no-sync python scripts/run_mypyc_build.py
+
+      - name: Normalize C files for diffchecking
+        shell: bash
+        run: |
+          for f in build/*.c; do
+            if ! grep -q 'DIFFCHECK_PLACEHOLDER' "$f"; then
+              sed -i '1i#ifndef DIFFCHECK_PLACEHOLDER\n#define DIFFCHECK_PLACEHOLDER 0\n#endif' "$f"
+            fi
+          done
+          sed -i 's/\(CPy_AddTraceback([^,]*, *[^,]*, *\)[0-9]\+\(, *[^)]*)\)/\1DIFFCHECK_PLACEHOLDER\2/g' build/*.c
+          sed -i 's/CPyStatics\[[0-9]\+\]/CPyStatics[DIFFCHECK_PLACEHOLDER]/g' build/*.c
+
+      - name: Check for generated C changes
+        shell: bash
+        run: |
+          if [[ -n $(git status --porcelain -- build) ]]; then
+            echo "changes_detected=true" >> "$GITHUB_ENV"
+          else
+            echo "changes_detected=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Commit generated C changes
+        if: env.changes_detected == 'true'
+        shell: bash
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
+          git add build
+          git commit -m "chore: compile to C for Linux x64 with mypyc"
+          git push
+
+  native-extensions:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        pyversion: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.pyversion }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Install build dependencies
+        run: uv sync --only-group build
+        shell: bash
+
+      - name: Build source-tree extensions
+        run: uv run --no-sync python scripts/ci/build_source_extensions.py --artifact-dir compiled-artifacts
+        shell: bash
+
+      - name: Upload source-tree extensions
+        uses: actions/upload-artifact@v6
+        with:
+          name: compiled-${{ matrix.os }}-py${{ matrix.pyversion }}
+          path: compiled-artifacts
+          if-no-files-found: error
+
+  unit:
+    needs: native-extensions
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        pyversion: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.pyversion }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --group dev --no-install-project
+        shell: bash
+
+      - name: Download source-tree extensions
+        uses: actions/download-artifact@v7
+        with:
+          name: compiled-${{ matrix.os }}-py${{ matrix.pyversion }}
+          path: .
+
+      - name: Run unit tests
+        env:
+          PYTHONFAULTHANDLER: 1
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
+          TYPEDENVS_SHUTUP: 1
+        run: uv run --no-sync python -m pytest tests/unit
+        shell: bash
+
+  integration:
+    needs: native-extensions
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        pyversion: ["3.10", "3.11", "3.12", "3.13"]
+        provider:
+          [
+            "TENDERLY_PROVIDER",
+            "LLAMA_ETH_RPC",
+            "INFURA_PROVIDER",
+            "ALCHEMY_PROVIDER",
+            "RETH_PROVIDER",
+            "CHAINSTACK_PROVIDER",
+          ]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.pyversion }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --group dev --no-install-project
+        shell: bash
+
+      - name: Download source-tree extensions
+        uses: actions/download-artifact@v7
+        with:
+          name: compiled-${{ matrix.os }}-py${{ matrix.pyversion }}
+          path: .
+
+      - name: Setup brownie networks
+        run: uv run --no-sync brownie networks modify mainnet host=${{ secrets[matrix.provider] }}
+        shell: bash
+        continue-on-error: true
+
+      - name: Run test suite
+        env:
+          PYTEST_NETWORK: mainnet
+          ETHERSCAN_TOKEN: ${{ secrets.ETHERSCAN_TOKEN  }}
+          MAX_RETRIES: 2
+          MIN_SLEEP_TIME: 1
+          MAX_SLEEP_TIME: 3
+          PYTHONFAULTHANDLER: 1
+          TYPEDENVS_SHUTUP: 1
+        run: uv run --no-sync python -m pytest tests/integration
+        shell: bash
