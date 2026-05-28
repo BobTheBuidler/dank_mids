@@ -2,6 +2,7 @@ import asyncio
 import atexit
 import threading
 from collections.abc import Callable
+from concurrent.futures import TimeoutError
 from typing import Any, Final, final
 
 import a_sync
@@ -15,6 +16,7 @@ from dank_mids.types import T
 get_running_loop: Final = asyncio.get_running_loop
 
 create_task: Final = a_sync.create_task
+SHUTDOWN_TIMEOUT: Final = 5.0
 
 
 @final
@@ -82,14 +84,34 @@ class HTTPRequesterThread(threading.Thread):
         return await caller_future
 
 
-def shutdown_http_requester() -> None:
-    async def close_session_and_stop() -> None:
-        if session := _requester._session:
-            await session.close()
-        _requester.loop.stop()
+def shutdown_http_requester(timeout: float = SHUTDOWN_TIMEOUT) -> None:
+    requester = _requester
+    loop = requester.loop
+    if loop.is_closed():
+        return
 
-    # Block until the ClientSession and loop are both closed
-    asyncio.run_coroutine_threadsafe(close_session_and_stop(), _requester.loop).result()
+    async def close_session() -> None:
+        if session := requester._session:
+            await session.close()
+
+    if requester.is_alive():
+        try:
+            future = asyncio.run_coroutine_threadsafe(close_session(), loop)
+            future.result(timeout=timeout)
+        except (RuntimeError, TimeoutError):
+            pass
+        try:
+            loop.call_soon_threadsafe(loop.stop)
+        except RuntimeError:
+            return
+    else:
+        try:
+            loop.stop()
+        except RuntimeError:
+            return
+
+    if requester.is_alive() and threading.current_thread() is not requester:
+        requester.join(timeout=timeout)
 
 
 _requester = HTTPRequesterThread()
