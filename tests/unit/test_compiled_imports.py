@@ -33,10 +33,8 @@ def _prepare_imports() -> None:
     else:
         pytest.fail(f"unsupported compiled import mode: {mode!r}")
     importlib.invalidate_caches()
-
-    for loaded_name in list(sys.modules):
-        if loaded_name == "dank_mids" or loaded_name.startswith("dank_mids."):
-            del sys.modules[loaded_name]
+    # Mypyc native modules keep C-level module state; do not unload and reimport
+    # them in the same interpreter while checking the compiled import surface.
 
 
 def _native_suffixes() -> tuple[str, ...]:
