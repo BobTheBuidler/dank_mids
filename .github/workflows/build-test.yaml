@@ -8,11 +8,6 @@ on:
     paths:
       - '.github/actions/setup-python-cache/action.yml'
       - '.github/workflows/build-test.yaml'
-      - '.github/workflows/build.yaml'
-      - '.github/workflows/pytest.yaml'
-      - '**.py'
-      - '**.pyd'
-      - '**.so'
       - '**/pytest.ini'
       - '**/pytest.yaml'
       - '.gitmodules'
