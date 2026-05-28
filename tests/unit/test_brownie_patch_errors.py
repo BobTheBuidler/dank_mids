@@ -3,14 +3,47 @@ import importlib
 import importlib.util
 import sys
 import types
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 
 
+def _managed_module(name: str) -> bool:
+    return name == "brownie" or name.startswith("brownie.") or name.startswith("dank_mids")
+
+
+def _blocked_import_name(name: str, block_name: str) -> bool:
+    return name == block_name or name.startswith(f"{block_name}.")
+
+
+class _ImportBlocker:
+    def __init__(self, block_name: str) -> None:
+        self.block_name = block_name
+
+    def find_spec(self, fullname, path=None, target=None):
+        if _blocked_import_name(fullname, self.block_name):
+            raise ImportError(f"blocked import: {self.block_name}")
+        return None
+
+
+@pytest.fixture(autouse=True)
+def _restore_import_state() -> Iterator[None]:
+    # These tests source-load and stub dank_mids modules; restore native imports
+    # so compiled-mode tests later in the same process see the real extensions.
+    saved_modules = {
+        name: module for name, module in sys.modules.items() if _managed_module(name)
+    }
+    yield
+    for name in list(sys.modules):
+        if _managed_module(name):
+            sys.modules.pop(name, None)
+    sys.modules.update(saved_modules)
+
+
 def _clear_modules() -> None:
     for name in list(sys.modules):
-        if name == "brownie" or name.startswith("brownie.") or name.startswith("dank_mids"):
+        if _managed_module(name):
             sys.modules.pop(name, None)
 
 
@@ -125,11 +158,17 @@ def _make_import_blocker(block_name: str):
     original_import = builtins.__import__
 
     def _blocked(name, globals=None, locals=None, fromlist=(), level=0):
-        if name == block_name:
+        if _blocked_import_name(name, block_name):
             raise ImportError(f"blocked import: {block_name}")
         return original_import(name, globals, locals, fromlist, level)
 
     return _blocked
+
+
+def _block_meta_import(monkeypatch, block_name: str) -> None:
+    # Compiled extensions can already be initialized in-process; block discovery
+    # too when a test needs to force an ImportError for a native target.
+    monkeypatch.setattr(sys, "meta_path", [_ImportBlocker(block_name), *sys.meta_path])
 
 
 def _install_brownie_package(connected: bool) -> types.ModuleType:
@@ -199,8 +238,7 @@ def _reload_dank_mids(monkeypatch, brownie_connected: bool | None = None, import
 
 
 def _import_compiled_dank_mids() -> tuple[types.ModuleType, types.ModuleType]:
-    _clear_modules()
-    _install_dank_mids_stubs()
+    _install_brownie_package(False)
 
     root = Path(__file__).resolve().parents[2]
     if str(root) not in sys.path:
@@ -260,6 +298,7 @@ def test_getattr_raises_import_error_for_missing_brownie_types(monkeypatch) -> N
     import_hook = _make_import_blocker("brownie")
     dank_mids, _ = _reload_dank_mids(monkeypatch, import_hook=import_hook)
     exc_types = importlib.import_module("dank_mids.exceptions")
+    _block_meta_import(monkeypatch, "dank_mids.brownie_patch.types")
 
     with pytest.raises(exc_types.BrowniePatchImportError) as excinfo:
         _ = dank_mids.DankContractCall
@@ -332,21 +371,19 @@ def test_getattr_foreign_initialized_state_raises_public_exception(monkeypatch) 
 
 def test_compiled_import_path_normalizes_state_identity_mismatch() -> None:
     dank_mids, brownie_patch = _import_compiled_dank_mids()
-    try:
-        module_file = getattr(brownie_patch, "__file__", "")
-        if not module_file.endswith((".so", ".pyd")):
-            pytest.skip("compiled brownie_patch extension not available for this interpreter")
+    module_file = getattr(brownie_patch, "__file__", "")
+    if not module_file.endswith((".so", ".pyd")):
+        pytest.skip("compiled brownie_patch extension not available for this interpreter")
 
-        spoof_cls = type("_BrowniePatchState", (), {"__module__": "dank_mids.brownie_patch"})
-        spoof = spoof_cls()
-        spoof.import_error = None
-        spoof.connected = True
-        spoof.initialized = True
-        brownie_patch._STATE = spoof
+    spoof_cls = type("_BrowniePatchState", (), {"__module__": "dank_mids.brownie_patch"})
+    spoof = spoof_cls()
+    spoof.import_error = None
+    spoof.connected = True
+    spoof.initialized = True
+    brownie_patch._STATE = spoof
+    sys.modules["brownie.network"].connected = True
 
-        exc_types = importlib.import_module("dank_mids.exceptions")
+    exc_types = importlib.import_module("dank_mids.exceptions")
 
-        with pytest.raises(exc_types.BrowniePatchNotInitializedError):
-            _ = dank_mids.dank_web3
-    finally:
-        _clear_modules()
+    with pytest.raises(exc_types.BrowniePatchNotInitializedError):
+        _ = dank_mids.dank_web3
