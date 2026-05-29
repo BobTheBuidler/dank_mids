@@ -16,8 +16,6 @@ This module is crucial for debugging, performance monitoring, and optimization o
 
 from __future__ import annotations
 
-# TODO: Robust and Refactor
-
 import logging
 from asyncio import create_task
 from collections import defaultdict, deque
@@ -35,6 +33,9 @@ from web3.types import RPCEndpoint
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.logging import CLogger, Level
 from dank_mids.stats import _nocompile
+
+# TODO: Robust and Refactor
+
 
 if TYPE_CHECKING:
     from dank_mids._requests import JSONRPCBatch
@@ -63,7 +64,7 @@ yield_to_loop: Final = sleep0
 # <func>
 
 
-def log_errd_batch(batch: "JSONRPCBatch") -> None:
+def log_errd_batch(batch: JSONRPCBatch) -> None:
     """
     Log information about a failed JSON-RPC batch.
 
@@ -363,7 +364,7 @@ class _Collector:
     """Handles the collection and computation of stats-related data."""
 
     def __init__(self) -> None:
-        self.errd_batches: Deque["JSONRPCBatch"] = deque(maxlen=500)
+        self.errd_batches: Deque[JSONRPCBatch] = deque(maxlen=500)
         """
         A deque that stores information about failed JSON-RPC batches.
         It has a maximum length of 500 to prevent unbounded memory usage.
@@ -407,7 +408,7 @@ class _Collector:
         self.retry_error_counts: DefaultDict[str, int] = defaultdict(int)
         """Counts of retry events grouped by exception type name."""
 
-        self.retry_events: Deque["RetryEvent"] = deque(maxlen=1000)
+        self.retry_events: Deque[RetryEvent] = deque(maxlen=1000)
         """Bounded deque of recently recorded retry events."""
 
         self.retry_delays: Deque[float] = deque(maxlen=50_000)
