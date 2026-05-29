@@ -15,8 +15,9 @@ Use this workflow when Python exits with `Segmentation fault`, `Fatal Python err
    - Set `PYTHONFAULTHANDLER=1` and any repo noise suppressors such as `TYPEDENVS_SHUTUP=1`.
 
 2. Build the compiled surface exactly like CI.
-   - Prefer `scripts/ci/build_source_extensions.py --artifact-dir <tmp-artifacts>` for source-tree mypyc builds.
-   - Leave generated `.so`/`.pyd` files and build directories out of commits unless the user explicitly asks for binaries.
+   - Prefer `uv run --no-sync python scripts/ci/build_source_extensions.py --artifact-dir <tmp-artifacts>` for source-tree mypyc builds.
+   - Keep `.so`, `.pyd`, `build/lib.*`, `build/temp.*`, and other binary or intermediate build outputs out of commits.
+   - Tracked generated C/H under `build/` exists for mypyc diff review, but maintainers should not hand-edit or manually stage it; generated-C CI normally produces and commits those updates.
 
 3. Reduce the crash to the smallest import or test.
    - Start with the parameterized compiled import test, then try direct imports with `python -c`.
