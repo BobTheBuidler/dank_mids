@@ -369,7 +369,7 @@ def test_getattr_foreign_initialized_state_raises_public_exception(monkeypatch) 
     assert brownie_patch._STATE.initialized is False
 
 
-def test_compiled_import_path_normalizes_state_identity_mismatch() -> None:
+def test_compiled_import_path_normalizes_state_identity_mismatch(monkeypatch) -> None:
     dank_mids, brownie_patch = _import_compiled_dank_mids()
     module_file = getattr(brownie_patch, "__file__", "")
     if not module_file.endswith((".so", ".pyd")):
@@ -380,7 +380,7 @@ def test_compiled_import_path_normalizes_state_identity_mismatch() -> None:
     spoof.import_error = None
     spoof.connected = True
     spoof.initialized = True
-    brownie_patch._STATE = spoof
+    monkeypatch.setattr(brownie_patch, "_STATE", spoof)
     sys.modules["brownie.network"].connected = True
 
     exc_types = importlib.import_module("dank_mids.exceptions")
