@@ -14,6 +14,7 @@ on:
       - 'Makefile'
       - 'hatch_build.py'
       - 'pyproject.toml'
+      - 'tests/**'
       - 'scripts/check_mypyc_wheel.py'
       - 'scripts/ci/build_source_extensions.py'
       - 'scripts/ci/mypyc_targets.py'
