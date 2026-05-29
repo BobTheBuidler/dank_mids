@@ -1,3 +1,4 @@
+import asyncio.tasks
 from asyncio import (
     AbstractEventLoop,
     Future,
@@ -7,7 +8,10 @@ from asyncio import (
     get_running_loop,
     sleep,
 )
-from collections.abc import Generator
+from collections.abc import Callable, Generator, Sequence
+from contextvars import Context
+from functools import partial
+from sys import version_info
 from threading import Lock
 from time import time
 from typing import TYPE_CHECKING, Any, Final, final
@@ -30,6 +34,29 @@ _future_init: Final = Future.__init__
 _future_await: Final = Future.__await__
 _future_set_result: Final = Future.set_result
 _future_set_exc: Final = Future.set_exception
+_NEEDS_WAIT_FOR_CALLBACK_TRACKING: Final = version_info < (3, 12)
+_FutureDoneCallback = Callable[[Future[T]], None]
+_FutureCallbackEntry = tuple[_FutureDoneCallback[T], Context]
+
+
+def _callback_is_legacy_wait_for_waiter(callback: _FutureDoneCallback[T]) -> bool:
+    if isinstance(callback, partial):
+        return callback.func is asyncio.tasks._release_waiter
+    return False
+
+
+def _legacy_wait_for_callback_count(callbacks: Sequence[_FutureCallbackEntry[T]]) -> int:
+    return sum(
+        1
+        for callback, _context in callbacks
+        if _callback_is_legacy_wait_for_waiter(callback)
+    )
+
+
+def _has_legacy_wait_for_callback(callbacks: Sequence[_FutureCallbackEntry[T]]) -> bool:
+    return any(
+        _callback_is_legacy_wait_for_waiter(callback) for callback, _context in callbacks
+    )
 
 
 @final
@@ -61,11 +88,21 @@ class DebuggableFuture(Future[T]):
     @property
     def waiter_count(self) -> int:
         with self._waiter_count_lock:
-            return self._waiter_count
+            awaited_count = self._waiter_count
+        if not _NEEDS_WAIT_FOR_CALLBACK_TRACKING:
+            return awaited_count
+        # Python 3.10/3.11 asyncio.wait_for(FutureSubclass) registers a
+        # _release_waiter callback instead of driving the subclass __await__ hook.
+        return awaited_count + _legacy_wait_for_callback_count(self._callbacks or ())
 
     @property
     def has_waiters(self) -> bool:
-        return self.waiter_count > 0
+        with self._waiter_count_lock:
+            if self._waiter_count > 0:
+                return True
+        if not _NEEDS_WAIT_FOR_CALLBACK_TRACKING:
+            return False
+        return _has_legacy_wait_for_callback(self._callbacks or ())
 
     def __await_with_waiter_tracking(
         self, awaiter: Generator[Any, None, T]
