@@ -122,6 +122,12 @@ class DebuggableFuture(Future[T]):
             if self._waiter_count > 0:
                 self._waiter_count -= 1
 
+    def _add_external_waiter(self) -> None:
+        self.__increment_waiters()
+
+    def _remove_external_waiter(self) -> None:
+        self.__decrement_waiters()
+
     def set_result(self, value: T) -> None:
         # sourcery skip: merge-duplicate-blocks, remove-redundant-if
         if self._loop is get_running_loop():
