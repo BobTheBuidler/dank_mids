@@ -11,7 +11,6 @@ from scripts.ci.mypyc_targets import compiled_module_names, extension_suffix
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MODULE_NAMES = compiled_module_names(REPO_ROOT)
-_STALE_DANK_MIDS_MODULES_CLEARED = False
 
 
 def _path_resolves_to_repo(path_entry: str) -> bool:
@@ -23,8 +22,6 @@ def _path_resolves_to_repo(path_entry: str) -> bool:
 
 
 def _prepare_imports() -> None:
-    global _STALE_DANK_MIDS_MODULES_CLEARED
-
     mode = os.getenv("DANK_MIDS_COMPILED_IMPORT_MODE", "source-tree")
     if mode == "source-tree":
         sys.path[:] = [path_entry for path_entry in sys.path if path_entry != str(REPO_ROOT)]
@@ -36,13 +33,8 @@ def _prepare_imports() -> None:
     else:
         pytest.fail(f"unsupported compiled import mode: {mode!r}")
     importlib.invalidate_caches()
-    if not _STALE_DANK_MIDS_MODULES_CLEARED:
-        for loaded_name in list(sys.modules):
-            if loaded_name == "dank_mids" or loaded_name.startswith("dank_mids."):
-                del sys.modules[loaded_name]
-        _STALE_DANK_MIDS_MODULES_CLEARED = True
-    # Mypyc native modules keep C-level module state; after the one-time stale
-    # cleanup, do not unload and reimport them between parameterized cases.
+    # Pytest collection may already hold references to imported dank_mids classes.
+    # Do not unload mypyc modules in-process; stale source imports fail below.
 
 
 def _native_suffixes() -> tuple[str, ...]:
