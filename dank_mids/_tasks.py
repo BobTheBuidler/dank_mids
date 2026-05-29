@@ -94,6 +94,8 @@ def shield(arg: asyncio.tasks._FutureLike[T]) -> asyncio.Future[T]:
         return inner
     loop = _get_loop(inner)
     outer: asyncio.Future[T] = loop.create_future()
+    remove_external_waiter: Any = None
+    tracking_external_waiter = False
 
     def _inner_done_callback(inner: asyncio.Future[T]) -> None:
         if outer.cancelled():
@@ -112,8 +114,19 @@ def shield(arg: asyncio.tasks._FutureLike[T]) -> asyncio.Future[T]:
                 outer.set_result(inner.result())
 
     def _outer_done_callback(outer: asyncio.Future[T]) -> None:
+        nonlocal tracking_external_waiter
+        if tracking_external_waiter:
+            tracking_external_waiter = False
+            remove_external_waiter()
         if not inner.done():
             inner.remove_done_callback(_inner_done_callback)
+
+    add_external_waiter = getattr(inner, "_add_external_waiter", None)
+    if add_external_waiter is not None:
+        remove_external_waiter = getattr(inner, "_remove_external_waiter", None)
+        if remove_external_waiter is not None:
+            add_external_waiter()
+            tracking_external_waiter = True
 
     inner.add_done_callback(_inner_done_callback)
     outer.add_done_callback(_outer_done_callback)

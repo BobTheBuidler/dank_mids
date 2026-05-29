@@ -3,7 +3,7 @@ import gc
 import importlib.util
 import sys
 import weakref
-from functools import lru_cache
+from functools import lru_cache, partial
 from pathlib import Path
 from unittest.mock import patch
 
@@ -11,6 +11,7 @@ import pytest
 
 import dank_mids._requests as requests_module
 import dank_mids.controller as controller_module
+from dank_mids._nocompile import try_for_result
 from dank_mids._requests import JSONRPCBatch, Multicall, RPCRequest
 from dank_mids._tasks import BATCH_TASKS, create_batch_task
 from dank_mids._uid import UIDGenerator
@@ -260,6 +261,67 @@ def test_debuggable_future_waiter_count_updates_on_completion() -> None:
 
 
 def test_debuggable_future_waiter_count_updates_on_cancellation() -> None:
+    async def run() -> None:
+        future: DebuggableFuture[str] = DebuggableFuture(_FutureOwner(), asyncio.get_running_loop())  # type: ignore[arg-type]
+        waiter = asyncio.create_task(asyncio.wait_for(future, timeout=1))
+        await asyncio.sleep(0)
+
+        assert future.has_waiters is True
+        assert future.waiter_count == 1
+
+        waiter.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await waiter
+
+        assert future.has_waiters is False
+        assert future.waiter_count == 0
+
+    asyncio.run(run())
+
+
+def test_debuggable_future_tracks_try_for_result_shield_waiter() -> None:
+    async def run() -> None:
+        future: DebuggableFuture[str] = DebuggableFuture(_FutureOwner(), asyncio.get_running_loop())  # type: ignore[arg-type]
+        waiter = asyncio.create_task(try_for_result(future))
+        await asyncio.sleep(0)
+
+        assert future.has_waiters is True
+        assert future.waiter_count == 1
+
+        future.set_result("ok")
+        assert await waiter == "ok"
+        assert future.has_waiters is False
+        assert future.waiter_count == 0
+
+    asyncio.run(run())
+
+
+def test_debuggable_future_waiter_count_ignores_fake_legacy_wait_for_callback() -> None:
+    async def run() -> None:
+        future: DebuggableFuture[str] = DebuggableFuture(_FutureOwner(), asyncio.get_running_loop())  # type: ignore[arg-type]
+        waiter = asyncio.get_running_loop().create_future()
+
+        def _release_waiter(_waiter: asyncio.Future[None]) -> None:
+            return None
+
+        callback = partial(_release_waiter, waiter)
+        future.add_done_callback(callback)
+
+        assert future.has_waiters is False
+        assert future.waiter_count == 0
+
+        future.remove_done_callback(callback)
+
+        assert future.has_waiters is False
+        assert future.waiter_count == 0
+
+    asyncio.run(run())
+
+
+def test_debuggable_future_waiter_count_includes_legacy_wait_for_callback() -> None:
+    if sys.version_info >= (3, 12):
+        pytest.skip("asyncio.wait_for drives FutureSubclass.__await__ on Python 3.12+")
+
     async def run() -> None:
         future: DebuggableFuture[str] = DebuggableFuture(_FutureOwner(), asyncio.get_running_loop())  # type: ignore[arg-type]
         waiter = asyncio.create_task(asyncio.wait_for(future, timeout=1))
