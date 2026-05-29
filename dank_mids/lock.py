@@ -6,6 +6,8 @@ from asyncio import AbstractEventLoop, Future, events, mixins
 from types import TracebackType
 from typing import Deque, Final, Literal, TypeVar, final
 
+from mypy_extensions import mypyc_attr
+
 from dank_mids.logging import get_c_logger
 
 E = TypeVar("E", bound=Exception)
@@ -26,6 +28,7 @@ __all__ = ["AlertingRLock", "Lock"]
 
 
 @final
+@mypyc_attr(acyclic=True)
 class AlertingRLock:
     def __init__(self, name: str) -> None:
         """

@@ -5,6 +5,8 @@ from enum import IntEnum
 from random import random
 from typing import Final, final
 
+from mypy_extensions import mypyc_attr
+
 
 @final
 class RetryAction(IntEnum):
@@ -17,6 +19,7 @@ class RetryAction(IntEnum):
     HANDLE_RATE_LIMIT = 4
 
 
+@mypyc_attr(acyclic=True)
 @dataclass(slots=True)
 class RetryBudget:
     """
@@ -36,6 +39,7 @@ class RetryBudget:
         return self.attempts
 
 
+@mypyc_attr(acyclic=True)
 @dataclass(frozen=True, slots=True)
 class RetryDecision:
     """Single retry decision outcome."""

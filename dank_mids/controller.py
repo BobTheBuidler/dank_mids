@@ -13,6 +13,7 @@ from eth_typing import BlockNumber, ChecksumAddress, HexStr
 from evmspec.data import ChainId
 from multicall.constants import MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
+from mypy_extensions import mypyc_attr
 from web3 import Web3
 from web3.types import RPCEndpoint, RPCResponse
 
@@ -47,6 +48,7 @@ cgather: Final = a_sync.cgather
 
 
 @final
+@mypyc_attr(acyclic=True)
 class _EarlyStartHandoff:
     """
     Keep moved multicalls alive until the already-started JSON-RPC batch finishes.

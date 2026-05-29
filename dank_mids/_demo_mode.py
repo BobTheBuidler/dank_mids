@@ -1,10 +1,13 @@
 from typing import Any, Final, final
 
+from mypy_extensions import mypyc_attr
+
 from dank_mids import ENVIRONMENT_VARIABLES
 from dank_mids.logging import get_c_logger
 
 
 @final
+@mypyc_attr(acyclic=True)
 class DummyLogger:
     """
     A dummy logger class that provides a no-op implementation of the info
