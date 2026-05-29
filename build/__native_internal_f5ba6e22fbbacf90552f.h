@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1491];
+extern PyObject *CPyStatics[1494];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -76,6 +76,7 @@ extern PyObject *CPyInit_dank_mids____exceptions(void);
 extern PyObject *CPyInitOnly_dank_mids____exceptions(void);
 extern PyObject *CPyStatic__tasks___globals;
 extern CPyModule *CPyModule___future__;
+extern CPyModule *CPyModule_dank_mids___helpers___future;
 extern int CPyExec_dank_mids____tasks(PyObject *module);
 extern PyObject *CPyInit_dank_mids____tasks(void);
 extern PyObject *CPyInitOnly_dank_mids____tasks(void);

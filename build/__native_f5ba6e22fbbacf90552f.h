@@ -259,6 +259,7 @@ typedef struct {
     PyObject *___mypyc_self__;
     PyObject *_inner;
     PyObject *_outer;
+    PyObject *_remove_external_waiter;
     PyObject *__inner_done_callback;
     PyObject *__outer_done_callback;
     PyObject *_arg;
