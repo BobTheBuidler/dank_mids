@@ -1,15 +1,29 @@
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import os
 import sys
 from pathlib import Path
 
 import pytest
 
-from scripts.ci.mypyc_targets import compiled_module_names, extension_suffix
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
+
+# cibuildwheel runs this file from {project} after installing a wheel, but the
+# repo root is intentionally removed from sys.path before importing dank_mids.
+# Load the repo-only target helper by path so installed-wheel mode can still
+# compute expected modules without making source-tree package code importable.
+_MYPYC_TARGETS_SPEC = importlib.util.spec_from_file_location(
+    "_dank_mids_test_mypyc_targets",
+    REPO_ROOT / "scripts" / "ci" / "mypyc_targets.py",
+)
+assert _MYPYC_TARGETS_SPEC is not None and _MYPYC_TARGETS_SPEC.loader is not None
+_mypyc_targets = importlib.util.module_from_spec(_MYPYC_TARGETS_SPEC)
+_MYPYC_TARGETS_SPEC.loader.exec_module(_mypyc_targets)
+compiled_module_names = _mypyc_targets.compiled_module_names
+extension_suffix = _mypyc_targets.extension_suffix
+
 MODULE_NAMES = compiled_module_names(REPO_ROOT)
 
 
