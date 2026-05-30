@@ -34,6 +34,7 @@ from web3.types import RPCEndpoint
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids.logging import CLogger, Level
+from dank_mids.stats._float_moving_average import FloatMovingAverage
 from dank_mids.stats import _nocompile
 
 if TYPE_CHECKING:
@@ -382,9 +383,9 @@ class _Collector:
         This is used for debugging and analysis purposes.
         """
 
-        self.event_loop_times: _Times = deque(maxlen=50_000)
+        self.event_loop_times: FloatMovingAverage = FloatMovingAverage(50_000)
         """
-        A deque that stores event loop execution times.
+        A fixed-size moving average for event loop execution times.
         It has a maximum length of 50,000 to limit memory usage.
         """
 
@@ -424,7 +425,7 @@ class _Collector:
         Example:
             >>> avg_time = collector.avg_loop_time
         """
-        return sum(collector.event_loop_times) / len(collector.event_loop_times)
+        return self.event_loop_times.average
 
     @property
     def count_active_brownie_calls(self) -> int:

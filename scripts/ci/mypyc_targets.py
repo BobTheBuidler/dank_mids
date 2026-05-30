@@ -45,6 +45,7 @@ MYPYC_TARGETS = [
     "dank_mids/lock.py",
     "dank_mids/logging.py",
     "dank_mids/middleware.py",
+    "dank_mids/stats/_float_moving_average.py",
     "dank_mids/stats/__init__.py",
 ]
 
