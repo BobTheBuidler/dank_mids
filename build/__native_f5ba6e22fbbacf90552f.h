@@ -2,6 +2,7 @@
 #define MYPYC_NATIVE_f5ba6e22fbbacf90552f_H
 #include <Python.h>
 #include <CPy.h>
+#include "time/librt_time.h"
 #ifndef MYPYC_DECLARED_tuple_T3CIO
 #define MYPYC_DECLARED_tuple_T3CIO
 typedef struct tuple_T3CIO {
