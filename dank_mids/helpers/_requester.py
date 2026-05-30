@@ -90,14 +90,12 @@ def shutdown_http_requester(timeout: float = SHUTDOWN_TIMEOUT) -> None:
     if loop.is_closed():
         return
 
-    async def close_session() -> None:
-        if session := requester._session:
-            await session.close()
-
     if requester.is_alive():
+        session = requester._session
         try:
-            future = asyncio.run_coroutine_threadsafe(close_session(), loop)
-            future.result(timeout=timeout)
+            if session is not None:
+                future = asyncio.run_coroutine_threadsafe(session.close(), loop)
+                future.result(timeout=timeout)
         except (RuntimeError, TimeoutError):
             pass
         try:
