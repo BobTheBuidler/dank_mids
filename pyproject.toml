@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling>=1.27"]
+requires = ["hatchling>=1.27", "tomli>=2; python_version < '3.11'"]
 build-backend = "hatchling.build"
 
 [project]
@@ -43,6 +43,7 @@ build = [
     "mypy[mypyc]==2.0.0",
     "setuptools",
     "typed-envs==0.2.4",
+    "tomli>=2; python_version < '3.11'",
     "types-requests",
 ]
 dev = [

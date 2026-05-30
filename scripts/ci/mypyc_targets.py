@@ -7,6 +7,9 @@ import pathlib
 import subprocess
 import sys
 import sysconfig
+from typing import Any
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 MYPYC_TARGETS = [
     "dank_mids/_batch.py",
@@ -100,19 +103,31 @@ setup(
 )
 """
 
-BUILD_DEPENDENCIES = [
-    "eth-retry==0.3.7",
-    "eth-typing==5.2.1",
-    "ez-a-sync==0.34.2",
-    "faster-eth-abi==5.2.27",
-    "faster-hexbytes==1.3.8",
-    "mypy[mypyc]==1.20.2",
-    "setuptools",
-    "typed-envs==0.2.4",
-    "types-requests",
-]
-
 VENDORED_AIOLIMITER_ROOT = pathlib.PurePosixPath("dank_mids/_vendor/aiolimiter")
+
+
+def _load_toml(path: pathlib.Path) -> dict[str, Any]:
+    if sys.version_info >= (3, 11):
+        import tomllib
+    else:
+        import tomli as tomllib
+
+    with path.open("rb") as file:
+        return tomllib.load(file)
+
+
+def build_dependencies(root: pathlib.Path = ROOT) -> list[str]:
+    pyproject = _load_toml(root / "pyproject.toml")
+    dependency_groups = pyproject.get("dependency-groups", {})
+    if not isinstance(dependency_groups, dict):
+        raise TypeError("[dependency-groups] must be a table")
+
+    build_group = dependency_groups.get("build")
+    if not isinstance(build_group, list):
+        raise TypeError("[dependency-groups].build must be a list")
+    if not all(isinstance(dependency, str) for dependency in build_group):
+        raise TypeError("[dependency-groups].build must contain only dependency strings")
+    return list(build_group)
 
 
 def expand_mypyc_targets(root: pathlib.Path) -> list[str]:

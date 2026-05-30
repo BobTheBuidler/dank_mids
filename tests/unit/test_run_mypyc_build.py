@@ -4,7 +4,11 @@ import importlib.util
 import sys
 from pathlib import Path
 
-from scripts.ci.mypyc_targets import MYPYC_BUILD_ARGS, expand_mypyc_targets
+from scripts.ci.mypyc_targets import (
+    MYPYC_BUILD_ARGS,
+    build_dependencies,
+    expand_mypyc_targets,
+)
 
 MODULE_PATH = Path(__file__).resolve().parents[2] / "scripts" / "run_mypyc_build.py"
 CLEAN_EXTENSIONS_PATH = (
@@ -51,6 +55,20 @@ def test_mypyc_targets_expand_vendored_aiolimiter_sources() -> None:
 
     assert "dank_mids/_vendor/aiolimiter/src/aiolimiter/__init__.py" in expanded_targets
     assert "dank_mids/_vendor/aiolimiter/src/aiolimiter/leakybucket.py" in expanded_targets
+
+
+def test_build_dependencies_come_from_pyproject(tmp_path) -> None:
+    (tmp_path / "pyproject.toml").write_text(
+        """
+[dependency-groups]
+build = [
+    "example==1",
+    "other==2",
+]
+""".lstrip()
+    )
+
+    assert build_dependencies(tmp_path) == ["example==1", "other==2"]
 
 
 def test_main_runs_compile_without_installing_dependencies(monkeypatch) -> None:
