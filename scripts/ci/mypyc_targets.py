@@ -190,6 +190,15 @@ def compiled_artifact_patterns(root: pathlib.Path) -> list[str]:
     return patterns
 
 
+def mypyc_runtime_artifacts(root: pathlib.Path) -> list[pathlib.Path]:
+    suffix = extension_suffix()
+    return sorted(path for path in root.glob(f"*__mypyc*{suffix}") if path.is_file())
+
+
+def mypyc_runtime_force_include(root: pathlib.Path) -> dict[str, str]:
+    return {str(path): path.name for path in mypyc_runtime_artifacts(root)}
+
+
 def clean_compiled_artifacts(root: pathlib.Path) -> None:
     suffix = extension_suffix()
     vendor_root = root / VENDORED_AIOLIMITER_ROOT

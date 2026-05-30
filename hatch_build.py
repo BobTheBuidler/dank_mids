@@ -13,6 +13,7 @@ from scripts.ci.mypyc_targets import (
     clean_compiled_artifacts,
     compiled_artifact_patterns,
     expand_mypyc_targets,
+    mypyc_runtime_force_include,
     run_mypyc,
 )
 
@@ -32,3 +33,4 @@ class CustomBuildHook(BuildHookInterface):
         build_data["pure_python"] = False
         build_data["infer_tag"] = True
         build_data.setdefault("artifacts", []).extend(compiled_artifact_patterns(root))
+        build_data.setdefault("force_include", {}).update(mypyc_runtime_force_include(root))

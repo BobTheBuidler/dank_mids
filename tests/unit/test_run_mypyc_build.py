@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import importlib.util
 import sys
+import zipfile
 from pathlib import Path
 
 from scripts.ci.mypyc_targets import (
     MYPYC_BUILD_ARGS,
     build_dependencies,
+    extension_suffix,
     expand_mypyc_targets,
+    mypyc_runtime_artifacts,
+    mypyc_runtime_force_include,
 )
 
 MODULE_PATH = Path(__file__).resolve().parents[2] / "scripts" / "run_mypyc_build.py"
@@ -17,6 +21,7 @@ CLEAN_EXTENSIONS_PATH = (
 BUILD_EXTENSIONS_PATH = (
     Path(__file__).resolve().parents[2] / "scripts" / "ci" / "build_source_extensions.py"
 )
+CHECK_WHEEL_PATH = Path(__file__).resolve().parents[2] / "scripts" / "check_mypyc_wheel.py"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location("run_mypyc_build", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
@@ -34,6 +39,12 @@ BUILD_EXTENSIONS_SPEC = importlib.util.spec_from_file_location(
 assert BUILD_EXTENSIONS_SPEC is not None and BUILD_EXTENSIONS_SPEC.loader is not None
 build_source_extensions = importlib.util.module_from_spec(BUILD_EXTENSIONS_SPEC)
 BUILD_EXTENSIONS_SPEC.loader.exec_module(build_source_extensions)
+CHECK_WHEEL_SPEC = importlib.util.spec_from_file_location(
+    "check_mypyc_wheel", CHECK_WHEEL_PATH
+)
+assert CHECK_WHEEL_SPEC is not None and CHECK_WHEEL_SPEC.loader is not None
+check_mypyc_wheel = importlib.util.module_from_spec(CHECK_WHEEL_SPEC)
+CHECK_WHEEL_SPEC.loader.exec_module(check_mypyc_wheel)
 
 
 def test_build_mypyc_command_contains_targets_and_flags() -> None:
@@ -69,6 +80,21 @@ build = [
     )
 
     assert build_dependencies(tmp_path) == ["example==1", "other==2"]
+
+
+def test_mypyc_runtime_artifacts_find_top_level_runtime(tmp_path) -> None:
+    suffix = extension_suffix()
+    runtime = tmp_path / f"abc123__mypyc{suffix}"
+    nested_dir = tmp_path / "dank_mids"
+    nested_dir.mkdir()
+    nested_runtime = nested_dir / f"nested__mypyc{suffix}"
+    wrong_suffix = tmp_path / "abc123__mypyc.test.so"
+    runtime.write_text("runtime")
+    nested_runtime.write_text("nested")
+    wrong_suffix.write_text("wrong")
+
+    assert mypyc_runtime_artifacts(tmp_path) == [runtime]
+    assert mypyc_runtime_force_include(tmp_path) == {str(runtime): runtime.name}
 
 
 def test_main_runs_compile_without_installing_dependencies(monkeypatch) -> None:
@@ -126,6 +152,34 @@ def test_copy_compiled_artifacts_preserves_source_tree_paths(tmp_path, monkeypat
     ]
     assert (artifact_dir / "abc123__mypyc.test.so").read_text() == "runtime"
     assert (artifact_dir / "dank_mids" / "_batch.test.so").read_text() == "batch"
+
+
+def _write_wheel(path: Path, names: list[str]) -> None:
+    with zipfile.ZipFile(path, "w") as wheel:
+        for name in names:
+            wheel.writestr(name, "")
+
+
+def test_check_mypyc_wheel_requires_top_level_runtime_artifact(tmp_path) -> None:
+    wheel = tmp_path / "pkg.whl"
+    _write_wheel(wheel, ["dank_mids/_batch.test.so"])
+
+    assert check_mypyc_wheel.check_wheel(wheel, ["dank_mids/_batch.py"]) == [
+        "pkg.whl: missing top-level mypyc runtime artifact"
+    ]
+
+
+def test_check_mypyc_wheel_accepts_top_level_runtime_artifact(tmp_path) -> None:
+    wheel = tmp_path / "pkg.whl"
+    _write_wheel(
+        wheel,
+        [
+            "abc123__mypyc.test.so",
+            "dank_mids/_batch.test.so",
+        ],
+    )
+
+    assert check_mypyc_wheel.check_wheel(wheel, ["dank_mids/_batch.py"]) == []
 
 
 def test_clean_build_intermediates_removes_ignored_build_dirs(tmp_path) -> None:
