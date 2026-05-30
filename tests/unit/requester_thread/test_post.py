@@ -7,44 +7,57 @@ import pytest
 from dank_mids.helpers._requester import HTTPRequesterThread
 from dank_mids.helpers._session import DankClientSession
 
-from ._helpers import InlineLoop
+from ._helpers import InlineLoop, wait_for_requester_state
 
 
 def test_post_runs_session_request_on_requester_loop(
     monkeypatch: pytest.MonkeyPatch,
     requester_thread: HTTPRequesterThread,
 ) -> None:
-    seen: dict[str, bytes | str | asyncio.AbstractEventLoop] = {}
-    requester_thread.loop = InlineLoop()
-    requester_thread.is_alive = lambda: True
+    seen_endpoint: list[str] = []
+    seen_data: list[bytes] = []
+    seen_loop: list[asyncio.AbstractEventLoop] = []
 
     async def fake_post(self, endpoint, *args, loads=None, **kwargs):
         del self, args, loads
-        seen["endpoint"] = endpoint
-        seen["data"] = kwargs["data"]
-        seen["loop"] = asyncio.get_running_loop()
+        seen_endpoint.append(endpoint)
+        seen_data.append(kwargs["data"])
+        seen_loop.append(asyncio.get_running_loop())
         return {"ok": True}
 
     monkeypatch.setattr(DankClientSession, "post", fake_post)
 
-    async def run_post() -> tuple[dict[str, bool], bool]:
+    async def run_post() -> tuple[dict[str, bool], asyncio.AbstractEventLoop]:
         caller_loop = asyncio.get_running_loop()
+        created_session = requester_thread._session is None
         try:
-            result = await requester_thread.post("https://node.example", data=b"{}")
-            await asyncio.sleep(0)
+            result = await asyncio.wait_for(
+                requester_thread.post("https://node.example", data=b"{}"),
+                timeout=2.0,
+            )
+            await wait_for_requester_state(
+                requester_thread,
+                lambda: requester_thread._tasks == set()
+                and requester_thread._active_post_count() == 0,
+            )
             assert requester_thread._tasks == set()
-            return result, seen["loop"] is caller_loop
+            return result, caller_loop
         finally:
-            if requester_thread._session is not None:
-                await requester_thread._session.close()
+            session = requester_thread._session
+            if created_session and session is not None and not session.closed:
+                close_future = asyncio.run_coroutine_threadsafe(
+                    session.close(),
+                    requester_thread.loop,
+                )
+                await asyncio.wrap_future(close_future)
 
-    result, ran_on_caller_loop = asyncio.run(run_post())
+    result, caller_loop = asyncio.run(run_post())
 
     assert result == {"ok": True}
-    assert ran_on_caller_loop is True
-    assert seen["endpoint"] == "https://node.example"
-    assert seen["data"] == b"{}"
-    assert isinstance(seen["loop"], asyncio.AbstractEventLoop)
+    assert seen_endpoint == ["https://node.example"]
+    assert seen_data == [b"{}"]
+    assert seen_loop == [requester_thread.loop]
+    assert seen_loop[0] is not caller_loop
     assert requester_thread._active_post_count() == 0
 
 
