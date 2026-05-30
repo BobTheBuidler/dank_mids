@@ -54,26 +54,6 @@ class HTTPRequesterThread(threading.Thread):
             )
         return session
 
-    def _schedule_active_post(self, callback: Callable[[], None]) -> None:
-        with self._active_posts_lock:
-            self._active_posts += 1
-            try:
-                self.loop.call_soon_threadsafe(callback)
-            except Exception:
-                self._active_posts -= 1
-                raise
-
-    def _remove_active_post(self) -> None:
-        with self._active_posts_lock:
-            self._active_posts -= 1
-
-    def _active_post_count(self) -> int:
-        with self._active_posts_lock:
-            return self._active_posts
-
-    def _has_active_posts(self) -> bool:
-        return self._active_post_count() > 0
-
     async def post(
         self,
         endpoint: str,
@@ -113,6 +93,26 @@ class HTTPRequesterThread(threading.Thread):
 
         self._schedule_active_post(start_request)
         return await caller_future
+
+    def _schedule_active_post(self, callback: Callable[[], None]) -> None:
+        with self._active_posts_lock:
+            self._active_posts += 1
+            try:
+                self.loop.call_soon_threadsafe(callback)
+            except Exception:
+                self._active_posts -= 1
+                raise
+
+    def _remove_active_post(self) -> None:
+        with self._active_posts_lock:
+            self._active_posts -= 1
+
+    def _active_post_count(self) -> int:
+        with self._active_posts_lock:
+            return self._active_posts
+
+    def _has_active_posts(self) -> bool:
+        return self._active_post_count() > 0
 
 
 def shutdown_http_requester(timeout: float = SHUTDOWN_TIMEOUT) -> None:
