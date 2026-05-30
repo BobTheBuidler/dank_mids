@@ -1,6 +1,9 @@
+from mypy_extensions import mypyc_attr
+
 from dank_mids.lock import AlertingRLock
 
 
+@mypyc_attr(acyclic=True)
 class UIDGenerator:
     __slots__ = "_value", "_lock"
 

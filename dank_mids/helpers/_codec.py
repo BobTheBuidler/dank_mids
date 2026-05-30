@@ -19,6 +19,7 @@ from eth_typing import ChecksumAddress, HexStr
 from evmspec.data import Address
 from faster_eth_abi import io
 from faster_eth_abi.abi import default_codec
+from mypy_extensions import mypyc_attr
 from msgspec.json import Decoder, Encoder
 
 if TYPE_CHECKING:
@@ -69,6 +70,7 @@ _decode_batch: BatchDecoder | None = None
 
 
 @final
+@mypyc_attr(acyclic=True)
 class RawResponse:
     """
     Wraps a Raw object that we know represents a Response with a `decode` helper method.
