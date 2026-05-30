@@ -58,15 +58,13 @@ def test_mypyc_targets_expand_vendored_aiolimiter_sources() -> None:
 
 
 def test_build_dependencies_come_from_pyproject(tmp_path) -> None:
-    (tmp_path / "pyproject.toml").write_text(
-        """
+    (tmp_path / "pyproject.toml").write_text("""
 [dependency-groups]
 build = [
     "example==1",
     "other==2",
 ]
-""".lstrip()
-    )
+""".lstrip())
 
     assert build_dependencies(tmp_path) == ["example==1", "other==2"]
 

@@ -1,6 +1,7 @@
 # Vendoring Third-Party Python Libraries
 
 This project vendors select third-party Python libraries directly into the repository. This approach is used to:
+
 - Enable compilation with mypyc for maximum performance
 - Ensure compatibility and reproducibility
 - Avoid dependency conflicts or breakages from upstream changes
@@ -59,7 +60,7 @@ For each vendored library, add a Makefile target to update it. Example for aioli
 
 ```makefile
 update-aiolimiter:
-	cd dank_mids/_vendor/aiolimiter && git fetch && git checkout main && git pull
+ cd dank_mids/_vendor/aiolimiter && git fetch && git checkout main && git pull
 ```
 
 For additional libraries, add similar targets.
@@ -71,7 +72,7 @@ For additional libraries, add similar targets.
 
   ```makefile
   mypyc:
-  	mypyc ... dank_mids/_vendor/aiolimiter/__init__.py dank_mids/_vendor/aiolimiter/aiolimiter.py ...
+   mypyc ... dank_mids/_vendor/aiolimiter/__init__.py dank_mids/_vendor/aiolimiter/aiolimiter.py ...
   ```
 
 - Update the list if new files are added upstream.
@@ -102,12 +103,14 @@ For additional libraries, add similar targets.
 ## Example: aiolimiter
 
 - Vendored at: `dank_mids/_vendor/aiolimiter/`
-- Upstream: https://github.com/mjpieters/aiolimiter
-- Add with: 
+- Upstream: <https://github.com/mjpieters/aiolimiter>
+- Add with:
+
   ```sh
   git submodule add https://github.com/mjpieters/aiolimiter.git dank_mids/_vendor/aiolimiter
   git submodule update --init --recursive
   ```
+
 - Update with: `make update-aiolimiter`
 - Compile with mypyc: add files to Makefile as shown above
 

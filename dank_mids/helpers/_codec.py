@@ -19,8 +19,8 @@ from eth_typing import ChecksumAddress, HexStr
 from evmspec.data import Address
 from faster_eth_abi import io
 from faster_eth_abi.abi import default_codec
-from mypy_extensions import mypyc_attr
 from msgspec.json import Decoder, Encoder
+from mypy_extensions import mypyc_attr
 
 if TYPE_CHECKING:
     from dank_mids import types

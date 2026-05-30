@@ -47,16 +47,12 @@ def _callback_is_legacy_wait_for_waiter(callback: _FutureDoneCallback[T]) -> boo
 
 def _legacy_wait_for_callback_count(callbacks: Sequence[_FutureCallbackEntry[T]]) -> int:
     return sum(
-        1
-        for callback, _context in callbacks
-        if _callback_is_legacy_wait_for_waiter(callback)
+        1 for callback, _context in callbacks if _callback_is_legacy_wait_for_waiter(callback)
     )
 
 
 def _has_legacy_wait_for_callback(callbacks: Sequence[_FutureCallbackEntry[T]]) -> bool:
-    return any(
-        _callback_is_legacy_wait_for_waiter(callback) for callback, _context in callbacks
-    )
+    return any(_callback_is_legacy_wait_for_waiter(callback) for callback, _context in callbacks)
 
 
 @final
