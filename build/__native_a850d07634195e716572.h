@@ -2,6 +2,7 @@
 #define MYPYC_NATIVE_a850d07634195e716572_H
 #include <Python.h>
 #include <CPy.h>
+#include "random/librt_random.h"
 #include "time/librt_time.h"
 #ifndef MYPYC_DECLARED_tuple_T3CIO
 #define MYPYC_DECLARED_tuple_T3CIO

@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1496];
+extern PyObject *CPyStatics[1497];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -264,7 +264,7 @@ extern CPyModule *CPyModule_dank_mids___helpers____retry_mechanics__internal;
 extern CPyModule *CPyModule_dank_mids___helpers____retry_mechanics;
 extern PyObject *CPyStatic__retry_mechanics___globals;
 extern CPyModule *CPyModule_enum;
-extern CPyModule *CPyModule_random;
+extern CPyModule *CPyModule_librt___random;
 extern int CPyExec_dank_mids___helpers____retry_mechanics(PyObject *module);
 extern PyObject *CPyInit_dank_mids___helpers____retry_mechanics(void);
 extern PyObject *CPyInitOnly_dank_mids___helpers____retry_mechanics(void);

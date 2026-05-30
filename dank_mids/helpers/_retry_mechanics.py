@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import IntEnum
-from random import random
 from typing import Final, final
 
+from librt.random import random
 from mypy_extensions import mypyc_attr
 
 
