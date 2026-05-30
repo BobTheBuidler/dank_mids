@@ -45,6 +45,7 @@ def test_post_runs_session_request_on_requester_loop(
     assert seen["endpoint"] == "https://node.example"
     assert seen["data"] == b"{}"
     assert isinstance(seen["loop"], asyncio.AbstractEventLoop)
+    assert requester_thread._active_post_count() == 0
 
 
 def test_post_propagates_session_request_exception(
@@ -69,6 +70,7 @@ def test_post_propagates_session_request_exception(
 
     with pytest.raises(RuntimeError, match="request failed"):
         asyncio.run(run_post())
+    assert requester_thread._active_post_count() == 0
 
 
 def test_post_raises_stored_thread_exception_when_requester_is_dead(
@@ -82,3 +84,4 @@ def test_post_raises_stored_thread_exception_when_requester_is_dead(
 
     with pytest.raises(RuntimeError, match="requester died"):
         asyncio.run(run_post())
+    assert requester_thread._active_post_count() == 0

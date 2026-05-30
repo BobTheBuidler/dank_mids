@@ -32,3 +32,13 @@ def requester_thread() -> Iterator[HTTPRequesterThread]:
                 pass
         else:
             requester._exc = original_exc
+
+
+@pytest.fixture
+def owned_requester_thread(monkeypatch: pytest.MonkeyPatch) -> Iterator[HTTPRequesterThread]:
+    requester = HTTPRequesterThread()
+    monkeypatch.setattr(requester_module, "_requester", requester)
+    try:
+        yield requester
+    finally:
+        requester_module.shutdown_http_requester(timeout=1.0)

@@ -965,6 +965,8 @@ typedef struct {
     PyObject *_loop;
     PyObject *__session;
     PyObject *__tasks;
+    CPyTagged __active_posts;
+    PyObject *__active_posts_lock;
     PyObject *__exc;
 } dank_mids___helpers____requester___HTTPRequesterThreadObject;
 
@@ -1027,7 +1029,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___run_and_set_result_gen___3_69Object;
+} dank_mids___helpers____requester___run_and_set_result_gen___3_71Object;
 
 typedef struct {
     PyObject_HEAD
@@ -1041,6 +1043,7 @@ typedef struct {
     CPyVTableItem *vtable;
     uint32_t bitmap;
     PyObject *___mypyc_self__;
+    char _has_active_posts;
     PyObject *_requester;
     PyObject *___mypyc_generator_attribute__close_session;
     double _timeout;
@@ -1059,9 +1062,11 @@ typedef struct {
     PyObject *_arg;
     PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_generator_attribute__session;
     PyObject *___mypyc_temp__5;
     tuple_T3OOO ___mypyc_temp__6;
+    PyObject *___mypyc_generator_attribute__session;
+    PyObject *___mypyc_temp__7;
+    tuple_T3OOO ___mypyc_temp__8;
 } dank_mids___helpers____requester___close_session_shutdown_http_requester_envObject;
 
 typedef struct {
@@ -1076,7 +1081,7 @@ typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
     PyObject *___mypyc_env__;
-} dank_mids___helpers____requester___close_session_gen___3_93Object;
+} dank_mids___helpers____requester___close_session_gen___3_126Object;
 
 typedef struct {
     PyObject_HEAD
