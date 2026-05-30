@@ -3,7 +3,6 @@ from collections import defaultdict
 from collections.abc import Iterable, Sequence
 from functools import lru_cache
 from logging import getLogger
-from time import time
 from typing import Any, DefaultDict, Final, Literal, cast, final
 
 import a_sync
@@ -13,6 +12,7 @@ from eth_typing import BlockNumber, ChecksumAddress, HexStr
 from evmspec.data import ChainId
 from multicall.constants import MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
+from librt.time import time
 from mypy_extensions import mypyc_attr
 from web3 import Web3
 from web3.types import RPCEndpoint, RPCResponse

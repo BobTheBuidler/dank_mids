@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1494];
+extern PyObject *CPyStatics[1493];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -201,10 +201,10 @@ extern CPyModule *CPyModule_dank_mids___controller;
 extern PyObject *CPyStatic_controller___globals;
 extern CPyModule *CPyModule_collections;
 extern CPyModule *CPyModule_logging;
-extern CPyModule *CPyModule_time;
 extern CPyModule *CPyModule_eth_retry;
 extern CPyModule *CPyModule_cchecksum;
 extern CPyModule *CPyModule_multicall___multicall;
+extern CPyModule *CPyModule_librt___time;
 extern CPyModule *CPyModule_web3;
 extern CPyModule *CPyModule_dank_mids___exceptions;
 extern CPyModule *CPyModule_dank_mids___helpers____errors__internal;
@@ -1568,7 +1568,6 @@ extern PyObject *CPyStatic_lock___logger;
 extern PyObject *CPyStatic_lock___CancelledError;
 extern PyObject *CPyStatic_lock___deque;
 extern PyObject *CPyStatic_lock___get_ident;
-extern PyObject *CPyStatic_lock___time;
 extern PyObject *CPyStatic_lock____get_running_loop;
 extern PyObject *CPyStatic_lock____global_lock;
 extern PyTypeObject *CPyType_lock___AlertingRLock;

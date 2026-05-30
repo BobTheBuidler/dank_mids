@@ -24,11 +24,11 @@ from collections import defaultdict, deque
 from collections.abc import Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor
 from copy import deepcopy
-from time import time
 from typing import TYPE_CHECKING, Any, DefaultDict, Deque, Final, TypeVar, final
 
 import msgspec
 from a_sync.asyncio import sleep0
+from librt.time import time
 from typed_envs.registry import _ENVIRONMENT_VARIABLES_SET_BY_USER
 from web3.types import RPCEndpoint
 

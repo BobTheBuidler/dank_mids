@@ -1,11 +1,11 @@
 import asyncio
 import collections
 import threading
-import time as _time
 from asyncio import AbstractEventLoop, Future, events, mixins
 from types import TracebackType
 from typing import Deque, Final, Literal, TypeVar, final
 
+from librt.time import time
 from mypy_extensions import mypyc_attr
 
 from dank_mids.logging import get_c_logger
@@ -20,8 +20,6 @@ CancelledError: Final = asyncio.CancelledError
 deque: Final = collections.deque
 
 get_ident: Final = threading.get_ident
-
-time: Final = _time.time
 
 
 __all__ = ["AlertingRLock", "Lock"]
