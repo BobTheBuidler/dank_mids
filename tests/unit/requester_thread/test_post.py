@@ -7,7 +7,7 @@ import pytest
 from dank_mids.helpers._requester import HTTPRequesterThread
 from dank_mids.helpers._session import DankClientSession
 
-from ._helpers import InlineLoop
+from ._helpers import InlineLoop, wait_for_requester_state
 
 
 def test_post_runs_session_request_on_requester_loop(
@@ -35,7 +35,11 @@ def test_post_runs_session_request_on_requester_loop(
                 requester_thread.post("https://node.example", data=b"{}"),
                 timeout=2.0,
             )
-            await asyncio.sleep(0)
+            await wait_for_requester_state(
+                requester_thread,
+                lambda: requester_thread._tasks == set()
+                and requester_thread._active_post_count() == 0,
+            )
             assert requester_thread._tasks == set()
             return result, caller_loop
         finally:
