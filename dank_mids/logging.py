@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 import logging
 import os
 import sys
@@ -9,6 +8,8 @@ from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from types import FrameType
 from typing import Any, Final, cast
+
+from librt.strings import StringWriter
 
 Level = int
 CallerInfo = tuple[str, int, str, str | None]
@@ -22,8 +23,6 @@ INFO: Final = logging.INFO
 DEBUG: Final = logging.DEBUG
 NOTSET: Final = logging.NOTSET
 
-
-StringIO: Final = io.StringIO
 
 print_stack: Final = traceback.print_stack
 
@@ -228,13 +227,12 @@ class CLogger(logging.Logger):
                 continue
             sinfo = None
             if stack_info:
-                sio = StringIO()
+                sio = StringWriter()
                 sio.write("Stack (most recent call last):\n")
                 print_stack(frame, file=sio)
                 sinfo = sio.getvalue()
                 if sinfo[-1] == "\n":
                     sinfo = sinfo[:-1]
-                sio.close()
             rv = (co_filename, cast(int, frame.f_lineno), co.co_name, sinfo)
             break
         return rv
