@@ -19,6 +19,12 @@ def test_float_moving_average_append_before_capacity() -> None:
     assert average.average == 1.5
 
 
+@pytest.mark.parametrize("capacity", [0, -1])
+def test_float_moving_average_rejects_non_positive_capacity(capacity: int) -> None:
+    with pytest.raises(ValueError, match="capacity must be positive"):
+        FloatMovingAverage(capacity)
+
+
 def test_float_moving_average_overwrites_oldest_value() -> None:
     average = FloatMovingAverage(3)
 
@@ -32,6 +38,21 @@ def test_float_moving_average_overwrites_oldest_value() -> None:
     assert average[0] == 2.0
     assert average[-1] == 4.0
     assert average.average == 3.0
+
+
+def test_float_moving_average_indexes_in_iteration_order_after_multiple_wraps() -> None:
+    average = FloatMovingAverage(3)
+
+    for value in (10.0, 20.0, 30.0, 40.0, 50.0):
+        average.append(value)
+
+    assert list(average) == [30.0, 40.0, 50.0]
+    assert average[0] == 30.0
+    assert average[1] == 40.0
+    assert average[2] == 50.0
+    assert average[-1] == 50.0
+    assert average[-2] == 40.0
+    assert average[-3] == 30.0
 
 
 def test_float_moving_average_empty_average_matches_old_zero_division_behavior() -> None:
