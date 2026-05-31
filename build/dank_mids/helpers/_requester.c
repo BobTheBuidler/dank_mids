@@ -14,7 +14,7 @@ PyInit__requester(void)
         fromlist = Py_BuildValue("(s)", "*");
         if (!fromlist) return NULL;
     }
-    tmp = PyImport_ImportModuleLevel("a850d07634195e716572__mypyc", NULL, NULL, fromlist, 0);
+    tmp = PyImport_ImportModuleLevel("ef7a1095370504e32934__mypyc", NULL, NULL, fromlist, 0);
     if (!tmp) return NULL;
     // Populate cross-group export tables lazily, just before we instantiate
     // the per-module real init. Deferring this out of the shared lib's own
@@ -27,7 +27,7 @@ PyInit__requester(void)
     PyObject *deps_capsule = PyObject_GetAttrString(tmp, "ensure_deps");
     if (deps_capsule != NULL) {
         int (*deps_func)(void) = (int (*)(void))PyCapsule_GetPointer(
-            deps_capsule, "a850d07634195e716572__mypyc.ensure_deps");
+            deps_capsule, "ef7a1095370504e32934__mypyc.ensure_deps");
         Py_DECREF(deps_capsule);
         if (deps_func == NULL) {
             Py_DECREF(tmp);
@@ -43,7 +43,7 @@ PyInit__requester(void)
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_dank_mids___helpers____requester");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "a850d07634195e716572__mypyc.init_dank_mids___helpers____requester");
+    void *init_func = PyCapsule_GetPointer(capsule, "ef7a1095370504e32934__mypyc.init_dank_mids___helpers____requester");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
