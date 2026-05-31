@@ -3,6 +3,7 @@
 #include <Python.h>
 #include <CPy.h>
 #include "random/librt_random.h"
+#include "strings/librt_strings.h"
 #include "time/librt_time.h"
 #include "vecs/librt_vecs.h"
 #ifndef MYPYC_DECLARED_tuple_T3CIO

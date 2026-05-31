@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1511];
+extern PyObject *CPyStatics[1510];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -300,9 +300,9 @@ extern int CPyExec_dank_mids___lock(PyObject *module);
 extern PyObject *CPyInit_dank_mids___lock(void);
 extern PyObject *CPyInitOnly_dank_mids___lock(void);
 extern PyObject *CPyStatic_logging___globals;
-extern CPyModule *CPyModule_io;
 extern CPyModule *CPyModule_traceback;
 extern CPyModule *CPyModule_contextlib;
+extern CPyModule *CPyModule_librt___strings;
 extern int CPyExec_dank_mids___logging(PyObject *module);
 extern PyObject *CPyInit_dank_mids___logging(void);
 extern PyObject *CPyInitOnly_dank_mids___logging(void);
@@ -1682,7 +1682,6 @@ extern CPyTagged CPyStatic_logging___WARN;
 extern CPyTagged CPyStatic_logging___INFO;
 extern CPyTagged CPyStatic_logging___DEBUG;
 extern CPyTagged CPyStatic_logging___NOTSET;
-extern PyObject *CPyStatic_logging___StringIO;
 extern PyObject *CPyStatic_logging___print_stack;
 extern PyObject *CPyStatic_logging____nameToLevel;
 extern PyObject *CPyStatic_logging____acquireLock;
