@@ -31,6 +31,11 @@ _PARITY_COVERED_CLOGGER_METHODS = {
     "warning",
 }
 
+_FAST_LEVEL_DIVERGENCE = (
+    "CLogger level inputs intentionally stay narrower than stdlib logging "
+    "to preserve tight mypyc-generated C for hot logging paths"
+)
+
 
 class _ListHandler(logging.Handler):
     def __init__(self) -> None:
@@ -105,6 +110,11 @@ def _assert_exception_parity(
     assert c_exc is not None
     assert type(c_exc) is type(stdlib_exc)
     assert c_exc.args == stdlib_exc.args
+
+
+def _assert_fast_level_type_divergence(call: Callable[[], object]) -> None:
+    exc = _capture_exception(call)
+    assert type(exc) is TypeError, _FAST_LEVEL_DIVERGENCE
 
 
 def _record_values(record: logging.LogRecord) -> dict[str, Any]:
@@ -263,8 +273,8 @@ def test_vendored_c_logger_methods_have_parity_coverage() -> None:
     assert vendored_methods == _PARITY_COVERED_CLOGGER_METHODS
 
 
-@pytest.mark.parametrize("level", [logging.INFO, "INFO", "NOPE", object()])
-def test_check_level_matches_stdlib(level: object) -> None:
+@pytest.mark.parametrize("level", [logging.INFO, "INFO", "NOPE"])
+def test_check_level_matches_stdlib(level: int | str) -> None:
     c_exc = _capture_exception(lambda: dank_logging._checkLevel(level))
     stdlib_exc = _capture_exception(lambda: logging._checkLevel(level))
 
@@ -275,9 +285,9 @@ def test_check_level_matches_stdlib(level: object) -> None:
 
 @pytest.mark.parametrize(
     "level",
-    [logging.NOTSET, logging.INFO, "INFO", "NOPE", object()],
+    [logging.NOTSET, logging.INFO, "INFO", "NOPE"],
 )
-def test_c_logger_init_matches_stdlib(level: object) -> None:
+def test_c_logger_init_matches_stdlib(level: int | str) -> None:
     c_exc = _capture_exception(lambda: CLogger("dank_mids.tests.logging.init", level))
     stdlib_exc = _capture_exception(
         lambda: logging.Logger("dank_mids.tests.logging.init", level),
@@ -337,9 +347,9 @@ def test_get_effective_level_matches_stdlib() -> None:
 @pytest.mark.parametrize("disabled", [False, True])
 @pytest.mark.parametrize(
     "level",
-    [logging.DEBUG, logging.INFO, logging.WARNING, "INFO", object()],
+    [logging.DEBUG, logging.INFO, logging.WARNING],
 )
-def test_is_enabled_for_matches_stdlib(level: object, disabled: bool) -> None:
+def test_is_enabled_for_matches_stdlib(level: int, disabled: bool) -> None:
     pair = _new_logger_pair(logging.INFO)
     pair.c_logger.disabled = disabled
     pair.stdlib_logger.disabled = disabled
@@ -391,19 +401,26 @@ def test_disabled_logging_entrypoint_matches_stdlib(
     assert pair.c_handler.records == pair.stdlib_handler.records == []
 
 
-def test_log_rejects_or_ignores_non_integer_level_like_stdlib(
+def test_level_type_inputs_are_intentional_mypyc_fast_path_divergence() -> None:
+    logger = CLogger("dank_mids.tests.logging.level_divergence", logging.DEBUG)
+
+    _assert_fast_level_type_divergence(
+        lambda: CLogger("dank_mids.tests.logging.level_divergence", object()),
+    )
+    _assert_fast_level_type_divergence(lambda: logger.isEnabledFor("INFO"))
+    _assert_fast_level_type_divergence(lambda: logger.isEnabledFor(object()))
+    _assert_fast_level_type_divergence(lambda: logger.log("INFO", "hello"))
+
+
+def test_log_with_integer_level_matches_stdlib_when_disabled(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     pair = _new_logger_pair(logging.DEBUG)
-    monkeypatch.setattr(logging, "raiseExceptions", True)
+    pair.c_logger.disabled = True
+    pair.stdlib_logger.disabled = True
 
-    c_exc = _capture_exception(lambda: pair.c_logger.log("INFO", "hello"))
-    stdlib_exc = _capture_exception(lambda: pair.stdlib_logger.log("INFO", "hello"))
-
-    _assert_exception_parity(c_exc, stdlib_exc)
-
-    monkeypatch.setattr(logging, "raiseExceptions", False)
-    _emit_pair(pair, "log", "INFO", "hello")
+    with _frozen_logging_time(monkeypatch):
+        _emit_pair(pair, "log", logging.INFO, "hidden")
 
     _assert_handler_parity(pair)
     assert pair.c_handler.records == pair.stdlib_handler.records == []
