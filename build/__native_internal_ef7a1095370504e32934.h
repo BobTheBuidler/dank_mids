@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1525];
+extern PyObject *CPyStatics[1526];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -1742,8 +1742,12 @@ extern char CPyDef_logging___CLogger____log(PyObject *cpy_r_self, CPyTagged cpy_
 extern PyObject *CPyPy_logging___CLogger____log(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_logging____py310_logging_caller_source_path(PyObject *cpy_r_filename);
 extern PyObject *CPyPy_logging____py310_logging_caller_source_path(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_logging____is_py310_logging_caller_internal_frame(PyObject *cpy_r_frame);
-extern PyObject *CPyPy_logging____is_py310_logging_caller_internal_frame(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_logging____is_logging_caller_internal_frame(PyObject *cpy_r_frame);
+extern PyObject *CPyPy_logging____is_logging_caller_internal_frame(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_logging____find_caller_frame(CPyTagged cpy_r_stacklevel);
+extern PyObject *CPyPy_logging____find_caller_frame(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_logging____find_caller_frame_py310(CPyTagged cpy_r_stacklevel);
+extern PyObject *CPyPy_logging____find_caller_frame_py310(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_logging_____top_level__(void);
 extern PyObject *CPyStatic_middleware___logger;
 extern PyObject *CPyStatic_middleware____controllers;
