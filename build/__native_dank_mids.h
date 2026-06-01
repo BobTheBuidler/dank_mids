@@ -232,6 +232,9 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *_request;
+    PyObject *_args;
+    PyObject *__exception;
 } dank_mids____exceptions___DankMidsClientResponseErrorObject;
 
 typedef struct {
@@ -635,7 +638,7 @@ typedef struct {
     PyObject *_w3;
     CPyTagged _max_jsonrpc_batch_size;
     PyObject *_sync_w3;
-    CPyTagged _chain_id;
+    PyObject *_chain_id;
     PyObject *_client_version;
     PyObject *_request_type;
     double __request_type_changed_ts;
@@ -664,7 +667,7 @@ typedef struct {
     PyObject *___mypyc_self__;
     PyObject *_self;
     PyObject *_w3;
-    CPyTagged _chainid;
+    PyObject *_chainid;
     char _using_reth_client;
     PyObject *_using_tenderly_client;
     char _using_chainstack_rpc;
