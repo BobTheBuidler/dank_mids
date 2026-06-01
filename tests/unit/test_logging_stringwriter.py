@@ -334,6 +334,23 @@ def test_find_caller_skips_compiled_logging_extension_frame() -> None:
     assert stdlib_caller[0] != logging._srcfile
 
 
+@pytest.mark.skipif(
+    sys.version_info >= (3, 11),
+    reason="py3.10 compiled caller-frame helper is compiled out on newer Python",
+)
+def test_py310_compiled_currentframe_preserves_user_frame(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def user_frame() -> str:
+        frame = sys._getframe()
+        monkeypatch.setattr(dank_logging.logging, "currentframe", lambda: frame)
+        caller = dank_logging._find_caller_frame_py310(1)
+        assert caller is not None
+        return caller.f_code.co_name
+
+    assert user_frame() == "user_frame"
+
+
 def test_get_effective_level_matches_stdlib() -> None:
     pair = _new_logger_pair(logging.NOTSET)
     c_parent = CLogger("dank_mids.tests.logging.parent", logging.ERROR)

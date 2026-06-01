@@ -343,7 +343,7 @@ def _find_caller_frame(stacklevel: int) -> FrameType | None:
 
 def _find_caller_frame_py310(stacklevel: int) -> FrameType | None:
     f = logging.currentframe()
-    if f is not None:
+    if f is not None and _is_logging_caller_internal_frame(f):
         f = f.f_back
     orig_f = f
 
