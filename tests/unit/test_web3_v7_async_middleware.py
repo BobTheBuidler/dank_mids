@@ -63,9 +63,17 @@ class _SyncProvider(BaseProvider):
 
 
 class _RecordingOnion:
-    def __init__(self) -> None:
+    def __init__(self, existing: tuple[Any, ...] = ()) -> None:
+        self.existing = existing
         self.add_calls: list[Any] = []
         self.inject_calls: list[tuple[Any, int]] = []
+
+    def __contains__(self, middleware_class: Any) -> bool:
+        return (
+            middleware_class in self.existing
+            or middleware_class in self.add_calls
+            or middleware_class in (call[0] for call in self.inject_calls)
+        )
 
     def add(self, middleware_class: Any) -> None:
         self.add_calls.append(middleware_class)
@@ -234,5 +242,28 @@ def test_sync_setup_uses_web3_v7_middleware_classes(monkeypatch) -> None:
 
         assert sync_w3.middleware_onion.add_calls == [AttributeDictMiddleware]
         assert sync_w3.middleware_onion.inject_calls == [(ExtraDataToPOAMiddleware, 0)]
+    finally:
+        helpers.sync_w3s.clear()
+
+
+def test_sync_setup_skips_existing_web3_v7_middleware(monkeypatch) -> None:
+    sync_w3 = SimpleNamespace(
+        eth=SimpleNamespace(is_async=False, chain_id=137),
+        provider=_SyncProvider(),
+        middleware_onion=_RecordingOnion(
+            existing=(AttributeDictMiddleware, ExtraDataToPOAMiddleware)
+        ),
+    )
+    async_w3 = object()
+    setup_result = object()
+    monkeypatch.setattr(dank_mids, "_ensure_side_effects", lambda: None)
+    monkeypatch.setattr(helpers, "get_async_w3", lambda _sync_w3: async_w3)
+    monkeypatch.setattr(helpers, "setup_dank_w3", lambda _async_w3: setup_result)
+    try:
+        helpers.sync_w3s.clear()
+        assert helpers.setup_dank_w3_from_sync(sync_w3) is setup_result
+
+        assert sync_w3.middleware_onion.add_calls == []
+        assert sync_w3.middleware_onion.inject_calls == []
     finally:
         helpers.sync_w3s.clear()

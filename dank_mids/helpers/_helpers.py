@@ -95,9 +95,14 @@ def setup_dank_w3_from_sync(sync_w3: Web3) -> DankWeb3:
 
     _ensure_side_effects()
     if sync_w3 not in sync_w3s:
-        __add_sync_attribute_dict_middleware(sync_w3)
-        if sync_w3.eth.chain_id not in skip_poa_middleware:
-            __add_sync_poa_middleware(sync_w3)
+        middleware_onion = sync_w3.middleware_onion
+        if AttributeDictMiddleware not in middleware_onion:
+            middleware_onion.add(AttributeDictMiddleware)
+        if (
+            sync_w3.eth.chain_id not in skip_poa_middleware
+            and ExtraDataToPOAMiddleware not in middleware_onion
+        ):
+            middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
         sync_w3s.append(sync_w3)
     return setup_dank_w3(get_async_w3(sync_w3))
 
@@ -149,35 +154,3 @@ def _sync_w3_from_async(w3: Web3) -> Web3:
     sync_w3.middleware_onion.clear()
     sync_w3.provider.middlewares = ()
     return sync_w3
-
-
-def __add_sync_attribute_dict_middleware(sync_w3: Web3) -> None:
-    """
-    Add Web3 v7's attribute-dict middleware to a synchronous Web3 instance.
-
-    Args:
-        sync_w3: The synchronous Web3 instance to add the middleware to.
-
-    Raises:
-        ValueError: If the provided Web3 instance is asynchronous.
-    """
-    if sync_w3.eth.is_async:
-        raise ValueError("You must pass in a sync Web3 instance.")
-    try:
-        sync_w3.middleware_onion.add(AttributeDictMiddleware)
-    except ValueError as e:
-        if str(e) != "You can't add the same un-named instance twice":
-            raise
-        # The middleware is already added
-
-
-def __add_sync_poa_middleware(sync_w3: Web3) -> None:
-    """
-    Add the Proof of Authority (PoA) middleware to a synchronous Web3 instance.
-
-    This ensures compatibility with PoA chains.
-
-    Args:
-        sync_w3: The synchronous Web3 instance to add the middleware to.
-    """
-    sync_w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
