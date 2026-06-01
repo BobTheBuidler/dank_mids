@@ -75,6 +75,8 @@ MYPYC_FLAGS = [
 ]
 MYPYC_ENV = {"MYPYC_STRICT_DUNDER_TYPING": "1"}
 MYPYC_BUILD_ARGS = [*MYPYC_TARGETS, *MYPYC_FLAGS]
+MYPYC_GROUP_NAME = "dank_mids"
+MYPYC_RUNTIME_MODULE = f"{MYPYC_GROUP_NAME}__mypyc"
 MYPYC_SETUP = """\
 from __future__ import annotations
 
@@ -99,6 +101,7 @@ setup(
         opt_level=os.getenv("MYPYC_OPT_LEVEL", "3"),
         debug_level=os.getenv("MYPYC_DEBUG_LEVEL", "1"),
         strict_dunder_typing=bool(int(os.getenv("MYPYC_STRICT_DUNDER_TYPING", "0"))),
+        group_name={group_name!r},
         log_trace=bool(int(os.getenv("MYPYC_LOG_TRACE", "0"))),
     ),
 )
@@ -166,13 +169,15 @@ def compiled_module_names(root: pathlib.Path) -> list[str]:
 
 
 def build_mypyc_command() -> list[str]:
-    return [sys.executable, "build/setup.py", "build_ext", "--inplace"]
+    return [sys.executable, "build/setup.py", "build_ext", "--inplace", "--force"]
 
 
 def run_mypyc(root: pathlib.Path) -> None:
     build_dir = root / "build"
     build_dir.mkdir(exist_ok=True)
-    (build_dir / "setup.py").write_text(MYPYC_SETUP.format(build_args=MYPYC_BUILD_ARGS))
+    (build_dir / "setup.py").write_text(
+        MYPYC_SETUP.format(build_args=MYPYC_BUILD_ARGS, group_name=MYPYC_GROUP_NAME)
+    )
     env = os.environ.copy()
     env.update(MYPYC_ENV)
     subprocess.run(build_mypyc_command(), cwd=root, env=env, check=True)

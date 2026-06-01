@@ -7,6 +7,9 @@ from pathlib import Path
 
 from scripts.ci.mypyc_targets import (
     MYPYC_BUILD_ARGS,
+    MYPYC_GROUP_NAME,
+    MYPYC_RUNTIME_MODULE,
+    MYPYC_SETUP,
     build_dependencies,
     extension_suffix,
     expand_mypyc_targets,
@@ -50,7 +53,13 @@ CHECK_WHEEL_SPEC.loader.exec_module(check_mypyc_wheel)
 def test_build_mypyc_command_contains_targets_and_flags() -> None:
     command = run_mypyc_build.build_mypyc_command()
 
-    assert command == [sys.executable, "build/setup.py", "build_ext", "--inplace"]
+    assert command == [
+        sys.executable,
+        "build/setup.py",
+        "build_ext",
+        "--inplace",
+        "--force",
+    ]
     assert "dank_mids/_batch.py" in MYPYC_BUILD_ARGS
     assert "dank_mids/helpers/_retry_mechanics.py" in MYPYC_BUILD_ARGS
     assert "dank_mids/stats/__init__.py" in MYPYC_BUILD_ARGS
@@ -59,6 +68,17 @@ def test_build_mypyc_command_contains_targets_and_flags() -> None:
     assert "--disable-error-code=unused-ignore" in MYPYC_BUILD_ARGS
     assert "--disable-error-code=arg-type" in MYPYC_BUILD_ARGS
     assert "--disable-error-code=override" in MYPYC_BUILD_ARGS
+
+
+def test_mypyc_setup_uses_deterministic_runtime_group_name() -> None:
+    rendered_setup = MYPYC_SETUP.format(
+        build_args=MYPYC_BUILD_ARGS,
+        group_name=MYPYC_GROUP_NAME,
+    )
+
+    assert MYPYC_GROUP_NAME == "dank_mids"
+    assert MYPYC_RUNTIME_MODULE == "dank_mids__mypyc"
+    assert "group_name='dank_mids'" in rendered_setup
 
 
 def test_mypyc_targets_expand_vendored_aiolimiter_sources() -> None:
@@ -84,7 +104,7 @@ build = [
 
 def test_mypyc_runtime_artifacts_find_top_level_runtime(tmp_path) -> None:
     suffix = extension_suffix()
-    runtime = tmp_path / f"abc123__mypyc{suffix}"
+    runtime = tmp_path / f"{MYPYC_RUNTIME_MODULE}{suffix}"
     nested_dir = tmp_path / "dank_mids"
     nested_dir.mkdir()
     nested_runtime = nested_dir / f"nested__mypyc{suffix}"
@@ -165,7 +185,22 @@ def test_check_mypyc_wheel_requires_top_level_runtime_artifact(tmp_path) -> None
     _write_wheel(wheel, ["dank_mids/_batch.test.so"])
 
     assert check_mypyc_wheel.check_wheel(wheel, ["dank_mids/_batch.py"]) == [
-        "pkg.whl: missing top-level mypyc runtime artifact"
+        "pkg.whl: missing top-level dank_mids__mypyc runtime artifact"
+    ]
+
+
+def test_check_mypyc_wheel_rejects_hash_named_runtime_artifact(tmp_path) -> None:
+    wheel = tmp_path / "pkg.whl"
+    _write_wheel(
+        wheel,
+        [
+            "f5ba6e22fbbacf90552f__mypyc.test.so",
+            "dank_mids/_batch.test.so",
+        ],
+    )
+
+    assert check_mypyc_wheel.check_wheel(wheel, ["dank_mids/_batch.py"]) == [
+        "pkg.whl: missing top-level dank_mids__mypyc runtime artifact"
     ]
 
 
@@ -174,7 +209,7 @@ def test_check_mypyc_wheel_accepts_top_level_runtime_artifact(tmp_path) -> None:
     _write_wheel(
         wheel,
         [
-            "abc123__mypyc.test.so",
+            "dank_mids__mypyc.test.so",
             "dank_mids/_batch.test.so",
         ],
     )

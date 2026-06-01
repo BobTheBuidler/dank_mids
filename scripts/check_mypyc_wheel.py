@@ -10,7 +10,7 @@ from glob import glob
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from scripts.ci.mypyc_targets import expand_mypyc_targets  # noqa: E402
+from scripts.ci.mypyc_targets import MYPYC_RUNTIME_MODULE, expand_mypyc_targets  # noqa: E402
 
 NATIVE_SUFFIXES = (".so", ".pyd")
 
@@ -35,10 +35,14 @@ def check_wheel(wheel_path: pathlib.Path, targets: list[str]) -> list[str]:
     with zipfile.ZipFile(wheel_path) as zf:
         names = set(zf.namelist())
     if not any(
-        "/" not in name and "__mypyc" in name and name.endswith(NATIVE_SUFFIXES)
+        "/" not in name
+        and name.startswith(MYPYC_RUNTIME_MODULE)
+        and name.endswith(NATIVE_SUFFIXES)
         for name in names
     ):
-        failures.append(f"{wheel_path.name}: missing top-level mypyc runtime artifact")
+        failures.append(
+            f"{wheel_path.name}: missing top-level {MYPYC_RUNTIME_MODULE} runtime artifact"
+        )
     for py_path in targets:
         ext_prefix = py_path[:-3]  # strip .py
         has_compiled = any(
