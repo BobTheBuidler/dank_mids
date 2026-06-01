@@ -193,26 +193,20 @@ def _fake_compiled_logging_path() -> str:
     return str(Path(dank_logging.__file__).with_name(f"logging{suffix}"))
 
 
-def _find_caller_through_compiled_logging_frame(
+def _find_caller_through_internal_logging_frame(
     logger: logging.Logger,
-) -> tuple[CallerInfo, CallerInfo]:
+) -> CallerInfo:
     namespace = {"logger": logger}
     code = compile(
         "def compiled_logging_wrapper():\n"
         "    return logger.findCaller()\n",
-        _fake_compiled_logging_path(),
+        _fake_compiled_logging_path()
+        if isinstance(logger, CLogger)
+        else logging._srcfile,
         "exec",
     )
     exec(code, namespace)
-    expected_line = sys._getframe().f_lineno + 1
-    caller = namespace["compiled_logging_wrapper"]()
-    expected = (
-        __file__,
-        expected_line,
-        "_find_caller_through_compiled_logging_frame",
-        None,
-    )
-    return caller, expected
+    return namespace["compiled_logging_wrapper"]()
 
 
 def _make_record(
@@ -318,11 +312,16 @@ def test_find_caller_exactly_matches_stdlib(
 
 
 def test_find_caller_skips_compiled_logging_extension_frame() -> None:
-    caller, expected = _find_caller_through_compiled_logging_frame(
+    c_caller = _find_caller_through_internal_logging_frame(
         get_c_logger("dank_mids.tests.logging.compiled_frame"),
     )
+    stdlib_caller = _find_caller_through_internal_logging_frame(
+        logging.Logger("dank_mids.tests.logging.stdlib_compiled_frame"),
+    )
 
-    assert caller == expected
+    assert c_caller == stdlib_caller
+    assert c_caller[0] != _fake_compiled_logging_path()
+    assert stdlib_caller[0] != logging._srcfile
 
 
 def test_get_effective_level_matches_stdlib() -> None:

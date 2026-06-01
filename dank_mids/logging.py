@@ -207,20 +207,15 @@ class CLogger(logging.Logger):
         Find the stack frame of the caller so that we can note the source
         file name, line number and function name.
         """
-        try:
-            f = sys._getframe()
-        except (AttributeError, ValueError):  # pragma: no cover
+        if sys.version_info < (3, 11):
+            f = _find_caller_frame_py310(stacklevel)
+        else:
+            try:
+                f = _find_caller_frame(stacklevel)
+            except (AttributeError, ValueError):  # pragma: no cover
+                f = None
+        if f is None:
             return "(unknown file)", 0, "(unknown function)", None
-
-        while stacklevel > 0:
-            if not _is_py310_logging_caller_internal_frame(f):
-                stacklevel -= 1
-                if stacklevel == 0:
-                    break
-            next_f = f.f_back
-            if next_f is None:
-                break
-            f = next_f
 
         co = f.f_code
         sinfo = None
@@ -327,8 +322,42 @@ def _py310_logging_caller_source_path(filename: str) -> str:
 _py310_logging_srcfile: Final = _py310_logging_caller_source_path(__file__)
 
 
-def _is_py310_logging_caller_internal_frame(frame: FrameType) -> bool:
+def _is_logging_caller_internal_frame(frame: FrameType) -> bool:
     filename = _py310_logging_caller_source_path(frame.f_code.co_filename)
     return filename == _srcfile or filename == _py310_logging_srcfile or (
         "importlib" in filename and "_bootstrap" in filename
     )
+
+
+def _find_caller_frame(stacklevel: int) -> FrameType | None:
+    f = sys._getframe()
+    while stacklevel > 0:
+        if not _is_logging_caller_internal_frame(f):
+            stacklevel -= 1
+            if stacklevel == 0:
+                break
+        next_f = f.f_back
+        if next_f is None:
+            break
+        f = next_f
+    return f
+
+
+def _find_caller_frame_py310(stacklevel: int) -> FrameType | None:
+    f = logging.currentframe()
+    if f is not None:
+        f = f.f_back
+    orig_f = f
+
+    while f and stacklevel > 1:
+        f = f.f_back
+        stacklevel -= 1
+    if f is None:
+        f = orig_f
+
+    while hasattr(f, "f_code"):
+        frame = cast(FrameType, f)
+        if not _is_logging_caller_internal_frame(frame):
+            return frame
+        f = frame.f_back
+    return None
