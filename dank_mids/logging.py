@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.machinery
 import logging
 import os
 import sys
@@ -202,40 +203,31 @@ class CLogger(logging.Logger):
         Find the stack frame of the caller so that we can note the source
         file name, line number and function name.
         """
-        f: FrameType | None
-        rv: CallerInfo
+        try:
+            f = sys._getframe()
+        except (AttributeError, ValueError):  # pragma: no cover
+            return "(unknown file)", 0, "(unknown function)", None
 
-        f = logging.currentframe()
-        # On some versions of IronPython, currentframe() returns None if
-        # IronPython isn't run with -X:Frames.
-        if f is not None:
-            f = f.f_back
-        orig_f = cast(FrameType, f)
-        while f and stacklevel > 1:
-            f = f.f_back
-            stacklevel -= 1
-        if not f:
-            f = orig_f
-        rv = "(unknown file)", 0, "(unknown function)", None
-        while hasattr(f, "f_code"):
-            frame = cast(FrameType, f)
-            co = frame.f_code
-            co_filename = co.co_filename
-            filename = os.path.normcase(co_filename)
-            if filename == _srcfile:
-                f = frame.f_back
-                continue
-            sinfo = None
-            if stack_info:
-                sio = StringWriter()
-                sio.write("Stack (most recent call last):\n")
-                print_stack(frame, file=sio)
-                sinfo = sio.getvalue()
-                if sinfo[-1] == "\n":
-                    sinfo = sinfo[:-1]
-            rv = (co_filename, cast(int, frame.f_lineno), co.co_name, sinfo)
-            break
-        return rv
+        while stacklevel > 0:
+            if not _is_py310_logging_caller_internal_frame(f):
+                stacklevel -= 1
+                if stacklevel == 0:
+                    break
+            next_f = f.f_back
+            if next_f is None:
+                break
+            f = next_f
+
+        co = f.f_code
+        sinfo = None
+        if stack_info:
+            sio = StringWriter()
+            sio.write("Stack (most recent call last):\n")
+            print_stack(f, file=sio)
+            sinfo = sio.getvalue()
+            if sinfo[-1] == "\n":
+                sinfo = sinfo[:-1]
+        return co.co_filename, cast(int, f.f_lineno), co.co_name, sinfo
 
     def makeRecord(
         self,
@@ -308,3 +300,31 @@ class CLogger(logging.Logger):
             sinfo,
         )
         self.handle(record)
+
+
+# ---------------------------------------------------------------------------
+# Py3.10 compiled caller-frame helpers
+#
+# Python 3.10's logging caller walk only knows about stdlib logging frames.
+# When this module is compiled by mypyc, CLogger frames can surface with native
+# extension filenames. Keep this scoped helper block isolated from the main
+# logging implementation so the compatibility boundary stays obvious.
+# ---------------------------------------------------------------------------
+
+
+def _py310_logging_caller_source_path(filename: str) -> str:
+    normalized = os.path.normcase(filename)
+    for suffix in importlib.machinery.EXTENSION_SUFFIXES:
+        if normalized.endswith(suffix):
+            return f"{normalized[: -len(suffix)]}.py"
+    return normalized
+
+
+_py310_logging_srcfile: Final = _py310_logging_caller_source_path(__file__)
+
+
+def _is_py310_logging_caller_internal_frame(frame: FrameType) -> bool:
+    filename = _py310_logging_caller_source_path(frame.f_code.co_filename)
+    return filename == _srcfile or filename == _py310_logging_srcfile or (
+        "importlib" in filename and "_bootstrap" in filename
+    )
