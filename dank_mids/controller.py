@@ -28,7 +28,7 @@ from dank_mids._uid import UIDGenerator
 from dank_mids.exceptions import GarbageCollectionError
 from dank_mids.helpers._codec import RawResponse, decode_raw
 from dank_mids.helpers._errors import log_request_type_switch
-from dank_mids.helpers._helpers import _sync_w3_from_async, w3_version_major
+from dank_mids.helpers._helpers import _sync_w3_from_async
 from dank_mids.helpers._multicall import MulticallContract, _get_multicall2, _get_multicall3
 from dank_mids.helpers._rate_limit import rate_limit_inactive
 from dank_mids.helpers._requester import _requester
@@ -565,4 +565,4 @@ class DankMiddlewareController:
 
 @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=0)
 def _get_client_version(sync_w3: Web3) -> str:
-    return sync_w3.client_version if w3_version_major >= 6 else cast(str, sync_w3.clientVersion)  # type: ignore [attr-defined]
+    return sync_w3.client_version

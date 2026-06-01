@@ -1311,12 +1311,19 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+} dank_mids___middleware___DankMiddlewareObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
     PyObject *___mypyc_generator_attribute__make_request;
-    PyObject *___mypyc_generator_attribute__web3;
     int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_generator_attribute___;
+    PyObject *___mypyc_generator_attribute__async_w3;
     tuple_T2OO ___mypyc_generator_attribute__controller_key;
     PyObject *___mypyc_generator_attribute__controller;
-} dank_mids___middleware___dank_middleware_genObject;
+} dank_mids___middleware___async_wrap_make_request_DankMiddleware_genObject;
 
 typedef struct {
     PyObject_HEAD

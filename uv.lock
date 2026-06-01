@@ -826,7 +826,7 @@ wheels = [
 
 [[package]]
 name = "dank-mids"
-version = "4.20.209"
+version = "4.20.210"
 source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
@@ -913,7 +913,7 @@ requires-dist = [
     { name = "librt", specifier = ">=0.11,<1" },
     { name = "multicall", specifier = ">=0.6.2,<1" },
     { name = "typed-envs", specifier = "==0.2.4" },
-    { name = "web3", specifier = ">=5.27,!=5.29.*,!=5.30.*,!=5.31.1,!=5.31.2,<8" },
+    { name = "web3", specifier = ">=7,<8" },
 ]
 
 [package.metadata.requires-dev]

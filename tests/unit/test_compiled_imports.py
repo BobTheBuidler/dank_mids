@@ -57,6 +57,14 @@ def _native_suffixes() -> tuple[str, ...]:
     return tuple(dict.fromkeys((suffix, platform_suffix, ".pyd", ".so")))
 
 
+def _assert_dank_middleware_removal(exc: ImportError) -> None:
+    message = str(exc)
+    assert "dank_middleware" in message
+    assert "web3 v7" in message
+    assert "DankMiddleware" in message
+    assert "setup_dank_w3" in message
+
+
 @pytest.mark.parametrize("module_name", MODULE_NAMES, ids=MODULE_NAMES)
 def test_mypyc_target_imports_compiled_extension(module_name: str) -> None:
     _prepare_imports()
@@ -68,3 +76,22 @@ def test_mypyc_target_imports_compiled_extension(module_name: str) -> None:
         f"{module_name} imported {module_file!r}; "
         f"expected native extension ending with one of {_native_suffixes()!r}"
     )
+
+
+def test_compiled_middleware_rejects_legacy_dank_middleware_import() -> None:
+    _prepare_imports()
+    module = importlib.import_module("dank_mids.middleware")
+    module_file = getattr(module, "__file__", None)
+
+    assert isinstance(module_file, str) and module_file.endswith(_native_suffixes()), (
+        f"dank_mids.middleware imported {module_file!r}; "
+        f"expected native extension ending with one of {_native_suffixes()!r}"
+    )
+
+    with pytest.raises(ImportError) as getattr_exc:
+        getattr(module, "dank_middleware")
+    _assert_dank_middleware_removal(getattr_exc.value)
+
+    with pytest.raises(ImportError) as import_exc:
+        exec("from dank_mids.middleware import dank_middleware", {})
+    _assert_dank_middleware_removal(import_exc.value)

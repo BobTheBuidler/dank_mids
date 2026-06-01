@@ -4,7 +4,7 @@ from importlib import import_module
 from typing import TYPE_CHECKING, Any, Final
 
 __all__ = [
-    "dank_middleware",
+    "DankMiddleware",
     "BlockSemaphore",
     "setup_dank_w3",
     "setup_dank_w3_from_sync",
@@ -38,6 +38,13 @@ _ALIASES: Final[dict[str, str]] = {
     "eth": "dank_eth",
 }
 
+_DANK_MIDDLEWARE_REMOVAL_MESSAGE: Final = (
+    "`dank_middleware` was the pre-web3 v7 function-style middleware and is no "
+    "longer supported. Use `from dank_mids.middleware import DankMiddleware` and "
+    "`async_w3.middleware_onion.inject(DankMiddleware, layer=0)`, or call "
+    "`setup_dank_w3(async_w3)` / `setup_dank_w3_from_sync(sync_w3)`."
+)
+
 _LAZY_IMPORTS: Final[dict[str, tuple[str, str]]] = {
     "patch_eth_utils": ("dank_mids._eth_utils", "patch_eth_utils"),
     "DankContractCall": ("dank_mids.brownie_patch.types", "DankContractCall"),
@@ -48,7 +55,7 @@ _LAZY_IMPORTS: Final[dict[str, tuple[str, str]]] = {
     "BrownieNotConnectedError": ("dank_mids.exceptions", "BrownieNotConnectedError"),
     "setup_dank_w3": ("dank_mids.helpers", "setup_dank_w3"),
     "setup_dank_w3_from_sync": ("dank_mids.helpers", "setup_dank_w3_from_sync"),
-    "dank_middleware": ("dank_mids.middleware", "dank_middleware"),
+    "DankMiddleware": ("dank_mids.middleware", "DankMiddleware"),
     "BlockSemaphore": ("dank_mids.semaphores", "BlockSemaphore"),
     "RetryEvent": ("dank_mids.retry_observer", "RetryEvent"),
     "RetryObserver": ("dank_mids.retry_observer", "RetryObserver"),
@@ -71,7 +78,7 @@ _NEEDS_SIDE_EFFECTS: Final[set[str]] = {
     "instances",
     "setup_dank_w3",
     "setup_dank_w3_from_sync",
-    "dank_middleware",
+    "DankMiddleware",
     "Contract",
     "dank_web3",
     "dank_eth",
@@ -98,7 +105,7 @@ if TYPE_CHECKING:
         BrowniePatchNotInitializedError,
     )
     from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
-    from dank_mids.middleware import dank_middleware
+    from dank_mids.middleware import DankMiddleware
     from dank_mids.retry_observer import (
         RetryEvent,
         RetryObserver,
@@ -210,6 +217,8 @@ def __getattr__(name: str) -> Any:
         BrowniePatchNotInitializedError: If brownie is connected but patch is not initialized.
         AttributeError: If the attribute is not found.
     """
+    if name == "dank_middleware":
+        raise ImportError(_DANK_MIDDLEWARE_REMOVAL_MESSAGE)
     if name in _ALIASES:
         return _load_attribute(_ALIASES[name], alias=name)
     if name in _LAZY_IMPORTS:

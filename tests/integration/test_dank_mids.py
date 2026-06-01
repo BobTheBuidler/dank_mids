@@ -30,7 +30,7 @@ MULTIBLOCK_WORK = (call_chai(i, height - i) for i in range(1000))
 
 
 @pytest.mark.asyncio_cooperative
-async def test_dank_middleware() -> None:
+async def test_middleware_controller_processes_calls() -> None:
     await igather(BIG_WORK)
     controller = instances[chain.id][0]
     cid = controller.call_uid.latest
