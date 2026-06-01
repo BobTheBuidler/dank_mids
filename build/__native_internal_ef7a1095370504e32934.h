@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1503];
+extern PyObject *CPyStatics[1517];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -420,6 +420,7 @@ extern PyTypeObject *CPyType__exceptions___OutOfGas;
 extern PyTypeObject *CPyType__exceptions___PayloadTooLarge;
 extern PyTypeObject *CPyType__exceptions___ExceedsMaxBatchSize;
 extern PyTypeObject *CPyType__exceptions___DankMidsClientResponseError;
+extern PyObject *CPyDef__exceptions___DankMidsClientResponseError(PyObject *cpy_r_exc, PyObject *cpy_r_request);
 extern PyTypeObject *CPyType__exceptions___DankMidsInternalError;
 extern PyTypeObject *CPyType__exceptions___RateLimitError;
 extern PyTypeObject *CPyType__exceptions___ChainstackRateLimitError;
@@ -869,7 +870,7 @@ extern PyObject *CPyPy_types____get_method_object(PyObject *self, PyObject *cons
 extern char CPyDef_types_____top_level__(void);
 extern PyObject *CPyStatic_constants___TOO_MUCH_DATA_ERRS;
 extern PyObject *CPyStatic_constants___RETRY_ERRS;
-extern CPyTagged CPyStatic_constants___GAS_LIMIT;
+extern PyObject *CPyStatic_constants___GAS_LIMIT;
 extern PyObject *CPyStatic_constants___MULTICALL2_OVERRIDE_CODE;
 extern PyObject *CPyStatic_constants___MULTICALL3_OVERRIDE_CODE;
 extern PyObject *CPyStatic_constants___MULTICALL2_DEPLOY_BLOCKS;
@@ -1742,7 +1743,7 @@ extern PyObject *CPyStatic_middleware___logger;
 extern PyObject *CPyStatic_middleware____controllers;
 extern PyObject *CPyStatic_middleware____current_thread;
 extern PyTypeObject *CPyType_middleware___DankMiddleware;
-extern PyObject *CPyDef_middleware___DankMiddleware(PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
+extern PyObject *CPyDef_middleware___DankMiddleware(void);
 extern PyTypeObject *CPyType_middleware___async_wrap_make_request_DankMiddleware_gen;
 extern PyObject *CPyDef_middleware___async_wrap_make_request_DankMiddleware_gen(void);
 extern CPyThreadLocal dank_mids___middleware___async_wrap_make_request_DankMiddleware_genObject *middleware___async_wrap_make_request_DankMiddleware_gen_free_instance;
