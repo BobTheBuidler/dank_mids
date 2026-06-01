@@ -38,6 +38,13 @@ _ALIASES: Final[dict[str, str]] = {
     "eth": "dank_eth",
 }
 
+_DANK_MIDDLEWARE_REMOVAL_MESSAGE: Final = (
+    "`dank_middleware` was the pre-web3 v7 function-style middleware and is no "
+    "longer supported. Use `from dank_mids.middleware import DankMiddleware` and "
+    "`async_w3.middleware_onion.inject(DankMiddleware, layer=0)`, or call "
+    "`setup_dank_w3(async_w3)` / `setup_dank_w3_from_sync(sync_w3)`."
+)
+
 _LAZY_IMPORTS: Final[dict[str, tuple[str, str]]] = {
     "patch_eth_utils": ("dank_mids._eth_utils", "patch_eth_utils"),
     "DankContractCall": ("dank_mids.brownie_patch.types", "DankContractCall"),
@@ -210,6 +217,8 @@ def __getattr__(name: str) -> Any:
         BrowniePatchNotInitializedError: If brownie is connected but patch is not initialized.
         AttributeError: If the attribute is not found.
     """
+    if name == "dank_middleware":
+        raise ImportError(_DANK_MIDDLEWARE_REMOVAL_MESSAGE)
     if name in _ALIASES:
         return _load_attribute(_ALIASES[name], alias=name)
     if name in _LAZY_IMPORTS:

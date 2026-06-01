@@ -7,6 +7,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
+import pytest
 from hexbytes import HexBytes
 from web3 import AsyncWeb3
 from web3.middleware import AttributeDictMiddleware, ExtraDataToPOAMiddleware
@@ -105,6 +106,14 @@ def _async_w3(response: RPCResponse | None = None) -> AsyncWeb3:
     return async_w3
 
 
+def _assert_dank_middleware_removal(exc: ImportError) -> None:
+    message = str(exc)
+    assert "dank_middleware" in message
+    assert "web3 v7" in message
+    assert "DankMiddleware" in message
+    assert "setup_dank_w3" in message
+
+
 def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
     async def run() -> None:
         middleware_module = _middleware_module_for_tests()
@@ -183,9 +192,15 @@ def test_web3_v7_middleware_class_reuses_controller_for_web3_thread_pair(monkeyp
     asyncio.run(run())
 
 
-def test_non_mainnet_setup_injects_web3_v7_poa_middleware(monkeypatch) -> None:
-    async_w3 = _async_w3()
+def test_non_mainnet_setup_injects_web3_v7_poa_middleware_before_dank(monkeypatch) -> None:
+    dank_eth = object()
+    async_w3 = SimpleNamespace(
+        eth=SimpleNamespace(is_async=True),
+        provider=_AsyncProvider(),
+        middleware_onion=_RecordingOnion(),
+    )
     monkeypatch.setattr(dank_mids, "_ensure_side_effects", lambda: None)
+    monkeypatch.setattr(helpers, "DankEth", lambda _async_w3: dank_eth)
     monkeypatch.setattr(
         helpers,
         "_sync_w3_from_async",
@@ -195,10 +210,42 @@ def test_non_mainnet_setup_injects_web3_v7_poa_middleware(monkeypatch) -> None:
         helpers.dank_w3s.clear()
         helpers.setup_dank_w3(async_w3)
 
-        assert middleware.DankMiddleware in tuple(async_w3.middleware_onion)
-        assert ExtraDataToPOAMiddleware in tuple(async_w3.middleware_onion)
+        assert async_w3.middleware_onion.inject_calls == [
+            (ExtraDataToPOAMiddleware, 0),
+            (middleware.DankMiddleware, 0),
+        ]
+        assert async_w3.eth is dank_eth
     finally:
         helpers.dank_w3s.clear()
+
+
+def test_dank_middleware_attribute_raises_migration_error() -> None:
+    middleware_module = _middleware_module_for_tests()
+
+    with pytest.raises(ImportError) as exc_info:
+        getattr(middleware_module, "dank_middleware")
+
+    _assert_dank_middleware_removal(exc_info.value)
+
+
+def test_dank_middleware_import_raises_migration_error(monkeypatch) -> None:
+    middleware_module = _middleware_module_for_tests()
+    monkeypatch.setitem(sys.modules, "dank_mids.middleware", middleware_module)
+    monkeypatch.setattr(dank_mids, "middleware", middleware_module, raising=False)
+
+    with pytest.raises(ImportError) as exc_info:
+        exec("from dank_mids.middleware import dank_middleware", {})
+
+    _assert_dank_middleware_removal(exc_info.value)
+
+
+def test_top_level_dank_middleware_import_raises_migration_error() -> None:
+    dank_mids.__dict__.pop("dank_middleware", None)
+
+    with pytest.raises(ImportError) as exc_info:
+        exec("from dank_mids import dank_middleware", {})
+
+    _assert_dank_middleware_removal(exc_info.value)
 
 
 def test_web3_v7_poa_middleware_formats_async_block_response() -> None:

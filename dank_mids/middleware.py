@@ -12,6 +12,13 @@ logger: Final = get_c_logger(__name__)
 
 __all__ = ["DankMiddleware"]
 
+_DANK_MIDDLEWARE_REMOVAL_MESSAGE: Final = (
+    "`dank_middleware` was the pre-web3 v7 function-style middleware and is no "
+    "longer supported. Use `from dank_mids.middleware import DankMiddleware` and "
+    "`async_w3.middleware_onion.inject(DankMiddleware, layer=0)`, or call "
+    "`setup_dank_w3(async_w3)` / `setup_dank_w3_from_sync(sync_w3)`."
+)
+
 # Each web3 + thread pair gets its own controller
 _controllers: Final[dict[tuple[Web3, threading.Thread], DankMiddlewareController]] = {}
 
@@ -32,3 +39,12 @@ class DankMiddleware(Web3Middleware):
             controller = DankMiddlewareController(async_w3)
             _controllers[controller_key] = controller
         return controller
+
+
+def _module_getattr(name: str) -> object:
+    if name == "dank_middleware":
+        raise ImportError(_DANK_MIDDLEWARE_REMOVAL_MESSAGE)
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+
+__getattr__ = _module_getattr  # TODO: remove when mypyc issue 1198 is resolved.
