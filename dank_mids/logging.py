@@ -274,7 +274,16 @@ class CLogger(logging.Logger):
             # exception on some versions of IronPython. We trap it here so that
             # IronPython can use logging.
             try:
-                fn, lno, func, sinfo = self.findCaller(stack_info, stacklevel)
+                if sys.version_info < (3, 11):
+                    frame = _py310_find_log_caller_frame(stacklevel)
+                    if frame is None:
+                        fn, lno, func = "(unknown file)", 0, "(unknown function)"
+                    else:
+                        fn, lno, func, sinfo = _py310_caller_info_from_frame(
+                            frame, stack_info
+                        )
+                else:
+                    fn, lno, func, sinfo = self.findCaller(stack_info, stacklevel)
             except ValueError:  # pragma: no cover
                 fn, lno, func = "(unknown file)", 0, "(unknown function)"
         else:  # pragma: no cover
@@ -342,7 +351,10 @@ def _find_caller_frame(stacklevel: int) -> FrameType | None:
 
 
 def _find_caller_frame_py310(stacklevel: int) -> FrameType | None:
-    f = logging.currentframe()
+    try:
+        f = logging.currentframe()
+    except ValueError:
+        f = sys._getframe()
     if f is not None and _is_logging_caller_internal_frame(f):
         f = f.f_back
     orig_f = f
@@ -359,3 +371,33 @@ def _find_caller_frame_py310(stacklevel: int) -> FrameType | None:
             return frame
         f = frame.f_back
     return None
+
+
+def _py310_find_log_caller_frame(stacklevel: int) -> FrameType | None:
+    f = sys._getframe()
+    while f is not None and _is_logging_caller_internal_frame(f):
+        f = f.f_back
+
+    while f is not None and stacklevel > 1:
+        f = f.f_back
+        stacklevel -= 1
+
+    while f is not None and _is_logging_caller_internal_frame(f):
+        f = f.f_back
+    return f
+
+
+def _py310_caller_info_from_frame(
+    frame: FrameType,
+    stack_info: bool,
+) -> CallerInfo:
+    co = frame.f_code
+    sinfo = None
+    if stack_info:
+        sio = StringWriter()
+        sio.write("Stack (most recent call last):\n")
+        print_stack(frame, file=sio)
+        sinfo = sio.getvalue()
+        if sinfo[-1] == "\n":
+            sinfo = sinfo[:-1]
+    return co.co_filename, cast(int, frame.f_lineno), co.co_name, sinfo

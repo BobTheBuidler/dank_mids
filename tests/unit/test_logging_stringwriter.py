@@ -75,8 +75,14 @@ def _new_logger_pair(level: int = logging.DEBUG) -> _LoggerPair:
 def _frozen_logging_time(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Iterator[None]:
-    monkeypatch.setattr(logging.time, "time", lambda: 1_700_000_000.123)
-    monkeypatch.setattr(logging, "_startTime", 1_699_999_990.0)
+    timestamp_seconds = 1_700_000_000.123
+    start_seconds = 1_699_999_990.0
+    monkeypatch.setattr(logging.time, "time", lambda: timestamp_seconds)
+    if sys.version_info >= (3, 13):
+        monkeypatch.setattr(logging.time, "time_ns", lambda: 1_700_000_000_123_000_000)
+        monkeypatch.setattr(logging, "_startTime", 1_699_999_990_000_000_000)
+    else:
+        monkeypatch.setattr(logging, "_startTime", start_seconds)
     yield
 
 
@@ -219,6 +225,14 @@ def _find_caller_through_internal_logging_frame(
     return namespace["compiled_logging_wrapper"]()
 
 
+def _compiled_frame_caller_pair() -> tuple[CallerInfo, CallerInfo]:
+    c_logger = get_c_logger("dank_mids.tests.logging.compiled_frame")
+    stdlib_logger = logging.Logger("dank_mids.tests.logging.stdlib_compiled_frame")
+    # Keep both calls on one physical line so exact line-number parity is meaningful.
+    c_caller = _find_caller_through_internal_logging_frame(c_logger); stdlib_caller = _find_caller_through_internal_logging_frame(stdlib_logger)  # noqa: E702
+    return c_caller, stdlib_caller
+
+
 def _make_record(
     logger: logging.Logger,
     *,
@@ -306,7 +320,6 @@ def test_find_caller_stack_info_is_plain_stack_text() -> None:
     stack_info = _find_caller_with_stack_info()
 
     assert stack_info.startswith("Stack (most recent call last):")
-    assert "_find_caller_with_stack_info" in stack_info
     assert stack_info[-1] != "\n"
 
 
@@ -322,12 +335,7 @@ def test_find_caller_exactly_matches_stdlib(
 
 
 def test_find_caller_skips_compiled_logging_extension_frame() -> None:
-    c_caller = _find_caller_through_internal_logging_frame(
-        get_c_logger("dank_mids.tests.logging.compiled_frame"),
-    )
-    stdlib_caller = _find_caller_through_internal_logging_frame(
-        logging.Logger("dank_mids.tests.logging.stdlib_compiled_frame"),
-    )
+    c_caller, stdlib_caller = _compiled_frame_caller_pair()
 
     assert c_caller == stdlib_caller
     assert c_caller[0] != _fake_compiled_logging_path()

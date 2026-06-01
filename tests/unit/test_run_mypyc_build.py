@@ -53,7 +53,13 @@ CHECK_WHEEL_SPEC.loader.exec_module(check_mypyc_wheel)
 def test_build_mypyc_command_contains_targets_and_flags() -> None:
     command = run_mypyc_build.build_mypyc_command()
 
-    assert command == [sys.executable, "build/setup.py", "build_ext", "--inplace"]
+    assert command == [
+        sys.executable,
+        "build/setup.py",
+        "build_ext",
+        "--inplace",
+        "--force",
+    ]
     assert "dank_mids/_batch.py" in MYPYC_BUILD_ARGS
     assert "dank_mids/helpers/_retry_mechanics.py" in MYPYC_BUILD_ARGS
     assert "dank_mids/stats/__init__.py" in MYPYC_BUILD_ARGS

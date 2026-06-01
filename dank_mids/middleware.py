@@ -1,5 +1,5 @@
 import threading
-from typing import Final
+from typing import Any, Final, cast
 
 from web3 import Web3
 from web3.middleware import Web3Middleware
@@ -20,7 +20,7 @@ _DANK_MIDDLEWARE_REMOVAL_MESSAGE: Final = (
 )
 
 # Each web3 + thread pair gets its own controller
-_controllers: Final[dict[tuple[Web3, threading.Thread], DankMiddlewareController]] = {}
+_controllers: Final[dict[tuple[Web3, threading.Thread], Any]] = {}
 
 _current_thread: Final = threading.current_thread
 
@@ -38,7 +38,7 @@ class DankMiddleware(Web3Middleware):
         if controller is None:
             controller = DankMiddlewareController(async_w3)
             _controllers[controller_key] = controller
-        return controller
+        return cast(AsyncMakeRequestFn, controller)
 
 
 def _module_getattr(name: str) -> object:

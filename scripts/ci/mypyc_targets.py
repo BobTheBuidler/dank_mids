@@ -169,7 +169,7 @@ def compiled_module_names(root: pathlib.Path) -> list[str]:
 
 
 def build_mypyc_command() -> list[str]:
-    return [sys.executable, "build/setup.py", "build_ext", "--inplace"]
+    return [sys.executable, "build/setup.py", "build_ext", "--inplace", "--force"]
 
 
 def run_mypyc(root: pathlib.Path) -> None:
