@@ -46,7 +46,7 @@ def get_c_logger(name: str) -> CLogger:
         return cast(CLogger, logging.getLogger(name))
 
 
-def _checkLevel(level: Level | str) -> Level:
+def _checkLevel(level: object) -> Level:
     if isinstance(level, int):
         rv = level
     elif str(level) == level:
@@ -59,7 +59,7 @@ def _checkLevel(level: Level | str) -> Level:
 
 
 class CLogger(logging.Logger):
-    def __init__(self, name: str, level: Level | str = logging.NOTSET) -> None:
+    def __init__(self, name: str, level: object = logging.NOTSET) -> None:
         """
         Initialize the logger with a name and an optional level.
         """
@@ -70,7 +70,7 @@ class CLogger(logging.Logger):
         self.propagate: bool = True
         self.handlers: list[logging.Handler] = []
         self.disabled: bool = False
-        self._cache: Final[dict[Level, bool]] = {}
+        self._cache: Final[dict[object, bool]] = {}
 
     def getEffectiveLevel(self) -> int:
         """
@@ -88,7 +88,7 @@ class CLogger(logging.Logger):
             logger = logger.parent
         return NOTSET
 
-    def isEnabledFor(self, level: Level) -> bool:
+    def isEnabledFor(self, level: object) -> bool:
         """
         Is this logger enabled for level 'level'?
         """
@@ -186,7 +186,7 @@ class CLogger(logging.Logger):
         """
         self.critical(msg, *args, **kwargs)
 
-    def log(self, level: Level, msg: object, *args: Any, **kwargs: Any) -> None:
+    def log(self, level: object, msg: object, *args: Any, **kwargs: Any) -> None:
         """
         Log 'msg % args' with the integer severity 'level'.
 
@@ -195,6 +195,10 @@ class CLogger(logging.Logger):
 
         logger.log(level, "We have a %s", "mysterious problem", exc_info=1)
         """
+        if not isinstance(level, int):
+            if logging.raiseExceptions:
+                raise TypeError("level must be an integer")
+            return
         if self.isEnabledFor(level):
             self._log(level, msg, args, **kwargs)
 
