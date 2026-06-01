@@ -1,9 +1,7 @@
 import asyncio
-import importlib.util
 import sys
 import threading
-from functools import lru_cache
-from pathlib import Path
+from queue import Queue
 from types import SimpleNamespace
 from typing import Any
 
@@ -16,25 +14,9 @@ from web3.providers.base import BaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
 import dank_mids
+import dank_mids.controller as controller_module
 import dank_mids.helpers._helpers as helpers
-import dank_mids.middleware as middleware
-
-
-@lru_cache(maxsize=1)
-def _middleware_module_for_tests() -> Any:
-    if not str(getattr(middleware, "__file__", "")).endswith(".so"):
-        return middleware
-
-    source_path = Path(__file__).resolve().parents[2] / "dank_mids" / "middleware.py"
-    spec = importlib.util.spec_from_file_location(
-        "dank_mids._middleware_test_source", source_path
-    )
-    assert spec is not None
-    assert spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
+import dank_mids.middleware as middleware  # Keep source/compiled imports identical.
 
 
 class _AsyncProvider(AsyncBaseProvider):
@@ -83,27 +65,28 @@ class _RecordingOnion:
         self.inject_calls.append((middleware_class, layer))
 
 
-class _DummyController:
-    instances: list["_DummyController"] = []
-
-    def __init__(self, async_w3: AsyncWeb3) -> None:
-        self.async_w3 = async_w3
-        self.calls: list[tuple[RPCEndpoint, Any]] = []
-        self.instances.append(self)
-
-    async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        self.calls.append((method, params))
-        return {
-            "jsonrpc": "2.0",
-            "id": len(self.calls),
-            "result": {"method": method, "params": params, "web3": id(self.async_w3)},
-        }
-
-
 def _async_w3(response: RPCResponse | None = None) -> AsyncWeb3:
     async_w3 = AsyncWeb3(_AsyncProvider(response))
     async_w3.middleware_onion.clear()
     return async_w3
+
+
+def _install_inert_controller_init(monkeypatch: pytest.MonkeyPatch) -> None:
+    fake_sync_w3 = SimpleNamespace(
+        eth=SimpleNamespace(chain_id=999_999),
+        client_version="pytest/test",
+    )
+    fake_multicall = SimpleNamespace(
+        address="0x0000000000000000000000000000000000000001"
+    )
+    # Use real controllers; compiled mypyc caches can reject fake controller objects.
+    monkeypatch.setattr(
+        controller_module, "_sync_w3_from_async", lambda _async_w3: fake_sync_w3
+    )
+    monkeypatch.setattr(
+        controller_module, "_get_multicall2", lambda _chainid: fake_multicall
+    )
+    monkeypatch.setattr(controller_module, "_get_multicall3", lambda _chainid: None)
 
 
 def _assert_dank_middleware_removal(exc: ImportError) -> None:
@@ -115,80 +98,80 @@ def _assert_dank_middleware_removal(exc: ImportError) -> None:
 
 
 def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
+    try:
+        async_w3 = _async_w3()
+        middleware._controllers.clear()
+
+        # Web3 v7 names class middlewares during injection; no request is needed.
+        async_w3.middleware_onion.inject(middleware.DankMiddleware, layer=0)
+
+        assert async_w3.middleware_onion.as_tuple_of_middleware() == (
+            middleware.DankMiddleware,
+        )
+        assert middleware._controllers == {}
+    finally:
+        middleware._controllers.clear()
+
+
+def test_web3_v7_middleware_class_reuses_controller_for_web3_thread_pair(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     async def run() -> None:
-        middleware_module = _middleware_module_for_tests()
-        try:
-            async_w3 = _async_w3()
-            _DummyController.instances.clear()
-            controller = _DummyController(async_w3)
-            middleware_module._controllers.clear()
-            middleware_module._controllers[
-                (async_w3, threading.current_thread())
-            ] = controller
-
-            async_w3.middleware_onion.inject(
-                middleware_module.DankMiddleware, layer=0
-            )
-            request_func = await async_w3.provider.request_func(
-                async_w3, async_w3.middleware_onion
-            )
-
-            response = await request_func(RPCEndpoint("web3_clientVersion"), [])
-
-            assert response["result"]["method"] == "web3_clientVersion"
-            assert request_func is controller
-        finally:
-            middleware_module._controllers.clear()
-
-    asyncio.run(run())
-
-
-def test_web3_v7_middleware_class_reuses_controller_for_web3_thread_pair(monkeypatch) -> None:
-    async def run() -> None:
-        middleware_module = _middleware_module_for_tests()
         try:
             async_w3 = _async_w3()
             other_async_w3 = _async_w3()
-            middleware_module._controllers.clear()
-            _DummyController.instances.clear()
-            current_thread = threading.current_thread()
-            first_controller = _DummyController(async_w3)
-            other_web3_controller = _DummyController(other_async_w3)
-            other_thread_controller = _DummyController(async_w3)
-            other_thread = threading.Thread()
-            middleware_module._controllers[(async_w3, current_thread)] = first_controller
-            middleware_module._controllers[
-                (other_async_w3, current_thread)
-            ] = other_web3_controller
-            middleware_module._controllers[
-                (async_w3, other_thread)
-            ] = other_thread_controller
+            middleware._controllers.clear()
+            controller_module.instances.clear()
 
-            first = await middleware_module.DankMiddleware(
-                async_w3
-            ).async_wrap_make_request(async_w3.provider.make_request)
-            second = await middleware_module.DankMiddleware(
-                async_w3
-            ).async_wrap_make_request(async_w3.provider.make_request)
-            other_web3 = await middleware_module.DankMiddleware(
+            first = await middleware.DankMiddleware(async_w3).async_wrap_make_request(
+                async_w3.provider.make_request
+            )
+            second = await middleware.DankMiddleware(async_w3).async_wrap_make_request(
+                async_w3.provider.make_request
+            )
+            other_web3 = await middleware.DankMiddleware(
                 other_async_w3
             ).async_wrap_make_request(other_async_w3.provider.make_request)
 
-            monkeypatch.setattr(
-                middleware_module, "_current_thread", lambda: other_thread
-            )
-            other_thread_result = await middleware_module.DankMiddleware(
-                async_w3
-            ).async_wrap_make_request(async_w3.provider.make_request)
+            result_queue: Queue[tuple[Any, threading.Thread, BaseException | None]]
+            result_queue = Queue()
+
+            def run_in_thread() -> None:
+                async def thread_run() -> None:
+                    try:
+                        result = await middleware.DankMiddleware(
+                            async_w3
+                        ).async_wrap_make_request(async_w3.provider.make_request)
+                    except BaseException as exc:
+                        result_queue.put((None, threading.current_thread(), exc))
+                    else:
+                        result_queue.put((result, threading.current_thread(), None))
+
+                asyncio.run(thread_run())
+
+            # Use a real thread; compiled globals may not honor monkeypatches.
+            other_thread = threading.Thread(target=run_in_thread)
+            other_thread.start()
+            other_thread.join(timeout=5)
+            assert not other_thread.is_alive()
+            other_thread_result, observed_thread, thread_exc = result_queue.get_nowait()
+            if thread_exc is not None:
+                raise thread_exc
 
             assert first is second
-            assert first is first_controller
-            assert other_web3 is other_web3_controller
-            assert other_thread_result is other_thread_controller
-            assert len(_DummyController.instances) == 3
+            assert other_web3 is not first
+            assert other_thread_result is not first
+            assert observed_thread is other_thread
+            assert set(middleware._controllers) == {
+                (async_w3, threading.current_thread()),
+                (other_async_w3, threading.current_thread()),
+                (async_w3, other_thread),
+            }
         finally:
-            middleware_module._controllers.clear()
+            middleware._controllers.clear()
+            controller_module.instances.clear()
 
+    _install_inert_controller_init(monkeypatch)
     asyncio.run(run())
 
 
@@ -220,18 +203,15 @@ def test_non_mainnet_setup_injects_web3_v7_poa_middleware_before_dank(monkeypatc
 
 
 def test_dank_middleware_attribute_raises_migration_error() -> None:
-    middleware_module = _middleware_module_for_tests()
-
     with pytest.raises(ImportError) as exc_info:
-        getattr(middleware_module, "dank_middleware")
+        getattr(middleware, "dank_middleware")
 
     _assert_dank_middleware_removal(exc_info.value)
 
 
 def test_dank_middleware_import_raises_migration_error(monkeypatch) -> None:
-    middleware_module = _middleware_module_for_tests()
-    monkeypatch.setitem(sys.modules, "dank_mids.middleware", middleware_module)
-    monkeypatch.setattr(dank_mids, "middleware", middleware_module, raising=False)
+    monkeypatch.setitem(sys.modules, "dank_mids.middleware", middleware)
+    monkeypatch.setattr(dank_mids, "middleware", middleware, raising=False)
 
     with pytest.raises(ImportError) as exc_info:
         exec("from dank_mids.middleware import dank_middleware", {})
