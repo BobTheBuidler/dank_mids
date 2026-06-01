@@ -1,20 +1,15 @@
-from importlib.metadata import version
-
 from typing_extensions import Self
 from web3._utils.blocks import select_method_for_block_identifier
 from web3._utils.rpc_abi import RPC
 from web3.eth import BaseEth
 from web3.method import Method, TFunc, default_root_munger
-from web3.types import BlockIdentifier, RPCEndpoint
+from web3.types import RPCEndpoint
 
 from dank_mids._web3.formatters import (
     _get_response_formatters,
     _response_formatters,
     get_request_formatters,
 )
-
-WEB3_MAJOR_VERSION = int(version("web3").split(".")[0])
-
 
 class MethodNoFormat(Method[TFunc]):
     """Custom method class to bypass web3py's default result formatters.
@@ -126,11 +121,7 @@ def bypass_transaction_receipt_formatter(eth: type[BaseEth]) -> None:
     Args:
         eth: The Ethereum base class instance whose method is to be modified.
     """
-    method = MethodNoFormat.default(RPC.eth_getTransactionReceipt)
-    if WEB3_MAJOR_VERSION >= 6:
-        eth._transaction_receipt = method
-    else:
-        eth._get_transaction_receipt = method
+    eth._transaction_receipt = MethodNoFormat.default(RPC.eth_getTransactionReceipt)
 
 
 def bypass_transaction_formatter(eth: type[BaseEth]) -> None:
@@ -152,23 +143,12 @@ _block_selectors = dict(
 def bypass_block_formatters(eth: type[BaseEth]) -> None:
     """Bypasses the formatter for block-related methods such as eth_getBlockByNumber.
 
-    Adjusts the mungers definition based on the major version of the web3 library.
-
     Args:
         eth: The Ethereum base class instance whose methods are to be modified.
     """
-    if WEB3_MAJOR_VERSION >= 6:
-        get_block_munger = eth.get_block_munger
-    else:
-
-        def get_block_munger(
-            self, block_identifier: BlockIdentifier, full_transactions: bool = False
-        ) -> tuple[BlockIdentifier, bool]:
-            return (block_identifier, full_transactions)
-
     eth._get_block = MethodNoFormat(
         method_choice_depends_on_args=select_method_for_block_identifier(**_block_selectors),
-        mungers=[get_block_munger],
+        mungers=[eth.get_block_munger],
     )
 
 

@@ -1,5 +1,5 @@
 import re
-from collections.abc import Callable, Coroutine
+from collections.abc import Callable
 from functools import cached_property
 from time import time
 from typing import (
@@ -88,10 +88,6 @@ class OverrideParams(TypedDict):
 JsonrpcParams = list[Union[eth_callParams, BlockId, OverrideParams]]
 """A list of parameters for JSON-RPC calls, which should be eth_callParams, BlockId, and OverrideParams, in that order."""
 
-
-# This type alias was introduced in web3 v5.28.0 but we like loose deps here so we recreate instead of import.
-AsyncMiddleware = Callable[[RPCEndpoint, Any], Coroutine[Any, Any, RPCResponse]]
-"""A type alias for asynchronous middleware functions."""
 
 _list_of_stuff = list[Union[str, None, dict, list]]
 """A type alias for a list that can contain strings, None, dictionaries, or lists."""

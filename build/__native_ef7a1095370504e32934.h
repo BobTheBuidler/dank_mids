@@ -232,9 +232,6 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *_request;
-    PyObject *_args;
-    PyObject *__exception;
 } dank_mids____exceptions___DankMidsClientResponseErrorObject;
 
 typedef struct {
@@ -638,7 +635,7 @@ typedef struct {
     PyObject *_w3;
     CPyTagged _max_jsonrpc_batch_size;
     PyObject *_sync_w3;
-    PyObject *_chain_id;
+    CPyTagged _chain_id;
     PyObject *_client_version;
     PyObject *_request_type;
     double __request_type_changed_ts;
@@ -667,7 +664,7 @@ typedef struct {
     PyObject *___mypyc_self__;
     PyObject *_self;
     PyObject *_w3;
-    PyObject *_chainid;
+    CPyTagged _chainid;
     char _using_reth_client;
     PyObject *_using_tenderly_client;
     char _using_chainstack_rpc;
@@ -1311,12 +1308,19 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+} dank_mids___middleware___DankMiddlewareObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
     PyObject *___mypyc_generator_attribute__make_request;
-    PyObject *___mypyc_generator_attribute__web3;
     int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_generator_attribute___;
+    PyObject *___mypyc_generator_attribute__async_w3;
     tuple_T2OO ___mypyc_generator_attribute__controller_key;
     PyObject *___mypyc_generator_attribute__controller;
-} dank_mids___middleware___dank_middleware_genObject;
+} dank_mids___middleware___async_wrap_make_request_DankMiddleware_genObject;
 
 typedef struct {
     PyObject_HEAD
