@@ -10,6 +10,8 @@ from dank_mids.logging import get_c_logger
 
 logger: Final = get_c_logger(__name__)
 
+__all__ = ["DankMiddleware"]
+
 # Each web3 + thread pair gets its own controller
 _controllers: Final[dict[tuple[Web3, threading.Thread], DankMiddlewareController]] = {}
 
@@ -30,6 +32,3 @@ class DankMiddleware(Web3Middleware):
             controller = DankMiddlewareController(async_w3)
             _controllers[controller_key] = controller
         return controller
-
-
-dank_middleware = DankMiddleware

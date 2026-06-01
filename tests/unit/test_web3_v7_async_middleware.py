@@ -105,7 +105,7 @@ def _async_w3(response: RPCResponse | None = None) -> AsyncWeb3:
     return async_w3
 
 
-def test_dank_middleware_composes_with_web3_v7_async_onion() -> None:
+def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
     async def run() -> None:
         middleware_module = _middleware_module_for_tests()
         try:
@@ -118,7 +118,7 @@ def test_dank_middleware_composes_with_web3_v7_async_onion() -> None:
             ] = controller
 
             async_w3.middleware_onion.inject(
-                middleware_module.dank_middleware, layer=0
+                middleware_module.DankMiddleware, layer=0
             )
             request_func = await async_w3.provider.request_func(
                 async_w3, async_w3.middleware_onion
@@ -134,7 +134,7 @@ def test_dank_middleware_composes_with_web3_v7_async_onion() -> None:
     asyncio.run(run())
 
 
-def test_dank_middleware_reuses_controller_for_web3_thread_pair(monkeypatch) -> None:
+def test_web3_v7_middleware_class_reuses_controller_for_web3_thread_pair(monkeypatch) -> None:
     async def run() -> None:
         middleware_module = _middleware_module_for_tests()
         try:
@@ -155,20 +155,20 @@ def test_dank_middleware_reuses_controller_for_web3_thread_pair(monkeypatch) -> 
                 (async_w3, other_thread)
             ] = other_thread_controller
 
-            first = await middleware_module.dank_middleware(
+            first = await middleware_module.DankMiddleware(
                 async_w3
             ).async_wrap_make_request(async_w3.provider.make_request)
-            second = await middleware_module.dank_middleware(
+            second = await middleware_module.DankMiddleware(
                 async_w3
             ).async_wrap_make_request(async_w3.provider.make_request)
-            other_web3 = await middleware_module.dank_middleware(
+            other_web3 = await middleware_module.DankMiddleware(
                 other_async_w3
             ).async_wrap_make_request(other_async_w3.provider.make_request)
 
             monkeypatch.setattr(
                 middleware_module, "_current_thread", lambda: other_thread
             )
-            other_thread_result = await middleware_module.dank_middleware(
+            other_thread_result = await middleware_module.DankMiddleware(
                 async_w3
             ).async_wrap_make_request(async_w3.provider.make_request)
 
@@ -195,7 +195,7 @@ def test_non_mainnet_setup_injects_web3_v7_poa_middleware(monkeypatch) -> None:
         helpers.dank_w3s.clear()
         helpers.setup_dank_w3(async_w3)
 
-        assert middleware.dank_middleware in tuple(async_w3.middleware_onion)
+        assert middleware.DankMiddleware in tuple(async_w3.middleware_onion)
         assert ExtraDataToPOAMiddleware in tuple(async_w3.middleware_onion)
     finally:
         helpers.dank_w3s.clear()

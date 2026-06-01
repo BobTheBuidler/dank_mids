@@ -70,9 +70,9 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
     # NOTE: We use this lookup to prevent errs where 2 project dependencies both depend on dank_mids and eth-brownie.
     if async_w3 not in dank_w3s:
         # NOTE: We import here to prevent a circular import
-        from dank_mids.middleware import dank_middleware
+        from dank_mids.middleware import DankMiddleware
 
-        async_w3.middleware_onion.inject(dank_middleware, layer=0)
+        async_w3.middleware_onion.inject(DankMiddleware, layer=0)
         if _sync_w3_from_async(async_w3).eth.chain_id not in skip_poa_middleware:
             async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
         dank_w3s.append(async_w3)

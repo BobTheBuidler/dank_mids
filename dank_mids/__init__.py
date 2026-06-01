@@ -4,7 +4,7 @@ from importlib import import_module
 from typing import TYPE_CHECKING, Any, Final
 
 __all__ = [
-    "dank_middleware",
+    "DankMiddleware",
     "BlockSemaphore",
     "setup_dank_w3",
     "setup_dank_w3_from_sync",
@@ -48,7 +48,7 @@ _LAZY_IMPORTS: Final[dict[str, tuple[str, str]]] = {
     "BrownieNotConnectedError": ("dank_mids.exceptions", "BrownieNotConnectedError"),
     "setup_dank_w3": ("dank_mids.helpers", "setup_dank_w3"),
     "setup_dank_w3_from_sync": ("dank_mids.helpers", "setup_dank_w3_from_sync"),
-    "dank_middleware": ("dank_mids.middleware", "dank_middleware"),
+    "DankMiddleware": ("dank_mids.middleware", "DankMiddleware"),
     "BlockSemaphore": ("dank_mids.semaphores", "BlockSemaphore"),
     "RetryEvent": ("dank_mids.retry_observer", "RetryEvent"),
     "RetryObserver": ("dank_mids.retry_observer", "RetryObserver"),
@@ -71,7 +71,7 @@ _NEEDS_SIDE_EFFECTS: Final[set[str]] = {
     "instances",
     "setup_dank_w3",
     "setup_dank_w3_from_sync",
-    "dank_middleware",
+    "DankMiddleware",
     "Contract",
     "dank_web3",
     "dank_eth",
@@ -98,7 +98,7 @@ if TYPE_CHECKING:
         BrowniePatchNotInitializedError,
     )
     from dank_mids.helpers import setup_dank_w3, setup_dank_w3_from_sync
-    from dank_mids.middleware import dank_middleware
+    from dank_mids.middleware import DankMiddleware
     from dank_mids.retry_observer import (
         RetryEvent,
         RetryObserver,

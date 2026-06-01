@@ -129,7 +129,7 @@ def _install_dank_mids_stubs() -> None:
     sys.modules["dank_mids.helpers"] = helpers
 
     middleware = types.ModuleType("dank_mids.middleware")
-    middleware.dank_middleware = object()
+    middleware.DankMiddleware = object()
     sys.modules["dank_mids.middleware"] = middleware
 
     semaphores = types.ModuleType("dank_mids.semaphores")
