@@ -1,6 +1,7 @@
 import threading
 from typing import Final, cast
 
+from mypy_extensions import mypyc_attr
 from web3 import AsyncWeb3
 from web3.middleware import Web3Middleware
 from web3.types import AsyncMakeRequestFn
@@ -26,21 +27,27 @@ _controllers: Final[dict[_ControllerKey, DankMiddlewareController]] = {}
 _current_thread: Final = threading.current_thread
 
 
+# TODO: Remove native_class=False once https://github.com/mypyc/mypyc/issues/1200 is fixed.
+@mypyc_attr(native_class=False)
 class DankMiddleware(Web3Middleware):
     """
     Web3 v7 middleware that routes async requests through a cached Dank controller.
     """
 
+    # Web3 v7 constructs unnamed middleware with None while building middleware names.
+    _w3: AsyncWeb3 | None
+
     def __init__(self, w3: AsyncWeb3 | None) -> None:
-        # Web3 v7 calls DankMiddleware(None) while naming unnamed class middleware.
+        # TODO: Remove this override with native_class=False once mypyc issue #1200 is fixed.
+        # The non-native compiled wrapper otherwise exposes a no-arg constructor.
         self._w3 = w3
 
     def __hash__(self) -> int:
-        # Keep hashing in compiled code; Web3's base method reads __dict__.
+        # TODO: Remove this override with native_class=False once mypyc issue #1200 is fixed.
+        # Web3's base hash reads __dict__, which is the fragile compiled-layout path.
         return hash(f"{type(self).__name__}({self._w3!r})")
 
     async def async_wrap_make_request(self, make_request: AsyncMakeRequestFn) -> AsyncMakeRequestFn:
-        _ = make_request
         async_w3 = self._w3
         if async_w3 is None:
             raise RuntimeError(

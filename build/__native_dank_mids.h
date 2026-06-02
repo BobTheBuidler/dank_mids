@@ -1311,8 +1311,20 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
-    PyObject *__w3;
-} dank_mids___middleware___DankMiddlewareObject;
+    vectorcallfunc vectorcall;
+} dank_mids___middleware_____init___3_DankMiddleware_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___middleware_____hash___3_DankMiddleware_objObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    vectorcallfunc vectorcall;
+} dank_mids___middleware___async_wrap_make_request_DankMiddleware_objObject;
 
 typedef struct {
     PyObject_HEAD
@@ -1320,7 +1332,6 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__self;
     PyObject *___mypyc_generator_attribute__make_request;
     int32_t ___mypyc_next_label__;
-    PyObject *___mypyc_generator_attribute___;
     PyObject *___mypyc_generator_attribute__async_w3;
     tuple_T2OO ___mypyc_generator_attribute__controller_key;
     PyObject *___mypyc_generator_attribute__controller;
