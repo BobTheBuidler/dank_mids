@@ -97,23 +97,44 @@ def _assert_dank_middleware_removal(exc: ImportError) -> None:
     assert "setup_dank_w3" in message
 
 
-def test_web3_v7_middleware_class_composes_with_async_onion_by_name() -> None:
+def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
     try:
         async_w3 = _async_w3()
         middleware._controllers.clear()
 
-        # Name it explicitly; unnamed class injection hits a separate compiled bug.
-        async_w3.middleware_onion.inject(
-            middleware.DankMiddleware,
-            name="dank_mids.DankMiddleware",
-            layer=0,
-        )
+        # This is setup_dank_w3's runtime path: unnamed Web3 v7 class injection.
+        async_w3.middleware_onion.inject(middleware.DankMiddleware, layer=0)
 
         assert async_w3.middleware_onion.as_tuple_of_middleware() == (
             middleware.DankMiddleware,
         )
         assert middleware._controllers == {}
     finally:
+        middleware._controllers.clear()
+
+
+def test_web3_v7_setup_dank_w3_injects_class_with_real_async_onion(monkeypatch) -> None:
+    dank_eth = object()
+    async_w3 = _async_w3()
+    monkeypatch.setattr(dank_mids, "_ensure_side_effects", lambda: None)
+    monkeypatch.setattr(helpers, "DankEth", lambda _async_w3: dank_eth)
+    monkeypatch.setattr(
+        helpers,
+        "_sync_w3_from_async",
+        lambda _async_w3: SimpleNamespace(eth=SimpleNamespace(chain_id=1)),
+    )
+    try:
+        helpers.dank_w3s.clear()
+        middleware._controllers.clear()
+        assert helpers.setup_dank_w3(async_w3) is async_w3
+
+        assert async_w3.middleware_onion.as_tuple_of_middleware() == (
+            middleware.DankMiddleware,
+        )
+        assert async_w3.eth is dank_eth
+        assert middleware._controllers == {}
+    finally:
+        helpers.dank_w3s.clear()
         middleware._controllers.clear()
 
 

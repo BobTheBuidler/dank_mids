@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1524];
+extern PyObject *CPyStatics[1528];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -1757,10 +1757,14 @@ extern PyObject *CPyStatic_middleware___logger;
 extern PyObject *CPyStatic_middleware____controllers;
 extern PyObject *CPyStatic_middleware____current_thread;
 extern PyTypeObject *CPyType_middleware___DankMiddleware;
-extern PyObject *CPyDef_middleware___DankMiddleware(void);
+extern PyObject *CPyDef_middleware___DankMiddleware(PyObject *cpy_r_w3);
 extern PyTypeObject *CPyType_middleware___async_wrap_make_request_DankMiddleware_gen;
 extern PyObject *CPyDef_middleware___async_wrap_make_request_DankMiddleware_gen(void);
 extern CPyThreadLocal dank_mids___middleware___async_wrap_make_request_DankMiddleware_genObject *middleware___async_wrap_make_request_DankMiddleware_gen_free_instance;
+extern char CPyDef_middleware___DankMiddleware_____init__(PyObject *cpy_r_self, PyObject *cpy_r_w3);
+extern PyObject *CPyPy_middleware___DankMiddleware_____init__(PyObject *self, PyObject *args, PyObject *kw);
+extern CPyTagged CPyDef_middleware___DankMiddleware_____hash__(PyObject *cpy_r_self);
+extern PyObject *CPyPy_middleware___DankMiddleware_____hash__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_middleware___async_wrap_make_request_DankMiddleware_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
 extern PyObject *CPyDef_middleware___async_wrap_make_request_DankMiddleware_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_middleware___async_wrap_make_request_DankMiddleware_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);

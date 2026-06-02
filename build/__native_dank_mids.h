@@ -1311,6 +1311,7 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     CPyVTableItem *vtable;
+    PyObject *__w3;
 } dank_mids___middleware___DankMiddlewareObject;
 
 typedef struct {

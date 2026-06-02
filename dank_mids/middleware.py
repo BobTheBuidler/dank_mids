@@ -1,7 +1,7 @@
 import threading
-from typing import Any, Final, cast
+from typing import Final, cast
 
-from web3 import Web3
+from web3 import AsyncWeb3
 from web3.middleware import Web3Middleware
 from web3.types import AsyncMakeRequestFn
 
@@ -20,7 +20,9 @@ _DANK_MIDDLEWARE_REMOVAL_MESSAGE: Final = (
 )
 
 # Each web3 + thread pair gets its own controller
-_controllers: Final[dict[tuple[Web3, threading.Thread], Any]] = {}
+_controllers: Final[
+    dict[tuple[AsyncWeb3, threading.Thread], DankMiddlewareController]
+] = {}
 
 _current_thread: Final = threading.current_thread
 
@@ -30,9 +32,21 @@ class DankMiddleware(Web3Middleware):
     Web3 v7 middleware that routes async requests through a cached Dank controller.
     """
 
+    def __init__(self, w3: AsyncWeb3 | None) -> None:
+        # Web3 v7 calls DankMiddleware(None) while naming unnamed class middleware.
+        self._w3 = w3
+
+    def __hash__(self) -> int:
+        # Keep hashing in compiled code; Web3's base method reads __dict__.
+        return hash(f"{type(self).__name__}({self._w3!r})")
+
     async def async_wrap_make_request(self, make_request: AsyncMakeRequestFn) -> AsyncMakeRequestFn:
         _ = make_request
         async_w3 = self._w3
+        if async_w3 is None:
+            raise RuntimeError(
+                "DankMiddleware(None) is only valid for Web3 middleware naming"
+            )
         controller_key = async_w3, _current_thread()
         controller = _controllers.get(controller_key)
         if controller is None:
