@@ -97,13 +97,17 @@ def _assert_dank_middleware_removal(exc: ImportError) -> None:
     assert "setup_dank_w3" in message
 
 
-def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
+def test_web3_v7_middleware_class_composes_with_async_onion_by_name() -> None:
     try:
         async_w3 = _async_w3()
         middleware._controllers.clear()
 
-        # Web3 v7 names class middlewares during injection; no request is needed.
-        async_w3.middleware_onion.inject(middleware.DankMiddleware, layer=0)
+        # Name it explicitly; unnamed class injection hits a separate compiled bug.
+        async_w3.middleware_onion.inject(
+            middleware.DankMiddleware,
+            name="dank_mids.DankMiddleware",
+            layer=0,
+        )
 
         assert async_w3.middleware_onion.as_tuple_of_middleware() == (
             middleware.DankMiddleware,
