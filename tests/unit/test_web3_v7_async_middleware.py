@@ -97,6 +97,14 @@ def _assert_dank_middleware_removal(exc: ImportError) -> None:
     assert "setup_dank_w3" in message
 
 
+def test_dank_middleware_naming_instance_keeps_python_attr_layout() -> None:
+    instance = middleware.DankMiddleware(None)
+
+    # Guards Web3's unnamed-class naming path until mypyc issue #1200 is fixed.
+    assert instance.__dict__["_w3"] is None
+    assert hash(instance) == instance.__hash__()
+
+
 def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
     try:
         async_w3 = _async_w3()
