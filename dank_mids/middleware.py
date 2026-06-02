@@ -20,9 +20,8 @@ _DANK_MIDDLEWARE_REMOVAL_MESSAGE: Final = (
 )
 
 # Each web3 + thread pair gets its own controller
-_controllers: Final[
-    dict[tuple[AsyncWeb3, threading.Thread], DankMiddlewareController]
-] = {}
+_ControllerKey = tuple[AsyncWeb3, threading.Thread]
+_controllers: Final[dict[_ControllerKey, DankMiddlewareController]] = {}
 
 _current_thread: Final = threading.current_thread
 
