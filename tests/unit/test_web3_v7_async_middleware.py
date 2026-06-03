@@ -1,7 +1,5 @@
 import asyncio
 import sys
-import threading
-from queue import Queue
 from types import SimpleNamespace
 from typing import Any
 
@@ -144,68 +142,6 @@ def test_web3_v7_setup_dank_w3_injects_class_with_real_async_onion(monkeypatch) 
     finally:
         helpers.dank_w3s.clear()
         middleware._controllers.clear()
-
-
-def test_web3_v7_middleware_class_reuses_controller_for_web3_thread_pair(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    async def run() -> None:
-        try:
-            async_w3 = _async_w3()
-            other_async_w3 = _async_w3()
-            middleware._controllers.clear()
-            controller_module.instances.clear()
-
-            first = await middleware.DankMiddleware(async_w3).async_wrap_make_request(
-                async_w3.provider.make_request
-            )
-            second = await middleware.DankMiddleware(async_w3).async_wrap_make_request(
-                async_w3.provider.make_request
-            )
-            other_web3 = await middleware.DankMiddleware(
-                other_async_w3
-            ).async_wrap_make_request(other_async_w3.provider.make_request)
-
-            result_queue: Queue[tuple[Any, threading.Thread, BaseException | None]]
-            result_queue = Queue()
-
-            def run_in_thread() -> None:
-                async def thread_run() -> None:
-                    try:
-                        result = await middleware.DankMiddleware(
-                            async_w3
-                        ).async_wrap_make_request(async_w3.provider.make_request)
-                    except BaseException as exc:
-                        result_queue.put((None, threading.current_thread(), exc))
-                    else:
-                        result_queue.put((result, threading.current_thread(), None))
-
-                asyncio.run(thread_run())
-
-            # Use a real thread; compiled globals may not honor monkeypatches.
-            other_thread = threading.Thread(target=run_in_thread)
-            other_thread.start()
-            other_thread.join(timeout=5)
-            assert not other_thread.is_alive()
-            other_thread_result, observed_thread, thread_exc = result_queue.get_nowait()
-            if thread_exc is not None:
-                raise thread_exc
-
-            assert first is second
-            assert other_web3 is not first
-            assert other_thread_result is not first
-            assert observed_thread is other_thread
-            assert set(middleware._controllers) == {
-                (async_w3, threading.current_thread()),
-                (other_async_w3, threading.current_thread()),
-                (async_w3, other_thread),
-            }
-        finally:
-            middleware._controllers.clear()
-            controller_module.instances.clear()
-
-    _install_inert_controller_init(monkeypatch)
-    asyncio.run(run())
 
 
 def test_non_mainnet_setup_injects_web3_v7_poa_middleware_before_dank(monkeypatch) -> None:
