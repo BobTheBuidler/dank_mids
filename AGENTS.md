@@ -14,11 +14,14 @@ All agents must follow these rules:
 8) Follow formatting/linting configured in pyproject.toml, setup.cfg, tox.ini, or ruff.toml.
 9) Update dependency lockfiles when adding or removing Python dependencies.
 10) If the repo uses mypyc, verify tests run against compiled extensions (not interpreted Python) and note how you confirmed.
-11) Maximize the use of caching in GitHub workflow files to minimize run duration.
-12) Use one of `paths` or `paths-ignore` in every workflow file to make sure workflows only run when required.
-13) All mypy configuration (flags, overrides, per-module ignores, and file targets) should go in pyproject.toml. Do not split config across CLI args, mypy.ini, setup.cfg, or workflow steps.
-14) Centralize pytest settings (flags, markers, ignore patterns, and targets) in pyproject.toml, pytest.ini, setup.cfg, or tox.ini; workflows/hooks should call pytest without inline args.
-15) If the branch you're assigned to work on is from a remote (ie origin/master or upstream/awesome-feature) you must ensure you fetch and pull from the remote before you begin your work.
+11) Do not monkeypatch anything in dank-mids, at all. Patch external edges ONLY.
+12) Do not mix test repair with production bug fixes; split test-only and code-fix PRs.
+13) Use yield fixtures for shared mutable test state cleanup.
+14) Maximize the use of caching in GitHub workflow files to minimize run duration.
+15) Use one of `paths` or `paths-ignore` in every workflow file to make sure workflows only run when required.
+16) All mypy configuration (flags, overrides, per-module ignores, and file targets) should go in pyproject.toml. Do not split config across CLI args, mypy.ini, setup.cfg, or workflow steps.
+17) Centralize pytest settings (flags, markers, ignore patterns, and targets) in pyproject.toml, pytest.ini, setup.cfg, or tox.ini; workflows/hooks should call pytest without inline args.
+18) If the branch you're assigned to work on is from a remote (ie origin/master or upstream/awesome-feature) you must ensure you fetch and pull from the remote before you begin your work.
 
 ## Repo Behavior Notes
 - `WeakList` uses weakrefs on purpose to avoid keeping abandoned calls alive; empty batches or empty JSON-RPC posts can happen when all queued calls are GC'd or drained, and that is expected. Don't "fix" this by switching to strong refs unless we explicitly change the design.
