@@ -5,6 +5,9 @@ import sys
 import zipfile
 from pathlib import Path
 
+import pytest
+
+import scripts.ci.mypyc_targets as mypyc_targets
 from scripts.ci.mypyc_targets import (
     MYPYC_BUILD_ARGS,
     MYPYC_GROUP_NAME,
@@ -15,6 +18,7 @@ from scripts.ci.mypyc_targets import (
     expand_mypyc_targets,
     mypyc_runtime_artifacts,
     mypyc_runtime_force_include,
+    preflight_mypyc_build_dependency_surface,
 )
 
 MODULE_PATH = Path(__file__).resolve().parents[2] / "scripts" / "run_mypyc_build.py"
@@ -100,6 +104,69 @@ build = [
     )
 
     assert build_dependencies(tmp_path) == ["example==1", "other==2"]
+
+
+def test_mypyc_build_dependency_surface_allows_build_only_runtime_overlap() -> None:
+    preflight_mypyc_build_dependency_surface(
+        REPO_ROOT,
+        installed_names=[
+            "aiolimiter",
+            "cchecksum",
+            "eth-retry",
+            "eth-typing",
+            "ez-a-sync",
+            "faster-eth-abi",
+            "faster-eth-utils",
+            "faster-hexbytes",
+            "librt",
+            "typed-envs",
+        ],
+    )
+
+
+def test_mypyc_build_dependency_surface_rejects_runtime_only_dependencies() -> None:
+    with pytest.raises(RuntimeError) as exc_info:
+        preflight_mypyc_build_dependency_surface(
+            REPO_ROOT,
+            installed_names=[
+                "aiofiles",
+                "evmspec",
+                "multicall",
+                "web3",
+            ],
+        )
+
+    message = str(exc_info.value)
+    assert "build-only dependency surface" in message
+    assert "uv run --only-group build python scripts/run_mypyc_build.py" in message
+    assert "dev/runtime env" in message
+    assert "aiofiles, evmspec, multicall, web3" in message
+
+
+def test_run_mypyc_preflights_before_writing_setup_or_invoking_subprocess(
+    tmp_path, monkeypatch
+) -> None:
+    calls: list[Path] = []
+
+    def fail_preflight(root: Path) -> None:
+        calls.append(root)
+        raise RuntimeError("contaminated")
+
+    def fake_run(*args, **kwargs) -> None:
+        raise AssertionError("subprocess.run should not be reached")
+
+    monkeypatch.setattr(
+        mypyc_targets,
+        "preflight_mypyc_build_dependency_surface",
+        fail_preflight,
+    )
+    monkeypatch.setattr(mypyc_targets.subprocess, "run", fake_run)
+
+    with pytest.raises(RuntimeError, match="contaminated"):
+        mypyc_targets.run_mypyc(tmp_path)
+
+    assert calls == [tmp_path]
+    assert not (tmp_path / "build" / "setup.py").exists()
 
 
 def test_mypyc_runtime_artifacts_find_top_level_runtime(tmp_path) -> None:

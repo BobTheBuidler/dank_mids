@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+import importlib.metadata
 import os
 import pathlib
+import re
 import subprocess
 import sys
 import sysconfig
@@ -108,6 +111,15 @@ setup(
 """
 
 VENDORED_AIOLIMITER_ROOT = pathlib.PurePosixPath("dank_mids/_vendor/aiolimiter")
+BUILD_SURFACE_RUNTIME_TRANSITIVE_DISTRIBUTIONS = frozenset(
+    {
+        "aiolimiter",
+        "cchecksum",
+        "faster-eth-utils",
+        "librt",
+    }
+)
+DEPENDENCY_NAME_RE = re.compile(r"^\s*([A-Za-z0-9][A-Za-z0-9._-]*)")
 
 
 def _load_toml(path: pathlib.Path) -> dict[str, Any]:
@@ -132,6 +144,73 @@ def build_dependencies(root: pathlib.Path = ROOT) -> list[str]:
     if not all(isinstance(dependency, str) for dependency in build_group):
         raise TypeError("[dependency-groups].build must contain only dependency strings")
     return list(build_group)
+
+
+def project_dependencies(root: pathlib.Path = ROOT) -> list[str]:
+    pyproject = _load_toml(root / "pyproject.toml")
+    project = pyproject.get("project", {})
+    if not isinstance(project, dict):
+        raise TypeError("[project] must be a table")
+
+    dependencies = project.get("dependencies", [])
+    if not isinstance(dependencies, list):
+        raise TypeError("[project].dependencies must be a list")
+    if not all(isinstance(dependency, str) for dependency in dependencies):
+        raise TypeError("[project].dependencies must contain only dependency strings")
+    return list(dependencies)
+
+
+def normalize_distribution_name(name: str) -> str:
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def distribution_name_from_dependency(dependency: str) -> str:
+    match = DEPENDENCY_NAME_RE.match(dependency)
+    if match is None:
+        raise ValueError(f"Unsupported dependency string: {dependency!r}")
+    return normalize_distribution_name(match.group(1))
+
+
+def installed_distribution_names() -> set[str]:
+    names: set[str] = set()
+    for distribution in importlib.metadata.distributions():
+        name = distribution.metadata.get("Name")
+        if name is not None:
+            names.add(normalize_distribution_name(name))
+    return names
+
+
+def runtime_dependency_contamination(
+    root: pathlib.Path = ROOT,
+    *,
+    installed_names: Iterable[str] | None = None,
+) -> list[str]:
+    installed = (
+        installed_distribution_names()
+        if installed_names is None
+        else {normalize_distribution_name(name) for name in installed_names}
+    )
+    runtime_names = {distribution_name_from_dependency(dep) for dep in project_dependencies(root)}
+    build_names = {distribution_name_from_dependency(dep) for dep in build_dependencies(root)}
+    allowed_runtime_names = build_names | BUILD_SURFACE_RUNTIME_TRANSITIVE_DISTRIBUTIONS
+    return sorted((runtime_names - allowed_runtime_names) & installed)
+
+
+def preflight_mypyc_build_dependency_surface(
+    root: pathlib.Path = ROOT,
+    *,
+    installed_names: Iterable[str] | None = None,
+) -> None:
+    contamination = runtime_dependency_contamination(root, installed_names=installed_names)
+    if contamination:
+        installed = ", ".join(contamination)
+        raise RuntimeError(
+            "mypyc builds must run with the build-only dependency surface; "
+            f"runtime-only project dependencies are installed: {installed}. "
+            "Use `make mypyc` or "
+            "`uv run --only-group build python scripts/run_mypyc_build.py`; "
+            "do not compile from a dev/runtime env."
+        )
 
 
 def expand_mypyc_targets(root: pathlib.Path) -> list[str]:
@@ -173,6 +252,7 @@ def build_mypyc_command() -> list[str]:
 
 
 def run_mypyc(root: pathlib.Path) -> None:
+    preflight_mypyc_build_dependency_surface(root)
     build_dir = root / "build"
     build_dir.mkdir(exist_ok=True)
     (build_dir / "setup.py").write_text(
