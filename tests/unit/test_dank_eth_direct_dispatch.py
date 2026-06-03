@@ -277,19 +277,24 @@ def test_middleware_route_only_request_function_reaches_dank_controller(
     async def run() -> None:
         _install_inert_controller_init(monkeypatch)
         async_w3 = _async_w3()
-        route_calls: list[tuple[RPCEndpoint, Any]] = []
+        calls: list[tuple[Any, RPCEndpoint, Any]] = []
 
-        async def route_only_call(
-            self: Any, method: RPCEndpoint, params: Any
-        ) -> RPCResponse:
-            route_calls.append((method, params))
-            return {"result": 123}
+        class FakeRPCRequest:
+            def __init__(self, observed_controller: Any, method: RPCEndpoint, params: Any) -> None:
+                calls.append((observed_controller, method, params))
 
-        monkeypatch.setattr(
-            controller_module.DankMiddlewareController,
-            "__call__",
-            route_only_call,
-        )
+            def __await__(self) -> Any:
+                async def inner() -> RPCResponse:
+                    return {"result": 123}
+
+                return inner().__await__()
+
+        async def noop() -> None:
+            return None
+
+        monkeypatch.setattr(controller_module, "rate_limit_inactive", lambda _endpoint: noop())
+        monkeypatch.setattr(controller_module, "RPCRequest", FakeRPCRequest)
+
         _clear_controller_cache()
 
         try:
@@ -299,7 +304,7 @@ def test_middleware_route_only_request_function_reaches_dank_controller(
             response = await request_func(RPC.eth_blockNumber, ())
 
             assert response == {"result": 123}
-            assert route_calls == [(RPC.eth_blockNumber, ())]
+            assert calls == [(request_func, RPC.eth_blockNumber, ())]
         finally:
             _clear_controller_cache()
 
