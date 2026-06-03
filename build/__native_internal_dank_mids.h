@@ -310,7 +310,7 @@ extern PyObject *CPyInitOnly_dank_mids___logging(void);
 extern CPyModule *CPyModule_dank_mids___middleware__internal;
 extern CPyModule *CPyModule_dank_mids___middleware;
 extern PyObject *CPyStatic_middleware___globals;
-extern CPyModule *CPyModule_web3___middleware;
+extern CPyModule *CPyModule_web3___middleware___base;
 extern int CPyExec_dank_mids___middleware(PyObject *module);
 extern PyObject *CPyInit_dank_mids___middleware(void);
 extern PyObject *CPyInitOnly_dank_mids___middleware(void);

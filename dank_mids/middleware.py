@@ -3,7 +3,7 @@ from typing import Final, cast
 
 from mypy_extensions import mypyc_attr
 from web3 import AsyncWeb3
-from web3.middleware import Web3Middleware
+from web3.middleware.base import Web3Middleware
 from web3.types import AsyncMakeRequestFn
 
 from dank_mids.controller import DankMiddlewareController
