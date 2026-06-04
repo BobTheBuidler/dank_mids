@@ -1,4 +1,3 @@
-import threading
 from typing import Final, cast
 
 from mypy_extensions import mypyc_attr
@@ -6,7 +5,7 @@ from web3 import AsyncWeb3
 from web3.middleware.base import Web3Middleware
 from web3.types import AsyncMakeRequestFn
 
-from dank_mids.controller import DankMiddlewareController
+from dank_mids.helpers._controllers import get_controller_for_async_w3
 from dank_mids.logging import get_c_logger
 
 logger: Final = get_c_logger(__name__)
@@ -19,13 +18,6 @@ _DANK_MIDDLEWARE_REMOVAL_MESSAGE: Final = (
     "`async_w3.middleware_onion.inject(DankMiddleware, layer=0)`, or call "
     "`setup_dank_w3(async_w3)` / `setup_dank_w3_from_sync(sync_w3)`."
 )
-
-# Each web3 + thread pair gets its own controller
-_ControllerKey = tuple[AsyncWeb3, threading.Thread]
-_controllers: Final[dict[_ControllerKey, DankMiddlewareController]] = {}
-
-_current_thread: Final = threading.current_thread
-
 
 # TODO: Remove native_class=False once https://github.com/mypyc/mypyc/issues/1200 is fixed.
 @mypyc_attr(native_class=False)
@@ -53,12 +45,7 @@ class DankMiddleware(Web3Middleware):
             raise RuntimeError(
                 "DankMiddleware(None) is only valid for Web3 middleware naming"
             )
-        controller_key = async_w3, _current_thread()
-        controller = _controllers.get(controller_key)
-        if controller is None:
-            controller = DankMiddlewareController(async_w3)
-            _controllers[controller_key] = controller
-        return cast(AsyncMakeRequestFn, controller)
+        return get_controller_for_async_w3(async_w3)
 
 
 def _module_getattr(name: str) -> object:

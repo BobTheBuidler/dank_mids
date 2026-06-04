@@ -35,6 +35,7 @@ MYPYC_TARGETS = [
     "dank_mids/ENVIRONMENT_VARIABLES.py",
     "dank_mids/helpers/__init__.py",
     "dank_mids/helpers/_codec.py",
+    "dank_mids/helpers/_controllers.py",
     "dank_mids/helpers/_errors.py",
     "dank_mids/helpers/_gather.py",
     "dank_mids/helpers/_rate_limit.py",
