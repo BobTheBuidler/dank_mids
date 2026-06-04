@@ -45,8 +45,7 @@ class DankMiddleware(Web3Middleware):
             raise RuntimeError(
                 "DankMiddleware(None) is only valid for Web3 middleware naming"
             )
-        controller = get_controller_for_async_w3(async_w3)
-        return cast(AsyncMakeRequestFn, controller)
+        return get_controller_for_async_w3(async_w3)
 
 
 def _module_getattr(name: str) -> object:
