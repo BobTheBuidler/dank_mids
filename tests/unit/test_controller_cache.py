@@ -12,6 +12,7 @@ from web3._utils.rpc_abi import RPC
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
+import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.middleware as middleware
 
 
@@ -102,11 +103,11 @@ def jsonrpc_server() -> Iterator[_JsonRpcServer]:
 
 @pytest.fixture
 def controller_cache() -> Iterator[ControllerCache]:
-    middleware._controllers.clear()
+    controller_cache_module._controllers.clear()
     try:
-        yield middleware._controllers
+        yield controller_cache_module._controllers
     finally:
-        middleware._controllers.clear()
+        controller_cache_module._controllers.clear()
 
 
 def test_controller_cache_reuses_web3_thread_pair(
