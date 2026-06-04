@@ -9,7 +9,6 @@ from typing import Any
 import pytest
 from web3 import AsyncWeb3
 from web3._utils.rpc_abi import RPC
-from web3.eth import AsyncEth
 from web3.method import Method
 from web3.providers.async_base import AsyncBaseProvider
 from web3.types import RPCEndpoint, RPCResponse
@@ -19,7 +18,6 @@ import dank_mids.controller as controller_module
 import dank_mids.helpers._helpers as helpers
 import dank_mids.middleware as middleware
 from dank_mids.eth import DankEth
-
 
 ACCOUNT = "0x0000000000000000000000000000000000000001"
 OTHER_ACCOUNT = "0x0000000000000000000000000000000000000002"
@@ -85,9 +83,7 @@ def _install_inert_controller_init(monkeypatch: pytest.MonkeyPatch) -> None:
         bytecode="0x00",
         needs_override_code_for_block=lambda _block: False,
     )
-    monkeypatch.setattr(
-        controller_module, "_sync_w3_from_async", lambda _async_w3: fake_sync_w3
-    )
+    monkeypatch.setattr(controller_module, "_sync_w3_from_async", lambda _async_w3: fake_sync_w3)
     monkeypatch.setattr(controller_module, "_get_client_version", lambda _sync_w3: "pytest/test")
     monkeypatch.setattr(controller_module, "_get_multicall2", lambda _chainid: fake_multicall)
     monkeypatch.setattr(controller_module, "_get_multicall3", lambda _chainid: None)
@@ -187,9 +183,7 @@ def test_dank_middleware_controller_cache_reuses_web3_thread_pair(
             )
 
             assert first is second
-            assert middleware._controllers == {
-                (async_w3, threading.current_thread()): first
-            }
+            assert middleware._controllers == {(async_w3, threading.current_thread()): first}
         finally:
             _clear_controller_cache()
 
@@ -217,9 +211,9 @@ def test_dank_middleware_controller_cache_keeps_web3_thread_pairs_distinct(
             def run_in_thread() -> None:
                 async def thread_run() -> None:
                     try:
-                        result = await middleware.DankMiddleware(
-                            async_w3
-                        ).async_wrap_make_request(async_w3.provider.make_request)
+                        result = await middleware.DankMiddleware(async_w3).async_wrap_make_request(
+                            async_w3.provider.make_request
+                        )
                     except BaseException as exc:
                         result_queue.put((None, threading.current_thread(), exc))
                     else:

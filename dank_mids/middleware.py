@@ -50,9 +50,7 @@ class DankMiddleware(Web3Middleware):
     async def async_wrap_make_request(self, make_request: AsyncMakeRequestFn) -> AsyncMakeRequestFn:
         async_w3 = self._w3
         if async_w3 is None:
-            raise RuntimeError(
-                "DankMiddleware(None) is only valid for Web3 middleware naming"
-            )
+            raise RuntimeError("DankMiddleware(None) is only valid for Web3 middleware naming")
         controller_key = async_w3, _current_thread()
         controller = _controllers.get(controller_key)
         if controller is None:

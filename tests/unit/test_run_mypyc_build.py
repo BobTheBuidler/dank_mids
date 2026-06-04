@@ -14,8 +14,8 @@ from scripts.ci.mypyc_targets import (
     MYPYC_RUNTIME_MODULE,
     MYPYC_SETUP,
     build_dependencies,
-    extension_suffix,
     expand_mypyc_targets,
+    extension_suffix,
     mypyc_runtime_artifacts,
     mypyc_runtime_force_include,
     preflight_mypyc_build_dependency_surface,
@@ -46,9 +46,7 @@ BUILD_EXTENSIONS_SPEC = importlib.util.spec_from_file_location(
 assert BUILD_EXTENSIONS_SPEC is not None and BUILD_EXTENSIONS_SPEC.loader is not None
 build_source_extensions = importlib.util.module_from_spec(BUILD_EXTENSIONS_SPEC)
 BUILD_EXTENSIONS_SPEC.loader.exec_module(build_source_extensions)
-CHECK_WHEEL_SPEC = importlib.util.spec_from_file_location(
-    "check_mypyc_wheel", CHECK_WHEEL_PATH
-)
+CHECK_WHEEL_SPEC = importlib.util.spec_from_file_location("check_mypyc_wheel", CHECK_WHEEL_PATH)
 assert CHECK_WHEEL_SPEC is not None and CHECK_WHEEL_SPEC.loader is not None
 check_mypyc_wheel = importlib.util.module_from_spec(CHECK_WHEEL_SPEC)
 CHECK_WHEEL_SPEC.loader.exec_module(check_mypyc_wheel)
@@ -93,15 +91,13 @@ def test_mypyc_targets_expand_vendored_aiolimiter_sources() -> None:
 
 
 def test_build_dependencies_come_from_pyproject(tmp_path) -> None:
-    (tmp_path / "pyproject.toml").write_text(
-        """
+    (tmp_path / "pyproject.toml").write_text("""
 [dependency-groups]
 build = [
     "example==1",
     "other==2",
 ]
-""".lstrip()
-    )
+""".lstrip())
 
     assert build_dependencies(tmp_path) == ["example==1", "other==2"]
 

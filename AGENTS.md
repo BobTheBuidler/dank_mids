@@ -24,8 +24,9 @@ All agents must follow these rules:
 18) If the branch you're assigned to work on is from a remote (ie origin/master or upstream/awesome-feature) you must ensure you fetch and pull from the remote before you begin your work.
 
 ## Repo Behavior Notes
+
 - `WeakList` uses weakrefs on purpose to avoid keeping abandoned calls alive; empty batches or empty JSON-RPC posts can happen when all queued calls are GC'd or drained, and that is expected. Don't "fix" this by switching to strong refs unless we explicitly change the design.
 - Generated C/H artifacts (`build/**/*.c`, `build/**/*.h`) are versioned for mypyc diff review; keep binary extensions (`.pyd`, `.so`) out of PRs.
 - `dank_mids/_vendor/aiolimiter` is a pinned submodule; update its pointer only when explicitly requested.
 
-Reference: https://www.conventionalcommits.org/en/v1.0.0/
+Reference: <https://www.conventionalcommits.org/en/v1.0.0/>

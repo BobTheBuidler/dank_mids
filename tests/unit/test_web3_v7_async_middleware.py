@@ -76,16 +76,10 @@ def _install_inert_controller_init(monkeypatch: pytest.MonkeyPatch) -> None:
         eth=SimpleNamespace(chain_id=999_999),
         client_version="pytest/test",
     )
-    fake_multicall = SimpleNamespace(
-        address="0x0000000000000000000000000000000000000001"
-    )
+    fake_multicall = SimpleNamespace(address="0x0000000000000000000000000000000000000001")
     # Use real controllers; compiled mypyc caches can reject fake controller objects.
-    monkeypatch.setattr(
-        controller_module, "_sync_w3_from_async", lambda _async_w3: fake_sync_w3
-    )
-    monkeypatch.setattr(
-        controller_module, "_get_multicall2", lambda _chainid: fake_multicall
-    )
+    monkeypatch.setattr(controller_module, "_sync_w3_from_async", lambda _async_w3: fake_sync_w3)
+    monkeypatch.setattr(controller_module, "_get_multicall2", lambda _chainid: fake_multicall)
     monkeypatch.setattr(controller_module, "_get_multicall3", lambda _chainid: None)
 
 
@@ -113,9 +107,7 @@ def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
         # This is setup_dank_w3's runtime path: unnamed Web3 v7 class injection.
         async_w3.middleware_onion.inject(middleware.DankMiddleware, layer=0)
 
-        assert async_w3.middleware_onion.as_tuple_of_middleware() == (
-            middleware.DankMiddleware,
-        )
+        assert async_w3.middleware_onion.as_tuple_of_middleware() == (middleware.DankMiddleware,)
         assert middleware._controllers == {}
     finally:
         middleware._controllers.clear()
@@ -136,9 +128,7 @@ def test_web3_v7_setup_dank_w3_injects_class_with_real_async_onion(monkeypatch) 
         middleware._controllers.clear()
         assert helpers.setup_dank_w3(async_w3) is async_w3
 
-        assert async_w3.middleware_onion.as_tuple_of_middleware() == (
-            middleware.DankMiddleware,
-        )
+        assert async_w3.middleware_onion.as_tuple_of_middleware() == (middleware.DankMiddleware,)
         assert async_w3.eth is dank_eth
         assert middleware._controllers == {}
     finally:
@@ -162,9 +152,9 @@ def test_web3_v7_middleware_class_reuses_controller_for_web3_thread_pair(
             second = await middleware.DankMiddleware(async_w3).async_wrap_make_request(
                 async_w3.provider.make_request
             )
-            other_web3 = await middleware.DankMiddleware(
-                other_async_w3
-            ).async_wrap_make_request(other_async_w3.provider.make_request)
+            other_web3 = await middleware.DankMiddleware(other_async_w3).async_wrap_make_request(
+                other_async_w3.provider.make_request
+            )
 
             result_queue: Queue[tuple[Any, threading.Thread, BaseException | None]]
             result_queue = Queue()
@@ -172,9 +162,9 @@ def test_web3_v7_middleware_class_reuses_controller_for_web3_thread_pair(
             def run_in_thread() -> None:
                 async def thread_run() -> None:
                     try:
-                        result = await middleware.DankMiddleware(
-                            async_w3
-                        ).async_wrap_make_request(async_w3.provider.make_request)
+                        result = await middleware.DankMiddleware(async_w3).async_wrap_make_request(
+                            async_w3.provider.make_request
+                        )
                     except BaseException as exc:
                         result_queue.put((None, threading.current_thread(), exc))
                     else:
@@ -271,13 +261,9 @@ def test_web3_v7_poa_middleware_formats_async_block_response() -> None:
             }
         )
         async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
-        request_func = await async_w3.provider.request_func(
-            async_w3, async_w3.middleware_onion
-        )
+        request_func = await async_w3.provider.request_func(async_w3, async_w3.middleware_onion)
 
-        response = await request_func(
-            RPCEndpoint("eth_getBlockByNumber"), ["latest", False]
-        )
+        response = await request_func(RPCEndpoint("eth_getBlockByNumber"), ["latest", False])
 
         assert "extraData" not in response["result"]
         assert response["result"]["proofOfAuthorityData"] == HexBytes("0x1234")

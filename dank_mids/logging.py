@@ -279,9 +279,7 @@ class CLogger(logging.Logger):
                     if frame is None:
                         fn, lno, func = "(unknown file)", 0, "(unknown function)"
                     else:
-                        fn, lno, func, sinfo = _py310_caller_info_from_frame(
-                            frame, stack_info
-                        )
+                        fn, lno, func, sinfo = _py310_caller_info_from_frame(frame, stack_info)
                 else:
                     fn, lno, func, sinfo = self.findCaller(stack_info, stacklevel)
             except ValueError:  # pragma: no cover
@@ -331,8 +329,10 @@ _py310_logging_srcfile: Final = _py310_logging_caller_source_path(__file__)
 
 def _is_logging_caller_internal_frame(frame: FrameType) -> bool:
     filename = _py310_logging_caller_source_path(frame.f_code.co_filename)
-    return filename == _srcfile or filename == _py310_logging_srcfile or (
-        "importlib" in filename and "_bootstrap" in filename
+    return (
+        filename == _srcfile
+        or filename == _py310_logging_srcfile
+        or ("importlib" in filename and "_bootstrap" in filename)
     )
 
 

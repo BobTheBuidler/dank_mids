@@ -35,9 +35,7 @@ def check_wheel(wheel_path: pathlib.Path, targets: list[str]) -> list[str]:
     with zipfile.ZipFile(wheel_path) as zf:
         names = set(zf.namelist())
     if not any(
-        "/" not in name
-        and name.startswith(MYPYC_RUNTIME_MODULE)
-        and name.endswith(NATIVE_SUFFIXES)
+        "/" not in name and name.startswith(MYPYC_RUNTIME_MODULE) and name.endswith(NATIVE_SUFFIXES)
         for name in names
     ):
         failures.append(

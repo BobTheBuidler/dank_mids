@@ -11,6 +11,7 @@ from dank_mids._web3.formatters import (
     get_request_formatters,
 )
 
+
 class MethodNoFormat(Method[TFunc]):
     """Custom method class to bypass web3py's default result formatters.
 

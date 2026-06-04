@@ -10,9 +10,9 @@ import eth_retry
 from cchecksum import to_checksum_address
 from eth_typing import BlockNumber, ChecksumAddress, HexStr
 from evmspec.data import ChainId
+from librt.time import time
 from multicall.constants import MULTICALL_ADDRESSES
 from multicall.multicall import NotSoBrightBatcher
-from librt.time import time
 from mypy_extensions import mypyc_attr
 from web3 import Web3
 from web3.types import RPCEndpoint, RPCResponse

@@ -31,9 +31,7 @@ class _ImportBlocker:
 def _restore_import_state() -> Iterator[None]:
     # These tests source-load and stub dank_mids modules; restore native imports
     # so compiled-mode tests later in the same process see the real extensions.
-    saved_modules = {
-        name: module for name, module in sys.modules.items() if _managed_module(name)
-    }
+    saved_modules = {name: module for name, module in sys.modules.items() if _managed_module(name)}
     yield
     for name in list(sys.modules):
         if _managed_module(name):

@@ -9,24 +9,22 @@ description = "Multicall batching middleware for asynchronous scripts using web3
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
 license = "MIT"
-authors = [
-    { name = "BobTheBuidler", email = "bobthebuidlerdefi@gmail.com" },
-]
+authors = [{ name = "BobTheBuidler", email = "bobthebuidlerdefi@gmail.com" }]
 dependencies = [
-    "aiofiles",
-    "aiolimiter>=1.2,<1.3",
-    "cchecksum>=0.0.3,<1",
-    "eth-retry>=0.3.6,<1",
-    "eth-typing>=4.2.0",
-    "evmspec>=0.4.6,<1",
-    "ez-a-sync>=0.34.0,<0.35",
-    "faster-eth-abi>=5.2.12",
-    "faster-eth-utils>=5.3.11",
-    "faster-hexbytes>1,<2",
-    "librt>=0.11,<1",
-    "multicall>=0.6.2,<1",
-    "typed-envs==0.2.4",
-    "web3>=7,<8",
+  "aiofiles",
+  "aiolimiter>=1.2,<1.3",
+  "cchecksum>=0.0.3,<1",
+  "eth-retry>=0.3.6,<1",
+  "eth-typing>=4.2.0",
+  "evmspec>=0.4.6,<1",
+  "ez-a-sync>=0.34.0,<0.35",
+  "faster-eth-abi>=5.2.12",
+  "faster-eth-utils>=5.3.11",
+  "faster-hexbytes>1,<2",
+  "librt>=0.11,<1",
+  "multicall>=0.6.2,<1",
+  "typed-envs==0.2.4",
+  "web3>=7,<8",
 ]
 
 [project.urls]
@@ -36,38 +34,35 @@ Documentation = "https://BobTheBuidler.github.io/dank_mids"
 
 [dependency-groups]
 build = [
-    "eth-retry==0.3.7",
-    "eth-typing==5.2.1",
-    "ez-a-sync==0.34.2",
-    "faster-eth-abi==5.2.27",
-    "faster-hexbytes==1.3.8",
-    "mypy[mypyc]==2.1.0",
-    "setuptools",
-    "typed-envs==0.2.4",
-    "tomli>=2; python_version < '3.11'",
-    "types-requests",
+  "eth-retry==0.3.7",
+  "eth-typing==5.2.1",
+  "ez-a-sync==0.34.2",
+  "faster-eth-abi==5.2.27",
+  "faster-hexbytes==1.3.8",
+  "mypy[mypyc]==2.1.0",
+  "setuptools",
+  "typed-envs==0.2.4",
+  "tomli>=2; python_version < '3.11'",
+  "types-requests",
 ]
 dev = [
-    "eth-brownie==1.22.0",
-    "importlib-resources>=6.4.0",
-    "pytest==9.0.3",
-    "pytest-asyncio-cooperative==0.40.0",
-    "pytest-cov==6.3.0",
-    "pytest-sugar==1.1.1",
-    "setuptools<81",
-    "types-aiofiles==25.1.0.20251011",
+  "eth-brownie==1.22.0",
+  "importlib-resources>=6.4.0",
+  "pytest==9.0.3",
+  "pytest-asyncio-cooperative==0.40.0",
+  "pytest-cov==6.3.0",
+  "pytest-sugar==1.1.1",
+  "setuptools<81",
+  "types-aiofiles==25.1.0.20251011",
 ]
 docs = [
-    { include-group = "dev" },
-    "Cython<4",
-    "sphinx",
-    "sphinx-rtd-theme",
-    "wheel",
+  { include-group = "dev" },
+  "Cython<4",
+  "sphinx",
+  "sphinx-rtd-theme",
+  "wheel",
 ]
-mypy = [
-    { include-group = "build" },
-    "types-aiofiles==25.1.0.20251011",
-]
+mypy = [{ include-group = "build" }, "types-aiofiles==25.1.0.20251011"]
 
 [tool.uv]
 required-version = ">=0.11.0"
@@ -75,34 +70,34 @@ default-groups = ["dev"]
 
 [tool.hatch.build]
 exclude = [
-    "/*.pyd",
-    "/*.so",
-    "/build",
-    "/cache",
-    "/dist",
-    "/docs/_build",
-    "/env",
-    "/tests",
-    "/.github",
-    "/.mypy_cache",
-    "/.pytest_cache",
-    "/.tox",
-    "/.venv",
-    "dank_mids/_vendor/aiolimiter/.git",
-    "dank_mids/_vendor/aiolimiter/.github",
-    "dank_mids/_vendor/aiolimiter/docs",
-    "dank_mids/_vendor/aiolimiter/tests",
-    "dank_mids/**/*.pyd",
-    "dank_mids/**/*.so",
+  "/*.pyd",
+  "/*.so",
+  "/build",
+  "/cache",
+  "/dist",
+  "/docs/_build",
+  "/env",
+  "/tests",
+  "/.github",
+  "/.mypy_cache",
+  "/.pytest_cache",
+  "/.tox",
+  "/.venv",
+  "dank_mids/_vendor/aiolimiter/.git",
+  "dank_mids/_vendor/aiolimiter/.github",
+  "dank_mids/_vendor/aiolimiter/docs",
+  "dank_mids/_vendor/aiolimiter/tests",
+  "dank_mids/**/*.pyd",
+  "dank_mids/**/*.so",
 ]
 
 [tool.hatch.build.targets.sdist]
 only-include = [
-    "dank_mids",
-    "hatch_build.py",
-    "LICENSE",
-    "README.md",
-    "scripts",
+  "dank_mids",
+  "hatch_build.py",
+  "LICENSE",
+  "README.md",
+  "scripts",
 ]
 
 [tool.hatch.build.targets.wheel]

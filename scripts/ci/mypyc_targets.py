@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
 import importlib.metadata
 import os
 import pathlib
@@ -10,6 +9,7 @@ import re
 import subprocess
 import sys
 import sysconfig
+from collections.abc import Iterable
 from typing import Any
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
