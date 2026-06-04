@@ -1333,8 +1333,6 @@ typedef struct {
     PyObject *___mypyc_generator_attribute__make_request;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__async_w3;
-    tuple_T2OO ___mypyc_generator_attribute__controller_key;
-    PyObject *___mypyc_generator_attribute__controller;
 } dank_mids___middleware___async_wrap_make_request_DankMiddleware_genObject;
 
 typedef struct {
