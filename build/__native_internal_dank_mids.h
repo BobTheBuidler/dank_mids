@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1530];
+extern PyObject *CPyStatics[1534];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -234,6 +234,13 @@ extern CPyModule *CPyModule_msgspec___json;
 extern int CPyExec_dank_mids___helpers____codec(PyObject *module);
 extern PyObject *CPyInit_dank_mids___helpers____codec(void);
 extern PyObject *CPyInitOnly_dank_mids___helpers____codec(void);
+extern CPyModule *CPyModule_dank_mids___helpers____controllers__internal;
+extern CPyModule *CPyModule_dank_mids___helpers____controllers;
+extern PyObject *CPyStatic__controllers___globals;
+extern CPyModule *CPyModule_threading;
+extern int CPyExec_dank_mids___helpers____controllers(PyObject *module);
+extern PyObject *CPyInit_dank_mids___helpers____controllers(void);
+extern PyObject *CPyInitOnly_dank_mids___helpers____controllers(void);
 extern PyObject *CPyStatic__errors___globals;
 extern CPyModule *CPyModule_web3___exceptions;
 extern int CPyExec_dank_mids___helpers____errors(PyObject *module);
@@ -252,7 +259,6 @@ extern PyObject *CPyInit_dank_mids___helpers____rate_limit(void);
 extern PyObject *CPyInitOnly_dank_mids___helpers____rate_limit(void);
 extern PyObject *CPyStatic__requester___globals;
 extern CPyModule *CPyModule_atexit;
-extern CPyModule *CPyModule_threading;
 extern CPyModule *CPyModule_concurrent___futures;
 extern CPyModule *CPyModule_aiohttp;
 extern CPyModule *CPyModule_aiohttp___typedefs;
@@ -1051,6 +1057,11 @@ extern PyObject *CPyPy__codec____import_from_types(PyObject *self, PyObject *con
 extern char CPyDef__codec_____make_decode_batch(void);
 extern PyObject *CPyPy__codec_____make_decode_batch(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__codec_____top_level__(void);
+extern PyObject *CPyStatic__controllers____controllers;
+extern PyObject *CPyStatic__controllers____current_thread;
+extern PyObject *CPyDef__controllers___get_controller_for_async_w3(PyObject *cpy_r_async_w3);
+extern PyObject *CPyPy__controllers___get_controller_for_async_w3(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__controllers_____top_level__(void);
 extern PyObject *CPyStatic__errors___error_logger;
 extern PyObject *CPyStatic__errors___error_logger_debug;
 extern PyObject *CPyStatic__errors___revert_logger;
@@ -1754,8 +1765,6 @@ extern tuple_T4OIOO CPyDef_logging____py310_caller_info_from_frame(PyObject *cpy
 extern PyObject *CPyPy_logging____py310_caller_info_from_frame(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_logging_____top_level__(void);
 extern PyObject *CPyStatic_middleware___logger;
-extern PyObject *CPyStatic_middleware____controllers;
-extern PyObject *CPyStatic_middleware____current_thread;
 extern PyTypeObject *CPyType_middleware___DankMiddleware;
 extern PyTypeObject *CPyType_middleware_____init___3_DankMiddleware_obj;
 extern PyObject *CPyDef_middleware_____init___3_DankMiddleware_obj(void);
