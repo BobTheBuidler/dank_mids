@@ -92,7 +92,7 @@ jobs:
           CIBW_SKIP: "pp* *-musllinux_* *-win32"
           CIBW_TEST_COMMAND: "pytest {project}/tests/compiled_imports/test_compiled_imports.py"
           CIBW_TEST_ENVIRONMENT: >
-            DANK_MIDS_COMPILED_IMPORT_MODE=installed-wheel
+            DANK_MIDS_COMPILED_IMPORT_LOCATION=installed-wheel
             PYTHONFAULTHANDLER=1
             PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
             TYPEDENVS_SHUTUP=1

@@ -1,5 +1,16 @@
 # Contributing
 
+## Compiled Runtime Contract
+
+dank-mids is validated as a compiled mypyc package. Treat tracked `.py` files as
+mypyc source inputs for the compiled runtime, not as a separate supported direct
+`.py` execution path.
+
+CI validates compiled source-tree artifacts copied into the checkout, and
+release tests validate compiled wheel artifacts imported from the installed
+wheel. Terms such as `source-tree` describe where native `.so`/`.pyd` artifacts
+are imported from; they do not imply direct `.py` execution.
+
 ## Pre-commit
 
 This repository uses `pre-commit` for local checks before commit.
