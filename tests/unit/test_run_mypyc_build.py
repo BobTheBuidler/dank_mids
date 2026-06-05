@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import subprocess
 import sys
 import zipfile
 from pathlib import Path
@@ -90,6 +91,25 @@ def test_mypyc_targets_expand_vendored_aiolimiter_sources() -> None:
 
     assert "dank_mids/_vendor/aiolimiter/src/aiolimiter/__init__.py" in expanded_targets
     assert "dank_mids/_vendor/aiolimiter/src/aiolimiter/leakybucket.py" in expanded_targets
+
+
+def test_vendored_aiolimiter_tracks_no_compiled_binary_artifacts() -> None:
+    """Regression test for stale vendored aiolimiter binaries importing old mypyc runtimes."""
+    tracked_binaries = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(REPO_ROOT / "dank_mids" / "_vendor" / "aiolimiter"),
+            "ls-files",
+            "src/aiolimiter/*.so",
+            "src/aiolimiter/*.pyd",
+        ],
+        check=True,
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout.splitlines()
+
+    assert tracked_binaries == []
 
 
 def test_build_dependencies_come_from_pyproject(tmp_path) -> None:
