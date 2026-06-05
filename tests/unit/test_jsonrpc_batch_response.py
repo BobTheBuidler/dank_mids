@@ -1,6 +1,8 @@
 import asyncio
 
-from dank_mids._requests import JSONRPCBatch
+from web3._utils.rpc_abi import RPC
+
+from dank_mids._requests import JSONRPCBatch, RPCRequest
 from dank_mids._uid import UIDGenerator
 from dank_mids.helpers._codec import decode_raw
 
@@ -54,3 +56,26 @@ def test_spoof_response_by_id_matches_and_skips_falsey() -> None:
     assert call1.responses == [response[1]]
     assert call2.responses == []
     assert mcall_coros == []
+
+
+def test_unbatched_rpc_request_error_includes_request_context() -> None:
+    async def run():
+        controller = _DummyController()
+        request = RPCRequest(controller, RPC.eth_blockNumber, [])
+
+        async def make_request(*_args, **_kwargs):
+            raw = decode_raw(
+                b'{"jsonrpc":"2.0","id":1,"error":{"code":-32000,"message":"weird node error"}}'
+            )
+            request._fut.set_result(raw)
+            return raw
+
+        request.make_request = make_request
+        response = await request.get_response_unbatched()
+        return request, response
+
+    request, response = asyncio.run(run())
+    context = response["error"]["dankmids_added_context"]
+
+    assert context.method == request.method == RPC.eth_blockNumber
+    assert context.params == request.params == []
