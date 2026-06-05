@@ -23,6 +23,7 @@ from dank_mids._web3.method import (
     MethodNoFormat,
     _block_selectors,
     bypass_formatters,
+    retrieve_dank_method_call_fn,
 )
 from dank_mids.types import Error, T
 
@@ -38,6 +39,10 @@ class TraceFilterParams(TypedDict, total=False):  # type: ignore [call-arg]
 
 class DankEth(AsyncEth):
     _block_cache_ttl = 0.1
+
+    def __init__(self, w3) -> None:
+        super().__init__(w3)
+        self.retrieve_caller_fn = retrieve_dank_method_call_fn(w3, self)
 
     # eth_chainId
 

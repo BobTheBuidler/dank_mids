@@ -1,6 +1,10 @@
 import asyncio
 import inspect
+import json
+import threading
+from collections.abc import Iterator
 from dataclasses import dataclass
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from types import SimpleNamespace
 from typing import Any
 
@@ -17,6 +21,7 @@ import dank_mids.controller as controller_module
 import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.helpers._helpers as helpers
 import dank_mids.middleware as middleware
+from dank_mids._exceptions import BadResponse, ExecutionReverted
 from dank_mids.eth import DankEth
 
 
@@ -26,6 +31,10 @@ OTHER_ACCOUNT = "0x0000000000000000000000000000000000000002"
 
 class _AsyncProvider(AsyncBaseProvider):
     endpoint_uri = "https://node.example"
+
+    def __init__(self, endpoint_uri: str = "https://node.example") -> None:
+        super().__init__()
+        self.endpoint_uri = endpoint_uri
 
     async def make_request(self, method: RPCEndpoint, params: Any) -> RPCResponse:
         raise AssertionError(f"unexpected provider request: {method} {params!r}")
@@ -47,6 +56,45 @@ class _NoopSemaphores:
         return _NoopAsyncContext()
 
 
+class _JsonRpcServer(ThreadingHTTPServer):
+    calls: list[tuple[str, Any]]
+    errors: dict[str, dict[str, Any]]
+    results: dict[str, Any]
+
+
+class _JsonRpcHandler(BaseHTTPRequestHandler):
+    def do_POST(self) -> None:
+        content_length = int(self.headers.get("Content-Length", "0"))
+        payload = json.loads(self.rfile.read(content_length))
+        is_batch = isinstance(payload, list)
+        requests = payload if is_batch else [payload]
+        server = self.server
+        assert isinstance(server, _JsonRpcServer)
+        responses = [self._handle_request(server, request) for request in requests]
+        body = json.dumps(responses if is_batch else responses[0]).encode()
+
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, _format: str, *args: Any) -> None:
+        return None
+
+    @staticmethod
+    def _handle_request(server: _JsonRpcServer, request: dict[str, Any]) -> dict[str, Any]:
+        method = request["method"]
+        params = request.get("params", [])
+        server.calls.append((method, params))
+        response = {"jsonrpc": "2.0", "id": request.get("id")}
+        if error := server.errors.get(method):
+            response["error"] = error
+        else:
+            response["result"] = server.results[method]
+        return response
+
+
 @dataclass(frozen=True)
 class _ProcessParamsCase:
     name: str
@@ -55,19 +103,59 @@ class _ProcessParamsCase:
     expected_request: tuple[RPCEndpoint, Any]
 
 
-def _async_w3() -> AsyncWeb3:
-    async_w3 = AsyncWeb3(_AsyncProvider())
+def _async_w3(endpoint_uri: str = "https://node.example") -> AsyncWeb3:
+    async_w3 = AsyncWeb3(_AsyncProvider(endpoint_uri))
     async_w3.middleware_onion.clear()
     return async_w3
 
 
-def _new_dank_eth() -> tuple[AsyncWeb3, DankEth]:
-    async_w3 = _async_w3()
+def _new_dank_eth(endpoint_uri: str = "https://node.example") -> tuple[AsyncWeb3, DankEth]:
+    async_w3 = _async_w3(endpoint_uri)
     return async_w3, DankEth(async_w3)
 
 
 def _descriptor(name: str) -> Method[Any]:
     return inspect.getattr_static(DankEth, name)
+
+
+@pytest.fixture
+def controller_cache() -> Iterator[dict[tuple[AsyncWeb3, threading.Thread], Any]]:
+    controller_cache_module._controllers.clear()
+    try:
+        yield controller_cache_module._controllers
+    finally:
+        controller_cache_module._controllers.clear()
+
+
+@pytest.fixture
+def jsonrpc_server() -> Iterator[_JsonRpcServer]:
+    server = _JsonRpcServer(("127.0.0.1", 0), _JsonRpcHandler)
+    server.calls = []
+    server.errors = {}
+    server.results = {
+        RPC.eth_chainId: "0x1",
+        RPC.web3_clientVersion: "pytest/test",
+        RPC.eth_blockNumber: "0x7b",
+    }
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield server
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+        server.server_close()
+
+
+def _server_endpoint(server: _JsonRpcServer) -> str:
+    return f"http://127.0.0.1:{server.server_port}"
+
+
+def _forbid_web3_manager(monkeypatch: pytest.MonkeyPatch, async_w3: AsyncWeb3) -> None:
+    async def forbidden_coro_request(*args: Any, **kwargs: Any) -> RPCResponse:
+        raise AssertionError("optimized DankEth methods must not call Web3 RequestManager")
+
+    monkeypatch.setattr(async_w3.manager, "coro_request", forbidden_coro_request)
 
 
 def _clear_controller_cache() -> None:
@@ -228,6 +316,100 @@ def test_middleware_route_only_request_function_reaches_dank_controller(
             assert calls == [(request_func, RPC.eth_blockNumber, ())]
         finally:
             _clear_controller_cache()
+
+    asyncio.run(run())
+
+
+def test_dank_eth_direct_dispatch_uses_controller_without_request_manager(
+    monkeypatch: pytest.MonkeyPatch,
+    controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
+    jsonrpc_server: _JsonRpcServer,
+) -> None:
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth(_server_endpoint(jsonrpc_server))
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        assert async_w3.middleware_onion.as_tuple_of_middleware() == ()
+        assert await eth.get_block_number() == 123
+        assert (RPC.eth_blockNumber, []) in jsonrpc_server.calls
+        assert isinstance(
+            controller_cache[(async_w3, threading.current_thread())],
+            controller_module.DankMiddlewareController,
+        )
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_accepts_compact_result_and_applies_result_formatter(
+    monkeypatch: pytest.MonkeyPatch,
+    jsonrpc_server: _JsonRpcServer,
+) -> None:
+    async def run() -> None:
+        jsonrpc_server.results[RPC.eth_blockNumber] = "0xa"
+        async_w3, eth = _new_dank_eth(_server_endpoint(jsonrpc_server))
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        assert await eth.get_block_number() == 10
+        assert (RPC.eth_blockNumber, []) in jsonrpc_server.calls
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_compact_error_raises_existing_dank_exception(
+    monkeypatch: pytest.MonkeyPatch,
+    jsonrpc_server: _JsonRpcServer,
+) -> None:
+    async def run() -> None:
+        jsonrpc_server.errors[RPC.eth_blockNumber] = {
+            "code": 3,
+            "message": "execution reverted",
+        }
+        async_w3, eth = _new_dank_eth(_server_endpoint(jsonrpc_server))
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        with pytest.raises(ExecutionReverted):
+            await eth.get_block_number()
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_preserves_compact_error_request_context(
+    monkeypatch: pytest.MonkeyPatch,
+    jsonrpc_server: _JsonRpcServer,
+) -> None:
+    async def run() -> None:
+        jsonrpc_server.errors[RPC.eth_blockNumber] = {
+            "code": -32000,
+            "message": "weird node error",
+        }
+        async_w3, eth = _new_dank_eth(_server_endpoint(jsonrpc_server))
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        with pytest.raises(BadResponse) as exc_info:
+            await eth.get_block_number()
+
+        assert exc_info.value.request.method == RPC.eth_blockNumber
+        assert exc_info.value.request.params == ()
+
+    asyncio.run(run())
+
+
+def test_dank_middleware_and_direct_dank_eth_share_controller_cache(
+    monkeypatch: pytest.MonkeyPatch,
+    controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
+    jsonrpc_server: _JsonRpcServer,
+) -> None:
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth(_server_endpoint(jsonrpc_server))
+        middleware_controller = await middleware.DankMiddleware(
+            async_w3
+        ).async_wrap_make_request(async_w3.provider.make_request)
+
+        assert await eth.get_block_number() == 123
+        assert controller_cache == {
+            (async_w3, threading.current_thread()): middleware_controller
+        }
+        assert hasattr(eth, "retrieve_caller_fn")
 
     asyncio.run(run())
 
