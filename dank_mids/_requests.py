@@ -412,7 +412,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         response: RawResponse = await self._fut
         decoded = response.decode(partial=True)
-        return format_with_errors(decoded, self.method, raw_mode=self.raw)
+        return format_with_errors(decoded, self.method, raw_mode=self.raw, request=self.request)
 
     async def spoof_response(self, data: RawResponse | bytes | Exception) -> None:
         # sourcery skip: merge-duplicate-blocks
