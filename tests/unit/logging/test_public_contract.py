@@ -1,9 +1,24 @@
 from __future__ import annotations
 
+import importlib.machinery
 import logging
 from collections.abc import Callable
 
+from dank_mids import logging as dank_logging
 from dank_mids.logging import CLogger, get_c_logger, use_c_logger_class
+
+_NATIVE_SUFFIXES = tuple(
+    dict.fromkeys((*importlib.machinery.EXTENSION_SUFFIXES, ".so", ".pyd"))
+)
+
+
+def test_logging_parity_suite_runs_against_compiled_logging_extension() -> None:
+    module_file = getattr(dank_logging, "__file__", None)
+
+    assert isinstance(module_file, str) and module_file.endswith(_NATIVE_SUFFIXES), (
+        "logging parity tests must run against compiled dank_mids.logging; "
+        "build/download source-tree extensions before running this suite."
+    )
 
 
 def test_get_c_logger_returns_c_logger(logger_name_prefix: str) -> None:

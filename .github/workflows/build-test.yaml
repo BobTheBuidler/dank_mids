@@ -214,7 +214,7 @@ jobs:
 
       - name: Run compiled import audit
         env:
-          DANK_MIDS_COMPILED_IMPORT_MODE: source-tree
+          DANK_MIDS_COMPILED_IMPORT_LOCATION: source-tree
           PYTHONFAULTHANDLER: 1
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1
           TYPEDENVS_SHUTUP: 1

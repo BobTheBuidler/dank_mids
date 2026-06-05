@@ -1,3 +1,11 @@
+"""Audit that dank-mids imports as compiled native mypyc artifacts.
+
+dank-mids is validated as a compiled mypyc package. The ``source-tree``
+location means native ``.so``/``.pyd`` artifacts copied into the checkout, and
+the ``installed-wheel`` location means native artifacts imported from an
+installed wheel. This audit never validates direct execution of ``.py`` sources.
+"""
+
 from __future__ import annotations
 
 import importlib
@@ -25,6 +33,10 @@ compiled_module_names = _mypyc_targets.compiled_module_names
 extension_suffix = _mypyc_targets.extension_suffix
 
 MODULE_NAMES = compiled_module_names(REPO_ROOT)
+COMPILED_IMPORT_LOCATION_ENV = "DANK_MIDS_COMPILED_IMPORT_LOCATION"
+LEGACY_COMPILED_IMPORT_MODE_ENV = "DANK_MIDS_COMPILED_IMPORT_MODE"
+SOURCE_TREE_LOCATION = "source-tree"
+INSTALLED_WHEEL_LOCATION = "installed-wheel"
 
 
 def _path_resolves_to_repo(path_entry: str) -> bool:
@@ -36,16 +48,24 @@ def _path_resolves_to_repo(path_entry: str) -> bool:
 
 
 def _prepare_imports() -> None:
-    mode = os.getenv("DANK_MIDS_COMPILED_IMPORT_MODE", "source-tree")
-    if mode == "source-tree":
+    location = os.getenv(COMPILED_IMPORT_LOCATION_ENV) or os.getenv(
+        LEGACY_COMPILED_IMPORT_MODE_ENV,
+        SOURCE_TREE_LOCATION,
+    )
+    if location == SOURCE_TREE_LOCATION:
         sys.path[:] = [path_entry for path_entry in sys.path if path_entry != str(REPO_ROOT)]
         sys.path.insert(0, str(REPO_ROOT))
-    elif mode == "installed-wheel":
+    elif location == INSTALLED_WHEEL_LOCATION:
         sys.path[:] = [
             path_entry for path_entry in sys.path if not _path_resolves_to_repo(path_entry)
         ]
     else:
-        pytest.fail(f"unsupported compiled import mode: {mode!r}")
+        pytest.fail(
+            f"unsupported compiled artifact location: {location!r}; expected "
+            f"{SOURCE_TREE_LOCATION!r} or {INSTALLED_WHEEL_LOCATION!r}. These values select "
+            "where native .so/.pyd artifacts are imported from, not direct "
+            ".py-source execution."
+        )
     importlib.invalidate_caches()
     # Pytest collection may already hold references to imported dank_mids classes.
     # Do not unload mypyc modules in-process; stale source imports fail below.

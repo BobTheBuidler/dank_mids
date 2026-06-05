@@ -2,6 +2,8 @@
 
 All agents must follow these rules:
 
+dank-mids is always compiled. PyPI wheels are compiled, setup compiles the project, and tests/CI must validate compiled extensions. Do not invent or reason from an interpreted `.py` runtime path; tracked `.py` files are mypyc source inputs.
+
 1) Sandbox runs may block Unix socketpair wakeups; rerun asyncio/threaded failures outside the sandbox before declaring repo, mypyc, or Python regressions.
 2) Fully test your changes before submitting a PR (run the full suite or all relevant tests): `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest <files>`
 3) PR titles must be descriptive and follow Conventional Commits-style prefixes:
