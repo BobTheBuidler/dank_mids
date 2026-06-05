@@ -12,6 +12,7 @@ from web3.providers.base import BaseProvider
 from web3.types import RPCEndpoint, RPCResponse
 
 import dank_mids
+import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.helpers._helpers as helpers
 import dank_mids.middleware as middleware  # Keep source/compiled imports identical.
 
@@ -87,7 +88,7 @@ def test_dank_middleware_naming_instance_keeps_python_attr_layout() -> None:
 def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
     try:
         async_w3 = _async_w3()
-        middleware._controllers.clear()
+        controller_cache_module._controllers.clear()
 
         # This is setup_dank_w3's runtime path: unnamed Web3 v7 class injection.
         async_w3.middleware_onion.inject(middleware.DankMiddleware, layer=0)
@@ -95,9 +96,9 @@ def test_web3_v7_middleware_class_composes_with_async_onion() -> None:
         assert async_w3.middleware_onion.as_tuple_of_middleware() == (
             middleware.DankMiddleware,
         )
-        assert middleware._controllers == {}
+        assert controller_cache_module._controllers == {}
     finally:
-        middleware._controllers.clear()
+        controller_cache_module._controllers.clear()
 
 
 def test_web3_v7_setup_dank_w3_injects_class_with_real_async_onion(monkeypatch) -> None:
@@ -112,17 +113,17 @@ def test_web3_v7_setup_dank_w3_injects_class_with_real_async_onion(monkeypatch) 
     )
     try:
         helpers.dank_w3s.clear()
-        middleware._controllers.clear()
+        controller_cache_module._controllers.clear()
         assert helpers.setup_dank_w3(async_w3) is async_w3
 
         assert async_w3.middleware_onion.as_tuple_of_middleware() == (
             middleware.DankMiddleware,
         )
         assert async_w3.eth is dank_eth
-        assert middleware._controllers == {}
+        assert controller_cache_module._controllers == {}
     finally:
         helpers.dank_w3s.clear()
-        middleware._controllers.clear()
+        controller_cache_module._controllers.clear()
 
 
 def test_non_mainnet_setup_injects_web3_v7_poa_middleware_before_dank(monkeypatch) -> None:

@@ -14,6 +14,7 @@ from web3.types import RPCEndpoint, RPCResponse
 
 import dank_mids
 import dank_mids.controller as controller_module
+import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.helpers._helpers as helpers
 import dank_mids.middleware as middleware
 from dank_mids.eth import DankEth
@@ -70,7 +71,7 @@ def _descriptor(name: str) -> Method[Any]:
 
 
 def _clear_controller_cache() -> None:
-    middleware._controllers.clear()
+    controller_cache_module._controllers.clear()
 
 
 def _install_inert_controller_init(monkeypatch: pytest.MonkeyPatch) -> None:
