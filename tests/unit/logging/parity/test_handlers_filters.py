@@ -19,6 +19,22 @@ def _handler_messages(handler: logging.Handler) -> list[str]:
     return [record.getMessage() for record in handler.records]
 
 
+def _assert_filter_success_parity(
+    c_result: object,
+    stdlib_result: object,
+    c_record: logging.LogRecord,
+    stdlib_record: logging.LogRecord,
+) -> None:
+    assert bool(c_result) == bool(stdlib_result) == True
+    assert type(c_result) is type(stdlib_result)
+    if isinstance(stdlib_result, logging.LogRecord):
+        assert c_result is c_record
+        assert stdlib_result is stdlib_record
+    else:
+        assert c_result is True
+        assert stdlib_result is True
+
+
 def test_add_and_remove_handler_match_stdlib(
     list_handler_type: type[logging.Handler],
     new_logger_pair: Callable[[int], object],
@@ -200,9 +216,7 @@ def test_add_remove_filter_and_filter_result_match_stdlib(
 
     c_result = pair.c_logger.filter(c_record)
     stdlib_result = pair.stdlib_logger.filter(stdlib_record)
-    assert bool(c_result) == bool(stdlib_result) == True
-    assert c_result is c_record
-    assert stdlib_result is stdlib_record
+    _assert_filter_success_parity(c_result, stdlib_result, c_record, stdlib_record)
     assert c_record.filter_marker == stdlib_record.filter_marker == True
 
     pair.c_logger.removeFilter(c_filter)
@@ -241,7 +255,5 @@ def test_callable_filter_matches_stdlib(
 
     c_result = pair.c_logger.filter(c_record)
     stdlib_result = pair.stdlib_logger.filter(stdlib_record)
-    assert bool(c_result) == bool(stdlib_result) == True
-    assert c_result is c_record
-    assert stdlib_result is stdlib_record
+    _assert_filter_success_parity(c_result, stdlib_result, c_record, stdlib_record)
     assert c_record.callable_filter_marker == stdlib_record.callable_filter_marker == "c"
