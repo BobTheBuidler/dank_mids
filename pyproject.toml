@@ -48,7 +48,7 @@ build = [
     "types-requests",
 ]
 dev = [
-    "eth-brownie==1.22.0",
+    "eth-brownie==1.22.1",
     "importlib-resources>=6.4.0",
     "pytest==9.0.3",
     "pytest-asyncio-cooperative==0.40.0",
