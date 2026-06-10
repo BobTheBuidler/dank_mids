@@ -88,7 +88,6 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v4.0.0
         env:
-          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-*"
           CIBW_SKIP: "pp* *-musllinux_* *-win32"
           CIBW_TEST_COMMAND: "pytest {project}/tests/compiled_imports/test_compiled_imports.py"
           CIBW_TEST_ENVIRONMENT: >
