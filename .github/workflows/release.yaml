@@ -86,7 +86,7 @@ jobs:
           enable-cache: true
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v4.0.0
+        uses: pypa/cibuildwheel@v4.1.0
         env:
           CIBW_SKIP: "pp* *-musllinux_* *-win32"
           CIBW_TEST_COMMAND: "pytest {project}/tests/compiled_imports/test_compiled_imports.py"
