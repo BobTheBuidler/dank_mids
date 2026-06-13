@@ -89,6 +89,7 @@
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -108,6 +109,8 @@
         <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.__call__">(dank_mids.brownie_patch.types.DankContractTx method)</a>
 </li>
         <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.__call__">(dank_mids.brownie_patch.types.DankOverloadedMethod method)</a>
+</li>
+        <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.__call__">(dank_mids.controller.DankMiddlewareController method)</a>
 </li>
         <li><a href="source/dank_mids.html#dank_mids.retry_observer.RetryObserver.__call__">(dank_mids.retry_observer.RetryObserver method)</a>
 </li>
@@ -161,6 +164,10 @@
 </li>
         <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod.__init__">(dank_mids.brownie_patch.types.DankOverloadedMethod method)</a>
 </li>
+        <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.__init__">(dank_mids.controller.DankMiddlewareController method)</a>
+</li>
+        <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.__init__">(dank_mids.DankMiddleware method)</a>
+</li>
         <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.__init__">(dank_mids.eth.DankEth method)</a>
 </li>
         <li><a href="source/dank_mids.html#dank_mids.eth.TraceFilterParams.__init__">(dank_mids.eth.TraceFilterParams method)</a>
@@ -182,6 +189,8 @@
         <li><a href="source/dank_mids.html#dank_mids.lock.Lock.__init__">(dank_mids.lock.Lock method)</a>
 </li>
         <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.__init__">(dank_mids.logging.CLogger method)</a>
+</li>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.__init__">(dank_mids.middleware.DankMiddleware method)</a>
 </li>
         <li><a href="source/dank_mids.html#dank_mids.retry_observer.RetryEvent.__init__">(dank_mids.retry_observer.RetryEvent method)</a>
 </li>
@@ -270,20 +279,44 @@
         <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.future.DebuggableFuture.add_done_callback">(dank_mids.helpers.future.DebuggableFuture method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.addFilter">addFilter() (dank_mids.logging.CLogger method)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.addHandler">addHandler() (dank_mids.logging.CLogger method)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.eth.TraceFilterParams.after">after (dank_mids.eth.TraceFilterParams attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.html#dank_mids.ENVIRONMENT_VARIABLES.AIOHTTP_TIMEOUT">AIOHTTP_TIMEOUT (in module dank_mids.ENVIRONMENT_VARIABLES)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.lock.AlertingRLock">AlertingRLock (class in dank_mids.lock)</a>
 </li>
       <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.alias">alias (dank_mids.brownie_patch.contract.Contract property)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.async_request_processor">async_request_processor() (dank_mids.DankMiddleware method)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.async_request_processor">(dank_mids.middleware.DankMiddleware method)</a>
+</li>
+      </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.async_response_processor">async_response_processor() (dank_mids.DankMiddleware method)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.async_response_processor">(dank_mids.middleware.DankMiddleware method)</a>
+</li>
+      </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.async_wrap_make_batch_request">async_wrap_make_batch_request() (dank_mids.DankMiddleware method)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.async_wrap_make_batch_request">(dank_mids.middleware.DankMiddleware method)</a>
+</li>
+      </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.async_wrap_make_request">async_wrap_make_request() (dank_mids.DankMiddleware method)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.async_wrap_make_request">(dank_mids.middleware.DankMiddleware method)</a>
+</li>
+      </ul></li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.attach_methods">attach_methods() (dank_mids.eth.DankEth method)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.retry_observer.RetryEvent.attempt">attempt (dank_mids.retry_observer.RetryEvent attribute)</a>, <a href="source/dank_mids.html#id0">[1]</a>
@@ -301,6 +334,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.balance">balance() (dank_mids.brownie_patch.contract.Contract method)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.batcher">batcher (dank_mids.controller.DankMiddlewareController attribute)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.types.BatchId">BatchId (in module dank_mids.types)</a>
 </li>
@@ -356,6 +391,8 @@
       </ul></li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.call_munger">call_munger() (dank_mids.eth.DankEth method)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.call_uid">call_uid (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.callHandlers">callHandlers() (dank_mids.logging.CLogger method)</a>
 </li>
       <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.DebuggableFuture.cancel">cancel() (dank_mids.helpers.DebuggableFuture method)</a>
@@ -370,8 +407,12 @@
         <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.future.DebuggableFuture.cancelled">(dank_mids.helpers.future.DebuggableFuture method)</a>
 </li>
       </ul></li>
-      <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.chain_id">chain_id (dank_mids.eth.DankEth attribute)</a>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.chain_id">chain_id (dank_mids.controller.DankMiddlewareController attribute)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.chain_id">(dank_mids.eth.DankEth attribute)</a>
 </li>
+      </ul></li>
       <li><a href="source/dank_mids.html#dank_mids.types.ChainstackRateLimitContext">ChainstackRateLimitContext (class in dank_mids.types)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.eth.TraceFilterParams.clear">clear() (dank_mids.eth.TraceFilterParams method)</a>
@@ -384,6 +425,8 @@
         <li><a href="source/dank_mids.html#dank_mids.types.RPCErrorWithContext.clear">(dank_mids.types.RPCErrorWithContext method)</a>
 </li>
       </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.client_version">client_version (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger">CLogger (class in dank_mids.logging)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.types.Error.code">code (dank_mids.types.Error attribute)</a>
@@ -489,6 +532,13 @@
 </li>
       </ul></li>
       <li>
+    dank_mids.controller
+
+      <ul>
+        <li><a href="source/dank_mids.html#module-dank_mids.controller">module</a>
+</li>
+      </ul></li>
+      <li>
     dank_mids.ENVIRONMENT_VARIABLES
 
       <ul>
@@ -566,6 +616,13 @@
 </li>
       </ul></li>
       <li>
+    dank_mids.middleware
+
+      <ul>
+        <li><a href="source/dank_mids.html#module-dank_mids.middleware">module</a>
+</li>
+      </ul></li>
+      <li>
     dank_mids.retry_observer
 
       <ul>
@@ -611,6 +668,14 @@
       <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx">DankContractTx (class in dank_mids.brownie_patch.types)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth">DankEth (class in dank_mids.eth)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware">DankMiddleware (class in dank_mids)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware">(class in dank_mids.middleware)</a>
+</li>
+      </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController">DankMiddlewareController (class in dank_mids.controller)</a>
 </li>
       <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankOverloadedMethod">DankOverloadedMethod (class in dank_mids.brownie_patch.types)</a>
 </li>
@@ -700,6 +765,8 @@
 </li>
       <li><a href="source/dank_mids.stats.html#dank_mids.stats.devhint">devhint() (in module dank_mids.stats)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.dispatch_pending_rpc_batch_and_wait">dispatch_pending_rpc_batch_and_wait() (dank_mids.controller.DankMiddlewareController method)</a>
+</li>
       <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.DebuggableFuture.done">done() (dank_mids.helpers.DebuggableFuture method)</a>
 
       <ul>
@@ -712,6 +779,8 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.early_start">early_start() (dank_mids.controller.DankMiddlewareController method)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.emit_retry_event">emit_retry_event() (in module dank_mids)</a>
 
       <ul>
@@ -734,6 +803,8 @@
         <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.call.encode_input">(in module dank_mids.brownie_patch.call)</a>
 </li>
       </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.endpoint">endpoint (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.types.Error">Error (class in dank_mids.types)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.retry_observer.RetryEvent.error">error (dank_mids.retry_observer.RetryEvent attribute)</a>, <a href="source/dank_mids.html#id9">[1]</a>
@@ -760,6 +831,8 @@
       </ul></li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.estimate_gas_munger">estimate_gas_munger() (dank_mids.eth.DankEth method)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.eth_call_semaphores">eth_call_semaphores (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.types.eth_callParams">eth_callParams (class in dank_mids.types)</a>
 </li>
       <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.EventName">EventName (class in dank_mids.brownie_patch.contract)</a>
@@ -778,6 +851,8 @@
         <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.exception">(dank_mids.logging.CLogger method)</a>
 </li>
       </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.execute_batch">execute_batch() (dank_mids.controller.DankMiddlewareController method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -942,14 +1017,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.handle">handle() (dank_mids.logging.CLogger method)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.has_pending_calls">has_pending_calls (dank_mids.controller.DankMiddlewareController property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.DebuggableFuture.has_waiters">has_waiters (dank_mids.helpers.DebuggableFuture property)</a>
 
       <ul>
         <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.future.DebuggableFuture.has_waiters">(dank_mids.helpers.future.DebuggableFuture property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.hasHandlers">hasHandlers() (dank_mids.logging.CLogger method)</a>
 </li>
   </ul></td>
@@ -1122,6 +1199,8 @@
         <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.hashing.make_hashable">(in module dank_mids.helpers.hashing)</a>
 </li>
       </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.make_request">make_request() (dank_mids.controller.DankMiddlewareController method)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.makeRecord">makeRecord() (dank_mids.logging.CLogger method)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.manager">manager (dank_mids.logging.CLogger attribute)</a>
@@ -1184,6 +1263,8 @@
 </li>
         <li><a href="source/dank_mids.html#module-dank_mids.constants">dank_mids.constants</a>
 </li>
+        <li><a href="source/dank_mids.html#module-dank_mids.controller">dank_mids.controller</a>
+</li>
         <li><a href="source/dank_mids.html#module-dank_mids.ENVIRONMENT_VARIABLES">dank_mids.ENVIRONMENT_VARIABLES</a>
 </li>
         <li><a href="source/dank_mids.html#module-dank_mids.eth">dank_mids.eth</a>
@@ -1206,6 +1287,8 @@
 </li>
         <li><a href="source/dank_mids.html#module-dank_mids.logging">dank_mids.logging</a>
 </li>
+        <li><a href="source/dank_mids.html#module-dank_mids.middleware">dank_mids.middleware</a>
+</li>
         <li><a href="source/dank_mids.html#module-dank_mids.retry_observer">dank_mids.retry_observer</a>
 </li>
         <li><a href="source/dank_mids.html#module-dank_mids.semaphores">dank_mids.semaphores</a>
@@ -1226,6 +1309,8 @@
       <li><a href="source/dank_mids.html#dank_mids.constants.MULTICALL2_OVERRIDE_CODE">MULTICALL2_OVERRIDE_CODE (in module dank_mids.constants)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.constants.MULTICALL3_DEPLOY_BLOCKS">MULTICALL3_DEPLOY_BLOCKS (in module dank_mids.constants)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.multicall_uid">multicall_uid (dank_mids.controller.DankMiddlewareController attribute)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.types.Multicalls">Multicalls (in module dank_mids.types)</a>
 </li>
@@ -1253,6 +1338,8 @@
         <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.types.DankContractTx.natspec">(dank_mids.brownie_patch.types.DankContractTx attribute)</a>
 </li>
       </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.no_multicall">no_multicall (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1303,6 +1390,10 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.pending_eth_calls">pending_eth_calls (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.pending_rpc_calls">pending_rpc_calls (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.eth.TraceFilterParams.pop">pop() (dank_mids.eth.TraceFilterParams method)</a>
 
       <ul>
@@ -1326,10 +1417,22 @@
   </ul></td>
 </tr></table>
 
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.queue_is_full">queue_is_full (dank_mids.controller.DankMiddlewareController property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.hashing.AttributeDict.recursive">recursive() (dank_mids.helpers.hashing.AttributeDict class method)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.reduce_batch_size">reduce_batch_size() (dank_mids.controller.DankMiddlewareController method)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.reduce_multicall_size">reduce_multicall_size() (dank_mids.controller.DankMiddlewareController method)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.register_retry_observer">register_retry_observer() (in module dank_mids)</a>
 
@@ -1363,10 +1466,26 @@
 </li>
       <li><a href="source/dank_mids.html#dank_mids.types.Request">Request (class in dank_mids.types)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.request_processor">request_processor() (dank_mids.DankMiddleware method)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.request_processor">(dank_mids.middleware.DankMiddleware method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.request_type">request_type (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.request_uid">request_uid (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.types.Response">Response (class in dank_mids.types)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.response_processor">response_processor() (dank_mids.DankMiddleware method)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.response_processor">(dank_mids.middleware.DankMiddleware method)</a>
+</li>
+      </ul></li>
       <li><a href="source/dank_mids.html#dank_mids.types.PartialResponse.result">result (dank_mids.types.PartialResponse attribute)</a>
 
       <ul>
@@ -1417,6 +1536,8 @@
 </li>
       <li><a href="source/dank_mids.brownie_patch.html#dank_mids.brownie_patch.contract.Contract.set_alias">set_alias() (dank_mids.brownie_patch.contract.Contract method)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.set_batch_size_limit">set_batch_size_limit() (dank_mids.controller.DankMiddlewareController method)</a>
+</li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.set_contract_factory">set_contract_factory() (dank_mids.eth.DankEth method)</a>
 </li>
       <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.DebuggableFuture.set_exception">set_exception() (dank_mids.helpers.DebuggableFuture method)</a>
@@ -1426,6 +1547,8 @@
 </li>
       </ul></li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.set_gas_price_strategy">set_gas_price_strategy() (dank_mids.eth.DankEth method)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.set_multicall_size_limit">set_multicall_size_limit() (dank_mids.controller.DankMiddlewareController method)</a>
 </li>
       <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.DebuggableFuture.set_result">set_result() (dank_mids.helpers.DebuggableFuture method)</a>
 
@@ -1483,6 +1606,8 @@
 </li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.simulate_v1">simulate_v1() (dank_mids.eth.DankEth method)</a>
 </li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.state_override_not_supported">state_override_not_supported (dank_mids.controller.DankMiddlewareController attribute)</a>
+</li>
       <li><a href="source/dank_mids.stats.html#dank_mids.stats.STATS">STATS (in module dank_mids.stats)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.StatsRetryObserver">StatsRetryObserver (class in dank_mids)</a>
@@ -1492,6 +1617,8 @@
 </li>
       </ul></li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.subscribe">subscribe() (dank_mids.eth.DankEth method)</a>
+</li>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.sync_w3">sync_w3 (dank_mids.controller.DankMiddlewareController attribute)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.syncing">syncing (dank_mids.eth.DankEth property)</a>
 </li>
@@ -1613,8 +1740,12 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.w3">w3 (dank_mids.eth.DankEth attribute)</a>
+      <li><a href="source/dank_mids.html#dank_mids.controller.DankMiddlewareController.w3">w3 (dank_mids.controller.DankMiddlewareController attribute)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.w3">(dank_mids.eth.DankEth attribute)</a>
 </li>
+      </ul></li>
       <li><a href="source/dank_mids.html#dank_mids.eth.DankEth.wait_for_transaction_receipt">wait_for_transaction_receipt() (dank_mids.eth.DankEth method)</a>
 </li>
       <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.DebuggableFuture.waiter_count">waiter_count (dank_mids.helpers.DebuggableFuture property)</a>
@@ -1623,16 +1754,28 @@
         <li><a href="source/dank_mids.helpers.html#dank_mids.helpers.future.DebuggableFuture.waiter_count">(dank_mids.helpers.future.DebuggableFuture property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.warn">warn() (dank_mids.logging.CLogger method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/dank_mids.html#dank_mids.logging.CLogger.warning">warning() (dank_mids.logging.CLogger method)</a>
 </li>
       <li><a href="source/dank_mids.html#dank_mids.retry_observer.RetryEvent.will_retry">will_retry (dank_mids.retry_observer.RetryEvent attribute)</a>, <a href="source/dank_mids.html#id14">[1]</a>
 
       <ul>
         <li><a href="source/dank_mids.html#dank_mids.RetryEvent.will_retry">(dank_mids.RetryEvent attribute)</a>, <a href="source/dank_mids.html#id23">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.wrap_make_batch_request">wrap_make_batch_request() (dank_mids.DankMiddleware method)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.wrap_make_batch_request">(dank_mids.middleware.DankMiddleware method)</a>
+</li>
+      </ul></li>
+      <li><a href="source/dank_mids.html#dank_mids.DankMiddleware.wrap_make_request">wrap_make_request() (dank_mids.DankMiddleware method)</a>
+
+      <ul>
+        <li><a href="source/dank_mids.html#dank_mids.middleware.DankMiddleware.wrap_make_request">(dank_mids.middleware.DankMiddleware method)</a>
 </li>
       </ul></li>
   </ul></td>
