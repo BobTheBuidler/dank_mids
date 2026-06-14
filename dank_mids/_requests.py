@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, Any, DefaultDict, Final, Generic, Optional, Ty
 from weakref import ProxyType
 from weakref import proxy as weak_proxy
 
+import json
 import a_sync
 import eth_retry
 from a_sync import PruningThreadPoolExecutor, igather
@@ -1150,7 +1151,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
     @property
     def data(self) -> bytes | None:
         try:
-            joined = b",".join(call.request.data for call in self)
+            items = [json.loads(call.request.data) for call in self]
         except TypeError as e0:
             # If we can't encode one of the calls, lets figure out which one and pass some useful info downstream
             for call in self:
@@ -1160,7 +1161,7 @@ class JSONRPCBatch(_Batch[RPCResponse, Multicall | eth_call | RPCRequest]):
                     raise TypeError(e1, call.request) from e0.__cause__
             raise
         else:
-            return b"[" + joined + b"]" if joined else None
+            return json.dumps(items).encode() if items else None
 
     @property
     def is_multicalls_only(self) -> bool:
