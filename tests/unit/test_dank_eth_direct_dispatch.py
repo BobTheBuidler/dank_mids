@@ -381,6 +381,7 @@ def test_inherited_uninstall_filter_falls_back_to_web3_caller(
 
 def test_direct_dispatch_applies_eth_call_error_formatter(
     monkeypatch: pytest.MonkeyPatch,
+    controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
     jsonrpc_server: JsonRpcServer,
 ) -> None:
     async def run() -> None:
