@@ -1,5 +1,7 @@
 import asyncio
 import inspect
+import threading
+from collections.abc import Iterator
 from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Any, ClassVar
@@ -18,7 +20,12 @@ import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.helpers._helpers as helpers
 import dank_mids.middleware as middleware
 from dank_mids.eth import DankEth
-from tests.unit._jsonrpc import AsyncProvider
+from tests.unit._jsonrpc import (
+    AsyncProvider,
+    JsonRpcServer,
+    jsonrpc_server,
+    server_endpoint,
+)
 
 
 ACCOUNT = "0x0000000000000000000000000000000000000001"
@@ -46,19 +53,37 @@ class _ProcessParamsCase:
     expected_request: tuple[RPCEndpoint, Any]
 
 
-def _async_w3() -> AsyncWeb3:
-    async_w3 = AsyncWeb3(AsyncProvider())
+def _async_w3(endpoint_uri: str = "https://node.example") -> AsyncWeb3:
+    async_w3 = AsyncWeb3(AsyncProvider(endpoint_uri))
     async_w3.middleware_onion.clear()
     return async_w3
 
 
-def _new_dank_eth() -> tuple[AsyncWeb3, DankEth]:
-    async_w3 = _async_w3()
+def _new_dank_eth(
+    endpoint_uri: str = "https://node.example",
+) -> tuple[AsyncWeb3, DankEth]:
+    async_w3 = _async_w3(endpoint_uri)
     return async_w3, DankEth(async_w3)
 
 
 def _descriptor(name: str) -> Method[Any]:
     return inspect.getattr_static(DankEth, name)
+
+
+@pytest.fixture
+def controller_cache() -> Iterator[dict[tuple[AsyncWeb3, threading.Thread], Any]]:
+    controller_cache_module._controllers.clear()
+    try:
+        yield controller_cache_module._controllers
+    finally:
+        controller_cache_module._controllers.clear()
+
+
+def _forbid_web3_manager(monkeypatch: pytest.MonkeyPatch, async_w3: AsyncWeb3) -> None:
+    async def forbidden_coro_request(*args: Any, **kwargs: Any) -> RPCResponse:
+        raise AssertionError("optimized DankEth methods must not call Web3 RequestManager")
+
+    monkeypatch.setattr(async_w3.manager, "coro_request", forbidden_coro_request)
 
 
 def _clear_controller_cache() -> None:
@@ -176,7 +201,9 @@ def test_setup_dank_w3_still_injects_middleware_for_route_only_compat(
         helpers.dank_w3s.clear()
         assert helpers.setup_dank_w3(async_w3) is async_w3
 
-        assert async_w3.middleware_onion.as_tuple_of_middleware() == (middleware.DankMiddleware,)
+        assert async_w3.middleware_onion.as_tuple_of_middleware() == (
+            middleware.DankMiddleware,
+        )
         assert isinstance(async_w3.eth, DankEth)
     finally:
         helpers.dank_w3s.clear()
@@ -253,6 +280,48 @@ def test_dank_eth_get_block_number_preserves_non_dank_async_middleware() -> None
         assert await DankEth(async_w3).get_block_number() == "0x7c"
         assert provider.calls == [(RPC.eth_blockNumber, ())]
         assert RewriteBlockNumberMiddleware.observed_methods == [RPC.eth_blockNumber]
+
+    asyncio.run(run())
+
+
+def test_dank_eth_direct_dispatch_uses_controller_without_request_manager(
+    monkeypatch: pytest.MonkeyPatch,
+    controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
+    jsonrpc_server: JsonRpcServer,
+) -> None:
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth(server_endpoint(jsonrpc_server))
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        assert async_w3.middleware_onion.as_tuple_of_middleware() == ()
+        assert await eth.get_block_number() == 123
+        assert (RPC.eth_blockNumber, []) in jsonrpc_server.calls
+        assert isinstance(
+            controller_cache[(async_w3, threading.current_thread())],
+            controller_module.DankMiddlewareController,
+        )
+
+    asyncio.run(run())
+
+
+def test_dank_eth_direct_dispatch_allows_dank_middleware_only(
+    monkeypatch: pytest.MonkeyPatch,
+    controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
+    jsonrpc_server: JsonRpcServer,
+) -> None:
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth(server_endpoint(jsonrpc_server))
+        async_w3.middleware_onion.add(middleware.DankMiddleware)
+        _forbid_web3_manager(monkeypatch, async_w3)
+        middleware_controller = await middleware.DankMiddleware(
+            async_w3
+        ).async_wrap_make_request(async_w3.provider.make_request)
+
+        assert async_w3.middleware_onion.as_tuple_of_middleware() == (middleware.DankMiddleware,)
+        assert await eth.get_block_number() == 123
+        assert controller_cache == {
+            (async_w3, threading.current_thread()): middleware_controller
+        }
 
     asyncio.run(run())
 
