@@ -1,4 +1,4 @@
-"""Keep middleware calls on the same per-Web3/thread controller."""
+"""Keep middleware and direct DankEth dispatch on the same per-Web3/thread controller."""
 
 import threading
 from typing import TYPE_CHECKING, Final
