@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dank-mids"
-version = "4.20.211"
+version = "4.20.212"
 description = "Multicall batching middleware for asynchronous scripts using web3.py"
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
