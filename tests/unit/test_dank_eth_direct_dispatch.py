@@ -2,14 +2,14 @@ import asyncio
 import inspect
 from dataclasses import dataclass
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, ClassVar
 
 import pytest
 from web3 import AsyncWeb3
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
 from web3.method import Method
-from web3.providers.async_base import AsyncBaseProvider
+from web3.middleware.base import Web3Middleware
 from web3.types import RPCEndpoint, RPCResponse
 
 import dank_mids
@@ -18,20 +18,11 @@ import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.helpers._helpers as helpers
 import dank_mids.middleware as middleware
 from dank_mids.eth import DankEth
+from tests.unit._jsonrpc import AsyncProvider
 
 
 ACCOUNT = "0x0000000000000000000000000000000000000001"
 OTHER_ACCOUNT = "0x0000000000000000000000000000000000000002"
-
-
-class _AsyncProvider(AsyncBaseProvider):
-    endpoint_uri = "https://node.example"
-
-    async def make_request(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        raise AssertionError(f"unexpected provider request: {method} {params!r}")
-
-    async def is_connected(self, show_traceback: bool = False) -> bool:
-        return True
 
 
 class _NoopAsyncContext:
@@ -56,7 +47,7 @@ class _ProcessParamsCase:
 
 
 def _async_w3() -> AsyncWeb3:
-    async_w3 = AsyncWeb3(_AsyncProvider())
+    async_w3 = AsyncWeb3(AsyncProvider())
     async_w3.middleware_onion.clear()
     return async_w3
 
@@ -228,6 +219,40 @@ def test_middleware_route_only_request_function_reaches_dank_controller(
             assert calls == [(request_func, RPC.eth_blockNumber, ())]
         finally:
             _clear_controller_cache()
+
+    asyncio.run(run())
+
+
+def test_dank_eth_get_block_number_preserves_non_dank_async_middleware() -> None:
+    class RewriteBlockNumberMiddleware(Web3Middleware):
+        observed_methods: ClassVar[list[RPCEndpoint]] = []
+
+        async def async_request_processor(
+            self,
+            method: RPCEndpoint,
+            params: Any,
+        ) -> tuple[RPCEndpoint, Any]:
+            self.observed_methods.append(method)
+            return method, params
+
+        async def async_response_processor(
+            self,
+            method: RPCEndpoint,
+            response: RPCResponse,
+        ) -> RPCResponse:
+            if method == RPC.eth_blockNumber:
+                return {**response, "result": "0x7c"}
+            return response
+
+    async def run() -> None:
+        provider = AsyncProvider(response={"jsonrpc": "2.0", "id": 1, "result": "0x7b"})
+        async_w3 = AsyncWeb3(provider)
+        async_w3.middleware_onion.clear()
+        async_w3.middleware_onion.add(RewriteBlockNumberMiddleware)
+
+        assert await DankEth(async_w3).get_block_number() == "0x7c"
+        assert provider.calls == [(RPC.eth_blockNumber, ())]
+        assert RewriteBlockNumberMiddleware.observed_methods == [RPC.eth_blockNumber]
 
     asyncio.run(run())
 
