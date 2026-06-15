@@ -6,10 +6,13 @@ from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Any, ClassVar
 
+from eth_abi import encode
 import pytest
 from web3 import AsyncWeb3
+from web3._utils.error_formatters_utils import OFFCHAIN_LOOKUP_FUNC_SELECTOR
 from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
+from web3.exceptions import OffchainLookup
 from web3.method import Method
 from web3.middleware.base import Web3Middleware
 from web3.types import RPCEndpoint, RPCResponse
@@ -68,6 +71,20 @@ def _new_dank_eth(
 
 def _descriptor(name: str) -> Method[Any]:
     return inspect.getattr_static(DankEth, name)
+
+
+def _offchain_lookup_error_data() -> str:
+    encoded_args = encode(
+        ["address", "string[]", "bytes", "bytes4", "bytes"],
+        [
+            ACCOUNT,
+            ["https://example.invalid/{data}"],
+            b"\x12\x34",
+            b"\x12\x34\x56\x78",
+            b"\x99",
+        ],
+    )
+    return f"{OFFCHAIN_LOOKUP_FUNC_SELECTOR}{encoded_args.hex()}"
 
 
 @pytest.fixture
@@ -322,6 +339,68 @@ def test_dank_eth_direct_dispatch_allows_dank_middleware_only(
         assert controller_cache == {
             (async_w3, threading.current_thread()): middleware_controller
         }
+
+    asyncio.run(run())
+
+
+def test_inherited_syncing_falls_back_to_web3_caller(
+    controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
+) -> None:
+    async def run() -> None:
+        provider = AsyncProvider(response={"jsonrpc": "2.0", "id": 1, "result": False})
+        async_w3 = AsyncWeb3(provider)
+        async_w3.middleware_onion.clear()
+        eth = DankEth(async_w3)
+
+        result = await eth.syncing
+
+        assert result is False
+        assert provider.calls == [(RPC.eth_syncing, ())]
+        assert controller_cache == {}
+
+    asyncio.run(run())
+
+
+def test_inherited_uninstall_filter_falls_back_to_web3_caller(
+    controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
+) -> None:
+    async def run() -> None:
+        provider = AsyncProvider(response={"jsonrpc": "2.0", "id": 1, "result": True})
+        async_w3 = AsyncWeb3(provider)
+        async_w3.middleware_onion.clear()
+        eth = DankEth(async_w3)
+
+        result = await eth.uninstall_filter("0x1")
+
+        assert result is True
+        assert provider.calls[0][0] == RPC.eth_uninstallFilter
+        assert controller_cache == {}
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_applies_eth_call_error_formatter(
+    monkeypatch: pytest.MonkeyPatch,
+    jsonrpc_server: JsonRpcServer,
+) -> None:
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth(server_endpoint(jsonrpc_server))
+        controller = controller_cache_module.get_controller_for_async_w3(async_w3)
+        _forbid_web3_manager(monkeypatch, async_w3)
+        no_multicall_address = next(iter(controller.no_multicall))
+        jsonrpc_server.errors[RPC.eth_call] = {
+            "code": 3,
+            "message": "execution reverted",
+            "data": _offchain_lookup_error_data(),
+        }
+
+        with pytest.raises(OffchainLookup):
+            await eth.call(
+                {"to": no_multicall_address, "data": "0x1234"},
+                ccip_read_enabled=False,
+            )
+
+        assert any(method == RPC.eth_call for method, _params in jsonrpc_server.calls)
 
     asyncio.run(run())
 
