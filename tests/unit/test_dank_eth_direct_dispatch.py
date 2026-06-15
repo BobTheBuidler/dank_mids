@@ -21,6 +21,7 @@ import dank_mids
 import dank_mids.controller as controller_module
 import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.helpers._helpers as helpers
+from dank_mids.helpers import _requester as requester_module
 import dank_mids.middleware as middleware
 from dank_mids.eth import DankEth
 from tests.unit._jsonrpc import (
@@ -94,6 +95,21 @@ def controller_cache() -> Iterator[dict[tuple[AsyncWeb3, threading.Thread], Any]
         yield controller_cache_module._controllers
     finally:
         controller_cache_module._controllers.clear()
+
+
+@pytest.fixture
+def requester_session_cleanup() -> Iterator[None]:
+    try:
+        yield
+    finally:
+        requester = requester_module._requester
+        session = requester._session
+        if session is None:
+            return
+        if not session.closed:
+            future = asyncio.run_coroutine_threadsafe(session.close(), requester.loop)
+            future.result(timeout=2)
+        requester._session = None
 
 
 def _forbid_web3_manager(monkeypatch: pytest.MonkeyPatch, async_w3: AsyncWeb3) -> None:
@@ -382,6 +398,7 @@ def test_inherited_uninstall_filter_falls_back_to_web3_caller(
 def test_direct_dispatch_applies_eth_call_error_formatter(
     monkeypatch: pytest.MonkeyPatch,
     controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
+    requester_session_cleanup: None,
     jsonrpc_server: JsonRpcServer,
 ) -> None:
     async def run() -> None:
