@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 from collections.abc import Callable, Iterator
 
 import pytest
@@ -46,6 +47,24 @@ def test_find_caller_skips_compiled_logging_extension_frame(
     assert c_caller == stdlib_caller
     assert c_caller[0] != fake_compiled_logging_path()
     assert stdlib_caller[0] != logging._srcfile
+
+
+@pytest.mark.skipif(
+    sys.version_info >= (3, 11),
+    reason="py3.10 uses the separate compiled findCaller frame helper",
+)
+def test_py310_find_caller_direct_call_reports_immediate_public_caller(
+    new_logger_pair: Callable[[int], object],
+) -> None:
+    pair = new_logger_pair(logging.DEBUG)
+
+    def user_frame() -> CallerInfo:
+        return pair.c_logger.findCaller()
+
+    filename, _lineno, func_name, _stack_info = user_frame()
+
+    assert func_name == "user_frame"
+    assert filename == __file__
 
 
 def test_public_emission_stacklevel_uses_user_frame_like_stdlib(
