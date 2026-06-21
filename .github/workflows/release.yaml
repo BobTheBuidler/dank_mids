@@ -95,7 +95,7 @@ jobs:
             PYTHONFAULTHANDLER=1
             PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
             TYPEDENVS_SHUTUP=1
-          CIBW_TEST_REQUIRES: "pytest eth-brownie==1.22.0"
+          CIBW_TEST_REQUIRES: "pytest eth-brownie==1.22.2"
         with:
           output-dir: wheelhouse
 

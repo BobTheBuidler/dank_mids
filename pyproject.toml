@@ -39,7 +39,7 @@ build = [
     "eth-retry==0.3.7",
     "eth-typing==5.2.1",
     "ez-a-sync==0.34.2",
-    "faster-eth-abi==5.2.27",
+    "faster-eth-abi==5.2.30",
     "faster-hexbytes==1.3.8",
     "mypy[mypyc]==2.1.0",
     "setuptools",
@@ -48,9 +48,9 @@ build = [
     "types-requests",
 ]
 dev = [
-    "eth-brownie==1.22.1",
+    "eth-brownie==1.22.2",
     "importlib-resources>=6.4.0",
-    "pytest==9.0.3",
+    "pytest==9.1.1",
     "pytest-asyncio-cooperative==0.40.0",
     "pytest-cov==6.3.0",
     "pytest-sugar==1.1.1",
