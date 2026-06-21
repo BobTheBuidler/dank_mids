@@ -50,7 +50,7 @@ build = [
 dev = [
     "eth-brownie==1.22.1",
     "importlib-resources>=6.4.0",
-    "pytest==9.0.3",
+    "pytest==9.1.1",
     "pytest-asyncio-cooperative==0.40.0",
     "pytest-cov==6.3.0",
     "pytest-sugar==1.1.1",
