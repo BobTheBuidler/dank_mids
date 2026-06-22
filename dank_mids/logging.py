@@ -319,6 +319,15 @@ class CLogger(logging.Logger):
 
 
 def _py310_logging_caller_source_path(filename: str) -> str:
+    """Return the comparable source path for a logging caller filename.
+
+    Args:
+        filename: Path reported by a frame code object or module ``__file__``.
+
+    Returns:
+        A case-normalized path, with compiled extension suffixes mapped back
+        to the corresponding ``.py`` source filename.
+    """
     normalized = os.path.normcase(filename)
     for suffix in importlib.machinery.EXTENSION_SUFFIXES:
         if normalized.endswith(suffix):
@@ -327,9 +336,20 @@ def _py310_logging_caller_source_path(filename: str) -> str:
 
 
 _py310_logging_srcfile: Final = _py310_logging_caller_source_path(__file__)
+"""Case-normalized source path used to identify this compiled logging module."""
 
 
 def _is_logging_caller_internal_frame(frame: FrameType) -> bool:
+    """Return whether a frame belongs to logging caller-discovery internals.
+
+    Args:
+        frame: Stack frame to classify.
+
+    Returns:
+        ``True`` when the frame is from stdlib logging, this compiled logging
+        module, or importlib bootstrap code that should not be reported as a
+        caller.
+    """
     filename = _py310_logging_caller_source_path(frame.f_code.co_filename)
     return filename == _srcfile or filename == _py310_logging_srcfile or (
         "importlib" in filename and "_bootstrap" in filename
@@ -337,6 +357,15 @@ def _is_logging_caller_internal_frame(frame: FrameType) -> bool:
 
 
 def _find_caller_frame(stacklevel: int) -> FrameType | None:
+    """Find the external caller frame after skipping logging internals.
+
+    Args:
+        stacklevel: Number of non-internal caller frames to advance before
+            returning.
+
+    Returns:
+        Matching frame, or the nearest available frame when the stack ends.
+    """
     f = sys._getframe()
     while stacklevel > 0:
         if not _is_logging_caller_internal_frame(f):
@@ -351,6 +380,17 @@ def _find_caller_frame(stacklevel: int) -> FrameType | None:
 
 
 def _find_caller_frame_py310(stacklevel: int) -> FrameType | None:
+    """Find the direct ``CLogger.findCaller()`` frame on Python 3.10.
+
+    Args:
+        stacklevel: Number of public caller frames requested by
+            ``findCaller()``.
+
+    Returns:
+        Frame that direct ``findCaller()`` should report, preserving immediate
+        public caller behavior while falling back to stdlib parity for helper
+        stacks.
+    """
     f = _find_caller_frame(stacklevel)
     if f is None or not f.f_code.co_name.startswith("_"):
         return f
@@ -382,6 +422,15 @@ def _find_caller_frame_py310(stacklevel: int) -> FrameType | None:
 
 
 def _py310_find_log_caller_frame(stacklevel: int) -> FrameType | None:
+    """Find the user caller frame for Python 3.10 log record emission.
+
+    Args:
+        stacklevel: Number of user frames requested by the logging call.
+
+    Returns:
+        Frame to use for ``LogRecord`` caller metadata, or ``None`` when no
+        user frame remains.
+    """
     f = sys._getframe()
     while f is not None and _is_logging_caller_internal_frame(f):
         f = f.f_back
@@ -399,6 +448,15 @@ def _py310_caller_info_from_frame(
     frame: FrameType,
     stack_info: bool,
 ) -> CallerInfo:
+    """Build ``findCaller()``-style caller metadata from a Python 3.10 frame.
+
+    Args:
+        frame: Frame selected as the caller.
+        stack_info: Whether to include formatted stack text.
+
+    Returns:
+        Tuple of filename, line number, function name, and optional stack text.
+    """
     co = frame.f_code
     sinfo = None
     if stack_info:
