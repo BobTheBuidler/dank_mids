@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1533];
+extern PyObject *CPyStatics[1525];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -112,7 +112,6 @@ extern CPyModule *CPyModule_functools;
 extern CPyModule *CPyModule_heapq;
 extern CPyModule *CPyModule_itertools;
 extern CPyModule *CPyModule_types;
-extern CPyModule *CPyModule_pathlib;
 extern int CPyExec_dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket(PyObject *module);
 extern PyObject *CPyInit_dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket(void);
 extern PyObject *CPyInitOnly_dank_mids____vendor___aiolimiter___src___aiolimiter___leakybucket(void);
