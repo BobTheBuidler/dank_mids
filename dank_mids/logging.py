@@ -351,10 +351,18 @@ def _find_caller_frame(stacklevel: int) -> FrameType | None:
 
 
 def _find_caller_frame_py310(stacklevel: int) -> FrameType | None:
+    f = _find_caller_frame(stacklevel)
+    if f is None or not f.f_code.co_name.startswith("_"):
+        return f
+
+    # Helper-stack calls still need py3.10 stdlib findCaller frame parity.
     try:
-        f = logging.currentframe()
+        f = sys._getframe(2)
     except ValueError:
-        f = sys._getframe()
+        try:
+            f = logging.currentframe()
+        except ValueError:
+            f = sys._getframe()
     if f is not None and _is_logging_caller_internal_frame(f):
         f = f.f_back
     orig_f = f
