@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1534];
+extern PyObject *CPyStatics[1545];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -130,6 +130,7 @@ extern CPyModule *CPyModule_dank_mids____web3___formatters;
 extern PyObject *CPyStatic_formatters___globals;
 extern CPyModule *CPyModule_faster_eth_utils___curried;
 extern CPyModule *CPyModule_faster_eth_utils___toolz;
+extern CPyModule *CPyModule_hexbytes;
 extern CPyModule *CPyModule_web3____utils___method_formatters;
 extern CPyModule *CPyModule_web3____utils___rpc_abi;
 extern CPyModule *CPyModule_web3___types;
@@ -589,6 +590,8 @@ extern PyObject *CPyStatic_formatters___ABI_REQUEST_FORMATTERS;
 extern tuple_T3OOO CPyStatic_formatters___REQUEST_FORMATTER_MAPS;
 extern PyObject *CPyStatic_formatters____request_formatters;
 extern PyObject *CPyStatic_formatters____response_formatters;
+extern PyObject *CPyStatic_formatters___POA_FORMATTER_METHODS;
+extern PyObject *CPyStatic_formatters____DANK_NULL_AS_RESULT_METHODS;
 extern PyTypeObject *CPyType_formatters___abi_request_formatters_gen;
 extern PyObject *CPyDef_formatters___abi_request_formatters_gen(void);
 extern CPyThreadLocal dank_mids____web3___formatters___abi_request_formatters_genObject *formatters___abi_request_formatters_gen_free_instance;
@@ -609,6 +612,10 @@ extern PyObject *CPyDef_formatters___abi_request_formatters(PyObject *cpy_r_norm
 extern PyObject *CPyPy_formatters___abi_request_formatters(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_formatters___get_request_formatters(PyObject *cpy_r_method_name);
 extern PyObject *CPyPy_formatters___get_request_formatters(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_formatters___dank_poa_result_formatter(PyObject *cpy_r_result);
+extern PyObject *CPyPy_formatters___dank_poa_result_formatter(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_formatters___get_dank_poa_result_formatter(PyObject *cpy_r_method);
+extern PyObject *CPyPy_formatters___get_dank_poa_result_formatter(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern tuple_T3OOO CPyDef_formatters____get_response_formatters(PyObject *cpy_r_method);
 extern PyObject *CPyPy_formatters____get_response_formatters(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_formatters_____top_level__(void);

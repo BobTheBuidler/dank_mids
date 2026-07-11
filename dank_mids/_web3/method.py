@@ -19,7 +19,9 @@ from web3.types import RPCEndpoint, RPCResponse
 from dank_mids._web3.formatters import (
     _get_response_formatters,
     _response_formatters,
+    get_dank_poa_result_formatter,
     get_request_formatters,
+    return_as_is,
 )
 from dank_mids.helpers._controllers import get_controller_for_async_w3
 from dank_mids.types import Error, PartialResponse
@@ -125,8 +127,16 @@ def _middleware_allows_direct_dispatch(async_w3: Any) -> bool:
         return True
 
     from dank_mids.middleware import DankMiddleware
+    from web3.middleware import ExtraDataToPOAMiddleware
 
-    return all(middleware_class is DankMiddleware for middleware_class in middleware_classes)
+    compatible_middleware = (DankMiddleware, ExtraDataToPOAMiddleware)
+    return all(middleware_class in compatible_middleware for middleware_class in middleware_classes)
+
+
+def _middleware_applies_poa_formatting(async_w3: Any) -> bool:
+    from web3.middleware import ExtraDataToPOAMiddleware
+
+    return ExtraDataToPOAMiddleware in async_w3.middleware_onion.as_tuple_of_middleware()
 
 
 def retrieve_dank_method_call_fn(
@@ -158,10 +168,17 @@ def retrieve_dank_method_call_fn(
                 null_result_formatters,
             ) = response_formatters
             controller = get_controller_for_async_w3(async_w3)
-            response = await controller(cast(RPCEndpoint, method_str), params)
+            method_endpoint = cast(RPCEndpoint, method_str)
+            response = await controller(method_endpoint, params)
             result = _extract_dank_result(
                 response, params, error_formatters, null_result_formatters
             )
+            poa_result_formatter = (
+                get_dank_poa_result_formatter(method_endpoint)
+                if _middleware_applies_poa_formatting(async_w3)
+                else return_as_is
+            )
+            result = poa_result_formatter(result)
             return apply_result_formatters(result_formatters, result)
 
         return caller

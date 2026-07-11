@@ -72,9 +72,14 @@ def setup_dank_w3(async_w3: Web3) -> DankWeb3:
         # NOTE: We import here to prevent a circular import
         from dank_mids.middleware import DankMiddleware
 
-        if _sync_w3_from_async(async_w3).eth.chain_id not in skip_poa_middleware:
-            async_w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
-        async_w3.middleware_onion.inject(DankMiddleware, layer=0)
+        middleware_onion = async_w3.middleware_onion
+        if (
+            _sync_w3_from_async(async_w3).eth.chain_id not in skip_poa_middleware
+            and ExtraDataToPOAMiddleware not in middleware_onion
+        ):
+            middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
+        if DankMiddleware not in middleware_onion:
+            middleware_onion.inject(DankMiddleware, layer=0)
         dank_w3s.append(async_w3)
     async_w3.eth = DankEth(async_w3)
     return async_w3

@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from typing import Any, ClassVar
 
 from eth_abi import encode
+from hexbytes import HexBytes
 import pytest
 from web3 import AsyncWeb3
 from web3._utils.error_formatters_utils import OFFCHAIN_LOOKUP_FUNC_SELECTOR
@@ -14,13 +15,17 @@ from web3._utils.rpc_abi import RPC
 from web3.eth import AsyncEth
 from web3.exceptions import OffchainLookup
 from web3.method import Method
+from web3.middleware import ExtraDataToPOAMiddleware
 from web3.middleware.base import Web3Middleware
 from web3.types import RPCEndpoint, RPCResponse
 
 import dank_mids
+import dank_mids._web3.formatters as formatter_module
+import dank_mids._web3.method as method_module
 import dank_mids.controller as controller_module
 import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.helpers._helpers as helpers
+from dank_mids._exceptions import ExecutionReverted
 from dank_mids.helpers import _requester as requester_module
 import dank_mids.middleware as middleware
 from dank_mids.eth import DankEth
@@ -47,6 +52,18 @@ class _NoopAsyncContext:
 class _NoopSemaphores:
     def __getitem__(self, block: Any) -> _NoopAsyncContext:
         return _NoopAsyncContext()
+
+
+class _RecordingDirectController:
+    def __init__(self, *responses: RPCResponse) -> None:
+        self.responses = list(responses)
+        self.calls: list[tuple[RPCEndpoint, Any]] = []
+
+    async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+        self.calls.append((method, params))
+        if len(self.responses) > 1:
+            return self.responses.pop(0)
+        return self.responses[0]
 
 
 @dataclass(frozen=True)
@@ -139,6 +156,13 @@ def _install_inert_controller_init(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(controller_module, "_get_client_version", lambda _sync_w3: "pytest/test")
     monkeypatch.setattr(controller_module, "_get_multicall2", lambda _chainid: fake_multicall)
     monkeypatch.setattr(controller_module, "_get_multicall3", lambda _chainid: None)
+
+
+def _install_direct_controller(
+    monkeypatch: pytest.MonkeyPatch,
+    controller: _RecordingDirectController,
+) -> None:
+    monkeypatch.setattr(method_module, "get_controller_for_async_w3", lambda _w3: controller)
 
 
 def _process_param_cases() -> list[_ProcessParamsCase]:
@@ -357,6 +381,272 @@ def test_dank_eth_direct_dispatch_allows_dank_middleware_only(
         }
 
     asyncio.run(run())
+
+
+def test_direct_dispatch_contract_accepts_result_only_response_for_mainnet_and_poa_clients(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Mainnet and POA clients accept the same result-only Dank response contract."""
+
+    async def run() -> None:
+        for middleware_classes in (
+            (),
+            (ExtraDataToPOAMiddleware, middleware.DankMiddleware),
+        ):
+            async_w3, eth = _new_dank_eth()
+            for middleware_class in middleware_classes:
+                async_w3.middleware_onion.add(middleware_class)
+            controller = _RecordingDirectController({"result": 123})
+            _install_direct_controller(monkeypatch, controller)
+            _forbid_web3_manager(monkeypatch, async_w3)
+
+            assert await eth.get_block_number() == 123
+            assert controller.calls == [(RPC.eth_blockNumber, ())]
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_contract_accepts_standard_jsonrpc_response(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Direct dispatch still accepts complete JSON-RPC envelopes."""
+
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth()
+        controller = _RecordingDirectController({"jsonrpc": "2.0", "id": 1, "result": 456})
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        assert await eth.get_block_number() == 456
+        assert controller.calls == [(RPC.eth_blockNumber, ())]
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_contract_preserves_dank_error_handling(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Direct dispatch keeps existing Dank error conversion for error responses."""
+
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth()
+        controller = _RecordingDirectController(
+            {"error": {"code": 3, "message": "execution reverted"}}
+        )
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        with pytest.raises(ExecutionReverted):
+            await eth.get_block_number()
+
+        assert controller.calls == [(RPC.eth_blockNumber, ())]
+
+    asyncio.run(run())
+
+
+def test_poa_direct_dispatch_does_not_call_web3_manager_for_method_no_format(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """POA middleware no longer routes Dank-owned methods through Web3 validation."""
+
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth()
+        async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        async_w3.middleware_onion.add(middleware.DankMiddleware)
+        controller = _RecordingDirectController({"result": 789})
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        assert await eth.get_block_number() == 789
+        assert controller.calls == [(RPC.eth_blockNumber, ())]
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_poa_formats_get_block_by_number_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """POA cleanup runs on direct eth_getBlockByNumber results."""
+
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth()
+        async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        controller = _RecordingDirectController(
+            {"result": {"number": "0x1", "extraData": "0x1234"}}
+        )
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        block = await eth.get_block(1)
+
+        assert controller.calls == [(RPC.eth_getBlockByNumber, ("0x1", False))]
+        assert "extraData" not in block
+        assert block["proofOfAuthorityData"] == HexBytes("0x1234")
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_poa_formats_get_block_by_hash_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """POA cleanup runs on direct eth_getBlockByHash results."""
+
+    async def run() -> None:
+        block_hash = HexBytes("0x" + "12" * 32)
+        async_w3, eth = _new_dank_eth()
+        async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        controller = _RecordingDirectController(
+            {"result": {"number": "0x1", "extraData": "0x5678"}}
+        )
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        block = await eth.get_block(block_hash)
+
+        assert controller.calls == [(RPC.eth_getBlockByHash, [block_hash.to_0x_hex(), False])]
+        assert "extraData" not in block
+        assert block["proofOfAuthorityData"] == HexBytes("0x5678")
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_poa_leaves_null_block_result_none(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """POA cleanup leaves null block results as None."""
+
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth()
+        async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        controller = _RecordingDirectController({"result": None})
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        assert await eth.get_block(1) is None
+        assert controller.calls == [(RPC.eth_getBlockByNumber, ("0x1", False))]
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_poa_preserves_already_normalized_block_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """POA cleanup preserves already-normalized proofOfAuthorityData payloads."""
+
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth()
+        async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        controller = _RecordingDirectController(
+            {"result": {"number": "0x1", "proofOfAuthorityData": "0xabcd"}}
+        )
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        block = await eth.get_block(1)
+
+        assert "extraData" not in block
+        assert block["proofOfAuthorityData"] == HexBytes("0xabcd")
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_applies_result_formatter_once(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """POA result formatting is applied exactly once per direct response."""
+
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth()
+        async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        controller = _RecordingDirectController(
+            {"result": {"number": "0x1", "extraData": "0x1234"}}
+        )
+        calls: list[RPCEndpoint] = []
+        original_getter = method_module.get_dank_poa_result_formatter
+
+        def counting_getter(method: RPCEndpoint):
+            formatter = original_getter(method)
+
+            def count_and_format(result: Any) -> Any:
+                calls.append(method)
+                return formatter(result)
+
+            return count_and_format
+
+        monkeypatch.setattr(method_module, "get_dank_poa_result_formatter", counting_getter)
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        block = await eth.get_block(1)
+
+        assert calls == [RPC.eth_getBlockByNumber]
+        assert block["proofOfAuthorityData"] == HexBytes("0x1234")
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_makes_one_controller_request_for_poa_method(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Direct POA dispatch does not introduce duplicate RPC requests."""
+
+    async def run() -> None:
+        async_w3, eth = _new_dank_eth()
+        async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        controller = _RecordingDirectController(
+            {"result": {"number": "0x1", "extraData": "0x1234"}}
+        )
+        _install_direct_controller(monkeypatch, controller)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        await eth.get_block(1)
+
+        assert controller.calls == [(RPC.eth_getBlockByNumber, ("0x1", False))]
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_allows_only_dank_compatible_middleware(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Only Dank and POA middleware preserve the direct-dispatch invariant."""
+
+    class PassthroughMiddleware(Web3Middleware):
+        pass
+
+    async def run() -> None:
+        poa_w3, poa_eth = _new_dank_eth()
+        poa_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        poa_w3.middleware_onion.add(middleware.DankMiddleware)
+        poa_controller = _RecordingDirectController({"result": 123})
+        _install_direct_controller(monkeypatch, poa_controller)
+        _forbid_web3_manager(monkeypatch, poa_w3)
+
+        assert await poa_eth.get_block_number() == 123
+        assert poa_controller.calls == [(RPC.eth_blockNumber, ())]
+
+        provider = AsyncProvider(response={"jsonrpc": "2.0", "id": 1, "result": "0x7b"})
+        fallback_w3 = AsyncWeb3(provider)
+        fallback_w3.middleware_onion.clear()
+        fallback_w3.middleware_onion.add(PassthroughMiddleware)
+        fallback_eth = DankEth(fallback_w3)
+
+        assert await fallback_eth.get_block_number() == "0x7b"
+        assert provider.calls == [(RPC.eth_blockNumber, ())]
+
+    asyncio.run(run())
+
+
+def test_dank_poa_subscription_formatter_preserves_ids_and_formats_block_payloads() -> None:
+    """The Dank POA subscription formatter preserves ids and formats block payloads."""
+
+    formatter = formatter_module.get_dank_poa_result_formatter(RPC.eth_subscribe)
+
+    assert formatter("0xsubscription") == "0xsubscription"
+    assert formatter({"number": "0x1", "extraData": "0x1234"}) == {
+        "number": "0x1",
+        "proofOfAuthorityData": HexBytes("0x1234"),
+    }
 
 
 def test_inherited_syncing_falls_back_to_web3_caller(

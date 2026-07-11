@@ -1,9 +1,10 @@
-from collections.abc import Callable, Iterator, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from typing import Any, Final, TypeVar
 
 from eth_typing import TypeStr
 from faster_eth_utils.curried import apply_formatter_at_index  # type: ignore [attr-defined]
 from faster_eth_utils.toolz import compose
+from hexbytes import HexBytes
 from web3._utils.method_formatters import (
     ERROR_FORMATTERS,
     METHOD_NORMALIZERS,
@@ -11,7 +12,7 @@ from web3._utils.method_formatters import (
     PYTHONIC_REQUEST_FORMATTERS,
     STANDARD_NORMALIZERS,
 )
-from web3._utils.rpc_abi import RPC_ABIS, apply_abi_formatters_to_dict
+from web3._utils.rpc_abi import RPC, RPC_ABIS, apply_abi_formatters_to_dict
 from web3.types import Formatters, RPCEndpoint, RPCResponse
 
 from dank_mids._web3.abi import get_formatter
@@ -79,11 +80,47 @@ ResponseFormatters = tuple[SuccessFormatter, ErrorFormatter, NullFormatter]
 
 _response_formatters: Final[dict[RPCEndpoint, ResponseFormatters]] = {}
 
+POA_FORMATTER_METHODS: Final = frozenset(
+    (
+        RPC.eth_getBlockByHash,
+        RPC.eth_getBlockByNumber,
+        RPC.eth_subscribe,
+    )
+)
+
+_DANK_NULL_AS_RESULT_METHODS: Final = frozenset(
+    (
+        RPC.eth_getBlockByHash,
+        RPC.eth_getBlockByNumber,
+    )
+)
+
+
+def dank_poa_result_formatter(result: Any) -> Any:
+    if not isinstance(result, Mapping):
+        return result
+
+    if "extraData" not in result and "proofOfAuthorityData" not in result:
+        return result
+
+    formatted = dict(result)
+    if "extraData" in formatted:
+        formatted["proofOfAuthorityData"] = formatted.pop("extraData")
+    if formatted.get("proofOfAuthorityData") is not None:
+        formatted["proofOfAuthorityData"] = HexBytes(formatted["proofOfAuthorityData"])
+    return formatted
+
+
+def get_dank_poa_result_formatter(method: RPCEndpoint) -> SuccessFormatter:
+    return dank_poa_result_formatter if method in POA_FORMATTER_METHODS else return_as_is
+
 
 def _get_response_formatters(method: RPCEndpoint) -> ResponseFormatters:
     formatters = _response_formatters[method] = (
         return_as_is,
         ERROR_FORMATTERS.get(method, return_as_is),
-        NULL_RESULT_FORMATTERS.get(method, return_as_is),
+        return_as_is
+        if method in _DANK_NULL_AS_RESULT_METHODS
+        else NULL_RESULT_FORMATTERS.get(method, return_as_is),
     )
     return formatters
