@@ -14,6 +14,7 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
+    cast,
     overload,
 )
 
@@ -346,7 +347,9 @@ class PartialResponse(DictStruct, frozen=True, omit_defaults=True, repr_omit_def
 
     @property
     def payload_too_large(self) -> bool:
-        return any(map(self.error.message.__contains__, constants.TOO_MUCH_DATA_ERRS))
+        return any(
+            map(cast(Error, self.error).message.__contains__, constants.TOO_MUCH_DATA_ERRS)
+        )
 
     def to_dict(self, method: RPCEndpoint | None = None) -> RPCResponse:  # type: ignore [override]
         """Returns a complete dictionary representation of this response ``Struct``."""
