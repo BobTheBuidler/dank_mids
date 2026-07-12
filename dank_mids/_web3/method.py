@@ -167,16 +167,21 @@ def retrieve_dank_method_call_fn(
                 error_formatters,
                 null_result_formatters,
             ) = response_formatters
-            controller = get_controller_for_async_w3(async_w3)
             method_endpoint = cast(RPCEndpoint, method_str)
-            response = await controller(method_endpoint, params)
-            result = _extract_dank_result(
-                response, params, error_formatters, null_result_formatters
-            )
             poa_result_formatter = (
                 get_dank_poa_result_formatter(method_endpoint)
                 if _middleware_applies_poa_formatting(async_w3)
                 else return_as_is
+            )
+            controller_method = (
+                cast(RPCEndpoint, f"{method_endpoint}_raw")
+                if poa_result_formatter is not return_as_is
+                else method_endpoint
+            )
+            controller = get_controller_for_async_w3(async_w3)
+            response = await controller(controller_method, params)
+            result = _extract_dank_result(
+                response, params, error_formatters, null_result_formatters
             )
             result = poa_result_formatter(result)
             return apply_result_formatters(result_formatters, result)

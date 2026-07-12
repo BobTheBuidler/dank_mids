@@ -39,6 +39,31 @@ from tests.unit._jsonrpc import (
 
 ACCOUNT = "0x0000000000000000000000000000000000000001"
 OTHER_ACCOUNT = "0x0000000000000000000000000000000000000002"
+ZERO_HASH = "0x" + "00" * 32
+ZERO_ADDRESS = "0x" + "00" * 20
+
+
+def _jsonrpc_block(extra_data: str = "0x1234") -> dict[str, Any]:
+    return {
+        "timestamp": "0x1",
+        "transactions": [],
+        "number": "0x1",
+        "hash": ZERO_HASH,
+        "logsBloom": "0x00",
+        "receiptsRoot": ZERO_HASH,
+        "extraData": extra_data,
+        "nonce": "0x0000000000000000",
+        "miner": ZERO_ADDRESS,
+        "gasLimit": "0x1",
+        "gasUsed": "0x0",
+        "uncles": [],
+        "sha3Uncles": ZERO_HASH,
+        "size": "0x1",
+        "transactionsRoot": ZERO_HASH,
+        "stateRoot": ZERO_HASH,
+        "mixHash": ZERO_HASH,
+        "parentHash": ZERO_HASH,
+    }
 
 
 class _NoopAsyncContext:
@@ -479,7 +504,9 @@ def test_direct_dispatch_poa_formats_get_block_by_number_result(
 
         block = await eth.get_block(1)
 
-        assert controller.calls == [(RPC.eth_getBlockByNumber, ("0x1", False))]
+        assert controller.calls == [
+            (RPCEndpoint(f"{RPC.eth_getBlockByNumber}_raw"), ("0x1", False))
+        ]
         assert "extraData" not in block
         assert block["proofOfAuthorityData"] == HexBytes("0x1234")
 
@@ -503,7 +530,9 @@ def test_direct_dispatch_poa_formats_get_block_by_hash_result(
 
         block = await eth.get_block(block_hash)
 
-        assert controller.calls == [(RPC.eth_getBlockByHash, [block_hash.to_0x_hex(), False])]
+        assert controller.calls == [
+            (RPCEndpoint(f"{RPC.eth_getBlockByHash}_raw"), [block_hash.to_0x_hex(), False])
+        ]
         assert "extraData" not in block
         assert block["proofOfAuthorityData"] == HexBytes("0x5678")
 
@@ -523,7 +552,37 @@ def test_direct_dispatch_poa_leaves_null_block_result_none(
         _forbid_web3_manager(monkeypatch, async_w3)
 
         assert await eth.get_block(1) is None
-        assert controller.calls == [(RPC.eth_getBlockByNumber, ("0x1", False))]
+        assert controller.calls == [
+            (RPCEndpoint(f"{RPC.eth_getBlockByNumber}_raw"), ("0x1", False))
+        ]
+
+    asyncio.run(run())
+
+
+def test_direct_dispatch_poa_formats_raw_controller_block_before_decode(
+    monkeypatch: pytest.MonkeyPatch,
+    controller_cache: dict[tuple[AsyncWeb3, threading.Thread], Any],
+    jsonrpc_server: JsonRpcServer,
+) -> None:
+    """Real Dank controller responses are cleaned before evmspec block decoding."""
+
+    async def run() -> None:
+        extra_data = "0x" + "12" * 33
+        jsonrpc_server.results[RPC.eth_getBlockByNumber] = _jsonrpc_block(extra_data)
+        async_w3, eth = _new_dank_eth(server_endpoint(jsonrpc_server))
+        async_w3.middleware_onion.add(ExtraDataToPOAMiddleware)
+        _forbid_web3_manager(monkeypatch, async_w3)
+
+        block = await eth.get_block(1)
+
+        assert (RPC.eth_getBlockByNumber, ["0x1", False]) in jsonrpc_server.calls
+        assert isinstance(
+            controller_cache[(async_w3, threading.current_thread())],
+            controller_module.DankMiddlewareController,
+        )
+        assert "extraData" not in block
+        assert block["proofOfAuthorityData"] == HexBytes(extra_data)
+        assert block.proofOfAuthorityData == HexBytes(extra_data)
 
     asyncio.run(run())
 
@@ -601,7 +660,9 @@ def test_direct_dispatch_makes_one_controller_request_for_poa_method(
 
         await eth.get_block(1)
 
-        assert controller.calls == [(RPC.eth_getBlockByNumber, ("0x1", False))]
+        assert controller.calls == [
+            (RPCEndpoint(f"{RPC.eth_getBlockByNumber}_raw"), ("0x1", False))
+        ]
 
     asyncio.run(run())
 

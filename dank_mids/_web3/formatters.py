@@ -5,6 +5,8 @@ from eth_typing import TypeStr
 from faster_eth_utils.curried import apply_formatter_at_index  # type: ignore [attr-defined]
 from faster_eth_utils.toolz import compose
 from hexbytes import HexBytes
+from msgspec import Raw
+from msgspec.json import decode as json_decode
 from web3._utils.method_formatters import (
     ERROR_FORMATTERS,
     METHOD_NORMALIZERS,
@@ -13,6 +15,7 @@ from web3._utils.method_formatters import (
     STANDARD_NORMALIZERS,
 )
 from web3._utils.rpc_abi import RPC, RPC_ABIS, apply_abi_formatters_to_dict
+from web3.datastructures import AttributeDict
 from web3.types import Formatters, RPCEndpoint, RPCResponse
 
 from dank_mids._web3.abi import get_formatter
@@ -97,6 +100,9 @@ _DANK_NULL_AS_RESULT_METHODS: Final = frozenset(
 
 
 def dank_poa_result_formatter(result: Any) -> Any:
+    if isinstance(result, Raw):
+        result = json_decode(result)
+
     if not isinstance(result, Mapping):
         return result
 
@@ -108,7 +114,7 @@ def dank_poa_result_formatter(result: Any) -> Any:
         formatted["proofOfAuthorityData"] = formatted.pop("extraData")
     if formatted.get("proofOfAuthorityData") is not None:
         formatted["proofOfAuthorityData"] = HexBytes(formatted["proofOfAuthorityData"])
-    return formatted
+    return AttributeDict.recursive(formatted)
 
 
 def get_dank_poa_result_formatter(method: RPCEndpoint) -> SuccessFormatter:

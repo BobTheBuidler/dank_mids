@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1545];
+extern PyObject *CPyStatics[1550];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -131,8 +131,11 @@ extern PyObject *CPyStatic_formatters___globals;
 extern CPyModule *CPyModule_faster_eth_utils___curried;
 extern CPyModule *CPyModule_faster_eth_utils___toolz;
 extern CPyModule *CPyModule_hexbytes;
+extern CPyModule *CPyModule_msgspec;
+extern CPyModule *CPyModule_msgspec___json;
 extern CPyModule *CPyModule_web3____utils___method_formatters;
 extern CPyModule *CPyModule_web3____utils___rpc_abi;
+extern CPyModule *CPyModule_web3___datastructures;
 extern CPyModule *CPyModule_web3___types;
 extern int CPyExec_dank_mids____web3___formatters(PyObject *module);
 extern PyObject *CPyInit_dank_mids____web3___formatters(void);
@@ -229,9 +232,7 @@ extern int CPyExec_dank_mids___helpers(PyObject *module);
 extern PyObject *CPyInit_dank_mids___helpers(void);
 extern PyObject *CPyInitOnly_dank_mids___helpers(void);
 extern PyObject *CPyStatic__codec___globals;
-extern CPyModule *CPyModule_msgspec;
 extern CPyModule *CPyModule_faster_eth_abi___abi;
-extern CPyModule *CPyModule_msgspec___json;
 extern int CPyExec_dank_mids___helpers____codec(PyObject *module);
 extern PyObject *CPyInit_dank_mids___helpers____codec(void);
 extern PyObject *CPyInitOnly_dank_mids___helpers____codec(void);
@@ -288,7 +289,6 @@ extern int CPyExec_dank_mids___helpers___batch_size(PyObject *module);
 extern PyObject *CPyInit_dank_mids___helpers___batch_size(void);
 extern PyObject *CPyInitOnly_dank_mids___helpers___batch_size(void);
 extern PyObject *CPyStatic_hashing___globals;
-extern CPyModule *CPyModule_web3___datastructures;
 extern int CPyExec_dank_mids___helpers___hashing(PyObject *module);
 extern PyObject *CPyInit_dank_mids___helpers___hashing(void);
 extern PyObject *CPyInitOnly_dank_mids___helpers___hashing(void);
