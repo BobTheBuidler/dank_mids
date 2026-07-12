@@ -1,5 +1,5 @@
 from collections.abc import Callable, Coroutine
-from typing import Any, cast
+from typing import Any, Generic, cast
 
 from typing_extensions import Self
 from web3._utils.blocks import select_method_for_block_identifier
@@ -27,7 +27,7 @@ from dank_mids.helpers._controllers import get_controller_for_async_w3
 from dank_mids.types import Error, PartialResponse
 
 
-class MethodNoFormat(Method[TFunc]):
+class MethodNoFormat(Method[TFunc], Generic[TFunc]):
     """Custom method class to bypass web3py's default result formatters.
 
     This class processes parameters, makes conditional adjustments to the parameters,
