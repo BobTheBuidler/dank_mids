@@ -153,6 +153,58 @@ def test_non_mainnet_setup_injects_web3_v7_poa_middleware_before_dank(monkeypatc
         helpers.dank_w3s.clear()
 
 
+def test_non_mainnet_setup_skips_existing_async_poa_and_dank_middleware(monkeypatch) -> None:
+    """Async setup is idempotent when POA and Dank middleware are already installed."""
+    dank_eth = object()
+    async_w3 = SimpleNamespace(
+        eth=SimpleNamespace(is_async=True),
+        provider=_AsyncProvider(),
+        middleware_onion=_RecordingOnion(
+            existing=(ExtraDataToPOAMiddleware, middleware.DankMiddleware)
+        ),
+    )
+    monkeypatch.setattr(dank_mids, "_ensure_side_effects", lambda: None)
+    monkeypatch.setattr(helpers, "DankEth", lambda _async_w3: dank_eth)
+    monkeypatch.setattr(
+        helpers,
+        "_sync_w3_from_async",
+        lambda _async_w3: SimpleNamespace(eth=SimpleNamespace(chain_id=137)),
+    )
+    try:
+        helpers.dank_w3s.clear()
+        helpers.setup_dank_w3(async_w3)
+
+        assert async_w3.middleware_onion.inject_calls == []
+        assert async_w3.eth is dank_eth
+    finally:
+        helpers.dank_w3s.clear()
+
+
+def test_non_mainnet_setup_injects_only_missing_async_dank_middleware(monkeypatch) -> None:
+    """Async setup preserves existing POA middleware and adds missing Dank middleware."""
+    dank_eth = object()
+    async_w3 = SimpleNamespace(
+        eth=SimpleNamespace(is_async=True),
+        provider=_AsyncProvider(),
+        middleware_onion=_RecordingOnion(existing=(ExtraDataToPOAMiddleware,)),
+    )
+    monkeypatch.setattr(dank_mids, "_ensure_side_effects", lambda: None)
+    monkeypatch.setattr(helpers, "DankEth", lambda _async_w3: dank_eth)
+    monkeypatch.setattr(
+        helpers,
+        "_sync_w3_from_async",
+        lambda _async_w3: SimpleNamespace(eth=SimpleNamespace(chain_id=137)),
+    )
+    try:
+        helpers.dank_w3s.clear()
+        helpers.setup_dank_w3(async_w3)
+
+        assert async_w3.middleware_onion.inject_calls == [(middleware.DankMiddleware, 0)]
+        assert async_w3.eth is dank_eth
+    finally:
+        helpers.dank_w3s.clear()
+
+
 def test_dank_middleware_attribute_raises_migration_error() -> None:
     with pytest.raises(ImportError) as exc_info:
         getattr(middleware, "dank_middleware")

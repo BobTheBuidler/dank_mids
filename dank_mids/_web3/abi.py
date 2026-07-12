@@ -89,7 +89,7 @@ class map_to_typed_data:
         elif not isinstance(elements, (bytes, str, bytearray)) and isinstance(elements, Iterable):
             return datatype(map(self, elements))
         elif isinstance(elements, ABITypedData) and elements.abi_type is not None:
-            return ABITypedData(*self.func(*elements))  # type: ignore [misc]
+            return ABITypedData(*self.func(elements.abi_type, elements.data))  # type: ignore [misc]
         else:
             return elements
 
@@ -148,6 +148,7 @@ def abi_sub_tree(abi_type: ABIType | None, data_value: Any) -> ABITypedData:
 
     # In the two special cases below, we rebuild the given data structures with
     # annotated items
+    value_to_annotate: Any
     if abi_type.is_array:
         # If type is array, determine item type and annotate all
         # items in iterable with that type
