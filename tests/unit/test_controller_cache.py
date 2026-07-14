@@ -21,6 +21,10 @@ def _async_w3(endpoint_uri: str) -> AsyncWeb3:
     return async_w3
 
 
+def _controller_for_request_func(request_func: Any) -> Any:
+    return request_func.__self__
+
+
 @pytest.fixture
 def controller_cache() -> Iterator[ControllerCache]:
     controller_cache_module._controllers.clear()
@@ -45,7 +49,9 @@ def test_controller_cache_reuses_web3_thread_pair(
         )
 
         assert first is second
-        assert controller_cache == {(async_w3, threading.current_thread()): first}
+        assert controller_cache == {
+            (async_w3, threading.current_thread()): _controller_for_request_func(first)
+        }
 
     asyncio.run(run())
 
@@ -91,9 +97,11 @@ def test_controller_cache_keeps_web3_thread_pairs_distinct(
         assert other_web3 is not first
         assert thread_result is not first
         assert controller_cache == {
-            (async_w3, threading.current_thread()): first,
-            (other_async_w3, threading.current_thread()): other_web3,
-            (async_w3, observed_thread): thread_result,
+            (async_w3, threading.current_thread()): _controller_for_request_func(first),
+            (other_async_w3, threading.current_thread()): _controller_for_request_func(
+                other_web3
+            ),
+            (async_w3, observed_thread): _controller_for_request_func(thread_result),
         }
 
     asyncio.run(run())

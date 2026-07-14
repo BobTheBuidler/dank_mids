@@ -1,11 +1,14 @@
 import asyncio
 import sys
+from collections.abc import Iterator
 from types import SimpleNamespace
 from typing import Any
 
 import pytest
 from hexbytes import HexBytes
 from web3 import AsyncWeb3
+from web3._utils.rpc_abi import RPC
+from web3.exceptions import BadResponseFormat, Web3RPCError
 from web3.middleware import AttributeDictMiddleware, ExtraDataToPOAMiddleware
 from web3.providers.async_base import AsyncBaseProvider
 from web3.providers.base import BaseProvider
@@ -14,7 +17,17 @@ from web3.types import RPCEndpoint, RPCResponse
 import dank_mids
 import dank_mids.helpers._controllers as controller_cache_module
 import dank_mids.helpers._helpers as helpers
+from dank_mids.helpers import _requester as requester_module
 import dank_mids.middleware as middleware  # Keep source/compiled imports identical.
+from tests.unit._jsonrpc import (
+    AsyncProvider as JsonRpcAsyncProvider,
+    JsonRpcServer,
+    jsonrpc_server,
+    server_endpoint,
+)
+
+
+CLIENT_VERSION = "reth/v1.10.2-8e3b5e6/x86_64-unknown-linux-gnu"
 
 
 class _AsyncProvider(AsyncBaseProvider):
@@ -67,6 +80,38 @@ def _async_w3(response: RPCResponse | None = None) -> AsyncWeb3:
     async_w3 = AsyncWeb3(_AsyncProvider(response))
     async_w3.middleware_onion.clear()
     return async_w3
+
+
+def _jsonrpc_async_w3(jsonrpc_server: JsonRpcServer) -> AsyncWeb3:
+    async_w3 = AsyncWeb3(JsonRpcAsyncProvider(server_endpoint(jsonrpc_server)))
+    async_w3.middleware_onion.clear()
+    async_w3.middleware_onion.inject(middleware.DankMiddleware, layer=0)
+    return async_w3
+
+
+def _last_payload_for_method(
+    jsonrpc_server: JsonRpcServer, method: RPCEndpoint
+) -> dict[str, Any]:
+    return next(
+        payload
+        for payload in reversed(jsonrpc_server.payloads)
+        if payload["method"] == method
+    )
+
+
+@pytest.fixture
+def requester_session_cleanup() -> Iterator[None]:
+    try:
+        yield
+    finally:
+        requester = requester_module._requester
+        session = requester._session
+        if session is None:
+            return
+        if not session.closed:
+            future = asyncio.run_coroutine_threadsafe(session.close(), requester.loop)
+            future.result(timeout=2)
+        requester._session = None
 
 
 def _assert_dank_middleware_removal(exc: ImportError) -> None:
@@ -229,6 +274,102 @@ def test_top_level_dank_middleware_import_raises_migration_error() -> None:
         exec("from dank_mids import dank_middleware", {})
 
     _assert_dank_middleware_removal(exc_info.value)
+
+
+def test_web3_manager_accepts_dank_client_version_response(
+    jsonrpc_server: JsonRpcServer,
+    requester_session_cleanup: None,
+) -> None:
+    async def run() -> None:
+        jsonrpc_server.results[RPC.web3_clientVersion] = CLIENT_VERSION
+        async_w3 = _jsonrpc_async_w3(jsonrpc_server)
+
+        try:
+            result = await async_w3.manager.coro_request(RPC.web3_clientVersion, [])
+        except BadResponseFormat as exc:
+            pytest.fail(f"Dank returned a partial response across the Web3 boundary: {exc}")
+
+        assert result == CLIENT_VERSION
+
+    try:
+        asyncio.run(run())
+    finally:
+        controller_cache_module._controllers.clear()
+
+
+def test_web3_boundary_normalizes_success_response_envelope(
+    jsonrpc_server: JsonRpcServer,
+    requester_session_cleanup: None,
+) -> None:
+    async def run() -> None:
+        jsonrpc_server.results[RPC.web3_clientVersion] = CLIENT_VERSION
+        async_w3 = _jsonrpc_async_w3(jsonrpc_server)
+        request_func = await async_w3.provider.request_func(
+            async_w3, async_w3.middleware_onion
+        )
+
+        response = await request_func(RPC.web3_clientVersion, [])
+        payload = _last_payload_for_method(jsonrpc_server, RPC.web3_clientVersion)
+
+        assert response["jsonrpc"] == "2.0"
+        assert response["id"] == payload["id"]
+        assert response["result"] == CLIENT_VERSION
+
+    try:
+        asyncio.run(run())
+    finally:
+        controller_cache_module._controllers.clear()
+
+
+def test_web3_boundary_normalizes_error_response_envelope(
+    jsonrpc_server: JsonRpcServer,
+    requester_session_cleanup: None,
+) -> None:
+    async def run() -> None:
+        error = {"code": -32000, "message": "weird node error"}
+        jsonrpc_server.errors[RPC.eth_blockNumber] = error
+        async_w3 = _jsonrpc_async_w3(jsonrpc_server)
+        request_func = await async_w3.provider.request_func(
+            async_w3, async_w3.middleware_onion
+        )
+
+        response = await request_func(RPC.eth_blockNumber, [])
+        payload = _last_payload_for_method(jsonrpc_server, RPC.eth_blockNumber)
+
+        assert response["jsonrpc"] == "2.0"
+        assert response["id"] == payload["id"]
+        assert response["error"]["code"] == error["code"]
+        assert response["error"]["message"] == error["message"]
+
+        with pytest.raises(Web3RPCError):
+            await async_w3.manager.coro_request(RPC.eth_blockNumber, [])
+
+    try:
+        asyncio.run(run())
+    finally:
+        controller_cache_module._controllers.clear()
+
+
+def test_controller_make_request_preserves_zero_request_id(
+    jsonrpc_server: JsonRpcServer,
+    requester_session_cleanup: None,
+) -> None:
+    async def run() -> None:
+        async_w3 = _jsonrpc_async_w3(jsonrpc_server)
+        request_func = await async_w3.provider.request_func(
+            async_w3, async_w3.middleware_onion
+        )
+        controller = request_func.__self__
+
+        await controller.make_request(RPC.eth_blockNumber, [], request_id=0)
+        payload = _last_payload_for_method(jsonrpc_server, RPC.eth_blockNumber)
+
+        assert payload["id"] == 0
+
+    try:
+        asyncio.run(run())
+    finally:
+        controller_cache_module._controllers.clear()
 
 
 def test_web3_v7_poa_middleware_formats_async_block_response() -> None:
