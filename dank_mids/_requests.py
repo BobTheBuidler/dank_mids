@@ -383,7 +383,7 @@ class RPCRequest(_RequestBase[RPCResponse]):
 
         if needs_full_request_spec(response) and controller._check_request_type():
             method = RPCEndpoint(f"{self.method}_raw") if self.raw else self.method
-            return await controller(method, self.params)
+            return await controller._request_partial(method, self.params)
         elif revert_logger.isEnabledFor(DEBUG) and type(response.exception) is ExecutionReverted:
             revert_logger_log_debug("%s for %s", response.exception, self)
         elif error_logger.isEnabledFor(DEBUG) and type(response.exception) is not ExecutionReverted:

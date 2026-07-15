@@ -179,7 +179,7 @@ def retrieve_dank_method_call_fn(
                 else method_endpoint
             )
             controller = get_controller_for_async_w3(async_w3)
-            response = await controller(controller_method, params)
+            response = await controller._request_partial(controller_method, params)
             result = _extract_dank_result(
                 response, params, error_formatters, null_result_formatters
             )

@@ -85,6 +85,9 @@ class _RecordingDirectController:
         self.calls: list[tuple[RPCEndpoint, Any]] = []
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+        return await self._request_partial(method, params)
+
+    async def _request_partial(self, method: RPCEndpoint, params: Any) -> RPCResponse:
         self.calls.append((method, params))
         if len(self.responses) > 1:
             return self.responses.pop(0)
@@ -326,7 +329,7 @@ def test_middleware_route_only_request_function_reaches_dank_controller(
             response = await request_func(RPC.eth_blockNumber, ())
 
             assert response == {"jsonrpc": "2.0", "id": 99, "result": 123}
-            assert calls == [(request_func.__self__, RPC.eth_blockNumber, ())]
+            assert calls == [(request_func, RPC.eth_blockNumber, ())]
         finally:
             _clear_controller_cache()
 
@@ -403,7 +406,7 @@ def test_dank_eth_direct_dispatch_allows_dank_middleware_only(
         assert async_w3.middleware_onion.as_tuple_of_middleware() == (middleware.DankMiddleware,)
         assert await eth.get_block_number() == 123
         assert controller_cache == {
-            (async_w3, threading.current_thread()): middleware_request_func.__self__
+            (async_w3, threading.current_thread()): middleware_request_func
         }
 
     asyncio.run(run())
@@ -802,7 +805,9 @@ def test_controller_call_routes_eth_call_to_multicall_compatible_path(
         monkeypatch.setattr(controller_module, "eth_call", FakeEthCall)
 
         response = await asyncio.wait_for(
-            controller(RPC.eth_call, ({"to": OTHER_ACCOUNT, "data": "0x1234"}, "latest")),
+            controller._request_partial(
+                RPC.eth_call, ({"to": OTHER_ACCOUNT, "data": "0x1234"}, "latest")
+            ),
             timeout=1,
         )
 
@@ -840,7 +845,9 @@ def test_controller_call_routes_no_multicall_eth_call_to_rpc_request(
         monkeypatch.setattr(controller_module, "RPCRequest", FakeRPCRequest)
 
         response = await asyncio.wait_for(
-            controller(RPC.eth_call, ({"to": OTHER_ACCOUNT, "data": "0x1234"}, "latest")),
+            controller._request_partial(
+                RPC.eth_call, ({"to": OTHER_ACCOUNT, "data": "0x1234"}, "latest")
+            ),
             timeout=1,
         )
 
@@ -878,7 +885,7 @@ def test_controller_call_routes_non_eth_call_to_rpc_request(
         monkeypatch.setattr(controller_module, "RPCRequest", FakeRPCRequest)
 
         response = await asyncio.wait_for(
-            controller(RPC.eth_getBalance, (ACCOUNT, "latest")),
+            controller._request_partial(RPC.eth_getBalance, (ACCOUNT, "latest")),
             timeout=1,
         )
 

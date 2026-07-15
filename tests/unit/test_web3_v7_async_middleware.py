@@ -359,7 +359,7 @@ def test_controller_make_request_preserves_zero_request_id(
         request_func = await async_w3.provider.request_func(
             async_w3, async_w3.middleware_onion
         )
-        controller = request_func.__self__
+        controller = request_func
 
         await controller.make_request(RPC.eth_blockNumber, [], request_id=0)
         payload = _last_payload_for_method(jsonrpc_server, RPC.eth_blockNumber)

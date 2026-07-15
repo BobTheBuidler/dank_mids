@@ -22,7 +22,7 @@ def _async_w3(endpoint_uri: str) -> AsyncWeb3:
 
 
 def _controller_for_request_func(request_func: Any) -> Any:
-    return request_func.__self__
+    return request_func
 
 
 @pytest.fixture

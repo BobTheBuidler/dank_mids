@@ -15,7 +15,7 @@ from multicall.multicall import NotSoBrightBatcher
 from librt.time import time
 from mypy_extensions import mypyc_attr
 from web3 import Web3
-from web3.types import AsyncMakeRequestFn, RPCEndpoint, RPCResponse
+from web3.types import RPCEndpoint, RPCResponse
 
 from dank_mids import ENVIRONMENT_VARIABLES as ENVS
 from dank_mids import _debugging
@@ -195,7 +195,6 @@ class DankMiddlewareController:
         """A dictionary of pending :class:`~Multicall` objects by block. The Multicalls hold all pending eth_calls."""
 
         self._start_new_batch()
-        self.web3_request_func: Final[AsyncMakeRequestFn] = self.async_make_request
 
     def __repr__(self) -> str:
         """
@@ -206,22 +205,12 @@ class DankMiddlewareController:
         """
         return f"<DankMiddlewareController instance={self._instance} chain={self.chain_id} endpoint={self.endpoint}>"
 
-    async def async_make_request(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+    async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
         """
         Web3 provider-boundary request function.
 
         Dank internals use partial response dicts, but Web3's RequestManager requires
         complete JSON-RPC envelopes from provider request functions.
-        """
-        response, request_id = await self._dispatch_request(method, params)
-        return self._normalize_web3_response(response, request_id)
-
-    async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
-        """
-        Asynchronous method to handle RPC calls.
-
-        This method routes different types of RPC calls to appropriate handlers,
-        including specialized handling for eth_call and other methods that may use queues.
 
         Args:
             method: The RPC method to be called.
@@ -229,6 +218,13 @@ class DankMiddlewareController:
 
         Returns:
             The response from the RPC call.
+        """
+        response, request_id = await self._dispatch_request(method, params)
+        return self._normalize_web3_response(response, request_id)
+
+    async def _request_partial(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+        """
+        Internal Dank request path that preserves partial response dictionaries.
         """
         response, _request_id = await self._dispatch_request(method, params)
         return response
