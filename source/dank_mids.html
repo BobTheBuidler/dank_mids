@@ -537,9 +537,9 @@ call execution, and error handling.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dank_mids.controller.DankMiddlewareController.__call__">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dank_mids.controller.DankMiddlewareController.__call__" title="Link to this definition"></a></dt>
-<dd><p>Asynchronous method to handle RPC calls.</p>
-<p>This method routes different types of RPC calls to appropriate handlers,
-including specialized handling for eth_call and other methods that may use queues.</p>
+<dd><p>Web3 provider-boundary request function.</p>
+<p>Dank internals use partial response dicts, but Web3’s RequestManager requires
+complete JSON-RPC envelopes from provider request functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
