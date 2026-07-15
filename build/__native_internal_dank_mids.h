@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[1555];
+extern PyObject *CPyStatics[1552];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -905,12 +905,12 @@ extern CPyThreadLocal dank_mids___controller_____init___3_DankMiddlewareControll
 extern PyTypeObject *CPyType_controller_____mypyc_lambda__0___3_init___3_DankMiddlewareController_obj;
 extern PyObject *CPyDef_controller_____mypyc_lambda__0___3_init___3_DankMiddlewareController_obj(void);
 extern CPyThreadLocal dank_mids___controller_____mypyc_lambda__0___3_init___3_DankMiddlewareController_objObject *controller_____mypyc_lambda__0___3_init___3_DankMiddlewareController_obj_free_instance;
-extern PyTypeObject *CPyType_controller___async_make_request_DankMiddlewareController_gen;
-extern PyObject *CPyDef_controller___async_make_request_DankMiddlewareController_gen(void);
-extern CPyThreadLocal dank_mids___controller___async_make_request_DankMiddlewareController_genObject *controller___async_make_request_DankMiddlewareController_gen_free_instance;
 extern PyTypeObject *CPyType_controller_____call___3_DankMiddlewareController_gen;
 extern PyObject *CPyDef_controller_____call___3_DankMiddlewareController_gen(void);
 extern CPyThreadLocal dank_mids___controller_____call___3_DankMiddlewareController_genObject *controller_____call___3_DankMiddlewareController_gen_free_instance;
+extern PyTypeObject *CPyType_controller____request_partial_DankMiddlewareController_gen;
+extern PyObject *CPyDef_controller____request_partial_DankMiddlewareController_gen(void);
+extern CPyThreadLocal dank_mids___controller____request_partial_DankMiddlewareController_genObject *controller____request_partial_DankMiddlewareController_gen_free_instance;
 extern PyTypeObject *CPyType_controller____dispatch_request_DankMiddlewareController_gen;
 extern PyObject *CPyDef_controller____dispatch_request_DankMiddlewareController_gen(void);
 extern CPyThreadLocal dank_mids___controller____dispatch_request_DankMiddlewareController_genObject *controller____dispatch_request_DankMiddlewareController_gen_free_instance;
@@ -940,21 +940,6 @@ extern char CPyDef_controller___DankMiddlewareController_____init__(PyObject *cp
 extern PyObject *CPyPy_controller___DankMiddlewareController_____init__(PyObject *self, PyObject *args, PyObject *kw);
 extern PyObject *CPyDef_controller___DankMiddlewareController_____repr__(PyObject *cpy_r_self);
 extern PyObject *CPyPy_controller___DankMiddlewareController_____repr__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_controller___async_make_request_DankMiddlewareController_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
-extern PyObject *CPyDef_controller___async_make_request_DankMiddlewareController_gen_____next__(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy_controller___async_make_request_DankMiddlewareController_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_controller___async_make_request_DankMiddlewareController_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
-extern PyObject *CPyPy_controller___async_make_request_DankMiddlewareController_gen___send(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_controller___async_make_request_DankMiddlewareController_gen_____iter__(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy_controller___async_make_request_DankMiddlewareController_gen_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_controller___async_make_request_DankMiddlewareController_gen___throw(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
-extern PyObject *CPyPy_controller___async_make_request_DankMiddlewareController_gen___throw(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_controller___async_make_request_DankMiddlewareController_gen___close(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy_controller___async_make_request_DankMiddlewareController_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_controller___async_make_request_DankMiddlewareController_gen_____await__(PyObject *cpy_r___mypyc_self__);
-extern PyObject *CPyPy_controller___async_make_request_DankMiddlewareController_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_controller___DankMiddlewareController___async_make_request(PyObject *cpy_r_self, PyObject *cpy_r_method, PyObject *cpy_r_params);
-extern PyObject *CPyPy_controller___DankMiddlewareController___async_make_request(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_controller_____call___3_DankMiddlewareController_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
 extern PyObject *CPyDef_controller_____call___3_DankMiddlewareController_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_controller_____call___3_DankMiddlewareController_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
@@ -970,6 +955,21 @@ extern PyObject *CPyDef_controller_____call___3_DankMiddlewareController_gen____
 extern PyObject *CPyPy_controller_____call___3_DankMiddlewareController_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_controller___DankMiddlewareController_____call__(PyObject *cpy_r_self, PyObject *cpy_r_method, PyObject *cpy_r_params);
 extern PyObject *CPyPy_controller___DankMiddlewareController_____call__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller____request_partial_DankMiddlewareController_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
+extern PyObject *CPyDef_controller____request_partial_DankMiddlewareController_gen_____next__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_controller____request_partial_DankMiddlewareController_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller____request_partial_DankMiddlewareController_gen___send(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_arg);
+extern PyObject *CPyPy_controller____request_partial_DankMiddlewareController_gen___send(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller____request_partial_DankMiddlewareController_gen_____iter__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_controller____request_partial_DankMiddlewareController_gen_____iter__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller____request_partial_DankMiddlewareController_gen___throw(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback);
+extern PyObject *CPyPy_controller____request_partial_DankMiddlewareController_gen___throw(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller____request_partial_DankMiddlewareController_gen___close(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_controller____request_partial_DankMiddlewareController_gen___close(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller____request_partial_DankMiddlewareController_gen_____await__(PyObject *cpy_r___mypyc_self__);
+extern PyObject *CPyPy_controller____request_partial_DankMiddlewareController_gen_____await__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef_controller___DankMiddlewareController____request_partial(PyObject *cpy_r_self, PyObject *cpy_r_method, PyObject *cpy_r_params);
+extern PyObject *CPyPy_controller___DankMiddlewareController____request_partial(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef_controller____dispatch_request_DankMiddlewareController_gen_____mypyc_generator_helper__(PyObject *cpy_r___mypyc_self__, PyObject *cpy_r_type, PyObject *cpy_r_value, PyObject *cpy_r_traceback, PyObject *cpy_r_arg, PyObject **cpy_r_stop_iter_ptr);
 extern PyObject *CPyDef_controller____dispatch_request_DankMiddlewareController_gen_____next__(PyObject *cpy_r___mypyc_self__);
 extern PyObject *CPyPy_controller____dispatch_request_DankMiddlewareController_gen_____next__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);

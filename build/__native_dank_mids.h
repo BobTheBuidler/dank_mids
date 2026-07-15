@@ -659,7 +659,6 @@ typedef struct {
     PyObject *_jsonrpc_batch_uid;
     PyObject *_pools_closed_lock;
     PyObject *_pending_eth_calls;
-    PyObject *_web3_request_func;
 } dank_mids___controller___DankMiddlewareControllerObject;
 
 typedef struct {
@@ -693,7 +692,7 @@ typedef struct {
     tuple_T3OOO ___mypyc_temp__1;
     PyObject *___mypyc_generator_attribute__response;
     PyObject *___mypyc_generator_attribute__request_id;
-} dank_mids___controller___async_make_request_DankMiddlewareController_genObject;
+} dank_mids___controller_____call___3_DankMiddlewareController_genObject;
 
 typedef struct {
     PyObject_HEAD
@@ -706,7 +705,7 @@ typedef struct {
     tuple_T3OOO ___mypyc_temp__3;
     PyObject *___mypyc_generator_attribute__response;
     PyObject *___mypyc_generator_attribute___request_id;
-} dank_mids___controller_____call___3_DankMiddlewareController_genObject;
+} dank_mids___controller____request_partial_DankMiddlewareController_genObject;
 
 typedef struct {
     PyObject_HEAD
