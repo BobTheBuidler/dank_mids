@@ -690,16 +690,39 @@ typedef struct {
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__0;
     tuple_T3OOO ___mypyc_temp__1;
+    PyObject *___mypyc_generator_attribute__response;
+    PyObject *___mypyc_generator_attribute__request_id;
+} dank_mids___controller_____call___3_DankMiddlewareController_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
+    PyObject *___mypyc_generator_attribute__method;
+    PyObject *___mypyc_generator_attribute__params;
+    int32_t ___mypyc_next_label__;
     PyObject *___mypyc_temp__2;
-    PyObject *___mypyc_temp__3;
-    char ___mypyc_temp__4;
-    PyObject *___mypyc_temp__5;
-    tuple_T3OOO ___mypyc_temp__6;
+    tuple_T3OOO ___mypyc_temp__3;
+    PyObject *___mypyc_generator_attribute__response;
+    PyObject *___mypyc_generator_attribute___request_id;
+} dank_mids___controller____request_partial_DankMiddlewareController_genObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+    PyObject *___mypyc_generator_attribute__self;
+    PyObject *___mypyc_generator_attribute__method;
+    PyObject *___mypyc_generator_attribute__params;
+    int32_t ___mypyc_next_label__;
+    PyObject *___mypyc_temp__4;
+    tuple_T3OOO ___mypyc_temp__5;
+    PyObject *___mypyc_temp__6;
     PyObject *___mypyc_temp__7;
-    tuple_T3OOO ___mypyc_temp__8;
+    char ___mypyc_temp__8;
     PyObject *___mypyc_temp__9;
-    PyObject *___mypyc_temp__10;
-    tuple_T3OOO ___mypyc_temp__11;
+    tuple_T3OOO ___mypyc_temp__10;
+    PyObject *___mypyc_generator_attribute__request;
+    PyObject *___mypyc_temp__11;
     tuple_T3OOO ___mypyc_temp__12;
     PyObject *___mypyc_temp__13;
     tuple_T3OOO ___mypyc_temp__14;
@@ -707,10 +730,12 @@ typedef struct {
     tuple_T3OOO ___mypyc_temp__16;
     PyObject *___mypyc_temp__17;
     tuple_T3OOO ___mypyc_temp__18;
-    tuple_T3OOO ___mypyc_temp__19;
-    PyObject *___mypyc_temp__20;
+    PyObject *___mypyc_temp__19;
+    tuple_T3OOO ___mypyc_temp__20;
     tuple_T3OOO ___mypyc_temp__21;
-} dank_mids___controller_____call___3_DankMiddlewareController_genObject;
+    PyObject *___mypyc_temp__22;
+    tuple_T3OOO ___mypyc_temp__23;
+} dank_mids___controller____dispatch_request_DankMiddlewareController_genObject;
 
 typedef struct {
     PyObject_HEAD
@@ -727,9 +752,9 @@ typedef struct {
     PyObject **_stop_iter_ptr;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__request;
-    PyObject *___mypyc_temp__22;
-    tuple_T3OOO ___mypyc_temp__23;
-    tuple_T3OOO ___mypyc_temp__24;
+    PyObject *___mypyc_temp__24;
+    tuple_T3OOO ___mypyc_temp__25;
+    tuple_T3OOO ___mypyc_temp__26;
     PyObject *___mypyc_generator_attribute__e;
 } dank_mids___controller___make_request_DankMiddlewareController_envObject;
 
@@ -746,25 +771,25 @@ typedef struct {
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__multicalls;
     PyObject *___mypyc_generator_attribute__pending_eth_calls;
-    PyObject *___mypyc_temp__25;
-    char ___mypyc_temp__26;
     PyObject *___mypyc_temp__27;
-    PyObject *___mypyc_temp__28;
-    CPyTagged ___mypyc_temp__29;
-    int64_t ___mypyc_temp__30;
-    PyObject *___mypyc_temp__31;
+    char ___mypyc_temp__28;
+    PyObject *___mypyc_temp__29;
+    PyObject *___mypyc_temp__30;
+    CPyTagged ___mypyc_temp__31;
+    int64_t ___mypyc_temp__32;
+    PyObject *___mypyc_temp__33;
     PyObject *___mypyc_generator_attribute__block;
     PyObject *___mypyc_generator_attribute__call;
     PyObject *___mypyc_generator_attribute__rpc_calls;
-    tuple_T3OOO ___mypyc_temp__32;
-    tuple_T3OOO ___mypyc_temp__33;
-    PyObject *___mypyc_generator_attribute__batch;
-    PyObject *___mypyc_temp__34;
+    tuple_T3OOO ___mypyc_temp__34;
     tuple_T3OOO ___mypyc_temp__35;
-    tuple_T3OOO ___mypyc_temp__36;
-    PyObject *___mypyc_generator_attribute__e;
-    PyObject *___mypyc_temp__37;
+    PyObject *___mypyc_generator_attribute__batch;
+    PyObject *___mypyc_temp__36;
+    tuple_T3OOO ___mypyc_temp__37;
     tuple_T3OOO ___mypyc_temp__38;
+    PyObject *___mypyc_generator_attribute__e;
+    PyObject *___mypyc_temp__39;
+    tuple_T3OOO ___mypyc_temp__40;
 } dank_mids___controller___execute_batch_DankMiddlewareController_genObject;
 
 typedef struct {
@@ -776,13 +801,13 @@ typedef struct {
     double ___mypyc_generator_attribute__timeout;
     int32_t ___mypyc_next_label__;
     PyObject *___mypyc_generator_attribute__dispatched_batches;
-    tuple_T3OOO ___mypyc_temp__39;
-    PyObject *___mypyc_temp__40;
     tuple_T3OOO ___mypyc_temp__41;
-    tuple_T3OOO ___mypyc_temp__42;
-    PyObject *___mypyc_temp__43;
+    PyObject *___mypyc_temp__42;
+    tuple_T3OOO ___mypyc_temp__43;
     tuple_T3OOO ___mypyc_temp__44;
-    tuple_T3OOO ___mypyc_temp__45;
+    PyObject *___mypyc_temp__45;
+    tuple_T3OOO ___mypyc_temp__46;
+    tuple_T3OOO ___mypyc_temp__47;
 } dank_mids___controller___dispatch_pending_rpc_batch_and_wait_DankMiddlewareController_genObject;
 
 typedef struct {

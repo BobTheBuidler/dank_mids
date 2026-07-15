@@ -38,6 +38,7 @@ class AsyncProvider(AsyncBaseProvider):
 class JsonRpcServer(ThreadingHTTPServer):
     calls: list[tuple[str, Any]]
     errors: dict[str, dict[str, Any]]
+    payloads: list[dict[str, Any]]
     results: dict[str, Any]
 
 
@@ -49,6 +50,7 @@ class _JsonRpcHandler(BaseHTTPRequestHandler):
         requests = payload if is_batch else [payload]
         server = self.server
         assert isinstance(server, JsonRpcServer)
+        server.payloads.extend(requests)
         responses = [self._handle_request(server, request) for request in requests]
         body = json.dumps(responses if is_batch else responses[0]).encode()
 
@@ -83,6 +85,7 @@ def jsonrpc_server() -> Iterator[JsonRpcServer]:
     server = JsonRpcServer(("127.0.0.1", 0), _JsonRpcHandler)
     server.calls = []
     server.errors = {}
+    server.payloads = []
     server.results = {
         RPC.eth_chainId: "0x1",
         RPC.web3_clientVersion: "pytest/test",

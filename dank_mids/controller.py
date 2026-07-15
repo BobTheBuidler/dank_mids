@@ -207,10 +207,10 @@ class DankMiddlewareController:
 
     async def __call__(self, method: RPCEndpoint, params: Any) -> RPCResponse:
         """
-        Asynchronous method to handle RPC calls.
+        Web3 provider-boundary request function.
 
-        This method routes different types of RPC calls to appropriate handlers,
-        including specialized handling for eth_call and other methods that may use queues.
+        Dank internals use partial response dicts, but Web3's RequestManager requires
+        complete JSON-RPC envelopes from provider request functions.
 
         Args:
             method: The RPC method to be called.
@@ -218,6 +218,22 @@ class DankMiddlewareController:
 
         Returns:
             The response from the RPC call.
+        """
+        response, request_id = await self._dispatch_request(method, params)
+        return self._normalize_web3_response(response, request_id)
+
+    async def _request_partial(self, method: RPCEndpoint, params: Any) -> RPCResponse:
+        """
+        Internal Dank request path that preserves partial response dictionaries.
+        """
+        response, _request_id = await self._dispatch_request(method, params)
+        return response
+
+    async def _dispatch_request(
+        self, method: RPCEndpoint, params: Any
+    ) -> tuple[RPCResponse, int | str]:
+        """
+        Route one Dank request and return both the internal response and request id.
         """
 
         await rate_limit_inactive(self.endpoint)
@@ -231,14 +247,27 @@ class DankMiddlewareController:
                         "making %s %s with params %s", self.request_type.__name__, method, params
                     )
                     if params[0]["to"] in self.no_multicall:
-                        return await RPCRequest(self, method, params)
-                    return await eth_call(self, params)
+                        request = RPCRequest(self, method, params)
+                    else:
+                        request = eth_call(self, params)
+                    return await request, request.uid
 
             logger.debug("making %s %s with params %s", self.request_type.__name__, method, params)
-            return await RPCRequest(self, method, params)
+            request = RPCRequest(self, method, params)
+            return await request, request.uid
         except GarbageCollectionError:
             # this exc shouldn't be exposed to the user so let's try this again
-            return await self(method, params)
+            return await self._dispatch_request(method, params)
+
+    @staticmethod
+    def _normalize_web3_response(response: RPCResponse, request_id: int | str) -> RPCResponse:
+        if response.get("jsonrpc") == "2.0" and "id" in response:
+            return response
+        if "result" in response:
+            return {"jsonrpc": "2.0", "id": request_id, "result": response["result"]}
+        if "error" in response:
+            return {"jsonrpc": "2.0", "id": request_id, "error": response["error"]}
+        return {"jsonrpc": "2.0", "id": request_id, **response}
 
     @eth_retry.auto_retry(min_sleep_time=0, max_sleep_time=1)
     async def make_request(
@@ -262,7 +291,9 @@ class DankMiddlewareController:
             Exception: If DEBUG environment variable is set, any exception that occurs during the request is logged and re-raised.
         """
         request = self.request_type(
-            method=method, params=params, id=request_id or self.call_uid.next
+            method=method,
+            params=params,
+            id=request_id if request_id is not None else self.call_uid.next,
         )
         try:
             return await _requester.post(self.endpoint, data=request, loads=decode_raw)
