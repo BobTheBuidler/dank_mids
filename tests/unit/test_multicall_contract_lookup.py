@@ -52,3 +52,11 @@ def test_get_multicalls_return_none_for_unknown_chainid() -> None:
 
     assert multicall_module._get_multicall2(chainid) is None
     assert multicall_module._get_multicall3(chainid) is None
+
+
+def test_needs_override_code_for_block_skips_tag_identifiers() -> None:
+    contract = multicall_module._get_multicall2(Network.Mainnet.value)
+    assert contract is not None
+
+    assert contract.needs_override_code_for_block("latest") is False
+    assert contract.needs_override_code_for_block("pending") is False

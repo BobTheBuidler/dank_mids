@@ -76759,31 +76759,34 @@ PyObject *CPyDef_controller___DankMiddlewareController____select_mcall_target_fo
     char cpy_r_r2;
     PyObject *cpy_r_r3;
     PyObject *cpy_r_r4;
-    PyObject *cpy_r_r5;
-    char cpy_r_r6;
+    char cpy_r_r5;
+    PyObject *cpy_r_r6;
     PyObject *cpy_r_r7;
-    int32_t cpy_r_r8;
+    PyObject *cpy_r_r8;
     char cpy_r_r9;
-    char cpy_r_r10;
-    PyObject *cpy_r_r11;
-    PyObject *cpy_r_r12;
-    PyObject **cpy_r_r14;
+    PyObject *cpy_r_r10;
+    int32_t cpy_r_r11;
+    char cpy_r_r12;
+    char cpy_r_r13;
+    PyObject *cpy_r_r14;
     PyObject *cpy_r_r15;
-    char cpy_r_r16;
-    PyObject *cpy_r_r17;
+    PyObject **cpy_r_r17;
     PyObject *cpy_r_r18;
     char cpy_r_r19;
     PyObject *cpy_r_r20;
-    int32_t cpy_r_r21;
+    PyObject *cpy_r_r21;
     char cpy_r_r22;
-    char cpy_r_r23;
-    PyObject *cpy_r_r24;
-    PyObject *cpy_r_r25;
+    PyObject *cpy_r_r23;
+    int32_t cpy_r_r24;
+    char cpy_r_r25;
+    char cpy_r_r26;
+    PyObject *cpy_r_r27;
+    PyObject *cpy_r_r28;
     cpy_r_r0 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* 'latest' */
     cpy_r_r1 = PyObject_RichCompare(cpy_r_block, cpy_r_r0, 2);
     if (unlikely(cpy_r_r1 == NULL)) {
         CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
-        goto CPyL23;
+        goto CPyL26;
     }
     if (unlikely(!PyBool_Check(cpy_r_r1))) {
         CPy_TypeError("bool", cpy_r_r1); cpy_r_r2 = 2;
@@ -76792,113 +76795,130 @@ PyObject *CPyDef_controller___DankMiddlewareController____select_mcall_target_fo
     CPy_DECREF(cpy_r_r1);
     if (unlikely(cpy_r_r2 == 2)) {
         CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
-        goto CPyL23;
+        goto CPyL26;
     }
-    if (!cpy_r_r2) goto CPyL5;
-    cpy_r_r3 = ((dank_mids___controller___DankMiddlewareControllerObject *)cpy_r_self)->__latest_mc;
-    if (unlikely(cpy_r_r3 == NULL)) {
-        CPy_AttributeError("dank_mids/controller.py", "_select_mcall_target_for_block", "DankMiddlewareController", "_latest_mc", 584, CPyStatic_controller___globals);
-        goto CPyL23;
-    }
-    CPy_INCREF(cpy_r_r3);
-CPyL4: ;
-    return cpy_r_r3;
-CPyL5: ;
-    cpy_r_r4 = ((dank_mids___controller___DankMiddlewareControllerObject *)cpy_r_self)->_mc3;
+    if (cpy_r_r2) goto CPyL6;
+    cpy_r_r3 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* 'pending' */
+    cpy_r_r4 = PyObject_RichCompare(cpy_r_block, cpy_r_r3, 2);
     if (unlikely(cpy_r_r4 == NULL)) {
-        CPy_AttributeError("dank_mids/controller.py", "_select_mcall_target_for_block", "DankMiddlewareController", "mc3", 585, CPyStatic_controller___globals);
-        goto CPyL23;
-    }
-    CPy_INCREF(cpy_r_r4);
-CPyL6: ;
-    cpy_r_r5 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r6 = cpy_r_r4 != cpy_r_r5;
-    if (!cpy_r_r6) goto CPyL15;
-    CPy_INCREF(cpy_r_r4);
-    cpy_r_r7 = cpy_r_r4;
-    cpy_r_r8 = PyObject_IsTrue(cpy_r_r7);
-    CPy_DECREF(cpy_r_r7);
-    cpy_r_r9 = cpy_r_r8 >= 0;
-    if (unlikely(!cpy_r_r9)) {
         CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
-        goto CPyL24;
+        goto CPyL26;
     }
-    cpy_r_r10 = cpy_r_r8;
-    if (!cpy_r_r10) goto CPyL15;
-    CPy_INCREF(cpy_r_r4);
-    cpy_r_r11 = cpy_r_r4;
-    cpy_r_r12 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* 'needs_override_code_for_block' */
-    PyObject *cpy_r_r13[2] = {cpy_r_r11, cpy_r_block};
-    cpy_r_r14 = (PyObject **)&cpy_r_r13;
-    cpy_r_r15 = PyObject_VectorcallMethod(cpy_r_r12, cpy_r_r14, 9223372036854775810ULL, 0);
-    if (unlikely(cpy_r_r15 == NULL)) {
-        CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
-        goto CPyL25;
-    }
-    CPy_DECREF(cpy_r_r11);
-    if (unlikely(!PyBool_Check(cpy_r_r15))) {
-        CPy_TypeError("bool", cpy_r_r15); cpy_r_r16 = 2;
+    if (unlikely(!PyBool_Check(cpy_r_r4))) {
+        CPy_TypeError("bool", cpy_r_r4); cpy_r_r5 = 2;
     } else
-        cpy_r_r16 = cpy_r_r15 == Py_True;
-    CPy_DECREF(cpy_r_r15);
-    if (unlikely(cpy_r_r16 == 2)) {
+        cpy_r_r5 = cpy_r_r4 == Py_True;
+    CPy_DECREF(cpy_r_r4);
+    if (unlikely(cpy_r_r5 == 2)) {
         CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
-        goto CPyL24;
+        goto CPyL26;
     }
-    if (cpy_r_r16) goto CPyL15;
-    return cpy_r_r4;
-CPyL15: ;
-    cpy_r_r17 = ((dank_mids___controller___DankMiddlewareControllerObject *)cpy_r_self)->_mc2;
-    if (unlikely(cpy_r_r17 == NULL)) {
-        CPy_AttributeError("dank_mids/controller.py", "_select_mcall_target_for_block", "DankMiddlewareController", "mc2", 589, CPyStatic_controller___globals);
-        goto CPyL24;
+    if (!cpy_r_r5) goto CPyL8;
+CPyL6: ;
+    cpy_r_r6 = ((dank_mids___controller___DankMiddlewareControllerObject *)cpy_r_self)->__latest_mc;
+    if (unlikely(cpy_r_r6 == NULL)) {
+        CPy_AttributeError("dank_mids/controller.py", "_select_mcall_target_for_block", "DankMiddlewareController", "_latest_mc", 584, CPyStatic_controller___globals);
+        goto CPyL26;
     }
-    CPy_INCREF(cpy_r_r17);
-CPyL16: ;
-    cpy_r_r18 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r19 = cpy_r_r17 != cpy_r_r18;
-    if (!cpy_r_r19) goto CPyL26;
-    CPy_INCREF(cpy_r_r17);
-    cpy_r_r20 = cpy_r_r17;
-    cpy_r_r21 = PyObject_IsTrue(cpy_r_r20);
-    CPy_DECREF(cpy_r_r20);
-    cpy_r_r22 = cpy_r_r21 >= 0;
-    if (unlikely(!cpy_r_r22)) {
+    CPy_INCREF(cpy_r_r6);
+CPyL7: ;
+    return cpy_r_r6;
+CPyL8: ;
+    cpy_r_r7 = ((dank_mids___controller___DankMiddlewareControllerObject *)cpy_r_self)->_mc3;
+    if (unlikely(cpy_r_r7 == NULL)) {
+        CPy_AttributeError("dank_mids/controller.py", "_select_mcall_target_for_block", "DankMiddlewareController", "mc3", 585, CPyStatic_controller___globals);
+        goto CPyL26;
+    }
+    CPy_INCREF(cpy_r_r7);
+CPyL9: ;
+    cpy_r_r8 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r9 = cpy_r_r7 != cpy_r_r8;
+    if (!cpy_r_r9) goto CPyL18;
+    CPy_INCREF(cpy_r_r7);
+    cpy_r_r10 = cpy_r_r7;
+    cpy_r_r11 = PyObject_IsTrue(cpy_r_r10);
+    CPy_DECREF(cpy_r_r10);
+    cpy_r_r12 = cpy_r_r11 >= 0;
+    if (unlikely(!cpy_r_r12)) {
         CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
         goto CPyL27;
     }
-    cpy_r_r23 = cpy_r_r21;
-    if (cpy_r_r23) {
+    cpy_r_r13 = cpy_r_r11;
+    if (!cpy_r_r13) goto CPyL18;
+    CPy_INCREF(cpy_r_r7);
+    cpy_r_r14 = cpy_r_r7;
+    cpy_r_r15 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* 'needs_override_code_for_block' */
+    PyObject *cpy_r_r16[2] = {cpy_r_r14, cpy_r_block};
+    cpy_r_r17 = (PyObject **)&cpy_r_r16;
+    cpy_r_r18 = PyObject_VectorcallMethod(cpy_r_r15, cpy_r_r17, 9223372036854775810ULL, 0);
+    if (unlikely(cpy_r_r18 == NULL)) {
+        CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
         goto CPyL28;
+    }
+    CPy_DECREF(cpy_r_r14);
+    if (unlikely(!PyBool_Check(cpy_r_r18))) {
+        CPy_TypeError("bool", cpy_r_r18); cpy_r_r19 = 2;
     } else
-        goto CPyL26;
-CPyL20: ;
-    cpy_r_r24 = cpy_r_r17;
-    goto CPyL22;
-CPyL21: ;
-    cpy_r_r24 = cpy_r_r4;
-CPyL22: ;
-    return cpy_r_r24;
+        cpy_r_r19 = cpy_r_r18 == Py_True;
+    CPy_DECREF(cpy_r_r18);
+    if (unlikely(cpy_r_r19 == 2)) {
+        CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
+        goto CPyL27;
+    }
+    if (cpy_r_r19) goto CPyL18;
+    return cpy_r_r7;
+CPyL18: ;
+    cpy_r_r20 = ((dank_mids___controller___DankMiddlewareControllerObject *)cpy_r_self)->_mc2;
+    if (unlikely(cpy_r_r20 == NULL)) {
+        CPy_AttributeError("dank_mids/controller.py", "_select_mcall_target_for_block", "DankMiddlewareController", "mc2", 589, CPyStatic_controller___globals);
+        goto CPyL27;
+    }
+    CPy_INCREF(cpy_r_r20);
+CPyL19: ;
+    cpy_r_r21 = (PyObject *)&_Py_NoneStruct;
+    cpy_r_r22 = cpy_r_r20 != cpy_r_r21;
+    if (!cpy_r_r22) goto CPyL29;
+    CPy_INCREF(cpy_r_r20);
+    cpy_r_r23 = cpy_r_r20;
+    cpy_r_r24 = PyObject_IsTrue(cpy_r_r23);
+    CPy_DECREF(cpy_r_r23);
+    cpy_r_r25 = cpy_r_r24 >= 0;
+    if (unlikely(!cpy_r_r25)) {
+        CPy_AddTraceback("dank_mids/controller.py", "_select_mcall_target_for_block", DIFFCHECK_PLACEHOLDER, CPyStatic_controller___globals);
+        goto CPyL30;
+    }
+    cpy_r_r26 = cpy_r_r24;
+    if (cpy_r_r26) {
+        goto CPyL31;
+    } else
+        goto CPyL29;
 CPyL23: ;
-    cpy_r_r25 = NULL;
-    return cpy_r_r25;
+    cpy_r_r27 = cpy_r_r20;
+    goto CPyL25;
 CPyL24: ;
-    CPy_DecRef(cpy_r_r4);
-    goto CPyL23;
+    cpy_r_r27 = cpy_r_r7;
 CPyL25: ;
-    CPy_DecRef(cpy_r_r4);
-    CPy_DecRef(cpy_r_r11);
-    goto CPyL23;
+    return cpy_r_r27;
 CPyL26: ;
-    CPy_DECREF(cpy_r_r17);
-    goto CPyL21;
+    cpy_r_r28 = NULL;
+    return cpy_r_r28;
 CPyL27: ;
-    CPy_DecRef(cpy_r_r4);
-    CPy_DecRef(cpy_r_r17);
-    goto CPyL23;
+    CPy_DecRef(cpy_r_r7);
+    goto CPyL26;
 CPyL28: ;
-    CPy_DECREF(cpy_r_r4);
-    goto CPyL20;
+    CPy_DecRef(cpy_r_r7);
+    CPy_DecRef(cpy_r_r14);
+    goto CPyL26;
+CPyL29: ;
+    CPy_DECREF(cpy_r_r20);
+    goto CPyL24;
+CPyL30: ;
+    CPy_DecRef(cpy_r_r7);
+    CPy_DecRef(cpy_r_r20);
+    goto CPyL26;
+CPyL31: ;
+    CPy_DECREF(cpy_r_r7);
+    goto CPyL23;
 }
                                                                             
                                                                             PyObject *CPyPy_controller___DankMiddlewareController____select_mcall_target_for_block(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames) {
@@ -150859,7 +150879,7 @@ CPyL17: ;
     "\001\?new multicall size limit %s is not lower than existing limit %s",
     "\001.jsonrpc batch size limit reduced from %s to %s",
     "\001Cnew jsonrpc batch size limit %s is not lower than existing limit %s",
-    "\004\006latest\035needs_override_code_for_block\016client_version\tlru_cache",
+    "\005\006latest\apending\035needs_override_code_for_block\016client_version\tlru_cache",
     "\005\tgetLogger\vDefaultDict\aLiteral\teth_retry\027dank_mids/controller.py",
     "\005\tcchecksum\aChainId\023multicall.multicall\nlibrt.time\004Web3",
     "\003\031dank_mids.helpers._errors\027log_request_type_switch\021MulticallContract",
@@ -150995,56 +151015,56 @@ CPyL17: ;
                                                                                                                                                     const double CPyLit_Float[] = {0};
                                                                                                                                                     const double CPyLit_Complex[] = {0};
                                                                                                                                                     const int CPyLit_Tuple[] = {
-    268, 1, 4, 1, 6, 3, 8, 8, 8, 3, 9, 9, 9, 2, 1285, 1286, 1, 12, 1,
+    268, 1, 4, 1, 6, 3, 8, 8, 8, 3, 9, 9, 9, 2, 1286, 1287, 1, 12, 1,
     18, 2, 21, 22, 1, 23, 2, 34, 35, 1, 34, 1, 79, 1, 85, 1, 96, 2, 98,
-    99, 6, 101, 102, 6, 103, 104, 105, 1, 1285, 2, 88, 92, 2, 109, 110, 1,
+    99, 6, 101, 102, 6, 103, 104, 105, 1, 1286, 2, 88, 92, 2, 109, 110, 1,
     112, 1, 22, 1, 113, 3, 102, 6, 105, 1, 129, 1, 138, 3, 185, 185, 185,
-    1, 1308, 3, 102, 187, 6, 1, 188, 3, 204, 197, 205, 3, 211, 211, 211,
-    1, 1313, 4, 101, 6, 213, 105, 1, 214, 1, 68, 1, 260, 3, 97, 97, 97, 1,
-    1319, 2, 98, 263, 2, 102, 6, 1, 255, 1, 266, 1, 278, 1, 282, 1, 285,
-    3, 315, 315, 315, 3, 316, 316, 316, 3, 317, 317, 317, 4, 1319, 1328,
-    1329, 1330, 1, 297, 2, 299, 298, 1, 289, 1, 322, 1, 105, 1, 327, 1,
-    104, 3, 197, 338, 339, 3, 100, 357, 357, 1, 1340, 1, 263, 1, 359, 4,
+    1, 1309, 3, 102, 187, 6, 1, 188, 3, 204, 197, 205, 3, 211, 211, 211,
+    1, 1314, 4, 101, 6, 213, 105, 1, 214, 1, 68, 1, 260, 3, 97, 97, 97, 1,
+    1320, 2, 98, 263, 2, 102, 6, 1, 255, 1, 266, 1, 278, 1, 282, 1, 285,
+    3, 315, 315, 315, 3, 316, 316, 316, 3, 317, 317, 317, 4, 1320, 1329,
+    1330, 1331, 1, 297, 2, 299, 298, 1, 289, 1, 322, 1, 105, 1, 327, 1,
+    104, 3, 197, 338, 339, 3, 100, 357, 357, 1, 1341, 1, 263, 1, 359, 4,
     102, 6, 103, 105, 1, 361, 1, 362, 2, 364, 354, 1, 385, 4, 263, 403,
     371, 404, 3, 102, 6, 103, 1, 387, 1, 391, 1, 397, 1, 392, 1, 409, 1,
     393, 5, 401, 411, 402, 412, 413, 3, 415, 416, 386, 1, 398, 3, 419,
     420, 421, 1, 423, 1, 440, 2, 440, 150, 2, 444, 445, 1, 458, 1, 459, 1,
     447, 1, 465, 1, 467, 1, 404, 1, 485, 1, 487, 2, 489, 490, 1, 491, 1,
-    494, 1, 503, 3, 566, 566, 566, 1, 1377, 2, 263, 404, 1, 532, 1, 534,
+    494, 1, 503, 3, 566, 566, 566, 1, 1378, 2, 263, 404, 1, 532, 1, 534,
     1, 511, 7, 101, 102, 6, 570, 571, 103, 104, 3, 572, 441, 441, 3, 573,
     441, 441, 3, 574, 441, 441, 3, 575, 441, 441, 3, 363, 363, 363, 3,
-    365, 363, 363, 3, 576, 576, 576, 7, 1384, 1385, 1386, 1387, 1388,
-    1389, 1390, 1, 577, 1, 543, 2, 550, 555, 1, 580, 2, 520, 525, 1, 582,
+    365, 363, 363, 3, 576, 576, 576, 7, 1385, 1386, 1387, 1388, 1389,
+    1390, 1391, 1, 577, 1, 543, 2, 550, 555, 1, 580, 2, 520, 525, 1, 582,
     1, 584, 1, 364, 1, 586, 1, 588, 1, 590, 1, 591, 1, 593, 1, 639, 1,
     102, 1, 444, 3, 580, 642, 643, 2, 510, 508, 4, 102, 103, 213, 105, 1,
-    653, 1, 655, 3, 656, 657, 658, 3, 589, 662, 662, 1, 1414, 1, 664, 1,
+    653, 1, 655, 3, 656, 657, 658, 3, 589, 662, 662, 1, 1415, 1, 664, 1,
     665, 3, 527, 737, 619, 1, 750, 5, 271, 96, 751, 291, 274, 1, 728, 2,
-    370, 404, 1, 771, 1, 772, 6, 102, 773, 6, 774, 104, 105, 3, 775, 775,
-    775, 2, 1285, 1426, 1, 615, 3, 664, 655, 188, 1, 778, 1, 724, 1, 726,
-    1, 293, 1, 781, 2, 420, 421, 1, 741, 1, 128, 1, 136, 1, 236, 4, 88,
-    92, 733, 58, 1, 268, 1, 281, 1, 734, 2, 112, 739, 1, 783, 1, 708, 3,
-    784, 721, 722, 1, 787, 1, 738, 3, 789, 714, 713, 2, 821, 822, 1, 824,
-    1, 826, 3, 101, 102, 6, 1, 825, 1, 478, 4, 835, 713, 836, 834, 1, 835,
-    3, 263, 370, 371, 11, 101, 102, 187, 6, 774, 571, 103, 213, 104, 105,
-    840, 3, 408, 408, 408, 2, 1390, 1461, 2, 655, 188, 1, 842, 1, 843, 2,
-    839, 845, 1, 865, 1, 819, 3, 873, 873, 873, 1, 1469, 2, 101, 6, 1,
-    875, 1, 207, 1, 887, 1, 888, 1, 881, 2, 219, 222, 1, 704, 2, 54, 22,
-    3, 714, 835, 713, 2, 915, 68, 2, 918, 370, 3, 919, 8, 8, 1, 1483, 3,
-    320, 320, 320, 2, 1319, 1485, 2, 773, 6, 2, 1285, 1483, 1, 110, 1,
-    939, 1, 940, 1, 950, 2, 956, 957, 5, 962, 205, 750, 963, 964, 3, 973,
-    973, 973, 3, 1319, 1495, 1469, 1, 751, 2, 958, 955, 1, 977, 1, 961, 1,
-    992, 2, 6, 105, 1, 994, 1, 1006, 2, 385, 1006, 2, 370, 403, 4, 6,
-    1015, 103, 105, 1, 1016, 2, 6, 774, 7, 1029, 1032, 403, 1033, 371,
-    404, 1034, 6, 102, 6, 1015, 103, 104, 105, 1, 1036, 3, 418, 150, 150,
-    1, 1513, 1, 103, 1, 1054, 3, 357, 357, 357, 3, 1319, 1517, 1469, 4,
-    1079, 96, 163, 1080, 5, 1081, 6, 774, 103, 105, 1, 1104, 3, 1120, 827,
-    827, 3, 5, 5, 5, 3, 1121, 1121, 1121, 5, 1522, 1523, 1328, 1329, 1524,
-    2, 403, 371, 1, 1123, 1, 1125, 3, 102, 6, 104, 1, 1126, 1, 1149, 1,
-    1151, 1, 1153, 1, 1173, 1, 1523, 1, 275, 2, 728, 1074, 2, 263, 370, 1,
-    143, 1, 1183, 7, 101, 102, 773, 1081, 6, 103, 105, 1, 1461, 1, 926, 1,
-    1209, 1, 420, 2, 1143, 1128, 1, 1212, 1, 1203, 1, 403, 1, 1241
+    370, 404, 1, 772, 1, 773, 6, 102, 774, 6, 775, 104, 105, 3, 776, 776,
+    776, 2, 1286, 1427, 1, 615, 3, 664, 655, 188, 1, 779, 1, 724, 1, 726,
+    1, 293, 1, 782, 2, 420, 421, 1, 741, 1, 128, 1, 136, 1, 236, 4, 88,
+    92, 733, 58, 1, 268, 1, 281, 1, 734, 2, 112, 739, 1, 784, 1, 708, 3,
+    785, 721, 722, 1, 788, 1, 738, 3, 790, 714, 713, 2, 822, 823, 1, 825,
+    1, 827, 3, 101, 102, 6, 1, 826, 1, 478, 4, 836, 713, 837, 835, 1, 836,
+    3, 263, 370, 371, 11, 101, 102, 187, 6, 775, 571, 103, 213, 104, 105,
+    841, 3, 408, 408, 408, 2, 1391, 1462, 2, 655, 188, 1, 843, 1, 844, 2,
+    840, 846, 1, 866, 1, 820, 3, 874, 874, 874, 1, 1470, 2, 101, 6, 1,
+    876, 1, 207, 1, 888, 1, 889, 1, 882, 2, 219, 222, 1, 704, 2, 54, 22,
+    3, 714, 836, 713, 2, 916, 68, 2, 919, 370, 3, 920, 8, 8, 1, 1484, 3,
+    320, 320, 320, 2, 1320, 1486, 2, 774, 6, 2, 1286, 1484, 1, 110, 1,
+    940, 1, 941, 1, 951, 2, 957, 958, 5, 963, 205, 750, 964, 965, 3, 974,
+    974, 974, 3, 1320, 1496, 1470, 1, 751, 2, 959, 956, 1, 978, 1, 962, 1,
+    993, 2, 6, 105, 1, 995, 1, 1007, 2, 385, 1007, 2, 370, 403, 4, 6,
+    1016, 103, 105, 1, 1017, 2, 6, 775, 7, 1030, 1033, 403, 1034, 371,
+    404, 1035, 6, 102, 6, 1016, 103, 104, 105, 1, 1037, 3, 418, 150, 150,
+    1, 1514, 1, 103, 1, 1055, 3, 357, 357, 357, 3, 1320, 1518, 1470, 4,
+    1080, 96, 163, 1081, 5, 1082, 6, 775, 103, 105, 1, 1105, 3, 1121, 828,
+    828, 3, 5, 5, 5, 3, 1122, 1122, 1122, 5, 1523, 1524, 1329, 1330, 1525,
+    2, 403, 371, 1, 1124, 1, 1126, 3, 102, 6, 104, 1, 1127, 1, 1150, 1,
+    1152, 1, 1154, 1, 1174, 1, 1524, 1, 275, 2, 728, 1075, 2, 263, 370, 1,
+    143, 1, 1184, 7, 101, 102, 774, 1082, 6, 103, 105, 1, 1462, 1, 927, 1,
+    1210, 1, 420, 2, 1144, 1129, 1, 1213, 1, 1204, 1, 403, 1, 1242
 };
-                                                                                                                                                    const int CPyLit_FrozenSet[] = {1, 2, 1057, 1058};
+                                                                                                                                                    const int CPyLit_FrozenSet[] = {1, 2, 1058, 1059};
                                                                                                                                                     CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES__internal = NULL;
                                                                                                                                                     CPyModule *CPyModule_dank_mids___ENVIRONMENT_VARIABLES;
                                                                                                                                                     PyObject *CPyStatic_ENVIRONMENT_VARIABLES___globals;
