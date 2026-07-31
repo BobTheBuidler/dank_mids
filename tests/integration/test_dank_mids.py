@@ -187,6 +187,9 @@ async def test_eth_getBalance_hex_block() -> None:
 async def test_eth_getBalance_latest() -> None:
     assert isinstance(await dank_web3.eth.get_balance(CHAI, "latest"), int)
 
+@pytest.mark.asyncio_cooperative
+async def test_eth_getBalance_pending() -> None:
+    assert isinstance(await dank_web3.eth.get_balance(CHAI, "pending"), int)
 
 @pytest.mark.asyncio_cooperative
 async def test_eth_getTransactionCount_no_block() -> None:

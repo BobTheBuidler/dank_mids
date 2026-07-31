@@ -56,14 +56,16 @@ class BlockSemaphore(_AbstractPrioritySemaphore):
     def __init__(self, value=1, *, name=None) -> None:
         super().__init__(_BlockSemaphoreContextManager, -1, int(value), name=name)
 
-    def __getitem__(self, block: int | HexStr | Literal["latest", None]) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
+    def __getitem__(
+        self, block: int | HexStr | Literal["latest", "pending", None]
+    ) -> "_BlockSemaphoreContextManager":  # type: ignore [override]
         if isinstance(block, int):
             priority = block
         elif isinstance(block, bytes):
             priority = int(block.hex(), 16)
         elif isinstance(block, str) and "0x" in block:
             priority = int(block, 16)
-        elif block not in {None, "latest"}:
+        elif block not in {None, "latest", "pending"}:
             # NOTE: We do this to generate an err if an unsuitable value was provided
             priority = block
         else:
