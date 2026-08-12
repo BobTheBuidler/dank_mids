@@ -36,7 +36,7 @@ Documentation = "https://BobTheBuidler.github.io/dank_mids"
 
 [dependency-groups]
 build = [
-    "eth-retry==0.3.7",
+    "eth-retry==0.3.8",
     "eth-typing==5.2.1",
     "ez-a-sync==0.34.2",
     "faster-eth-abi==5.2.30",

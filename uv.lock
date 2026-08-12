@@ -837,7 +837,7 @@ wheels = [
 
 [[package]]
 name = "dank-mids"
-version = "4.20.214"
+version = "4.20.215"
 source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
@@ -929,7 +929,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 build = [
-    { name = "eth-retry", specifier = "==0.3.7" },
+    { name = "eth-retry", specifier = "==0.3.8" },
     { name = "eth-typing", specifier = "==5.2.1" },
     { name = "ez-a-sync", specifier = "==0.34.2" },
     { name = "faster-eth-abi", specifier = "==5.2.30" },
@@ -965,7 +965,7 @@ docs = [
     { name = "wheel" },
 ]
 mypy = [
-    { name = "eth-retry", specifier = "==0.3.7" },
+    { name = "eth-retry", specifier = "==0.3.8" },
     { name = "eth-typing", specifier = "==5.2.1" },
     { name = "ez-a-sync", specifier = "==0.34.2" },
     { name = "faster-eth-abi", specifier = "==5.2.30" },
@@ -1280,14 +1280,11 @@ wheels = [
 
 [[package]]
 name = "eth-retry"
-version = "0.3.7"
+version = "0.3.8"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/53/cb/71b1f9ad6ea1d76186d379c608cb6ec162420239ac7c3cc16371e0133003/eth_retry-0.3.7.tar.gz", hash = "sha256:0a0d7efbdd2f986e965e5bc8f6698d4efc001387b74d509b16216fc165d5aa5f", size = 5303, upload-time = "2026-01-25T03:14:43.022Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4e/9a/f5fcd9f3ab43428dbe70e189785d2858e4df1b0aea7d61b5759ab61d9cea/eth_retry-0.3.8.tar.gz", hash = "sha256:53fba6afd2b89f4450d1f4c0e6cd929d33bd88f3bbf3225526f56db299530f3f", size = 5287, upload-time = "2026-08-09T08:15:17.923Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/71/918744215f11c49fc20516079ceef5e17ae0cb1c4750169bea5909ce48d4/eth_retry-0.3.7-py3-none-any.whl", hash = "sha256:3155584bf6a178b95aa959d344dd077851295ceecba263b97a733cc9c1b1629c", size = 6674, upload-time = "2026-01-25T03:14:44.017Z" },
+    { url = "https://files.pythonhosted.org/packages/59/68/bc63b2081cede3dcc7421c42ee073df8376605161b70704e1432624ab142/eth_retry-0.3.8-py3-none-any.whl", hash = "sha256:5d1e188cddf2a1ec106faad57cb42d98694a21cea3e6fe3ca44c1fb37ff4f0c6", size = 6656, upload-time = "2026-08-09T08:15:18.71Z" },
 ]
 
 [[package]]
