@@ -71,6 +71,8 @@ mypy = [
 
 [tool.uv]
 required-version = ">=0.11.0"
+# Emergency distrust fix while the development Brownie release pins an older bundle.
+override-dependencies = ["certifi>=2026.10.19"]
 default-groups = ["dev"]
 
 [tool.hatch.build]
