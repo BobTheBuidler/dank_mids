@@ -20,7 +20,7 @@ except ImportError:
     MULTICALL3_ADDRESSES = {}
 
 
-BlockIdentifier = Union[BlockNumber, Literal["latest"], HexStr]
+BlockIdentifier = Union[BlockNumber, Literal["latest", "pending"], HexStr]
 
 
 class MulticallContract(Struct):
@@ -72,7 +72,7 @@ class MulticallContract(Struct):
         Returns:
             True if override code is needed, False otherwise.
         """
-        if block == "latest":
+        if block == "latest" or block == "pending":
             return False
         if self.deploy_block is None:
             return True

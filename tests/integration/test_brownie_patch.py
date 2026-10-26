@@ -25,6 +25,9 @@ async def test_patch_call() -> None:
     assert (
         await weth.totalSupply.coroutine(block_identifier=13_000_000) == 6620041514474872981393155
     )
+    assert (
+        await weth.totalSupply.coroutine(block_identifier="pending") > 0
+    )
 
 
 @pytest.mark.asyncio_cooperative
