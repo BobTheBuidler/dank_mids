@@ -122237,7 +122237,7 @@ CPyTagged CPyDef_method___get_len(PyObject *cpy_r_method) {
     if (!cpy_r_r1) goto CPyL2;
     return 10;
 CPyL2: ;
-    cpy_r_r2 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* frozenset({'eth_getCode', 'eth_getTransaction'}) */
+    cpy_r_r2 = CPyStatics[DIFFCHECK_PLACEHOLDER]; /* frozenset({'eth_getTransaction', 'eth_getCode'}) */
     cpy_r_r3 = PySet_Contains(cpy_r_r2, cpy_r_method);
     cpy_r_r4 = cpy_r_r3 >= 0;
     if (unlikely(!cpy_r_r4)) {
@@ -150932,7 +150932,7 @@ CPyL17: ;
     "\a\v__getitem__\b__iter__\a__len__\b__repr__\r_repr_pretty_\vclassmethod\004keys",
     "\003\034dank_mids/helpers/hashing.py\025tupleize_lists_nested\016datastructures",
     "\005\006object\023lru_cache_lite_wrap\005cache\tParamSpec\003__P",
-    "\003\031eth_getTransactionReceipt\veth_getCode\022eth_getTransaction",
+    "\003\031eth_getTransactionReceipt\022eth_getTransaction\veth_getCode",
     "\005\016eth_getBlockBy\017eth_blockNumber\veth_getLogs\006trace_\006debug_",
     "\004\016BYPASS_METHODS\aget_len\fshould_batch\aacquire",
     "\002 wtf\?! %s with name %s is locked!\037cannot release un-acquired lock",
