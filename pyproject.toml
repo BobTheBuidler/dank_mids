@@ -14,6 +14,10 @@ authors = [
 ]
 dependencies = [
     "aiofiles",
+    "aiohttp>=3.14.5,<4",
+    "certifi>=2026.10.19",
+    "multidict>=6.9.1,<7",
+    "urllib3>=2.8.0,<3",
     "aiolimiter>=1.2,<1.3",
     "cchecksum>=0.0.3,<1",
     "eth-retry>=0.3.6,<1",
@@ -46,6 +50,7 @@ build = [
     "typed-envs==0.2.4",
     "tomli>=2; python_version < '3.11'",
     "types-requests",
+    "urllib3>=2.8.0,<3",
 ]
 dev = [
     "eth-brownie==1.22.2",
@@ -71,6 +76,15 @@ mypy = [
 
 [tool.uv]
 required-version = ">=0.11.0"
+# Emergency distrust fix while the development Brownie release pins an older bundle.
+override-dependencies = [
+    "aiohttp>=3.14.5,<4",
+    "certifi>=2026.10.19",
+    "multidict>=6.9.1,<7",
+    "python-dotenv>=1.2.4,<2",
+    "urllib3>=2.8.0,<3",
+    "yarl>=1.25.1,<2",
+]
 default-groups = ["dev"]
 
 [tool.hatch.build]
